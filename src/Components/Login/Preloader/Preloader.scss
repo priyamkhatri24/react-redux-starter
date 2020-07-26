@@ -1,0 +1,13 @@
+.Preloader {
+  @import '../../../scss/bootstrap';
+
+  width: 25%;
+  @include media-breakpoint-down(md) {
+    width: 75%;
+  }
+
+  &__hello {
+    color: $grey;
+    line-height: $spacer * 1.5;
+  }
+}
