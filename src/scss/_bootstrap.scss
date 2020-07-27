@@ -17,3 +17,7 @@
 // (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px)
 // Available mixins: media-breakpoint-up, media-breakpoint-down, media-breakpoint-between, media-breakpoint-only
 @import '~bootstrap/scss/mixins/breakpoints';
+
+// Import to build floating labels in forms
+
+@import './floatingLabel';

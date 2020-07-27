@@ -7,7 +7,9 @@ import './Preloader.scss';
 const Preloader = () => {
   const [count, setCount] = useState(0);
   useInterval(() => {
-    if (count >= 100) return;
+    if (count >= 100) {
+      return;
+    }
     setCount(count + 1);
   }, 50);
 
@@ -22,7 +24,7 @@ const Preloader = () => {
         </TextLoop>
       </h6>
 
-      <ProgressBar now={count} label={`${count}%`} />
+      <ProgressBar now={count} label={`${count}%`} max={100} />
     </div>
   );
 };
