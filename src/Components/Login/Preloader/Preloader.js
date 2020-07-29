@@ -17,8 +17,8 @@ const Preloader = () => {
 
   return (
     <div className='Preloader mx-auto '>
-      <h5 className='Preloader__hello m-5 p-lg-5'>HELLO!</h5>
-      <h6 className='m-5 text-center'>
+      <h5 className='Preloader__hello m-lg-3 m-5 p-lg-5'>HELLO!</h5>
+      <h6 className='m-lg-3 m-5 text-center'>
         <TextLoop mask='true' interval={1000}>
           {hello}
         </TextLoop>

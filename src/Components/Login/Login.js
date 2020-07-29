@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import './Login.scss';
 import Preloader from './Preloader/Preloader';
 import jumboImage from '../../assets/images/yourCoachingHeavy.png';
 import footerIngenium from '../../assets/images/ingiLOGO.png';
 import PhoneNo from './PhoneNo/PhoneNo';
+import { post } from '../../Utilities/Remote';
 
 class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
       currentComponent: 'Preloader',
+      userInfo: '',
     };
   }
 
@@ -24,11 +27,29 @@ class Login extends Component {
   };
 
   getPhoneNo = (param) => {
-    console.log(param);
+    const requestBody = {
+      // client_id: param,
+      client_id: '3',
+      contact: '7999583681',
+    };
+
+    post(requestBody, '/enterNumberAndLogin')
+      .then((res) => {
+        if (res.result.is_user === true) {
+          this.setState({ userInfo: res.result.user_info });
+          this.handleComponent('SignIn');
+        }
+      })
+      .catch((e) => console.error(e));
   };
 
   render() {
-    const { currentComponent } = this.state;
+    const { currentComponent, userInfo } = this.state;
+
+    if (currentComponent === 'SignIn') {
+      return <Redirect to={{ pathname: '/signIn', state: { userInfo } }} />;
+    }
+
     return (
       <div className='text-center Login'>
         <img src={jumboImage} alt='coachingLogo' className='Login__jumbo' />
