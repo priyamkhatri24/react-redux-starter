@@ -1,21 +1,17 @@
-import React, { useEffect } from 'react';
-import jumboImage from '../../../assets/images/yourCoachingHeavy.png';
+import React, { Component } from 'react';
 
-const SignIn = (props) => {
-  useEffect(() => {
-    const nibs = props.location.state.userInfo;
-    console.log('hello', nibs);
-  }, []);
+class SignIn extends Component {
+  componentDidMount(props) {
+    console.log('property_id', this.props.location.state);
+  }
 
-  return (
-    <div className='text-center Signin'>
-      <img src={jumboImage} alt='coachingLogo' className='Signin__jumbo' />
-      {props.location.state.userInfo.map((elem) => (
-        <div>{elem.username}</div>
-      ))}
-      <div>hi</div>
-    </div>
-  );
-};
+  render() {
+    return (
+      <div className='text-center Signin'>
+        <div>hi</div>
+      </div>
+    );
+  }
+}
 
 export default SignIn;

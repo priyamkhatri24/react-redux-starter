@@ -14,6 +14,10 @@
     }
   }
 
+  &__blurImage {
+    filter: blur(5px);
+  }
+
   &__footerText {
     font-family: 'Montserrat-Regular';
     font-size: $spacer * 0.75;

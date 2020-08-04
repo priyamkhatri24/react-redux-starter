@@ -9,8 +9,9 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
     "classnames": "^2.2.6",
+    "connected-react-router": "^6.8.0",
     "formik": "^2.1.5",
-    "history": "^5.0.0",
+    "history": "4.10.1",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
@@ -54,7 +55,8 @@
     "husky": "^4.2.5",
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
-    "pretty-quick": "^2.0.1"
+    "pretty-quick": "^2.0.1",
+    "redux-devtools-extension": "^2.13.8"
   },
   "husky": {
     "hooks": {

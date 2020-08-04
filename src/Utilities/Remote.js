@@ -22,3 +22,13 @@ export const post = (requestBody, endpoint) => {
       console.error(`The error is ${err}`);
     });
 };
+
+export const get = (requestBody = null, endpoint) => {
+  // requestBody must be an object
+  return axios
+    .get(testUrl + endpoint, { params: requestBody })
+    .then((result) => result.data)
+    .catch((err) => {
+      console.error(`The error is ${err}`);
+    });
+};

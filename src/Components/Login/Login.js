@@ -2,10 +2,17 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import './Login.scss';
 import Preloader from './Preloader/Preloader';
-import jumboImage from '../../assets/images/yourCoachingHeavy.png';
 import footerIngenium from '../../assets/images/ingiLOGO.png';
 import PhoneNo from './PhoneNo/PhoneNo';
 import { post } from '../../Utilities/Remote';
+import { connect } from 'react-redux';
+import {
+  getCurrentBranding,
+  getBrandingError,
+  getBrandingPending,
+} from '../../redux/reducers/branding.reducer';
+import getBranding from './Login.service';
+import { bindActionCreators } from 'redux';
 
 class Login extends Component {
   constructor(props) {
@@ -13,13 +20,27 @@ class Login extends Component {
     this.state = {
       currentComponent: 'Preloader',
       userInfo: '',
+      image: null,
+      pending: this.props.currentbranding.pending,
     };
+  }
+
+  componentDidUpdate(prevprops) {
+    if (
+      prevprops.currentbranding.pending !== this.props.currentbranding.pending &&
+      this.props.currentbranding.pending === false
+    ) {
+      this.setState({ image: this.props.currentbranding.branding.client_logo });
+    }
   }
 
   componentDidMount() {
     setTimeout(() => {
       this.handleComponent('PhoneNo');
     }, 6000);
+    const domain = { domain_name: window.location.hostname };
+    const { fetchBranding } = this.props;
+    fetchBranding(domain);
   }
 
   handleComponent = (param) => {
@@ -28,8 +49,8 @@ class Login extends Component {
 
   getPhoneNo = (param) => {
     const requestBody = {
-      // client_id: param,
-      client_id: '3',
+      // contact: param,
+      client_id: this.props.currentbranding.branding.client_id,
       contact: '7999583681',
     };
 
@@ -38,21 +59,32 @@ class Login extends Component {
         if (res.result.is_user === true) {
           this.setState({ userInfo: res.result.user_info });
           this.handleComponent('SignIn');
+          //      this.goToLogin();
+        } else {
+          this.handleComponent('SignUp');
         }
       })
       .catch((e) => console.error(e));
   };
 
+  goToLoginOrSignUp() {
+    console.log(this.state, 'signin state', this.props, 'singin props');
+    // return <Redirect push to={{ pathname: '/signin' }} />;
+    this.props.history.push('/signin');
+  }
   render() {
-    const { currentComponent, userInfo } = this.state;
+    const { currentComponent, userInfo, image } = this.state;
 
     if (currentComponent === 'SignIn') {
-      return <Redirect to={{ pathname: '/signIn', state: { userInfo } }} />;
+      return <Redirect push to={{ pathname: '/signin', state: { userInfo, image } }} />;
+    } else if (currentComponent === 'SignUp') {
+      return <Redirect push to={{ pathname: '/signup', state: { image } }} />;
     }
 
     return (
       <div className='text-center Login'>
-        <img src={jumboImage} alt='coachingLogo' className='Login__jumbo' />
+        <img src={image} alt='coachingLogo' className='Login__jumbo' />
+
         {currentComponent === 'Preloader' && <Preloader />}
 
         {currentComponent === 'PhoneNo' && <PhoneNo getPhoneNo={this.getPhoneNo} />}
@@ -66,4 +98,18 @@ class Login extends Component {
   }
 }
 
-export default Login;
+const mapStateToProps = (state) => ({
+  error: getBrandingError(state),
+  currentbranding: getCurrentBranding(state),
+  pending: getBrandingPending(state),
+});
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      fetchBranding: getBranding,
+    },
+    dispatch,
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
