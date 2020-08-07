@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { phoneRegExp } from '../../../Utilities/regExp';
 import './PhoneNo.scss';
 
@@ -9,42 +13,118 @@ const PhoneNo = (props) => {
   const [title, setTitle] = useState('');
   const [spinner, setSpinner] = useState(true);
   const [isValid, setValid] = useState(false);
+  const [isFocused, setFocus] = useState(false);
+  const [showPassword, setPasswordShown] = useState(true);
+
+  const { placeholder, status, password, getData } = props;
+
   const setClick = () => {
-    if (title.match(phoneRegExp)) {
-      props.getPhoneNo(title);
-      setSpinner(false);
-      setValid(false);
-    } else {
-      setValid(true);
+    if (placeholder === 'Mobile number') {
+      if (title.match(phoneRegExp)) {
+        getData(title);
+        setSpinner(false);
+        setValid(false);
+        setTitle('');
+      } else {
+        setValid(true);
+      }
+    } else if (placeholder === 'username' || placeholder === 'Password') {
+      getData(title);
+      setTitle('');
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setPasswordShown((prevState) => !prevState);
+  };
+
   return (
-    <div className='text-center PhoneNo'>
-      <p className='mx-lg-5 mx-3 mt-3 mt-lg-5 PhoneNo__text PhoneNo__engText'>
-        Please enter your mobile number to continue
-      </p>
-      <p className='mx-lg-5 mx-3 PhoneNo__text PhoneNo__hinText'>
-        जारी रखने के लिए कृपया अपना मोबाइल नंबर दर्ज करें
-      </p>
+    <div className='text-center PhoneNo mt-5'>
+      {placeholder === 'Mobile number' && (
+        <div>
+          <p className='mx-lg-5 mx-3 mt-3 mt-lg-5 PhoneNo__text PhoneNo__engText'>
+            Please enter your mobile number to continue
+          </p>
+          <p className='mx-lg-5 mx-3 PhoneNo__text PhoneNo__hinText'>
+            जारी रखने के लिए कृपया अपना मोबाइल नंबर दर्ज करें
+          </p>
+        </div>
+      )}
+
+      {placeholder === 'username' && (
+        <div>
+          <p className='mx-lg-5 mx-3 mt-3 mt-lg-5 PhoneNo__text PhoneNo__engText'>
+            Enter username sent on your mobile number
+          </p>
+          <p className='mx-lg-5 mx-3 PhoneNo__text PhoneNo__hinText'>
+            अपने मोबाइल नंबर पर भेजा गया username दर्ज करें
+          </p>
+        </div>
+      )}
+
+      {placeholder === 'Password' && (
+        <div>
+          {status === 'pending' && (
+            <p className='mx-lg-5 mx-3 mt-3 mt-lg-5  PhoneNo__passText'>Create Password</p>
+          )}
+          {status === 'active' && <p className='mx-lg-5 mx-3  PhoneNo__passText'>Enter Password</p>}
+        </div>
+      )}
+
       <Row className='mx-auto PhoneNo__input mt-5'>
-        <Col md={10} xs={9} className='p-0'>
-          <label className='form-group has-float-label' htmlFor='Mobile Number'>
+        <Col md={10} xs={9} className='p-0 my-auto'>
+          <label className='has-float-label my-auto'>
             <input
               className='form-control'
               name='Mobile Number'
-              type='number'
-              placeholder='Mobile number'
+              type={password ? (showPassword ? 'password' : 'text') : 'text'}
+              placeholder={placeholder}
               onChange={(event) => setTitle(event.target.value)}
+              onFocus={() => setFocus(true)}
+              onBlur={() => setFocus(false)}
+              value={title}
             />
-            <span>Mobile number</span>
+            <span>{placeholder}</span>
+            {password &&
+              (showPassword ? (
+                <i
+                  className='PhoneNo__show'
+                  onClick={togglePasswordVisibility}
+                  onKeyDown={togglePasswordVisibility}
+                  role='button'
+                  tabIndex={0}
+                >
+                  <VisibilityOffIcon />
+                </i>
+              ) : (
+                <i
+                  className='PhoneNo__show'
+                  onClick={togglePasswordVisibility}
+                  onKeyDown={togglePasswordVisibility}
+                  role='button'
+                  tabIndex={0}
+                >
+                  <VisibilityIcon />
+                </i>
+              ))}
           </label>
         </Col>
-        <Col md={2} xs={3} className='p-0'>
+        <Col md={2} xs={3} className='p-0 my-auto'>
           {spinner ? (
-            <Button variant='primary' type='submit' onClick={() => setClick()}>
-              Submit
-            </Button>
+            isFocused ? (
+              <Button variant='outline-primary' size='sm' type='submit' onClick={() => setClick()}>
+                <ChevronRightIcon />
+              </Button>
+            ) : (
+              <Button
+                variant='outline-secondary'
+                size='sm'
+                type='submit'
+                onClick={() => setClick()}
+              >
+                <ChevronRightIcon />
+              </Button>
+            )
           ) : (
             <div className='spinner-border text-primary' role='status'>
               <span className='sr-only'>Loading...</span>
@@ -52,9 +132,26 @@ const PhoneNo = (props) => {
           )}
         </Col>
       </Row>
-      {isValid && <small className='text-danger d-block'>Please enter a valid number</small>}
+      {isValid && (
+        <small className='text-danger d-block'>
+          Please enter a valid
+          {placeholder}
+        </small>
+      )}
     </div>
   );
 };
 
 export default PhoneNo;
+
+PhoneNo.propTypes = {
+  placeholder: PropTypes.string.isRequired,
+  status: PropTypes.string,
+  password: PropTypes.bool,
+  getData: PropTypes.func.isRequired,
+};
+
+PhoneNo.defaultProps = {
+  password: false,
+  status: '',
+};

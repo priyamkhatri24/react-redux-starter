@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import TextLoop from 'react-text-loop';
-import useInterval from '../../../Utilities/utilities';
+import { useInterval } from '../../../Utilities';
 import './Preloader.scss';
 
 const Preloader = () => {

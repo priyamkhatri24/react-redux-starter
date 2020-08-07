@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 // Custom hook to implement setInterval
 
-export default function useInterval(callback, delay) {
+export const useInterval = (callback, delay) => {
   const savedCallback = useRef();
 
   // Remember the latest function.
@@ -18,6 +18,6 @@ export default function useInterval(callback, delay) {
       const id = setInterval(tick, delay);
       return () => clearInterval(id);
     }
-    return console.log('Delay cant be null');
+    return console.error('Delay cant be null');
   }, [delay]);
-}
+};
