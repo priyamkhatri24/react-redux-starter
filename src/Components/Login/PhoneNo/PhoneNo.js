@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import { phoneRegExp } from '../../../Utilities/regExp';
+import { phoneRegExp } from '../../../Utilities';
 import './PhoneNo.scss';
 
 const PhoneNo = (props) => {
@@ -16,7 +16,7 @@ const PhoneNo = (props) => {
   const [isFocused, setFocus] = useState(false);
   const [showPassword, setPasswordShown] = useState(true);
 
-  const { placeholder, status, password, getData } = props;
+  const { placeholder, status, password, getData, forgotPlaceholder } = props;
 
   const setClick = () => {
     if (placeholder === 'Mobile number') {
@@ -71,7 +71,7 @@ const PhoneNo = (props) => {
         </div>
       )}
 
-      <Row className='mx-auto PhoneNo__input mt-5'>
+      <Row className='mx-auto PhoneNo__input mt-5 w-75'>
         <Col md={10} xs={9} className='p-0 my-auto'>
           <label className='has-float-label my-auto'>
             <input
@@ -132,10 +132,22 @@ const PhoneNo = (props) => {
           )}
         </Col>
       </Row>
+      {(placeholder === 'username' || placeholder === 'Password') && (
+        <Row className='mx-auto w-75'>
+          <span
+            className='PhoneNo__forgot p-1'
+            onClick={() => forgotPlaceholder()}
+            onKeyDown={() => forgotPlaceholder()}
+          >
+            Forgot {placeholder}?
+          </span>
+        </Row>
+      )}
+
       {isValid && (
         <small className='text-danger d-block'>
           Please enter a valid
-          {placeholder}
+          <span>{placeholder}</span>
         </small>
       )}
     </div>
@@ -149,9 +161,11 @@ PhoneNo.propTypes = {
   status: PropTypes.string,
   password: PropTypes.bool,
   getData: PropTypes.func.isRequired,
+  forgotPlaceholder: PropTypes.func,
 };
 
 PhoneNo.defaultProps = {
   password: false,
   status: '',
+  forgotPlaceholder: () => {},
 };

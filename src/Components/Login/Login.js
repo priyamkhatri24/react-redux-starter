@@ -34,11 +34,14 @@ class Login extends Component {
 
   componentDidUpdate(prevprops) {
     const {
-      pending,
-      branding: { client_logo },
-    } = this.props.currentbranding;
+      currentbranding: {
+        pending,
+        branding: { client_logo: image },
+      },
+    } = this.props;
+
     if (prevprops.currentbranding.pending !== pending && pending === false) {
-      this.setState({ image: client_logo });
+      this.setState({ image });
     }
   }
 
@@ -48,40 +51,38 @@ class Login extends Component {
 
   getPhoneNo = (param) => {
     const requestBody = {
-      // contact: param,
+      contact: param,
       client_id: this.props.currentbranding.branding.client_id,
-      contact: '7999583681',
+      // contact: '7999583681',
     };
 
     post(requestBody, '/enterNumberAndLogin')
       .then((res) => {
+        console.log(res);
         if (res.result.is_user === true) {
-          this.goToLoginOrSignUp('signin', res.result.user_info);
-
-          // this.setState({ userInfo: res.result.user_info });
-          //   this.handleComponent('SignIn');
-          //      this.goToLogin();
+          this.goToLoginOrSignUp('signin', requestBody.contact, res.result.user_info);
         } else {
-          //          this.handleComponent('SignUp');
           this.goToLoginOrSignUp('signup', requestBody.contact);
         }
       })
       .catch((e) => console.error(e));
   };
 
-  goToLoginOrSignUp(path, payload) {
-    const { push } = this.props.history;
+  goToLoginOrSignUp(path, contact, payload = null) {
+    const {
+      history: { push },
+    } = this.props;
+    const { image } = this.state;
 
     if (path === 'signup') {
       push({
         pathname: '/signup',
-
-        state: { contact: payload },
+        state: { contact },
       });
     } else {
       push({
         pathname: '/signin',
-        state: { userInfo: payload, image: this.state.image },
+        state: { userInfo: payload, image, contact },
       });
     }
   }
@@ -128,4 +129,14 @@ Login.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+
+  currentbranding: PropTypes.shape({
+    branding: PropTypes.shape({
+      client_id: PropTypes.number,
+      client_logo: PropTypes.string,
+    }),
+    pending: PropTypes.bool.isRequired,
+  }).isRequired,
+
+  fetchBranding: PropTypes.func.isRequired,
 };

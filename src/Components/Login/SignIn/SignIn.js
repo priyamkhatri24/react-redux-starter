@@ -5,22 +5,23 @@ import PhoneNo from '../PhoneNo/PhoneNo';
 import footerIngenium from '../../../assets/images/ingiLOGO.png';
 import './SignIn.scss';
 import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
-import { get } from '../../../Utilities';
+import { get, post, apiValidation } from '../../../Utilities';
 
 const SignIn = (props) => {
   const {
     location: {
-      state: { image, userInfo },
+      state: { image, userInfo, contact },
     },
   } = props;
 
-  const { currentbranding: { branding: { client_id = '' } = {} } = {} } = props;
+  const { currentbranding: { branding: { client_id: clientId = '' } = {} } = {} } = props;
 
   const [currentComponent, setComponent] = useState('username');
   const [validUser, checkValidUser] = useState(false);
   const [loginParams, setLoginParams] = useState({
     user_name: '',
-    clientId: client_id,
+    clientId,
+    user_id: 0,
   });
   const [userStatus, setUserStatus] = useState('');
 
@@ -32,13 +33,33 @@ const SignIn = (props) => {
     if (userParam && userParam.length) {
       setComponent('password');
       setLoginParams((prevState) => {
-        return { ...prevState, user_name: userParam[0].username };
+        return { ...prevState, user_name: userParam[0].username, user_id: userParam[0].user_id };
       });
       checkValidUser(false);
       setUserStatus(userParam[0].user_status);
     } else {
       checkValidUser(true);
     }
+  };
+
+  const forgotUsername = () => {
+    const { push } = props.history;
+    const requestBody = {
+      contact,
+      client_id: loginParams.clientId,
+    };
+
+    post(requestBody, '/forgotUsername')
+      .then((res) => {
+        const result = apiValidation(res);
+        if (result.status === 'Wrong username') {
+          alert('Please Check your Internet Connection');
+          push({ pathname: '/' });
+        } else if (result === 'success') {
+          alert('The Username Has been sent to your registered mobile number');
+        }
+      })
+      .catch((e) => console.error(e));
   };
 
   const getPassword = (param) => {
@@ -53,6 +74,10 @@ const SignIn = (props) => {
 
       get(reqBody, '/loginUser')
         .then((res) => {
+          const result = apiValidation(res);
+          if (result.status === 'Wrong password. Login failed') {
+            checkValidUser(true);
+          }
           console.log(res);
         })
         .catch((err) => console.log(err));
@@ -61,13 +86,49 @@ const SignIn = (props) => {
     }
   };
 
+  const forgotPassword = () => {
+    const { push } = props.history;
+    console.log(loginParams);
+    const requestBody = {
+      user_id: loginParams.user_id,
+      contact,
+    };
+
+    post(requestBody, '/resendOTP')
+      .then((res) => {
+        const result = apiValidation(res);
+        if (result.status === 'sending successful') {
+          push({
+            pathname: '/forgotpassword',
+            state: { image, contact, userId: loginParams.user_id },
+          });
+        } else {
+          alert('Please Check Your Internet Connection');
+        }
+      })
+      .catch((e) => console.err(e));
+  };
+
   return (
-    <div className='text-center Signin'>
-      <img src={image} alt='coachingLogo' className='Signin__jumbo' />
-      {currentComponent === 'username' && <PhoneNo placeholder='username' getData={getUserName} />}
+    <div className='Signin text-center'>
+      <img
+        src={image}
+        alt='coachingLogo'
+        className='Signin__jumbo img-fluid rounded mx-auto d-block'
+      />
+
+      {currentComponent === 'username' && (
+        <PhoneNo placeholder='username' getData={getUserName} forgotPlaceholder={forgotUsername} />
+      )}
 
       {currentComponent === 'password' && (
-        <PhoneNo placeholder='Password' getData={getPassword} password status={userStatus} />
+        <PhoneNo
+          placeholder='Password'
+          getData={getPassword}
+          password
+          status={userStatus}
+          forgotPlaceholder={forgotPassword}
+        />
       )}
       {validUser && (
         <small className='text-danger d-block'>
@@ -75,6 +136,7 @@ const SignIn = (props) => {
           {currentComponent}
         </small>
       )}
+
       <footer id='sticky-footer' className='py-4 footer fixed-bottom mb-5 '>
         <h6 className='Login__footerText'>Powered By</h6>
         <img src={footerIngenium} alt='footerLogo' className='w-25' />
@@ -94,6 +156,7 @@ SignIn.propTypes = {
     state: PropTypes.shape({
       image: PropTypes.string,
       userInfo: PropTypes.array.isRequired,
+      contact: PropTypes.string.isRequired,
     }),
   }),
 
@@ -102,6 +165,10 @@ SignIn.propTypes = {
       client_id: PropTypes.number.isRequired,
     }),
   }),
+
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 SignIn.defaultProps = {
@@ -110,4 +177,6 @@ SignIn.defaultProps = {
       image: '',
     }),
   }),
+
+  currentbranding: {},
 };

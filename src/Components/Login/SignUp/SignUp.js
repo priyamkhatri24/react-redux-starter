@@ -1,77 +1,112 @@
-import React, { useEffect, useState } from 'react';
-import OtpInput from 'react-otp-input';
-import Button from 'react-bootstrap/Button';
-import { useInterval } from '../../../Utilities';
-import './SignUp.scss';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
+import { post, get, apiValidation } from '../../../Utilities';
+import { OTPInput } from '../../Common';
 
-const SignUp = () => {
-  const [otp, setOtp] = useState('');
-  const [count, setCount] = useState(15);
-  const [resend, setResend] = useState(false);
+const SignUp = (props) => {
+  const [resendText, setResendText] = useState('Resend?');
 
-  const ContainerStyle = {
-    alignItems: 'center',
-    justifyContent: 'center',
+  const {
+    location: {
+      state: { contact },
+    },
+    currentbranding: { branding: { client_id: clientId = '' } = {} } = {},
+  } = props;
+
+  const verifyOTP = (otp) => {
+    const requestBody = {
+      client_id: clientId,
+      phone_number: contact,
+      filled_otp: otp,
+    };
+    get(requestBody, '/verifyLoginOTP')
+      .then((res) => {
+        const result = apiValidation(res);
+
+        if (result.verification_status === 'wrong otp entered') {
+          alert('Invalid OTP!');
+        } else if (result.verification_status === 'otp expired') {
+          alert('OTP expired');
+        } else if (result.verification_status === 'otp verified') {
+          const { user_status: userStatus, user_id: userId } = result;
+          const { push } = props.history;
+
+          if (userStatus === 'visitor') {
+            push({
+              pathname: '/admission',
+              state: { userId },
+            });
+          } else if (userStatus === 'admission') {
+            push({
+              pathname: '/admissionform',
+              state: { userId },
+            });
+          }
+        } else if (res.success === 0) {
+          alert('Unable to reach the server. Please check your internet connection');
+        }
+      })
+      .catch((e) => console.error(e));
   };
 
-  const inputStyle = {
-    width: '3rem',
-    margin: '1.5rem',
-    borderTopStyle: 'none',
-    borderRightStyle: 'none',
-    borderLeftStyle: 'none',
-    borderBottomColor: '#2699FB',
+  const resendOtp = () => {
+    const requestBody = {
+      client_id: clientId,
+      contact,
+    };
+    post(requestBody, '/resendOTPForCRM')
+      .then((res) => {
+        if (res.success === 1) {
+          setResendText('Sent!');
+        } else if (res.success === 0) {
+          setResendText('Resend Failed. Try again?');
+        }
+      })
+      .catch((e) => console.error(e));
   };
-
-  useInterval(() => {
-    if (count <= 0) {
-      setResend(true);
-      return;
-    }
-    setCount(count - 1);
-  }, 1000);
-
-  useEffect(() => {
-    //  const nibs = props.location.state.contact;
-    // console.log('hello', nibs);
-  }, []);
-
-  const handleClick = () => console.log('lol');
 
   return (
-    <div className='text-center Signup'>
-      <p className='Signup__heading  mx-4'>
-        Enter the 4-digit one time password we have sent you on
-      </p>
-      <p className='Signup__mobile mb-5'>+91-8452990246</p>
-      <OtpInput
-        value={otp}
-        onChange={(e) => setOtp(e)}
-        numInputs={4}
-        separator={<span>-</span>}
-        isInputNum
-        containerStyle={ContainerStyle}
-        inputStyle={inputStyle}
-        // focusStyle={}
+    <div className='text-center'>
+      <OTPInput
+        contact={contact}
+        resendOtp={resendOtp}
+        verifyOTP={verifyOTP}
+        resendText={resendText}
       />
-      {resend ? (
-        <p className='Signup__resend mt-5'>Resend?</p>
-      ) : (
-        <p className='Signup__timer mt-5'>
-          Resend OTP in 0:
-          <span>{count}</span>
-        </p>
-      )}
-      <Button
-        variant='custom'
-        disabled={!(otp.length === 4)}
-        onClick={otp.length === 4 ? handleClick : null}
-      >
-        Verify
-      </Button>
-      <div>{otp}</div>
     </div>
   );
 };
 
-export default SignUp;
+const mapStateToProps = (state) => ({
+  currentbranding: getCurrentBranding(state),
+});
+
+export default connect(mapStateToProps)(SignUp);
+
+SignUp.propTypes = {
+  location: PropTypes.shape({
+    state: PropTypes.shape({
+      contact: PropTypes.string.isRequired,
+    }),
+  }).isRequired,
+
+  currentbranding: PropTypes.shape({
+    branding: PropTypes.shape({
+      client_id: PropTypes.number,
+    }),
+  }),
+
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
+
+SignUp.defaultProps = {
+  currentbranding: PropTypes.shape({
+    branding: PropTypes.shape({
+      client_id: null,
+    }),
+  }),
+};
