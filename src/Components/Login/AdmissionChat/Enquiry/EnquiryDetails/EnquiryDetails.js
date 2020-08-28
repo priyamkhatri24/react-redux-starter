@@ -2,66 +2,169 @@ import React, { useState, useEffect, useRef } from 'react';
 import '../Enquiry.scss';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import CheckIcon from '@material-ui/icons/Check';
-import Button from 'react-bootstrap/Button';
 import DescriptionIcon from '@material-ui/icons/Description';
 import { history } from '../../../../../Routing';
 import { ChatDots } from '../../../../Common';
-import { useTimeout, EmailRegExp } from '../../../../../Utilities';
 import avatarImage from '../../../../../assets/images/avatarImage.jpg';
+import EnquiryTemplate from '../../EnquiryTemplate/EnquiryTemplate';
 
 const EnquiryDetails = () => {
-  const [waitingDots, setWaitingDotsTme] = useState(true);
-  const [showInput, setShowInput] = useState(true);
-  const [emailDots, setEmailDots] = useState(true);
-  const [name, showName] = useState(false);
-  const [isValid, setValid] = useState(false);
-  const [newEnquiryDetails, setEnquiryDetails] = useState({
-    name: '',
-    emailAddress: '',
-  });
+  const [showLastElement, setShowLastElement] = useState(false);
+  const [newEnquiryDetails, setEnquiryDetails] = useState({});
+  const [visibleArrayLength, setLength] = useState(1); // since we are setting visiblity of first element to true
+  const [isVisibleArray, setVisible] = useState([]);
 
-  const inputEl = useRef(null);
   const focusedBlurb = useRef(null);
 
+  const textArray = {
+    result: [
+      {
+        crm_question_id: 1,
+        english_text: 'Please tell us your name ?',
+        hindi_text: 'कृपया हमें अपना नाम बताएं ?',
+        question_type: 'subjective',
+        english_options: [],
+        hindi_options: [],
+        crm_question_response_id: null,
+        crm_question_crm_question_id: null,
+        client_user_client_user_id: null,
+        answer: '',
+        type: 'name',
+      },
+      {
+        crm_question_id: 2,
+        english_text: ' Please provide your email address.',
+        hindi_text: 'कृपया हमें अपना ई-मेल पता उपलब्ध कराएं',
+        question_type: 'subjective',
+        english_options: [],
+        hindi_options: [],
+        crm_question_response_id: null,
+        crm_question_crm_question_id: null,
+        client_user_client_user_id: null,
+        answer: '',
+        type: 'email',
+      },
+      {
+        crm_question_id: 3,
+        english_text: 'Hello, how are you feeling?',
+        hindi_text: 'स्वागत है आपका',
+        question_type: 'subjective',
+        english_options: [],
+        hindi_options: [],
+        crm_question_response_id: null,
+        crm_question_crm_question_id: null,
+        client_user_client_user_id: null,
+        type: 'Hello',
+      },
+      {
+        crm_question_id: 4,
+        english_text: 'Hello,A for?',
+        hindi_text: 'स्वागत है आपका',
+        question_type: 'objective',
+        english_options: [
+          {
+            option_text: 'A',
+            order: 1,
+          },
+          {
+            option_text: 'B',
+            order: 2,
+          },
+          {
+            option_text: 'C',
+            order: 3,
+          },
+          {
+            option_text: 'D',
+            order: 4,
+          },
+        ],
+        hindi_options: [
+          {
+            option_text: 'A',
+            order: 1,
+          },
+          {
+            option_text: 'B',
+            order: 2,
+          },
+          {
+            option_text: 'C',
+            order: 3,
+          },
+          {
+            option_text: 'D',
+            order: 4,
+          },
+        ],
+        crm_question_response_id: null,
+        crm_question_crm_question_id: null,
+        client_user_client_user_id: null,
+        type: 'a for',
+      },
+    ],
+  };
+
   useEffect(() => {
-    if (!waitingDots && showInput) {
-      inputEl.current.focus();
-    } else if (!waitingDots && !showInput) {
-      focusedBlurb.current.focus();
+    textArray.result.map((elem) => {
+      return (elem['isVisible'] = false);
+    });
+    textArray.result[0].isVisible = true;
+    setVisible((prevstate) => [...prevstate, ...textArray.result]);
+  }, []);
+
+  useEffect(() => {
+    if (showLastElement) {
+      focusedBlurb.current.scrollIntoView({ behaviour: 'smooth' });
     }
-  });
-
-  useTimeout(() => setWaitingDotsTme(false), 3000);
-
-  const setFormValue = (param, value) => {
-    if (param === 'name') {
-      setEnquiryDetails((prevstate) => {
-        return { ...prevstate, name: value };
-      });
-      console.log(value);
-    } else if (param === 'email') {
-      setEnquiryDetails((prevstate) => {
-        return { ...prevstate, emailAddress: value };
-      });
-    }
-  };
-
-  const nameSubmitted = () => {
-    showName(true);
-    setTimeout(() => setEmailDots(false), 3000);
-  };
-
-  const emailSubmitted = () => {
-    if (newEnquiryDetails.emailAddress.match(EmailRegExp)) {
-      setValid(false);
-      setShowInput(false);
-
+    setTimeout(() => {
       console.log(newEnquiryDetails);
+    }, 2000);
+  }, [showLastElement]);
+
+  const getFormData = (data, type) => {
+    setEnquiryDetails((prevstate) => {
+      return { ...prevstate, [type]: data };
+    });
+    if (visibleArrayLength < isVisibleArray.length) {
+      let newArr = [...isVisibleArray];
+      newArr[visibleArrayLength].isVisible = true;
+      setVisible(newArr);
+      setLength((e) => e + 1);
     } else {
-      setValid(true);
+      // condition for last element
+      setShowLastElement(true);
     }
   };
+
+  // const setFormValue = (param, value) => {
+  //   if (param === 'name') {
+  //     setEnquiryDetails((prevstate) => {
+  //       return { ...prevstate, name: value };
+  //     });
+  //     console.log(value);
+  //   } else if (param === 'email') {
+  //     setEnquiryDetails((prevstate) => {
+  //       return { ...prevstate, emailAddress: value };
+  //     });
+  //   }
+  // };
+
+  // const nameSubmitted = () => {
+  //   showName(true);
+  //   setTimeout(() => setEmailDots(false), 3000);
+  // };
+
+  // const emailSubmitted = () => {
+  //   if (newEnquiryDetails.emailAddress.match(EmailRegExp)) {
+  //     setValid(false);
+  //     setShowInput(false);
+
+  //     console.log(newEnquiryDetails);
+  //   } else {
+  //     setValid(true);
+  //   }
+  // };
 
   const goToAdmission = () => {
     history.push('./dashboard');
@@ -78,166 +181,72 @@ const EnquiryDetails = () => {
         </div>
       </Row>
 
-      {waitingDots && <ChatDots />}
+      {isVisibleArray
+        .filter((elem) => elem.isVisible === true)
+        .map((elem) => (
+          <EnquiryTemplate
+            text={elem}
+            getData={getFormData}
+            type={elem.type}
+            details={newEnquiryDetails}
+            key={elem.crm_question_id}
+          />
+        ))}
 
-      {!waitingDots && (
+      {showLastElement && (
         <>
           <Row className='mb-3 ml-1 Enquiry__blurb'>
             <img
               src={avatarImage}
-              width='30'
-              height='30'
+              width='24'
+              height='24'
               alt='avatar'
               className='rounded-circle m-1'
             />
 
             <div className='ml-2 Enquiry__chatBox w-75 p-3'>
-              <p>Please tell us your name ?</p>
+              <p> Thank you for your interest! We will contact you shortly.</p>
               <p className='Enquiry__hinText'>
-                <span>कृपया हमें अपना नाम बताएं ?</span>
+                <span> आपकी रूचि के लिए धन्यवाद। हम आपसे शीघ्र ही संपर्क करेंगे।</span>
               </p>
             </div>
           </Row>
 
-          {name && (
-            <>
-              <Row className='Enquiry__rightBlurb mb-3'>
-                <div className='ml-auto mr-3 '>
-                  <Col className='p-0'>
-                    <p className='text-center Enquiry__rightInfo p-3 m-0 rounded'>
-                      {newEnquiryDetails.name}
-                    </p>
-                  </Col>
-                </div>
-              </Row>
-              {emailDots && <ChatDots />}
+          <Row className='mb-3 ml-1 Enquiry__blurb'>
+            <img
+              src={avatarImage}
+              width='24'
+              height='24'
+              alt='avatar'
+              className='rounded-circle m-1'
+            />
 
-              {!emailDots && (
-                <Row className='mb-3 ml-1 Enquiry__blurb'>
-                  <img
-                    src={avatarImage}
-                    width='30'
-                    height='30'
-                    alt='avatar'
-                    className='rounded-circle m-1'
-                  />
-
-                  <div className='ml-2 Enquiry__chatBox w-75 p-3'>
-                    <p>
-                      Hi
-                      {newEnquiryDetails.name}!
-                    </p>
-                    <p> Please provide your email address.</p>
-                    <p className='Enquiry__hinText'>
-                      <span>कृपया हमें अपना ई-मेल पता उपलब्ध कराएं</span>
-                    </p>
-                  </div>
-                </Row>
-              )}
-            </>
-          )}
-
-          {showInput && (
-            <Row className='text-center'>
-              <Col xs={9}>
-                <input
-                  ref={inputEl}
-                  className='form-control'
-                  name={name ? 'email' : 'Name'}
-                  type='text'
-                  placeholder={name ? 'Email Address' : 'Name'}
-                  onChange={
-                    name
-                      ? (event) => setFormValue('email', event.target.value)
-                      : (event) => setFormValue('name', event.target.value)
-                  }
-                  value={name ? newEnquiryDetails.emailAddress : newEnquiryDetails.name}
-                />
+            <div className='ml-2 Enquiry__chatBox w-75 p-3'>
+              <p>
+                If you have already been contacted. Please move forward and fill our admission form.
+              </p>
+              <p className='Enquiry__hinText'>
+                <span>यदि आपसे संपर्क किया जा चुका है। कृपया आगे बढ़े और admission form भरे।</span>
+              </p>
+            </div>
+          </Row>
+          <Row className='Enquiry__rightBlurb mb-3'>
+            <div className='ml-auto mr-3 '>
+              <Col className='p-0'>
+                <p className='text-center Enquiry__admissionForm p-3 m-0 rounded'>
+                  <DescriptionIcon />
+                  <span
+                    ref={focusedBlurb}
+                    tabIndex='-1'
+                    onClick={() => goToAdmission()}
+                    onKeyDown={() => goToAdmission()}
+                  >
+                    Admission Form
+                  </span>
+                </p>
               </Col>
-              <Col xs={3}>
-                <Button
-                  variant='primary'
-                  onClick={name ? () => emailSubmitted() : () => nameSubmitted()}
-                >
-                  <CheckIcon />
-                </Button>
-              </Col>
-
-              {isValid && (
-                <small className='text-danger d-block'>Please enter a valid Email Address</small>
-              )}
-            </Row>
-          )}
-
-          {!showInput && (
-            <>
-              <Row className='Enquiry__rightBlurb mb-3'>
-                <div className='ml-auto mr-3 '>
-                  <Col className='p-0'>
-                    <p className='text-center Enquiry__rightInfo p-3 m-0 rounded'>
-                      {newEnquiryDetails.emailAddress}
-                    </p>
-                  </Col>
-                </div>
-              </Row>
-
-              <Row className='mb-3 ml-1 Enquiry__blurb'>
-                <img
-                  src={avatarImage}
-                  width='30'
-                  height='30'
-                  alt='avatar'
-                  className='rounded-circle m-1'
-                />
-
-                <div className='ml-2 Enquiry__chatBox w-75 p-3'>
-                  <p> Thank you for your interest! We will contact you shortly.</p>
-                  <p className='Enquiry__hinText'>
-                    <span> आपकी रूचि के लिए धन्यवाद। हम आपसे शीघ्र ही संपर्क करेंगे।</span>
-                  </p>
-                </div>
-              </Row>
-
-              <Row className='mb-3 ml-1 Enquiry__blurb'>
-                <img
-                  src={avatarImage}
-                  width='30'
-                  height='30'
-                  alt='avatar'
-                  className='rounded-circle m-1'
-                />
-
-                <div className='ml-2 Enquiry__chatBox w-75 p-3'>
-                  <p>
-                    If you have already been contacted. Please move forward and fill our admission
-                    form.
-                  </p>
-                  <p className='Enquiry__hinText'>
-                    <span>
-                      यदि आपसे संपर्क किया जा चुका है। कृपया आगे बढ़े और admission form भरे।
-                    </span>
-                  </p>
-                </div>
-              </Row>
-              <Row className='Enquiry__rightBlurb mb-3'>
-                <div className='ml-auto mr-3 '>
-                  <Col className='p-0'>
-                    <p className='text-center Enquiry__admissionForm p-3 m-0 rounded'>
-                      <DescriptionIcon />
-                      <span
-                        ref={focusedBlurb}
-                        tabIndex='-1'
-                        onClick={() => goToAdmission()}
-                        onKeyDown={() => goToAdmission()}
-                      >
-                        Admission Form
-                      </span>
-                    </p>
-                  </Col>
-                </div>
-              </Row>
-            </>
-          )}
+            </div>
+          </Row>
         </>
       )}
     </>

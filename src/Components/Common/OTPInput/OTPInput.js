@@ -7,7 +7,7 @@ import './OTPInput.scss';
 
 export const OTPInput = (props) => {
   const [otp, setOtp] = useState('');
-  const [count, setCount] = useState(15);
+  const [count, setCount] = useState(60);
   const [resend, setResend] = useState(false);
 
   const { contact, resendOtp, verifyOTP, resendText } = props;

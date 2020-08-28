@@ -26,7 +26,7 @@ class Login extends Component {
   componentDidMount() {
     setTimeout(() => {
       this.handleComponent('PhoneNo');
-    }, 6000);
+    }, 3000);
     const domain = { domain_name: window.location.hostname };
     const { fetchBranding } = this.props;
     fetchBranding(domain);
@@ -100,7 +100,7 @@ class Login extends Component {
           <PhoneNo getData={this.getPhoneNo} placeholder='Mobile number' />
         )}
 
-        <footer id='sticky-footer' className='py-4 footer fixed-bottom mb-5 '>
+        <footer className='py-4 Login__footer '>
           <h6 className='Login__footerText'>Powered By</h6>
           <img src={footerIngenium} alt='footerLogo' className='w-25' />
         </footer>

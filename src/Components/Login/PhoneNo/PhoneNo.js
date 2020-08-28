@@ -77,7 +77,15 @@ const PhoneNo = (props) => {
             <input
               className='form-control'
               name='Mobile Number'
-              type={password ? (showPassword ? 'password' : 'text') : 'text'}
+              type={
+                password
+                  ? showPassword
+                    ? 'password'
+                    : 'text'
+                  : placeholder === 'Mobile number'
+                  ? 'number'
+                  : 'text'
+              }
               placeholder={placeholder}
               onChange={(event) => setTitle(event.target.value)}
               onFocus={() => setFocus(true)}

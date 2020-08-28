@@ -137,7 +137,7 @@ const SignIn = (props) => {
         </small>
       )}
 
-      <footer id='sticky-footer' className='py-4 footer fixed-bottom mb-5 '>
+      <footer className='py-4 Login__footer'>
         <h6 className='Login__footerText'>Powered By</h6>
         <img src={footerIngenium} alt='footerLogo' className='w-25' />
       </footer>

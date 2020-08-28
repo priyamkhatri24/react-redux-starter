@@ -23,7 +23,8 @@
 }
 
 .has-float-label > input[type='text']:focus + span,
-.has-float-label > input[type='password']:focus + span {
+.has-float-label > input[type='password']:focus + span,
+.has-float-label > input[type='number']:focus + span {
   color: rgba(38, 153, 251, 1);
 }
 
@@ -113,14 +114,16 @@
 }
 
 .has-float-label > input[type='text']:focus,
-.has-float-label > input[type='password']:focus {
+.has-float-label > input[type='password']:focus,
+.has-float-label > input[type='number']:focus {
   border-color: rgba(38, 153, 251, 1);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(255, 255, 255, 0.6);
   outline: 0 none;
 }
 
 .has-float-label > input[type='text'],
-.has-float-label > input[type='password'] {
+.has-float-label > input[type='password'],
+.has-float-label > input[type='number'] {
   border-color: rgba(0, 0, 0, 0.54);
   border-radius: 5px;
   color: rgba(0, 0, 0, 0.87);

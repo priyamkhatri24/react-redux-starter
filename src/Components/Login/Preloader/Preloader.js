@@ -11,7 +11,7 @@ const Preloader = () => {
       return;
     }
     setCount(count + 1);
-  }, 50);
+  }, 20);
 
   const hello = ['Hello', 'Dumantis', 'Bonjour', 'Namaskar'];
 
