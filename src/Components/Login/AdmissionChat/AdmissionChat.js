@@ -11,7 +11,7 @@ const AdmissionChat = () => {
     <div className='Admission'>
       <Row className='Admission__nav m-0 px-4 pt-3 '>
         <div className='mt-2 mx-2 mx-lg-4'>
-          <BackButton />
+          <BackButton color='FFF' />
         </div>
         <div className='m-1 '>
           <img

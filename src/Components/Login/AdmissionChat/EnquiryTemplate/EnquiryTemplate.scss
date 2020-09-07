@@ -17,16 +17,16 @@
     padding: 5px;
   }
 
-  &__inputRow {
-    // @include media-breakpoint-down(md) {
-    //   position: absolute;
-    //   bottom: 10px;
-    // }
-  }
+  // &__inputRow {
+  //   @include media-breakpoint-down(md) {
+  //     position: absolute;
+  //     bottom: 10px;
+  //   }
+  // }
 
-  &__input > input:focus {
-    //    outline: 1px solid $primaryBlue;
-  }
+  // &__input > input:focus {
+  //     outline: 1px solid $primaryBlue;
+  // }
 }
 
 .btn-enquiryTemplate {

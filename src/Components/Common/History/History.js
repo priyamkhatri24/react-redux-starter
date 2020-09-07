@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 
 export const BackButton = withRouter((props) => {
   const style = {
-    color: '#FFF',
+    color: props.color,
   };
 
   return <ArrowBackIcon onClick={props.history.goBack} style={style} />;

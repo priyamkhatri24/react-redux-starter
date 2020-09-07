@@ -34,30 +34,15 @@ const EnquiryTemplate = (props) => {
           : props.text.english_options[i].option_text;
       }
     }
+
+    if (props.text.response) {
+      setData(props.text.response);
+      setValue(true);
+      props.getData(inputData, props.type);
+    }
   }, []);
 
   const inputEl = useRef(null);
-
-  // const englishText = props.text.english_text.split(' or ');
-  // let modifiedEnglish = [];
-
-  // if (englishText.length > 1) {
-  //   modifiedEnglish = [...englishText]
-  //     .map((e, i) => (i < englishText.length - 1 ? [e, 'or'] : [e]))
-  //     .reduce((a, b) => a.concat(b));
-  // } else {
-  //   modifiedEnglish = englishText;
-  // }
-
-  // const hindiText = props.text.hindi_text.split(' या ');
-  // let modifiedHindi = [];
-  // if (hindiText.length > 1) {
-  //   modifiedHindi = [...hindiText]
-  //     .map((e, i) => (i < hindiText.length - 1 ? [e, 'या'] : [e]))
-  //     .reduce((a, b) => a.concat(b));
-  // } else {
-  //   modifiedHindi = hindiText;
-  // }
 
   const submitData = () => {
     if (props.type === 'email') {
@@ -166,7 +151,7 @@ const EnquiryTemplate = (props) => {
                         return (
                           <Form.Check
                             type='radio'
-                            id='EnquiryInformation'
+                            id={elem}
                             label={elem}
                             value={elem}
                             name='ojective options'

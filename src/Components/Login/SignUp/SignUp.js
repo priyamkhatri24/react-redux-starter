@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
 import { post, get, apiValidation } from '../../../Utilities';
 import { OTPInput } from '../../Common';
+import { clientUserIdActions } from '../../../redux/actions/clientUserId.action';
 
 const SignUp = (props) => {
   const [resendText, setResendText] = useState('Resend?');
@@ -30,7 +31,9 @@ const SignUp = (props) => {
         } else if (result.verification_status === 'otp expired') {
           alert('OTP expired');
         } else if (result.verification_status === 'otp verified') {
-          const { user_status: userStatus, user_id: userId } = result;
+          const { user_status: userStatus, user_id: userId, client_user_id: clientUserId } = result;
+          props.setUserIdToStore(userId);
+          props.setCLientUserIdToStore(clientUserId);
           const { push } = props.history;
 
           if (userStatus === 'visitor') {
@@ -83,7 +86,18 @@ const mapStateToProps = (state) => ({
   currentbranding: getCurrentBranding(state),
 });
 
-export default connect(mapStateToProps)(SignUp);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setCLientUserIdToStore: (payload) => {
+      dispatch(clientUserIdActions.setCLientUserIdToStore(payload));
+    },
+    setUserIdToStore: (payload) => {
+      dispatch(clientUserIdActions.setUserIdToStore(payload));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
 
 SignUp.propTypes = {
   location: PropTypes.shape({

@@ -4,11 +4,10 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import DescriptionIcon from '@material-ui/icons/Description';
 import { history } from '../../../../../Routing';
-import { ChatDots } from '../../../../Common';
 import avatarImage from '../../../../../assets/images/avatarImage.jpg';
 import EnquiryTemplate from '../../EnquiryTemplate/EnquiryTemplate';
 
-const EnquiryDetails = () => {
+const EnquiryDetails = (props) => {
   const [showLastElement, setShowLastElement] = useState(false);
   const [newEnquiryDetails, setEnquiryDetails] = useState({});
   const [visibleArrayLength, setLength] = useState(1); // since we are setting visiblity of first element to true
@@ -16,101 +15,102 @@ const EnquiryDetails = () => {
 
   const focusedBlurb = useRef(null);
 
-  const textArray = {
-    result: [
-      {
-        crm_question_id: 1,
-        english_text: 'Please tell us your name ?',
-        hindi_text: 'कृपया हमें अपना नाम बताएं ?',
-        question_type: 'subjective',
-        english_options: [],
-        hindi_options: [],
-        crm_question_response_id: null,
-        crm_question_crm_question_id: null,
-        client_user_client_user_id: null,
-        answer: '',
-        type: 'name',
-      },
-      {
-        crm_question_id: 2,
-        english_text: ' Please provide your email address.',
-        hindi_text: 'कृपया हमें अपना ई-मेल पता उपलब्ध कराएं',
-        question_type: 'subjective',
-        english_options: [],
-        hindi_options: [],
-        crm_question_response_id: null,
-        crm_question_crm_question_id: null,
-        client_user_client_user_id: null,
-        answer: '',
-        type: 'email',
-      },
-      {
-        crm_question_id: 3,
-        english_text: 'Hello, how are you feeling?',
-        hindi_text: 'स्वागत है आपका',
-        question_type: 'subjective',
-        english_options: [],
-        hindi_options: [],
-        crm_question_response_id: null,
-        crm_question_crm_question_id: null,
-        client_user_client_user_id: null,
-        type: 'Hello',
-      },
-      {
-        crm_question_id: 4,
-        english_text: 'Hello,A for?',
-        hindi_text: 'स्वागत है आपका',
-        question_type: 'objective',
-        english_options: [
-          {
-            option_text: 'A',
-            order: 1,
-          },
-          {
-            option_text: 'B',
-            order: 2,
-          },
-          {
-            option_text: 'C',
-            order: 3,
-          },
-          {
-            option_text: 'D',
-            order: 4,
-          },
-        ],
-        hindi_options: [
-          {
-            option_text: 'A',
-            order: 1,
-          },
-          {
-            option_text: 'B',
-            order: 2,
-          },
-          {
-            option_text: 'C',
-            order: 3,
-          },
-          {
-            option_text: 'D',
-            order: 4,
-          },
-        ],
-        crm_question_response_id: null,
-        crm_question_crm_question_id: null,
-        client_user_client_user_id: null,
-        type: 'a for',
-      },
-    ],
-  };
+  // const textArray = {
+  //   result: [
+  //     {
+  //       crm_question_id: 1,
+  //       english_text: 'Please tell us your name ?',
+  //       hindi_text: 'कृपया हमें अपना नाम बताएं ?',
+  //       question_type: 'subjective',
+  //       english_options: [],
+  //       hindi_options: [],
+  //       crm_question_response_id: null,
+  //       crm_question_crm_question_id: null,
+  //       client_user_client_user_id: null,
+  //       response: '',
+  //       placeholder: 'name',
+  //     },
+  //     {
+  //       crm_question_id: 2,
+  //       english_text: ' Please provide your email address.',
+  //       hindi_text: 'कृपया हमें अपना ई-मेल पता उपलब्ध कराएं',
+  //       question_type: 'subjective',
+  //       english_options: [],
+  //       hindi_options: [],
+  //       crm_question_response_id: null,
+  //       crm_question_crm_question_id: null,
+  //       client_user_client_user_id: null,
+  //       response: '',
+  //       placeholder: 'email',
+  //     },
+  //     {
+  //       crm_question_id: 3,
+  //       english_text: 'Hello, how are you feeling?',
+  //       hindi_text: 'स्वागत है आपका',
+  //       question_type: 'subjective',
+  //       english_options: [],
+  //       hindi_options: [],
+  //       crm_question_response_id: null,
+  //       crm_question_crm_question_id: null,
+  //       client_user_client_user_id: null,
+  //       placeholder: 'Hello',
+  //       response: 'abcdef',
+  //     },
+  //     {
+  //       crm_question_id: 4,
+  //       english_text: 'Hello,A for?',
+  //       hindi_text: 'स्वागत है आपका',
+  //       question_type: 'objective',
+  //       english_options: [
+  //         {
+  //           option_text: 'A',
+  //           order: 1,
+  //         },
+  //         {
+  //           option_text: 'B',
+  //           order: 2,
+  //         },
+  //         {
+  //           option_text: 'C',
+  //           order: 3,
+  //         },
+  //         {
+  //           option_text: 'D',
+  //           order: 4,
+  //         },
+  //       ],
+  //       hindi_options: [
+  //         {
+  //           option_text: 'A',
+  //           order: 1,
+  //         },
+  //         {
+  //           option_text: 'B',
+  //           order: 2,
+  //         },
+  //         {
+  //           option_text: 'C',
+  //           order: 3,
+  //         },
+  //         {
+  //           option_text: 'D',
+  //           order: 4,
+  //         },
+  //       ],
+  //       crm_question_response_id: null,
+  //       crm_question_crm_question_id: null,
+  //       client_user_client_user_id: null,
+  //       placeholder: 'a for',
+  //     },
+  //   ],
+  // };
 
   useEffect(() => {
-    textArray.result.map((elem) => {
+    props.questions.map((elem) => {
       return (elem['isVisible'] = false);
     });
-    textArray.result[0].isVisible = true;
-    setVisible((prevstate) => [...prevstate, ...textArray.result]);
+    props.questions[0].isVisible = true;
+    setVisible(props.questions);
   }, []);
 
   useEffect(() => {
@@ -118,7 +118,7 @@ const EnquiryDetails = () => {
       focusedBlurb.current.scrollIntoView({ behaviour: 'smooth' });
     }
     setTimeout(() => {
-      console.log(newEnquiryDetails);
+      console.log(isVisibleArray);
     }, 2000);
   }, [showLastElement]);
 
@@ -167,7 +167,7 @@ const EnquiryDetails = () => {
   // };
 
   const goToAdmission = () => {
-    history.push('./dashboard');
+    history.push('./admissionform');
   };
 
   return (
@@ -187,7 +187,7 @@ const EnquiryDetails = () => {
           <EnquiryTemplate
             text={elem}
             getData={getFormData}
-            type={elem.type}
+            type={elem.placeholder}
             details={newEnquiryDetails}
             key={elem.crm_question_id}
           />

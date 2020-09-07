@@ -3,25 +3,28 @@ import './Enquiry.scss';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import EnquiryDetails from './EnquiryDetails/EnquiryDetails';
 import avatarImage from '../../../../assets/images/avatarImage.jpg';
 import { ChatDots } from '../../../Common';
 import { useTimeout, get, apiValidation } from '../../../../Utilities';
+import { getClientUserId } from '../../../../redux/reducers/clientUserId.reducer';
 
-const Enquiry = () => {
+const Enquiry = (props) => {
   const [radioOption, setOptions] = useState('initialForm');
   const [waitingDots, setWaitingDotsTime] = useState(true);
   const [waitingDotsAgain, setWaitingDotsTimeAgain] = useState(true);
-
-  useTimeout(() => setWaitingDotsTime(false), 1000);
+  const [CRMQuestions, setCRMQuestions] = useState([]);
   useTimeout(() => setWaitingDotsTimeAgain(false), 2000);
 
   useEffect(() => {
-    get(3, '/getCRMQuestions')
+    console.log(props.clientUserId);
+    get(1622, '/getCRMQuestions') //change to clientBranding
       .then((res) => {
         const result = apiValidation(res);
-        console.log(result);
+        setWaitingDotsTime(false);
+        setCRMQuestions(result);
       })
       .catch((e) => console.error(e));
   }, []);
@@ -139,7 +142,7 @@ const Enquiry = () => {
 
               {radioOption === 'admissionForm' && <Redirect push to='/admissionform' />}
 
-              {radioOption === 'information' && <EnquiryDetails />}
+              {radioOption === 'information' && <EnquiryDetails questions={CRMQuestions} />}
             </>
           )}
         </div>
@@ -148,4 +151,8 @@ const Enquiry = () => {
   );
 };
 
-export default Enquiry;
+const mapStateToProps = (state) => ({
+  clientUserId: getClientUserId(state),
+});
+
+export default connect(mapStateToProps)(Enquiry);

@@ -2,4 +2,6 @@ export const brandingConstants = {
   SUCCESS: 'BRANDING_SUCCESS',
   ERROR: 'BRANDING_ERROR',
   CLEAR: 'BRANDING_CLEAR',
+  USERID: 'USER_ID',
+  CLIENTUSERID: 'CLIENT_USER_ID',
 };
