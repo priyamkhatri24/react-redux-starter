@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { Formik, Field } from 'formik';
-import Button from 'react-bootstrap/button';
+import Button from 'react-bootstrap/Button';
 import './FormTemplate.scss';
 
 export default class FormTemplate extends Component {
