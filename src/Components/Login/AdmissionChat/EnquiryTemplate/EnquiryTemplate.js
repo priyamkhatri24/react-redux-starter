@@ -1,19 +1,22 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import { ChatDots } from '../../../Common';
 import { useTimeout, EmailRegExp, onlyAlphaRegExp } from '../../../../Utilities';
 import avatarImage from '../../../../assets/images/avatarImage.jpg';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
 import './EnquiryTemplate.scss';
 import check from '../../../../assets/images/checkMark.svg';
 
 const EnquiryTemplate = (props) => {
+  const { text, getData, type, details } = props;
+
   const [waitingDots, setWaitingDotsTime] = useState(true);
   const [isValid, setValid] = useState(false);
   const [inputData, setData] = useState('');
   const [showValue, setValue] = useState(false);
+  const inputEl = useRef(null);
 
   useTimeout(() => setWaitingDotsTime(false), 1000);
 
@@ -24,48 +27,51 @@ const EnquiryTemplate = (props) => {
   });
 
   useEffect(() => {
-    if (props.text.question_type === 'objective') {
-      props.text['merged'] = [];
-      for (let i = 0; i < props.text.english_options.length; i++) {
-        props.text.merged[i] = props.text.hindi_options[i]
-          ? props.text.english_options[i].option_text +
-            '/' +
-            props.text.hindi_options[i].option_text
-          : props.text.english_options[i].option_text;
+    if (text.question_type === 'objective') {
+      text.merged = [];
+      for (let i = 0; i < text.english_options.length; i++) {
+        text.merged[i] = text.hindi_options[i]
+          ? `${text.english_options[i].option_text}/${text.hindi_options[i].option_text}`
+          : text.english_options[i].option_text;
       }
     }
 
-    if (props.text.response) {
-      setData(props.text.response);
+    if (text.response) {
+      setData(text.response);
       setValue(true);
-      props.getData(inputData, props.type);
+      getData(inputData, type);
     }
-  }, []);
-
-  const inputEl = useRef(null);
+  }, [
+    getData,
+    inputData,
+    text.english_options,
+    text.hindi_options,
+    text.merged,
+    text.question_type,
+    text.response,
+    type,
+  ]);
 
   const submitData = () => {
-    if (props.type === 'email') {
+    if (type === 'email') {
       if (inputData.match(EmailRegExp)) {
         setValid(false);
-        props.getData(inputData, props.type);
+        getData(inputData, type);
         setValue(true);
       } else {
         setValid(true);
       }
+    } else if (inputData) {
+      setValid(false);
+      getData(inputData, type);
+      setValue(true);
     } else {
-      if (inputData) {
-        setValid(false);
-        props.getData(inputData, props.type);
-        setValue(true);
-      } else {
-        setValid(true);
-      }
+      setValid(true);
     }
   };
 
   const setFormData = (e) => {
-    if ((props.type === 'name' && e === '') || onlyAlphaRegExp.test(e)) {
+    if ((type === 'name' && e === '') || onlyAlphaRegExp.test(e)) {
       setData(e);
     } else {
       setData(e);
@@ -73,7 +79,7 @@ const EnquiryTemplate = (props) => {
   };
 
   const submitOption = (e) => {
-    props.getData(e, props.type);
+    getData(e, type);
   };
 
   return (
@@ -103,8 +109,8 @@ const EnquiryTemplate = (props) => {
               className='rounded-circle m-1'
             />
             <div className='ml-2 Enquiry__chatBox w-75 p-3'>
-              {props.details.name && props.type !== 'name' && <p>Hi {props.details.name}!</p>}
-              <p>{props.text.english_text}</p>
+              {details.name && type !== 'name' && <p>Hi {details.name}!</p>}
+              <p>{text.english_text}</p>
 
               <p className='Enquiry__hinText'>
                 <span>{props.text.hindi_text}</span>
@@ -112,14 +118,14 @@ const EnquiryTemplate = (props) => {
             </div>
           </Row>
 
-          {!showValue && props.text.question_type === 'subjective' && (
+          {!showValue && text.question_type === 'subjective' && (
             <Row className='text-center EnquiryTemplate__inputRow'>
               <Col xs={10} className='EnquiryTemplate__input pr-0'>
                 <input
                   ref={inputEl}
-                  name={props.type}
+                  name={type}
                   type='text'
-                  placeholder={props.type}
+                  placeholder={type}
                   onChange={(event) => setFormData(event.target.value)}
                   value={inputData}
                 />
@@ -132,13 +138,13 @@ const EnquiryTemplate = (props) => {
 
               {isValid && (
                 <small className='text-danger d-block text-center'>
-                  Please enter a valid {props.type}
+                  Please enter a valid {type}
                 </small>
               )}
             </Row>
           )}
 
-          {!showValue && props.text.question_type === 'objective' && (
+          {!showValue && text.question_type === 'objective' && (
             <Row className='Enquiry__rightBlurb mb-3'>
               <div className='ml-auto mr-3 '>
                 <Col className='Enquiry__formContainer p-0'>
@@ -147,7 +153,7 @@ const EnquiryTemplate = (props) => {
                   </p>
                   <Form className='Enquiry__form my-3 mx-2 '>
                     <div className='mb-3'>
-                      {props.text.merged.map((elem) => {
+                      {text.merged.map((elem) => {
                         return (
                           <Form.Check
                             type='radio'

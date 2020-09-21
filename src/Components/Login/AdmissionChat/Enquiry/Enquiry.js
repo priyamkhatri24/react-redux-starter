@@ -12,6 +12,7 @@ import { useTimeout, get, apiValidation } from '../../../../Utilities';
 import { getClientUserId } from '../../../../redux/reducers/clientUserId.reducer';
 
 const Enquiry = (props) => {
+  const { clientUserId } = props;
   const [radioOption, setOptions] = useState('initialForm');
   const [waitingDots, setWaitingDotsTime] = useState(true);
   const [waitingDotsAgain, setWaitingDotsTimeAgain] = useState(true);
@@ -19,15 +20,15 @@ const Enquiry = (props) => {
   useTimeout(() => setWaitingDotsTimeAgain(false), 2000);
 
   useEffect(() => {
-    console.log(props.clientUserId);
-    get(1622, '/getCRMQuestions') //change to clientBranding
+    console.log(clientUserId);
+    get(1622, '/getCRMQuestions') // change to clientBranding
       .then((res) => {
         const result = apiValidation(res);
         setWaitingDotsTime(false);
         setCRMQuestions(result);
       })
       .catch((e) => console.error(e));
-  }, []);
+  }, [clientUserId]);
 
   return (
     <div className='Enquiry'>

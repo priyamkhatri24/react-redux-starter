@@ -8,6 +8,7 @@ import avatarImage from '../../../../../assets/images/avatarImage.jpg';
 import EnquiryTemplate from '../../EnquiryTemplate/EnquiryTemplate';
 
 const EnquiryDetails = (props) => {
+  const { questions } = props;
   const [showLastElement, setShowLastElement] = useState(false);
   const [newEnquiryDetails, setEnquiryDetails] = useState({});
   const [visibleArrayLength, setLength] = useState(1); // since we are setting visiblity of first element to true
@@ -106,20 +107,17 @@ const EnquiryDetails = (props) => {
   // };
 
   useEffect(() => {
-    props.questions.map((elem) => {
-      return (elem['isVisible'] = false);
+    questions.map((elem) => {
+      return (elem.isVisible = false);
     });
-    props.questions[0].isVisible = true;
-    setVisible(props.questions);
-  }, []);
+    questions[0].isVisible = true;
+    setVisible(questions);
+  }, [questions]);
 
   useEffect(() => {
     if (showLastElement) {
       focusedBlurb.current.scrollIntoView({ behaviour: 'smooth' });
     }
-    setTimeout(() => {
-      console.log(isVisibleArray);
-    }, 2000);
   }, [showLastElement]);
 
   const getFormData = (data, type) => {
@@ -127,7 +125,7 @@ const EnquiryDetails = (props) => {
       return { ...prevstate, [type]: data };
     });
     if (visibleArrayLength < isVisibleArray.length) {
-      let newArr = [...isVisibleArray];
+      const newArr = [...isVisibleArray];
       newArr[visibleArrayLength].isVisible = true;
       setVisible(newArr);
       setLength((e) => e + 1);
@@ -240,6 +238,7 @@ const EnquiryDetails = (props) => {
                     tabIndex='-1'
                     onClick={() => goToAdmission()}
                     onKeyDown={() => goToAdmission()}
+                    role='button'
                   >
                     Admission Form
                   </span>
