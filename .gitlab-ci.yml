@@ -41,10 +41,9 @@ deploy:
     - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
     - aws configure set region ap-south-1
     - ls -la -F
-    - mv dist/isso-ncov-frontend/* dist/
-    - cd dist
+    - cd build
     - ls -al -F
     - cd ..
-    - aws deploy push --application-name isso-ncov-frontend --s3-location $AWS_S3_LOCATION --no-ignore-hidden-files --source dist
+    - aws deploy push --application-name ingeniumwebportal --s3-location $AWS_S3_LOCATION --no-ignore-hidden-files --source build
   only:
     - master
