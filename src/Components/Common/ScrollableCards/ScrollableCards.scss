@@ -1,0 +1,49 @@
+.Scrollable {
+  @import '../../../scss/bootstrap';
+
+  &__card {
+    background-color: #fff;
+    min-width: 100%;
+    min-height: 200px;
+    display: flex;
+    overflow-x: auto;
+  }
+
+  &__cardContent {
+    min-width: 150px;
+    margin: 5px;
+
+    @include media-breakpoint-up(md) {
+      min-width: 200px;
+    }
+  }
+  &__card::-webkit-scrollbar {
+    display: none;
+  }
+
+  &__image {
+    height: 60px;
+    width: 60px;
+    border-radius: 50px;
+  }
+
+  &__cardHeading {
+    font-family: 'Montserrat-Regular';
+    font-weight: 700;
+    color: $lightGrey;
+
+    @include media-breakpoint-up(md) {
+      font-size: $spacer * 1.5;
+    }
+  }
+
+  &__cardSubHeading {
+    font-family: 'Montserrat-Regular';
+    font-size: $spacer * 0.75;
+    color: $lightGrey;
+
+    @include media-breakpoint-up(md) {
+      font-size: $spacer;
+    }
+  }
+}

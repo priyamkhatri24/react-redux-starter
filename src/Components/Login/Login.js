@@ -6,13 +6,14 @@ import './Login.scss';
 import Preloader from './Preloader/Preloader';
 import footerIngenium from '../../assets/images/ingiLOGO.png';
 import PhoneNo from './PhoneNo/PhoneNo';
-import { post } from '../../Utilities/Remote';
+import { post, get, apiValidation } from '../../Utilities';
 import {
   getCurrentBranding,
   getBrandingError,
   getBrandingPending,
 } from '../../redux/reducers/branding.reducer';
 import getBranding from './Login.service';
+import Welcome from './Welcome/Welcome';
 
 class Login extends Component {
   constructor(props) {
@@ -20,13 +21,11 @@ class Login extends Component {
     this.state = {
       currentComponent: 'Preloader',
       image: null,
+      welcomeData: null,
     };
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.handleComponent('PhoneNo');
-    }, 3000);
     const domain = { domain_name: window.location.hostname };
     const { fetchBranding } = this.props;
     fetchBranding(domain);
@@ -36,12 +35,31 @@ class Login extends Component {
     const {
       currentbranding: {
         pending,
-        branding: { client_logo: image },
+        branding: { client_logo: image, client_id: clientId },
       },
     } = this.props;
 
     if (prevprops.currentbranding.pending !== pending && pending === false) {
       this.setState({ image });
+
+      const request = {
+        client_id: clientId,
+      };
+
+      setTimeout(() => {
+        get(request, '/getAdsForClient')
+          .then((res) => {
+            const result = apiValidation(res);
+
+            if (result.is_ad) {
+              this.setState({ welcomeData: result });
+              this.handleComponent('Welcome');
+            } else {
+              this.handleComponent('PhoneNo');
+            }
+          })
+          .catch(() => this.handleComponent('PhoneNo'));
+      }, 3000);
     }
   }
 
@@ -53,7 +71,6 @@ class Login extends Component {
     const requestBody = {
       contact: param,
       client_id: this.props.currentbranding.branding.client_id,
-      // contact: '7999583681',
     };
 
     post(requestBody, '/enterNumberAndLogin')
@@ -88,23 +105,31 @@ class Login extends Component {
   }
 
   render() {
-    const { currentComponent, image } = this.state;
+    const { currentComponent, image, welcomeData } = this.state;
 
     return (
-      <div className='text-center Login'>
-        <img src={image} alt='coachingLogo' className='Login__jumbo' />
+      <>
+        {currentComponent !== 'Welcome' && (
+          <div className='text-center Login'>
+            <img src={image} alt='coachingLogo' className='Login__jumbo' />
 
-        {currentComponent === 'Preloader' && <Preloader />}
+            {currentComponent === 'Preloader' && <Preloader />}
 
-        {currentComponent === 'PhoneNo' && (
-          <PhoneNo getData={this.getPhoneNo} placeholder='Mobile number' />
+            {currentComponent === 'PhoneNo' && (
+              <PhoneNo getData={this.getPhoneNo} placeholder='Mobile number' />
+            )}
+
+            <footer className='py-4 Login__footer '>
+              <h6 className='Login__footerText'>Powered By</h6>
+              <img src={footerIngenium} alt='footerLogo' className='w-25' />
+            </footer>
+          </div>
         )}
 
-        <footer className='py-4 Login__footer '>
-          <h6 className='Login__footerText'>Powered By</h6>
-          <img src={footerIngenium} alt='footerLogo' className='w-25' />
-        </footer>
-      </div>
+        {currentComponent === 'Welcome' && (
+          <Welcome data={welcomeData} changeComponent={this.handleComponent} />
+        )}
+      </>
     );
   }
 }

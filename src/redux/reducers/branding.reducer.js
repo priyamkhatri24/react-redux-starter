@@ -1,4 +1,4 @@
-import { brandingConstants } from '../../constants/branding.constants';
+import { brandingConstants } from '../../constants';
 
 const initialState = {
   pending: false,

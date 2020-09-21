@@ -1,0 +1,49 @@
+image: node:10
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: 'build'
+  script:
+    - apt update
+    - apt-get install -y nodejs
+    - npm install -y npm@6.11.0
+    - nodejs -v
+    - npm -v
+    - ls -la -F
+    - npm ci
+    - npx build --prod
+  cache:
+    paths:
+      - node_modules/
+  artifacts:
+    when: on_success
+    name: '$CI_JOB_NAME-$CI_COMMIT_REF_NAME'
+    paths:
+      - build/
+  only:
+    - master
+
+deploy:
+  stage: 'deploy'
+  environment:
+    name: production
+  script:
+    - apt update
+    - apt install -y software-properties-common
+    - apt install -y python-dev
+    - apt install -y python-pip
+    - pip install awscli
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    - aws configure set region ap-south-1
+    - ls -la -F
+    - mv dist/isso-ncov-frontend/* dist/
+    - cd dist
+    - ls -al -F
+    - cd ..
+    - aws deploy push --application-name isso-ncov-frontend --s3-location $AWS_S3_LOCATION --no-ignore-hidden-files --source dist
+  only:
+    - master

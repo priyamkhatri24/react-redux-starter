@@ -6,3 +6,47 @@
   padding-left: 24px;
   padding-right: 24px;
 }
+
+.btn-customSkip {
+  font-family: 'Montserrat-Regular';
+  color: #fff;
+  border-radius: 50px;
+  background-color: #000;
+  opacity: 0.5;
+  height: 32px;
+  font-size: 12px;
+  padding-right: 16px;
+  padding-left: 16px;
+}
+
+@media (min-width: 992px) {
+  .btn-customSkip {
+    height: 40px;
+    font-size: 18px;
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+}
+
+.btn-dashboardBlueOnWhite {
+  border-radius: 5px;
+  background-color: #fff;
+  color: rgba(127, 196, 253, 1);
+  font-family: 'Montserrat-Medium';
+  font-size: 18px;
+  line-height: 22px;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
+  height: 36px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.btn-noticeBoardPost {
+  border-radius: 50px;
+  border: 0.1px solid #707070;
+  padding-right: 20px;
+  padding-left: 20px;
+  font-family: 'Montserrat-SemiBold';
+  font-size: 14px;
+  height: 36px;
+}

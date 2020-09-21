@@ -4,15 +4,6 @@ import Button from 'react-bootstrap/button';
 import './FormTemplate.scss';
 
 export default class FormTemplate extends Component {
-  validateDynamic(value) {
-    let error;
-    if (!value) {
-      error = 'Required';
-    }
-
-    return error;
-  }
-
   renderFields(inputs) {
     return inputs.map((input) => {
       if (input.type === 'select') {
@@ -31,7 +22,7 @@ export default class FormTemplate extends Component {
                 return (
                   <label className='has-float-label my-auto'>
                     <input
-                      className={'form-control ' + hasError}
+                      className={`form-control ${hasError}`}
                       {...field}
                       type='text'
                       placeholder={field.name}
@@ -75,7 +66,7 @@ export default class FormTemplate extends Component {
                   <select
                     value={field.value}
                     {...field}
-                    className={'FormTemplate__select ' + hasError}
+                    className={`FormTemplate__select ${hasError}`}
                   >
                     {selectOptions}
                   </select>
@@ -88,7 +79,7 @@ export default class FormTemplate extends Component {
     );
   }
 
-  //style checkbox and textArea
+  // style checkbox and textArea
 
   renderCheckBox(input) {
     return (
@@ -123,7 +114,7 @@ export default class FormTemplate extends Component {
               const hasError = errors[input.name] && touched[input.name] ? 'hasError' : '';
               return (
                 <div>
-                  <textarea {...field} id={hasError}></textarea>
+                  <textarea {...field} id={hasError} />
                 </div>
               );
             }}
@@ -134,10 +125,10 @@ export default class FormTemplate extends Component {
   }
 
   getInitialValues(inputs) {
-    //declare an empty initialValues object
+    // declare an empty initialValues object
     const initialValues = {};
-    //loop loop over fields array
-    //if prop does not exit in the initialValues object,
+    // loop loop over fields array
+    // if prop does not exit in the initialValues object,
     // pluck off the name and value props and add it to the initialValues object;
     inputs.forEach((field) => {
       if (!initialValues[field.name]) {
@@ -145,8 +136,17 @@ export default class FormTemplate extends Component {
       }
     });
 
-    //return initialValues object
+    // return initialValues object
     return initialValues;
+  }
+
+  validateDynamic(value) {
+    let error;
+    if (!value) {
+      error = 'Required';
+    }
+
+    return error;
   }
 
   render() {
@@ -161,7 +161,7 @@ export default class FormTemplate extends Component {
         initialValues={initialValues}
       >
         {(form) => {
-          const errorMessageShow = Object.keys(form.errors).length > 0 ? true : false;
+          const errorMessageShow = Object.keys(form.errors).length > 0;
 
           return (
             <div>

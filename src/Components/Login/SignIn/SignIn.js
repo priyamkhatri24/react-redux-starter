@@ -6,6 +6,8 @@ import footerIngenium from '../../../assets/images/ingiLOGO.png';
 import './SignIn.scss';
 import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
 import { get, post, apiValidation } from '../../../Utilities';
+import { clientUserIdActions } from '../../../redux/actions/clientUserId.action';
+import { userProfileActions } from '../../../redux/actions/userProfile.action';
 
 const SignIn = (props) => {
   const {
@@ -54,7 +56,7 @@ const SignIn = (props) => {
         const result = apiValidation(res);
         if (result.status === 'Wrong username') {
           alert('Please Check your Internet Connection');
-          push({ pathname: '/' });
+          push({ pathname: '/login' });
         } else if (result === 'success') {
           alert('The Username Has been sent to your registered mobile number');
         }
@@ -74,11 +76,37 @@ const SignIn = (props) => {
 
       get(reqBody, '/loginUser')
         .then((res) => {
+          const { push } = props.history;
           const result = apiValidation(res);
           if (result.status === 'Wrong password. Login failed') {
             checkValidUser(true);
           }
-          console.log(res);
+          const {
+            token,
+            user: {
+              client_user_id: clientUserId,
+              client_client_id: clientId,
+              contact: userContact,
+              first_name: firstName,
+              role_array: roleArray,
+              last_name: lastName,
+              user_user_id: userUserId,
+              user_id: userId,
+              profile_image: profileImage,
+            },
+          } = result;
+
+          props.setCLientUserIdToStore(clientUserId);
+          props.setUserIdToStore(userId);
+          props.setUserUserIdToStore(userUserId);
+          props.setRoleArrayToStore(roleArray);
+          props.setFirstNameToStore(firstName);
+          props.setLastNameToStore(lastName);
+          props.setProfileImageToStore(profileImage);
+          props.setContactToStore(userContact);
+          props.setTokenToStore(token);
+          props.setClientIdToStore(clientId);
+          push({ pathname: '/' });
         })
         .catch((err) => console.log(err));
     } else if (userStatus === 'pending') {
@@ -149,7 +177,42 @@ const mapStateToProps = (state) => ({
   currentbranding: getCurrentBranding(state),
 });
 
-export default connect(mapStateToProps)(SignIn);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setCLientUserIdToStore: (payload) => {
+      dispatch(clientUserIdActions.setCLientUserIdToStore(payload));
+    },
+    setClientIdToStore: (payload) => {
+      dispatch(clientUserIdActions.setClientIdToStore(payload));
+    },
+    setUserIdToStore: (payload) => {
+      dispatch(clientUserIdActions.setUserIdToStore(payload));
+    },
+    setUserUserIdToStore: (payload) => {
+      dispatch(clientUserIdActions.setUserUserIdToStore(payload));
+    },
+    setRoleArrayToStore: (payload) => {
+      dispatch(clientUserIdActions.setRoleArrayToStore(payload));
+    },
+    setFirstNameToStore: (payload) => {
+      dispatch(userProfileActions.setFirstNameToStore(payload));
+    },
+    setLastNameToStore: (payload) => {
+      dispatch(userProfileActions.setLastNameToStore(payload));
+    },
+    setContactToStore: (payload) => {
+      dispatch(userProfileActions.setContactToStore(payload));
+    },
+    setProfileImageToStore: (payload) => {
+      dispatch(userProfileActions.setProfileImageToStore(payload));
+    },
+    setTokenToStore: (payload) => {
+      dispatch(userProfileActions.setTokenToStore(payload));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
 
 SignIn.propTypes = {
   location: PropTypes.shape({

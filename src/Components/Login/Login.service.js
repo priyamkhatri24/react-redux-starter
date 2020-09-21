@@ -3,11 +3,11 @@ import { get } from '../../Utilities/Remote';
 
 function getBranding(param) {
   return (dispatch) => {
-    console.log('hello');
     dispatch(brandingActions.clear());
 
     get(param, '/getClientbyDomain')
       .then((res) => {
+        console.log(res);
         dispatch(brandingActions.success(res));
       })
       .catch((e) => dispatch(brandingActions.error(e)));

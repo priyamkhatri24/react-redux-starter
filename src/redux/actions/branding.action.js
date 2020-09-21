@@ -1,10 +1,4 @@
-import { brandingConstants } from '../../constants/branding.constants';
-
-export const brandingActions = {
-  success,
-  error,
-  clear,
-};
+import { brandingConstants } from '../../constants';
 
 function success(payload) {
   return { type: brandingConstants.SUCCESS, payload };
@@ -17,3 +11,9 @@ function error(payload) {
 function clear() {
   return { type: brandingConstants.CLEAR };
 }
+
+export const brandingActions = {
+  success,
+  error,
+  clear,
+};
