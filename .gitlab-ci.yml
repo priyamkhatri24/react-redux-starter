@@ -12,9 +12,10 @@ build:
     - npm install -y npm@6.11.0
     - nodejs -v
     - npm -v
+    - yarn -v
     - ls -la -F
-    - npm ci
-    - npx build --prod
+    - yarn
+    - yarn build --prod
   cache:
     paths:
       - node_modules/
