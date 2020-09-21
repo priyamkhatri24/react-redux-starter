@@ -2,7 +2,7 @@
   @import '../../../scss/bootstrap';
 
   &__text {
-    color: #000000de;
+    color: $headingGrey;
     font-size: 14px;
     @include media-breakpoint-up(md) {
       font-size: 24px;
@@ -17,10 +17,37 @@
     font-family: 'MartelSans-Regular';
   }
 
+  &__passText {
+    font-size: $spacer * 1.25;
+    font-family: 'Montserrat-Medium';
+    color: $headingGrey;
+
+    @include media-breakpoint-up(md) {
+      font-size: $spacer * 2;
+    }
+  }
+
   &__input {
     width: 90%;
     @include media-breakpoint-up(md) {
       width: 75%;
+    }
+  }
+
+  &__show {
+    position: absolute;
+    top: 15%;
+    right: 5%;
+  }
+
+  &__forgot {
+    color: $primaryBlue;
+    font-family: 'Montserrat-Regular';
+    font-size: $spacer * 0.75;
+    letter-spacing: 0.4px;
+
+    @include media-breakpoint-up(md) {
+      font-size: $spacer;
     }
   }
 }

@@ -1,0 +1,8 @@
+export const userProfileConstants = {
+  FIRSTNAME: 'FIRST_NAME',
+  LASTNAME: 'LAST_NAME',
+  CONTACT: 'CONTACT',
+  PROFILEIMAGE: 'PROFILE_IMAGE',
+  TOKEN: 'TOKEN',
+  LOGOUT: 'LOGOUT',
+};

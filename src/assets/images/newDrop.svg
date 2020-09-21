@@ -1,0 +1,39 @@
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="375" height="529" viewBox="0 0 375 529">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        filter: url(#Path_628);
+      }
+
+      .cls-3 {
+        filter: url(#Path_627);
+      }
+    </style>
+    <filter id="Path_627" x="0" y="0" width="375" height="529" filterUnits="userSpaceOnUse">
+      <feOffset dy="-2" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feFlood flood-opacity="0.161"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Path_628" x="0" y="6" width="55" height="55" filterUnits="userSpaceOnUse">
+      <feOffset dy="1" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1.5" result="blur-2"/>
+      <feFlood flood-opacity="0.161"/>
+      <feComposite operator="in" in2="blur-2"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="backDropCard" transform="translate(7.5 0)">
+    <g class="cls-3" transform="matrix(1, 0, 0, 1, 7.5, 0)">
+      <path id="Path_627-2" data-name="Path 627" class="cls-1" d="M46,0H345a15,15,0,0,1,15,15V514H0V46Z" transform="translate(0 9.5)"/>
+    </g>
+    <g class="cls-2" transform="matrix(1, 0, 0, 1, 0, 0)">
+      <path id="Path_628-2" data-name="Path 628" class="cls-1" d="M24.053,21.951,46,0V31A15,15,0,0,1,31,46H0Z" transform="translate(7.5 9.5)"/>
+    </g>
+  </g>
+</svg>

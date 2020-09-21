@@ -1,0 +1,38 @@
+.Signin {
+  @import '../../../scss/bootstrap';
+
+  margin-top: 125px;
+
+  @include media-breakpoint-up(lg) {
+    margin-top: 100px;
+  }
+
+  &__jumbo {
+    width: 50%;
+    @include media-breakpoint-down(md) {
+      width: 75%;
+    }
+  }
+
+  &__footer {
+    @include media-breakpoint-down(md) {
+      margin-top: 30vh;
+    }
+
+    @include media-breakpoint-up(md) {
+      position: absolute;
+      bottom: 30px;
+      width: 100%;
+      height: 80px;
+      padding-bottom: 30px;
+    }
+    text-align: center;
+  }
+
+  &__footerText {
+    font-family: 'Montserrat-Regular';
+    font-size: $spacer * 0.75;
+    color: rgba($color: $black, $alpha: 0.6);
+    line-height: 15px;
+  }
+}
