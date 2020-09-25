@@ -68,14 +68,18 @@ class Login extends Component {
   };
 
   getPhoneNo = (param) => {
+    const {
+      currentbranding: {
+        branding: { client_id: clientId },
+      },
+    } = this.props;
     const requestBody = {
       contact: param,
-      client_id: this.props.currentbranding.branding.client_id,
+      client_id: clientId,
     };
 
     post(requestBody, '/enterNumberAndLogin')
       .then((res) => {
-        console.log(res);
         if (res.result.is_user === true) {
           this.goToLoginOrSignUp('signin', requestBody.contact, res.result.user_info);
         } else {

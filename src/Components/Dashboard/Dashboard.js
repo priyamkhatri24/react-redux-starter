@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import format from 'date-fns/format';
@@ -49,7 +50,6 @@ const Dashboard = (props) => {
     get(payload, '/getRecentData')
       .then((res) => {
         const result = apiValidation(res);
-        console.log(result);
         setNotices(result.notice);
       })
       .catch((err) => console.error(err));
@@ -58,7 +58,6 @@ const Dashboard = (props) => {
 
   const logout = () => {
     const { push } = props.history;
-    console.log('logout');
     clearProfile();
     push({ pathname: '/login' });
   };
@@ -108,7 +107,7 @@ const Dashboard = (props) => {
         </h4>
         <p className='mr-5'>Create tests &amp; home-works in 4 simple steps</p>
         <Button variant='dashboardBlueOnWhite'>
-          Let's go
+          Let&apos;s go
           <span>
             <ChevronRightIcon />
           </span>
@@ -177,7 +176,8 @@ const Dashboard = (props) => {
           <Col xs={8}>
             <p className='Dashboard__todaysHitsText'>Notice Board</p>
             <Button variant='noticeBoardPost'>
-              <BorderColorIcon /> <span className='m-2'>Write a post</span>
+              <BorderColorIcon />
+              <span className='m-2'>Write a post</span>
             </Button>
           </Col>
           <Col xs={4}>
@@ -203,7 +203,9 @@ const Dashboard = (props) => {
                 />
               </Col>
               <Col xs={10} className='pt-4'>
-                <p className='Dashboard__scrollableCardHeading m-0'>{`${elem.first_name} ${elem.last_name}`}</p>
+                <p className='Dashboard__scrollableCardHeading m-0'>
+                  {`${elem.first_name} ${elem.last_name}`}
+                </p>
                 <p className='Dashboard__noticeSubHeading'>
                   {format(fromUnixTime(elem.time_of_notice), 'hh:m bbbb, do MMM yyy')}
                 </p>
@@ -217,7 +219,8 @@ const Dashboard = (props) => {
       <DashboardCards
         image={offlineAssignment}
         heading='Offline assignment'
-        subHeading='Record marks of all the pen-paper tests and send the marks to parents in simple way.'
+        subHeading='Record marks of all the pen-paper tests and send
+         the marks to parents in simple way.'
         boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
         backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
         backGround='rgb(236,255,252)'
@@ -226,7 +229,8 @@ const Dashboard = (props) => {
       <DashboardCards
         image={camera}
         heading='Send photos &amp; files'
-        subHeading='Send question papers, notes and books as photos or files such as .pdf, .doc, .txt, etc..'
+        subHeading='Send question papers, notes and books as
+        photos or files such as .pdf, .doc, .txt, etc..'
         boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
         backGround='rgb(247,236,255)'
         backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
@@ -317,3 +321,17 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+
+Dashboard.propTypes = {
+  clientId: PropTypes.number.isRequired,
+  clientUserId: PropTypes.number.isRequired,
+  clearProfile: PropTypes.func.isRequired,
+  userProfile: PropTypes.shape({
+    firstName: PropTypes.string.isRequired,
+    profileImage: PropTypes.string,
+  }).isRequired,
+
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};

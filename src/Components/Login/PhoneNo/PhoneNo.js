@@ -73,7 +73,7 @@ const PhoneNo = (props) => {
 
       <Row className='mx-auto PhoneNo__input mt-5 w-75'>
         <Col md={10} xs={9} className='p-0 my-auto'>
-          <label className='has-float-label my-auto'>
+          <label htmlFor='Mobile Number' className='has-float-label my-auto'>
             <input
               className='form-control'
               name='Mobile Number'
@@ -146,6 +146,8 @@ const PhoneNo = (props) => {
             className='PhoneNo__forgot p-1'
             onClick={() => forgotPlaceholder()}
             onKeyDown={() => forgotPlaceholder()}
+            role='button'
+            tabIndex='-1'
           >
             Forgot {placeholder}?
           </span>

@@ -51,12 +51,16 @@ export const OTPInput = (props) => {
         // focusStyle={}
       />
       {resend ? (
-        <p
-          className='OTPInput__resend mt-5'
-          onClick={() => resendOtp()}
-          onKeyDown={() => resendOtp()}
-        >
-          {resendText}
+        <p>
+          <span
+            className='OTPInput__resend mt-5'
+            onClick={() => resendOtp()}
+            onKeyDown={() => resendOtp()}
+            role='button'
+            tabIndex='-1'
+          >
+            {resendText}
+          </span>
         </p>
       ) : (
         <p className='OTPInput__timer mt-5'>

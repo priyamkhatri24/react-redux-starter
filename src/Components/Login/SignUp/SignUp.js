@@ -115,6 +115,9 @@ SignUp.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+
+  setUserIdToStore: PropTypes.func.isRequired,
+  setCLientUserIdToStore: PropTypes.func.isRequired,
 };
 
 SignUp.defaultProps = {

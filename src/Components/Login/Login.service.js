@@ -7,7 +7,6 @@ function getBranding(param) {
 
     get(param, '/getClientbyDomain')
       .then((res) => {
-        console.log(res);
         dispatch(brandingActions.success(res));
       })
       .catch((e) => dispatch(brandingActions.error(e)));

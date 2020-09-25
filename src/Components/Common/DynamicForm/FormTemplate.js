@@ -1,51 +1,31 @@
-import React, { Component, Fragment } from 'react';
+/* eslint-disable react/jsx-props-no-spreading */
+
+import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
 import { Formik, Field } from 'formik';
 import Button from 'react-bootstrap/Button';
 import './FormTemplate.scss';
 
-export default class FormTemplate extends Component {
-  renderFields(inputs) {
-    return inputs.map((input) => {
-      if (input.type === 'select') {
-        return this.renderSelect(input);
-      }
+const FormTemplate = (props) => {
+  const { fields, validation, getData } = props;
 
-      return (
-        <div key={input.name}>
-          <div className='my-4 FormTemplate__input mx-auto'>
-            <Field name={input.name} validate={this.validateDynamic}>
-              {(props) => {
-                const { field } = props;
-                const { errors, touched } = props.form;
-                const hasError =
-                  errors[input.name] && touched[input.name] ? 'FormTemplate__hasError' : '';
-                return (
-                  <label className='has-float-label my-auto'>
-                    <input
-                      className={`form-control ${hasError}`}
-                      {...field}
-                      type='text'
-                      placeholder={field.name}
-                    />
-                    <span>{field.name}</span>
-                  </label>
-                );
-              }}
-            </Field>
-          </div>
-        </div>
-      );
-    });
-  }
+  const validateDynamic = (value) => {
+    let error;
+    if (!value) {
+      error = 'Required';
+    }
 
-  renderSelect(input) {
+    return error;
+  };
+
+  const renderSelect = (input) => {
     return (
       <Fragment key={input.name}>
         <div>
-          <Field name={input.name} validate={this.validateDynamic}>
-            {(props) => {
-              const { field } = props;
-              const { errors, touched } = props.form;
+          <Field name={input.name} validate={validateDynamic}>
+            {(property) => {
+              const { field } = property;
+              const { errors, touched } = property.form;
               const hasError =
                 errors[input.name] && touched[input.name] ? 'FormTemplate__hasError' : '';
 
@@ -56,8 +36,7 @@ export default class FormTemplate extends Component {
               );
               const options = input.data.map((i) => (
                 <option key={i} value={i}>
-                  {' '}
-                  {i}{' '}
+                  {i}
                 </option>
               ));
               const selectOptions = [defaultOption, ...options];
@@ -77,19 +56,20 @@ export default class FormTemplate extends Component {
         </div>
       </Fragment>
     );
-  }
+  };
 
   // style checkbox and textArea
 
-  renderCheckBox(input) {
+  const renderCheckBox = (input) => {
     return (
       <Fragment key={input.name}>
-        <label>{input.label}</label>
+        <label htmlFor={input.name}>{input.label}</label>
         <Field name={input.name}>
           {(prop) => {
             const { field } = prop;
             return (
               <input
+                id={input.name}
                 name={input.name}
                 type='checkbox'
                 checked={field.value}
@@ -100,17 +80,17 @@ export default class FormTemplate extends Component {
         </Field>
       </Fragment>
     );
-  }
+  };
 
-  renderTextArea(input) {
+  const renderTextArea = (input) => {
     return (
       <Fragment key={input.name}>
-        <label>{input.label}</label>
+        <label htmlFor={input.name}>{input.label}</label>
         <div>
           <Field name={input.name}>
-            {(props) => {
-              const { field } = props;
-              const { errors, touched } = props.form;
+            {(property) => {
+              const { field } = property;
+              const { errors, touched } = property.form;
               const hasError = errors[input.name] && touched[input.name] ? 'hasError' : '';
               return (
                 <div>
@@ -122,9 +102,9 @@ export default class FormTemplate extends Component {
         </div>
       </Fragment>
     );
-  }
+  };
 
-  getInitialValues(inputs) {
+  const getInitialValues = (inputs) => {
     // declare an empty initialValues object
     const initialValues = {};
     // loop loop over fields array
@@ -138,49 +118,85 @@ export default class FormTemplate extends Component {
 
     // return initialValues object
     return initialValues;
-  }
+  };
 
-  validateDynamic(value) {
-    let error;
-    if (!value) {
-      error = 'Required';
-    }
+  const renderFields = (inputs) => {
+    return inputs.map((input) => {
+      if (input.type === 'select') return renderSelect(input);
+      if (input.type === 'textarea') return renderTextArea(input);
+      if (input.type === 'checkbox') return renderCheckBox(input);
 
-    return error;
-  }
+      return (
+        <div key={input.name}>
+          <div className='my-4 FormTemplate__input mx-auto'>
+            <Field name={input.name} validate={validateDynamic}>
+              {(property) => {
+                const { field } = property;
+                const { errors, touched } = property.form;
+                const hasError =
+                  errors[input.name] && touched[input.name] ? 'FormTemplate__hasError' : '';
+                return (
+                  <label htmlFor={field.name} className='has-float-label my-auto'>
+                    <input
+                      className={`form-control ${hasError}`}
+                      {...field}
+                      type='text'
+                      placeholder={field.name}
+                      id={field.name}
+                    />
+                    <span>{field.name}</span>
+                  </label>
+                );
+              }}
+            </Field>
+          </div>
+        </div>
+      );
+    });
+  };
 
-  render() {
-    const initialValues = this.getInitialValues(this.props.fields);
+  const initialValues = getInitialValues(fields);
 
-    return (
-      <Formik
-        onSubmit={(values) => {
-          this.props.getData(values);
-        }}
-        validationSchema={this.props.validation}
-        initialValues={initialValues}
-      >
-        {(form) => {
-          const errorMessageShow = Object.keys(form.errors).length > 0;
+  return (
+    <Formik
+      onSubmit={(values) => {
+        getData(values);
+      }}
+      validationSchema={validation}
+      initialValues={initialValues}
+    >
+      {(form) => {
+        const errorMessageShow = Object.keys(form.errors).length > 0;
 
-          return (
-            <div>
-              <form onSubmit={form.handleSubmit} className='mx-auto text-center mb-4'>
-                {this.renderFields(this.props.fields)}
-                <Button type='submit' variant='customPrimary'>
-                  Submit
-                </Button>
+        return (
+          <div>
+            <form onSubmit={form.handleSubmit} className='mx-auto text-center mb-4'>
+              {renderFields(fields)}
+              <Button type='submit' variant='customPrimary'>
+                Submit
+              </Button>
 
-                {errorMessageShow && (
-                  <small className='text-danger d-block text-center mt-3'>
-                    Please fill the required fields
-                  </small>
-                )}
-              </form>
-            </div>
-          );
-        }}
-      </Formik>
-    );
-  }
-}
+              {errorMessageShow && (
+                <small className='text-danger d-block text-center mt-3'>
+                  Please fill the required fields
+                </small>
+              )}
+            </form>
+          </div>
+        );
+      }}
+    </Formik>
+  );
+};
+
+export default FormTemplate;
+
+FormTemplate.propTypes = {
+  validation: PropTypes.instanceOf(Object),
+  fields: PropTypes.instanceOf(Array).isRequired,
+  getData: PropTypes.func.isRequired,
+};
+
+FormTemplate.defaultProps = {
+  validation: undefined,
+};

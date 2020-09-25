@@ -1,12 +1,15 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import './ScrollableCards.scss';
 
 export const ScrollableCards = (props) => {
+  const { data } = props;
+
   return (
     <section className='Scrollable__card'>
-      {props.data[0].student_result_information_id &&
-        props.data.map((elem) => {
+      {data[0].student_result_information_id &&
+        data.map((elem) => {
           return (
             <Card
               className='Scrollable__cardContent text-center'
@@ -20,8 +23,8 @@ export const ScrollableCards = (props) => {
           );
         })}
 
-      {props.data[0].client_team_id &&
-        props.data.map((elem) => {
+      {data[0].client_team_id &&
+        data.map((elem) => {
           return (
             <Card
               className='Scrollable__cardContent text-center'
@@ -36,4 +39,8 @@ export const ScrollableCards = (props) => {
         })}
     </section>
   );
+};
+
+ScrollableCards.propTypes = {
+  data: PropTypes.instanceOf(Array).isRequired,
 };

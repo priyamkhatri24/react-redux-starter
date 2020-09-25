@@ -28,7 +28,6 @@ const SignIn = (props) => {
   const [userStatus, setUserStatus] = useState('');
 
   const getUserName = (param) => {
-    console.log(loginParams, 'loginparams');
     const userParam = userInfo.filter((e) => {
       return e.username === param;
     });
@@ -65,8 +64,6 @@ const SignIn = (props) => {
   };
 
   const getPassword = (param) => {
-    console.log(loginParams);
-
     if (userStatus === 'active') {
       const reqBody = {
         user_name: loginParams.user_name,
@@ -85,7 +82,7 @@ const SignIn = (props) => {
             token,
             user: {
               client_user_id: clientUserId,
-              client_client_id: clientId,
+              client_client_id: clientID,
               contact: userContact,
               first_name: firstName,
               role_array: roleArray,
@@ -105,7 +102,7 @@ const SignIn = (props) => {
           props.setProfileImageToStore(profileImage);
           props.setContactToStore(userContact);
           props.setTokenToStore(token);
-          props.setClientIdToStore(clientId);
+          props.setClientIdToStore(clientID);
           push({ pathname: '/' });
         })
         .catch((err) => console.log(err));
@@ -232,6 +229,17 @@ SignIn.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+
+  setCLientUserIdToStore: PropTypes.func.isRequired,
+  setUserIdToStore: PropTypes.func.isRequired,
+  setUserUserIdToStore: PropTypes.func.isRequired,
+  setRoleArrayToStore: PropTypes.func.isRequired,
+  setFirstNameToStore: PropTypes.func.isRequired,
+  setLastNameToStore: PropTypes.func.isRequired,
+  setProfileImageToStore: PropTypes.func.isRequired,
+  setContactToStore: PropTypes.func.isRequired,
+  setTokenToStore: PropTypes.func.isRequired,
+  setClientIdToStore: PropTypes.func.isRequired,
 };
 
 SignIn.defaultProps = {

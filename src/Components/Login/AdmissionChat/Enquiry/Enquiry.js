@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import './Enquiry.scss';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -157,3 +158,7 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(Enquiry);
+
+Enquiry.propTypes = {
+  clientUserId: PropTypes.number.isRequired,
+};

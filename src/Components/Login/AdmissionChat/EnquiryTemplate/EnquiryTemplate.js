@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -113,7 +114,7 @@ const EnquiryTemplate = (props) => {
               <p>{text.english_text}</p>
 
               <p className='Enquiry__hinText'>
-                <span>{props.text.hindi_text}</span>
+                <span>{text.hindi_text}</span>
               </p>
             </div>
           </Row>
@@ -190,3 +191,31 @@ const EnquiryTemplate = (props) => {
 };
 
 export default EnquiryTemplate;
+
+EnquiryTemplate.propTypes = {
+  text: PropTypes.shape({
+    question_type: PropTypes.string.isRequired,
+    merged: PropTypes.instanceOf(Array),
+    english_options: PropTypes.instanceOf(Array),
+    hindi_options: PropTypes.instanceOf(Array),
+    response: PropTypes.string,
+    english_text: PropTypes.string,
+    hindi_text: PropTypes.string,
+  }),
+
+  getData: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired,
+  details: PropTypes.instanceOf(Object),
+};
+
+EnquiryTemplate.defaultProps = {
+  text: {
+    merged: undefined,
+    english_options: [],
+    hindi_options: [],
+    english_text: '',
+    hindi_text: '',
+    response: null,
+  },
+  details: {},
+};

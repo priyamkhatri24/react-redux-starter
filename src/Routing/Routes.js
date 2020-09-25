@@ -20,7 +20,7 @@ export function Routes() {
       <Route path='/admissionform' component={AdmissionForm} />
       <Route path='/forgotpassword' component={ForgotPassword} />
 
-      {/* redirect user to Login page if route does not exist and user is not authenticated */}
+      {/* redirect user to Dashboard page if route does not exist */}
 
       <Route component={Dashboard} />
     </Switch>

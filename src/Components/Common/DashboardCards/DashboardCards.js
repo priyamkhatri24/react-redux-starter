@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -41,4 +42,25 @@ export const DashboardCards = (props) => {
       </Row>
     </div>
   );
+};
+
+DashboardCards.propTypes = {
+  image: PropTypes.string.isRequired,
+  heading: PropTypes.string,
+  subHeading: PropTypes.string,
+  boxshadow: PropTypes.string,
+  backGround: PropTypes.string,
+  backgroundImg: PropTypes.string,
+  coloredHeading: PropTypes.string,
+  color: PropTypes.string,
+};
+
+DashboardCards.defaultProps = {
+  heading: undefined,
+  subHeading: '',
+  boxshadow: '',
+  backGround: '',
+  backgroundImg: '',
+  coloredHeading: '',
+  color: '',
 };

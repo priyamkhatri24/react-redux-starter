@@ -35,7 +35,7 @@ const AdmissionForm = () => {
   const getImageInput = (e) => {
     const reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]);
-    reader.onloadend = function () {
+    reader.onloadend = function getImage() {
       const base64data = reader.result;
       setImage(base64data);
     };
@@ -58,9 +58,8 @@ const AdmissionForm = () => {
             alt='upload your profile pic'
             className='AdmissionForm__avatarImage my-5'
           />
+          <input id='file-input' type='file' onChange={(e) => getImageInput(e)} accept='image/*' />
         </label>
-
-        <input id='file-input' type='file' onChange={(e) => getImageInput(e)} accept='image/*' />
       </div>
 
       <DynamicForm fields={dataArray} getData={getFormData} />
