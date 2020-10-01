@@ -6,13 +6,19 @@ import './Login.scss';
 import Preloader from './Preloader/Preloader';
 import footerIngenium from '../../assets/images/ingiLOGO.png';
 import PhoneNo from './PhoneNo/PhoneNo';
-import { post, get, apiValidation } from '../../Utilities';
+import {
+  post,
+  get,
+  apiValidation,
+  setGlobalColors,
+  changeFaviconAndDocumentTitle,
+} from '../../Utilities';
 import {
   getCurrentBranding,
   getBrandingError,
   getBrandingPending,
 } from '../../redux/reducers/branding.reducer';
-import getBranding from './Login.service';
+import { getBranding, getColor } from './Login.service';
 import Welcome from './Welcome/Welcome';
 
 class Login extends Component {
@@ -35,12 +41,22 @@ class Login extends Component {
     const {
       currentbranding: {
         pending,
-        branding: { client_logo: image, client_id: clientId },
+        branding: {
+          client_logo: image,
+          client_id: clientId,
+          client_color: clientColor,
+          client_icon: clientIcon,
+          client_title: clientTitle,
+        },
       },
     } = this.props;
 
     if (prevprops.currentbranding.pending !== pending && pending === false) {
       this.setState({ image });
+
+      this.setClientColors(clientColor);
+
+      changeFaviconAndDocumentTitle(clientIcon, clientTitle);
 
       const request = {
         client_id: clientId,
@@ -62,6 +78,32 @@ class Login extends Component {
       }, 3000);
     }
   }
+
+  setClientColors = (color) => {
+    const { fetchColors } = this.props;
+
+    const init = color.indexOf('(');
+    const fin = color.indexOf(')');
+    const colorValues = color.substr(init + 1, fin - init - 1).split(',');
+    const lightSaturation = (parseFloat(colorValues[1]) * 0.6).toFixed(2);
+    const lighterSaturation = (parseFloat(colorValues[1]) * 0.3).toFixed(2);
+    const lightestSaturation = (parseFloat(colorValues[1]) * 0.08).toFixed(2);
+
+    const lightcolorString = `hsl(${colorValues[0]},${lightSaturation}%,${colorValues[2]})`;
+    const lightercolorString = `hsl(${colorValues[0]},${lighterSaturation}%,${colorValues[2]})`;
+    const lightestcolorString = `hsl(${colorValues[0]},${lightestSaturation}%,${colorValues[2]})`;
+
+    setGlobalColors(color, lightcolorString, lightercolorString, lightestcolorString);
+
+    const colorVariables = {
+      primary: color,
+      light: lightcolorString,
+      lighter: lightercolorString,
+      superLight: lightestcolorString,
+    };
+
+    fetchColors(colorVariables);
+  };
 
   handleComponent = (param) => {
     this.setState({ currentComponent: param });
@@ -148,6 +190,7 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       fetchBranding: getBranding,
+      fetchColors: getColor,
     },
     dispatch,
   );
@@ -163,9 +206,13 @@ Login.propTypes = {
     branding: PropTypes.shape({
       client_id: PropTypes.number,
       client_logo: PropTypes.string,
+      client_color: PropTypes.string,
+      client_icon: PropTypes.string,
+      client_title: PropTypes.string,
     }),
     pending: PropTypes.bool.isRequired,
   }).isRequired,
 
   fetchBranding: PropTypes.func.isRequired,
+  fetchColors: PropTypes.func.isRequired,
 };

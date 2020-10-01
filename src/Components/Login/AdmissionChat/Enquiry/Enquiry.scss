@@ -44,7 +44,7 @@
   }
 
   &__formHeading {
-    background-color: $primaryBlue;
+    background-color: var(--primary-blue);
     color: $white;
     font-family: 'Montserrat-Regular';
     font-size: $spacer * 0.75;
@@ -52,7 +52,7 @@
   }
 
   &__formContainer {
-    border: 1px solid $primaryBlue;
+    border: 1px solid var(--primary-blue);
     border-radius: 5px;
   }
 
@@ -61,7 +61,7 @@
   }
 
   #EnquiryInformation + label {
-    color: $primaryBlue;
+    color: var(--primary-blue);
     font-size: $spacer * 0.75;
     font-family: 'Montserrat-Regular';
   }
@@ -69,18 +69,18 @@
   /************************Enquiry Details ********************************/
 
   &__rightInfo {
-    background-color: $primaryBlue;
+    background-color: var(--primary-blue);
     color: $white;
     font-size: $spacer * 0.75;
     font-family: 'Montserrat-Regular';
   }
 
   &__admissionForm {
-    color: $primaryBlue;
+    color: var(--primary-blue);
     text-decoration: underline;
     font-family: 'Montserrat-Regular';
     font-size: $spacer * 0.75;
-    border: 1px solid $primaryBlue;
+    border: 1px solid var(--primary-blue);
   }
 }
 

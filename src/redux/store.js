@@ -23,5 +23,6 @@ store.subscribe(() => {
     branding: store.getState().branding,
     clientUserIdUpdate: store.getState().clientUserIdUpdate,
     userProfile: store.getState().userProfile,
+    color: store.getState().color,
   });
 });

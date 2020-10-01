@@ -11,7 +11,7 @@ export function branding(state = initialState, action) {
     case brandingConstants.SUCCESS:
       return {
         ...state,
-        branding: action.payload.result[0],
+        branding: action.payload,
         pending: false,
       };
     case brandingConstants.ERROR:
@@ -23,6 +23,7 @@ export function branding(state = initialState, action) {
     case brandingConstants.CLEAR:
       return {
         ...state,
+        branding: {},
         pending: true,
       };
     default:

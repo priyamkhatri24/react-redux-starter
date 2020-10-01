@@ -3,7 +3,7 @@
   height: 100vh;
 
   &__nav {
-    background-color: $primaryBlue;
+    background-color: var(--primary-blue);
     position: fixed;
     height: 15vh;
     overflow-y: hidden;

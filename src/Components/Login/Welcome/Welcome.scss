@@ -139,9 +139,6 @@
     width: 90%;
   }
 
-  &__testimonialCarousel {
-  }
-
   &__testimonialText {
     font-family: 'Montserrat-Regular';
   }
@@ -160,6 +157,6 @@
   }
 
   &__signInButton {
-    background-color: $disabledBlue;
+    background-color: var(--superlight-blue);
   }
 }

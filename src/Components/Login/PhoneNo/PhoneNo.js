@@ -120,7 +120,7 @@ const PhoneNo = (props) => {
         <Col md={2} xs={3} className='p-0 my-auto'>
           {spinner ? (
             isFocused ? (
-              <Button variant='outline-primary' size='sm' type='submit' onClick={() => setClick()}>
+              <Button variant='dynamicOutline' size='sm' type='submit' onClick={() => setClick()}>
                 <ChevronRightIcon />
               </Button>
             ) : (

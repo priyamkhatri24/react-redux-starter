@@ -43,7 +43,7 @@
   &__innovation > h4 {
     font-family: 'Montserrat-Bold';
     line-height: $spacer * 1.8125;
-    color: $primaryBlue;
+    color: var(--primary-blue);
   }
 
   &__innovation > h4 > span {
@@ -99,7 +99,7 @@
 
   &__attendanceCard {
     border-radius: 10px;
-    border-left: 30px solid $lighterBlue;
+    border-left: 30px solid var(--lighter-blue);
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
   }
 
@@ -148,7 +148,7 @@
   }
 
   &__noticeText {
-    background-color: $lightestBlue;
+    background-color: var(--lightest-blue);
     font-family: 'Montserrat-Medium';
     font-size: $spacer * 0.75;
     color: $headingGrey;

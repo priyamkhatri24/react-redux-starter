@@ -1,5 +1,5 @@
 .btn-customPrimary {
-  background-color: #2699fb;
+  background-color: var(--primary-blue, rgba(38, 153, 251, 1));
   color: #fff;
   font-family: 'Montserrat-Regular';
   border-radius: 50px;
@@ -31,7 +31,7 @@
 .btn-dashboardBlueOnWhite {
   border-radius: 5px;
   background-color: #fff;
-  color: rgba(127, 196, 253, 1);
+  color: var(--lighter-blue, rgba(127, 196, 253, 1));
   font-family: 'Montserrat-Medium';
   font-size: 18px;
   line-height: 22px;
@@ -49,4 +49,10 @@
   font-family: 'Montserrat-SemiBold';
   font-size: 14px;
   height: 36px;
+}
+
+.btn-dynamicOutline {
+  border-radius: 5px;
+  border: 1px solid var(--primary-blue);
+  color: var(--primary-blue);
 }

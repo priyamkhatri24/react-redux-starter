@@ -41,7 +41,7 @@
   }
 
   &__forgot {
-    color: $primaryBlue;
+    color: var(--primary-blue);
     font-family: 'Montserrat-Regular';
     font-size: $spacer * 0.75;
     letter-spacing: 0.4px;

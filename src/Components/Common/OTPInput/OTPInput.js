@@ -23,7 +23,7 @@ export const OTPInput = (props) => {
     borderTopStyle: 'none',
     borderRightStyle: 'none',
     borderLeftStyle: 'none',
-    borderBottomColor: '#2699FB',
+    borderBottomColor: 'var(--primary-blue)',
   };
 
   useInterval(() => {

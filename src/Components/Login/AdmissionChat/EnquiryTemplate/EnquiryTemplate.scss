@@ -6,12 +6,12 @@
   }
 
   &__input > input {
-    color: $primaryBlue;
+    color: var(--primary-blue);
     font-size: 14px;
     font-family: 'Montserrat-Regular';
     width: 100%;
     border-radius: 5px;
-    border: 1px solid $primaryBlue;
+    border: 1px solid var(--primary-blue);
     height: 32px;
     text-align: end;
     padding: 5px;
@@ -30,7 +30,7 @@
 }
 
 .btn-enquiryTemplate {
-  background-color: #2699fb;
+  background-color: var(--primary-blue);
   height: 32px;
   width: 32px;
   color: white;

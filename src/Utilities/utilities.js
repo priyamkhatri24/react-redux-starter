@@ -51,3 +51,27 @@ export const apiValidation = (res, payload = 'result') => {
   }
   return console.error('The API has failed');
 };
+
+// function to implement global color styles
+
+export const setGlobalColors = (primary, light, lighter, superlight) => {
+  document.body.style.setProperty('--primary-blue', primary);
+  document.body.style.setProperty('--lighter-blue', light);
+  document.body.style.setProperty('--lightest-blue', lighter);
+  document.body.style.setProperty('--superlight-blue', superlight);
+};
+
+// function to dynamically change document title
+
+export function changeFaviconAndDocumentTitle(favicon, documentTitle = 'Ingenium Education') {
+  const link = document.createElement('link');
+  const oldLink = document.getElementById('dynamic-favicon');
+  link.id = 'dynamic-favicon';
+  link.rel = 'shortcut icon';
+  link.href = favicon;
+  document.title = documentTitle;
+  if (oldLink) {
+    document.head.removeChild(oldLink);
+  }
+  document.head.appendChild(link);
+}
