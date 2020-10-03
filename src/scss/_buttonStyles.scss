@@ -55,4 +55,16 @@
   border-radius: 5px;
   border: 1px solid var(--primary-blue);
   color: var(--primary-blue);
+  height: 32px;
+  width: 32px;
+  padding: 0;
+}
+
+.btn-unfocusedOutline {
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.54);
+  color: rgba(0, 0, 0, 0.54);
+  height: 32px;
+  width: 32px;
+  padding: 0;
 }

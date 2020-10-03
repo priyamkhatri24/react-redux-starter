@@ -71,9 +71,11 @@ const PhoneNo = (props) => {
         </div>
       )}
 
-      <Row className='mx-auto PhoneNo__input mt-5 w-75'>
-        <Col md={10} xs={9} className='p-0 my-auto'>
-          <label htmlFor='Mobile Number' className='has-float-label my-auto'>
+      <Row className='mx-auto PhoneNo__input mt-5'>
+        <Col md={10} xs={10} className='p-0 my-auto'>
+          {/* disabing eslint since adding htmlFor results in the input not applying the span */}
+          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+          <label className='has-float-label my-auto'>
             <input
               className='form-control'
               name='Mobile Number'
@@ -117,19 +119,14 @@ const PhoneNo = (props) => {
               ))}
           </label>
         </Col>
-        <Col md={2} xs={3} className='p-0 my-auto'>
+        <Col md={2} xs={2} className='p-0 my-auto'>
           {spinner ? (
             isFocused ? (
               <Button variant='dynamicOutline' size='sm' type='submit' onClick={() => setClick()}>
                 <ChevronRightIcon />
               </Button>
             ) : (
-              <Button
-                variant='outline-secondary'
-                size='sm'
-                type='submit'
-                onClick={() => setClick()}
-              >
+              <Button variant='unfocusedOutline' size='sm' type='submit' onClick={() => setClick()}>
                 <ChevronRightIcon />
               </Button>
             )
@@ -141,7 +138,7 @@ const PhoneNo = (props) => {
         </Col>
       </Row>
       {(placeholder === 'username' || placeholder === 'Password') && (
-        <Row className='mx-auto w-75'>
+        <Row className='mx-auto' style={{ width: '90%' }}>
           <span
             className='PhoneNo__forgot p-1'
             onClick={() => forgotPlaceholder()}

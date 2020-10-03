@@ -4,8 +4,9 @@
   background-color: $dashboardBackground;
 
   &__headerCard {
-    background: rgba(38, 153, 251, 0.7);
-    background: linear-gradient(180deg, rgba(38, 153, 251, 0.7) 0%, rgba(249, 253, 255, 0.7) 100%);
+    // background: rgba(38, 153, 251, 0.7);
+    background: var(--primary-blue);
+    background: linear-gradient(180deg, var(--primary-blue) 0%, rgba(249, 253, 255, 0.7) 100%);
   }
 
   &__profileImage {
