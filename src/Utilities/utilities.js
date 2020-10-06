@@ -46,7 +46,7 @@ export const useTimeout = (callback, delay) => {
 };
 
 export const apiValidation = (res, payload = 'result') => {
-  if (res.success === 1) {
+  if (res && res.success === 1) {
     return res[payload];
   }
   return console.error('The API has failed');

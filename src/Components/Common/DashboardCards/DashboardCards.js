@@ -4,6 +4,8 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './DashboardCards.scss';
+import Button from 'react-bootstrap/Button';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 export const DashboardCards = (props) => {
   const {
@@ -15,6 +17,8 @@ export const DashboardCards = (props) => {
     backgroundImg,
     coloredHeading,
     color,
+    buttonText,
+    buttonClick,
   } = props;
 
   const style = {
@@ -35,6 +39,15 @@ export const DashboardCards = (props) => {
             <span>{heading}</span>
           </p>
           <p className='Dashboard__attendanceSubHeading'>{subHeading}</p>
+
+          {buttonText && (
+            <Button variant='liveClasses' onClick={() => buttonClick()}>
+              {buttonText}{' '}
+              <span>
+                <ChevronRightIcon />
+              </span>
+            </Button>
+          )}
         </Col>
         <Col xs={4}>
           <img src={image} alt='notebook' height='80' width='80' />
@@ -53,6 +66,8 @@ DashboardCards.propTypes = {
   backgroundImg: PropTypes.string,
   coloredHeading: PropTypes.string,
   color: PropTypes.string,
+  buttonText: PropTypes.string,
+  buttonClick: PropTypes.func,
 };
 
 DashboardCards.defaultProps = {
@@ -63,4 +78,6 @@ DashboardCards.defaultProps = {
   backgroundImg: '',
   coloredHeading: '',
   color: '',
+  buttonText: null,
+  buttonClick: () => {},
 };

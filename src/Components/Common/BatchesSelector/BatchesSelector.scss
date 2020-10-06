@@ -1,0 +1,14 @@
+.Batches {
+  @import '../../../scss/bootstrap';
+
+  &__totalBatches:after {
+    content: '';
+    background-color: $disabledGrey;
+    position: absolute;
+    width: 2px;
+    height: 95%;
+    top: 5%;
+    right: 0;
+    display: block;
+  }
+}

@@ -62,6 +62,11 @@ const Dashboard = (props) => {
     push({ pathname: '/login' });
   };
 
+  const goToLiveClasses = () => {
+    const { push } = props.history;
+    push({ pathname: '/liveclasses' });
+  };
+
   return (
     <>
       <div className='Dashboard__headerCard'>
@@ -99,6 +104,17 @@ const Dashboard = (props) => {
           </Row>
         </div>
       </div>
+
+      <DashboardCards
+        image={camera}
+        heading='Live Classes'
+        subHeading='Conduct all your live classes here effectively'
+        boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
+        backGround='rgb(247,236,255)'
+        backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
+        buttonText='Go live now'
+        buttonClick={goToLiveClasses}
+      />
 
       <div className='Dashboard__innovation pt-4 px-3 pb-3'>
         <h4>Witness </h4>

@@ -1,0 +1,72 @@
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
+import './BatchesSelector.scss';
+
+export const BatchesSelector = (props) => {
+  const { batches, getSelectedBatches } = props;
+  const [selectedBatches, setSelectedBatches] = useState([]);
+
+  useEffect(() => {
+    getSelectedBatches(selectedBatches);
+  }, [selectedBatches, getSelectedBatches]);
+
+  const selectBatch = (elem) => {
+    const index = batches.findIndex((e) => e.client_batch_id === elem.client_batch_id);
+    batches.splice(index, 1);
+    setSelectedBatches((prevstate) => [...prevstate, elem]);
+  };
+
+  const removeBatch = (elem) => {
+    const index = selectedBatches.findIndex((e) => e.client_batch_id === elem.client_batch_id);
+    batches.push(elem);
+    setSelectedBatches((prevstate) => [
+      ...prevstate.slice(0, index),
+      ...prevstate.slice(index + 1),
+    ]);
+  };
+
+  return (
+    <Row className='Batches py-3'>
+      <Col xs={6} className='text-center'>
+        <h6 className='mb-4'>Batches</h6>
+        <div className='Batches__totalBatches'>
+          {batches.map((elem) => {
+            return (
+              <Row
+                className='justify-content-center mb-1'
+                key={`elem${elem.client_batch_id}${elem.batch_name}`}
+              >
+                <Button variant='outline-secondary' size='sm' onClick={() => selectBatch(elem)}>
+                  {elem.batch_name}
+                </Button>
+              </Row>
+            );
+          })}
+        </div>
+      </Col>
+      <Col xs={6} className='text-center'>
+        <h6 className='mb-4'>{selectedBatches.length} Selected</h6>
+        {selectedBatches.map((elem) => {
+          return (
+            <Row
+              className='justify-content-center mb-1'
+              key={`e123${elem.client_batch_id}${elem.count}`}
+            >
+              <Button variant='customLightBlue' size='sm' onClick={() => removeBatch(elem)}>
+                {elem.batch_name}
+              </Button>
+            </Row>
+          );
+        })}
+      </Col>
+    </Row>
+  );
+};
+
+BatchesSelector.propTypes = {
+  getSelectedBatches: PropTypes.func.isRequired,
+  batches: PropTypes.instanceOf(Array).isRequired,
+};

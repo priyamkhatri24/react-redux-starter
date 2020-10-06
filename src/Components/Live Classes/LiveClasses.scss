@@ -1,0 +1,61 @@
+.LiveClasses {
+  @import '../../scss/bootstrap';
+
+  background-color: var(--superlight-blue);
+  height: 100vh;
+  overflow: scroll;
+  overflow-x: hidden;
+
+  &__Card {
+    width: 90%;
+
+    @include media-breakpoint-up(md) {
+      width: 75%;
+    }
+  }
+
+  &__show {
+    position: absolute;
+    top: 10%;
+    right: 3%;
+    color: $disabledGrey;
+  }
+
+  &__adminHeading {
+    font-family: 'Montserrat-SemiBold';
+  }
+
+  &__adminCard {
+    border: 1px solid $disabledGrey;
+    border-radius: 5px;
+  }
+
+  &__adminCardTime {
+    font-size: $spacer * 0.875;
+    font-family: 'Montserrat-Regular';
+    color: $disabledGrey;
+  }
+
+  &__adminDuration {
+    font-size: $spacer * 0.75;
+    font-family: 'Montserrat-Regular';
+    color: $dashboardGrey;
+    font-weight: 700;
+  }
+
+  &__adminDuration > span {
+    color: var(--primary-blue);
+  }
+
+  &__adminBatches {
+    font-size: $spacer * 0.75;
+    font-family: 'Montserrat-Regular';
+    color: $dashboardGrey;
+    font-weight: 700;
+  }
+
+  &__adminBatches > span {
+    font-size: $spacer * 0.875;
+    color: $headingGrey;
+  }
+}

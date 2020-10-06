@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Login from '../Components/Login/Login';
 import Dashboard from '../Components/Dashboard/Dashboard';
+import LiveClasses from '../Components/Live Classes/LiveClasses';
 import SignIn from '../Components/Login/SignIn/SignIn';
 import SignUp from '../Components/Login/SignUp/SignUp';
 import AdmissionChat from '../Components/Login/AdmissionChat/AdmissionChat';
@@ -19,6 +20,7 @@ export function Routes() {
       <Route path='/admission' component={AdmissionChat} />
       <Route path='/admissionform' component={AdmissionForm} />
       <Route path='/forgotpassword' component={ForgotPassword} />
+      <AuthenticatedRoute path='/liveclasses' component={LiveClasses} />
 
       {/* redirect user to Dashboard page if route does not exist */}
 
