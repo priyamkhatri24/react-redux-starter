@@ -79,7 +79,7 @@ class Login extends Component {
     }
   }
 
-  setClientColors = (color) => {
+  setClientColors = (color = 'hsl(208, 96.4%, 56.7%)') => {
     const { fetchColors } = this.props;
 
     const init = color.indexOf('(');
