@@ -7,6 +7,7 @@ import SignIn from '../Components/Login/SignIn/SignIn';
 import SignUp from '../Components/Login/SignUp/SignUp';
 import AdmissionChat from '../Components/Login/AdmissionChat/AdmissionChat';
 import AdmissionForm from '../Components/Login/AdmissionChat/AdmissionForm/AdmissionForm';
+import StudyBin from '../Components/Study Bin/StudyBin';
 import ForgotPassword from '../Components/Login/SignIn/ForgotPassword/ForgotPassword';
 import { AuthenticatedRoute } from './AuthenticatedRoute';
 
@@ -21,6 +22,7 @@ export function Routes() {
       <Route path='/admissionform' component={AdmissionForm} />
       <Route path='/forgotpassword' component={ForgotPassword} />
       <AuthenticatedRoute path='/liveclasses' component={LiveClasses} />
+      <AuthenticatedRoute path='/studybin' component={StudyBin} />
 
       {/* redirect user to Dashboard page if route does not exist */}
 

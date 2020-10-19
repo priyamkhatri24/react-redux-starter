@@ -67,6 +67,11 @@ const Dashboard = (props) => {
     push({ pathname: '/liveclasses' });
   };
 
+  const goToStudyBin = () => {
+    const { push } = props.history;
+    push({ pathname: '/studybin' });
+  };
+
   return (
     <>
       <div className='Dashboard__headerCard'>
@@ -317,6 +322,7 @@ const Dashboard = (props) => {
         color='rgba(0, 102, 255, 0.87)'
         subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
         boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+        buttonClick={goToStudyBin}
       />
     </>
   );

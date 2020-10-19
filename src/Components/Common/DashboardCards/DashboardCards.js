@@ -28,7 +28,14 @@ export const DashboardCards = (props) => {
   };
 
   return (
-    <div className='DashboardCards my-3 mx-auto' style={style}>
+    <div
+      className='DashboardCards my-3 mx-auto'
+      role='button'
+      tabIndex='-1'
+      style={style}
+      onClick={() => buttonClick()}
+      onKeyDown={() => buttonClick()}
+    >
       <span className='Dashboard__verticalDots'>
         <MoreVertIcon />
       </span>
@@ -41,7 +48,7 @@ export const DashboardCards = (props) => {
           <p className='Dashboard__attendanceSubHeading'>{subHeading}</p>
 
           {buttonText && (
-            <Button variant='liveClasses' onClick={() => buttonClick()}>
+            <Button variant='liveClasses'>
               {buttonText}{' '}
               <span>
                 <ChevronRightIcon />

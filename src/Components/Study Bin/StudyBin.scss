@@ -1,0 +1,29 @@
+.StudyBin {
+  @import '../../scss/bootstrap';
+
+  &__heading {
+    font-size: $spacer * 0.75;
+    color: $lightGrey;
+    font-family: 'Montserrat-Medium';
+
+    @include media-breakpoint-up(md) {
+      font-size: $spacer * 1.25;
+    }
+  }
+
+  &__box {
+    border: 1px solid $dashboardGreyLight;
+    border-radius: 5px;
+  }
+
+  &__folderName {
+    font-family: 'Montserrat-Regular';
+    font-size: $spacer * 0.75;
+    color: $headingGrey;
+    line-height: 15px;
+
+    @include media-breakpoint-up(md) {
+      font-size: $spacer * 1.25;
+    }
+  }
+}

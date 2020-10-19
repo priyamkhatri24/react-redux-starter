@@ -6,3 +6,4 @@ export * from './ScrollableCards/ScrollableCards';
 export * from './DashboardCards/DashboardCards';
 export * from './PageHeader/PageHeader';
 export * from './BatchesSelector/BatchesSelector';
+export * from './VideoPlayer/VideoPlayer';
