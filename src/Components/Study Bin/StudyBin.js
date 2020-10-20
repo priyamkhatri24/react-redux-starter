@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import YouTubeIcon from '@material-ui/icons/YouTube';
 import folder from '../../assets/images/FilesFolders/folderIcon.svg';
 import doc from '../../assets/images/FilesFolders/doc.svg';
 import docx from '../../assets/images/FilesFolders/docx.svg';
@@ -10,13 +11,14 @@ import pdf from '../../assets/images/FilesFolders/pdf.svg';
 import ppt from '../../assets/images/FilesFolders/ppt.svg';
 import xls from '../../assets/images/FilesFolders/xls.svg';
 import txt from '../../assets/images/FilesFolders/txt.svg';
+import youtube from '../../assets/images/FilesFolders/youtube.png';
 import { get, apiValidation } from '../../Utilities';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
-import { PageHeader, VideoPlayer } from '../Common';
+import { PageHeader } from '../Common';
 import './StudyBin.scss';
 
 const StudyBin = (props) => {
-  const { clientUserId, clientId } = props;
+  const { clientUserId, clientId, history } = props;
   const [fileArray, setFileArray] = useState([]);
   const [folderArray, setFolderArray] = useState([]);
 
@@ -39,6 +41,10 @@ const StudyBin = (props) => {
       })
       .catch((err) => console.log(err));
   }, [clientId, clientUserId]);
+
+  const goToVideoPlayer = (elem) => {
+    history.push({ pathname: '/videoplayer', state: { link: elem.file_link } });
+  };
 
   return (
     <div className='StudyBin'>
@@ -90,7 +96,21 @@ const StudyBin = (props) => {
                 className='p-2 StudyBin__box my-2'
               >
                 {elem.file_type === 'youtube' ? (
-                  <VideoPlayer link={elem.file_link} />
+                  <>
+                    <span className='Dashboard__verticalDots'>
+                      <MoreVertIcon />
+                    </span>
+                    <div
+                      className='m-2 text-center'
+                      onClick={() => goToVideoPlayer(elem)}
+                      onKeyDown={() => goToVideoPlayer(elem)}
+                      role='button'
+                      tabIndex='-1'
+                    >
+                      <img src={youtube} alt='youtube' height='67' width='67' />
+                      <h6 className='text-center mt-3 StudyBin__folderName'>{elem.file_name}</h6>
+                    </div>
+                  </>
                 ) : (
                   <>
                     <span className='Dashboard__verticalDots'>
@@ -127,9 +147,6 @@ const StudyBin = (props) => {
             );
           })}
         </Row>
-      </div>
-      <div style={{ height: '500px' }}>
-        <VideoPlayer link='qxmVVa-9xls' />
       </div>
     </div>
   );

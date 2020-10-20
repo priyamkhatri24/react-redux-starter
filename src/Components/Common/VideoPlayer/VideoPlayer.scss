@@ -1,0 +1,11 @@
+.VideoPlayer {
+  @import '../../../scss/bootstrap';
+
+  &__seek {
+    color: var(--primary-blue);
+  }
+
+  &__wrapper {
+    pointer-events: none;
+  }
+}

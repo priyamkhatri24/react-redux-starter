@@ -10,6 +10,7 @@ import AdmissionForm from '../Components/Login/AdmissionChat/AdmissionForm/Admis
 import StudyBin from '../Components/Study Bin/StudyBin';
 import ForgotPassword from '../Components/Login/SignIn/ForgotPassword/ForgotPassword';
 import { AuthenticatedRoute } from './AuthenticatedRoute';
+import { VideoPlayer } from '../Components/Common';
 
 export function Routes() {
   return (
@@ -23,6 +24,7 @@ export function Routes() {
       <Route path='/forgotpassword' component={ForgotPassword} />
       <AuthenticatedRoute path='/liveclasses' component={LiveClasses} />
       <AuthenticatedRoute path='/studybin' component={StudyBin} />
+      <AuthenticatedRoute path='/videoplayer' component={VideoPlayer} />
 
       {/* redirect user to Dashboard page if route does not exist */}
 
