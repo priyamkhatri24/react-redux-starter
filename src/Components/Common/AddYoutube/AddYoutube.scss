@@ -1,0 +1,20 @@
+.AddYoutube {
+  @import '../../../scss/bootstrap';
+
+  &__heading {
+    font-family: 'Montserrat-Bold';
+  }
+
+  &__instructions {
+    font-family: 'Montserrat-Regular';
+  }
+
+  &__instructions > span {
+    background-color: $yellow;
+  }
+
+  &__title {
+    font-family: 'Montserrat-Regular';
+    font-size: $spacer * 0.875;
+  }
+}

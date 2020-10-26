@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 // Custom hook to implement setInterval
 
 export const useInterval = (callback, delay) => {
@@ -44,6 +44,16 @@ export const useTimeout = (callback, delay) => {
     return console.error('Delay cannot be null');
   }, [delay]);
 };
+
+// Custom hook to implement forceUpdate
+
+export function useForceUpdate() {
+  const [, setTick] = useState(0);
+  const update = useCallback(() => {
+    setTick((tick) => tick + 1);
+  }, []);
+  return update;
+}
 
 export const apiValidation = (res, payload = 'result') => {
   if (res && res.success === 1) {
