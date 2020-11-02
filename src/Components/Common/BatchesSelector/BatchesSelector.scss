@@ -1,13 +1,16 @@
 .Batches {
   @import '../../../scss/bootstrap';
 
+  height: 70vh;
+  overflow-y: scroll;
+
   &__totalBatches:after {
     content: '';
     background-color: $disabledGrey;
     position: absolute;
     width: 2px;
-    height: 95%;
-    top: 5%;
+    height: 100%;
+    top: 0;
     right: 0;
     display: block;
   }

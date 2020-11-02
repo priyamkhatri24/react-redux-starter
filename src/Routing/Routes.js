@@ -11,6 +11,9 @@ import StudyBin from '../Components/Study Bin/StudyBin';
 import ForgotPassword from '../Components/Login/SignIn/ForgotPassword/ForgotPassword';
 import { AuthenticatedRoute } from './AuthenticatedRoute';
 import { VideoPlayer, FileView, AddYoutube } from '../Components/Common';
+import NoticeBoard from '../Components/NoticeBoard/NoticeBoard';
+import Profile from '../Components/Profile/Profile';
+import EditProfile from '../Components/Profile/EditProfile';
 
 export function Routes() {
   return (
@@ -26,7 +29,9 @@ export function Routes() {
       <AuthenticatedRoute path='/studybin' component={StudyBin} />
       <AuthenticatedRoute path='/videoplayer' component={VideoPlayer} />
       <AuthenticatedRoute path='/addyoutubevideo' component={AddYoutube} />
-
+      <AuthenticatedRoute path='/noticeboard' component={NoticeBoard} />
+      <AuthenticatedRoute path='/profile' component={Profile} />
+      <AuthenticatedRoute path='/editprofile' component={EditProfile} />
       <Route path='/fileviewer' component={FileView} />
 
       {/* redirect user to Dashboard page if route does not exist */}

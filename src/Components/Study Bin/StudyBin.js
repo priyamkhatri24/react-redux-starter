@@ -13,7 +13,7 @@ import ppt from '../../assets/images/FilesFolders/ppt.svg';
 import xls from '../../assets/images/FilesFolders/xls.svg';
 import txt from '../../assets/images/FilesFolders/txt.svg';
 import youtube from '../../assets/images/FilesFolders/youtube.png';
-import { get, apiValidation, post, useForceUpdate } from '../../Utilities';
+import { get, apiValidation, post } from '../../Utilities';
 import {
   getClientId,
   getClientUserId,
@@ -36,7 +36,6 @@ const StudyBin = (props) => {
   const [rerender, setrerender] = useState(false);
   const handleClose = () => setModal(false);
   const handleShow = () => setModal(true);
-  const forceUpdate = useForceUpdate();
 
   const searchFolder = (search) => {
     console.log(search);

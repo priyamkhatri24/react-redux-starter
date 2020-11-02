@@ -67,9 +67,19 @@ const Dashboard = (props) => {
     push({ pathname: '/liveclasses' });
   };
 
+  const goToNoticeBoard = () => {
+    const { push } = props.history;
+    push({ pathname: '/noticeboard' });
+  };
+
   const goToStudyBin = () => {
     const { push } = props.history;
     push({ pathname: '/studybin' });
+  };
+
+  const goToProfile = () => {
+    const { push } = props.history;
+    push({ pathname: '/profile' });
   };
 
   return (
@@ -87,7 +97,7 @@ const Dashboard = (props) => {
           </span>
         </Row>
         <Row className='mx-auto px-2 mt-4'>
-          <Col xs={4}>
+          <Col xs={4} onClick={() => goToProfile()}>
             <img
               src={profileImage}
               className='Dashboard__profileImage float-right img-responsive'
@@ -189,7 +199,13 @@ const Dashboard = (props) => {
         </div>
       </div>
 
-      <div className='Dashboard__noticeBoard mx-auto p-3'>
+      <div
+        className='Dashboard__noticeBoard mx-auto p-3'
+        onClick={() => goToNoticeBoard()}
+        role='button'
+        tabIndex='-1'
+        onKeyDown={() => goToNoticeBoard()}
+      >
         <span className='Dashboard__verticalDots'>
           <MoreVertIcon />
         </span>

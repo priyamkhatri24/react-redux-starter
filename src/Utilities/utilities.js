@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 // Custom hook to implement setInterval
 
 export const useInterval = (callback, delay) => {
@@ -45,16 +45,6 @@ export const useTimeout = (callback, delay) => {
   }, [delay]);
 };
 
-// Custom hook to implement forceUpdate
-
-export function useForceUpdate() {
-  const [, setTick] = useState(0);
-  const update = useCallback(() => {
-    setTick((tick) => tick + 1);
-  }, []);
-  return update;
-}
-
 export const apiValidation = (res, payload = 'result') => {
   if (res && res.success === 1) {
     return res[payload];
@@ -84,4 +74,12 @@ export function changeFaviconAndDocumentTitle(favicon, documentTitle = 'Ingenium
     document.head.removeChild(oldLink);
   }
   document.head.appendChild(link);
+}
+
+// function to check whether development or environment
+
+export function prodOrDev() {
+  if (process.env.NODE_ENV === 'development') return 'development';
+  if (process.env.NODE_ENV === 'production') return 'production';
+  return 'test';
 }
