@@ -1,0 +1,9 @@
+.Assignments {
+  @import '../../scss/bootstrap';
+
+  &__dueDate {
+    font-family: $regular;
+    font-size: $spacer * 0.675;
+    color: $dashboardBlack;
+  }
+}

@@ -1,0 +1,32 @@
+.QuestionTaker {
+  @import '../../../scss/bootstrap';
+
+  &__smallQuestion {
+    font-size: $spacer * 0.625;
+    font-family: $semiBold;
+    color: $lightGrey;
+  }
+
+  &__currentQuestion {
+    font-size: $spacer;
+    line-height: $spacer * 1.25;
+    letter-spacing: 0.49px;
+    color: $headingGrey;
+    font-family: $semiBold;
+  }
+
+  &__totalQuestions {
+    font-size: $spacer * 0.875;
+    font-family: $semiBold;
+    line-height: $spacer * 1.25;
+    color: $lightGrey;
+  }
+
+  &__currentSubject {
+    color: $lightGrey;
+    font-size: $spacer * 0.75;
+    font-family: $semiBold;
+    letter-spacing: 0.37px;
+    line-height: $spacer * 1.75;
+  }
+}

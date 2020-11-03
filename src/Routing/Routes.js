@@ -10,10 +10,11 @@ import AdmissionForm from '../Components/Login/AdmissionChat/AdmissionForm/Admis
 import StudyBin from '../Components/Study Bin/StudyBin';
 import ForgotPassword from '../Components/Login/SignIn/ForgotPassword/ForgotPassword';
 import { AuthenticatedRoute } from './AuthenticatedRoute';
-import { VideoPlayer, FileView, AddYoutube } from '../Components/Common';
+import { VideoPlayer, FileView, AddYoutube, QuestionTaker } from '../Components/Common';
 import NoticeBoard from '../Components/NoticeBoard/NoticeBoard';
 import Profile from '../Components/Profile/Profile';
 import EditProfile from '../Components/Profile/EditProfile';
+import Assignments from '../Components/Assignments/Assignment';
 
 export function Routes() {
   return (
@@ -32,6 +33,8 @@ export function Routes() {
       <AuthenticatedRoute path='/noticeboard' component={NoticeBoard} />
       <AuthenticatedRoute path='/profile' component={Profile} />
       <AuthenticatedRoute path='/editprofile' component={EditProfile} />
+      <AuthenticatedRoute path='/assignments' component={Assignments} />
+      <AuthenticatedRoute path='/questiontaker' component={QuestionTaker} />
       <Route path='/fileviewer' component={FileView} />
 
       {/* redirect user to Dashboard page if route does not exist */}

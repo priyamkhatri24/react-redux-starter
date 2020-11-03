@@ -1,0 +1,13 @@
+.Timer {
+  @import '../../../scss/bootstrap';
+  &__circular {
+    height: $spacer * 2;
+    width: $spacer * 2;
+  }
+
+  &__time {
+    font-size: $spacer;
+    font-family: $semiBold;
+    color: var(--lightest-blue);
+  }
+}

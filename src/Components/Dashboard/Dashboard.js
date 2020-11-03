@@ -82,6 +82,11 @@ const Dashboard = (props) => {
     push({ pathname: '/profile' });
   };
 
+  const goToAssignments = () => {
+    const { push } = props.history;
+    push({ pathname: '/assignments' });
+  };
+
   return (
     <>
       <div className='Dashboard__headerCard'>
@@ -306,15 +311,22 @@ const Dashboard = (props) => {
         backGround='rgb(248,252,255)'
         backgroundImg='linear-gradient(90deg, rgba(248,252,255,1) 0%, rgba(188,224,253,1) 100%)'
       />
+      <div
+        onClick={() => goToAssignments()}
+        onKeyDown={() => goToAssignments()}
+        tabIndex='-1'
+        role='button'
+      >
+        <DashboardCards
+          image={student}
+          coloredHeading='Live'
+          color='rgba(255, 0, 0, 0.87)'
+          heading='Test'
+          subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
+          boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+        />
+      </div>
 
-      <DashboardCards
-        image={student}
-        coloredHeading='Live'
-        color='rgba(255, 0, 0, 0.87)'
-        heading='Test'
-        subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
-        boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-      />
       <DashboardCards
         image={student}
         coloredHeading='Demo'

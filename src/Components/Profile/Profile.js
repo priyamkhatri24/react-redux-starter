@@ -69,7 +69,13 @@ const Profile = (props) => {
         <Tabs defaultActiveKey='Details' className='Profile__Tabs' justify>
           <Tab eventKey='Details' title='Details'>
             <div className='LiveClasses__adminCard p-2 m-3' style={{ position: 'relative' }}>
-              <div className='Profile__edit text-center py-1' onClick={() => goToEditProfile()}>
+              <div
+                className='Profile__edit text-center py-1'
+                onClick={() => goToEditProfile()}
+                role='button'
+                onKeyDown={() => goToEditProfile()}
+                tabIndex='-1'
+              >
                 <CreateIcon />
               </div>
               <h6 className='LiveClasses__adminHeading mb-0'>First Name</h6>

@@ -6,19 +6,19 @@
     color: $black;
   }
 
-  .nav-link.active {
-    color: var(--primary-blue);
-    border-bottom: 3px solid var(--primary-blue);
-    border-top: 0;
-    border-left: 0;
-    border-right: 0;
-    font-family: $regular;
-  }
+  // .nav-link.active {
+  //   color: var(--primary-blue);
+  //   border-bottom: 3px solid var(--primary-blue);
+  //   border-top: 0;
+  //   border-left: 0;
+  //   border-right: 0;
+  //   font-family: $regular;
+  // }
 
-  .nav-link {
-    color: $black;
-    font-family: $regular;
-  }
+  // .nav-link {
+  //   color: $black;
+  //   font-family: $regular;
+  // }
 
   &__edit {
     position: absolute;
