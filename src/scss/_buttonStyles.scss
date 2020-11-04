@@ -152,6 +152,35 @@
   margin: 0.5rem;
 }
 
+.btn-greenTest {
+  background-color: #0f0;
+  color: #fff;
+}
+
+.btn-purpleTest {
+  background-color: #5e2d79;
+  color: #fff;
+}
+
+.btn-purpleGreenTest {
+  background-color: #5e2d79;
+  color: #fff;
+  position: relative;
+}
+
+.btn-customTestSubmit {
+  font-size: 10px;
+  font-family: $medium;
+  color: #fff;
+  line-height: 1.25rem;
+  background-color: var(--lighter-blue);
+  border-radius: 50px;
+  height: 36px;
+  width: 100px;
+  margin: 5px;
+  padding: 0;
+}
+
 /**************************************Progress Bar Styles ********************************/
 
 .bg-testProgress {

@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Timer from './Timer';
@@ -561,11 +559,16 @@ export class QuestionTaker extends Component {
   }
 
   componentDidMount() {
+    if (!window.MathJax) {
+      this.loadMathJaxScript();
+    }
     this.setState({ currentTime: 1604389169, testEndTime: 1604389267 });
     const idAdd = this.state.result.map((elem) => {
       elem.question_list.map((e, index) => {
         const newObj = e;
         newObj.uuid = index + 1;
+        newObj.status = 'notVisited'; // 'notVisited' 'unattempted' 'attempted' review reviewAttempted
+        newObj.isFocused = false;
         return newObj;
       });
       return elem;
@@ -576,12 +579,64 @@ export class QuestionTaker extends Component {
     });
   }
 
+  loadMathJaxScript = () => {
+    let resolveLoadMathjaxScriptPromise = null;
+
+    const loadMathjaxScriptPromise = new Promise((resolve) => {
+      resolveLoadMathjaxScriptPromise = resolve;
+    });
+
+    const script2 = document.createElement('script');
+    script2.src = 'https://polyfill.io/v3/polyfill.min.js?features=es6';
+    const script1 = document.createElement('script');
+    script1.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+    script1.async = true;
+    script1.id = 'MathJax-script';
+    const config =
+      'MathJax.Hub.Config({' +
+      'extensions: ["tex2jax.js"],' +
+      'jax: ["input/TeX","output/HTML-CSS"]' +
+      '});' +
+      'MathJax.Hub.Startup.onload();';
+
+    if (window.opera) {
+      script1.innerHTML = config;
+    } else {
+      script1.text = config;
+    }
+
+    // script1.addEventListener('load', () => {
+    //   window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub]);
+    // });
+
+    script1.onload = resolveLoadMathjaxScriptPromise;
+    document.body.appendChild(script1);
+    document.body.appendChild(script2);
+
+    return loadMathjaxScriptPromise;
+  };
+
   timerHasFinished = () => {
     console.log('it has finished');
   };
 
   triggerFinish = () => {
     console.log('finished');
+  };
+
+  changeQuestion = (subject, questionId) => {
+    const currentSubject = this.state.result.filter((elem) => {
+      return elem.subject === subject;
+    });
+
+    const tempQuestion = currentSubject[0].question_list;
+    const requiredQuestion = tempQuestion.filter((elem) => {
+      return elem.uuid === questionId;
+    });
+
+    console.log(...requiredQuestion);
+    const requiredQuestionObject = requiredQuestion[0];
+    this.setState({ currentQuestion: requiredQuestionObject });
   };
 
   render() {
@@ -597,7 +652,7 @@ export class QuestionTaker extends Component {
             <MoreVertIcon />
           </div>
         </div>
-        <Pallette questions={result} />
+        <Pallette questions={result} changeQuestion={this.changeQuestion} />
         <QuestionCard currentQuestion={currentQuestion} />
       </div>
     );

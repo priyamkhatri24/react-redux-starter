@@ -8,9 +8,10 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import Collapse from 'react-bootstrap/Collapse';
+import DoneIcon from '@material-ui/icons/Done';
 
 const Pallette = (props) => {
-  const { questions } = props;
+  const { questions, changeQuestion } = props;
   const [currentQuestion, setCurrentQuestion] = useState(55);
   const [totalQuestions, setTotalQuestions] = useState([]);
   const [subject, setSubject] = useState('');
@@ -31,6 +32,13 @@ const Pallette = (props) => {
     setTotalQuestions(elem.question_list);
   };
 
+  const handleChangeQuestion = (id) => {
+    setCurrentQuestion(id);
+    console.log(subject);
+    console.log(id);
+    changeQuestion(subject, id);
+  };
+
   return (
     <div className='mt-3 mx-2'>
       <Card style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)', borderRadius: '10px' }}>
@@ -43,7 +51,11 @@ const Pallette = (props) => {
               <span className='ml-auto QuestionTaker__currentSubject'>{subject}</span>
             </Row>
             <Row>
-              <ProgressBar now={60} variant='testProgress' bsPrefix='testerProgressBar' />
+              <ProgressBar
+                now={(currentQuestion / totalQuestions.length) * 100}
+                variant='testProgress'
+                bsPrefix='testerProgressBar'
+              />
             </Row>
           </Col>
           <Col xs={2}>
@@ -91,7 +103,23 @@ const Pallette = (props) => {
             <Row className='m-2'>
               {totalQuestions.map((elem) => {
                 return (
-                  <Button variant='testPallette' key={elem.uuid}>
+                  <Button
+                    variant='testPallette'
+                    className={
+                      elem.status === 'attempted'
+                        ? 'btn-greenTest'
+                        : elem.status === 'review'
+                        ? 'btn-purpleTest'
+                        : elem.status === 'reviewAttempted'
+                        ? 'btn-purpleGreenTest'
+                        : 'btn-unattempted'
+                    }
+                    onClick={() => handleChangeQuestion(elem.uuid)}
+                    key={elem.uuid}
+                  >
+                    {elem.status === 'reviewAttempted' && (
+                      <DoneIcon className='QuestionTaker__tick' id='testTick' />
+                    )}
                     {elem.uuid}
                   </Button>
                 );
