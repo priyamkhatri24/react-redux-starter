@@ -30,12 +30,12 @@ const Pallette = (props) => {
   const selectSubject = (elem) => {
     setSubject(elem.subject);
     setTotalQuestions(elem.question_list);
+    changeQuestion(elem.subject, 1);
+    setCurrentQuestion(1);
   };
 
   const handleChangeQuestion = (id) => {
     setCurrentQuestion(id);
-    console.log(subject);
-    console.log(id);
     changeQuestion(subject, id);
   };
 

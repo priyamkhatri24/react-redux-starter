@@ -2,45 +2,67 @@ import React, { useEffect, useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
-import { propComparator } from '../../../Utilities';
+import MathJax from 'react-mathjax-preview';
+import cx from 'classnames';
+import { propComparator, useInterval } from '../../../Utilities';
 
 const QuestionCard = (props) => {
-  const { currentQuestion } = props;
+  const { currentQuestion, onUnmount } = props;
   const [question, setQuestion] = useState({});
   const [timer, setTimer] = useState(0);
   const [answer, setAnswer] = useState('');
-  const [isFocused, setFocused] = useState();
 
   useEffect(() => {
-    currentQuestion.option_array.sort(propComparator('order'));
-    setQuestion(currentQuestion);
+    if (Object.keys(currentQuestion).length > 0) {
+      currentQuestion.option_array.sort(propComparator('order'));
+      setQuestion(currentQuestion);
+      setTimer(currentQuestion.timer);
+    }
+
     console.log(answer, 'ye answer h');
   }, [currentQuestion, answer]);
+
+  useEffect(() => {
+    return () =>
+      onUnmount({
+        time: timer,
+        count: currentQuestion.noOfTimesVisited + 1,
+        uuid: currentQuestion.uuid,
+      });
+  }, []);
+
+  useInterval(() => {
+    setTimer(timer + 1);
+  }, 1000);
 
   const selectedAnswer = (e) => {
     setAnswer(e);
     const focusedQuestions = question;
     focusedQuestions.option_array = question.option_array.map((elem) => {
       if (elem.order === Number(e)) {
-        elem.isFocused = true;
+        elem.isFocus = true;
         return elem;
       }
-      elem.isFocused = false;
+      elem.isFocus = false;
       return elem;
     });
     setQuestion(focusedQuestions);
   };
 
-  const submitAnswer = (elem) => {
-    console.log(question);
-    if (elem === 'Clear Response') {
+  const submitAnswer = (e) => {
+    console.log(question, 'yessyr');
+    if (e === 'Clear Response') {
       const focusedQuestions = question;
-      focusedQuestions.option_array = question.option_array.map((e) => {
-        e.isFocused = false;
-        return e;
-      });
-      console.log(focusedQuestions);
+      focusedQuestions.option_array.forEach((res) => (res.isFocus = false));
+      console.log(focusedQuestions, 'etf');
       setQuestion(focusedQuestions);
+    } else if (e === 'Save And Next') {
+      const correctQuestion = question;
+      correctQuestion.option_array = question.option_array.filter((elem) => {
+        return elem.isFocused === true;
+      });
+
+      console.log(correctQuestion, 'shi h ye');
     }
   };
 
@@ -52,15 +74,14 @@ const QuestionCard = (props) => {
       >
         <span className='ml-auto QuestionTaker__questionType my-2'>
           {question.question_type === 'single'
-            ? 'Multiple Choice'
+            ? 'Single Choice'
             : question.question_type === 'multiple'
             ? 'Multiple Choice'
             : 'Subjective'}
         </span>
-        <div
-          className='QuestionTaker__questionHeading'
-          dangerouslySetInnerHTML={{ __html: question.question_text }}
-        />
+        <div className='QuestionTaker__questionHeading'>
+          <MathJax math={String.raw`${question.question_text}`} />
+        </div>
         <div className='mt-4'>
           {Object.keys(question).length > 0 &&
             question.option_array.length > 0 &&
@@ -69,8 +90,8 @@ const QuestionCard = (props) => {
               return (
                 <div key={elem.order} className='QuestionTaker__questionOptions m-2'>
                   <label
-                    className={`QuestionTaker__customRadio p-2 ${
-                      elem.isFocused ? 'QuestionTaker__focusedRadio' : ''
+                    className={`QuestionTaker__customRadio p-2 w-100 ${
+                      elem.isFocus ? 'QuestionTaker__focusedRadio' : 'w-75'
                     }`}
                     htmlFor={`testRadio${elem.order}`}
                   >
@@ -81,10 +102,9 @@ const QuestionCard = (props) => {
                       onChange={(e) => selectedAnswer(e.target.value)}
                       id={`testRadio${elem.order}`}
                     />
-                    <div
-                      className='radioControl'
-                      dangerouslySetInnerHTML={{ __html: elem.option_text_array[0] }}
-                    />
+                    <div className='radioControl'>
+                      <MathJax math={String.raw`${elem.option_text_array[0]}`} />
+                    </div>
                   </label>
                 </div>
               );
@@ -92,14 +112,15 @@ const QuestionCard = (props) => {
         </div>
       </Card>
       <Row className='mx-2 mt-5 mb-3 justify-content-center'>
-        {['Clear Response', 'Save And Next', 'Mark For Review'].map((elem) => {
+        {['Clear Response', 'Save And Next', 'Mark For Review'].map((e) => {
           return (
-            <Button variant='customTestSubmit' onClick={() => submitAnswer(elem)}>
-              {elem}
+            <Button variant='customTestSubmit' onClick={() => submitAnswer(e)} key={e}>
+              {e}
             </Button>
           );
         })}
       </Row>
+      <pre>{timer}</pre>
     </>
   );
 };

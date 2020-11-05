@@ -504,71 +504,25 @@ export class QuestionTaker extends Component {
       ],
       currentTime: 0,
       testEndTime: 0,
-      currentQuestion: {
-        question_id: 1059,
-        question_text:
-          '<strong>Statement-1 :&nbsp;</strong>The sum of the series 1 + (1 + 2 + 4) + (4 + 6 + 9) + (9 + 12 + 16) + .... + (361 + 380 + 400) is 8000.<br />\n<strong>Statement-2</strong>&nbsp;:$$\\sum_{k=1}^{n} (k^{3}-(k-1)^{3}) = n^{3}$$, for any natural number n.\n',
-        hindi_text: null,
-        question_image: '',
-        question_type: 'single',
-        question_answer: '[B]',
-        created_at: '1532458500',
-        question_status: null,
-        student_answer: null,
-        question_order: null,
-        time_taken: null,
-        subject_id: 2,
-        subject_name: 'Science',
-        option_array: [
-          {
-            text: 'Statement-1 is false, Statement-2 is true.\n',
-            option_text_array: ['<p>Statement-1 is false, Statement-2 is true.</p>\n'],
-            image: '',
-            order: 1,
-          },
-          {
-            text:
-              'Statement-1 is true, statement-2 is true; statement-2 is a correct explanation for Statement-1.&nbsp;\n',
-            option_text_array: [
-              '<p>Statement-1 is true, statement-2 is true; statement-2 is a correct explanation for Statement-1.&nbsp;</p>\n',
-            ],
-            image: '',
-            order: 2,
-          },
-          {
-            text:
-              'Statement-1 is true, statement-2 is true; statement-2 is not a correct explanation for Statement-1.\n',
-            option_text_array: [
-              '<p>Statement-1 is true, statement-2 is true; statement-2 is not a correct explanation for Statement-1.</p>\n',
-            ],
-            image: '',
-            order: 3,
-          },
-          {
-            text: 'Statement-1 is true, statement-2 is false.\n',
-            option_text_array: ['<p>Statement-1 is true, statement-2 is false.</p>\n'],
-            image: '',
-            order: 4,
-          },
-        ],
-        question_text_array: [
-          '<strong>Statement-1 :&nbsp;</strong>The sum of the series 1 + (1 + 2 + 4) + (4 + 6 + 9) + (9 + 12 + 16) + .... + (361 + 380 + 400) is 8000.<br />\n<strong>Statement-2</strong>&nbsp;:$$\\sum_{k=1}^{n} (k^{3}-(k-1)^{3}) = n^{3}$$, for any natural number n.\n',
-        ],
-      },
+      currentQuestion: '',
     };
   }
 
   componentDidMount() {
-    if (!window.MathJax) {
-      this.loadMathJaxScript();
-    }
-    this.setState({ currentTime: 1604389169, testEndTime: 1604389267 });
+    this.setState({
+      currentTime: 1604389169,
+      testEndTime: 1604389267,
+      currentQuestion: this.state.result[0].question_list[0],
+    });
     const idAdd = this.state.result.map((elem) => {
       elem.question_list.map((e, index) => {
         const newObj = e;
         newObj.uuid = index + 1;
-        newObj.status = 'notVisited'; // 'notVisited' 'unattempted' 'attempted' review reviewAttempted
-        newObj.isFocused = false;
+        newObj.question_status = 'notVisited'; // 'notVisited' 'unattempted' 'attempted' review reviewAttempted
+        newObj.option_array.map((res) => (res.isFocus = false));
+        newObj.isCorrect = false;
+        newObj.timer = 0;
+        newObj.noOfTimesVisited = 0;
         return newObj;
       });
       return elem;
@@ -578,43 +532,6 @@ export class QuestionTaker extends Component {
       console.log(this.state.result);
     });
   }
-
-  loadMathJaxScript = () => {
-    let resolveLoadMathjaxScriptPromise = null;
-
-    const loadMathjaxScriptPromise = new Promise((resolve) => {
-      resolveLoadMathjaxScriptPromise = resolve;
-    });
-
-    const script2 = document.createElement('script');
-    script2.src = 'https://polyfill.io/v3/polyfill.min.js?features=es6';
-    const script1 = document.createElement('script');
-    script1.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-    script1.async = true;
-    script1.id = 'MathJax-script';
-    const config =
-      'MathJax.Hub.Config({' +
-      'extensions: ["tex2jax.js"],' +
-      'jax: ["input/TeX","output/HTML-CSS"]' +
-      '});' +
-      'MathJax.Hub.Startup.onload();';
-
-    if (window.opera) {
-      script1.innerHTML = config;
-    } else {
-      script1.text = config;
-    }
-
-    // script1.addEventListener('load', () => {
-    //   window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub]);
-    // });
-
-    script1.onload = resolveLoadMathjaxScriptPromise;
-    document.body.appendChild(script1);
-    document.body.appendChild(script2);
-
-    return loadMathjaxScriptPromise;
-  };
 
   timerHasFinished = () => {
     console.log('it has finished');
@@ -639,6 +556,10 @@ export class QuestionTaker extends Component {
     this.setState({ currentQuestion: requiredQuestionObject });
   };
 
+  questionCardUnmount = (elem) => {
+    console.log(elem);
+  };
+
   render() {
     const { currentTime, testEndTime, result, currentQuestion } = this.state;
     return (
@@ -653,7 +574,7 @@ export class QuestionTaker extends Component {
           </div>
         </div>
         <Pallette questions={result} changeQuestion={this.changeQuestion} />
-        <QuestionCard currentQuestion={currentQuestion} />
+        <QuestionCard currentQuestion={currentQuestion} onUnmount={this.questionCardUnmount} />
       </div>
     );
   }
