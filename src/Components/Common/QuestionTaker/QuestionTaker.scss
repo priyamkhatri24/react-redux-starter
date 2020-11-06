@@ -79,6 +79,14 @@
   &__focusedRadio {
     border: 5px solid var(--primary-blue);
   }
+
+  &__timeRemaining {
+    font-size: $spacer;
+    letter-spacing: 0.49px;
+    line-height: $spacer * 1.75;
+    color: $lightGrey;
+    font-family: $semiBold;
+  }
 }
 
 #testTick {

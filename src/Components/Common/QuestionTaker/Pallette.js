@@ -19,13 +19,21 @@ const Pallette = (props) => {
 
   useEffect(() => {
     if (questions) {
+      //  setSubject(questions[0].subject);
+      //  setTotalQuestions(questions[0].question_list);
+      setCurrentQuestion(1);
+    }
+
+    console.log(questions, 'pallle');
+  }, [questions]);
+
+  useEffect(() => {
+    if (questions) {
       setSubject(questions[0].subject);
       setTotalQuestions(questions[0].question_list);
       setCurrentQuestion(1);
     }
-
-    console.log(questions);
-  }, [questions]);
+  }, []);
 
   const selectSubject = (elem) => {
     setSubject(elem.subject);
@@ -106,18 +114,20 @@ const Pallette = (props) => {
                   <Button
                     variant='testPallette'
                     className={
-                      elem.status === 'attempted'
+                      elem.question_status === 'attempted'
                         ? 'btn-greenTest'
-                        : elem.status === 'review'
+                        : elem.question_status === 'review'
                         ? 'btn-purpleTest'
-                        : elem.status === 'reviewAttempted'
+                        : elem.question_status === 'reviewAttempted'
                         ? 'btn-purpleGreenTest'
+                        : elem.question_status === 'unattempted'
+                        ? 'btn-redTest'
                         : 'btn-unattempted'
                     }
                     onClick={() => handleChangeQuestion(elem.uuid)}
                     key={elem.uuid}
                   >
-                    {elem.status === 'reviewAttempted' && (
+                    {elem.question_status === 'reviewAttempted' && (
                       <DoneIcon className='QuestionTaker__tick' id='testTick' />
                     )}
                     {elem.uuid}

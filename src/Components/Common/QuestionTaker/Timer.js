@@ -5,7 +5,7 @@ import 'react-circular-progressbar/dist/styles.css';
 import './Timer.scss';
 
 const Timer = (props) => {
-  const { startTime, endTime, isFinished } = props;
+  const { startTime, endTime, isFinished, getCurrentTimerTime } = props;
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
@@ -21,6 +21,12 @@ const Timer = (props) => {
     setMinutes(Math.floor((durationTime % 3600) / 60));
     setSeconds(Math.floor(durationTime % 60));
   }, [endTime, startTime]);
+
+  useEffect(() => {
+    if (getCurrentTimerTime) {
+      getCurrentTimerTime(progressbarDuration);
+    }
+  }, [progressbarDuration, getCurrentTimerTime]);
 
   useInterval(() => {
     if (seconds > 0) {
