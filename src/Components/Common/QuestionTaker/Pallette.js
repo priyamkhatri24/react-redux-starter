@@ -11,8 +11,8 @@ import Collapse from 'react-bootstrap/Collapse';
 import DoneIcon from '@material-ui/icons/Done';
 
 const Pallette = (props) => {
-  const { questions, changeQuestion } = props;
-  const [currentQuestion, setCurrentQuestion] = useState(55);
+  const { questions, changeQuestion, currentQuestion, startingResult } = props;
+  const [currentQuestionId, setCurrentQuestionId] = useState(55);
   const [totalQuestions, setTotalQuestions] = useState([]);
   const [subject, setSubject] = useState('');
   const [expand, setExpand] = useState(false);
@@ -21,29 +21,30 @@ const Pallette = (props) => {
     if (questions) {
       //  setSubject(questions[0].subject);
       //  setTotalQuestions(questions[0].question_list);
-      setCurrentQuestion(1);
+      //   setCurrentQuestion(currentQuestion);
+      setCurrentQuestionId(currentQuestion.uuid);
     }
 
-    console.log(questions, 'pallle');
+    // console.log(questions, currentQuestionId.uuid, 'pallle');
   }, [questions]);
 
   useEffect(() => {
-    if (questions) {
+    if (startingResult) {
       setSubject(questions[0].subject);
       setTotalQuestions(questions[0].question_list);
-      setCurrentQuestion(1);
+      setCurrentQuestionId(1);
     }
-  }, []);
+  }, [startingResult]);
 
   const selectSubject = (elem) => {
     setSubject(elem.subject);
     setTotalQuestions(elem.question_list);
     changeQuestion(elem.subject, 1);
-    setCurrentQuestion(1);
+    setCurrentQuestionId(1);
   };
 
   const handleChangeQuestion = (id) => {
-    setCurrentQuestion(id);
+    setCurrentQuestionId(id);
     changeQuestion(subject, id);
   };
 
@@ -54,13 +55,13 @@ const Pallette = (props) => {
           <Col xs={10}>
             <Row>
               <span className='QuestionTaker__smallQuestion my-auto'>Question</span>
-              <span className='QuestionTaker__currentQuestion ml-2'>{currentQuestion}</span>
+              <span className='QuestionTaker__currentQuestion ml-2'>{currentQuestionId}</span>
               <span className='QuestionTaker__totalQuestions ml-1'>/{totalQuestions.length}</span>
               <span className='ml-auto QuestionTaker__currentSubject'>{subject}</span>
             </Row>
             <Row>
               <ProgressBar
-                now={(currentQuestion / totalQuestions.length) * 100}
+                now={(currentQuestionId / totalQuestions.length) * 100}
                 variant='testProgress'
                 bsPrefix='testerProgressBar'
               />
@@ -114,20 +115,20 @@ const Pallette = (props) => {
                   <Button
                     variant='testPallette'
                     className={
-                      elem.question_status === 'attempted'
+                      elem.question_status === 'Attempted'
                         ? 'btn-greenTest'
-                        : elem.question_status === 'review'
+                        : elem.question_status === 'Review'
                         ? 'btn-purpleTest'
-                        : elem.question_status === 'reviewAttempted'
+                        : elem.question_status === 'Answered And review'
                         ? 'btn-purpleGreenTest'
-                        : elem.question_status === 'unattempted'
+                        : elem.question_status === 'Viewed'
                         ? 'btn-redTest'
                         : 'btn-unattempted'
                     }
                     onClick={() => handleChangeQuestion(elem.uuid)}
                     key={elem.uuid}
                   >
-                    {elem.question_status === 'reviewAttempted' && (
+                    {elem.question_status === 'Answered And review' && (
                       <DoneIcon className='QuestionTaker__tick' id='testTick' />
                     )}
                     {elem.uuid}

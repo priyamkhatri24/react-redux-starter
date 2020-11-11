@@ -20,6 +20,7 @@ import offlineAssignment from '../../assets/images/Dashboard/offline.svg';
 import camera from '../../assets/images/Dashboard/camera.svg';
 import analysis from '../../assets/images/Dashboard/analysis.svg';
 import student from '../../assets/images/Dashboard/student.svg';
+import Tests from '../Tests/Tests';
 import './Dashboard.scss';
 
 const Dashboard = (props) => {
@@ -28,6 +29,7 @@ const Dashboard = (props) => {
     clientUserId,
     userProfile: { firstName, profileImage },
     clearProfile,
+    history,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
@@ -57,34 +59,47 @@ const Dashboard = (props) => {
   }, [clientId, clientUserId]);
 
   const logout = () => {
-    const { push } = props.history;
+    const { push } = history;
     clearProfile();
     push({ pathname: '/login' });
   };
 
   const goToLiveClasses = () => {
-    const { push } = props.history;
+    const { push } = history;
     push({ pathname: '/liveclasses' });
   };
 
   const goToNoticeBoard = () => {
-    const { push } = props.history;
+    const { push } = history;
     push({ pathname: '/noticeboard' });
   };
 
   const goToStudyBin = () => {
-    const { push } = props.history;
+    const { push } = history;
     push({ pathname: '/studybin' });
   };
 
   const goToProfile = () => {
-    const { push } = props.history;
+    const { push } = history;
     push({ pathname: '/profile' });
   };
 
-  const goToAssignments = () => {
-    const { push } = props.history;
-    push({ pathname: '/assignments' });
+  const goToAssignments = (type) => {
+    const { push } = history;
+    push({ pathname: '/assignments', state: type });
+  };
+
+  const startHomework = (responseArray, testId) => {
+    const { push } = history;
+    push({ pathname: '/questiontaker', state: { result: responseArray, testId } });
+  };
+
+  const startLiveTest = (responseArray, startTime = 0, endTime = 0) => {
+    const { push } = history;
+    push({
+      pathname: '/questiontaker',
+      state: { result: responseArray, currentTime: startTime, testEndTime: endTime },
+    });
   };
 
   return (
@@ -311,9 +326,9 @@ const Dashboard = (props) => {
         backGround='rgb(248,252,255)'
         backgroundImg='linear-gradient(90deg, rgba(248,252,255,1) 0%, rgba(188,224,253,1) 100%)'
       />
-      <div
-        onClick={() => goToAssignments()}
-        onKeyDown={() => goToAssignments()}
+      {/* <div
+        onClick={() => goToAssignments('live test')}
+        onKeyDown={() => goToAssignments('live test')}
         tabIndex='-1'
         role='button'
       >
@@ -325,9 +340,13 @@ const Dashboard = (props) => {
           subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
           boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
         />
+      </div> */}
+
+      <div>
+        <Tests startHomework={startHomework} startLive={startLiveTest} />
       </div>
 
-      <DashboardCards
+      {/* <DashboardCards
         image={student}
         coloredHeading='Demo'
         color='rgba(207, 236, 0, 0.87)  '
@@ -336,13 +355,20 @@ const Dashboard = (props) => {
         boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
       />
 
-      <DashboardCards
-        image={student}
-        coloredHeading='Tests'
-        color='rgba(0, 102, 255, 0.87)'
-        subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
-        boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-      />
+      <div
+        onClick={() => goToAssignments('homework')}
+        onKeyDown={() => goToAssignments('homework')}
+        tabIndex='-1'
+        role='button'
+      >
+        <DashboardCards
+          image={student}
+          coloredHeading='Homework'
+          color='rgba(0, 102, 255, 0.87)'
+          subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
+          boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+        />
+      </div> */}
 
       <DashboardCards
         image={student}

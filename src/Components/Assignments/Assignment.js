@@ -15,9 +15,10 @@ import './Assignment.scss';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 
 const Assignments = (props) => {
-  const { clientUserId } = props;
+  const { clientUserId, history: { location: { state: type } = {} } = {} } = props;
   const [homework, setHomework] = useState([]);
   const [tests, setTests] = useState([]);
+  const [assignmentType, setAssignmentType] = useState('');
 
   useEffect(() => {
     get({ client_user_id: clientUserId }, '/getHomeworkOfStudent').then((res) => {
@@ -29,7 +30,9 @@ const Assignments = (props) => {
       const result = apiValidation(res);
       setTests(result);
     });
-  }, [clientUserId]);
+
+    setAssignmentType(type);
+  }, [clientUserId, type]);
 
   const startHomeworkTest = (elem) => {
     const payload = {
@@ -174,7 +177,7 @@ const Assignments = (props) => {
   };
   return (
     <div className='Assignments'>
-      <PageHeader title='Assignments' />
+      <PageHeader title={assignmentType} />
       <div style={{ marginTop: '5rem' }}>
         <Tabs defaultActiveKey='Homework' className='Profile__Tabs' justify>
           <Tab eventKey='Homework' title='Homework'>

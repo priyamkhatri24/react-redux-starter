@@ -1,6 +1,6 @@
 import React, { useRef, Component } from 'react';
 import { findDOMNode } from 'react-dom';
-import ReactPlayer from 'react-player';
+import ReactPlayer from 'react-player/youtube';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';

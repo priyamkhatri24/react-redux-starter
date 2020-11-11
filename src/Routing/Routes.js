@@ -10,7 +10,8 @@ import AdmissionForm from '../Components/Login/AdmissionChat/AdmissionForm/Admis
 import StudyBin from '../Components/Study Bin/StudyBin';
 import ForgotPassword from '../Components/Login/SignIn/ForgotPassword/ForgotPassword';
 import { AuthenticatedRoute } from './AuthenticatedRoute';
-import { VideoPlayer, FileView, AddYoutube, QuestionTaker } from '../Components/Common';
+import { VideoPlayer, FileView, AddYoutube } from '../Components/Common';
+import QuestionTaker from '../Components/Common/QuestionTaker/QuestionTaker';
 import NoticeBoard from '../Components/NoticeBoard/NoticeBoard';
 import Profile from '../Components/Profile/Profile';
 import EditProfile from '../Components/Profile/EditProfile';

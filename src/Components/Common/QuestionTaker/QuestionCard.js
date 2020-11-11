@@ -146,7 +146,7 @@ class QuestionCard extends Component {
         const payload = {
           isCorrect:
             question.question_answer.toUpperCase().localeCompare(answer.toUpperCase()) === 0,
-          answer,
+          answer: answer === '' ? null : answer,
           uuid: question.uuid,
           time: timer,
         };
@@ -183,7 +183,7 @@ class QuestionCard extends Component {
         console.log(convertToText, answerArray, isCorrect);
         const payload = {
           isCorrect,
-          answer: answerArray,
+          answer: convertToText.length > 0 ? convertToText : null,
           uuid: question.uuid,
           time: timer,
         };
@@ -211,7 +211,7 @@ class QuestionCard extends Component {
   }
 
   render() {
-    const { question, timer } = this.state;
+    const { question } = this.state;
     return (
       <>
         <Card
