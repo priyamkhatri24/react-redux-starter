@@ -3,6 +3,7 @@ import Row from 'react-bootstrap/Row';
 import userAvatar from '../../../../assets/images/user.svg';
 import './AdmissionForm.scss';
 import { BackButton, DynamicForm } from '../../../Common';
+import { uploadImage } from '../../../../Utilities';
 
 const AdmissionForm = () => {
   const [image, setImage] = useState(userAvatar);
@@ -34,8 +35,12 @@ const AdmissionForm = () => {
 
   const getImageInput = (e) => {
     const reader = new FileReader();
+    console.log(e.target.files);
+    const file = e.target.files[0];
     reader.readAsDataURL(e.target.files[0]);
     reader.onloadend = function getImage() {
+      uploadImage(file).then((res) => console.log('fileu;lod ', res));
+
       const base64data = reader.result;
       setImage(base64data);
     };

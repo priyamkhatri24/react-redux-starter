@@ -7,8 +7,16 @@ import { connect } from 'react-redux';
 import Timer from './Timer';
 import Pallette from './Pallette';
 import QuestionCard from './QuestionCard';
-import { post, apivalidation } from '../../../Utilities';
+import { post } from '../../../Utilities';
+import { testsActions } from '../../../redux/actions/tests.action';
 import { getClientUserId } from '../../../redux/reducers/clientUserId.reducer';
+import {
+  getTestId,
+  gettestType,
+  getTestResultArray,
+  getTestStartTime,
+  getTestEndTime,
+} from '../../../redux/reducers/tests.reducer';
 import './QuestionTaker.scss';
 
 class QuestionTaker extends Component {
@@ -33,10 +41,10 @@ class QuestionTaker extends Component {
   }
 
   componentDidMount() {
-    const { state } = this.props.history.location;
+    const { testId, testResultArray, testEndTime, testStartTime } = this.props;
 
-    if (state) {
-      const idAdd = state.result.map((elem) => {
+    if (testResultArray.length) {
+      const idAdd = testResultArray.map((elem) => {
         elem.question_list.map((e, index) => {
           const newObj = e;
           newObj.uuid = index + 1;
@@ -52,12 +60,12 @@ class QuestionTaker extends Component {
 
       this.setState({
         result: idAdd,
-        currentQuestion: state.result[0].question_list[0],
-        currentSubject: state.result[0].subject,
+        currentQuestion: testResultArray[0].question_list[0],
+        currentSubject: testResultArray[0].subject,
         startingResult: true,
-        currentTime: state.currentTime ? state.currentTime : 0,
-        testEndTime: state.testEndTime ? state.testEndTime : 0,
-        testId: state.testId ? state.testId : 0,
+        currentTime: testStartTime,
+        testEndTime,
+        testId,
       });
 
       window.addEventListener('beforeunload', this.onUnload);
@@ -66,15 +74,29 @@ class QuestionTaker extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.onUnload);
+    this.props.history.push('/');
   }
 
   onUnload = () => {
+    // const {
+    //   history,
+    //   setTestEndTimeToStore,
+    //   setTestIdToStore,
+    //   setTestResultArrayToStore,
+    //   setTestTypeToStore,
+    //   setTestStartTimeToStore,
+    // } = this.props;
     this.setState({
       result: [{ question_list: [], subject: '' }],
       currentTime: 0,
       testEndTime: 0,
     });
-    this.props.history.push('/');
+    // setTestEndTimeToStore(0);
+    // setTestIdToStore(null);
+    // setTestResultArrayToStore([]);
+    // setTestTypeToStore(null);
+    // setTestStartTimeToStore(0);
+    // history.push('/');
   };
 
   timerHasFinished = () => {
@@ -112,17 +134,38 @@ class QuestionTaker extends Component {
     };
     post(finalPayload, '/studentTestActivity').then((res) => {
       if (res.success) {
-        Swal.fire({
-          title: 'Well Done!',
-          text: 'Test successfully submitted',
-          icon: 'success',
-          confirmButtonText: `Next`,
-          customClass: 'Assignments__SweetAlert',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.props.history.push('/');
-          }
-        });
+        const updationPayload = {
+          client_user_id: this.props.clientUserId,
+          test_id: this.props.testId,
+          test_status: 'submitted',
+        };
+        if (this.props.testType === 'demotest') {
+          post(updationPayload, '/updateTestStatus').then((response) => {
+            if (response.success) {
+              this.testSubmissionAlert();
+            }
+          });
+        } else if (this.props.testType === 'homework' || this.props.testType === 'livetest') {
+          post(updationPayload, '/submitTest').then((response) => {
+            if (response.success) {
+              this.testSubmissionAlert();
+            }
+          });
+        }
+      }
+    });
+  };
+
+  testSubmissionAlert = () => {
+    Swal.fire({
+      title: 'Well Done!',
+      text: 'Test successfully submitted',
+      icon: 'success',
+      confirmButtonText: `Next`,
+      customClass: 'Assignments__SweetAlert',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.props.history.push('/');
       }
     });
   };
@@ -293,6 +336,31 @@ class QuestionTaker extends Component {
 
 const mapStateToProps = (state) => ({
   clientUserId: getClientUserId(state),
+  testId: getTestId(state),
+  testType: gettestType(state),
+  testResultArray: getTestResultArray(state),
+  testStartTime: getTestStartTime(state),
+  testEndTime: getTestEndTime(state),
 });
 
-export default connect(mapStateToProps)(QuestionTaker);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setTestIdToStore: (payload) => {
+      dispatch(testsActions.setTestIdToStore(payload));
+    },
+    setTestTypeToStore: (payload) => {
+      dispatch(testsActions.setTestTypeToStore(payload));
+    },
+    setTestStartTimeToStore: (payload) => {
+      dispatch(testsActions.setTestStartTimeToStore(payload));
+    },
+    setTestEndTimeToStore: (payload) => {
+      dispatch(testsActions.setTestEndTimeToStore(payload));
+    },
+    setTestResultArrayToStore: (payload) => {
+      dispatch(testsActions.setTestResultArrayToStore(payload));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(QuestionTaker);

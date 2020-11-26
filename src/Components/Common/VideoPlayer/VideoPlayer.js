@@ -1,4 +1,4 @@
-import React, { useRef, Component } from 'react';
+import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import ReactPlayer from 'react-player/youtube';
 import Button from 'react-bootstrap/Button';
@@ -13,6 +13,7 @@ import VolumeUpIcon from '@material-ui/icons/VolumeUp';
 import './VideoPlayer.scss';
 import screenfull from 'screenfull';
 import { PageHeader } from '../PageHeader/PageHeader';
+import { getParams } from '../../../Utilities';
 
 export class VideoPlayer extends Component {
   constructor(props) {
@@ -20,6 +21,11 @@ export class VideoPlayer extends Component {
     let fullUrl = 'https://www.youtube.com/watch?v=qxmVVa-9xls';
     if (this.props.location.state) {
       fullUrl = `https://www.youtube.com/watch?v=${this.props.location.state.link}`;
+    } else {
+      const { id } = this.props.match.params;
+      console.log(id);
+      fullUrl = `https://www.youtube.com/watch?v=${id}`;
+      // if (Object.keys(params).includes('videoId')) fullUrl = params.videoId;
     }
 
     const width =
@@ -45,10 +51,10 @@ export class VideoPlayer extends Component {
 
   componentDidMount() {
     window.addEventListener('beforeunload', this.onUnload);
-    if (!this.props.location.state) {
-      this.props.history.push('/');
-    } else {
-    }
+    // if (!this.props.location.state) {
+    //   this.props.history.push('/');
+    // } else {
+    // }
   }
 
   componentWillUnmount() {

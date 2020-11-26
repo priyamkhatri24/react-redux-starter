@@ -119,7 +119,12 @@ const Tests = (props) => {
         }).then((result) => {
           if (result.isConfirmed) {
             const response = apiValidation(res);
-            startLive(response, parseInt(liveCheck[0].startTime, 10), liveCheck[0].endTime);
+            startLive(
+              response,
+              parseInt(liveCheck[0].startTime, 10),
+              liveCheck[0].endTime,
+              'livetest',
+            );
             console.log(response);
           }
         });
@@ -185,7 +190,7 @@ const Tests = (props) => {
           get(demoTestPayload, '/getTestQuestionsForStudentWithLanguage').then((response) => {
             console.log(response);
             const studentQuestions = apiValidation(response);
-            startLive(studentQuestions, currentTime, testStartTime);
+            startLive(studentQuestions, currentTime, testStartTime, 'demotest');
           });
         } else if (dateResult > 0) {
           const testPayload = {

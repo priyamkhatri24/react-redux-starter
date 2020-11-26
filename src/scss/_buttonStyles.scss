@@ -7,6 +7,17 @@
   padding-right: 1.5rem;
 }
 
+.btn-customSecondary {
+  background-color: #fff;
+  color: var(--primary-blue);
+  border-radius: 50px;
+  padding-top: 0;
+  padding-bottom: 0;
+  font-family: 'Montserrat-Regular';
+  font-size: 14px;
+  border: 1px solid var(--primary-blue);
+}
+
 .btn-customLightBlue {
   background-color: var(--lighter-blue);
   color: #fff;

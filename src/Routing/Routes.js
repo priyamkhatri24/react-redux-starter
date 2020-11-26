@@ -16,6 +16,8 @@ import NoticeBoard from '../Components/NoticeBoard/NoticeBoard';
 import Profile from '../Components/Profile/Profile';
 import EditProfile from '../Components/Profile/EditProfile';
 import Assignments from '../Components/Assignments/Assignment';
+import Fees from '../Components/Fees/Fees';
+import FeesOrder from '../Components/Fees/Fees.order';
 
 export function Routes() {
   return (
@@ -27,15 +29,19 @@ export function Routes() {
       <Route path='/admission' component={AdmissionChat} />
       <Route path='/admissionform' component={AdmissionForm} />
       <Route path='/forgotpassword' component={ForgotPassword} />
+      <Route path='/videoplayer/:id' component={VideoPlayer} />
+
       <AuthenticatedRoute path='/liveclasses' component={LiveClasses} />
       <AuthenticatedRoute path='/studybin' component={StudyBin} />
-      <AuthenticatedRoute path='/videoplayer' component={VideoPlayer} />
       <AuthenticatedRoute path='/addyoutubevideo' component={AddYoutube} />
       <AuthenticatedRoute path='/noticeboard' component={NoticeBoard} />
       <AuthenticatedRoute path='/profile' component={Profile} />
       <AuthenticatedRoute path='/editprofile' component={EditProfile} />
       <AuthenticatedRoute path='/assignments' component={Assignments} />
       <AuthenticatedRoute path='/questiontaker' component={QuestionTaker} />
+      <AuthenticatedRoute path='/fees' component={Fees} />
+      <AuthenticatedRoute exact path='/order' component={FeesOrder} />
+
       <Route path='/fileviewer' component={FileView} />
 
       {/* redirect user to Dashboard page if route does not exist */}

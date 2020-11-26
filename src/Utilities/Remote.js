@@ -57,3 +57,9 @@ export const get = (requestBody = null, endpoint) => {
       console.error(`The error is ${err}`);
     });
 };
+
+export const uploadImage = (file) => {
+  const fd = new FormData();
+  fd.append('upl', file);
+  return post(fd, '/upload');
+};

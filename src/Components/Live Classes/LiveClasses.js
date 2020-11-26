@@ -493,7 +493,15 @@ class LiveClasses extends Component {
             )}
 
             <Modal show={showModal} onHide={this.handleClose} centered>
+              <Modal.Header closeButton>
+                <Modal.Title>Select Batches</Modal.Title>
+              </Modal.Header>
               <BatchesSelector batches={batches} getSelectedBatches={this.getSelectedBatches} />
+              <Modal.Footer>
+                <Button variant='dashboardBlueOnWhite' onClick={this.handleClose}>
+                  Next
+                </Button>
+              </Modal.Footer>
             </Modal>
           </>
         )}

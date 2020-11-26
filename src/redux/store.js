@@ -24,5 +24,6 @@ store.subscribe(() => {
     clientUserIdUpdate: store.getState().clientUserIdUpdate,
     userProfile: store.getState().userProfile,
     color: store.getState().color,
+    testsUpdate: store.getState().testsUpdate,
   });
 });

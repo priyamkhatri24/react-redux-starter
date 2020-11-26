@@ -14,6 +14,7 @@ import { get, apiValidation } from '../../Utilities';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import dashboardAssignmentImage from '../../assets/images/Dashboard/dashboardAssignment.svg';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
+import { testsActions } from '../../redux/actions/tests.action';
 import hands from '../../assets/images/Dashboard/hands.svg';
 import { DashboardCards } from '../Common';
 import offlineAssignment from '../../assets/images/Dashboard/offline.svg';
@@ -30,6 +31,11 @@ const Dashboard = (props) => {
     userProfile: { firstName, profileImage },
     clearProfile,
     history,
+    setTestResultArrayToStore,
+    setTestStartTimeToStore,
+    setTestTypeToStore,
+    setTestIdToStore,
+    setTestEndTimeToStore,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
@@ -84,22 +90,31 @@ const Dashboard = (props) => {
     push({ pathname: '/profile' });
   };
 
-  const goToAssignments = (type) => {
+  const goToFees = () => {
     const { push } = history;
-    push({ pathname: '/assignments', state: type });
+    push('fees');
   };
 
   const startHomework = (responseArray, testId) => {
     const { push } = history;
-    push({ pathname: '/questiontaker', state: { result: responseArray, testId } });
+    // push({ pathname: '/questiontaker', state: { result: responseArray, testId } });
+    push('/questiontaker');
+    setTestResultArrayToStore(responseArray);
+    setTestIdToStore(testId);
+    setTestTypeToStore('homework');
   };
 
-  const startLiveTest = (responseArray, startTime = 0, endTime = 0) => {
+  const startLiveTest = (responseArray, startTime = 0, endTime = 0, testType) => {
     const { push } = history;
-    push({
-      pathname: '/questiontaker',
-      state: { result: responseArray, currentTime: startTime, testEndTime: endTime },
-    });
+    // push({
+    //   pathname: '/questiontaker',
+    //   state: { result: responseArray, currentTime: startTime, testEndTime: endTime },
+    // });
+    push('/questiontaker');
+    setTestResultArrayToStore(responseArray);
+    setTestEndTimeToStore(endTime);
+    setTestStartTimeToStore(startTime);
+    setTestTypeToStore(testType);
   };
 
   return (
@@ -302,14 +317,16 @@ const Dashboard = (props) => {
         backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
       />
 
-      <DashboardCards
-        image={analysis}
-        heading='Fees'
-        subHeading='See fees history and amount to be paid for coming months.'
-        boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-        backGround='rgb(238,232,241)'
-        backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
-      />
+      <div onClick={() => goToFees()} role='button' tabIndex='-1' onKeyDown={() => goToFees()}>
+        <DashboardCards
+          image={analysis}
+          heading='Fees'
+          subHeading='See fees history and amount to be paid for coming months.'
+          boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+          backGround='rgb(238,232,241)'
+          backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
+        />
+      </div>
       <DashboardCards
         image={analysis}
         heading='Analysis'
@@ -392,6 +409,21 @@ const mapDispatchToProps = (dispatch) => {
   return {
     clearProfile: () => {
       dispatch(userProfileActions.clearUserProfile());
+    },
+    setTestIdToStore: (payload) => {
+      dispatch(testsActions.setTestIdToStore(payload));
+    },
+    setTestTypeToStore: (payload) => {
+      dispatch(testsActions.setTestTypeToStore(payload));
+    },
+    setTestStartTimeToStore: (payload) => {
+      dispatch(testsActions.setTestStartTimeToStore(payload));
+    },
+    setTestEndTimeToStore: (payload) => {
+      dispatch(testsActions.setTestEndTimeToStore(payload));
+    },
+    setTestResultArrayToStore: (payload) => {
+      dispatch(testsActions.setTestResultArrayToStore(payload));
     },
   };
 };

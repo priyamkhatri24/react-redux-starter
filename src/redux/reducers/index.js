@@ -3,6 +3,7 @@ import { connectRouter } from 'connected-react-router';
 import { branding } from './branding.reducer';
 import { clientUserIdUpdate } from './clientUserId.reducer';
 import { userProfile } from './userProfile.reducer';
+import { testsUpdate } from './tests.reducer';
 import { color } from './color.reducer';
 
 const rootReducer = (history) =>
@@ -12,6 +13,7 @@ const rootReducer = (history) =>
     clientUserIdUpdate,
     userProfile,
     color,
+    testsUpdate,
   });
 
 export default rootReducer;

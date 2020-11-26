@@ -11,18 +11,31 @@
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
+    <!-----------------------------SCRIPT TO LOAD DYNAMIC MANIFEST------------------------------------------------------->
     <script>
       var full = window.location.host; // subdomain.domain.com
-      var parts = full.split('.');
-      var sub = parts[0];
-      link = document.createElement('link');
-      link.href = 'http://13.126.247.152:3000' + sub;
-      console.log(link.href, 'manifest link');
-      link.rel = 'manifest';
-      document.getElementsByTagName('head')[0].appendChild(link);
+      console.log(full);
+      // var parts = full.split('.');
+      // var sub = parts[0];
+      const testDomain = 'ingenium.surge.sh';
+      const serverURL  = 'http://13.126.247.152:3000'
+      const fullURL = `${serverURL}/getManifestDataOfClient?domain_name=${testDomain}`;
+      fetch(fullURL).then(res => res.json()).then(resp => {
+        link = document.createElement('link');
+        link.rel = 'manifest';
+        link.id = 'dynamic-manifest'
+        document.getElementsByTagName('head')[0].appendChild(link);
+        const currentManifest = document.querySelector('#default-manifest');
+        currentManifest.parentNode.removeChild(currentManifest);
+        const manifestData = JSON.stringify(resp.result);
+        const blob = new Blob([manifestData], { type: 'application/json' });
+        const manifestURL = URL.createObjectURL(blob);
+        document.querySelector('#dynamic-manifest').setAttribute('href', manifestURL);
+        console.log(resp);
+      });
     </script>
 
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" id='default-manifest'/>
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
