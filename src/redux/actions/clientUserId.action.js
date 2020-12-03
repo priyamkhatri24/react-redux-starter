@@ -20,10 +20,15 @@ function setRoleArrayToStore(payload) {
   return { type: userConstants.ROLEARRAY, payload };
 }
 
+function clearClientIdDetails() {
+  return { type: userConstants.CLEAR };
+}
+
 export const clientUserIdActions = {
   setUserIdToStore,
   setCLientUserIdToStore,
   setUserUserIdToStore,
   setRoleArrayToStore,
   setClientIdToStore,
+  clearClientIdDetails,
 };

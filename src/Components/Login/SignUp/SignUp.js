@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Swal from 'sweetalert2';
 import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
 import { post, get, apiValidation } from '../../../Utilities';
 import { OTPInput } from '../../Common';
@@ -25,7 +26,6 @@ const SignUp = (props) => {
     get(requestBody, '/verifyLoginOTP')
       .then((res) => {
         const result = apiValidation(res);
-
         if (result.verification_status === 'wrong otp entered') {
           alert('Invalid OTP!');
         } else if (result.verification_status === 'otp expired') {
@@ -41,14 +41,28 @@ const SignUp = (props) => {
               pathname: '/admission',
               state: { userId },
             });
-          } else if (userStatus === 'admission') {
+          } else if (userStatus === 'inquiry') {
             push({
               pathname: '/admissionform',
               state: { userId },
             });
+          } else if (userStatus === 'admission') {
+            Swal.fire({
+              icon: 'success',
+              text:
+                'Thank You for filling the admission form. Please wait while the institute approves your information',
+            }).then((response) => {
+              if (response.isConfirmed) {
+                push('/login');
+              }
+            });
           }
         } else if (res.success === 0) {
-          alert('Unable to reach the server. Please check your internet connection');
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Unable to reach the server. Please check your internet connection',
+          });
         }
       })
       .catch((e) => console.error(e));

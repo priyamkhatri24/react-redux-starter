@@ -9,6 +9,7 @@ import Button from 'react-bootstrap/Button';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import CreateIcon from '@material-ui/icons/Create';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
+import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { PageHeader } from '../Common';
@@ -17,7 +18,14 @@ import userImage from '../../assets/images/user.svg';
 import './Profile.scss';
 
 const Profile = (props) => {
-  const { clientId, clientUserId, userProfile, clearProfile, history } = props;
+  const {
+    clientId,
+    clientUserId,
+    userProfile,
+    clearProfile,
+    history,
+    clearClientIdDetails,
+  } = props;
   const [batches, setBatches] = useState([]);
 
   const logout = () => {
@@ -29,6 +37,7 @@ const Profile = (props) => {
         const result = apiValidation(res);
         if (result) {
           clearProfile();
+          clearClientIdDetails();
           history.push({ pathname: '/login' });
         }
       })
@@ -132,6 +141,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    clearClientIdDetails: () => {
+      dispatch(clientUserIdActions.clearClientIdDetails());
+    },
     clearProfile: () => {
       dispatch(userProfileActions.clearUserProfile());
     },

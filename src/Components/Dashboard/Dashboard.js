@@ -14,6 +14,7 @@ import { get, apiValidation } from '../../Utilities';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import dashboardAssignmentImage from '../../assets/images/Dashboard/dashboardAssignment.svg';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
+import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { testsActions } from '../../redux/actions/tests.action';
 import hands from '../../assets/images/Dashboard/hands.svg';
 import { DashboardCards } from '../Common';
@@ -30,6 +31,7 @@ const Dashboard = (props) => {
     clientUserId,
     userProfile: { firstName, profileImage },
     clearProfile,
+    clearClientIdDetails,
     history,
     setTestResultArrayToStore,
     setTestStartTimeToStore,
@@ -67,6 +69,7 @@ const Dashboard = (props) => {
   const logout = () => {
     const { push } = history;
     clearProfile();
+    clearClientIdDetails();
     push({ pathname: '/login' });
   };
 
@@ -407,6 +410,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    clearClientIdDetails: () => {
+      dispatch(clientUserIdActions.clearClientIdDetails());
+    },
     clearProfile: () => {
       dispatch(userProfileActions.clearUserProfile());
     },

@@ -4,4 +4,5 @@ export const testConstants = {
   TESTSTARTTIME: 'TEST_START_TIME',
   TESTENDTIME: 'TEST_END_TIME',
   RESULTARRAY: 'RESULT_ARRAY',
+  CLEAR: 'CLEAR',
 };

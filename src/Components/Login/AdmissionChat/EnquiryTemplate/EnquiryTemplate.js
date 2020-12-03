@@ -11,7 +11,7 @@ import './EnquiryTemplate.scss';
 import check from '../../../../assets/images/checkMark.svg';
 
 const EnquiryTemplate = (props) => {
-  const { text, getData, type, details } = props;
+  const { text, getData, type, details, id } = props;
 
   const [waitingDots, setWaitingDotsTime] = useState(true);
   const [isValid, setValid] = useState(false);
@@ -40,7 +40,7 @@ const EnquiryTemplate = (props) => {
     if (text.response) {
       setData(text.response);
       setValue(true);
-      getData(inputData, type);
+      getData(inputData, id);
     }
   }, [
     getData,
@@ -51,20 +51,21 @@ const EnquiryTemplate = (props) => {
     text.question_type,
     text.response,
     type,
+    id,
   ]);
 
   const submitData = () => {
     if (type === 'email') {
       if (inputData.match(EmailRegExp)) {
         setValid(false);
-        getData(inputData, type);
+        getData(inputData, id);
         setValue(true);
       } else {
         setValid(true);
       }
     } else if (inputData) {
       setValid(false);
-      getData(inputData, type);
+      getData(inputData, id);
       setValue(true);
     } else {
       setValid(true);
@@ -80,7 +81,7 @@ const EnquiryTemplate = (props) => {
   };
 
   const submitOption = (e) => {
-    getData(e, type);
+    getData(e, id);
   };
 
   return (
@@ -206,6 +207,7 @@ EnquiryTemplate.propTypes = {
   getData: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
   details: PropTypes.instanceOf(Object),
+  id: PropTypes.number.isRequired,
 };
 
 EnquiryTemplate.defaultProps = {

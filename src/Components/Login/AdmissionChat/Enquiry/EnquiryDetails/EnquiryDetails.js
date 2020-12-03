@@ -1,15 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import Swal from 'sweetalert2';
 import '../Enquiry.scss';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import DescriptionIcon from '@material-ui/icons/Description';
 import avatarImage from '../../../../../assets/images/avatarImage.jpg';
 import EnquiryTemplate from '../../EnquiryTemplate/EnquiryTemplate';
+import { getClientUserId } from '../../../../../redux/reducers/clientUserId.reducer';
+import { post } from '../../../../../Utilities';
 
 const EnquiryDetails = (props) => {
-  const { questions } = props;
+  const { questions, clientUserId } = props;
   const [showLastElement, setShowLastElement] = useState(false);
   const [newEnquiryDetails, setEnquiryDetails] = useState({});
   /** since we are setting visiblity of first element to true */
@@ -78,7 +82,28 @@ const EnquiryDetails = (props) => {
   // };
 
   const goToAdmission = () => {
-    setAdmissionForm(true);
+    const questionArray = Object.keys(newEnquiryDetails).map((key) => ({
+      crm_question_id: Number(key),
+      response: newEnquiryDetails[key],
+    }));
+    console.log(questionArray);
+
+    const payload = {
+      client_user_id: clientUserId,
+      question_array: JSON.stringify(questionArray),
+    };
+
+    post(payload, '/addCRMQuestionResponse').then((res) => {
+      if (res.success) {
+        setAdmissionForm(true);
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Unable to reach our servers',
+        });
+      }
+    });
   };
 
   return (
@@ -102,6 +127,7 @@ const EnquiryDetails = (props) => {
             type={elem.placeholder}
             details={newEnquiryDetails}
             key={elem.crm_question_id}
+            id={elem.crm_question_id}
           />
         ))}
 
@@ -166,8 +192,13 @@ const EnquiryDetails = (props) => {
   );
 };
 
-export default EnquiryDetails;
+const mapStateToProps = (state) => ({
+  clientUserId: getClientUserId(state),
+});
+
+export default connect(mapStateToProps)(EnquiryDetails);
 
 EnquiryDetails.propTypes = {
   questions: PropTypes.instanceOf(Array).isRequired,
+  clientUserId: PropTypes.number.isRequired,
 };

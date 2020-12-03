@@ -37,6 +37,15 @@ export function testsUpdate(state = initialState, action) {
         ...state,
         testresultArray: action.payload,
       };
+    case testConstants.CLEAR:
+      return {
+        ...state,
+        testId: null,
+        testType: null,
+        testStartTime: 0,
+        testEndTime: 0,
+        testresultArray: [],
+      };
     default:
       return state;
   }

@@ -20,10 +20,15 @@ function setTestResultArrayToStore(payload) {
   return { type: testConstants.RESULTARRAY, payload };
 }
 
+function clearTests() {
+  return { type: testConstants.CLEAR };
+}
+
 export const testsActions = {
   setTestIdToStore,
   setTestTypeToStore,
   setTestStartTimeToStore,
   setTestEndTimeToStore,
   setTestResultArrayToStore,
+  clearTests,
 };

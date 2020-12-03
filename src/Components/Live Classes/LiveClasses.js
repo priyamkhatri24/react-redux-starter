@@ -9,6 +9,8 @@ import Col from 'react-bootstrap/Col';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import format from 'date-fns/format';
 import Modal from 'react-bootstrap/Modal';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
 import Button from 'react-bootstrap/Button';
 import {
   getClientId,
@@ -147,7 +149,6 @@ class LiveClasses extends Component {
         triggerJitsi: true,
       });
     } else if (element.stream_type === 'big_blue_button') {
-      console.log('bbb nhi hua', element);
       rejoinBigBlueButtonStream(
         jitsiFirstName,
         jitsiLastName,
@@ -280,178 +281,78 @@ class LiveClasses extends Component {
             role={role}
           />
         )}
+        <Tabs
+          style={{ marginTop: '6rem' }}
+          defaultActiveKey='Live Classes'
+          className='Profile__Tabs'
+          justify
+        >
+          <Tab eventKey='Live Classes' title='Live Classes'>
+            {!triggerJitsi && role === 'student' && (
+              <div className='mt-4'>
+                {studentBatches.length ? (
+                  studentBatches.map((elem) => {
+                    return (
+                      <Card
+                        key={elem.stream_id}
+                        className='LiveClasses__Card mx-auto p-2 mb-3 mb-lg-5'
+                      >
+                        <div className='LiveClasses__adminCard p-2'>
+                          <h6 className='LiveClasses__adminHeading mb-0'>
+                            {elem.first_name} {elem.last_name} is streaming Live
+                          </h6>
+                          <p className='LiveClasses__adminCardTime mb-0'>
+                            {format(fromUnixTime(elem.created_at), 'HH:mm MMM dd, yyyy')}
+                          </p>
 
-        {!triggerJitsi && role === 'student' && (
-          <div className='mt-4'>
-            {studentBatches.length ? (
-              studentBatches.map((elem) => {
-                return (
-                  <Card key={elem.stream_id} className='LiveClasses__Card mx-auto p-2 mb-3 mb-lg-5'>
-                    <div className='LiveClasses__adminCard p-2'>
-                      <h6 className='LiveClasses__adminHeading mb-0'>
-                        {elem.first_name} {elem.last_name} is streaming Live
-                      </h6>
-                      <p className='LiveClasses__adminCardTime mb-0'>
-                        {format(fromUnixTime(elem.created_at), 'HH:mm MMM dd, yyyy')}
-                      </p>
-
-                      <p className='LiveClasses__adminDuration'>
-                        Duration:{' '}
-                        <span>
-                          {`${Math.floor(elem.duration / 3600000)} hr ${Math.floor(
-                            (elem.duration % 3600) / 60,
-                          )} min `}
-                        </span>
-                      </p>
-
-                      <p className='LiveClasses__adminBatches'>
-                        Streaming In :{' '}
-                        {elem.batch_array.map((e, i) => {
-                          return (
-                            <span key={`elem${e}`}>
-                              {e}
-                              {i < elem.batch_array.length - 1 ? ',' : ''}
+                          <p className='LiveClasses__adminDuration'>
+                            Duration:{' '}
+                            <span>
+                              {`${Math.floor(elem.duration / 3600000)} hr ${Math.floor(
+                                (elem.duration % 3600) / 60,
+                              )} min `}
                             </span>
-                          );
-                        })}
-                      </p>
-                      <Row className='justify-content-center mb-2 mb-lg-4'>
-                        <Button
-                          variant='customPrimary'
-                          size='sm'
-                          onClick={() => this.startLiveStream(elem)}
-                        >
-                          Attend Live Now!
-                        </Button>
-                      </Row>
-                    </div>
-                  </Card>
-                );
-              })
-            ) : (
-              <p className='text-center m-4'>Oops! There are no videos being streamed currently.</p>
+                          </p>
+
+                          <p className='LiveClasses__adminBatches'>
+                            Streaming In :{' '}
+                            {elem.batch_array.map((e, i) => {
+                              return (
+                                <span key={`elem${e}`}>
+                                  {e}
+                                  {i < elem.batch_array.length - 1 ? ',' : ''}
+                                </span>
+                              );
+                            })}
+                          </p>
+                          <Row className='justify-content-center mb-2 mb-lg-4'>
+                            <Button
+                              variant='customPrimary'
+                              size='sm'
+                              onClick={() => this.startLiveStream(elem)}
+                            >
+                              Attend Live Now!
+                            </Button>
+                          </Row>
+                        </div>
+                      </Card>
+                    );
+                  })
+                ) : (
+                  <p className='text-center m-4'>
+                    Oops! There are no videos being streamed currently.
+                  </p>
+                )}
+              </div>
             )}
-          </div>
-        )}
 
-        {!triggerJitsi && role === 'teacher' && (
-          <>
-            {doesLiveStreamExist &&
-              existingStream.map((elem) => {
-                return (
-                  <div className='LiveClasses__adminCard p-2 m-3' key={`elem${elem.stream_id}`}>
-                    <h6 className='LiveClasses__adminHeading mb-0'>Ongoing Live Stream</h6>
-                    <p className='LiveClasses__adminCardTime mb-0'>
-                      {format(fromUnixTime(elem.created_at), 'HH:mm MMM dd, yyyy')}
-                    </p>
-
-                    <p className='LiveClasses__adminDuration'>
-                      Duration:{' '}
-                      <span>
-                        {`${Math.floor(elem.duration / 3600000)} hr ${Math.floor(
-                          (elem.duration % 3600) / 60,
-                        )} min `}
-                      </span>
-                    </p>
-
-                    <p className='LiveClasses__adminBatches'>
-                      Streaming In :{' '}
-                      {elem.batch_array.map((e, i) => {
-                        return (
-                          <span key={`elem${e}`}>
-                            {e}
-                            {i < elem.batch_array.length - 1 ? ',' : ''}
-                          </span>
-                        );
-                      })}
-                    </p>
-                    <Row className='justify-content-center mb-2 mb-lg-4'>
-                      <Col xs={9} className='text-center'>
-                        <Button
-                          variant='customPrimary'
-                          size='sm'
-                          onClick={() => this.rejoinLiveStream(elem)}
-                        >
-                          Rejoin
-                        </Button>
-                      </Col>
-                      <Col>
-                        <DeleteIcon onClick={() => this.deleteLiveStream(elem)} />
-                      </Col>
-                    </Row>
-                  </div>
-                );
-              })}
-
-            {!doesLiveStreamExist && (
+            {!triggerJitsi && role === 'teacher' && (
               <>
-                <Card className='LiveClasses__Card mx-auto mt-5 p-3'>
-                  <label htmlFor='Select Batch' className='has-float-label my-auto'>
-                    <input
-                      className='form-control'
-                      name='Select Batch'
-                      type='text'
-                      placeholder='Select Batch'
-                      onClick={() => this.setState({ showModal: true })}
-                      readOnly
-                      value={inputValue}
-                    />
-                    <span>Select Batch</span>
-                    <i className='LiveClasses__show'>
-                      <ExpandMoreIcon />
-                    </i>
-                  </label>
-                  <label className='has-float-label my-auto' htmlFor='Duration'>
-                    <input
-                      className='form-control mt-4'
-                      name='Duration'
-                      type='time'
-                      step='1'
-                      placeholder='Duration'
-                      onChange={(e) => this.setState({ duration: e.target.value })}
-                    />
-                    <span className='mt-4'>Duration</span>
-                  </label>
-                </Card>
-                <Row className='justify-content-center mt-4 mt-lg-5'>
-                  <Button
-                    variant='customPrimary'
-                    size='sm'
-                    className='mr-2 mr-lg-5'
-                    onClick={(e) => this.createStream(e.target.id)}
-                    disabled={!selectedBatches.length || !duration}
-                    id='alpha'
-                  >
-                    Go Live Alpha!
-                  </Button>
-                  <Button
-                    variant='customPrimary'
-                    size='sm'
-                    onClick={(e) => this.createStream(e.target.id)}
-                    disabled={!selectedBatches.length || !duration}
-                    id='beta'
-                  >
-                    Go Live Beta!
-                  </Button>
-                </Row>
-              </>
-            )}
-            {adminBatches.length && (
-              <div className='LiveClasses__adminInfo'>
-                <h6 className='text-center my-4 my-md-5 LiveClasses__adminHeading'>
-                  Institute&apos;s other Live Classes
-                </h6>
-
-                {adminBatches.map((elem) => {
-                  return (
-                    <Card
-                      key={elem.stream_id}
-                      className='LiveClasses__Card mx-auto p-2 mb-3 mb-lg-5'
-                    >
-                      <div className='LiveClasses__adminCard p-2'>
-                        <h6 className='LiveClasses__adminHeading mb-0'>
-                          {elem.first_name} {elem.last_name} is streaming Live
-                        </h6>
+                {doesLiveStreamExist &&
+                  existingStream.map((elem) => {
+                    return (
+                      <div className='LiveClasses__adminCard p-2 m-3' key={`elem${elem.stream_id}`}>
+                        <h6 className='LiveClasses__adminHeading mb-0'>Ongoing Live Stream</h6>
                         <p className='LiveClasses__adminCardTime mb-0'>
                           {format(fromUnixTime(elem.created_at), 'HH:mm MMM dd, yyyy')}
                         </p>
@@ -477,34 +378,150 @@ class LiveClasses extends Component {
                           })}
                         </p>
                         <Row className='justify-content-center mb-2 mb-lg-4'>
-                          <Button
-                            variant='customPrimary'
-                            size='sm'
-                            onClick={() => this.startLiveStream(elem)}
-                          >
-                            Attend Live Now!
-                          </Button>
+                          <Col xs={9} className='text-center'>
+                            <Button
+                              variant='customPrimary'
+                              size='sm'
+                              onClick={() => this.rejoinLiveStream(elem)}
+                            >
+                              Rejoin
+                            </Button>
+                          </Col>
+                          <Col>
+                            <DeleteIcon onClick={() => this.deleteLiveStream(elem)} />
+                          </Col>
                         </Row>
                       </div>
-                    </Card>
-                  );
-                })}
-              </div>
-            )}
+                    );
+                  })}
 
-            <Modal show={showModal} onHide={this.handleClose} centered>
-              <Modal.Header closeButton>
-                <Modal.Title>Select Batches</Modal.Title>
-              </Modal.Header>
-              <BatchesSelector batches={batches} getSelectedBatches={this.getSelectedBatches} />
-              <Modal.Footer>
-                <Button variant='dashboardBlueOnWhite' onClick={this.handleClose}>
-                  Next
-                </Button>
-              </Modal.Footer>
-            </Modal>
-          </>
-        )}
+                {!doesLiveStreamExist && (
+                  <>
+                    <Card className='LiveClasses__Card mx-auto mt-5 p-3'>
+                      <label htmlFor='Select Batch' className='has-float-label my-auto'>
+                        <input
+                          className='form-control'
+                          name='Select Batch'
+                          type='text'
+                          placeholder='Select Batch'
+                          onClick={() => this.setState({ showModal: true })}
+                          readOnly
+                          value={inputValue}
+                        />
+                        <span>Select Batch</span>
+                        <i className='LiveClasses__show'>
+                          <ExpandMoreIcon />
+                        </i>
+                      </label>
+                      <label className='has-float-label my-auto' htmlFor='Duration'>
+                        <input
+                          className='form-control mt-4'
+                          name='Duration'
+                          type='time'
+                          step='1'
+                          placeholder='Duration'
+                          onChange={(e) => this.setState({ duration: e.target.value })}
+                        />
+                        <span className='mt-4'>Duration</span>
+                      </label>
+                    </Card>
+                    <Row className='justify-content-center mt-4 mt-lg-5'>
+                      <Button
+                        variant='customPrimary'
+                        size='sm'
+                        className='mr-2 mr-lg-5'
+                        onClick={(e) => this.createStream(e.target.id)}
+                        disabled={!selectedBatches.length || !duration}
+                        id='alpha'
+                      >
+                        Go Live Alpha!
+                      </Button>
+                      <Button
+                        variant='customPrimary'
+                        size='sm'
+                        onClick={(e) => this.createStream(e.target.id)}
+                        disabled={!selectedBatches.length || !duration}
+                        id='beta'
+                      >
+                        Go Live Beta!
+                      </Button>
+                    </Row>
+                  </>
+                )}
+                {adminBatches.length && (
+                  <div className='LiveClasses__adminInfo'>
+                    <h6 className='text-center my-4 my-md-5 LiveClasses__adminHeading'>
+                      Institute&apos;s other Live Classes
+                    </h6>
+
+                    {adminBatches.map((elem) => {
+                      return (
+                        <Card
+                          key={elem.stream_id}
+                          className='LiveClasses__Card mx-auto p-2 mb-3 mb-lg-5'
+                        >
+                          <div className='LiveClasses__adminCard p-2'>
+                            <h6 className='LiveClasses__adminHeading mb-0'>
+                              {elem.first_name} {elem.last_name} is streaming Live
+                            </h6>
+                            <p className='LiveClasses__adminCardTime mb-0'>
+                              {format(fromUnixTime(elem.created_at), 'HH:mm MMM dd, yyyy')}
+                            </p>
+
+                            <p className='LiveClasses__adminDuration'>
+                              Duration:{' '}
+                              <span>
+                                {`${Math.floor(elem.duration / 3600000)} hr ${Math.floor(
+                                  (elem.duration % 3600) / 60,
+                                )} min `}
+                              </span>
+                            </p>
+
+                            <p className='LiveClasses__adminBatches'>
+                              Streaming In :{' '}
+                              {elem.batch_array.map((e, i) => {
+                                return (
+                                  <span key={`elem${e}`}>
+                                    {e}
+                                    {i < elem.batch_array.length - 1 ? ',' : ''}
+                                  </span>
+                                );
+                              })}
+                            </p>
+                            <Row className='justify-content-center mb-2 mb-lg-4'>
+                              <Button
+                                variant='customPrimary'
+                                size='sm'
+                                onClick={() => this.startLiveStream(elem)}
+                              >
+                                Attend Live Now!
+                              </Button>
+                            </Row>
+                          </div>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                )}
+
+                <Modal show={showModal} onHide={this.handleClose} centered>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Select Batches</Modal.Title>
+                  </Modal.Header>
+                  <BatchesSelector batches={batches} getSelectedBatches={this.getSelectedBatches} />
+                  <Modal.Footer>
+                    <Button variant='dashboardBlueOnWhite' onClick={this.handleClose}>
+                      Next
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+              </>
+            )}
+          </Tab>
+          <Tab eventKey='Recordings' title='Recordings'>
+            ashmit lodu h
+          </Tab>
+        </Tabs>
       </div>
     );
   }

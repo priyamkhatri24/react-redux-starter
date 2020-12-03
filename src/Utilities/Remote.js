@@ -61,5 +61,11 @@ export const get = (requestBody = null, endpoint) => {
 export const uploadImage = (file) => {
   const fd = new FormData();
   fd.append('upl', file);
-  return post(fd, '/upload');
+  console.log(file);
+  return axios
+    .post(`${testUrl}/upload`, fd, authHeaderPost())
+    .then((result) => result.data)
+    .catch((err) => {
+      console.error(`The error is ${err}`);
+    });
 };
