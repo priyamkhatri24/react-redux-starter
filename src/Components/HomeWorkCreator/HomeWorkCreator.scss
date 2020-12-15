@@ -1,0 +1,137 @@
+.Homework {
+  @import '../../scss/bootstrap';
+
+  &__carousel .carousel-root .carousel .control-dots {
+    position: fixed;
+    top: 6%;
+    height: 5vh;
+    background-color: white;
+  }
+
+  &__carousel .carousel-root .carousel .slider-wrapper ul li {
+    background: transparent;
+  }
+
+  &__selectCard {
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
+  }
+
+  &__smallHeading {
+    font-size: $spacer * 0.75;
+    font-family: $regular;
+    line-height: 15px;
+    color: $dashboardBlack;
+  }
+
+  &__scrollable {
+    background-color: #fff;
+    min-width: 100%;
+    min-height: 40px;
+    display: flex;
+    overflow-x: auto;
+  }
+
+  &__scrollable::-webkit-scrollbar {
+    display: none;
+  }
+
+  &__questionBubble {
+    min-width: 40px;
+    min-height: 40px;
+    margin: 5px;
+    font-size: $spacer * 0.875;
+    font-family: $regular;
+    color: $white;
+    background-color: var(--lighter-blue);
+    border-radius: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @include media-breakpoint-up(md) {
+      min-width: 50px;
+    }
+  }
+
+  &__subjectBubble {
+    min-width: 120px;
+    min-height: 30px;
+    margin: 5px;
+    font-size: $spacer * 0.875;
+    font-family: $regular;
+    border-radius: 50px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @include media-breakpoint-up(md) {
+      min-width: 50px;
+    }
+  }
+
+  &__selected {
+    background-color: var(--lighter-blue);
+    color: $white;
+  }
+
+  &__unselected {
+    color: $dashboardBlack;
+    background-color: $white;
+    border: 1px solid $dashboardGrey;
+  }
+
+  &__stepPlaceHolder {
+    font-family: $semiBold;
+  }
+
+  &__dueDate {
+    font-family: $regular;
+    font-size: $spacer * 0.675;
+    color: $dashboardBlack;
+  }
+  /*******Question.js******/
+  &__edit {
+    width: 46px;
+    height: 25px;
+    border-radius: 20px 0 0 20px;
+    background-color: $lightestBlue;
+  }
+
+  &__questionHeading {
+    font-size: $spacer * 0.875;
+    font-family: $regular;
+    color: $headingGrey;
+    line-height: $spacer * 1.25;
+  }
+
+  &__options {
+    font-size: $spacer * 0.875;
+    font-family: $medium;
+    color: $lightGrey;
+    line-height: $spacer * 1.25;
+  }
+
+  &__multipleOptions {
+    font-size: $spacer * 0.875;
+    font-family: $regular;
+    color: $lightGrey;
+    line-height: $spacer * 1.25;
+  }
+
+  &__questionIndex {
+    font-family: $medium;
+    font-size: $spacer * 0.875;
+    line-height: $spacer * 1.25;
+    color: $headingGrey;
+  }
+
+  &__questionType {
+    font-size: $spacer * 0.625;
+    font-family: $medium;
+    line-height: $spacer * 1.25;
+    color: $lightGrey;
+  }
+
+  /**************************/
+}

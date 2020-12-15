@@ -436,7 +436,12 @@ const NoticeBoard = (props) => {
         <Modal.Header closeButton>
           <Modal.Title>Batches</Modal.Title>
         </Modal.Header>
-        <BatchesSelector batches={batches} getSelectedBatches={getSelectedBatches} />
+        <BatchesSelector
+          batches={batches}
+          getSelectedBatches={getSelectedBatches}
+          title='Batches'
+          selectBatches={selectedBatches}
+        />
         <Modal.Footer>
           <Button variant='boldText' onClick={() => sendNoticeOrCallParent()}>
             Next
@@ -448,7 +453,12 @@ const NoticeBoard = (props) => {
         <Modal.Header closeButton>
           <Modal.Title>Students</Modal.Title>
         </Modal.Header>
-        <BatchesSelector batches={students} getSelectedBatches={getStudentBatches} />
+        <BatchesSelector
+          batches={students}
+          getSelectedBatches={getStudentBatches}
+          title='Students'
+          selectBatches={selectedStudents}
+        />
         <Modal.Footer>
           <Button variant='boldText' onClick={() => callParent()}>
             Next

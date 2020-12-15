@@ -15,9 +15,11 @@ import QuestionTaker from '../Components/Common/QuestionTaker/QuestionTaker';
 import NoticeBoard from '../Components/NoticeBoard/NoticeBoard';
 import Profile from '../Components/Profile/Profile';
 import EditProfile from '../Components/Profile/EditProfile';
-import Assignments from '../Components/Assignments/Assignment';
 import Fees from '../Components/Fees/Fees';
 import FeesOrder from '../Components/Fees/Fees.order';
+import HomeWorkCreator from '../Components/HomeWorkCreator/HomeWorkCreator';
+import SavedSentTests from '../Components/HomeWorkCreator/SavedSentTests';
+import FinalQuestions from '../Components/HomeWorkCreator/FinalQuestions';
 
 export function Routes() {
   return (
@@ -37,10 +39,12 @@ export function Routes() {
       <AuthenticatedRoute path='/noticeboard' component={NoticeBoard} />
       <AuthenticatedRoute path='/profile' component={Profile} />
       <AuthenticatedRoute path='/editprofile' component={EditProfile} />
-      <AuthenticatedRoute path='/assignments' component={Assignments} />
       <AuthenticatedRoute path='/questiontaker' component={QuestionTaker} />
       <AuthenticatedRoute path='/fees' component={Fees} />
       <AuthenticatedRoute exact path='/order' component={FeesOrder} />
+      <AuthenticatedRoute exact path='/homework' component={HomeWorkCreator} />
+      <AuthenticatedRoute exect path='/homework/savedtests' component={SavedSentTests} />
+      <AuthenticatedRoute exect path='/homework/preview' component={FinalQuestions} />
 
       <Route path='/fileviewer' component={FileView} />
 

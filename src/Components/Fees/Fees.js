@@ -10,7 +10,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Button from 'react-bootstrap/Button';
 import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
-import { get, apiValidation, displayRazorpay, post } from '../../Utilities';
+import { get, apiValidation, displayRazorpay } from '../../Utilities';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { BackButton } from '../Common';
 import avatarImage from '../../assets/images/avatarImage.jpg';

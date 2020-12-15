@@ -98,6 +98,11 @@ const Dashboard = (props) => {
     push('fees');
   };
 
+  const goToHomeWorkCreator = () => {
+    const { push } = history;
+    push({ pathname: '/homework', state: { letsGo: true } });
+  };
+
   const startHomework = (responseArray, testId) => {
     const { push } = history;
     // push({ pathname: '/questiontaker', state: { result: responseArray, testId } });
@@ -175,7 +180,7 @@ const Dashboard = (props) => {
           The <span>innovation</span>
         </h4>
         <p className='mr-5'>Create tests &amp; home-works in 4 simple steps</p>
-        <Button variant='dashboardBlueOnWhite'>
+        <Button variant='dashboardBlueOnWhite' onClick={() => goToHomeWorkCreator()}>
           Let&apos;s go
           <span>
             <ChevronRightIcon />

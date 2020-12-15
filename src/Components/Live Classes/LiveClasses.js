@@ -188,7 +188,9 @@ class LiveClasses extends Component {
         }
         return acc;
       }, '');
-      this.setState({ inputValue: inputString + extraBatchesString });
+      if (this.state.selectedBatches.length > 0)
+        this.setState({ inputValue: inputString + extraBatchesString });
+      else this.setState({ inputValue: '' });
     }
   };
 
@@ -508,7 +510,12 @@ class LiveClasses extends Component {
                   <Modal.Header closeButton>
                     <Modal.Title>Select Batches</Modal.Title>
                   </Modal.Header>
-                  <BatchesSelector batches={batches} getSelectedBatches={this.getSelectedBatches} />
+                  <BatchesSelector
+                    batches={batches}
+                    selectBatches={selectedBatches}
+                    getSelectedBatches={this.getSelectedBatches}
+                    title='Batches'
+                  />
                   <Modal.Footer>
                     <Button variant='dashboardBlueOnWhite' onClick={this.handleClose}>
                       Next
@@ -519,7 +526,7 @@ class LiveClasses extends Component {
             )}
           </Tab>
           <Tab eventKey='Recordings' title='Recordings'>
-            ashmit lodu h
+            Testing
           </Tab>
         </Tabs>
       </div>

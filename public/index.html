@@ -14,9 +14,6 @@
     <!-----------------------------SCRIPT TO LOAD DYNAMIC MANIFEST------------------------------------------------------->
     <script>
       var full = window.location.host; // subdomain.domain.com
-      console.log(full);
-      // var parts = full.split('.');
-      // var sub = parts[0];
       const testDomain = 'ingenium.surge.sh';
       const serverURL  = 'http://13.126.247.152:3000'
       const fullURL = `${serverURL}/getManifestDataOfClient?domain_name=${testDomain}`;
@@ -31,7 +28,6 @@
         const blob = new Blob([manifestData], { type: 'application/json' });
         const manifestURL = URL.createObjectURL(blob);
         document.querySelector('#dynamic-manifest').setAttribute('href', manifestURL);
-        console.log(resp);
       });
     </script>
 
