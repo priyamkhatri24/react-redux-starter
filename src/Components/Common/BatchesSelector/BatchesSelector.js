@@ -6,8 +6,8 @@ import Button from 'react-bootstrap/Button';
 import './BatchesSelector.scss';
 
 export const BatchesSelector = (props) => {
-  const { batches, getSelectedBatches } = props;
-  const [selectedBatches, setSelectedBatches] = useState([]);
+  const { batches, getSelectedBatches, title, selectBatches } = props;
+  const [selectedBatches, setSelectedBatches] = useState([...selectBatches]);
 
   useEffect(() => {
     getSelectedBatches(selectedBatches);
@@ -31,7 +31,7 @@ export const BatchesSelector = (props) => {
   return (
     <Row className='Batches py-3'>
       <Col xs={6} className='text-center'>
-        <h6 className='mb-4'>Batches</h6>
+        <h6 className='mb-4'>{title}</h6>
         <div className='Batches__totalBatches'>
           {batches.map((elem) => {
             return (
@@ -68,5 +68,7 @@ export const BatchesSelector = (props) => {
 
 BatchesSelector.propTypes = {
   getSelectedBatches: PropTypes.func.isRequired,
+  selectBatches: PropTypes.instanceOf(Array).isRequired,
   batches: PropTypes.instanceOf(Array).isRequired,
+  title: PropTypes.string.isRequired,
 };

@@ -45,7 +45,7 @@ const FormTemplate = (props) => {
                   <select
                     value={field.value}
                     {...field}
-                    className={`FormTemplate__select ${hasError}`}
+                    className={`FormTemplate__select ${hasError} mb-3`}
                   >
                     {selectOptions}
                   </select>
@@ -141,10 +141,10 @@ const FormTemplate = (props) => {
                       className={`form-control ${hasError}`}
                       {...field}
                       type='text'
-                      placeholder={field.name}
+                      placeholder={input.label}
                       id={field.name}
                     />
-                    <span>{field.name}</span>
+                    <span>{input.label}</span>
                   </label>
                 );
               }}

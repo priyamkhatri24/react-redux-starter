@@ -57,3 +57,15 @@ export const get = (requestBody = null, endpoint) => {
       console.error(`The error is ${err}`);
     });
 };
+
+export const uploadImage = (file) => {
+  const fd = new FormData();
+  fd.append('upl', file);
+  console.log(file);
+  return axios
+    .post(`${testUrl}/upload`, fd, authHeaderPost())
+    .then((result) => result.data)
+    .catch((err) => {
+      console.error(`The error is ${err}`);
+    });
+};

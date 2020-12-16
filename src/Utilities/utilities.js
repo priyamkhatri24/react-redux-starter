@@ -75,3 +75,16 @@ export function changeFaviconAndDocumentTitle(favicon, documentTitle = 'Ingenium
   }
   document.head.appendChild(link);
 }
+
+// function to check whether development or environment
+
+export function prodOrDev() {
+  if (process.env.NODE_ENV === 'development') return 'development';
+  if (process.env.NODE_ENV === 'production') return 'production';
+  return 'test';
+}
+
+// function that sorts according to given parameter (Object key)
+
+export const propComparator = (propName) => (a, b) =>
+  a[propName] === b[propName] ? 0 : a[propName] < b[propName] ? -1 : 1;

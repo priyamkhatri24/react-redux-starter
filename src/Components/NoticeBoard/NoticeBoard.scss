@@ -1,0 +1,19 @@
+.NoticeBoard {
+  @import '../../scss/bootstrap';
+
+  &__input {
+    text-align: end;
+  }
+
+  &__input > label {
+    font-size: $spacer * 0.75;
+    font-family: 'Montserrat-Medium';
+    color: $lightGrey;
+  }
+
+  &__smsInfo {
+    font-size: $spacer * 0.75;
+    font-family: 'Montserrat-Medium';
+    color: $lightGrey;
+  }
+}

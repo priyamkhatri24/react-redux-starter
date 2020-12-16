@@ -14,12 +14,15 @@ import { get, apiValidation } from '../../Utilities';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import dashboardAssignmentImage from '../../assets/images/Dashboard/dashboardAssignment.svg';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
+import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
+import { testsActions } from '../../redux/actions/tests.action';
 import hands from '../../assets/images/Dashboard/hands.svg';
 import { DashboardCards } from '../Common';
 import offlineAssignment from '../../assets/images/Dashboard/offline.svg';
 import camera from '../../assets/images/Dashboard/camera.svg';
 import analysis from '../../assets/images/Dashboard/analysis.svg';
 import student from '../../assets/images/Dashboard/student.svg';
+import Tests from '../Tests/Tests';
 import './Dashboard.scss';
 
 const Dashboard = (props) => {
@@ -28,6 +31,13 @@ const Dashboard = (props) => {
     clientUserId,
     userProfile: { firstName, profileImage },
     clearProfile,
+    clearClientIdDetails,
+    history,
+    setTestResultArrayToStore,
+    setTestStartTimeToStore,
+    setTestTypeToStore,
+    setTestIdToStore,
+    setTestEndTimeToStore,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
@@ -57,19 +67,62 @@ const Dashboard = (props) => {
   }, [clientId, clientUserId]);
 
   const logout = () => {
-    const { push } = props.history;
+    const { push } = history;
     clearProfile();
+    clearClientIdDetails();
     push({ pathname: '/login' });
   };
 
   const goToLiveClasses = () => {
-    const { push } = props.history;
+    const { push } = history;
     push({ pathname: '/liveclasses' });
   };
 
+  const goToNoticeBoard = () => {
+    const { push } = history;
+    push({ pathname: '/noticeboard' });
+  };
+
   const goToStudyBin = () => {
-    const { push } = props.history;
+    const { push } = history;
     push({ pathname: '/studybin' });
+  };
+
+  const goToProfile = () => {
+    const { push } = history;
+    push({ pathname: '/profile' });
+  };
+
+  const goToFees = () => {
+    const { push } = history;
+    push('fees');
+  };
+
+  const goToHomeWorkCreator = () => {
+    const { push } = history;
+    push({ pathname: '/homework', state: { letsGo: true } });
+  };
+
+  const startHomework = (responseArray, testId) => {
+    const { push } = history;
+    // push({ pathname: '/questiontaker', state: { result: responseArray, testId } });
+    push('/questiontaker');
+    setTestResultArrayToStore(responseArray);
+    setTestIdToStore(testId);
+    setTestTypeToStore('homework');
+  };
+
+  const startLiveTest = (responseArray, startTime = 0, endTime = 0, testType) => {
+    const { push } = history;
+    // push({
+    //   pathname: '/questiontaker',
+    //   state: { result: responseArray, currentTime: startTime, testEndTime: endTime },
+    // });
+    push('/questiontaker');
+    setTestResultArrayToStore(responseArray);
+    setTestEndTimeToStore(endTime);
+    setTestStartTimeToStore(startTime);
+    setTestTypeToStore(testType);
   };
 
   return (
@@ -87,7 +140,7 @@ const Dashboard = (props) => {
           </span>
         </Row>
         <Row className='mx-auto px-2 mt-4'>
-          <Col xs={4}>
+          <Col xs={4} onClick={() => goToProfile()}>
             <img
               src={profileImage}
               className='Dashboard__profileImage float-right img-responsive'
@@ -127,7 +180,7 @@ const Dashboard = (props) => {
           The <span>innovation</span>
         </h4>
         <p className='mr-5'>Create tests &amp; home-works in 4 simple steps</p>
-        <Button variant='dashboardBlueOnWhite'>
+        <Button variant='dashboardBlueOnWhite' onClick={() => goToHomeWorkCreator()}>
           Let&apos;s go
           <span>
             <ChevronRightIcon />
@@ -189,7 +242,13 @@ const Dashboard = (props) => {
         </div>
       </div>
 
-      <div className='Dashboard__noticeBoard mx-auto p-3'>
+      <div
+        className='Dashboard__noticeBoard mx-auto p-3'
+        onClick={() => goToNoticeBoard()}
+        role='button'
+        tabIndex='-1'
+        onKeyDown={() => goToNoticeBoard()}
+      >
         <span className='Dashboard__verticalDots'>
           <MoreVertIcon />
         </span>
@@ -266,14 +325,16 @@ const Dashboard = (props) => {
         backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
       />
 
-      <DashboardCards
-        image={analysis}
-        heading='Fees'
-        subHeading='See fees history and amount to be paid for coming months.'
-        boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-        backGround='rgb(238,232,241)'
-        backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
-      />
+      <div onClick={() => goToFees()} role='button' tabIndex='-1' onKeyDown={() => goToFees()}>
+        <DashboardCards
+          image={analysis}
+          heading='Fees'
+          subHeading='See fees history and amount to be paid for coming months.'
+          boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+          backGround='rgb(238,232,241)'
+          backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
+        />
+      </div>
       <DashboardCards
         image={analysis}
         heading='Analysis'
@@ -290,16 +351,27 @@ const Dashboard = (props) => {
         backGround='rgb(248,252,255)'
         backgroundImg='linear-gradient(90deg, rgba(248,252,255,1) 0%, rgba(188,224,253,1) 100%)'
       />
+      {/* <div
+        onClick={() => goToAssignments('live test')}
+        onKeyDown={() => goToAssignments('live test')}
+        tabIndex='-1'
+        role='button'
+      >
+        <DashboardCards
+          image={student}
+          coloredHeading='Live'
+          color='rgba(255, 0, 0, 0.87)'
+          heading='Test'
+          subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
+          boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+        />
+      </div> */}
 
-      <DashboardCards
-        image={student}
-        coloredHeading='Live'
-        color='rgba(255, 0, 0, 0.87)'
-        heading='Test'
-        subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
-        boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-      />
-      <DashboardCards
+      <div>
+        <Tests startHomework={startHomework} startLive={startLiveTest} />
+      </div>
+
+      {/* <DashboardCards
         image={student}
         coloredHeading='Demo'
         color='rgba(207, 236, 0, 0.87)  '
@@ -308,13 +380,20 @@ const Dashboard = (props) => {
         boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
       />
 
-      <DashboardCards
-        image={student}
-        coloredHeading='Tests'
-        color='rgba(0, 102, 255, 0.87)'
-        subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
-        boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-      />
+      <div
+        onClick={() => goToAssignments('homework')}
+        onKeyDown={() => goToAssignments('homework')}
+        tabIndex='-1'
+        role='button'
+      >
+        <DashboardCards
+          image={student}
+          coloredHeading='Homework'
+          color='rgba(0, 102, 255, 0.87)'
+          subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
+          boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+        />
+      </div> */}
 
       <DashboardCards
         image={student}
@@ -336,8 +415,26 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    clearClientIdDetails: () => {
+      dispatch(clientUserIdActions.clearClientIdDetails());
+    },
     clearProfile: () => {
       dispatch(userProfileActions.clearUserProfile());
+    },
+    setTestIdToStore: (payload) => {
+      dispatch(testsActions.setTestIdToStore(payload));
+    },
+    setTestTypeToStore: (payload) => {
+      dispatch(testsActions.setTestTypeToStore(payload));
+    },
+    setTestStartTimeToStore: (payload) => {
+      dispatch(testsActions.setTestStartTimeToStore(payload));
+    },
+    setTestEndTimeToStore: (payload) => {
+      dispatch(testsActions.setTestEndTimeToStore(payload));
+    },
+    setTestResultArrayToStore: (payload) => {
+      dispatch(testsActions.setTestResultArrayToStore(payload));
     },
   };
 };

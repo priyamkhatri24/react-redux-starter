@@ -1,0 +1,45 @@
+.Tests {
+  @import '../../scss/bootstrap';
+
+  &__scrollableCard {
+    min-width: 100%;
+    min-height: 103px;
+    display: flex;
+    overflow-x: auto;
+  }
+
+  &__scrollableCard::-webkit-scrollbar {
+    display: none;
+  }
+
+  &__scrollableCard > div {
+    min-width: 276px;
+    margin: 5px;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
+    border: 1px solid transparent;
+    border-radius: 10px;
+  }
+
+  &__scrollableCardHeading {
+    font-size: $spacer * 0.875;
+    color: $headingGrey;
+    line-height: $spacer * 1.25;
+    font-family: 'Montserrat-SemiBold';
+    color: $homeworkBlue;
+  }
+
+  &__scrollableCardText {
+    font-size: $spacer * 0.75;
+    font-family: 'Montserrat-Regular';
+    color: $dashboardBlack;
+    line-height: 15px;
+  }
+
+  &__Counter {
+    font-family: $semiBold;
+    color: $headingGrey;
+    letter-spacing: 0.43px;
+    line-height: $spacer * 1.75;
+    font-size: $spacer * 0.875;
+  }
+}

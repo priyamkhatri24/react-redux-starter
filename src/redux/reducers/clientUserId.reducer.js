@@ -37,6 +37,15 @@ export function clientUserIdUpdate(state = initialState, action) {
         ...state,
         roleArray: action.payload,
       };
+    case userConstants.CLEAR:
+      return {
+        ...state,
+        userId: null,
+        clientId: null,
+        clientUserId: null,
+        userUserID: null,
+        roleArray: [],
+      };
     default:
       return state;
   }
