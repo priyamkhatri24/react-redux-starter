@@ -307,6 +307,9 @@ export class VideoPlayer extends Component {
                   <Dropdown.Item as='button' onClick={this.handleSetPlaybackRate} value={1}>
                     1x
                   </Dropdown.Item>
+                  <Dropdown.Item as='button' onClick={this.handleSetPlaybackRate} value={1.25}>
+                    1.25x
+                  </Dropdown.Item>
                   <Dropdown.Item as='button' onClick={this.handleSetPlaybackRate} value={1.5}>
                     1.5x
                   </Dropdown.Item>

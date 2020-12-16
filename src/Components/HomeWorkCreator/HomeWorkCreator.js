@@ -61,7 +61,7 @@ const HomeWorkCreator = (props) => {
   return (
     <div className='Homework'>
       <PageHeader title='Homework Creator' />
-      <div style={{ marginTop: '8rem' }} className='Homework__carousel'>
+      <div style={{ marginTop: '7rem' }} className='Homework__carousel'>
         <Carousel
           style={{ backgroundColor: 'red' }}
           showArrows={false}

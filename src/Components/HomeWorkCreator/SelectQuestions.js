@@ -106,6 +106,10 @@ const SelectQuestions = (props) => {
     });
   };
 
+  const goToCreateQuestion = () => {
+    history.push('/homework/create');
+  };
+
   return (
     <>
       <Card className='mx-4 Homework__selectCard mb-3'>
@@ -252,7 +256,15 @@ const SelectQuestions = (props) => {
                 >
                   Add from saved/sent tests.
                 </p>
-                <p className='Homework__smallHeading text-left ml-3'>Add Questions Manually.</p>
+                <p
+                  className='Homework__smallHeading text-left ml-3'
+                  onClick={() => goToCreateQuestion()}
+                  onKeyDown={() => goToCreateQuestion()}
+                  role='button'
+                  tabIndex='-1'
+                >
+                  Add Questions Manually.
+                </p>
               </Card>
             </>
           )}

@@ -20,6 +20,7 @@ import FeesOrder from '../Components/Fees/Fees.order';
 import HomeWorkCreator from '../Components/HomeWorkCreator/HomeWorkCreator';
 import SavedSentTests from '../Components/HomeWorkCreator/SavedSentTests';
 import FinalQuestions from '../Components/HomeWorkCreator/FinalQuestions';
+import CreateQuestion from '../Components/HomeWorkCreator/CreateQuestion';
 
 export function Routes() {
   return (
@@ -45,6 +46,7 @@ export function Routes() {
       <AuthenticatedRoute exact path='/homework' component={HomeWorkCreator} />
       <AuthenticatedRoute exect path='/homework/savedtests' component={SavedSentTests} />
       <AuthenticatedRoute exect path='/homework/preview' component={FinalQuestions} />
+      <AuthenticatedRoute exect path='/homework/create' component={CreateQuestion} />
 
       <Route path='/fileviewer' component={FileView} />
 
