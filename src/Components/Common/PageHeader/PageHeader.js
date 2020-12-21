@@ -37,7 +37,7 @@ export const PageHeader = (props) => {
         <>
           <SearchIcon />
           <input
-            autoFocus
+            autoFocus // eslint-disable-line
             placeholder={placeholder}
             className='PageHeader__input mx-2'
             onChange={(e) => searchFilter(e.target.value)}

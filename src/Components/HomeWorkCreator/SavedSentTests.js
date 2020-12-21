@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Tabs from 'react-bootstrap/Tabs';
@@ -150,3 +151,19 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SavedSentTests);
+
+SavedSentTests.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func,
+    location: PropTypes.shape({
+      state: PropTypes.shape({
+        classId: PropTypes.instanceOf(Object).isRequired,
+      }),
+    }),
+  }).isRequired,
+  clientId: PropTypes.number.isRequired,
+  clientUserId: PropTypes.number.isRequired,
+  roleArray: PropTypes.instanceOf(Array).isRequired,
+  setCurrentSlide: PropTypes.func.isRequired,
+  setQuestionArrayToStore: PropTypes.func.isRequired,
+};

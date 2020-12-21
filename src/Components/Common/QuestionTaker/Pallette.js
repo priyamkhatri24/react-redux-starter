@@ -147,4 +147,7 @@ export default Pallette;
 
 Pallette.propTypes = {
   questions: PropTypes.instanceOf(Array).isRequired,
+  changeQuestion: PropTypes.func.isRequired,
+  currentQuestion: PropTypes.instanceOf(Object).isRequired,
+  startingResult: PropTypes.bool.isRequired,
 };

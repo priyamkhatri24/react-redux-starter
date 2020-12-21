@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { connect } from 'react-redux';
@@ -86,7 +87,7 @@ const HomeWorkCreator = (props) => {
                 onKeyDown={onClickHandler}
                 value={index}
                 key={index}
-                role='button'
+                role='button' // eslint-disable-line
                 tabIndex={0}
                 title={`${label} ${index + 1}`}
                 aria-label={`${label} ${index + 1}`}
@@ -123,3 +124,28 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeWorkCreator);
+
+HomeWorkCreator.propTypes = {
+  setCurrentSlide: PropTypes.func.isRequired,
+  setSelectedQuestionArrayToStore: PropTypes.func.isRequired,
+  currentSlide: PropTypes.number.isRequired,
+  history: PropTypes.shape({
+    location: PropTypes.shape({
+      state: PropTypes.shape({
+        letsGo: PropTypes.bool,
+      }),
+    }),
+  }),
+  setQuestionArrayToStore: PropTypes.func.isRequired,
+  questionArray: PropTypes.instanceOf(Array).isRequired,
+};
+
+HomeWorkCreator.defaultProps = {
+  history: PropTypes.shape({
+    location: PropTypes.shape({
+      state: PropTypes.shape({
+        letsGo: false,
+      }),
+    }),
+  }),
+};

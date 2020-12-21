@@ -1,3 +1,6 @@
+// we are builidng URLS hence disabling max-len for the file
+/* eslint-disable max-len */
+
 import * as sha1 from 'js-sha1';
 import { post, apiValidation, get } from '../../Utilities';
 

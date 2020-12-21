@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import CreateIcon from '@material-ui/icons/Create';
 import Button from 'react-bootstrap/Button';
@@ -52,10 +53,10 @@ const Question = (props) => {
           )}
 
           {question.question_type !== 'subjective' &&
-            question.option_array.map((e, index) => {
+            question.option_array.map((e, i) => {
               return (
                 <div className='d-flex mx-3 mb-2 Homework__multipleOptions' key={e.order}>
-                  <span className='mr-2 my-auto'>{index + 1}.</span>{' '}
+                  <span className='mr-2 my-auto'>{i + 1}.</span>{' '}
                   <MathJax math={String.raw`${e.text}`} />
                 </div>
               );
@@ -88,3 +89,9 @@ const Question = (props) => {
 };
 
 export default Question;
+
+Question.propTypes = {
+  question: PropTypes.instanceOf(Object).isRequired,
+  index: PropTypes.number.isRequired,
+  update: PropTypes.func.isRequired,
+};

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -69,6 +70,7 @@ const NoticeBoard = (props) => {
       });
       return topicArray;
     }
+    return null;
   };
 
   const handleClose = (option) => {
@@ -183,7 +185,7 @@ const NoticeBoard = (props) => {
             if (sendSMS) SMSPromise = post(noticeMessagePayload, '/sendNoticeMessageToStudents');
 
             Promise.all([notificationPromise, SMSPromise])
-              .then((response) => console.log(response))
+              .then((resp) => console.log(resp))
               .catch((err) => console.log('Promise.all ka err', err));
           }
         })
@@ -478,3 +480,29 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(NoticeBoard);
+
+NoticeBoard.propTypes = {
+  clientUserId: PropTypes.number.isRequired,
+  clientId: PropTypes.number.isRequired,
+  roleArray: PropTypes.instanceOf(Array).isRequired,
+  currentbranding: PropTypes.shape({
+    branding: PropTypes.shape({
+      client_name: PropTypes.string,
+    }),
+    userProfile: PropTypes.shape({
+      firstName: PropTypes.string.isRequired,
+      lastName: PropTypes.string,
+      contact: PropTypes.string.isRequired,
+      profileImage: PropTypes.string,
+    }),
+  }).isRequired,
+  userProfile: PropTypes.shape({
+    profileImage: PropTypes.string,
+  }),
+};
+
+NoticeBoard.defaultProps = {
+  userProfile: PropTypes.shape({
+    profileImage: '',
+  }),
+};

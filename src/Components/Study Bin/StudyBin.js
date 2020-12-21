@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -24,8 +25,16 @@ import './StudyBin.scss';
 import { AddButton } from '../Common/AddButton/AddButton';
 
 const StudyBin = (props) => {
-  const { clientUserId, clientId, history, roleArray } = props;
-  const { state: { title, videoId } = {} } = props.location;
+  // const { clientUserId, clientId, history, roleArray } = props;
+  // const { state: { title, videoId } = {} } = props.location;
+
+  const {
+    location: { state: { title, videoId } = {} },
+    clientUserId,
+    clientId,
+    history,
+    roleArray,
+  } = props;
 
   const [fileArray, setFileArray] = useState([]);
   const [folderArray, setFolderArray] = useState([]);
@@ -335,3 +344,13 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(StudyBin);
+
+StudyBin.propTypes = {
+  clientId: PropTypes.number.isRequired,
+  clientUserId: PropTypes.number.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+  roleArray: PropTypes.instanceOf(Array).isRequired,
+  location: PropTypes.instanceOf(Object).isRequired,
+};

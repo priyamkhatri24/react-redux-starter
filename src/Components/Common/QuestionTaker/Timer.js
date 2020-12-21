@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { useInterval } from '../../../Utilities';
 import 'react-circular-progressbar/dist/styles.css';
@@ -73,3 +74,14 @@ const Timer = (props) => {
 };
 
 export default Timer;
+
+Timer.propTypes = {
+  startTime: PropTypes.number.isRequired,
+  endTime: PropTypes.number.isRequired,
+  isFinished: PropTypes.func.isRequired,
+  getCurrentTimerTime: PropTypes.func,
+};
+
+Timer.defaultProps = {
+  getCurrentTimerTime: () => {},
+};

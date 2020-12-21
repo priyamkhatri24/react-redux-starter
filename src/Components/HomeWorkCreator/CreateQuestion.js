@@ -44,7 +44,7 @@ const CreateQuestion = () => {
                 onKeyDown={onClickHandler}
                 value={index}
                 key={index}
-                role='button'
+                role='button' // eslint-disable-line
                 tabIndex={0}
                 title={`${label} ${index + 1}`}
                 aria-label={`${label} ${index + 1}`}

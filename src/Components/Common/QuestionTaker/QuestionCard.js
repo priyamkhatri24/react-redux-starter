@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
@@ -201,17 +202,19 @@ class QuestionCard extends Component {
 
       return false;
     }
+    return null;
   };
 
   handleChecked(order) {
-    const checkedArray = [...this.state.checked];
+    const { checked } = this.state;
+    const checkedArray = [...checked];
     checkedArray[order - 1] = !checkedArray[order - 1];
     this.setState({ checked: checkedArray });
     console.log('CHANGE!');
   }
 
   render() {
-    const { question } = this.state;
+    const { question, answer, checked } = this.state;
     return (
       <>
         <Card
@@ -268,7 +271,7 @@ class QuestionCard extends Component {
                     name='Answer'
                     type='text'
                     placeholder='Answer'
-                    value={this.state.answer}
+                    value={answer}
                     onChange={(e) => this.setState({ answer: e.target.value })}
                   />
                   <span>Answer</span>
@@ -285,7 +288,7 @@ class QuestionCard extends Component {
                     <label
                       htmlFor={elem.order}
                       className={`QuestionTaker__customRadio p-2 w-100 ${
-                        this.state.checked[elem.order - 1] ? 'QuestionTaker__focusedRadio' : 'w-75'
+                        checked[elem.order - 1] ? 'QuestionTaker__focusedRadio' : 'w-75'
                       }`}
                     >
                       <div className='radioControl'>
@@ -295,7 +298,7 @@ class QuestionCard extends Component {
                         onChange={() => this.handleChecked(elem.order)}
                         id={elem.order}
                         type='checkbox'
-                        checked={this.state.checked[elem.order - 1]}
+                        checked={checked[elem.order - 1]}
                       />
                       {elem.image && <img src={elem.image} alt='option' className='img-fluid' />}
                     </label>
@@ -320,3 +323,9 @@ class QuestionCard extends Component {
 }
 
 export default QuestionCard;
+
+QuestionCard.propTypes = {
+  currentQuestion: PropTypes.instanceOf(Object).isRequired,
+  onUnmount: PropTypes.func.isRequired,
+  onSaveAndNext: PropTypes.func.isRequired,
+};

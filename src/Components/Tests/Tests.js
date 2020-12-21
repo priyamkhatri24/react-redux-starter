@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import fromUnixTime from 'date-fns/fromUnixTime';
@@ -353,3 +354,9 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(Tests);
+
+Tests.propTypes = {
+  startHomework: PropTypes.func.isRequired,
+  startLive: PropTypes.func.isRequired,
+  clientUserId: PropTypes.number.isRequired,
+};

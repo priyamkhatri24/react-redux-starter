@@ -117,7 +117,7 @@ class LiveClasses extends Component {
 
     if (element.stream_type === 'jitsi') {
       let strippedDomain = domain;
-      if (element.server_url) strippedDomain = element.server_url.split('/')[2];
+      if (element.server_url) strippedDomain = element.server_url.split('/')[2]; // eslint-disable-line
       this.setState({
         jitsiFirstName: element.first_name,
         jitsiLastName: element.last_name,
@@ -142,7 +142,7 @@ class LiveClasses extends Component {
 
     if (element.stream_type === 'jitsi') {
       let strippedDomain = domain;
-      if (element.server_url) strippedDomain = element.server_url.split('/')[2];
+      if (element.server_url) strippedDomain = element.server_url.split('/')[2]; //eslint-disable-line
       this.setState({
         jitsiRoomName: element.stream_link,
         domain: strippedDomain,
@@ -176,6 +176,7 @@ class LiveClasses extends Component {
   handleClose = () => this.setState({ showModal: false });
 
   getSelectedBatches = (payload) => {
+    const { selectedBatches } = this.state;
     this.setState({ selectedBatches: payload });
     const extraBatchesString = payload.length > 1 ? ` +${(payload.length - 2).toString()}` : '';
     if (payload.length) {
@@ -188,7 +189,7 @@ class LiveClasses extends Component {
         }
         return acc;
       }, '');
-      if (this.state.selectedBatches.length > 0)
+      if (selectedBatches.length > 0)
         this.setState({ inputValue: inputString + extraBatchesString });
       else this.setState({ inputValue: '' });
     }

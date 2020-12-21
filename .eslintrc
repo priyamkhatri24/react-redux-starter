@@ -5,18 +5,20 @@
     "allowImportExportEverywhere": false,
     "codeFrame": false
   },
-  "extends": ["airbnb", "prettier"],
+  "extends": ["airbnb", "prettier", "react-app"],
   "env": {
     "browser": true,
     "jest": true
   },
   "rules": {
+    "react/no-did-update-set-state":["warn"],
+    "jsx-a11y/label-has-associated-control":["off"],
     "max-len": ["error", { "code": 120 }],
     "prefer-promise-reject-errors": ["off"],
     "react/jsx-filename-extension": ["off"],
     "no-return-assign": ["off"],
     "import/prefer-default-export": ["off"],
-    "no-console": ["warn"], // Remove this during final code cleanup
+    "no-console": ["off"], // Remove this during final code cleanup
     "react/jsx-one-expression-per-line": ["off"],
     "no-nested-ternary": ["off"],
     "no-plusplus": [2, { "allowForLoopAfterthoughts": true }], // only allows for for loops

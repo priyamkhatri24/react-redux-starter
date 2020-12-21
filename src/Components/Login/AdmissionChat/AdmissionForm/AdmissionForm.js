@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
@@ -147,7 +148,8 @@ const AdmissionForm = (props) => {
           Swal.fire({
             icon: 'Success',
             text:
-              'Thank you for filling the admission form. You will receive your username on your registered number, use it to login',
+              'Thank you for filling the admission form. ' +
+              'You will receive your username on your registered number, use it to login',
           }).then((response) => {
             if (response.isConfirmed) history.push('/login');
           });
@@ -200,3 +202,17 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(AdmissionForm);
+
+AdmissionForm.propTypes = {
+  clientId: PropTypes.number.isRequired,
+  clientUserId: PropTypes.number.isRequired,
+  currentbranding: PropTypes.shape({
+    branding: PropTypes.shape({
+      client_contact: PropTypes.string,
+    }),
+  }).isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+  userId: PropTypes.number.isRequired,
+};

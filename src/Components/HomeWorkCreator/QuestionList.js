@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { connect } from 'react-redux';
@@ -105,3 +106,15 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(QuestionList);
+
+QuestionList.propTypes = {
+  setCurrentSlide: PropTypes.func.isRequired,
+  setSelectedQuestionArrayToStore: PropTypes.func.isRequired,
+  homeworkQuestions: PropTypes.instanceOf(Array),
+  selectedQuestionArray: PropTypes.instanceOf(Array),
+};
+
+QuestionList.defaultProps = {
+  homeworkQuestions: [],
+  selectedQuestionArray: [],
+};

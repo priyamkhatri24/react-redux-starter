@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import './AddButton.scss';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
@@ -57,7 +58,7 @@ export const AddButton = (props) => {
                         key={elem.name}
                         onClick={elem.func}
                         onKeyDown={elem.func}
-                        role='button'
+                        role='button' // eslint-disable-line
                         tabIndex='-1'
                       >
                         {elem.name}{' '}
@@ -82,4 +83,8 @@ export const AddButton = (props) => {
       </div>
     </div>
   );
+};
+
+AddButton.propTypes = {
+  addButtonArray: PropTypes.instanceOf(Array).isRequired,
 };

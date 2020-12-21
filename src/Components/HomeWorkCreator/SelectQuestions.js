@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -247,24 +248,24 @@ const SelectQuestions = (props) => {
               </Col>
               <Card className='w-100 mt-4 p-3 mb-3'>
                 <p className='Homework__smallHeading text-left'>Other Options:</p>
-                <p
-                  className='Homework__smallHeading text-left ml-3'
+                <div
+                  className='Homework__smallHeading text-left ml-3 mb-1'
                   onClick={() => goToSentSaved()}
                   onKeyDown={() => goToSentSaved()}
                   role='button'
                   tabIndex='-1'
                 >
                   Add from saved/sent tests.
-                </p>
-                <p
-                  className='Homework__smallHeading text-left ml-3'
+                </div>
+                <div
+                  className='Homework__smallHeading text-left ml-3 mb-1'
                   onClick={() => goToCreateQuestion()}
                   onKeyDown={() => goToCreateQuestion()}
                   role='button'
                   tabIndex='-1'
                 >
                   Add Questions Manually.
-                </p>
+                </div>
               </Card>
             </>
           )}
@@ -292,3 +293,10 @@ const SelectQuestions = (props) => {
 };
 
 export default SelectQuestions;
+
+SelectQuestions.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
+  fetch: PropTypes.func.isRequired,
+};

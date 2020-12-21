@@ -445,6 +445,12 @@ Dashboard.propTypes = {
   clientId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
   clearProfile: PropTypes.func.isRequired,
+  clearClientIdDetails: PropTypes.func.isRequired,
+  setTestResultArrayToStore: PropTypes.func.isRequired,
+  setTestEndTimeToStore: PropTypes.func.isRequired,
+  setTestStartTimeToStore: PropTypes.func.isRequired,
+  setTestIdToStore: PropTypes.func.isRequired,
+  setTestTypeToStore: PropTypes.func.isRequired,
   userProfile: PropTypes.shape({
     firstName: PropTypes.string.isRequired,
     profileImage: PropTypes.string,

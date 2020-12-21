@@ -215,7 +215,7 @@ SignIn.propTypes = {
   location: PropTypes.shape({
     state: PropTypes.shape({
       image: PropTypes.string,
-      userInfo: PropTypes.array.isRequired,
+      userInfo: PropTypes.instanceOf(Array),
       contact: PropTypes.string.isRequired,
     }),
   }),

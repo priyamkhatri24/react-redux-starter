@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { connect } from 'react-redux';
@@ -75,3 +76,12 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PreviewQuestions);
+
+PreviewQuestions.propTypes = {
+  setCurrentSlide: PropTypes.func.isRequired,
+  setSelectedQuestionArrayToStore: PropTypes.func.isRequired,
+  selectedQuestionArray: PropTypes.instanceOf(Array).isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};

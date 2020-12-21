@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import compareAsc from 'date-fns/compareAsc';
 import differenceInSeconds from 'date-fns/differenceInSeconds';
@@ -72,3 +73,8 @@ const LiveTestCounter = (props) => {
 };
 
 export default LiveTestCounter;
+
+LiveTestCounter.propTypes = {
+  isAllowed: PropTypes.func.isRequired,
+  id: PropTypes.number.isRequired,
+};

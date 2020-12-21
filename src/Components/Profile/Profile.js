@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -151,3 +152,26 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+
+Profile.propTypes = {
+  clientId: PropTypes.number.isRequired,
+  clientUserId: PropTypes.number.isRequired,
+  userProfile: PropTypes.shape({
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string,
+    contact: PropTypes.string.isRequired,
+    profileImage: PropTypes.string,
+  }),
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+  clearProfile: PropTypes.func.isRequired,
+  clearClientIdDetails: PropTypes.func.isRequired,
+};
+
+Profile.defaultProps = {
+  userProfile: PropTypes.shape({
+    lastName: '',
+    profileImage: '',
+  }),
+};

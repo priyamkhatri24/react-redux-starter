@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import ReactPlayer from 'react-player/youtube';

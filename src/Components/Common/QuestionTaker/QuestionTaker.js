@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Modal from 'react-bootstrap/Modal';
@@ -73,36 +74,23 @@ class QuestionTaker extends Component {
   }
 
   componentWillUnmount() {
+    const { history } = this.props;
     window.removeEventListener('beforeunload', this.onUnload);
-    this.props.history.push('/');
+    history.push('/');
   }
 
   onUnload = () => {
-    // const {
-    //   history,
-    //   setTestEndTimeToStore,
-    //   setTestIdToStore,
-    //   setTestResultArrayToStore,
-    //   setTestTypeToStore,
-    //   setTestStartTimeToStore,
-    // } = this.props;
     this.setState({
       result: [{ question_list: [], subject: '' }],
       currentTime: 0,
       testEndTime: 0,
     });
-    // setTestEndTimeToStore(0);
-    // setTestIdToStore(null);
-    // setTestResultArrayToStore([]);
-    // setTestTypeToStore(null);
-    // setTestStartTimeToStore(0);
-    // history.push('/');
   };
 
   timerHasFinished = () => {
-    console.log('it has finished');
-    console.log(this.state.result);
-    const finalArray = this.state.result
+    const { result, testId } = this.state;
+    const { clientUserId, testType, testId: testID } = this.props;
+    const finalArray = result
       .map((elem) => {
         const flattenedQuestionArray = elem.question_list.map((e) => {
           const payload = {};
@@ -126,26 +114,25 @@ class QuestionTaker extends Component {
 
     const finalObject = Object.assign({}, ...finalArray);
 
-    console.log(finalObject, 'stiingi');
     const finalPayload = {
-      client_user_id: this.props.clientUserId,
-      test_id: this.state.testId,
+      client_user_id: clientUserId,
+      test_id: testId,
       questions_array: JSON.stringify(finalObject),
     };
     post(finalPayload, '/studentTestActivity').then((res) => {
       if (res.success) {
         const updationPayload = {
-          client_user_id: this.props.clientUserId,
-          test_id: this.props.testId,
+          client_user_id: clientUserId,
+          test_id: testID,
           test_status: 'submitted',
         };
-        if (this.props.testType === 'demotest') {
+        if (testType === 'demotest') {
           post(updationPayload, '/updateTestStatus').then((response) => {
             if (response.success) {
               this.testSubmissionAlert();
             }
           });
-        } else if (this.props.testType === 'homework' || this.props.testType === 'livetest') {
+        } else if (testType === 'homework' || testType === 'livetest') {
           post(updationPayload, '/submitTest').then((response) => {
             if (response.success) {
               this.testSubmissionAlert();
@@ -157,15 +144,17 @@ class QuestionTaker extends Component {
   };
 
   testSubmissionAlert = () => {
+    const { history } = this.props;
+
     Swal.fire({
       title: 'Well Done!',
       text: 'Test successfully submitted',
       icon: 'success',
       confirmButtonText: `Next`,
       customClass: 'Assignments__SweetAlert',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.props.history.push('/');
+    }).then((res) => {
+      if (res.isConfirmed) {
+        history.push('/');
       }
     });
   };
@@ -176,7 +165,9 @@ class QuestionTaker extends Component {
   };
 
   changeQuestion = (subject, questionId) => {
-    const currentSubject = this.state.result.filter((elem) => {
+    const { result } = this.state;
+
+    const currentSubject = result.filter((elem) => {
       return elem.subject === subject;
     });
 
@@ -192,10 +183,11 @@ class QuestionTaker extends Component {
 
   questionCardUnmount = (elem) => {
     console.log(elem, 'njj');
+    const { result, currentSubject } = this.state;
     if (elem.uuid) {
-      const tempResult = [...this.state.result];
+      const tempResult = [...result];
       const newResult = tempResult.map((res) => {
-        if (res.subject === this.state.currentSubject) {
+        if (res.subject === currentSubject) {
           res.question_list.forEach((e) => {
             if (e.uuid === elem.uuid && e.student_answer === null) {
               e.noOfTimesVisited = elem.count;
@@ -273,7 +265,15 @@ class QuestionTaker extends Component {
   handleFinishClose = () => this.setState({ modalOpen: false });
 
   render() {
-    const { currentTime, testEndTime, result, currentQuestion } = this.state;
+    const {
+      currentTime,
+      testEndTime,
+      result,
+      currentQuestion,
+      startingResult,
+      modalOpen,
+      timerCurrentTime,
+    } = this.state;
     return (
       <div className='QuestionTaker'>
         <div className='mx-2 mt-3 d-flex'>
@@ -296,7 +296,7 @@ class QuestionTaker extends Component {
           questions={result}
           changeQuestion={this.changeQuestion}
           currentQuestion={currentQuestion}
-          startingResult={this.state.startingResult}
+          startingResult={startingResult}
         />
 
         <QuestionCard
@@ -305,14 +305,14 @@ class QuestionTaker extends Component {
           onSaveAndNext={this.onSaveAndNext}
         />
 
-        <Modal show={this.state.modalOpen} centered onHide={this.handleFinishClose}>
+        <Modal show={modalOpen} centered onHide={this.handleFinishClose}>
           <Modal.Body className='text-center'>
             {currentTime !== 0 && testEndTime !== 0 && (
               <>
                 <p className='QuestionTaker__timeRemaining mt-3'>Time Remaining</p>
                 <Timer
                   startTime={Date.now()}
-                  endTime={Date.now() + this.state.timerCurrentTime}
+                  endTime={Date.now() + timerCurrentTime}
                   isFinished={this.timerHasFinished}
                 />
               </>
@@ -364,3 +364,15 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(QuestionTaker);
+
+QuestionTaker.propTypes = {
+  clientUserId: PropTypes.number.isRequired,
+  testId: PropTypes.number.isRequired,
+  testType: PropTypes.string.isRequired,
+  testResultArray: PropTypes.instanceOf(Array).isRequired,
+  testStartTime: PropTypes.number.isRequired,
+  testEndTime: PropTypes.number.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
