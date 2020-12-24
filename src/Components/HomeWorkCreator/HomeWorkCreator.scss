@@ -134,4 +134,41 @@
   }
 
   /**************************/
+
+  &__ckQuestion {
+    font-size: $spacer * 0.875;
+    font-family: $medium;
+    color: $disabledGrey;
+  }
+
+  &__ckAttach {
+    background-color: $lightestGrey;
+    color: $disabledGrey;
+    border-radius: 50px;
+    height: 1.5 * $spacer;
+    width: 1.5 * $spacer;
+  }
+
+  &__inlineEditor .ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-rounded-corners {
+    border-color: #c4c4c4;
+  }
+
+  &__inlineEditor .ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-rounded-corners p {
+    margin: 0;
+    font-family: $medium;
+    font-size: $spacer * 0.875;
+  }
+
+  /************************/
+  &__preview {
+    font-family: $bold;
+  }
+
+  &__previewHeading {
+    font-family: $semiBold;
+  }
+
+  &__previewText {
+    font-family: $regular;
+  }
 }

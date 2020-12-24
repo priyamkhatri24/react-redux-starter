@@ -21,6 +21,7 @@ import HomeWorkCreator from '../Components/HomeWorkCreator/HomeWorkCreator';
 import SavedSentTests from '../Components/HomeWorkCreator/SavedSentTests';
 import FinalQuestions from '../Components/HomeWorkCreator/FinalQuestions';
 import CreateQuestion from '../Components/HomeWorkCreator/CreateQuestion';
+import HomeWorkAssigner from '../Components/HomeWorkCreator/HomeWorkAssigner';
 
 export function Routes() {
   return (
@@ -47,6 +48,7 @@ export function Routes() {
       <AuthenticatedRoute exect path='/homework/savedtests' component={SavedSentTests} />
       <AuthenticatedRoute exect path='/homework/preview' component={FinalQuestions} />
       <AuthenticatedRoute exect path='/homework/create' component={CreateQuestion} />
+      <AuthenticatedRoute exect path='/homework/assign' component={HomeWorkAssigner} />
 
       <Route path='/fileviewer' component={FileView} />
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
@@ -9,11 +10,12 @@ import CloseIcon from '@material-ui/icons/Close';
 import Button from 'react-bootstrap/Button';
 import RangeSlider from 'react-bootstrap-range-slider';
 import { get, apiValidation } from '../../Utilities';
+import { homeworkActions } from '../../redux/actions/homework.action';
 import { BatchesSelector } from '../Common';
 import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 
 const SelectQuestions = (props) => {
-  const { history, fetch } = props;
+  const { history, fetch, setCurrentSubjectArrayToStore, setCurrentChapterArrayToStore } = props;
   const [classes, setClasses] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState({});
@@ -52,7 +54,17 @@ const SelectQuestions = (props) => {
       .map((e) => {
         return e.subject_id;
       });
+    /** *********************Sets subject array to store**************** */
+    const selectedSubjectArray = newSubjectAraay
+      .filter((e) => {
+        return e.isSelected === true;
+      })
+      .map((e) => {
+        return e.class_subject_id;
+      });
 
+    setCurrentSubjectArrayToStore(selectedSubjectArray);
+    /** ************************************************************* */
     const payload = {
       class_id: currentQuestion.class_id,
       subject_array: JSON.stringify(payloadArray),
@@ -84,11 +96,15 @@ const SelectQuestions = (props) => {
 
   const getSelectedBatches = (payload) => {
     setSelectedChapters(payload);
+
+    const chapterArray = payload.map((e) => e.chapter_id);
+    /** ************************Set Chapter Array to Store */
+    setCurrentChapterArrayToStore(chapterArray);
+    /** ************************************************** */
   };
 
   const fetchQuestions = () => {
     const chapterArray = selectedChapters.map((e) => e.chapter_id);
-
     const payload = {
       chapter_array: JSON.stringify(chapterArray),
       number_of_questions: noOfQuestions,
@@ -292,9 +308,22 @@ const SelectQuestions = (props) => {
   );
 };
 
-export default SelectQuestions;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setCurrentChapterArrayToStore: (payload) => {
+      dispatch(homeworkActions.setCurrentChapterArrayToStore(payload));
+    },
+    setCurrentSubjectArrayToStore: (payload) => {
+      dispatch(homeworkActions.setCurrentSubjectArrayToStore(payload));
+    },
+  };
+};
+
+export default connect(null, mapDispatchToProps)(SelectQuestions);
 
 SelectQuestions.propTypes = {
+  setCurrentSubjectArrayToStore: PropTypes.func.isRequired,
+  setCurrentChapterArrayToStore: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,

@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import Swal from 'sweetalert2';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { connect } from 'react-redux';
 import Question from './Question';
 import { homeworkActions } from '../../redux/actions/homework.action';
-import { getSelectedQuestionArray } from '../../redux/reducers/homeworkCreator.reducer';
+import {
+  getCurrentChapterArray,
+  getCurrentSubjectArray,
+  getSelectedQuestionArray,
+  getTestId,
+  getTestName,
+} from '../../redux/reducers/homeworkCreator.reducer';
+import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
+import { post } from '../../Utilities';
 
 const QuestionList = (props) => {
   const {
@@ -13,9 +22,23 @@ const QuestionList = (props) => {
     setSelectedQuestionArrayToStore,
     selectedQuestionArray,
     setCurrentSlide,
+    testId,
+    testName,
+    clientId,
+    clientUserId,
+    currentChapterArray,
+    currentSubjectArray,
+    setTestIdToStore,
+    setTestNameToStore,
   } = props;
   const [questions, setQuestions] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
+  const [isDraft, setDraft] = useState(0);
+
+  useEffect(() => {
+    const draft = testId === null ? 0 : 1;
+    setDraft(draft);
+  }, [testId]);
 
   useEffect(() => {
     const newQuestions = homeworkQuestions.map((e) => {
@@ -30,15 +53,67 @@ const QuestionList = (props) => {
   }, [selectedQuestionArray]);
 
   const updateSelectedQuestions = (question) => {
+    const ques = [];
+    ques.push(question.question_id);
     const newSelectedQuestions = JSON.parse(JSON.stringify(selectedQuestions));
     if (question.isSelected === true) {
-      newSelectedQuestions.push(question);
-      setSelectedQuestionArrayToStore(newSelectedQuestions);
-    } else {
-      const removedSelectedQuestions = newSelectedQuestions.filter((e) => {
-        return e.question_id !== question.question_id;
+      let payload;
+      if (!isDraft) {
+        payload = {
+          language_type: 'english',
+          client_id: clientId,
+          questions_array: JSON.stringify(ques),
+          is_draft: isDraft,
+          chapter_array: JSON.stringify(currentChapterArray),
+          teacher_id: clientUserId,
+          class_subject: JSON.stringify(currentSubjectArray),
+        };
+      } else {
+        payload = {
+          chapter_array: JSON.stringify(currentChapterArray),
+          teacher_id: clientUserId,
+          test_id: testId,
+          is_draft: isDraft,
+          questions_array: JSON.stringify(ques),
+          class_subject: JSON.stringify(currentSubjectArray),
+          client_id: clientId,
+          test_name: testName,
+        };
+      }
+      console.log(payload);
+      post(payload, '/addTestFromHomeworkCreator').then((res) => {
+        if (res.success) {
+          if (!isDraft) {
+            setTestIdToStore(res.test_id);
+            setTestNameToStore(res.test_name);
+          }
+          newSelectedQuestions.push(question);
+          setSelectedQuestionArrayToStore(newSelectedQuestions);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops',
+            text: 'Question could not be added',
+          });
+        }
       });
-      setSelectedQuestionArrayToStore(removedSelectedQuestions);
+    } else {
+      post({ question_id: question.question_id, test_id: testId }, '/deleteQuestionFromTest').then(
+        (res) => {
+          if (res.success) {
+            const removedSelectedQuestions = newSelectedQuestions.filter((e) => {
+              return e.question_id !== question.question_id;
+            });
+            setSelectedQuestionArrayToStore(removedSelectedQuestions);
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops',
+              text: 'Question could not be removed',
+            });
+          }
+        },
+      );
     }
   };
 
@@ -92,6 +167,12 @@ const QuestionList = (props) => {
 
 const mapStateToProps = (state) => ({
   selectedQuestionArray: getSelectedQuestionArray(state),
+  testId: getTestId(state),
+  testName: getTestName(state),
+  clientId: getClientId(state),
+  clientUserId: getClientUserId(state),
+  currentChapterArray: getCurrentChapterArray(state),
+  currentSubjectArray: getCurrentSubjectArray(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -102,19 +183,34 @@ const mapDispatchToProps = (dispatch) => {
     setCurrentSlide: (payload) => {
       dispatch(homeworkActions.setCurrentSlide(payload));
     },
+    setTestIdToStore: (payload) => {
+      dispatch(homeworkActions.setTestIdToStore(payload));
+    },
+    setTestNameToStore: (payload) => {
+      dispatch(homeworkActions.setTestNameToStore(payload));
+    },
   };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(QuestionList);
 
 QuestionList.propTypes = {
+  clientId: PropTypes.number.isRequired,
+  clientUserId: PropTypes.number.isRequired,
   setCurrentSlide: PropTypes.func.isRequired,
+  setTestIdToStore: PropTypes.func.isRequired,
+  setTestNameToStore: PropTypes.func.isRequired,
+  currentChapterArray: PropTypes.instanceOf(Array).isRequired,
+  currentSubjectArray: PropTypes.instanceOf(Array).isRequired,
   setSelectedQuestionArrayToStore: PropTypes.func.isRequired,
   homeworkQuestions: PropTypes.instanceOf(Array),
   selectedQuestionArray: PropTypes.instanceOf(Array),
+  testId: PropTypes.number,
+  testName: PropTypes.string.isRequired,
 };
 
 QuestionList.defaultProps = {
   homeworkQuestions: [],
   selectedQuestionArray: [],
+  testId: null,
 };

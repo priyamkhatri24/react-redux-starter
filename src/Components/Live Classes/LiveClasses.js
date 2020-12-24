@@ -12,6 +12,8 @@ import Modal from 'react-bootstrap/Modal';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Button from 'react-bootstrap/Button';
+import Swal from 'sweetalert2';
+
 import {
   getClientId,
   getClientUserId,
@@ -226,7 +228,12 @@ class LiveClasses extends Component {
     const milliseconds =
       (durationArray[0] * 3600 + durationArray[1] * 60 + durationArray[2]) * 1000;
     if (Number.isNaN(Number(milliseconds))) {
-      alert('Please input the complete duration.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops',
+        text: 'Please input the complete duration.',
+      });
+
       return;
     }
     const batchIdArray = JSON.stringify(selectedBatches.map((elem) => elem.client_batch_id));
