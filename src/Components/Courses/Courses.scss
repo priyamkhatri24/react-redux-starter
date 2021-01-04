@@ -1,0 +1,39 @@
+.Courses {
+  @import '../../scss/bootstrap';
+
+  &__heading {
+    color: $headingGrey;
+    line-height: $spacer * 1.25;
+    font-family: $medium;
+  }
+
+  &__subHeading {
+    font-family: $regular;
+    line-height: 15px;
+    color: $dashboardBlack;
+    font-size: $spacer * 0.75;
+  }
+
+  &__accordionHeading {
+    border-radius: 5px;
+    border: 1px solid $dashboardGrey;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
+    font-family: $medium;
+    font-size: $spacer * 0.875;
+    line-height: $spacer * 1.25;
+  }
+
+  &__couponHeading {
+    color: $dashboardBlack;
+    font-family: $regular;
+    font-size: $spacer * 0.75;
+  }
+
+  &__viewCourseImage {
+    max-width: 100%;
+    width: 95px;
+    height: 61px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+}

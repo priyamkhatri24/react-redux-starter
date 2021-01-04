@@ -17,7 +17,7 @@ import { userProfileActions } from '../../redux/actions/userProfile.action';
 import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { testsActions } from '../../redux/actions/tests.action';
 import hands from '../../assets/images/Dashboard/hands.svg';
-import { DashboardCards } from '../Common';
+import { CoursesCards, DashboardCards } from '../Common';
 import offlineAssignment from '../../assets/images/Dashboard/offline.svg';
 import camera from '../../assets/images/Dashboard/camera.svg';
 import analysis from '../../assets/images/Dashboard/analysis.svg';
@@ -41,6 +41,8 @@ const Dashboard = (props) => {
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
+  const [allCourses, setAllCourses] = useState([]);
+  const [myCourses, setMyCourses] = useState([]);
 
   const partsOfDay = () => {
     const hours = new Date().getHours();
@@ -64,6 +66,13 @@ const Dashboard = (props) => {
       })
       .catch((err) => console.error(err));
     partsOfDay();
+
+    get({ client_user_id: clientUserId }, '/getRecentCourses').then((res) => {
+      const result = apiValidation(res);
+      setAllCourses(result.assigned_courses);
+      setMyCourses(result.subscribed_courses);
+      console.log(result);
+    });
   }, [clientId, clientUserId]);
 
   const logout = () => {
@@ -123,6 +132,17 @@ const Dashboard = (props) => {
     setTestEndTimeToStore(endTime);
     setTestStartTimeToStore(startTime);
     setTestTypeToStore(testType);
+  };
+
+  const goToCourses = (type) => {
+    const { push } = history;
+    push({ pathname: '/courses', state: { type } });
+  };
+
+  const goToBuyCourse = (id) => {
+    const { push } = history;
+
+    push({ pathname: '/courses/buyCourse', state: { id, clientUserId } });
   };
 
   return (
@@ -296,6 +316,13 @@ const Dashboard = (props) => {
         ))}
       </div>
 
+      <CoursesCards
+        allCourses={allCourses}
+        myCourses={myCourses}
+        goToCourse={goToCourses}
+        buyCourseId={goToBuyCourse}
+      />
+
       <DashboardCards
         image={offlineAssignment}
         heading='Offline assignment'
@@ -351,49 +378,10 @@ const Dashboard = (props) => {
         backGround='rgb(248,252,255)'
         backgroundImg='linear-gradient(90deg, rgba(248,252,255,1) 0%, rgba(188,224,253,1) 100%)'
       />
-      {/* <div
-        onClick={() => goToAssignments('live test')}
-        onKeyDown={() => goToAssignments('live test')}
-        tabIndex='-1'
-        role='button'
-      >
-        <DashboardCards
-          image={student}
-          coloredHeading='Live'
-          color='rgba(255, 0, 0, 0.87)'
-          heading='Test'
-          subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
-          boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-        />
-      </div> */}
 
       <div>
         <Tests startHomework={startHomework} startLive={startLiveTest} />
       </div>
-
-      {/* <DashboardCards
-        image={student}
-        coloredHeading='Demo'
-        color='rgba(207, 236, 0, 0.87)  '
-        heading='Test'
-        subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
-        boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-      />
-
-      <div
-        onClick={() => goToAssignments('homework')}
-        onKeyDown={() => goToAssignments('homework')}
-        tabIndex='-1'
-        role='button'
-      >
-        <DashboardCards
-          image={student}
-          coloredHeading='Homework'
-          color='rgba(0, 102, 255, 0.87)'
-          subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
-          boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-        />
-      </div> */}
 
       <DashboardCards
         image={student}

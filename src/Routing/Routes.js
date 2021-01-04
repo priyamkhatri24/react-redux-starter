@@ -22,6 +22,9 @@ import SavedSentTests from '../Components/HomeWorkCreator/SavedSentTests';
 import FinalQuestions from '../Components/HomeWorkCreator/FinalQuestions';
 import CreateQuestion from '../Components/HomeWorkCreator/CreateQuestion';
 import HomeWorkAssigner from '../Components/HomeWorkCreator/HomeWorkAssigner';
+import ViewCourses from '../Components/Courses/ViewCourses';
+import BuyCourse from '../Components/Courses/BuyCourse';
+import Mycourse from '../Components/Courses/MyCourse';
 
 export function Routes() {
   return (
@@ -45,10 +48,13 @@ export function Routes() {
       <AuthenticatedRoute path='/fees' component={Fees} />
       <AuthenticatedRoute exact path='/order' component={FeesOrder} />
       <AuthenticatedRoute exact path='/homework' component={HomeWorkCreator} />
-      <AuthenticatedRoute exect path='/homework/savedtests' component={SavedSentTests} />
-      <AuthenticatedRoute exect path='/homework/preview' component={FinalQuestions} />
-      <AuthenticatedRoute exect path='/homework/create' component={CreateQuestion} />
-      <AuthenticatedRoute exect path='/homework/assign' component={HomeWorkAssigner} />
+      <AuthenticatedRoute exact path='/homework/savedtests' component={SavedSentTests} />
+      <AuthenticatedRoute exact path='/homework/preview' component={FinalQuestions} />
+      <AuthenticatedRoute exact path='/homework/create' component={CreateQuestion} />
+      <AuthenticatedRoute exact path='/homework/assign' component={HomeWorkAssigner} />
+      <AuthenticatedRoute exact path='/courses' component={ViewCourses} />
+      <AuthenticatedRoute exact path='/courses/buyCourse' component={BuyCourse} />
+      <AuthenticatedRoute exact path='/courses/mycourse' component={Mycourse} />
 
       <Route path='/fileviewer' component={FileView} />
 

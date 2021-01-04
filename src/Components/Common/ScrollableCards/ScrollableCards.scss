@@ -46,4 +46,79 @@
       font-size: $spacer;
     }
   }
+
+  /****************************Course Cards**********/
+
+  &__courseCardContent {
+    min-width: 180px;
+    margin: 5px;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
+  }
+
+  &__courseImage {
+    max-width: 100%;
+    width: 180px;
+    height: 150px;
+    object-fit: cover;
+  }
+
+  &__coursesInitialHeading {
+    position: absolute;
+    top: 50%;
+    left: 20%;
+    z-index: 999;
+    color: $headingGrey;
+    font-family: $bold;
+  }
+
+  &__blurCourseImage {
+    filter: blur(3px);
+  }
+
+  &__smallText {
+    color: $white;
+    font-size: $spacer * 0.625;
+    font-family: $regular;
+    line-height: 13px;
+  }
+
+  &__courseCardHeading {
+    font-size: $spacer * 0.75;
+    font-family: $semiBold;
+    color: $headingGrey;
+    line-height: 15px;
+    text-align: left;
+  }
+
+  &__courseCardSubHeading {
+    font-size: $spacer * 0.625;
+    font-family: $regular;
+    color: $lightGrey;
+    line-height: 13px;
+    text-align: left;
+  }
+
+  &__emoji {
+    width: $spacer * 0.5;
+    height: $spacer * 0.5;
+    color: $dirtyYellow;
+  }
+
+  &__bestSeller {
+    background-color: $dirtyYellow;
+    text-align: left;
+    border-radius: 2px;
+    font-size: $spacer * 0.5;
+    line-height: 11px;
+    color: $headingGrey;
+    font-family: $bold;
+    width: 30%;
+  }
+
+  &__viewAll {
+    font-size: $spacer * 1.5;
+    font-family: $medium;
+    letter-spacing: 2px;
+    line-height: 28px;
+  }
 }

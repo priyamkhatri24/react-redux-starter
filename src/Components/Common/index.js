@@ -9,3 +9,4 @@ export * from './BatchesSelector/BatchesSelector';
 export * from './VideoPlayer/VideoPlayer';
 export * from './FileViewer/FileViewer';
 export * from './AddYoutube/AddYoutube';
+export * from './ScrollableCards/CoursesCards';

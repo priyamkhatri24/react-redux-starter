@@ -24,6 +24,7 @@ export async function displayRazorpay(
   razorSuccess,
   userFeeId,
   clientId,
+  RazorpayKeyId,
 ) {
   const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js');
 
@@ -44,7 +45,7 @@ export async function displayRazorpay(
   // const { amount, id: order_id, currency } = result.data;
 
   const options = {
-    key: process.env.REACT_APP_RAZORPAY_TEST_KEY_ID, // Enter the Key ID generated from the Dashboard
+    key: RazorpayKeyId, // Enter the Key ID generated from the Dashboard
     amount: amount.toString(),
     currency,
     name: brandName,
