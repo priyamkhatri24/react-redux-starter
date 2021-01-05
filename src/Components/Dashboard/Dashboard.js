@@ -145,6 +145,12 @@ const Dashboard = (props) => {
     push({ pathname: '/courses/buyCourse', state: { id, clientUserId } });
   };
 
+  const goToMyCourse = (id) => {
+    const { push } = history;
+
+    push({ pathname: '/courses/mycourse', state: { id, clientUserId } });
+  };
+
   return (
     <>
       <div className='Dashboard__headerCard'>
@@ -321,6 +327,7 @@ const Dashboard = (props) => {
         myCourses={myCourses}
         goToCourse={goToCourses}
         buyCourseId={goToBuyCourse}
+        myCourseId={goToMyCourse}
       />
 
       <DashboardCards

@@ -9,7 +9,7 @@ import coursesBoy from '../../../assets/images/Courses/coursesBoy.svg';
 import rupee from '../../../assets/images/Courses/rupee.svg';
 
 export const CoursesCards = (props) => {
-  const { allCourses, myCourses, goToCourse, buyCourseId } = props;
+  const { allCourses, myCourses, goToCourse, buyCourseId, myCourseId } = props;
 
   return (
     <>
@@ -114,7 +114,7 @@ export const CoursesCards = (props) => {
             <Card
               className='Scrollable__courseCardContent text-center'
               key={`elem+${elem.course_id}`}
-              onClick={() => buyCourseId(elem.course_id)}
+              onClick={() => myCourseId(elem.course_id)}
             >
               <div style={{ position: 'relative' }}>
                 <img
@@ -168,4 +168,5 @@ CoursesCards.propTypes = {
   myCourses: PropTypes.instanceOf(Array).isRequired,
   goToCourse: PropTypes.func.isRequired,
   buyCourseId: PropTypes.func.isRequired,
+  myCourseId: PropTypes.func.isRequired,
 };
