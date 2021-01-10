@@ -31,6 +31,10 @@ const Enquiry = (props) => {
       .catch((e) => console.error(e));
   }, [clientUserId]);
 
+  useEffect(() => {
+    console.log(radioOption);
+  }, [radioOption]);
+
   return (
     <div className='Enquiry'>
       <Col>

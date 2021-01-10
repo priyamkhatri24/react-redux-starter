@@ -169,7 +169,7 @@ const StudyBin = (props) => {
   ]);
 
   const goToVideoPlayer = (elem) => {
-    history.push({ pathname: '/videoplayer', state: { link: elem.file_link } });
+    history.push({ pathname: `/videoplayer/${elem.file_link}`, state: { link: elem.file_link } });
   };
 
   const openFileView = (elem) => {

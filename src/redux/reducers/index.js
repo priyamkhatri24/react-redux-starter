@@ -6,6 +6,7 @@ import { userProfile } from './userProfile.reducer';
 import { testsUpdate } from './tests.reducer';
 import { color } from './color.reducer';
 import { homework } from './homeworkCreator.reducer';
+import { course } from './course.reducer';
 
 const rootReducer = (history) =>
   combineReducers({
@@ -16,6 +17,7 @@ const rootReducer = (history) =>
     color,
     testsUpdate,
     homework,
+    course,
   });
 
 export default rootReducer;

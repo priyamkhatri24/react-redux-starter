@@ -8,11 +8,14 @@ import { BackButton } from '../BackButton/BackButton';
 import './PageHeader.scss';
 
 export const PageHeader = (props) => {
-  const { title, search, placeholder, searchFilter, customBack, handleBack } = props;
+  const { title, search, placeholder, searchFilter, customBack, handleBack, transparent } = props;
 
   const [searchBar, triggerSearchBar] = useState(false);
   return (
-    <div className='PageHeader p-3 d-flex'>
+    <div
+      className='PageHeader p-3 d-flex'
+      style={transparent ? { backgroundColor: 'transparent' } : {}}
+    >
       {!searchBar && (
         <>
           {customBack ? <ArrowBackIcon onClick={() => handleBack()} /> : <BackButton />}
@@ -58,18 +61,21 @@ export const PageHeader = (props) => {
 };
 
 PageHeader.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   search: PropTypes.bool,
   placeholder: PropTypes.string,
   searchFilter: PropTypes.func,
   customBack: PropTypes.bool,
   handleBack: PropTypes.func,
+  transparent: PropTypes.bool,
 };
 
 PageHeader.defaultProps = {
+  title: '',
   search: false,
   placeholder: '',
   searchFilter: () => {},
   customBack: false,
   handleBack: () => {},
+  transparent: false,
 };

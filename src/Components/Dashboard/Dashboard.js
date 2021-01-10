@@ -11,11 +11,16 @@ import { connect } from 'react-redux';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { get, apiValidation } from '../../Utilities';
-import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
+import {
+  getClientId,
+  getClientUserId,
+  getRoleArray,
+} from '../../redux/reducers/clientUserId.reducer';
 import dashboardAssignmentImage from '../../assets/images/Dashboard/dashboardAssignment.svg';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
 import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { testsActions } from '../../redux/actions/tests.action';
+import { courseActions } from '../../redux/actions/course.action';
 import hands from '../../assets/images/Dashboard/hands.svg';
 import { CoursesCards, DashboardCards } from '../Common';
 import offlineAssignment from '../../assets/images/Dashboard/offline.svg';
@@ -29,6 +34,7 @@ const Dashboard = (props) => {
   const {
     clientId,
     clientUserId,
+    roleArray,
     userProfile: { firstName, profileImage },
     clearProfile,
     clearClientIdDetails,
@@ -38,6 +44,7 @@ const Dashboard = (props) => {
     setTestTypeToStore,
     setTestIdToStore,
     setTestEndTimeToStore,
+    setCourseIdToStore,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
@@ -147,8 +154,8 @@ const Dashboard = (props) => {
 
   const goToMyCourse = (id) => {
     const { push } = history;
-
-    push({ pathname: '/courses/mycourse', state: { id, clientUserId } });
+    setCourseIdToStore(id);
+    push('/courses/mycourse');
   };
 
   return (
@@ -199,74 +206,86 @@ const Dashboard = (props) => {
         buttonText='Go live now'
         buttonClick={goToLiveClasses}
       />
-
-      <div className='Dashboard__innovation pt-4 px-3 pb-3'>
-        <h4>Witness </h4>
-        <h4>
-          The <span>innovation</span>
-        </h4>
-        <p className='mr-5'>Create tests &amp; home-works in 4 simple steps</p>
-        <Button variant='dashboardBlueOnWhite' onClick={() => goToHomeWorkCreator()}>
-          Let&apos;s go
-          <span>
-            <ChevronRightIcon />
-          </span>
-        </Button>
-        <div className='Dashboard__assignment my-4'>
-          <section className='Dashboard__scrollableCard'>
-            <div>
-              <Row>
-                <Col xs={8} className='pr-0'>
-                  <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
-                    Sent assignments
-                  </p>
-                  <p className='Dashboard__scrollableCardText pl-3 mt-1'>
-                    All the tests &amp; homeworks sent to students are here...
-                  </p>
-                </Col>
-                <Col xs={4} className='pt-3'>
-                  <img src={dashboardAssignmentImage} alt='assignment' height='40px' width='40px' />
-                </Col>
-              </Row>
-            </div>
-            <div>
-              <Row>
-                <Col xs={8} className='pr-0'>
-                  <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
-                    Saved assignments
-                  </p>
-                  <p className='Dashboard__scrollableCardText pl-3 mt-1'>
-                    See all your saved tests &amp; homeworks here...
-                  </p>
-                </Col>
-                <Col xs={4} className='pt-3'>
-                  <img src={dashboardAssignmentImage} alt='assignment' height='40px' width='40px' />
-                </Col>
-              </Row>
-            </div>
-          </section>
-        </div>
-      </div>
-
-      <div className='Dashboard__attendance p-4'>
-        <div className='w-75 Dashboard__attendanceCard mx-auto pt-4'>
-          <img src={hands} alt='hands' className='mx-auto d-block' />
-          <Row className='m-3'>
-            <span className='Dashboard__todaysHitsText my-auto'>Attendance</span>
-            <span className='ml-auto'>
+      {(roleArray.includes(3) || roleArray.includes(4)) && (
+        <div className='Dashboard__innovation pt-4 px-3 pb-3'>
+          <h4>Witness </h4>
+          <h4>
+            The <span>innovation</span>
+          </h4>
+          <p className='mr-5'>Create tests &amp; home-works in 4 simple steps</p>
+          <Button variant='dashboardBlueOnWhite' onClick={() => goToHomeWorkCreator()}>
+            Let&apos;s go
+            <span>
               <ChevronRightIcon />
             </span>
-          </Row>
-
-          <p className='Dashboard__attendanceSubHeading mx-3'>
-            Record attendance of the students and notify parents via SMS daily.
-          </p>
-
-          <hr />
-
-          <p>Recent Attendance</p>
+          </Button>
+          <div className='Dashboard__assignment my-4'>
+            <section className='Dashboard__scrollableCard'>
+              <div>
+                <Row>
+                  <Col xs={8} className='pr-0'>
+                    <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
+                      Sent assignments
+                    </p>
+                    <p className='Dashboard__scrollableCardText pl-3 mt-1'>
+                      All the tests &amp; homeworks sent to students are here...
+                    </p>
+                  </Col>
+                  <Col xs={4} className='pt-3'>
+                    <img
+                      src={dashboardAssignmentImage}
+                      alt='assignment'
+                      height='40px'
+                      width='40px'
+                    />
+                  </Col>
+                </Row>
+              </div>
+              <div>
+                <Row>
+                  <Col xs={8} className='pr-0'>
+                    <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
+                      Saved assignments
+                    </p>
+                    <p className='Dashboard__scrollableCardText pl-3 mt-1'>
+                      See all your saved tests &amp; homeworks here...
+                    </p>
+                  </Col>
+                  <Col xs={4} className='pt-3'>
+                    <img
+                      src={dashboardAssignmentImage}
+                      alt='assignment'
+                      height='40px'
+                      width='40px'
+                    />
+                  </Col>
+                </Row>
+              </div>
+            </section>
+          </div>
         </div>
-      </div>
+      )}
+      {(roleArray.includes(3) || roleArray.includes(4)) && (
+        <div className='Dashboard__attendance p-4'>
+          <div className='w-75 Dashboard__attendanceCard mx-auto pt-4'>
+            <img src={hands} alt='hands' className='mx-auto d-block' />
+            <Row className='m-3'>
+              <span className='Dashboard__todaysHitsText my-auto'>Attendance</span>
+              <span className='ml-auto'>
+                <ChevronRightIcon />
+              </span>
+            </Row>
+
+            <p className='Dashboard__attendanceSubHeading mx-3'>
+              Record attendance of the students and notify parents via SMS daily.
+            </p>
+
+            <hr />
+
+            <p>Recent Attendance</p>
+          </div>
+        </div>
+      )}
 
       <div
         className='Dashboard__noticeBoard mx-auto p-3'
@@ -330,34 +349,40 @@ const Dashboard = (props) => {
         myCourseId={goToMyCourse}
       />
 
-      <DashboardCards
-        image={offlineAssignment}
-        heading='Offline assignment'
-        subHeading='Record marks of all the pen-paper tests and send
+      {(roleArray.includes(3) || roleArray.includes(4)) && (
+        <DashboardCards
+          image={offlineAssignment}
+          heading='Offline assignment'
+          subHeading='Record marks of all the pen-paper tests and send
          the marks to parents in simple way.'
-        boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
-        backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
-        backGround='rgb(236,255,252)'
-      />
+          boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
+          backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
+          backGround='rgb(236,255,252)'
+        />
+      )}
 
-      <DashboardCards
-        image={camera}
-        heading='Send photos &amp; files'
-        subHeading='Send question papers, notes and books as
+      {(roleArray.includes(3) || roleArray.includes(4)) && (
+        <DashboardCards
+          image={camera}
+          heading='Send photos &amp; files'
+          subHeading='Send question papers, notes and books as
         photos or files such as .pdf, .doc, .txt, etc..'
-        boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
-        backGround='rgb(247,236,255)'
-        backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
-      />
+          boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
+          backGround='rgb(247,236,255)'
+          backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
+        />
+      )}
 
-      <DashboardCards
-        image={analysis}
-        heading='Admissions'
-        subHeading='Manage students, teachers and batches from a single place.'
-        boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-        backGround='rgb(235,245,246)'
-        backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
-      />
+      {(roleArray.includes(3) || roleArray.includes(4)) && (
+        <DashboardCards
+          image={analysis}
+          heading='Admissions'
+          subHeading='Manage students, teachers and batches from a single place.'
+          boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+          backGround='rgb(235,245,246)'
+          backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
+        />
+      )}
 
       <div onClick={() => goToFees()} role='button' tabIndex='-1' onKeyDown={() => goToFees()}>
         <DashboardCards
@@ -369,22 +394,26 @@ const Dashboard = (props) => {
           backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
         />
       </div>
-      <DashboardCards
-        image={analysis}
-        heading='Analysis'
-        subHeading='See detailed reports of every student and assignments.'
-        boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-        backGround='rgb(248,252,255)'
-        backgroundImg='linear-gradient(90deg, rgba(248,252,255,1) 0%, rgba(188,224,253,1) 100%)'
-      />
-      <DashboardCards
-        image={student}
-        heading='Student corner'
-        subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
-        boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-        backGround='rgb(248,252,255)'
-        backgroundImg='linear-gradient(90deg, rgba(248,252,255,1) 0%, rgba(188,224,253,1) 100%)'
-      />
+      {(roleArray.includes(3) || roleArray.includes(4)) && (
+        <DashboardCards
+          image={analysis}
+          heading='Analysis'
+          subHeading='See detailed reports of every student and assignments.'
+          boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+          backGround='rgb(248,252,255)'
+          backgroundImg='linear-gradient(90deg, rgba(248,252,255,1) 0%, rgba(188,224,253,1) 100%)'
+        />
+      )}
+      {(roleArray.includes(3) || roleArray.includes(4)) && (
+        <DashboardCards
+          image={student}
+          heading='Student corner'
+          subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
+          boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+          backGround='rgb(248,252,255)'
+          backgroundImg='linear-gradient(90deg, rgba(248,252,255,1) 0%, rgba(188,224,253,1) 100%)'
+        />
+      )}
 
       <div>
         <Tests startHomework={startHomework} startLive={startLiveTest} />
@@ -406,6 +435,7 @@ const mapStateToProps = (state) => ({
   userProfile: getUserProfile(state),
   clientId: getClientId(state),
   clientUserId: getClientUserId(state),
+  roleArray: getRoleArray(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -431,6 +461,9 @@ const mapDispatchToProps = (dispatch) => {
     setTestResultArrayToStore: (payload) => {
       dispatch(testsActions.setTestResultArrayToStore(payload));
     },
+    setCourseIdToStore: (payload) => {
+      dispatch(courseActions.setCourseIdToStore(payload));
+    },
   };
 };
 
@@ -446,11 +479,12 @@ Dashboard.propTypes = {
   setTestStartTimeToStore: PropTypes.func.isRequired,
   setTestIdToStore: PropTypes.func.isRequired,
   setTestTypeToStore: PropTypes.func.isRequired,
+  setCourseIdToStore: PropTypes.func.isRequired,
   userProfile: PropTypes.shape({
     firstName: PropTypes.string.isRequired,
     profileImage: PropTypes.string,
   }).isRequired,
-
+  roleArray: PropTypes.instanceOf(Array).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,

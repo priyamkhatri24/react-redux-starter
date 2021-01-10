@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import cx from 'classnames';
+import format from 'date-fns/format';
+import fromUnixTime from 'date-fns/fromUnixTime';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
@@ -17,6 +20,9 @@ import { PageHeader } from '../Common';
 import './Courses.scss';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
+import YCIcon from '../../assets/images/ycIcon.png';
+import checkmark from '../../assets/images/order/icons8-checked.svg';
+import caution from '../../assets/images/order/icons8-medium-risk-50.png';
 
 const BuyCourse = (props) => {
   const {
@@ -37,9 +43,18 @@ const BuyCourse = (props) => {
   const [whiteStarArray, setWhiteStarArray] = useState([]);
   const [starArray, setStarArray] = useState([]);
   const [showCouponModal, setShowCouponModal] = useState(false);
+  const [showFeeModal, setShowFeeModal] = useState(false);
   const [coupon, setCoupon] = useState('');
-  const [couponId, setCouponId] = useState(0);
+  const [couponId, setCouponId] = useState('');
   const [couponMessage, setCouponMessage] = useState('');
+  const [order, setOrder] = useState({});
+
+  const statusClass = cx({
+    Fees__orderStatus: true,
+    Fees__orderGreen:
+      order.status === 'marked' || order.status === 'waived' || order.status === 'paid',
+    Fees__orderRed: order.status === 'pending' || order.status === 'due',
+  });
 
   useEffect(() => {
     const payload = {
@@ -105,6 +120,17 @@ const BuyCourse = (props) => {
   const openCouponModal = () => setShowCouponModal(true);
   const closeCouponModal = () => setShowCouponModal(false);
 
+  const openFeeModal = () => setShowFeeModal(true);
+  const closeFeeModal = () => {
+    setShowFeeModal(false);
+    if (order.status === 'marked' || order.status === 'waived' || order.status === 'paid') {
+      history.push({
+        pathname: '/courses/mycourse',
+        state: { id: history.location.state.id, clientUserId: history.location.state.clientUserId },
+      });
+    }
+  };
+
   const applyCoupon = () => {
     const payload = {
       client_user_id: history.location.state.clientUserId,
@@ -116,7 +142,9 @@ const BuyCourse = (props) => {
     get(payload, '/checkCouponCode').then((res) => {
       const result = apiValidation(res);
       if (result.coupon_status === 'true') {
-        setCoursePrice(result.price);
+        let newPrice = coursePrice - result.price;
+        if (newPrice <= 0) newPrice = 1;
+        setCoursePrice(newPrice);
         setCouponId(result.coupon_id);
         setCouponMessage(result.message);
       } else {
@@ -169,7 +197,13 @@ const BuyCourse = (props) => {
       course_order_id: payload.user_fee_id,
     };
 
-    get(verifyPayload, '/fetchOrderByIDForCourse').then((res) => console.log(res));
+    get(verifyPayload, '/fetchOrderByIDForCourse').then((res) => {
+      console.log(res);
+      // alert('payment successful');
+      const result = apiValidation(res);
+      setOrder(result);
+      openFeeModal();
+    });
   };
 
   return (
@@ -180,7 +214,7 @@ const BuyCourse = (props) => {
           <Row className='mx-3'>
             <Col xs={4} className=''>
               <img
-                src={course.course_display_image}
+                src={course.course_display_image ? course.course_display_image : YCIcon}
                 alt='course'
                 className='mx-auto
               img-fluid'
@@ -339,6 +373,63 @@ const BuyCourse = (props) => {
           </Button>
           <Button variant='boldText' onClick={() => payToRazorBaba()}>
             Pay
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showFeeModal} centered onHide={closeFeeModal}>
+        <Modal.Header closeButton>
+          <span className='Scrollable__courseCardHeading my-auto' style={{ fontSize: '14px' }}>
+            Payment Summary
+          </span>
+        </Modal.Header>
+        <Modal.Body>
+          <div className='text-center'>
+            <img
+              src={order.status === 'due' || order.status === 'pending' ? caution : checkmark}
+              alt='caution'
+              className='img-fluid'
+            />
+            <h1 className='Fees__orderAmount mt-3'>&#x20B9; {order.amount}</h1>
+            <p className='Fees__orderDescription'>{order.description}</p>
+            <h3 className={statusClass}>
+              {order.status === 'due'
+                ? 'Payment Due'
+                : order.status === 'pending'
+                ? 'Payment Pending'
+                : order.status === 'paid'
+                ? 'Payment Successful'
+                : order.status === 'waived'
+                ? 'Payment Waived'
+                : 'Payment Marked'}
+            </h3>
+
+            <p className='Fees__orderSummary m-2'>
+              {order.status === 'due'
+                ? 'Your payment is due. Please complete your payment before the due date given below.'
+                : order.status === 'pending'
+                ? 'Your payment is pending. PLease wait while your payment is processed.'
+                : order.status === 'waived'
+                ? 'The payment has been been waived off.'
+                : order.status === 'marked'
+                ? 'Your payment has been marked as paid.'
+                : 'Congrats. The payment of fees was successfully processed. Happy learning!'}
+            </p>
+          </div>
+          <p className='Fees__orderDetailHeading mb-0 ml-3 mt-4'>DUE DATE</p>
+          <p className='Fees_orderDetails ml-3'>
+            {order.due_date
+              ? format(fromUnixTime(parseInt(order.due_date, 10)), 'dd-MMM-yyyy')
+              : 'Immediately'}
+          </p>
+          <p className='Fees__orderDetailHeading mb-0'>TO: {order.coaching_name}</p>
+          <p className='Fees_orderDetails'>{order.coaching_email}</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='boldText' onClick={() => closeFeeModal()}>
+            {order.status === 'marked' || order.status === 'waived' || order.status === 'paid'
+              ? 'Go To Course'
+              : 'Please Try Again'}
           </Button>
         </Modal.Footer>
       </Modal>

@@ -25,6 +25,7 @@ import HomeWorkAssigner from '../Components/HomeWorkCreator/HomeWorkAssigner';
 import ViewCourses from '../Components/Courses/ViewCourses';
 import BuyCourse from '../Components/Courses/BuyCourse';
 import Mycourse from '../Components/Courses/MyCourse';
+import PlyrVideoPlayer from '../Components/Common/VideoPlayer/PlyrVideoPlayer';
 
 export function Routes() {
   return (
@@ -36,7 +37,8 @@ export function Routes() {
       <Route path='/admission' component={AdmissionChat} />
       <Route path='/admissionform' component={AdmissionForm} />
       <Route path='/forgotpassword' component={ForgotPassword} />
-      <Route path='/videoplayer/:id' component={VideoPlayer} />
+      <Route path='/videoplayerplyr/:id' component={VideoPlayer} />
+      <Route path='/videoplayer/:id' component={PlyrVideoPlayer} />
 
       <AuthenticatedRoute path='/liveclasses' component={LiveClasses} />
       <AuthenticatedRoute path='/studybin' component={StudyBin} />

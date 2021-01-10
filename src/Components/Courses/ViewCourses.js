@@ -10,9 +10,10 @@ import { apiValidation, get } from '../../Utilities';
 import { PageHeader } from '../Common';
 import rupee from '../../assets/images/Courses/rupee.svg';
 import placeholder from '../../assets/images/avatarImage.jpg';
+import { courseActions } from '../../redux/actions/course.action';
 
 const ViewCourses = (props) => {
-  const { clientUserId, history } = props;
+  const { clientUserId, history, setCourseIdToStore } = props;
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
@@ -38,6 +39,11 @@ const ViewCourses = (props) => {
   const goToBuyCourse = (id) => {
     const { push } = history;
     push({ pathname: '/courses/buyCourse', state: { id, clientUserId } });
+  };
+
+  const goToMyCourse = (id) => {
+    history.push('/courses/myCourse');
+    setCourseIdToStore(id);
   };
 
   return (
@@ -67,7 +73,11 @@ const ViewCourses = (props) => {
             <Row
               className='m-3'
               key={course.course_id}
-              onClick={() => goToBuyCourse(course.course_id)}
+              onClick={
+                history.location.state.type === 'allCourses'
+                  ? () => goToBuyCourse(course.course_id)
+                  : () => goToMyCourse(course.course_id)
+              }
             >
               <Col xs={4} className=''>
                 <img
@@ -123,9 +133,18 @@ const mapStateToProps = (state) => ({
   clientUserId: getClientUserId(state),
 });
 
-export default connect(mapStateToProps)(ViewCourses);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setCourseIdToStore: (payload) => {
+      dispatch(courseActions.setCourseIdToStore(payload));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ViewCourses);
 
 ViewCourses.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
+  setCourseIdToStore: PropTypes.func.isRequired,
 };

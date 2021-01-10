@@ -32,7 +32,9 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    const domain = { domain_name: 'ingenium.surge.sh' }; // { domain_name: window.location.hostname };
+    const domain = { domain_name: 'portal.tca.ingeniumedu.com' }; // { domain_name: window.location.hostname };
+    // const domain = { domain_name: window.location.hostname }; // { domain_name: window.location.hostname };
+
     const { fetchBranding } = this.props;
     fetchBranding(domain);
   }

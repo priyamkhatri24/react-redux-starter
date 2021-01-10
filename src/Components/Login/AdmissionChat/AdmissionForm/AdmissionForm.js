@@ -130,7 +130,7 @@ const AdmissionForm = (props) => {
       client_user_id: clientUserId,
       user_id: userId,
       client_id: clientId,
-      contact: currentbranding.branding.client_contact,
+      contact: currentbranding.branding.client_contact, // bnde ka
       question_array: JSON.stringify(questionArray),
       first_name: firstName.current.value,
       last_name: lastName.current.value,
@@ -146,7 +146,7 @@ const AdmissionForm = (props) => {
       if (res.success) {
         if (autoApproval.current === 'true') {
           Swal.fire({
-            icon: 'Success',
+            icon: 'success',
             text:
               'Thank you for filling the admission form. ' +
               'You will receive your username on your registered number, use it to login',

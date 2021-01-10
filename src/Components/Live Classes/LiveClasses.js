@@ -279,7 +279,7 @@ class LiveClasses extends Component {
     } = this.state;
     return (
       <div className='LiveClasses'>
-        <PageHeader title='Live Stream' />
+        <PageHeader title='Live Stream' transparent />
 
         {triggerJitsi && (
           <Jitsi

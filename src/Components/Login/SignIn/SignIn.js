@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
 import PhoneNo from '../PhoneNo/PhoneNo';
 import footerIngenium from '../../../assets/images/ingiLOGO.png';
@@ -54,10 +55,18 @@ const SignIn = (props) => {
       .then((res) => {
         const result = apiValidation(res);
         if (result.status === 'Wrong username') {
-          alert('Please Check your Internet Connection');
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops!',
+            text: `Please check your internet connection.`,
+          });
           push({ pathname: '/login' });
         } else if (result === 'success') {
-          alert('The Username Has been sent to your registered mobile number');
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: `The Username Has been sent to your registered mobile number`,
+          });
         }
       })
       .catch((e) => console.error(e));
@@ -108,6 +117,47 @@ const SignIn = (props) => {
         .catch((err) => console.log(err));
     } else if (userStatus === 'pending') {
       console.log('brooo');
+      console.log(loginParams);
+      console.log(param);
+      const payload = {
+        user_name: loginParams.user_name,
+        password: param,
+        user_id: loginParams.user_id,
+      };
+
+      post(payload, '/signupAfterOtpForWeb').then((res) => {
+        console.log(res);
+        const result = apiValidation(res);
+
+        if (result.status === 'signup successful') {
+          const {
+            token,
+            user: {
+              client_user_id: clientUserId,
+              client_client_id: clientID,
+              contact: userContact,
+              first_name: firstName,
+              role_array: roleArray,
+              last_name: lastName,
+              user_user_id: userUserId,
+              user_id: userId,
+              profile_image: profileImage,
+            },
+          } = result;
+
+          props.setCLientUserIdToStore(clientUserId);
+          props.setUserIdToStore(userId);
+          props.setUserUserIdToStore(userUserId);
+          props.setRoleArrayToStore(roleArray);
+          props.setFirstNameToStore(firstName);
+          props.setLastNameToStore(lastName);
+          props.setProfileImageToStore(profileImage);
+          props.setContactToStore(userContact);
+          props.setTokenToStore(token);
+          props.setClientIdToStore(clientID);
+          props.history.push({ pathname: '/' });
+        }
+      });
     }
   };
 
@@ -128,7 +178,11 @@ const SignIn = (props) => {
             state: { image, contact, userId: loginParams.user_id },
           });
         } else {
-          alert('Please Check Your Internet Connection');
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops!',
+            text: `Please check your internet connection.`,
+          });
         }
       })
       .catch((e) => console.err(e));

@@ -25,14 +25,11 @@ function authHeaderGet() {
   return {};
 }
 
-// const config = {
-//   headers: {
-//     'Content-Type': 'application/x-www-form-urlencoded',
-//   },
-// };
-
-const testUrl = 'http://13.126.247.152:3000';
-// const prod_url = '';
+const testUrl =
+  process.env.NODE_ENV === 'development'
+    ? 'http://13.126.247.152:3000'
+    : 'https://portal.tca.ingeniumedu.com';
+// const testUrl = 'https://portal.tca.ingeniumedu.com';
 
 const transformRequest = (jsonData = {}) =>
   Object.entries(jsonData)

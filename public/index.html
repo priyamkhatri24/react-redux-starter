@@ -13,7 +13,7 @@
     -->
     <!-----------------------------SCRIPT TO LOAD DYNAMIC MANIFEST------------------------------------------------------->
     <script>
-      var full = window.location.host; // subdomain.domain.com
+      const full = window.location.host; // subdomain.domain.com
       const testDomain = 'ingenium.surge.sh';
       const serverURL  = 'http://13.126.247.152:3000'
       const fullURL = `${serverURL}/getManifestDataOfClient?domain_name=${testDomain}`;
