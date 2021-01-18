@@ -9,6 +9,8 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Row from 'react-bootstrap/Row';
 import Card from 'react-bootstrap/Card';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PlyrComponent from 'plyr-react';
 import 'plyr-react/dist/plyr.css';
@@ -19,6 +21,7 @@ import { testsActions } from '../../redux/actions/tests.action';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import { getCourseId } from '../../redux/reducers/course.reducer';
+import checkmark from '../../assets/images/order/icons8-checked.svg';
 
 const Mycourse = (props) => {
   const {
@@ -38,6 +41,8 @@ const Mycourse = (props) => {
     autoplay: true,
   };
   const [course, setCourse] = useState({});
+  const [analysis, setAnalysis] = useState({});
+  const [showAnalysisModal, setShowAnalysisModal] = useState(false);
   const [isVideo, setVideo] = useState(false);
   const [source, setSource] = useState({
     type: 'video',
@@ -74,16 +79,54 @@ const Mycourse = (props) => {
         newSource.sources = [{ src: elem.file_link }];
         setSource(newSource);
       } else {
+        // history.push({
+        //   pathname: '/fileviewer',
+        //   state: { filePath: elem.file_link },
+        // });
+
         history.push({
-          pathname: '/fileviewer',
+          pathname: '/otherfileviewer',
           state: { filePath: elem.file_link },
         });
       }
     } else if (type === 'test') {
-      if (elem.test_type === 'homework') {
-        startHomeworkTest(elem);
-      } else if (elem.test_type === 'demo test') startDemoTest(elem);
-      else if (elem.test_type === 'live test') startLiveTest(elem);
+      const payload = {
+        client_user_id: clientUserId,
+        test_id: elem.id,
+        is_paid: false,
+      };
+
+      get(payload, '/getTestStatusForStudent').then((res) => {
+        const resp = apiValidation(res);
+
+        if (resp.is_attempt === 1) {
+          Swal.fire({
+            icon: 'info',
+            title: 'Oops...',
+            text: 'You have already attempted this test. Would you like to see your results?',
+            showCloseButton: true,
+            showCancelButton: true,
+            customClass: 'Assignments__SweetAlert',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              const testPayload = {
+                client_user_id: clientUserId,
+                test_id: elem.id,
+                test_type: elem.test_type,
+              };
+              get(testPayload, '/getTestAnalysisForStudent').then((response) => {
+                console.log(response);
+                const analysisResult = apiValidation(response, 'analysis');
+                setAnalysis(analysisResult);
+                openAnalysisModal();
+              });
+            }
+          });
+        } else if (elem.test_type === 'homework') {
+          startHomeworkTest(elem);
+        } else if (elem.test_type === 'demo test') startDemoTest(elem);
+        else if (elem.test_type === 'live test') startLiveTest(elem);
+      });
     }
   };
 
@@ -258,6 +301,9 @@ const Mycourse = (props) => {
     setTestTypeToStore(testType);
   };
 
+  const openAnalysisModal = () => setShowAnalysisModal(true);
+  const closeAnalysisModal = () => setShowAnalysisModal(false);
+
   return (
     <div>
       <PageHeader transparent />
@@ -332,6 +378,56 @@ const Mycourse = (props) => {
           </Tabs>
         </div>
       )}
+
+      <Modal show={showAnalysisModal} centered onHide={closeAnalysisModal}>
+        <Modal.Header closeButton>
+          <span className='Scrollable__courseCardHeading my-auto' style={{ fontSize: '14px' }}>
+            Analysis
+          </span>
+        </Modal.Header>
+        <Modal.Body className='mx-auto'>
+          <div className='text-center my-3'>
+            <img src={checkmark} alt='checkmark' />
+          </div>
+          <Row className='Scrollable__courseCardHeading mt-3 mx-auto' style={{ fontSize: '14px' }}>
+            <Col className='text-center' xs={6}>
+              Attempted
+            </Col>
+            <Col className='text-center' xs={6}>
+              {analysis.attempted}
+            </Col>
+          </Row>
+          <Row className='Scrollable__courseCardHeading mt-3 mx-auto' style={{ fontSize: '14px' }}>
+            <Col className='text-center' xs={6}>
+              Correct Questions
+            </Col>
+            <Col className='text-center' xs={6}>
+              {analysis.correct_questions}
+            </Col>
+          </Row>
+          <Row className='Scrollable__courseCardHeading mt-3 mx-auto' style={{ fontSize: '14px' }}>
+            <Col className='text-center' xs={6}>
+              Incorrect Questions
+            </Col>
+            <Col className='text-center' xs={6}>
+              {analysis.incorrect_questions}
+            </Col>
+          </Row>
+          <Row className='Scrollable__courseCardHeading mt-3 mx-auto' style={{ fontSize: '14px' }}>
+            <Col className='text-center' xs={6}>
+              Marks
+            </Col>
+            <Col className='text-center' xs={6}>
+              {analysis.total_marks} / {analysis.maximum_marks}
+            </Col>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='boldTextSecondary' onClick={() => closeAnalysisModal()}>
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

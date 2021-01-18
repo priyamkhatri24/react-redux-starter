@@ -95,7 +95,7 @@ const Profile = (props) => {
               <p className='LiveClasses__adminDuration '>{userProfile.contact}</p>
 
               <h6 className='LiveClasses__adminHeading mb-0'>Username</h6>
-              <p className='LiveClasses__adminDuration '>userame aega yahan</p>
+              <p className='LiveClasses__adminDuration '>{userProfile.userName}</p>
 
               <Row className='justify-content-end mb-2 mb-lg-4 mr-2'>
                 <Button variant='customPrimary' size='sm' onClick={() => logout()}>
@@ -159,6 +159,7 @@ Profile.propTypes = {
   userProfile: PropTypes.shape({
     firstName: PropTypes.string.isRequired,
     lastName: PropTypes.string,
+    userName: PropTypes.string.isRequired,
     contact: PropTypes.string.isRequired,
     profileImage: PropTypes.string,
   }),

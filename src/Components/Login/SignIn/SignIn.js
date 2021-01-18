@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
@@ -9,16 +9,20 @@ import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
 import { get, post, apiValidation } from '../../../Utilities';
 import { clientUserIdActions } from '../../../redux/actions/clientUserId.action';
 import { userProfileActions } from '../../../redux/actions/userProfile.action';
+import { firstTimeLoginActions } from '../../../redux/actions/firsttimeLogin.action';
+import { getFirstTimeLoginState } from '../../../redux/reducers/firstTimeLogin.reducer';
 
 const SignIn = (props) => {
   const {
     location: {
       state: { image, userInfo, contact },
     },
+    firstTimeLogin,
+    setFirstTimeLoginToStore,
+    history,
   } = props;
 
   const { currentbranding: { branding: { client_id: clientId = '' } = {} } = {} } = props;
-
   const [currentComponent, setComponent] = useState('username');
   const [validUser, checkValidUser] = useState(false);
   const [loginParams, setLoginParams] = useState({
@@ -27,6 +31,11 @@ const SignIn = (props) => {
     user_id: 0,
   });
   const [userStatus, setUserStatus] = useState('');
+
+  useEffect(() => {
+    // checks whether the user is logged for the first time only
+    if (firstTimeLogin) history.push('/');
+  }, [firstTimeLogin, history]);
 
   const getUserName = (param) => {
     const userParam = userInfo.filter((e) => {
@@ -84,9 +93,11 @@ const SignIn = (props) => {
         .then((res) => {
           const { push } = props.history;
           const result = apiValidation(res);
+
           if (result.status === 'Wrong password. Login failed') {
             checkValidUser(true);
           }
+
           const {
             token,
             user: {
@@ -99,8 +110,10 @@ const SignIn = (props) => {
               user_user_id: userUserId,
               user_id: userId,
               profile_image: profileImage,
+              username: userName,
             },
           } = result;
+          console.log(result, userName, result.user);
 
           props.setCLientUserIdToStore(clientUserId);
           props.setUserIdToStore(userId);
@@ -112,7 +125,9 @@ const SignIn = (props) => {
           props.setContactToStore(userContact);
           props.setTokenToStore(token);
           props.setClientIdToStore(clientID);
+          props.setUserNameToStore(userName);
           push({ pathname: '/' });
+          setFirstTimeLoginToStore(true);
         })
         .catch((err) => console.log(err));
     } else if (userStatus === 'pending') {
@@ -126,7 +141,6 @@ const SignIn = (props) => {
       };
 
       post(payload, '/signupAfterOtpForWeb').then((res) => {
-        console.log(res);
         const result = apiValidation(res);
 
         if (result.status === 'signup successful') {
@@ -142,6 +156,7 @@ const SignIn = (props) => {
               user_user_id: userUserId,
               user_id: userId,
               profile_image: profileImage,
+              username: userName,
             },
           } = result;
 
@@ -155,7 +170,9 @@ const SignIn = (props) => {
           props.setContactToStore(userContact);
           props.setTokenToStore(token);
           props.setClientIdToStore(clientID);
+          props.setUserNameToStore(userName);
           props.history.push({ pathname: '/' });
+          setFirstTimeLoginToStore(true);
         }
       });
     }
@@ -226,6 +243,7 @@ const SignIn = (props) => {
 
 const mapStateToProps = (state) => ({
   currentbranding: getCurrentBranding(state),
+  firstTimeLogin: getFirstTimeLoginState(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -257,8 +275,14 @@ const mapDispatchToProps = (dispatch) => {
     setProfileImageToStore: (payload) => {
       dispatch(userProfileActions.setProfileImageToStore(payload));
     },
+    setUserNameToStore: (payload) => {
+      dispatch(userProfileActions.setUserNameToStore(payload));
+    },
     setTokenToStore: (payload) => {
       dispatch(userProfileActions.setTokenToStore(payload));
+    },
+    setFirstTimeLoginToStore: (payload) => {
+      dispatch(firstTimeLoginActions.setFirstTimeLoginToStore(payload));
     },
   };
 };
@@ -294,6 +318,9 @@ SignIn.propTypes = {
   setContactToStore: PropTypes.func.isRequired,
   setTokenToStore: PropTypes.func.isRequired,
   setClientIdToStore: PropTypes.func.isRequired,
+  setUserNameToStore: PropTypes.func.isRequired,
+  firstTimeLogin: PropTypes.bool.isRequired,
+  setFirstTimeLoginToStore: PropTypes.func.isRequired,
 };
 
 SignIn.defaultProps = {

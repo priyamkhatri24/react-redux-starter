@@ -23,5 +23,6 @@ store.subscribe(() => {
     color: store.getState().color,
     testsUpdate: store.getState().testsUpdate,
     homework: store.getState().homework,
+    course: store.getState().course,
   });
 });

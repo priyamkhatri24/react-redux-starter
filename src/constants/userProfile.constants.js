@@ -4,5 +4,6 @@ export const userProfileConstants = {
   CONTACT: 'CONTACT',
   PROFILEIMAGE: 'PROFILE_IMAGE',
   TOKEN: 'TOKEN',
+  USERNAME: 'USERNAME',
   LOGOUT: 'LOGOUT',
 };

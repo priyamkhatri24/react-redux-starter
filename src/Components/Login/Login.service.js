@@ -2,6 +2,7 @@ import { brandingActions } from '../../redux/actions/branding.action';
 import { colorActions } from '../../redux/actions/color.actions';
 import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { get } from '../../Utilities/Remote';
+import { userProfileActions } from '../../redux/actions/userProfile.action';
 
 export function getBranding(param) {
   return (dispatch) => {
@@ -20,5 +21,11 @@ export function getColor(param) {
   return (dispatch) => {
     dispatch(colorActions.clear());
     dispatch(colorActions.success(param));
+  };
+}
+
+export function getContact(param) {
+  return (dispatch) => {
+    dispatch(userProfileActions.setContactToStore(param));
   };
 }

@@ -82,7 +82,7 @@ export async function displayRazorpay(
 
     prefill: {
       name: brandName,
-      email: 'sidhant.d@ingeniumedu.com',
+      email: '',
       contact: brandContact,
     },
     notes: {

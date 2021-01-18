@@ -7,6 +7,7 @@ export * from './DashboardCards/DashboardCards';
 export * from './PageHeader/PageHeader';
 export * from './BatchesSelector/BatchesSelector';
 export * from './VideoPlayer/VideoPlayer';
-export * from './FileViewer/FileViewer';
+export * from './FileViewer/PDFFileViewer';
 export * from './AddYoutube/AddYoutube';
 export * from './ScrollableCards/CoursesCards';
+export * from './FileViewer/FileViewer';

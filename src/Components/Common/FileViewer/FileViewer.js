@@ -1,58 +1,55 @@
-/* eslint-disable */
-
-import React, { useEffect, useState } from 'react';
-import { pdfjs, Document, Page } from 'react-pdf';
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import Button from 'react-bootstrap/Button';
-import { getParams } from '../../../Utilities';
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { PageHeader } from '../PageHeader/PageHeader';
-import { Row } from 'react-bootstrap';
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-export const FileView = (props) => {
-  // const [fileType, setFileType] = useState('');
-  const [fileViewPath, setFilePath] = useState('');
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
-  const width = window.innerWidth;
+export const TempViewFile = (props) => {
+  const {
+    history: {
+      location: {
+        state: { filePath },
+      },
+    },
+  } = props;
 
   useEffect(() => {
-    if (props.location.state) {
-      const { type, filePath } = props.location.state;
-      //  setFileType(type);
-      setFilePath(filePath);
-    } else {
-      const params = getParams(window.location.href);
-      //    setFileType(params.fileType);
-      setFilePath(params.filePath);
-    }
-  }, [props.location.state]);
-
-  const onDocumentLoadSuccess = ({ numpages }) => {
-    setNumPages(numpages);
-  };
+    console.log(props.history.location.state.filePath);
+  });
 
   return (
-    <>
+    <div>
       <PageHeader title='File Viewer' />
-      <div style={{ width: '100%', overflow: 'scroll', marginTop: '5rem' }}>
-        {/* <FileViewer fileType={fileType} filePath={fileViewPath} onError={(e) => console.error(e)} /> */}
-        <Document file={fileViewPath} onLoadSuccess={onDocumentLoadSuccess}>
-          <Page pageNumber={pageNumber} width={width} />
-        </Document>
+      <div
+        style={{
+          marginTop: '5rem',
+          width: '100%',
+          height: '100vh',
+          paddingBottom: '56%',
+          position: 'relative',
+        }}
+      >
+        <iframe
+          title='file viewer'
+          src={`https://view.officeapps.live.com/op/embed.aspx?src=${filePath}?zoomTo='pageWidth'`}
+          style={{
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            display: 'block',
+            top: 0,
+            left: 0,
+          }}
+        />
       </div>
-      <Row className='mx-5 my-3 justify-content-between'>
-        <Button
-          variant='customPrimarySmol'
-          onClick={() => setPageNumber((p) => (p > 1 ? p - 1 : p))}
-        >
-          Previous
-        </Button>
-
-        <Button variant='customPrimarySmol' onClick={() => setPageNumber((p) => p + 1)}>
-          Next Page
-        </Button>
-      </Row>
-    </>
+    </div>
   );
+};
+
+TempViewFile.propTypes = {
+  history: PropTypes.shape({
+    location: PropTypes.shape({
+      state: PropTypes.shape({
+        filePath: PropTypes.string.isRequired,
+      }),
+    }),
+  }).isRequired,
 };

@@ -17,6 +17,7 @@ import {
   getRoleArray,
 } from '../../redux/reducers/clientUserId.reducer';
 import dashboardAssignmentImage from '../../assets/images/Dashboard/dashboardAssignment.svg';
+import userAvatar from '../../assets/images/user.svg';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
 import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { testsActions } from '../../redux/actions/tests.action';
@@ -141,6 +142,11 @@ const Dashboard = (props) => {
     setTestTypeToStore(testType);
   };
 
+  const goToCoursesForTeacher = () => {
+    const { push } = history;
+    push({ pathname: '/courses/teachercourse' });
+  };
+
   const goToCourses = (type) => {
     const { push } = history;
     push({ pathname: '/courses', state: { type } });
@@ -175,7 +181,7 @@ const Dashboard = (props) => {
         <Row className='mx-auto px-2 mt-4'>
           <Col xs={4} onClick={() => goToProfile()}>
             <img
-              src={profileImage}
+              src={profileImage || userAvatar}
               className='Dashboard__profileImage float-right img-responsive'
               alt='profile'
             />
@@ -195,238 +201,349 @@ const Dashboard = (props) => {
           </Row>
         </div>
       </div>
+      {/* *****************************Teacher View ********************************* */}
+      {(roleArray.includes(3) || roleArray.includes(4)) && (
+        <>
+          <DashboardCards
+            image={analysis}
+            heading='Courses'
+            subHeading='Increase your profit by building and selling your courses here.'
+            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
+            backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
+            backGround='rgb(236,255,252)'
+            buttonClick={goToCoursesForTeacher}
+          />
 
-      <DashboardCards
-        image={camera}
-        heading='Live Classes'
-        subHeading='Conduct all your live classes here effectively'
-        boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
-        backGround='rgb(247,236,255)'
-        backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
-        buttonText='Go live now'
-        buttonClick={goToLiveClasses}
-      />
-      {(roleArray.includes(3) || roleArray.includes(4)) && (
-        <div className='Dashboard__innovation pt-4 px-3 pb-3'>
-          <h4>Witness </h4>
-          <h4>
-            The <span>innovation</span>
-          </h4>
-          <p className='mr-5'>Create tests &amp; home-works in 4 simple steps</p>
-          <Button variant='dashboardBlueOnWhite' onClick={() => goToHomeWorkCreator()}>
-            Let&apos;s go
-            <span>
-              <ChevronRightIcon />
-            </span>
-          </Button>
-          <div className='Dashboard__assignment my-4'>
-            <section className='Dashboard__scrollableCard'>
-              <div>
-                <Row>
-                  <Col xs={8} className='pr-0'>
-                    <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
-                      Sent assignments
-                    </p>
-                    <p className='Dashboard__scrollableCardText pl-3 mt-1'>
-                      All the tests &amp; homeworks sent to students are here...
-                    </p>
-                  </Col>
-                  <Col xs={4} className='pt-3'>
-                    <img
-                      src={dashboardAssignmentImage}
-                      alt='assignment'
-                      height='40px'
-                      width='40px'
-                    />
-                  </Col>
-                </Row>
-              </div>
-              <div>
-                <Row>
-                  <Col xs={8} className='pr-0'>
-                    <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
-                      Saved assignments
-                    </p>
-                    <p className='Dashboard__scrollableCardText pl-3 mt-1'>
-                      See all your saved tests &amp; homeworks here...
-                    </p>
-                  </Col>
-                  <Col xs={4} className='pt-3'>
-                    <img
-                      src={dashboardAssignmentImage}
-                      alt='assignment'
-                      height='40px'
-                      width='40px'
-                    />
-                  </Col>
-                </Row>
-              </div>
-            </section>
+          <DashboardCards
+            image={camera}
+            heading='Live Classes'
+            subHeading={
+              roleArray.includes(3) || roleArray.includes(4)
+                ? 'Conduct all your live classes here effectively'
+                : 'Attend all your live classes from here.'
+            }
+            boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
+            backGround='rgb(247,236,255)'
+            backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
+            buttonText={roleArray.includes(3) || roleArray.includes(4) ? 'Go live now' : ''}
+            buttonClick={goToLiveClasses}
+          />
+
+          <div className='Dashboard__innovation pt-4 px-3 pb-3'>
+            <h4>Witness </h4>
+            <h4>
+              The <span>innovation</span>
+            </h4>
+            <p className='mr-5'>Create tests &amp; home-works in 4 simple steps</p>
+            <Button variant='dashboardBlueOnWhite' onClick={() => goToHomeWorkCreator()}>
+              Let&apos;s go
+              <span>
+                <ChevronRightIcon />
+              </span>
+            </Button>
+            <div className='Dashboard__assignment my-4'>
+              <section className='Dashboard__scrollableCard'>
+                <div>
+                  <Row>
+                    <Col xs={8} className='pr-0'>
+                      <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
+                        Sent assignments
+                      </p>
+                      <p className='Dashboard__scrollableCardText pl-3 mt-1'>
+                        All the tests &amp; homeworks sent to students are here...
+                      </p>
+                    </Col>
+                    <Col xs={4} className='pt-3'>
+                      <img
+                        src={dashboardAssignmentImage}
+                        alt='assignment'
+                        height='40px'
+                        width='40px'
+                      />
+                    </Col>
+                  </Row>
+                </div>
+                <div>
+                  <Row>
+                    <Col xs={8} className='pr-0'>
+                      <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
+                        Saved assignments
+                      </p>
+                      <p className='Dashboard__scrollableCardText pl-3 mt-1'>
+                        See all your saved tests &amp; homeworks here...
+                      </p>
+                    </Col>
+                    <Col xs={4} className='pt-3'>
+                      <img
+                        src={dashboardAssignmentImage}
+                        alt='assignment'
+                        height='40px'
+                        width='40px'
+                      />
+                    </Col>
+                  </Row>
+                </div>
+              </section>
+            </div>
           </div>
-        </div>
-      )}
-      {(roleArray.includes(3) || roleArray.includes(4)) && (
-        <div className='Dashboard__attendance p-4'>
-          <div className='w-75 Dashboard__attendanceCard mx-auto pt-4'>
-            <img src={hands} alt='hands' className='mx-auto d-block' />
-            <Row className='m-3'>
-              <span className='Dashboard__todaysHitsText my-auto'>Attendance</span>
-              <span className='ml-auto'>
+
+          <div className='Dashboard__attendance p-4'>
+            <div className='w-75 Dashboard__attendanceCard mx-auto pt-4'>
+              <img src={hands} alt='hands' className='mx-auto d-block' />
+              <Row className='m-3'>
+                <span className='Dashboard__todaysHitsText my-auto'>Attendance</span>
+                <span className='ml-auto'>
+                  <ChevronRightIcon />
+                </span>
+              </Row>
+
+              <p className='Dashboard__attendanceSubHeading mx-3'>
+                Record attendance of the students and notify parents via SMS daily.
+              </p>
+
+              <hr />
+
+              <p>Recent Attendance</p>
+            </div>
+          </div>
+
+          <div
+            className='Dashboard__noticeBoard mx-auto p-3'
+            onClick={() => goToNoticeBoard()}
+            role='button'
+            tabIndex='-1'
+            onKeyDown={() => goToNoticeBoard()}
+          >
+            <span className='Dashboard__verticalDots'>
+              <MoreVertIcon />
+            </span>
+            <Row className='mt-2'>
+              <Col xs={8}>
+                <p className='Dashboard__todaysHitsText'>Notice Board</p>
+                {(roleArray.includes(3) || roleArray.includes(4)) && (
+                  <Button variant='noticeBoardPost'>
+                    <BorderColorIcon />
+                    <span className='m-2'>Write a post</span>
+                  </Button>
+                )}
+              </Col>
+              <Col xs={4}>
+                <img src={dashboardAssignmentImage} alt='notice' height='80' width='80' />
+              </Col>
+            </Row>
+
+            <Row className='mt-5 ml-1 mb-3'>
+              <span className='Dashboard__noticeBoardText my-auto'>Latest Notices</span>
+              <span className='ml-auto' style={{ color: 'rgba(117, 117, 117, 1)' }}>
                 <ChevronRightIcon />
               </span>
             </Row>
 
-            <p className='Dashboard__attendanceSubHeading mx-3'>
-              Record attendance of the students and notify parents via SMS daily.
-            </p>
-
-            <hr />
-
-            <p>Recent Attendance</p>
+            {notices.map((elem) => (
+              <div key={`elem${elem.notice_id}`} className='Dashboard__notice'>
+                <Row>
+                  <Col xs={2} className='p-4'>
+                    <img
+                      src={elem.profile_image}
+                      alt='profile'
+                      className='Dashboard__noticeImage d-block mx-auto'
+                    />
+                  </Col>
+                  <Col xs={10} className='pt-4'>
+                    <p className='Dashboard__scrollableCardHeading m-0'>
+                      {`${elem.first_name} ${elem.last_name}`}
+                    </p>
+                    <p className='Dashboard__noticeSubHeading'>
+                      {format(fromUnixTime(elem.time_of_notice), 'hh:m bbbb, do MMM yyy')}
+                    </p>
+                  </Col>
+                </Row>
+                <p className='p-2 Dashboard__noticeText'>{elem.notice_text}</p>
+              </div>
+            ))}
           </div>
-        </div>
+
+          <CoursesCards
+            allCourses={allCourses}
+            myCourses={myCourses}
+            goToCourse={goToCourses}
+            buyCourseId={goToBuyCourse}
+            myCourseId={goToMyCourse}
+          />
+          <DashboardCards
+            image={offlineAssignment}
+            heading='Offline assignment'
+            subHeading='Record marks of all the pen-paper tests and send
+         the marks to parents in simple way.'
+            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
+            backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
+            backGround='rgb(236,255,252)'
+          />
+
+          <DashboardCards
+            image={camera}
+            heading='Send photos &amp; files'
+            subHeading='Send question papers, notes and books as
+        photos or files such as .pdf, .doc, .txt, etc..'
+            boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
+            backGround='rgb(247,236,255)'
+            backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
+          />
+
+          <DashboardCards
+            image={analysis}
+            heading='Admissions'
+            subHeading='Manage students, teachers and batches from a single place.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(235,245,246)'
+            backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
+          />
+
+          <div onClick={() => goToFees()} role='button' tabIndex='-1' onKeyDown={() => goToFees()}>
+            <DashboardCards
+              image={analysis}
+              heading='Fees'
+              subHeading='See fees history and amount to be paid for coming months.'
+              boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+              backGround='rgb(238,232,241)'
+              backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
+            />
+          </div>
+          <DashboardCards
+            image={analysis}
+            heading='Analysis'
+            subHeading='See detailed reports of every student and assignments.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(248,252,255)'
+            backgroundImg='linear-gradient(90deg, rgba(248,252,255,1) 0%, rgba(188,224,253,1) 100%)'
+          />
+
+          <DashboardCards
+            image={student}
+            heading='Student corner'
+            subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(248,252,255)'
+            backgroundImg='linear-gradient(90deg, rgba(248,252,255,1) 0%, rgba(188,224,253,1) 100%)'
+          />
+
+          <div>
+            <Tests startHomework={startHomework} startLive={startLiveTest} />
+          </div>
+
+          <DashboardCards
+            image={student}
+            coloredHeading='Study Bin'
+            color='rgba(0, 102, 255, 0.87)'
+            subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            buttonClick={goToStudyBin}
+          />
+        </>
       )}
 
-      <div
-        className='Dashboard__noticeBoard mx-auto p-3'
-        onClick={() => goToNoticeBoard()}
-        role='button'
-        tabIndex='-1'
-        onKeyDown={() => goToNoticeBoard()}
-      >
-        <span className='Dashboard__verticalDots'>
-          <MoreVertIcon />
-        </span>
-        <Row className='mt-2'>
-          <Col xs={8}>
-            <p className='Dashboard__todaysHitsText'>Notice Board</p>
-            <Button variant='noticeBoardPost'>
-              <BorderColorIcon />
-              <span className='m-2'>Write a post</span>
-            </Button>
-          </Col>
-          <Col xs={4}>
-            <img src={dashboardAssignmentImage} alt='notice' height='80' width='80' />
-          </Col>
-        </Row>
-
-        <Row className='mt-5 ml-1 mb-3'>
-          <span className='Dashboard__noticeBoardText my-auto'>Latest Notices</span>
-          <span className='ml-auto' style={{ color: 'rgba(117, 117, 117, 1)' }}>
-            <ChevronRightIcon />
-          </span>
-        </Row>
-
-        {notices.map((elem) => (
-          <div key={`elem${elem.notice_id}`} className='Dashboard__notice'>
-            <Row>
-              <Col xs={2} className='p-4'>
-                <img
-                  src={elem.profile_image}
-                  alt='profile'
-                  className='Dashboard__noticeImage d-block mx-auto'
-                />
+      {/* *****************************Student View ********************************* */}
+      {(roleArray.includes(1) || roleArray.includes(2)) && (
+        <>
+          <CoursesCards
+            allCourses={allCourses}
+            myCourses={myCourses}
+            goToCourse={goToCourses}
+            buyCourseId={goToBuyCourse}
+            myCourseId={goToMyCourse}
+          />
+          <DashboardCards
+            image={camera}
+            heading='Live Classes'
+            subHeading={
+              roleArray.includes(3) || roleArray.includes(4)
+                ? 'Conduct all your live classes here effectively'
+                : 'Attend all your live classes from here.'
+            }
+            boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
+            backGround='rgb(247,236,255)'
+            backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
+            buttonText={roleArray.includes(3) || roleArray.includes(4) ? 'Go live now' : ''}
+            buttonClick={goToLiveClasses}
+          />
+          <div>
+            <Tests startHomework={startHomework} startLive={startLiveTest} />
+          </div>
+          <div onClick={() => goToFees()} role='button' tabIndex='-1' onKeyDown={() => goToFees()}>
+            <DashboardCards
+              image={analysis}
+              heading='Fees'
+              subHeading='See fees history and amount to be paid for coming months.'
+              boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+              backGround='rgb(238,232,241)'
+              backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
+            />
+          </div>
+          <div
+            className='Dashboard__noticeBoard mx-auto p-3'
+            onClick={() => goToNoticeBoard()}
+            role='button'
+            tabIndex='-1'
+            onKeyDown={() => goToNoticeBoard()}
+          >
+            <span className='Dashboard__verticalDots'>
+              <MoreVertIcon />
+            </span>
+            <Row className='mt-2'>
+              <Col xs={8}>
+                <p className='Dashboard__todaysHitsText'>Notice Board</p>
+                {(roleArray.includes(3) || roleArray.includes(4)) && (
+                  <Button variant='noticeBoardPost'>
+                    <BorderColorIcon />
+                    <span className='m-2'>Write a post</span>
+                  </Button>
+                )}
               </Col>
-              <Col xs={10} className='pt-4'>
-                <p className='Dashboard__scrollableCardHeading m-0'>
-                  {`${elem.first_name} ${elem.last_name}`}
-                </p>
-                <p className='Dashboard__noticeSubHeading'>
-                  {format(fromUnixTime(elem.time_of_notice), 'hh:m bbbb, do MMM yyy')}
-                </p>
+              <Col xs={4}>
+                <img src={dashboardAssignmentImage} alt='notice' height='80' width='80' />
               </Col>
             </Row>
-            <p className='p-2 Dashboard__noticeText'>{elem.notice_text}</p>
+
+            <Row className='mt-5 ml-1 mb-3'>
+              <span className='Dashboard__noticeBoardText my-auto'>Latest Notices</span>
+              <span className='ml-auto' style={{ color: 'rgba(117, 117, 117, 1)' }}>
+                <ChevronRightIcon />
+              </span>
+            </Row>
+
+            {notices.map((elem) => (
+              <div key={`elem${elem.notice_id}`} className='Dashboard__notice'>
+                <Row>
+                  <Col xs={2} className='p-4'>
+                    <img
+                      src={elem.profile_image}
+                      alt='profile'
+                      className='Dashboard__noticeImage d-block mx-auto'
+                    />
+                  </Col>
+                  <Col xs={10} className='pt-4'>
+                    <p className='Dashboard__scrollableCardHeading m-0'>
+                      {`${elem.first_name} ${elem.last_name}`}
+                    </p>
+                    <p className='Dashboard__noticeSubHeading'>
+                      {format(fromUnixTime(elem.time_of_notice), 'hh:m bbbb, do MMM yyy')}
+                    </p>
+                  </Col>
+                </Row>
+                <p className='p-2 Dashboard__noticeText'>{elem.notice_text}</p>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-
-      <CoursesCards
-        allCourses={allCourses}
-        myCourses={myCourses}
-        goToCourse={goToCourses}
-        buyCourseId={goToBuyCourse}
-        myCourseId={goToMyCourse}
-      />
-
-      {(roleArray.includes(3) || roleArray.includes(4)) && (
-        <DashboardCards
-          image={offlineAssignment}
-          heading='Offline assignment'
-          subHeading='Record marks of all the pen-paper tests and send
-         the marks to parents in simple way.'
-          boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
-          backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
-          backGround='rgb(236,255,252)'
-        />
+          <DashboardCards
+            image={student}
+            coloredHeading='Study Bin'
+            color='rgba(0, 102, 255, 0.87)'
+            subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            buttonClick={goToStudyBin}
+          />
+        </>
       )}
-
-      {(roleArray.includes(3) || roleArray.includes(4)) && (
-        <DashboardCards
-          image={camera}
-          heading='Send photos &amp; files'
-          subHeading='Send question papers, notes and books as
-        photos or files such as .pdf, .doc, .txt, etc..'
-          boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
-          backGround='rgb(247,236,255)'
-          backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
-        />
-      )}
-
-      {(roleArray.includes(3) || roleArray.includes(4)) && (
-        <DashboardCards
-          image={analysis}
-          heading='Admissions'
-          subHeading='Manage students, teachers and batches from a single place.'
-          boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-          backGround='rgb(235,245,246)'
-          backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
-        />
-      )}
-
-      <div onClick={() => goToFees()} role='button' tabIndex='-1' onKeyDown={() => goToFees()}>
-        <DashboardCards
-          image={analysis}
-          heading='Fees'
-          subHeading='See fees history and amount to be paid for coming months.'
-          boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-          backGround='rgb(238,232,241)'
-          backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
-        />
-      </div>
-      {(roleArray.includes(3) || roleArray.includes(4)) && (
-        <DashboardCards
-          image={analysis}
-          heading='Analysis'
-          subHeading='See detailed reports of every student and assignments.'
-          boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-          backGround='rgb(248,252,255)'
-          backgroundImg='linear-gradient(90deg, rgba(248,252,255,1) 0%, rgba(188,224,253,1) 100%)'
-        />
-      )}
-      {(roleArray.includes(3) || roleArray.includes(4)) && (
-        <DashboardCards
-          image={student}
-          heading='Student corner'
-          subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
-          boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-          backGround='rgb(248,252,255)'
-          backgroundImg='linear-gradient(90deg, rgba(248,252,255,1) 0%, rgba(188,224,253,1) 100%)'
-        />
-      )}
-
-      <div>
-        <Tests startHomework={startHomework} startLive={startLiveTest} />
-      </div>
-
-      <DashboardCards
-        image={student}
-        coloredHeading='Study Bin'
-        color='rgba(0, 102, 255, 0.87)'
-        subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
-        boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-        buttonClick={goToStudyBin}
-      />
     </>
   );
 };

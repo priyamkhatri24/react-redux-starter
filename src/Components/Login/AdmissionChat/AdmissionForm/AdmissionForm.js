@@ -9,6 +9,7 @@ import {
   getUserId,
 } from '../../../../redux/reducers/clientUserId.reducer';
 import { getCurrentBranding } from '../../../../redux/reducers/branding.reducer';
+import { getUserProfile } from '../../../../redux/reducers/userProfile.reducer';
 import userAvatar from '../../../../assets/images/user.svg';
 import './AdmissionForm.scss';
 import { BackButton, DynamicForm } from '../../../Common';
@@ -41,7 +42,7 @@ const AdmissionForm = (props) => {
   //   { label: 'Date of Birth', value: '', type: 'input', name: 'DOB' },
   // ];
 
-  const { clientId, clientUserId, currentbranding, userId, history } = props;
+  const { clientId, clientUserId, currentbranding, userId, history, userProfile } = props;
   const [image, setImage] = useState(userAvatar);
   const [admissionFormData, setAdmissionFormData] = useState([]);
   const firstName = useRef({});
@@ -130,7 +131,7 @@ const AdmissionForm = (props) => {
       client_user_id: clientUserId,
       user_id: userId,
       client_id: clientId,
-      contact: currentbranding.branding.client_contact, // bnde ka
+      contact: userProfile.contact, // bnde ka
       question_array: JSON.stringify(questionArray),
       first_name: firstName.current.value,
       last_name: lastName.current.value,
@@ -139,7 +140,6 @@ const AdmissionForm = (props) => {
       parent_contact: parentContact.current.value,
       auto_approval: autoApproval.current,
     };
-    console.log(currentbranding);
     console.log(payload);
 
     post(payload, '/submitAdmissonForm').then((res) => {
@@ -199,6 +199,7 @@ const mapStateToProps = (state) => ({
   clientUserId: getClientUserId(state),
   currentbranding: getCurrentBranding(state),
   userId: getUserId(state),
+  userProfile: getUserProfile(state),
 });
 
 export default connect(mapStateToProps)(AdmissionForm);
@@ -215,4 +216,5 @@ AdmissionForm.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   userId: PropTypes.number.isRequired,
+  userProfile: PropTypes.instanceOf(Object).isRequired,
 };

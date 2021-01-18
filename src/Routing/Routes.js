@@ -10,7 +10,7 @@ import AdmissionForm from '../Components/Login/AdmissionChat/AdmissionForm/Admis
 import StudyBin from '../Components/Study Bin/StudyBin';
 import ForgotPassword from '../Components/Login/SignIn/ForgotPassword/ForgotPassword';
 import { AuthenticatedRoute } from './AuthenticatedRoute';
-import { VideoPlayer, FileView, AddYoutube } from '../Components/Common';
+import { VideoPlayer, FileView, AddYoutube, TempViewFile } from '../Components/Common';
 import QuestionTaker from '../Components/Common/QuestionTaker/QuestionTaker';
 import NoticeBoard from '../Components/NoticeBoard/NoticeBoard';
 import Profile from '../Components/Profile/Profile';
@@ -26,6 +26,9 @@ import ViewCourses from '../Components/Courses/ViewCourses';
 import BuyCourse from '../Components/Courses/BuyCourse';
 import Mycourse from '../Components/Courses/MyCourse';
 import PlyrVideoPlayer from '../Components/Common/VideoPlayer/PlyrVideoPlayer';
+import TeacherCourses from '../Components/Courses/TeacherCourses';
+import CourseStatistics from '../Components/Courses/CourseStatistics';
+import CreateCourse from '../Components/Courses/CreateCourse';
 
 export function Routes() {
   return (
@@ -57,8 +60,16 @@ export function Routes() {
       <AuthenticatedRoute exact path='/courses' component={ViewCourses} />
       <AuthenticatedRoute exact path='/courses/buyCourse' component={BuyCourse} />
       <AuthenticatedRoute exact path='/courses/mycourse' component={Mycourse} />
+      <AuthenticatedRoute exact path='/courses/teachercourse' component={TeacherCourses} />
+      <AuthenticatedRoute
+        exact
+        path='/courses/teachercourse/statistics'
+        component={CourseStatistics}
+      />
+      <AuthenticatedRoute exact path='/courses/createcourse' component={CreateCourse} />
 
       <Route path='/fileviewer' component={FileView} />
+      <Route path='/otherfileviewer' component={TempViewFile} />
 
       {/* redirect user to Dashboard page if route does not exist */}
 

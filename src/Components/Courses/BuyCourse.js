@@ -305,7 +305,7 @@ const BuyCourse = (props) => {
                     <div>
                       {e.content_array.map((elem, i) => {
                         return (
-                          <p className='mx-2'>
+                          <p className='mx-2' key={elem.name}>
                             {i + 1}. {elem.name}
                           </p>
                         );

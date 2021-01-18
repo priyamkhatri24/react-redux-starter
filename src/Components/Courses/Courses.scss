@@ -47,4 +47,64 @@
   //   top: 0;
   //   left: 0;
   // }
+
+  &__coloredNumber {
+    color: var(--primary-blue);
+    border: 1px solid var(--primary-blue);
+    font-size: $spacer;
+    width: $spacer * 1.45;
+    height: $spacer * 1.45;
+    text-align: center;
+    line-height: $spacer * 1.25;
+    border-radius: 0.5rem * 1.25; /* or 50% width & line-height */
+  }
+
+  &__createCourse {
+    font-family: $bold;
+    line-height: 18px;
+    color: $headingGrey;
+    font-size: $spacer * 0.875;
+  }
+
+  &__chotiDetail {
+    font-family: $regular;
+    color: $lightGrey;
+    line-height: 15px;
+    font-size: $spacer * 0.75;
+  }
+
+  &__motiDetail {
+    font-family: $regular;
+    font-size: $spacer * 0.875;
+    line-height: 18px;
+    color: $black;
+  }
+
+  &__edit {
+    position: absolute;
+    top: 10px;
+    right: 45px;
+    width: 50px;
+    border-radius: 20px 0 0 20px;
+    background-color: $lightestBlue;
+  }
+
+  &__tinySubHeading {
+    font-family: $regular;
+    font-size: $spacer * 0.625;
+    color: $lightGrey;
+    line-height: 13px;
+  }
+
+  &__rupeeAmount {
+    font-size: $spacer * 0.875;
+    font-family: $regular;
+    color: var(--primary-blue);
+  }
+
+  &__couponSmallColor {
+    font-size: $spacer * 0.625;
+    letter-spacing: 0.31px;
+    color: var(--primary-blue);
+  }
 }

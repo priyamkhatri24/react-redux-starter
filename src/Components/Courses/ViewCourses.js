@@ -9,7 +9,7 @@ import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get } from '../../Utilities';
 import { PageHeader } from '../Common';
 import rupee from '../../assets/images/Courses/rupee.svg';
-import placeholder from '../../assets/images/avatarImage.jpg';
+import placeholder from '../../assets/images/ycIcon.png';
 import { courseActions } from '../../redux/actions/course.action';
 
 const ViewCourses = (props) => {

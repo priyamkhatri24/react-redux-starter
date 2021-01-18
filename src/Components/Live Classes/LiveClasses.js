@@ -46,6 +46,7 @@ class LiveClasses extends Component {
       role: 'teacher',
       doesLiveStreamExist: false,
       doesBBBexist: false,
+      recordings: [],
     };
   }
 
@@ -59,8 +60,9 @@ class LiveClasses extends Component {
       };
       get(payload, '/getLiveStreamsForStudent').then((res) => {
         const result = apiValidation(res);
-
-        this.setState({ studentBatches: result });
+        const tempfilter = result.filter((e) => e.stream_type !== 'zoom');
+        // this.setState({ studentBatches: result });
+        this.setState({ studentBatches: tempfilter });
       });
     }
 
@@ -95,6 +97,19 @@ class LiveClasses extends Component {
         this.setState({ adminBatches: result });
       });
     }
+
+    /** **********************Recordings ********** */
+
+    get(
+      { client_user_id: clientUserId, client_id: clientId },
+      '/getRecordedLiveStreamOfCoaching',
+    ).then((res) => {
+      const result = apiValidation(res);
+      console.log(result);
+      this.setState({ recordings: result });
+      const { recordings } = this.state;
+      console.log(recordings);
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -276,6 +291,7 @@ class LiveClasses extends Component {
       doesLiveStreamExist,
       existingStream,
       studentBatches,
+      recordings,
     } = this.state;
     return (
       <div className='LiveClasses'>
@@ -534,7 +550,59 @@ class LiveClasses extends Component {
             )}
           </Tab>
           <Tab eventKey='Recordings' title='Recordings'>
-            Testing
+            {recordings.length > 0 ? (
+              <div>
+                {recordings.map((elem) => {
+                  return (
+                    <Card
+                      key={elem.stream_name}
+                      className='LiveClasses__Card mx-auto p-2 mb-3 mb-lg-5'
+                    >
+                      <div className='LiveClasses__adminCard p-2'>
+                        <h6 className='LiveClasses__adminHeading mb-0'>
+                          {elem.first_name} {elem.last_name} is streaming Live
+                        </h6>
+                        <p className='LiveClasses__adminCardTime mb-0'>
+                          {format(fromUnixTime(elem.created_at), 'HH:mm MMM dd, yyyy')}
+                        </p>
+
+                        <p className='LiveClasses__adminDuration'>
+                          Duration:{' '}
+                          <span>
+                            {`${Math.floor(elem.duration / 3600000)} hr ${Math.floor(
+                              (elem.duration % 3600) / 60,
+                            )} min `}
+                          </span>
+                        </p>
+
+                        <p className='LiveClasses__adminBatches'>
+                          Streaming In :{' '}
+                          {elem.batch_array.map((e, i) => {
+                            return (
+                              <span key={`elem${e}`}>
+                                {e}
+                                {i < elem.batch_array.length - 1 ? ',' : ''}
+                              </span>
+                            );
+                          })}
+                        </p>
+                        <Row className='justify-content-center mb-2 mb-lg-4'>
+                          <Button
+                            variant='customPrimary'
+                            size='sm'
+                            onClick={() => this.startLiveStream(elem)}
+                          >
+                            Watch Recording
+                          </Button>
+                        </Row>
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className='text-center m-4'>Oops! There are no recordings to show.</p>
+            )}
           </Tab>
         </Tabs>
       </div>
