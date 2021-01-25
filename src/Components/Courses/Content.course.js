@@ -15,6 +15,9 @@ const Content = (props) => {
     sectionArray,
     getUpdatedSectionArray,
     getSectiontoUpdateInDB,
+    setCourseCurrentSectionIdToStore,
+    setCourseCurrentSectionNameToStore,
+    history,
   } = props;
   const [section, setSectionArray] = useState([]);
   const [isSectionUpdateValid, setIsSectionUpdateValid] = useState(false);
@@ -72,6 +75,12 @@ const Content = (props) => {
     } else setIsSectionUpdateValid(true);
   };
 
+  const addNewContent = (id, name) => {
+    setCourseCurrentSectionIdToStore(id);
+    setCourseCurrentSectionNameToStore(name);
+    history.push('/courses/createcourse/addcontent');
+  };
+
   return (
     <div>
       {['Basic Information'].map((e, i) => {
@@ -80,6 +89,7 @@ const Content = (props) => {
             className='m-2 p-2'
             style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)', borderRadius: '10px' }}
             onClick={() => setCourseCurrentSlideToStore(1)}
+            key={e}
           >
             <Row className='my-auto Courses__createCourse mx-2'>
               <span className='Courses__coloredNumber mr-2'>{1}</span>{' '}
@@ -163,7 +173,11 @@ const Content = (props) => {
                 </>
               )}
               <Row className='w-50 m-1'>
-                <Button variant='boldText' className='p-0' onClick={() => {}}>
+                <Button
+                  variant='boldText'
+                  className='p-0'
+                  onClick={() => addNewContent(elem.section_id, elem.section_name)}
+                >
                   +Add Content
                 </Button>
               </Row>
@@ -229,6 +243,7 @@ const Content = (props) => {
           <Card
             className='m-2 p-2'
             style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)', borderRadius: '10px' }}
+            key={i} //eslint-disable-line
           >
             <Row className='my-auto Courses__createCourse mx-2'>
               <span className='Courses__coloredNumber mr-2'>{i + 3}</span>{' '}
@@ -249,6 +264,12 @@ const mapDispatchToProps = (dispatch) => {
     setCourseCurrentSlideToStore: (payload) => {
       dispatch(courseActions.setCourseCurrentSlideToStore(payload));
     },
+    setCourseCurrentSectionIdToStore: (payload) => {
+      dispatch(courseActions.setCourseCurrentSectionIdToStore(payload));
+    },
+    setCourseCurrentSectionNameToStore: (payload) => {
+      dispatch(courseActions.setCourseCurrentSectionNameToStore(payload));
+    },
   };
 };
 
@@ -257,6 +278,9 @@ export default connect(null, mapDispatchToProps)(Content);
 Content.propTypes = {
   sectionArray: PropTypes.instanceOf(Array).isRequired,
   setCourseCurrentSlideToStore: PropTypes.func.isRequired,
+  setCourseCurrentSectionNameToStore: PropTypes.func.isRequired,
+  setCourseCurrentSectionIdToStore: PropTypes.func.isRequired,
   getUpdatedSectionArray: PropTypes.func.isRequired,
   getSectiontoUpdateInDB: PropTypes.func.isRequired,
+  history: PropTypes.instanceOf(Object).isRequired,
 };

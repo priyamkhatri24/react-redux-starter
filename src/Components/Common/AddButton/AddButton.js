@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import PersonAddRoundedIcon from '@material-ui/icons/PersonAddRounded';
 
 export const AddButton = (props) => {
-  const { addButtonArray } = props;
+  const { addButtonArray, onlyUseButton, triggerButton } = props;
   const [openMenu, setOpenMenu] = useState(false);
   const divlengthClass = classNames({
     AddButton__innerDiv: !openMenu,
@@ -24,15 +24,23 @@ export const AddButton = (props) => {
     // };
   };
 
+  const openMenuOrTriggerFunction = () => {
+    if (onlyUseButton) {
+      triggerButton();
+    } else {
+      setOpenMenu(true);
+    }
+  };
+
   return (
-    <div className='AddButton__wrap'>
+    <div className='AddButton__wrap' style={{ zIndex: '999' }}>
       <div className='AddButton__folded'>
         <div className={divlengthClass}>
           {!openMenu && (
             <AddIcon
               className='AddButton__addIcon'
-              onClick={() => setOpenMenu(true)}
-              onKeyDown={() => setOpenMenu(true)}
+              onClick={() => openMenuOrTriggerFunction()}
+              onKeyDown={() => openMenuOrTriggerFunction()}
               role='button'
               tabIndex='-1'
             />
@@ -86,5 +94,13 @@ export const AddButton = (props) => {
 };
 
 AddButton.propTypes = {
-  addButtonArray: PropTypes.instanceOf(Array).isRequired,
+  addButtonArray: PropTypes.instanceOf(Array),
+  onlyUseButton: PropTypes.bool,
+  triggerButton: PropTypes.func,
+};
+
+AddButton.defaultProps = {
+  onlyUseButton: false,
+  addButtonArray: [],
+  triggerButton: () => {},
 };

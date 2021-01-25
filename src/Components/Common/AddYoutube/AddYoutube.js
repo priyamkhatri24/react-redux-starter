@@ -41,8 +41,13 @@ export const AddYoutube = (props) => {
   };
 
   const sendYoutubeData = () => {
+    const route =
+      props.history.location.state.goTo === 'addContent'
+        ? '/courses/createcourse/addcontent'
+        : '/studybin';
+
     props.history.push({
-      pathname: '/studybin',
+      pathname: route,
       state: { videoId, title: youtubeVideo.snippet.title },
     });
   };
@@ -122,5 +127,10 @@ export const AddYoutube = (props) => {
 AddYoutube.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
+    location: PropTypes.shape({
+      state: PropTypes.shape({
+        goTo: PropTypes.string.isRequired,
+      }),
+    }),
   }).isRequired,
 };

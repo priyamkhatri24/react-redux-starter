@@ -33,15 +33,15 @@ const CreateCourse = (props) => {
   const [coupons, setCoupons] = useState([]);
 
   useEffect(() => {
-    if (!courseId) {
-      history.push('/');
-    } else {
-      get({ client_id: clientId, course_id: courseId }, '/getCouponsOfCourse').then((res) => {
-        console.log(res);
-        const result = apiValidation(res);
-        setCoupons(result);
-      });
-    }
+    // if (!courseId) {
+    //   history.push('/');
+    // } else {
+    get({ client_id: clientId, course_id: courseId }, '/getCouponsOfCourse').then((res) => {
+      console.log(res);
+      const result = apiValidation(res);
+      setCoupons(result);
+    });
+    // }
   }, [courseId, clientId, history]);
 
   useEffect(() => {
@@ -120,6 +120,7 @@ const CreateCourse = (props) => {
                 sectionArray={course.section_array}
                 getUpdatedSectionArray={getUpdatedSectionArray}
                 getSectiontoUpdateInDB={updateSectionInDb}
+                history={history}
               />
             )}
             {currentSlide === 3 && (
@@ -127,6 +128,7 @@ const CreateCourse = (props) => {
                 courseTitle={course.course_title}
                 courseDesc={course.course_description}
                 updateDisplayDetails={updateDisplayDetails}
+                courseDisplayImage={course.course_display_image}
               />
             )}
             {currentSlide === 4 && (
@@ -134,9 +136,19 @@ const CreateCourse = (props) => {
                 coursePrice={course.course_price}
                 discountPrice={course.discount_price}
                 coupons={coupons}
+                clientId={clientId}
+                courseId={courseId}
+                clientUserId={clientUserId}
               />
             )}
-            {currentSlide === 5 && <Privacy />}
+            {currentSlide === 5 && (
+              <Privacy
+                clientId={clientId}
+                courseId={courseId}
+                history={history}
+                clientUserId={clientUserId}
+              />
+            )}
           </div>
         </>
       )}

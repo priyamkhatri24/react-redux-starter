@@ -76,9 +76,11 @@ const PreviewQuestions = (props) => {
           );
         })}
       </Card>
-      <Row className='justify-content-center my-3' onClick={() => goToAssigner()}>
-        <Button variant='customPrimary'>Next</Button>
-      </Row>
+      {!history.location.state && !history.location.state.goTo === 'addContent' && (
+        <Row className='justify-content-center my-3' onClick={() => goToAssigner()}>
+          <Button variant='customPrimary'>Next</Button>
+        </Row>
+      )}
     </>
   );
 };
@@ -93,5 +95,10 @@ PreviewQuestions.propTypes = {
   selectedQuestionArray: PropTypes.instanceOf(Array).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
+    location: PropTypes.shape({
+      state: PropTypes.shape({
+        goTo: PropTypes.string.isRequired,
+      }),
+    }),
   }).isRequired,
 };

@@ -6,12 +6,13 @@ import Button from 'react-bootstrap/Button';
 import './BatchesSelector.scss';
 
 export const BatchesSelector = (props) => {
-  const { batches, getSelectedBatches, title, selectBatches } = props;
+  const { batches, getSelectedBatches, title, selectBatches, sendBoth } = props;
   const [selectedBatches, setSelectedBatches] = useState([...selectBatches]);
 
   useEffect(() => {
-    getSelectedBatches(selectedBatches);
-  }, [selectedBatches, getSelectedBatches]);
+    if (sendBoth) getSelectedBatches(batches, selectedBatches);
+    else getSelectedBatches(selectedBatches);
+  }, [selectedBatches, getSelectedBatches, batches, sendBoth]);
 
   const selectBatch = (elem) => {
     const index = batches.findIndex((e) => e.client_batch_id === elem.client_batch_id);
@@ -71,4 +72,9 @@ BatchesSelector.propTypes = {
   selectBatches: PropTypes.instanceOf(Array).isRequired,
   batches: PropTypes.instanceOf(Array).isRequired,
   title: PropTypes.string.isRequired,
+  sendBoth: PropTypes.bool,
+};
+
+BatchesSelector.defaultProps = {
+  sendBoth: false,
 };

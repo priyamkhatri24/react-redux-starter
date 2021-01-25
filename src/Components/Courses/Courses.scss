@@ -108,3 +108,31 @@
     color: var(--primary-blue);
   }
 }
+
+#limited + label {
+  font-family: 'Montserrat-Regular';
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.38);
+  line-height: 18px;
+}
+
+#forever + label {
+  font-family: 'Montserrat-Regular';
+  font-size: 14px;
+  color: var(--primary-blue);
+  line-height: 18px;
+}
+
+#limitedNumber + label {
+  font-family: 'Montserrat-Regular';
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.38);
+  line-height: 18px;
+}
+
+#unlimited + label {
+  font-family: 'Montserrat-Regular';
+  font-size: 14px;
+  color: var(--primary-blue);
+  line-height: 18px;
+}

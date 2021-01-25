@@ -11,3 +11,4 @@ export * from './FileViewer/PDFFileViewer';
 export * from './AddYoutube/AddYoutube';
 export * from './ScrollableCards/CoursesCards';
 export * from './FileViewer/FileViewer';
+export * from './AddButton/AddButton';

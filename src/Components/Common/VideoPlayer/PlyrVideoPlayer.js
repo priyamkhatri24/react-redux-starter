@@ -20,9 +20,14 @@ const PlyrVideoPlayer = (props) => {
   });
 
   useEffect(() => {
-    if (history.location.state) {
+    if (history.location.state && history.location.state.link) {
       const newSource = JSON.parse(JSON.stringify(source));
       newSource.sources = [{ src: history.location.state.link, provider: 'youtube' }];
+      setSource(newSource);
+    } else if (history.location.state && history.location.state.videoLink) {
+      const newSource = JSON.parse(JSON.stringify(source));
+      newSource.sources = [{ src: history.location.state.videoLink }];
+      console.log(newSource);
       setSource(newSource);
     } else {
       const { id } = match.params;

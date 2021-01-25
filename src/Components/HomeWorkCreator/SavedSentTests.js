@@ -22,7 +22,7 @@ const SavedSentTests = (props) => {
     clientUserId,
     clientId,
     roleArray,
-    history: { location: { state: classId } = {} } = {},
+    history: { location: { state: { classId, goTo } } = {} } = {},
     setCurrentSlide,
     setQuestionArrayToStore,
     history,
@@ -35,12 +35,12 @@ const SavedSentTests = (props) => {
       client_user_id: clientUserId,
       is_admin: roleArray.includes(4) ? 'true' : 'false',
       client_id: clientId,
-      class_id: classId.class_id,
+      class_id: goTo === 'addContent' ? null : classId.class_id,
     };
 
     const sentAssignmentPayload = {
       client_user_id: clientUserId,
-      class_id: classId.class_id,
+      class_id: goTo === 'addContent' ? null : classId.class_id,
       client_batch_id: null,
       is_admin: roleArray.includes(4) ? 'true' : 'false',
       client_id: clientId,
@@ -56,7 +56,7 @@ const SavedSentTests = (props) => {
       const result = apiValidation(res);
       setSentTests(result);
     });
-  }, [clientUserId, clientId, classId, roleArray]);
+  }, [clientUserId, clientId, classId, roleArray, goTo]);
 
   const getQuestions = (testId) => {
     get({ test_id: testId }, '/getTestQuestions').then((res) => {
@@ -66,6 +66,10 @@ const SavedSentTests = (props) => {
       setQuestionArrayToStore(result);
       history.push('/homework');
     });
+  };
+
+  const goToAddContent = (testId, draft) => {
+    history.push({ pathname: '/courses/createcourse/addcontent', state: { testId, draft } });
   };
 
   return (
@@ -79,7 +83,11 @@ const SavedSentTests = (props) => {
                 <Row
                   className='LiveClasses__adminCard p-2 m-3'
                   key={`elem${elem.test_id}`}
-                  onClick={() => getQuestions(elem.test_id)}
+                  onClick={
+                    goTo === 'addContent'
+                      ? () => goToAddContent(elem.test_id, false)
+                      : () => getQuestions(elem.test_id)
+                  }
                 >
                   <Col xs={2}>
                     <AssignmentOutlinedIcon />
@@ -109,7 +117,11 @@ const SavedSentTests = (props) => {
                 <Row
                   className='LiveClasses__adminCard p-2 m-3'
                   key={`elem${elem.test_id}`}
-                  onClick={() => getQuestions(elem.test_id)}
+                  onClick={
+                    goTo === 'addContent'
+                      ? () => goToAddContent(elem.test_id, true)
+                      : () => getQuestions(elem.test_id)
+                  }
                 >
                   <Col xs={2}>
                     <AssignmentOutlinedIcon />
@@ -157,7 +169,8 @@ SavedSentTests.propTypes = {
     push: PropTypes.func,
     location: PropTypes.shape({
       state: PropTypes.shape({
-        classId: PropTypes.instanceOf(Object).isRequired,
+        classId: PropTypes.instanceOf(Object),
+        goTo: PropTypes.string,
       }),
     }),
   }).isRequired,

@@ -57,7 +57,6 @@ const TeacherCourses = (props) => {
     courseTitle
       ? post({ course_title: courseTitle, client_user_id: clientUserId }, '/addCourse').then(
           (res) => {
-            console.log(res);
             setCourseIdToStore(res.course_id);
             get({ client_id: clientId, course_id: res.course_id }, '/getCourseDetails').then(
               (response) => {
@@ -88,6 +87,7 @@ const TeacherCourses = (props) => {
       console.log(response);
       const result = apiValidation(response);
       setCourseObjectToStore(result);
+      setCourseIdToStore(result.course_id);
       setCourseCurrentSlideToStore(
         result.tag_array.length === 0
           ? 1

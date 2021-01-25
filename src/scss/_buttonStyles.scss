@@ -263,6 +263,20 @@
   line-height: 18px;
 }
 
+.btn-primaryOutline {
+  border-radius: 5px;
+  border: 1px solid var(--primary-blue);
+  color: var(--primary-blue);
+  font-family: 'Montserrat-Bold';
+}
+
+.btn-redOutline {
+  border-radius: 5px;
+  border: 1px solid #ff0000de;
+  color: #ff0000de;
+  font-family: 'Montserrat-Bold';
+}
+
 /**************************************Progress Bar Styles ********************************/
 
 .bg-testProgress {

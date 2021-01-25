@@ -29,6 +29,7 @@ import PlyrVideoPlayer from '../Components/Common/VideoPlayer/PlyrVideoPlayer';
 import TeacherCourses from '../Components/Courses/TeacherCourses';
 import CourseStatistics from '../Components/Courses/CourseStatistics';
 import CreateCourse from '../Components/Courses/CreateCourse';
+import AddContent from '../Components/Courses/AddContent';
 
 export function Routes() {
   return (
@@ -41,7 +42,7 @@ export function Routes() {
       <Route path='/admissionform' component={AdmissionForm} />
       <Route path='/forgotpassword' component={ForgotPassword} />
       <Route path='/videoplayerplyr/:id' component={VideoPlayer} />
-      <Route path='/videoplayer/:id' component={PlyrVideoPlayer} />
+      <Route path='/videoplayer/:id?' component={PlyrVideoPlayer} />
 
       <AuthenticatedRoute path='/liveclasses' component={LiveClasses} />
       <AuthenticatedRoute path='/studybin' component={StudyBin} />
@@ -67,6 +68,7 @@ export function Routes() {
         component={CourseStatistics}
       />
       <AuthenticatedRoute exact path='/courses/createcourse' component={CreateCourse} />
+      <AuthenticatedRoute exact path='/courses/createcourse/addcontent' component={AddContent} />
 
       <Route path='/fileviewer' component={FileView} />
       <Route path='/otherfileviewer' component={TempViewFile} />

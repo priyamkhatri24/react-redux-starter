@@ -12,7 +12,13 @@ import { uploadImage } from '../../Utilities';
 import YCIcon from '../../assets/images/ycIcon.png';
 
 const Display = (props) => {
-  const { setCourseCurrentSlideToStore, courseTitle, courseDesc, updateDisplayDetails } = props;
+  const {
+    setCourseCurrentSlideToStore,
+    courseTitle,
+    courseDesc,
+    updateDisplayDetails,
+    courseDisplayImage,
+  } = props;
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [imageTitle, setImageTitle] = useState('');
@@ -26,13 +32,16 @@ const Display = (props) => {
     setDescription(courseDesc);
   }, [courseTitle, courseDesc]);
 
+  useEffect(() => {
+    if (courseDisplayImage) setImageTitle(courseDisplayImage);
+  }, [courseDisplayImage]);
+
   const getImageInput = (e, type) => {
     const reader = new FileReader();
     const file = e.target.files[0];
     if (file) {
       reader.readAsDataURL(e.target.files[0]);
       uploadImage(file).then((res) => {
-        console.log('fileu;lod ', res);
         type === 'image'
           ? (courseImage.current = res.filename)
           : (courseVideo.current = res.filename);
@@ -252,8 +261,10 @@ Display.propTypes = {
   courseTitle: PropTypes.string.isRequired,
   courseDesc: PropTypes.string,
   updateDisplayDetails: PropTypes.func.isRequired,
+  courseDisplayImage: PropTypes.string,
 };
 
 Display.defaultProps = {
   courseDesc: '',
+  courseDisplayImage: '',
 };
