@@ -10,7 +10,7 @@ import AdmissionForm from '../Components/Login/AdmissionChat/AdmissionForm/Admis
 import StudyBin from '../Components/Study Bin/StudyBin';
 import ForgotPassword from '../Components/Login/SignIn/ForgotPassword/ForgotPassword';
 import { AuthenticatedRoute } from './AuthenticatedRoute';
-import { VideoPlayer, FileView, AddYoutube, TempViewFile } from '../Components/Common';
+import { FileView, AddYoutube, TempViewFile } from '../Components/Common';
 import QuestionTaker from '../Components/Common/QuestionTaker/QuestionTaker';
 import NoticeBoard from '../Components/NoticeBoard/NoticeBoard';
 import Profile from '../Components/Profile/Profile';
@@ -30,6 +30,9 @@ import TeacherCourses from '../Components/Courses/TeacherCourses';
 import CourseStatistics from '../Components/Courses/CourseStatistics';
 import CreateCourse from '../Components/Courses/CreateCourse';
 import AddContent from '../Components/Courses/AddContent';
+import Admissions from '../Components/Admissions/Admissions';
+import UserDetails from '../Components/Admissions/UsersDetails';
+import BatchDetails from '../Components/Admissions/BatchesDetails';
 
 export function Routes() {
   return (
@@ -41,7 +44,7 @@ export function Routes() {
       <Route path='/admission' component={AdmissionChat} />
       <Route path='/admissionform' component={AdmissionForm} />
       <Route path='/forgotpassword' component={ForgotPassword} />
-      <Route path='/videoplayerplyr/:id' component={VideoPlayer} />
+      {/* <Route path='/videoplayerplyr/:id' component={VideoPlayer} /> */}
       <Route path='/videoplayer/:id?' component={PlyrVideoPlayer} />
 
       <AuthenticatedRoute path='/liveclasses' component={LiveClasses} />
@@ -69,6 +72,9 @@ export function Routes() {
       />
       <AuthenticatedRoute exact path='/courses/createcourse' component={CreateCourse} />
       <AuthenticatedRoute exact path='/courses/createcourse/addcontent' component={AddContent} />
+      <AuthenticatedRoute exact path='/admissions' component={Admissions} />
+      <AuthenticatedRoute exact path='/admissions/user' component={UserDetails} />
+      <AuthenticatedRoute exact path='/admissions/batch' component={BatchDetails} />
 
       <Route path='/fileviewer' component={FileView} />
       <Route path='/otherfileviewer' component={TempViewFile} />

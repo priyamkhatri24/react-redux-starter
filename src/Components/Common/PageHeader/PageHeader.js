@@ -4,13 +4,29 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import FilterListIcon from '@material-ui/icons/FilterList';
 import { BackButton } from '../BackButton/BackButton';
+
 import './PageHeader.scss';
 
 export const PageHeader = (props) => {
-  const { title, search, placeholder, searchFilter, customBack, handleBack, transparent } = props;
+  const {
+    title,
+    search,
+    placeholder,
+    searchFilter,
+    customBack,
+    handleBack,
+    transparent,
+    filter,
+    triggerFilters,
+  } = props;
 
   const [searchBar, triggerSearchBar] = useState(false);
+  const closeSearchBar = () => {
+    triggerSearchBar(false);
+    searchFilter('');
+  };
   return (
     <div
       className='PageHeader p-3 d-flex'
@@ -31,6 +47,11 @@ export const PageHeader = (props) => {
                 <SearchIcon className='mr-3' />
               </span>
             )}
+            {filter && (
+              <span role='button' tabIndex='-1' onKeyDown={triggerFilters} onClick={triggerFilters}>
+                <FilterListIcon className='mr-3' />
+              </span>
+            )}
             <MoreVertIcon />
           </div>
         </>
@@ -48,8 +69,8 @@ export const PageHeader = (props) => {
           <span
             role='button'
             tabIndex='-1'
-            onKeyDown={() => triggerSearchBar(false)}
-            onClick={() => triggerSearchBar(false)}
+            onKeyDown={() => closeSearchBar()}
+            onClick={() => closeSearchBar()}
             className='ml-auto'
           >
             <ClearIcon className='mr-3' />
@@ -65,9 +86,11 @@ PageHeader.propTypes = {
   search: PropTypes.bool,
   placeholder: PropTypes.string,
   searchFilter: PropTypes.func,
+  triggerFilters: PropTypes.func,
   customBack: PropTypes.bool,
   handleBack: PropTypes.func,
   transparent: PropTypes.bool,
+  filter: PropTypes.bool,
 };
 
 PageHeader.defaultProps = {
@@ -77,5 +100,7 @@ PageHeader.defaultProps = {
   searchFilter: () => {},
   customBack: false,
   handleBack: () => {},
+  triggerFilters: () => {},
   transparent: false,
+  filter: false,
 };

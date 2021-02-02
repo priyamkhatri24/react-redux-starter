@@ -155,4 +155,10 @@
     color: $headingGrey;
     border-radius: 0 0 5px 5px;
   }
+
+  &__admissionsBlueText {
+    color: var(--primary-blue);
+    font-size: $spacer * 1.5;
+    font-family: $bold;
+  }
 }

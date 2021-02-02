@@ -205,6 +205,11 @@ const AddContent = (props) => {
     } else if (type === 'image') {
       setImgLink(elem.file_link);
       handleImageOpen();
+    } else if (type === 'file') {
+      history.push({
+        pathname: '/otherfileviewer',
+        state: { filePath: elem.file_link },
+      });
     }
   };
 
@@ -214,9 +219,20 @@ const AddContent = (props) => {
       delete_array: JSON.stringify([{ id: elem.id, content_type: elem.content_type }]),
     };
 
-    post(payload, '/deleteSectionContent').then((res) => {
-      if (res.success) {
-        getSectionContent();
+    Swal.fire({
+      title: 'Delete Content',
+      text: 'Do you wish to delete this content?',
+      icon: 'question',
+      confirmButtonText: `Yes`,
+      showDenyButton: true,
+      customClass: 'Assignments__SweetAlert',
+    }).then((resp) => {
+      if (resp.isConfirmed) {
+        post(payload, '/deleteSectionContent').then((res) => {
+          if (res.success) {
+            getSectionContent();
+          }
+        });
       }
     });
   };
@@ -233,30 +249,48 @@ const AddContent = (props) => {
                 <Col xs={2}>
                   <AssignmentIcon />
                 </Col>
-                <Col
-                  xs={8}
-                  onClick={() =>
-                    openTheContent(
-                      elem.content_type === 'file' ? elem.file_type : elem.content_type,
-                      elem,
-                    )
-                  } // eslint-disable-line
-                >
-                  <h6 className='LiveClasses__adminHeading mb-0'>{elem.name}</h6>
-                  <p className='LiveClasses__adminCardTime mb-0' />
+                <Col xs={8}>
+                  <Button
+                    style={{
+                      backgroundColor: '#fff',
+                      borderColor: '#fff',
+                      padding: 0,
+                      textAlign: 'left',
+                      width: '100%',
+                    }}
+                    variant='light'
+                    onClick={() =>
+                      openTheContent(
+                        elem.content_type === 'file' ? elem.file_type : elem.content_type,
+                        elem,
+                      )
+                    } // eslint-disable-line
+                  >
+                    <h6 className='LiveClasses__adminHeading mb-0'>{elem.name}</h6>
+                    <p className='LiveClasses__adminCardTime mb-0' />
 
-                  <p className='LiveClasses__adminDuration mb-0'>
-                    Type:{' '}
-                    <span>{elem.content_type === 'file' ? elem.file_type : elem.content_type}</span>
-                  </p>
+                    <p className='LiveClasses__adminDuration mb-0'>
+                      Type:{' '}
+                      <span>
+                        {elem.content_type === 'file' ? elem.file_type : elem.content_type}
+                      </span>
+                    </p>
+                  </Button>
                 </Col>
-                <Col
-                  xs={2}
-                  className='d-flex justify-content-center align-items-center'
-                  onClick={() => removeSection(elem)}
-                  style={{ zIndex: '9' }}
-                >
-                  <CloseIcon />
+                <Col xs={2} className='d-flex justify-content-center align-items-center p-0'>
+                  <Button
+                    onClick={() => removeSection(elem)}
+                    style={{
+                      backgroundColor: '#fff',
+                      borderColor: '#fff',
+                      zIndex: '9',
+                      width: '100%',
+                      textAlign: 'center',
+                    }}
+                    variant='light'
+                  >
+                    <CloseIcon />
+                  </Button>
                 </Col>
               </Row>
             );
@@ -311,7 +345,6 @@ const AddContent = (props) => {
             id='file-input-all'
             type='file'
             onChange={(e) => getImageInput(e, 'file')}
-            accept='*/*'
             style={{ display: 'none' }}
             ref={courseFileRef}
           />

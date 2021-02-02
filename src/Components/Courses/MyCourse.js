@@ -159,10 +159,10 @@ const Mycourse = (props) => {
 
   const startHomework = (responseArray, testId) => {
     const { push } = history;
-    push('/questiontaker');
     setTestResultArrayToStore(responseArray);
     setTestIdToStore(testId);
     setTestTypeToStore('homework');
+    push('/questiontaker');
   };
 
   const startDemoTest = (elem) => {

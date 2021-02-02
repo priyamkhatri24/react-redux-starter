@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
@@ -42,10 +43,21 @@ const Content = (props) => {
   };
 
   const deleteSection = (i) => {
-    post({ section_id: i }, '/deleteSection').then((res) => {
-      if (res.success) {
-        const newSectionArray = section.filter((e) => e.section_id !== i);
-        getUpdatedSectionArray(newSectionArray);
+    Swal.fire({
+      title: 'Delete Section',
+      text: 'Do you wish to delete this section?',
+      icon: 'question',
+      confirmButtonText: `Yes`,
+      showDenyButton: true,
+      customClass: 'Assignments__SweetAlert',
+    }).then((resp) => {
+      if (resp.isConfirmed) {
+        post({ section_id: i }, '/deleteSection').then((res) => {
+          if (res.success) {
+            const newSectionArray = section.filter((e) => e.section_id !== i);
+            getUpdatedSectionArray(newSectionArray);
+          }
+        });
       }
     });
   };

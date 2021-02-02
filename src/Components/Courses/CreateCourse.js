@@ -106,11 +106,15 @@ const CreateCourse = (props) => {
     });
   };
 
+  const handleBack = () => {
+    history.push('/courses/teachercourse');
+  };
+
   return (
     <div>
       {Object.keys(course).length > 0 && (
         <>
-          <PageHeader title={course.course_title} />
+          <PageHeader title={course.course_title} customBack handleBack={handleBack} />
           <div style={{ marginTop: '5rem' }}>
             {currentSlide === 1 && (
               <Basic tagArray={course.tag_array} getTagArrays={getTagsOfBasic} />

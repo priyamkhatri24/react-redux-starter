@@ -27,12 +27,13 @@ const Basic = (props) => {
       });
     setLearningTags(learn);
     const prerequisite = tagArray
-      .filter((e) => e.tag_type === 'prerequisite')
+      .filter((e) => e.tag_type === 'prereqisite')
       .map((e, i) => {
         e.meriId = i + 1;
         return e;
       });
     setprerequisiteTags(prerequisite);
+    console.log(prerequisite);
   }, [tagArray]);
 
   const deleteObject = (id, type) => {
@@ -108,6 +109,9 @@ const Basic = (props) => {
         <p className='mt-2 mx-2 Courses__chotiDetail'>
           The answers you write here will help students decide if your course is the one for them.
         </p>
+        <p className='mt-2 mx-2 Courses__motiDetail'>
+          What will the students learn from your course?
+        </p>
         {learningtags.map((e) => {
           return (
             <Row className='m-2' key={e.meriId}>
@@ -163,7 +167,7 @@ const Basic = (props) => {
           </Button>
         </Row>
         <p className='mt-2 mx-2 Courses__motiDetail'>
-          What will the students learn from your course?
+          Are there any course requirements or prerequisites?{' '}
         </p>
         {prerequisiteTags.map((e) => {
           return (
@@ -233,6 +237,7 @@ const Basic = (props) => {
           <Card
             className='m-2 p-2'
             style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)', borderRadius: '10px' }}
+            key={e}
           >
             <Row className='my-auto Courses__createCourse mx-2'>
               <span className='Courses__coloredNumber mr-2'>{i + 2}</span>{' '}

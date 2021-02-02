@@ -48,6 +48,15 @@ const PreviewQuestions = (props) => {
                   <div className='Homework__questionHeading text-left m-2'>
                     <MathJax math={String.raw`${question.question_text}`} />
                   </div>
+                  {question.question_image && (
+                    <div className='text-center'>
+                      <img
+                        src={question.question_image}
+                        className='img-fluid m-2 w-75 mx-auto'
+                        alt='question'
+                      />
+                    </div>
+                  )}
 
                   {question.question_type !== 'subjective' && (
                     <p className='Homework__options text-left m-2'>Options</p>
@@ -56,10 +65,11 @@ const PreviewQuestions = (props) => {
                   {question.question_type !== 'subjective' &&
                     question.option_array.map((e, i) => {
                       return (
-                        <div className='d-flex mx-3 mb-2 Homework__multipleOptions' key={e.order}>
+                        <Row className='d-flex mx-3 mb-2 Homework__multipleOptions' key={e.order}>
                           <span className='mr-2 my-auto'>{i + 1}.</span>{' '}
                           <MathJax math={String.raw`${e.text}`} />
-                        </div>
+                          {e.image && <img src={e.image} className='img-fluid w-75' alt='option' />}
+                        </Row>
                       );
                     })}
 

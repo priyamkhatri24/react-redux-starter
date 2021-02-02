@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import ReactApexCharts from 'react-apexcharts';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import format from 'date-fns/format';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import { connect } from 'react-redux';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
@@ -28,6 +31,7 @@ import offlineAssignment from '../../assets/images/Dashboard/offline.svg';
 import camera from '../../assets/images/Dashboard/camera.svg';
 import analysis from '../../assets/images/Dashboard/analysis.svg';
 import student from '../../assets/images/Dashboard/student.svg';
+import YourCoaching from '../../assets/images/yourCoachingHeavy.png';
 import Tests from '../Tests/Tests';
 import './Dashboard.scss';
 
@@ -51,6 +55,34 @@ const Dashboard = (props) => {
   const [notices, setNotices] = useState([]);
   const [allCourses, setAllCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
+  const [admissions, setAdmissions] = useState({});
+
+  const options = {
+    colors: ['var(--primary-blue)', 'rgba(0, 0, 0, 0.54)'],
+    chart: {
+      type: 'bar',
+      toolbar: {
+        show: false,
+      },
+    },
+    fill: {
+      colors: ['var(--primary-blue)', 'rgba(0, 0, 0, 0.54)'],
+    },
+    grid: { show: false },
+
+    plotOptions: {
+      bar: {
+        horizontal: true,
+        distributed: true,
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    xaxis: {
+      categories: ['Active', 'Inactive'],
+    },
+  };
 
   const partsOfDay = () => {
     const hours = new Date().getHours();
@@ -71,6 +103,7 @@ const Dashboard = (props) => {
       .then((res) => {
         const result = apiValidation(res);
         setNotices(result.notice);
+        setAdmissions(result.admission);
       })
       .catch((err) => console.error(err));
     partsOfDay();
@@ -100,6 +133,11 @@ const Dashboard = (props) => {
     push({ pathname: '/noticeboard' });
   };
 
+  const goToAdmissions = () => {
+    const { push } = history;
+    push({ pathname: '/admissions' });
+  };
+
   const goToStudyBin = () => {
     const { push } = history;
     push({ pathname: '/studybin' });
@@ -123,10 +161,10 @@ const Dashboard = (props) => {
   const startHomework = (responseArray, testId) => {
     const { push } = history;
     // push({ pathname: '/questiontaker', state: { result: responseArray, testId } });
-    push('/questiontaker');
     setTestResultArrayToStore(responseArray);
     setTestIdToStore(testId);
     setTestTypeToStore('homework');
+    push('/questiontaker');
   };
 
   const startLiveTest = (responseArray, startTime = 0, endTime = 0, testType) => {
@@ -363,6 +401,82 @@ const Dashboard = (props) => {
             ))}
           </div>
 
+          {Object.keys(admissions).length > 0 && (
+            <div className='Dashboard__noticeBoard mx-auto p-3 mt-3'>
+              <span className='Dashboard__verticalDots'>
+                <MoreVertIcon />
+              </span>
+              <Row className='m-2'>
+                <p className='Dashboard__todaysHitsText'>Admissions</p>
+              </Row>
+              <img src={YourCoaching} className='img-fluid' alt='yourcoaching' />
+              <Row className='justify-content-center m-2 mb-4 p-2'>
+                <Col className='text-center mt-3 p-0'>
+                  <Button variant='noticeBoardPost'>
+                    <PersonAddIcon />
+                    <span className=''>Add User</span>
+                  </Button>
+                </Col>
+                <Col className='text-center mt-3 p-0'>
+                  <Button variant='noticeBoardPost'>
+                    <PersonAddIcon />
+                    <span className=''>Add Batch</span>
+                  </Button>
+                </Col>
+              </Row>
+              <div
+                onClick={() => goToAdmissions()}
+                role='button'
+                tabIndex='-1'
+                onKeyDown={() => goToAdmissions()}
+              >
+                {[
+                  {
+                    title: 'Student',
+                    active: admissions.active_students,
+                    pending: admissions.pending_students,
+                  },
+                  {
+                    title: 'Teacher',
+                    active: admissions.active_teachers,
+                    pending: admissions.pending_teachers,
+                  },
+                  {
+                    title: 'Admin',
+                    active: admissions.active_admins,
+                    pending: admissions.pending_admins,
+                  },
+                ].map((elem) => {
+                  const series = [
+                    {
+                      data: [elem.active, elem.pending],
+                    },
+                  ];
+                  return (
+                    <Card key={elem.title} className='my-3 mx-2'>
+                      <Row className='p-2'>
+                        <Col xs={4} className='text-center p-2 my-auto'>
+                          <p
+                            className='Dashboard__attendanceSubHeading'
+                            style={{ fontFamily: 'Montserrat-SemiBold' }}
+                          >
+                            {elem.title}
+                          </p>
+                          <p className='Dashboard__admissionsBlueText my-auto'>
+                            {elem.pending + elem.active}
+                          </p>
+                        </Col>
+                        <Col xs={8}>
+                          <ReactApexCharts options={options} series={series} type='bar' />
+                        </Col>
+                      </Row>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <CoursesCards
             allCourses={allCourses}
             myCourses={myCourses}
@@ -466,6 +580,7 @@ const Dashboard = (props) => {
             buttonText={roleArray.includes(3) || roleArray.includes(4) ? 'Go live now' : ''}
             buttonClick={goToLiveClasses}
           />
+
           <div>
             <Tests startHomework={startHomework} startLive={startLiveTest} />
           </div>
