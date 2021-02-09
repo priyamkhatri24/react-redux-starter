@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import CloseIcon from '@material-ui/icons/Close';
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';

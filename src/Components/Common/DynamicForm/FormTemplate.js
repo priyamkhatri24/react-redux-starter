@@ -4,7 +4,30 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Formik, Field } from 'formik';
 import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import 'react-datepicker/dist/react-datepicker.css';
 import './FormTemplate.scss';
+
+const CustomInput = ({ value, onClick }) => (
+  <Row className='m-2 justify-content-center'>
+    <label htmlFor='Select Date' className='w-100 has-float-label my-auto'>
+      <input
+        className='form-control'
+        name='Select Date'
+        type='text'
+        placeholder='Select Date'
+        onClick={onClick}
+        readOnly
+        value={value}
+      />
+      <span>Select Date</span>
+      <i className='LiveClasses__show'>
+        <ExpandMoreIcon />
+      </i>
+    </label>
+  </Row>
+);
 
 const FormTemplate = (props) => {
   const { fields, validation, getData } = props;
@@ -104,6 +127,38 @@ const FormTemplate = (props) => {
     );
   };
 
+  const renderDate = (input) => {
+    return (
+      <Fragment key={input.name}>
+        <div className='my-4 FormTemplate__input mx-auto'>
+          <Field name={input.name}>
+            {(property) => {
+              const { field } = property;
+              const { errors, touched } = property.form;
+              const hasError = errors[input.name] && touched[input.name] ? 'hasError' : '';
+
+              return (
+                <label htmlFor={field.name} className='has-float-label my-auto'>
+                  <input
+                    className={`form-control ${hasError}`}
+                    {...field}
+                    type='date'
+                    placeholder={input.label}
+                    id={field.name}
+                  />
+                  <span>{input.label}</span>
+                </label>
+                // <div>
+                //   <textarea {...field} id={hasError} />
+                // </div>
+              );
+            }}
+          </Field>
+        </div>
+      </Fragment>
+    );
+  };
+
   const getInitialValues = (inputs) => {
     // declare an empty initialValues object
     const initialValues = {};
@@ -125,6 +180,7 @@ const FormTemplate = (props) => {
       if (input.type === 'select') return renderSelect(input);
       if (input.type === 'textarea') return renderTextArea(input);
       if (input.type === 'checkbox') return renderCheckBox(input);
+      if (input.type === 'date') return renderDate(input);
 
       return (
         <div key={input.name}>
@@ -133,14 +189,16 @@ const FormTemplate = (props) => {
               {(property) => {
                 const { field } = property;
                 const { errors, touched } = property.form;
+
                 const hasError =
                   errors[input.name] && touched[input.name] ? 'FormTemplate__hasError' : '';
                 return (
                   <label htmlFor={field.name} className='has-float-label my-auto'>
                     <input
+                      defaultValue={input.value}
                       className={`form-control ${hasError}`}
                       {...field}
-                      type='text'
+                      type={input.type === 'number' ? 'number' : 'text'}
                       placeholder={input.label}
                       id={field.name}
                     />
@@ -199,4 +257,9 @@ FormTemplate.propTypes = {
 
 FormTemplate.defaultProps = {
   validation: undefined,
+};
+
+CustomInput.propTypes = {
+  value: PropTypes.node.isRequired,
+  onClick: PropTypes.func.isRequired,
 };

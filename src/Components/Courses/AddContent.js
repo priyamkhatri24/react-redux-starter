@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
 import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
-import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import AssignmentIcon from '@material-ui/icons/Assignment';
@@ -14,8 +13,17 @@ import AttachFileIcon from '@material-ui/icons/AttachFile';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import { AddButton, PageHeader } from '../Common';
-import { apiValidation, get, post, propComparator, uploadImage } from '../../Utilities';
 import {
+  apiValidation,
+  get,
+  post,
+  propComparator,
+  uploadImage,
+  verifyIsImage,
+  verifyIsVideo,
+} from '../../Utilities';
+import {
+  getCourseAddContentTestId,
   getCourseCurrentSectionId,
   getCourseCurrentSectionName,
   getCourseSectionPriorityOrder,
@@ -28,7 +36,7 @@ const AddContent = (props) => {
   const {
     history: {
       push,
-      location: { state: { testId, draft, videoId, title } = {} },
+      location: { state: { draft, videoId, title } = {} },
     },
     history,
     sectionId,
@@ -37,6 +45,8 @@ const AddContent = (props) => {
     clientUserId,
     setCourseSectionPriorityOrderToStore,
     courseSectionPriorityOrder,
+    courseAddContentTestId,
+    setCourseAddContentTestIdToStore,
   } = props;
   const [showModal, setShowModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
@@ -67,25 +77,25 @@ const AddContent = (props) => {
   }, [getSectionContent]);
 
   useEffect(() => {
-    if (testId) {
+    if (courseAddContentTestId) {
       const newOrder = courseSectionPriorityOrder + 1;
       const payload = {
         section_id: sectionId,
-        test_array: JSON.stringify([{ test_id: testId, order: newOrder }]),
+        test_array: JSON.stringify([{ test_id: courseAddContentTestId, order: newOrder }]),
         is_draft: draft,
         client_user_id: clientUserId,
       };
       post(payload, '/addSectionContent').then((res) => {
-        console.log(res);
+        console.log(res, 'test id');
         getSectionContent();
         setCourseSectionPriorityOrderToStore(newOrder);
       });
-      delete history.location.state.testId;
+      setCourseAddContentTestIdToStore(0);
     }
   }, [
-    testId,
+    courseAddContentTestId,
+    setCourseAddContentTestIdToStore,
     courseSectionPriorityOrder,
-    history,
     setSelectedQuestionArrayToStore,
     clientUserId,
     draft,
@@ -171,8 +181,24 @@ const AddContent = (props) => {
   const getImageInput = (e, type) => {
     const reader = new FileReader();
     const file = e.target.files[0];
+    let isFileAllowed = false;
     console.log(file);
-    if (file) {
+    if (type === 'image' && verifyIsImage.test(file.name.split('.')[1])) {
+      isFileAllowed = true;
+    } else if (type === 'video' && verifyIsVideo.test(file.name.split('.')[1])) {
+      isFileAllowed = true;
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid File Type!',
+        text: `The supported file types are ${
+          type === 'image'
+            ? 'gif, jpeg, jpg, tiff, png, webp, bmp'
+            : 'mov,mp3, mp4 , mpg, avi, wmv, flv, 3gp'
+        }`,
+      });
+    }
+    if (file && isFileAllowed) {
       reader.readAsDataURL(e.target.files[0]);
       uploadImage(file).then((res) => {
         postImageToSection(file.name, res.filename, type);
@@ -206,10 +232,22 @@ const AddContent = (props) => {
       setImgLink(elem.file_link);
       handleImageOpen();
     } else if (type === 'file') {
-      history.push({
-        pathname: '/otherfileviewer',
-        state: { filePath: elem.file_link },
-      });
+      // const fileType = elem.file_type.replace(/\./g, ''); // removes the . form .doc / .ppt etc
+      const fileType = elem.name.split('.')[1];
+      fileType === 'pdf' || fileType === 'pd'
+        ? history.push({
+            pathname: '/fileviewer',
+            state: { filePath: elem.file_link, type: fileType },
+          })
+        : history.push({
+            pathname: '/otherfileviewer',
+            state: { filePath: elem.file_link, type: fileType },
+          });
+
+      // history.push({
+      //   pathname: '/otherfileviewer',
+      //   state: { filePath: elem.file_link },
+      // });
     }
   };
 
@@ -329,15 +367,14 @@ const AddContent = (props) => {
             id='file-input-image'
             type='file'
             onChange={(e) => getImageInput(e, 'image')}
-            accept='image/*'
             style={{ display: 'none' }}
             ref={courseImageRef}
           />
           <input
             id='file-input-video'
             type='file'
+            accept
             onChange={(e) => getImageInput(e, 'video')}
-            accept='video/*'
             style={{ display: 'none' }}
             ref={courseVideoRef}
           />
@@ -367,6 +404,7 @@ const mapStateToProps = (state) => ({
   sectionName: getCourseCurrentSectionName(state),
   clientUserId: getClientUserId(state),
   courseSectionPriorityOrder: getCourseSectionPriorityOrder(state),
+  courseAddContentTestId: getCourseAddContentTestId(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -376,6 +414,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     setCourseSectionPriorityOrderToStore: (payload) => {
       dispatch(courseActions.setCourseSectionPriorityOrderToStore(payload));
+    },
+    setCourseAddContentTestIdToStore: (payload) => {
+      dispatch(courseActions.setCourseAddContentTestIdToStore(payload));
     },
   };
 };
@@ -401,4 +442,6 @@ AddContent.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   setCourseSectionPriorityOrderToStore: PropTypes.func.isRequired,
   courseSectionPriorityOrder: PropTypes.number.isRequired,
+  setCourseAddContentTestIdToStore: PropTypes.func.isRequired,
+  courseAddContentTestId: PropTypes.number.isRequired,
 };

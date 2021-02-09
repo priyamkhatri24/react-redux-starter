@@ -88,3 +88,10 @@ export function prodOrDev() {
 
 export const propComparator = (propName) => (a, b) =>
   a[propName] === b[propName] ? 0 : a[propName] < b[propName] ? -1 : 1;
+
+// // function to validate file. Ideally should be server side but ab kya kar sakte h lol.
+
+// export const verifyFileExtension = (type, acceptedFile) => {
+//   const typeRegex = new RegExp(acceptedFile.replace(/\*/g, '.*').replace(/,/g, '|'));
+//   return typeRegex.test(type);
+// };

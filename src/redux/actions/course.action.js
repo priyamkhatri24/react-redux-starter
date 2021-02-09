@@ -24,6 +24,10 @@ function setCourseSectionPriorityOrderToStore(payload) {
   return { type: courseConstants.COURSESECTIONPRIORITYORDER, payload };
 }
 
+function setCourseAddContentTestIdToStore(payload) {
+  return { type: courseConstants.COURSEADDCONTENTTESTID, payload };
+}
+
 export const courseActions = {
   setCourseIdToStore,
   setCourseObjectToStore,
@@ -31,4 +35,5 @@ export const courseActions = {
   setCourseCurrentSectionIdToStore,
   setCourseCurrentSectionNameToStore,
   setCourseSectionPriorityOrderToStore,
+  setCourseAddContentTestIdToStore,
 };

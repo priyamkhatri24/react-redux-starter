@@ -175,20 +175,20 @@ const StudyBin = (props) => {
   const openFileView = (elem) => {
     console.log(elem);
     const fileType = elem.file_type.replace(/\./g, ''); // removes the . form .doc / .ppt etc
-    // fileType === 'pdf' || fileType === 'pd'
-    //   ? history.push({
-    //       pathname: '/fileviewer',
-    //       state: { filePath: elem.file_link, type: fileType },
-    //     })
-    //   : history.push({
-    //       pathname: '/otherfileviewer',
-    //       state: { filePath: elem.file_link, type: fileType },
-    //     });
+    fileType === 'pdf' || fileType === 'pd'
+      ? history.push({
+          pathname: '/fileviewer',
+          state: { filePath: elem.file_link, type: fileType },
+        })
+      : history.push({
+          pathname: '/otherfileviewer',
+          state: { filePath: elem.file_link, type: fileType },
+        });
 
-    history.push({
-      pathname: '/otherfileviewer',
-      state: { filePath: elem.file_link, type: fileType },
-    });
+    // history.push({
+    //   pathname: '/otherfileviewer',
+    //   state: { filePath: elem.file_link, type: fileType },
+    // });
   };
 
   const openFolder = (elem) => {

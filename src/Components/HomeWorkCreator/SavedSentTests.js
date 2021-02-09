@@ -16,6 +16,7 @@ import {
   getRoleArray,
 } from '../../redux/reducers/clientUserId.reducer';
 import { homeworkActions } from '../../redux/actions/homework.action';
+import { courseActions } from '../../redux/actions/course.action';
 
 const SavedSentTests = (props) => {
   const {
@@ -25,6 +26,7 @@ const SavedSentTests = (props) => {
     history: { location: { state: { classId, goTo } } = {} } = {},
     setCurrentSlide,
     setQuestionArrayToStore,
+    setCourseAddContentTestIdToStore,
     history,
   } = props;
   const [sentTests, setSentTests] = useState([]);
@@ -69,7 +71,8 @@ const SavedSentTests = (props) => {
   };
 
   const goToAddContent = (testId, draft) => {
-    history.push({ pathname: '/courses/createcourse/addcontent', state: { testId, draft } });
+    history.push({ pathname: '/courses/createcourse/addcontent', state: { draft } });
+    setCourseAddContentTestIdToStore(testId);
   };
 
   return (
@@ -159,6 +162,9 @@ const mapDispatchToProps = (dispatch) => {
     setCurrentSlide: (payload) => {
       dispatch(homeworkActions.setCurrentSlide(payload));
     },
+    setCourseAddContentTestIdToStore: (payload) => {
+      dispatch(courseActions.setCourseAddContentTestIdToStore(payload));
+    },
   };
 };
 
@@ -179,4 +185,5 @@ SavedSentTests.propTypes = {
   roleArray: PropTypes.instanceOf(Array).isRequired,
   setCurrentSlide: PropTypes.func.isRequired,
   setQuestionArrayToStore: PropTypes.func.isRequired,
+  setCourseAddContentTestIdToStore: PropTypes.func.isRequired,
 };

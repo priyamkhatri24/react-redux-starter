@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -7,16 +8,18 @@ import PhoneIcon from '@material-ui/icons/Phone';
 import FaceIcon from '@material-ui/icons/Face';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import avatarImage from '../../assets/images/user.svg';
+import { admissionActions } from '../../redux/actions/admissions.action';
 
 const UserDataCard = (props) => {
-  const { elem, history } = props;
+  const { elem, history, setAdmissionUserProfileToStore } = props;
 
   return (
     <Card
       className='m-2 Admissions__card'
       key={elem.user_id}
       onClick={() => {
-        history.push({ pathname: '/admissions/user', state: { user: elem } });
+        setAdmissionUserProfileToStore(elem);
+        history.push('/admissions/user');
       }}
     >
       <Row className='ml-auto mx-2 pt-1'>
@@ -66,9 +69,18 @@ const UserDataCard = (props) => {
   );
 };
 
-export default UserDataCard;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setAdmissionUserProfileToStore: (payload) => {
+      dispatch(admissionActions.setAdmissionUserProfileToStore(payload));
+    },
+  };
+};
+
+export default connect(null, mapDispatchToProps)(UserDataCard);
 
 UserDataCard.propTypes = {
   elem: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
+  setAdmissionUserProfileToStore: PropTypes.func.isRequired,
 };

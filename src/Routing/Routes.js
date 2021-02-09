@@ -33,6 +33,10 @@ import AddContent from '../Components/Courses/AddContent';
 import Admissions from '../Components/Admissions/Admissions';
 import UserDetails from '../Components/Admissions/UsersDetails';
 import BatchDetails from '../Components/Admissions/BatchesDetails';
+import AddDetails from '../Components/Admissions/AddDetails';
+import SelectClass from '../Components/Admissions/SelectClass';
+import AddBatch from '../Components/Admissions/AddBatch';
+import EditProfileHOC from '../Components/Admissions/EditProfileHoC';
 
 export function Routes() {
   return (
@@ -75,6 +79,10 @@ export function Routes() {
       <AuthenticatedRoute exact path='/admissions' component={Admissions} />
       <AuthenticatedRoute exact path='/admissions/user' component={UserDetails} />
       <AuthenticatedRoute exact path='/admissions/batch' component={BatchDetails} />
+      <AuthenticatedRoute exact path='/admissions/add/details' component={AddDetails} />
+      <AuthenticatedRoute exact path='/admissions/add/class' component={SelectClass} />
+      <AuthenticatedRoute exact path='/admissions/add/batch' component={AddBatch} />
+      <AuthenticatedRoute exact path='/admissions/editprofile' component={EditProfileHOC} />
 
       <Route path='/fileviewer' component={FileView} />
       <Route path='/otherfileviewer' component={TempViewFile} />

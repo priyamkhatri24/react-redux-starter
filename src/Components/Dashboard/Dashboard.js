@@ -7,6 +7,7 @@ import format from 'date-fns/format';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
+import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
@@ -34,6 +35,7 @@ import student from '../../assets/images/Dashboard/student.svg';
 import YourCoaching from '../../assets/images/yourCoachingHeavy.png';
 import Tests from '../Tests/Tests';
 import './Dashboard.scss';
+import { admissionActions } from '../../redux/actions/admissions.action';
 
 const Dashboard = (props) => {
   const {
@@ -50,12 +52,16 @@ const Dashboard = (props) => {
     setTestIdToStore,
     setTestEndTimeToStore,
     setCourseIdToStore,
+    setAdmissionRoleArrayToStore,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
   const [allCourses, setAllCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
   const [admissions, setAdmissions] = useState({});
+  const [optionsModal, setOptionsModal] = useState(false);
+  const openOptionsModal = () => setOptionsModal(true);
+  const closeOptionsModal = () => setOptionsModal(false);
 
   const options = {
     colors: ['var(--primary-blue)', 'rgba(0, 0, 0, 0.54)'],
@@ -160,7 +166,6 @@ const Dashboard = (props) => {
 
   const startHomework = (responseArray, testId) => {
     const { push } = history;
-    // push({ pathname: '/questiontaker', state: { result: responseArray, testId } });
     setTestResultArrayToStore(responseArray);
     setTestIdToStore(testId);
     setTestTypeToStore('homework');
@@ -169,15 +174,11 @@ const Dashboard = (props) => {
 
   const startLiveTest = (responseArray, startTime = 0, endTime = 0, testType) => {
     const { push } = history;
-    // push({
-    //   pathname: '/questiontaker',
-    //   state: { result: responseArray, currentTime: startTime, testEndTime: endTime },
-    // });
-    push('/questiontaker');
     setTestResultArrayToStore(responseArray);
     setTestEndTimeToStore(endTime);
     setTestStartTimeToStore(startTime);
     setTestTypeToStore(testType);
+    push('/questiontaker');
   };
 
   const goToCoursesForTeacher = () => {
@@ -200,6 +201,20 @@ const Dashboard = (props) => {
     const { push } = history;
     setCourseIdToStore(id);
     push('/courses/mycourse');
+  };
+
+  const goToAddBatch = () => {
+    const { push } = history;
+    push('/admissions/add/batch');
+  };
+
+  const addDetails = (type) => {
+    type === 'student'
+      ? setAdmissionRoleArrayToStore(['1'])
+      : type === 'teacher'
+      ? setAdmissionRoleArrayToStore(['3'])
+      : setAdmissionRoleArrayToStore(['4']);
+    history.push({ pathname: '/admissions/add/details' });
   };
 
   return (
@@ -243,16 +258,6 @@ const Dashboard = (props) => {
       {(roleArray.includes(3) || roleArray.includes(4)) && (
         <>
           <DashboardCards
-            image={analysis}
-            heading='Courses'
-            subHeading='Increase your profit by building and selling your courses here.'
-            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
-            backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
-            backGround='rgb(236,255,252)'
-            buttonClick={goToCoursesForTeacher}
-          />
-
-          <DashboardCards
             image={camera}
             heading='Live Classes'
             subHeading={
@@ -266,6 +271,89 @@ const Dashboard = (props) => {
             buttonText={roleArray.includes(3) || roleArray.includes(4) ? 'Go live now' : ''}
             buttonClick={goToLiveClasses}
           />
+
+          {roleArray.includes(4) && Object.keys(admissions).length > 0 && (
+            <div className='Dashboard__noticeBoard mx-auto p-3 mt-3'>
+              <span className='Dashboard__verticalDots'>
+                <MoreVertIcon />
+              </span>
+              <Row className='m-2'>
+                <p className='Dashboard__todaysHitsText'>Admissions</p>
+              </Row>
+              <div
+                onClick={() => goToAdmissions()}
+                role='button'
+                tabIndex='-1'
+                onKeyDown={() => goToAdmissions()}
+              >
+                <img src={YourCoaching} className='img-fluid' alt='yourcoaching' />
+              </div>
+              <Row className='justify-content-center m-2 mb-4 p-2'>
+                <Col className='text-center mt-3 p-0'>
+                  <Button variant='noticeBoardPost' onClick={() => openOptionsModal()}>
+                    <PersonAddIcon />
+                    <span>Add User</span>
+                  </Button>
+                </Col>
+                <Col className='text-center mt-3 p-0'>
+                  <Button variant='noticeBoardPost' onClick={() => goToAddBatch()}>
+                    <PersonAddIcon />
+                    <span>Add Batch</span>
+                  </Button>
+                </Col>
+              </Row>
+              <div
+                onClick={() => goToAdmissions()}
+                role='button'
+                tabIndex='-1'
+                onKeyDown={() => goToAdmissions()}
+              >
+                {[
+                  {
+                    title: 'Student',
+                    active: admissions.active_students,
+                    pending: admissions.pending_students,
+                  },
+                  {
+                    title: 'Teacher',
+                    active: admissions.active_teachers,
+                    pending: admissions.pending_teachers,
+                  },
+                  {
+                    title: 'Admin',
+                    active: admissions.active_admins,
+                    pending: admissions.pending_admins,
+                  },
+                ].map((elem) => {
+                  const series = [
+                    {
+                      data: [elem.active, elem.pending],
+                    },
+                  ];
+                  return (
+                    <Card key={elem.title} className='my-3 mx-2'>
+                      <Row className='p-2'>
+                        <Col xs={4} className='text-center p-2 my-auto'>
+                          <p
+                            className='Dashboard__attendanceSubHeading'
+                            style={{ fontFamily: 'Montserrat-SemiBold' }}
+                          >
+                            {elem.title}
+                          </p>
+                          <p className='Dashboard__admissionsBlueText my-auto'>
+                            {elem.pending + elem.active}
+                          </p>
+                        </Col>
+                        <Col xs={8}>
+                          <ReactApexCharts options={options} series={series} type='bar' />
+                        </Col>
+                      </Row>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           <div className='Dashboard__innovation pt-4 px-3 pb-3'>
             <h4>Witness </h4>
@@ -325,7 +413,25 @@ const Dashboard = (props) => {
             </div>
           </div>
 
-          <div className='Dashboard__attendance p-4'>
+          <DashboardCards
+            image={analysis}
+            heading='Courses'
+            subHeading='Increase your profit by building and selling your courses here.'
+            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
+            backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
+            backGround='rgb(236,255,252)'
+            buttonClick={goToCoursesForTeacher}
+          />
+          <DashboardCards
+            image={student}
+            coloredHeading='Study Bin'
+            color='rgba(0, 102, 255, 0.87)'
+            subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            buttonClick={goToStudyBin}
+          />
+
+          {/* <div className='Dashboard__attendance p-4'>
             <div className='w-75 Dashboard__attendanceCard mx-auto pt-4'>
               <img src={hands} alt='hands' className='mx-auto d-block' />
               <Row className='m-3'>
@@ -343,7 +449,7 @@ const Dashboard = (props) => {
 
               <p>Recent Attendance</p>
             </div>
-          </div>
+          </div> */}
 
           <div
             className='Dashboard__noticeBoard mx-auto p-3'
@@ -382,7 +488,7 @@ const Dashboard = (props) => {
                 <Row>
                   <Col xs={2} className='p-4'>
                     <img
-                      src={elem.profile_image}
+                      src={elem.profile_image ? elem.profile_image : userAvatar}
                       alt='profile'
                       className='Dashboard__noticeImage d-block mx-auto'
                     />
@@ -401,90 +507,14 @@ const Dashboard = (props) => {
             ))}
           </div>
 
-          {Object.keys(admissions).length > 0 && (
-            <div className='Dashboard__noticeBoard mx-auto p-3 mt-3'>
-              <span className='Dashboard__verticalDots'>
-                <MoreVertIcon />
-              </span>
-              <Row className='m-2'>
-                <p className='Dashboard__todaysHitsText'>Admissions</p>
-              </Row>
-              <img src={YourCoaching} className='img-fluid' alt='yourcoaching' />
-              <Row className='justify-content-center m-2 mb-4 p-2'>
-                <Col className='text-center mt-3 p-0'>
-                  <Button variant='noticeBoardPost'>
-                    <PersonAddIcon />
-                    <span className=''>Add User</span>
-                  </Button>
-                </Col>
-                <Col className='text-center mt-3 p-0'>
-                  <Button variant='noticeBoardPost'>
-                    <PersonAddIcon />
-                    <span className=''>Add Batch</span>
-                  </Button>
-                </Col>
-              </Row>
-              <div
-                onClick={() => goToAdmissions()}
-                role='button'
-                tabIndex='-1'
-                onKeyDown={() => goToAdmissions()}
-              >
-                {[
-                  {
-                    title: 'Student',
-                    active: admissions.active_students,
-                    pending: admissions.pending_students,
-                  },
-                  {
-                    title: 'Teacher',
-                    active: admissions.active_teachers,
-                    pending: admissions.pending_teachers,
-                  },
-                  {
-                    title: 'Admin',
-                    active: admissions.active_admins,
-                    pending: admissions.pending_admins,
-                  },
-                ].map((elem) => {
-                  const series = [
-                    {
-                      data: [elem.active, elem.pending],
-                    },
-                  ];
-                  return (
-                    <Card key={elem.title} className='my-3 mx-2'>
-                      <Row className='p-2'>
-                        <Col xs={4} className='text-center p-2 my-auto'>
-                          <p
-                            className='Dashboard__attendanceSubHeading'
-                            style={{ fontFamily: 'Montserrat-SemiBold' }}
-                          >
-                            {elem.title}
-                          </p>
-                          <p className='Dashboard__admissionsBlueText my-auto'>
-                            {elem.pending + elem.active}
-                          </p>
-                        </Col>
-                        <Col xs={8}>
-                          <ReactApexCharts options={options} series={series} type='bar' />
-                        </Col>
-                      </Row>
-                    </Card>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          <CoursesCards
+          {/* <CoursesCards
             allCourses={allCourses}
             myCourses={myCourses}
             goToCourse={goToCourses}
             buyCourseId={goToBuyCourse}
             myCourseId={goToMyCourse}
-          />
-          <DashboardCards
+          /> */}
+          {/* <DashboardCards
             image={offlineAssignment}
             heading='Offline assignment'
             subHeading='Record marks of all the pen-paper tests and send
@@ -539,20 +569,7 @@ const Dashboard = (props) => {
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             backGround='rgb(248,252,255)'
             backgroundImg='linear-gradient(90deg, rgba(248,252,255,1) 0%, rgba(188,224,253,1) 100%)'
-          />
-
-          <div>
-            <Tests startHomework={startHomework} startLive={startLiveTest} />
-          </div>
-
-          <DashboardCards
-            image={student}
-            coloredHeading='Study Bin'
-            color='rgba(0, 102, 255, 0.87)'
-            subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
-            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-            buttonClick={goToStudyBin}
-          />
+          /> */}
         </>
       )}
 
@@ -659,6 +676,40 @@ const Dashboard = (props) => {
           />
         </>
       )}
+      <Modal show={optionsModal} onHide={closeOptionsModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Select Type</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Row className='mx-0 justify-content-between'>
+            <Button
+              variant='noticeBoardPost'
+              style={{ paddingRight: '10px', paddingLeft: '10px' }}
+              onClick={() => addDetails('student')}
+            >
+              <PersonAddIcon />
+              <span>Student</span>
+            </Button>
+            <Button
+              variant='noticeBoardPost'
+              style={{ paddingRight: '10px', paddingLeft: '10px' }}
+              onClick={() => addDetails('teacher')}
+            >
+              <PersonAddIcon />
+              <span className=''>Teacher</span>
+            </Button>
+
+            <Button
+              style={{ paddingRight: '10px', paddingLeft: '10px' }}
+              variant='noticeBoardPost'
+              onClick={() => addDetails('admin')}
+            >
+              <PersonAddIcon />
+              <span className=''>Admin</span>
+            </Button>
+          </Row>
+        </Modal.Body>
+      </Modal>
     </>
   );
 };
@@ -696,6 +747,9 @@ const mapDispatchToProps = (dispatch) => {
     setCourseIdToStore: (payload) => {
       dispatch(courseActions.setCourseIdToStore(payload));
     },
+    setAdmissionRoleArrayToStore: (payload) => {
+      dispatch(admissionActions.setAdmissionRoleArrayToStore(payload));
+    },
   };
 };
 
@@ -712,6 +766,7 @@ Dashboard.propTypes = {
   setTestIdToStore: PropTypes.func.isRequired,
   setTestTypeToStore: PropTypes.func.isRequired,
   setCourseIdToStore: PropTypes.func.isRequired,
+  setAdmissionRoleArrayToStore: PropTypes.func.isRequired,
   userProfile: PropTypes.shape({
     firstName: PropTypes.string.isRequired,
     profileImage: PropTypes.string,

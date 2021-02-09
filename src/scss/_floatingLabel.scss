@@ -25,6 +25,7 @@
 .has-float-label > input[type='text']:focus + span,
 .has-float-label > input[type='password']:focus + span,
 .has-float-label > input[type='number']:focus + span,
+.has-float-label > input[type='date']:focus + span,
 .has-float-label > input[type='time']:focus + span {
   color: var(--primary-blue);
 }
@@ -115,6 +116,7 @@
 }
 
 .has-float-label > input[type='text']:focus,
+.has-float-label > input[type='date']:focus,
 .has-float-label > input[type='password']:focus,
 .has-float-label > input[type='number']:focus,
 .has-float-label > input[type='time']:focus {
@@ -125,6 +127,7 @@
 
 .has-float-label > input[type='text'],
 .has-float-label > input[type='password'],
+.has-float-label > input[type='date'],
 .has-float-label > input[type='number'],
 .has-float-label > input[type='text'] {
   border-color: rgba(0, 0, 0, 0.54);

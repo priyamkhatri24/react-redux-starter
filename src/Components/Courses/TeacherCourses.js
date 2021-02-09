@@ -103,9 +103,13 @@ const TeacherCourses = (props) => {
     });
   };
 
+  const goToDashboard = () => {
+    history.push('/');
+  };
+
   return (
     <>
-      <PageHeader title='Courses' />
+      <PageHeader title='Courses' handleBack={goToDashboard} customBack />
       <div style={{ marginTop: '5rem' }}>
         <Tabs
           defaultActiveKey='My Courses'

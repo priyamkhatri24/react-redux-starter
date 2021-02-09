@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import Row from 'react-bootstrap/Row';
 import Modal from 'react-bootstrap/Modal';
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -11,9 +12,10 @@ import { PageHeader, FilterAccordion, AddButton } from '../Common';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get } from '../../Utilities';
 import './Admissions.scss';
+import { admissionActions } from '../../redux/actions/admissions.action';
 
 const Admissions = (props) => {
-  const { clientId, history } = props;
+  const { clientId, history, setAdmissionRoleArrayToStore } = props;
   const [searchString, setSearchString] = useState('');
   const [filters, setFilters] = useState({});
   const [batches, setBatches] = useState([]);
@@ -23,6 +25,13 @@ const Admissions = (props) => {
   const [batchModal, setBatchModal] = useState(false);
   const handleOpen = () => setBatchModal(true);
   const handleClose = () => setBatchModal(false);
+  const [optionsModal, setOptionsModal] = useState(false);
+  const openOptionsModal = () => {
+    handleClose();
+    setOptionsModal(true);
+  };
+  const closeOptionsModal = () => setOptionsModal(false);
+
   const [filterPayload, setFilterPayload] = useState({
     class_id: null,
     client_id: clientId,
@@ -124,6 +133,15 @@ const Admissions = (props) => {
     setTab(option);
   };
 
+  const addDetails = (type) => {
+    type === 'student'
+      ? setAdmissionRoleArrayToStore(['1'])
+      : type === 'teacher'
+      ? setAdmissionRoleArrayToStore(['3'])
+      : setAdmissionRoleArrayToStore(['4']);
+    history.push({ pathname: '/admissions/add/details' });
+  };
+
   return (
     <>
       <AddButton onlyUseButton triggerButton={handleOpen} />
@@ -182,7 +200,7 @@ const Admissions = (props) => {
           <div style={{ height: '65vh', overflow: 'scroll' }}>
             {tab === 'Users' ? (
               users.map((elem) => {
-                return <UserDataCard elem={elem} history={history} />;
+                return <UserDataCard elem={elem} history={history} key={elem.user_id} />;
               })
             ) : (
               <Row className='justify-content-center mx-1'>
@@ -197,7 +215,57 @@ const Admissions = (props) => {
           <Modal.Header closeButton>
             <Modal.Title>Add</Modal.Title>
           </Modal.Header>
-          <Modal.Body>kgggk</Modal.Body>
+          <Modal.Body>
+            <Row className='mx-2 justify-content-between'>
+              <Button variant='noticeBoardPost' onClick={() => openOptionsModal()}>
+                <PersonAddIcon />
+                <span>Add User</span>
+              </Button>
+              <Button
+                variant='noticeBoardPost'
+                onClick={() => {
+                  history.push('/admissions/add/batch');
+                }}
+              >
+                <PersonAddIcon />
+                <span className=''>Add Batch</span>
+              </Button>
+            </Row>
+          </Modal.Body>
+        </Modal>
+        <Modal show={optionsModal} onHide={closeOptionsModal} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Select Type</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Row className='mx-0 justify-content-between'>
+              <Button
+                variant='noticeBoardPost'
+                style={{ paddingRight: '10px', paddingLeft: '10px' }}
+                onClick={() => addDetails('student')}
+              >
+                <PersonAddIcon />
+                <span>Student</span>
+              </Button>
+              <Button
+                variant='noticeBoardPost'
+                style={{ paddingRight: '10px', paddingLeft: '10px' }}
+                onClick={() => addDetails('teacher')}
+              >
+                <PersonAddIcon />
+                <span className=''>Teacher</span>
+              </Button>
+
+              <Button
+                style={{ paddingRight: '10px', paddingLeft: '10px' }}
+                variant='noticeBoardPost'
+                onClick={() => addDetails('admin')}
+              >
+                <PersonAddIcon />
+                <span className=''>Admin</span>
+              </Button>
+            </Row>
+          </Modal.Body>
         </Modal>
       </div>
     </>
@@ -208,9 +276,18 @@ const mapStateToProps = (state) => ({
   clientId: getClientId(state),
 });
 
-export default connect(mapStateToProps)(Admissions);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setAdmissionRoleArrayToStore: (payload) => {
+      dispatch(admissionActions.setAdmissionRoleArrayToStore(payload));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Admissions);
 
 Admissions.propTypes = {
   clientId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
+  setAdmissionRoleArrayToStore: PropTypes.func.isRequired,
 };

@@ -7,6 +7,7 @@ const initialState = {
   courseCurrentSectionName: '',
   courseCurrentSectionId: null,
   courseSectionPriorityOrder: 0,
+  courseAddContentTestId: 0,
 };
 
 export function course(state = initialState, action) {
@@ -47,6 +48,12 @@ export function course(state = initialState, action) {
         courseSectionPriorityOrder: action.payload,
       };
 
+    case courseConstants.COURSEADDCONTENTTESTID:
+      return {
+        ...state,
+        courseAddContentTestId: action.payload,
+      };
+
     default:
       return state;
   }
@@ -58,3 +65,4 @@ export const getCourseCurrentSlide = (state) => state.course.courseCurrentSlide;
 export const getCourseCurrentSectionName = (state) => state.course.courseCurrentSectionName;
 export const getCourseCurrentSectionId = (state) => state.course.courseCurrentSectionId;
 export const getCourseSectionPriorityOrder = (state) => state.course.courseSectionPriorityOrder;
+export const getCourseAddContentTestId = (state) => state.course.courseAddContentTestId;

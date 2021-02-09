@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Swal from 'sweetalert2';
+import fromUnixTime from 'date-fns/fromUnixTime';
+import format from 'date-fns/format';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Tabs from 'react-bootstrap/Tabs';
@@ -15,19 +18,10 @@ import { BatchesSelector, PageHeader } from '../Common';
 import { getClientId, getClientUserId, getUserId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get, post } from '../../Utilities';
 import userImage from '../../assets/images/user.svg';
+import { getAdmissionUserProfile } from '../../redux/reducers/admissions.reducer';
 
 const UserDetails = (props) => {
-  const {
-    history,
-    clientId,
-    userId,
-    history: {
-      location: {
-        state: { user },
-      },
-    },
-    clientUserId,
-  } = props;
+  const { history, clientId, userId, user, clientUserId } = props;
   const [batches, setBatches] = useState([]);
   const [allBatches, setAllBatches] = useState([]);
   const [showBatchModal, setShowBatchModal] = useState(false);
@@ -57,12 +51,6 @@ const UserDetails = (props) => {
   };
 
   useEffect(() => {
-    if (history.location.state && history.location.state.user) {
-      console.log(history.location.state.user);
-    }
-  }, [history]);
-
-  useEffect(() => {
     const batchPayload = {
       client_id: clientId,
       client_user_id: clientUserId,
@@ -82,9 +70,20 @@ const UserDetails = (props) => {
   };
 
   const deleteUser = (id) => {
-    post({ user_id: id }, '/deleteUser').then((res) => {
-      if (res.success) {
-        history.push('/admissions');
+    Swal.fire({
+      title: 'Delete Section',
+      text: 'Do you wish to delete this section?',
+      icon: 'question',
+      confirmButtonText: `Yes`,
+      showDenyButton: true,
+      customClass: 'Assignments__SweetAlert',
+    }).then((resp) => {
+      if (resp.isConfirmed) {
+        post({ user_id: id }, '/deleteUser').then((res) => {
+          if (res.success) {
+            history.push('/admissions');
+          }
+        });
       }
     });
   };
@@ -108,9 +107,9 @@ const UserDetails = (props) => {
             <div className='LiveClasses__adminCard p-2 m-3' style={{ position: 'relative' }}>
               <div
                 className='Courses__edit text-center py-1'
-                onClick={() => {}}
+                onClick={() => history.push('/admissions/editprofile')}
                 role='button'
-                onKeyDown={() => {}}
+                onKeyDown={() => history.push('/admissions/editprofile')}
                 tabIndex='-1'
               >
                 <CreateIcon />
@@ -129,11 +128,61 @@ const UserDetails = (props) => {
               <h6 className='LiveClasses__adminHeading mb-0'>First Name</h6>
               <p className='LiveClasses__adminDuration '>{user.first_name}</p>
 
+              {user.last_name && (
+                <>
+                  <h6 className='LiveClasses__adminHeading mb-0'>Last Name</h6>
+                  <p className='LiveClasses__adminDuration '>{user.last_name}</p>
+                </>
+              )}
+
               <h6 className='LiveClasses__adminHeading mb-0'>Mobile Number</h6>
               <p className='LiveClasses__adminDuration '>{user.contact}</p>
 
-              <h6 className='LiveClasses__adminHeading mb-0'>Username</h6>
-              <p className='LiveClasses__adminDuration '>{user.username}</p>
+              {user.username && (
+                <>
+                  <h6 className='LiveClasses__adminHeading mb-0'>Username</h6>
+                  <p className='LiveClasses__adminDuration '>{user.username}</p>
+                </>
+              )}
+              {user.parent_name && (
+                <>
+                  <h6 className='LiveClasses__adminHeading mb-0'>Parent&apos;s Name</h6>
+                  <p className='LiveClasses__adminDuration '>{user.parent_name}</p>
+                </>
+              )}
+              {user.parent_contact && (
+                <>
+                  <h6 className='LiveClasses__adminHeading mb-0'>Parent&apos;s Mobile Number</h6>
+                  <p className='LiveClasses__adminDuration '>{user.parent_contact}</p>
+                </>
+              )}
+              {user.gender && (
+                <>
+                  <h6 className='LiveClasses__adminHeading mb-0'>Gender</h6>
+                  <p className='LiveClasses__adminDuration '>{user.gender}</p>
+                </>
+              )}
+
+              {user.email && (
+                <>
+                  <h6 className='LiveClasses__adminHeading mb-0'>Email Address</h6>
+                  <p className='LiveClasses__adminDuration '>{user.email}</p>
+                </>
+              )}
+              {user.address && (
+                <>
+                  <h6 className='LiveClasses__adminHeading mb-0'>Residential Address</h6>
+                  <p className='LiveClasses__adminDuration '>{user.address}</p>
+                </>
+              )}
+              {user.birthday && (
+                <>
+                  <h6 className='LiveClasses__adminHeading mb-0'>Date Of Birth</h6>
+                  <p className='LiveClasses__adminDuration '>
+                    {format(fromUnixTime(parseInt(user.birthday / 1000, 10)), 'dd-MMM-yyyy')}
+                  </p>
+                </>
+              )}
             </div>
           </Tab>
           <Tab eventKey='Batches' title='Batches'>
@@ -189,12 +238,14 @@ const mapStateToProps = (state) => ({
   clientId: getClientId(state),
   clientUserId: getClientUserId(state),
   userId: getUserId(state),
+  user: getAdmissionUserProfile(state),
 });
 
 export default connect(mapStateToProps)(UserDetails);
 
 UserDetails.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
+  user: PropTypes.instanceOf(Object).isRequired,
   clientId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
   userId: PropTypes.number.isRequired,
