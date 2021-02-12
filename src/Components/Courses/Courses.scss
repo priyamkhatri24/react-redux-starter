@@ -52,11 +52,19 @@
     color: var(--primary-blue);
     border: 1px solid var(--primary-blue);
     font-size: $spacer;
-    width: $spacer * 1.45;
-    height: $spacer * 1.45;
+    // width: $spacer * 1.45;
+    // height: $spacer * 1.45;
+    // text-align: center;
+    // line-height: $spacer * 1.25;
+    // border-radius: 0.5rem * 1.25; /* or 50% width & line-height */
+
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    padding: 1px;
+
+    background: #fff;
     text-align: center;
-    line-height: $spacer * 1.25;
-    border-radius: 0.5rem * 1.25; /* or 50% width & line-height */
   }
 
   &__createCourse {

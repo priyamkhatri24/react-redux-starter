@@ -535,9 +535,6 @@ const Price = (props) => {
             <Row className='my-auto Courses__createCourse mx-2'>
               <span className='Courses__coloredNumber mr-2'>{5}</span>{' '}
               <span className='my-auto ml-3'>{e}</span>
-              <span className='ml-auto' style={{ color: 'rgba(0, 0, 0, 0.54)' }}>
-                <CreateIcon />
-              </span>
             </Row>
           </Card>
         );

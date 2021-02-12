@@ -29,7 +29,7 @@ const Display = (props) => {
 
   useEffect(() => {
     setTitle(courseTitle);
-    setDescription(courseDesc);
+    setDescription(courseDesc && courseDesc !== 'null' ? courseDesc : '');
   }, [courseTitle, courseDesc]);
 
   useEffect(() => {
@@ -151,7 +151,7 @@ const Display = (props) => {
           <Col xs={8} className='p-0'>
             <Row className='my-auto Courses__createCourse mx-2'>
               <span className='my-auto ml-3' style={{ fontFamily: 'Montserrat-Regular' }}>
-                Add Course display page
+                Add Course display image
               </span>
             </Row>
             <Row className='my-auto mx-2'>
@@ -234,11 +234,8 @@ const Display = (props) => {
             key={i} // eslint-disable-line
           >
             <Row className='my-auto Courses__createCourse mx-2'>
-              <span className='Courses__coloredNumber mr-2'>{i + 3}</span>{' '}
+              <span className='Courses__coloredNumber mr-2'>{i + 4}</span>{' '}
               <span className='my-auto ml-3'>{e}</span>
-              <span className='ml-auto' style={{ color: 'rgba(0, 0, 0, 0.54)' }}>
-                <CreateIcon />
-              </span>
             </Row>
           </Card>
         );

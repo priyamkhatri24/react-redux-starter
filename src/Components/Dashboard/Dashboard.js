@@ -221,13 +221,7 @@ const Dashboard = (props) => {
     <>
       <div className='Dashboard__headerCard'>
         <Row className='pt-4 pr-4'>
-          <span
-            className='ml-auto'
-            onClick={() => logout()}
-            onKeyDown={() => logout()}
-            role='button'
-            tabIndex='-1'
-          >
+          <span className='ml-auto'>
             <MoreVertIcon />
           </span>
         </Row>
@@ -245,14 +239,14 @@ const Dashboard = (props) => {
           </Col>
         </Row>
 
-        <div className='Dashboard__todaysHits mx-auto my-4'>
+        {/* <div className='Dashboard__todaysHits mx-auto my-4'>
           <Row className='mx-3 pt-2'>
             <span className='Dashboard__todaysHitsText'>Today&apos;s hit for you</span>
             <span className='ml-auto'>
               <MoreVertIcon />
             </span>
           </Row>
-        </div>
+        </div> */}
       </div>
       {/* *****************************Teacher View ********************************* */}
       {(roleArray.includes(3) || roleArray.includes(4)) && (

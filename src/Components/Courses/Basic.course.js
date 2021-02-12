@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
-import CreateIcon from '@material-ui/icons/Create';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import CloseIcon from '@material-ui/icons/Close';
@@ -22,14 +21,14 @@ const Basic = (props) => {
     const learn = tagArray
       .filter((e) => e.tag_type === 'learning')
       .map((e, i) => {
-        e.meriId = i + 1;
+        e.meriId = new Date().getTime() + i;
         return e;
       });
     setLearningTags(learn);
     const prerequisite = tagArray
       .filter((e) => e.tag_type === 'prereqisite')
       .map((e, i) => {
-        e.meriId = i + 1;
+        e.meriId = new Date().getTime() + i + 1;
         return e;
       });
     setprerequisiteTags(prerequisite);
@@ -75,7 +74,7 @@ const Basic = (props) => {
         course_tag_id: '',
         tag_name: type === 'learning' ? currentLearning : currentPrerequisite,
         tag_type: type === 'learning' ? 'learning' : 'prereqisite',
-        meriId: type === 'learning' ? learningtags.length + 1 : prerequisiteTags.length + 1,
+        meriId: type === 'learning' ? new Date().getTime() : new Date().getTime() + 1,
       };
       type === 'learning'
         ? setLearningTags((prev) => [...prev, newObject])
@@ -83,17 +82,38 @@ const Basic = (props) => {
       type === 'learning' ? setCurrentLearning('') : setCurrentRequisite('');
     }
   };
+
+  const instantAdd = (type) => {
+    if (type === 'learning' && !currentLearning && learningtags.length === 0) {
+      setIsLearningValid(true);
+      return [...learningtags];
+    }
+    if (type === 'prerequisite' && !currentPrerequisite && prerequisiteTags.length === 0) {
+      setIsPrequisiteValid(true);
+      return [...prerequisiteTags];
+    }
+    type === 'learning' ? setIsLearningValid(false) : setIsPrequisiteValid(false);
+    const newObject = {
+      course_tag_id: '',
+      tag_name: type === 'learning' ? currentLearning : currentPrerequisite,
+      tag_type: type === 'learning' ? 'learning' : 'prereqisite',
+      meriId: type === 'learning' ? new Date().getTime() : new Date().getTime() + 1,
+    };
+    return type === 'learning' ? [...learningtags, newObject] : [...prerequisiteTags, newObject];
+  };
+
   const goToNext = () => {
-    add('learning');
-    add('prerequisite');
-    const allTags = [...prerequisiteTags, ...learningtags];
+    const instantLearning = instantAdd('learning');
+    const instantpreRequisite = instantAdd('prerequisite');
+    const allTags = [...instantpreRequisite, ...instantLearning];
+    console.log(allTags);
     const prunedTags = allTags.map((e) => {
       delete e.meriId;
       return e;
     });
 
     const deletedArray = [...deleteLearningArray, ...deletePrerequisiteArray];
-    getTagArrays(prunedTags, deletedArray);
+    if (allTags.length) getTagArrays(prunedTags, deletedArray);
   };
 
   return (
@@ -162,8 +182,11 @@ const Basic = (props) => {
         )}
 
         <Row className='w-50 m-2'>
-          <Button variant='dashboardBlueOnWhite' onClick={() => add('learning')}>
-            +Add More
+          <Button variant='courseBlueOnWhite' onClick={() => add('learning')}>
+            <span style={{ fontSize: '18px' }} className='my-auto'>
+              +
+            </span>
+            <span className='my-auto ml-2'>Add More</span>
           </Button>
         </Row>
         <p className='mt-2 mx-2 Courses__motiDetail'>
@@ -216,8 +239,11 @@ const Basic = (props) => {
         {isPrequisiteValid && <small className='text-danger d-block'>This field is required</small>}
 
         <Row className='w-50 m-2'>
-          <Button variant='dashboardBlueOnWhite' onClick={() => add('prerequisite')}>
-            +Add More
+          <Button variant='courseBlueOnWhite' onClick={() => add('prerequisite')}>
+            <span style={{ fontSize: '18px' }} className='my-auto'>
+              +
+            </span>
+            <span className='my-auto ml-2'>Add More</span>
           </Button>
         </Row>
 
@@ -242,9 +268,6 @@ const Basic = (props) => {
             <Row className='my-auto Courses__createCourse mx-2'>
               <span className='Courses__coloredNumber mr-2'>{i + 2}</span>{' '}
               <span className='my-auto ml-3'>{e}</span>
-              <span className='ml-auto' style={{ color: 'rgba(0, 0, 0, 0.54)' }}>
-                <CreateIcon />
-              </span>
             </Row>
           </Card>
         );

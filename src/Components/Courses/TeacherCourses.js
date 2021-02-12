@@ -119,7 +119,7 @@ const TeacherCourses = (props) => {
         >
           <Tab eventKey='My Courses' title='My Courses'>
             <Button
-              variant='customPrimary'
+              variant='customPrimaryWithShadow'
               style={{
                 position: 'fixed',
                 bottom: 10,
@@ -175,7 +175,7 @@ const TeacherCourses = (props) => {
                         className='ml-auto rounded'
                         style={
                           course.course_status === 'published'
-                            ? { background: '#00ff00' }
+                            ? {}
                             : course.course_status === 'incomplete'
                             ? { background: 'rgba(255, 0, 0, 0.87)' }
                             : { background: ' rgba(0, 0, 0, 0.54)' }
@@ -189,8 +189,11 @@ const TeacherCourses = (props) => {
                           }}
                           className='m-2'
                         >
-                          {' '}
-                          {course.course_status}
+                          {course.course_status === 'published'
+                            ? ' '
+                            : course.course_status === 'completed'
+                            ? 'Unpublished'
+                            : 'Incomplete'}
                         </span>
                       </div>
                     </Row>

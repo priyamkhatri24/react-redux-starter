@@ -199,11 +199,14 @@ const Content = (props) => {
         {!createNewSection && (
           <Row className='w-50 m-2'>
             <Button
-              variant='dashboardBlueOnWhite'
-              className='p-1 mx-2'
+              variant='courseBlueOnWhite'
+              className='p-1 mx-2 my-auto'
               onClick={() => setCreateNewSection(true)}
             >
-              Add Section
+              <span style={{ fontSize: '18px' }} className='my-auto'>
+                +
+              </span>
+              <span className='my-auto ml-2'>Add Section</span>
             </Button>
           </Row>
         )}
@@ -260,9 +263,6 @@ const Content = (props) => {
             <Row className='my-auto Courses__createCourse mx-2'>
               <span className='Courses__coloredNumber mr-2'>{i + 3}</span>{' '}
               <span className='my-auto ml-3'>{e}</span>
-              <span className='ml-auto' style={{ color: 'rgba(0, 0, 0, 0.54)' }}>
-                <CreateIcon />
-              </span>
             </Row>
           </Card>
         );
