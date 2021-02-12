@@ -9,7 +9,7 @@ import { PageHeader } from '../PageHeader/PageHeader';
 import { get, apiValidation } from '../../../Utilities';
 import './AddYoutube.scss';
 
-export const AddYoutube = (props) => {
+const AddYoutube = (props) => {
   const [videoId, setVideoId] = useState('');
   const [key, setKey] = useState('');
   const [youtubeVideo, setYoutubeVideo] = useState({});
@@ -123,6 +123,8 @@ export const AddYoutube = (props) => {
     </div>
   );
 };
+
+export default AddYoutube;
 
 AddYoutube.propTypes = {
   history: PropTypes.shape({

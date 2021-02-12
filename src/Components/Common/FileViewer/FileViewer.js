@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { PageHeader } from '../PageHeader/PageHeader';
 
-export const TempViewFile = (props) => {
+const TempViewFile = (props) => {
   const {
     history: {
       location: {
@@ -43,6 +43,8 @@ export const TempViewFile = (props) => {
     </div>
   );
 };
+
+export default TempViewFile;
 
 TempViewFile.propTypes = {
   history: PropTypes.shape({

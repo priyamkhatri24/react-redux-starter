@@ -15,6 +15,8 @@ import { apiValidation, get, post } from '../../Utilities';
 import { PageHeader } from '../Common';
 import placeholder from '../../assets/images/ycIcon.png';
 import { courseActions } from '../../redux/actions/course.action';
+import './Courses.scss';
+import '../Profile/Profile.scss';
 
 const TeacherCourses = (props) => {
   const {

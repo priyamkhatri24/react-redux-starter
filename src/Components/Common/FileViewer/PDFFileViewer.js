@@ -9,7 +9,7 @@ import { PageHeader } from '../PageHeader/PageHeader';
 import { Row } from 'react-bootstrap';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-export const FileView = (props) => {
+const FileView = (props) => {
   // const [fileType, setFileType] = useState('');
   const [fileViewPath, setFilePath] = useState('');
   const [numPages, setNumPages] = useState(null);
@@ -56,3 +56,5 @@ export const FileView = (props) => {
     </>
   );
 };
+
+export default FileView;
