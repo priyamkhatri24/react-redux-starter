@@ -1,6 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Loadable from 'react-loadable';
+import Skeleton from 'react-loading-skeleton';
 import { AuthenticatedRoute } from './AuthenticatedRoute';
 import TeacherCourses from '../Components/Courses/TeacherCourses';
 
@@ -258,7 +259,7 @@ function Loading({ error }) {
   if (error) {
     return 'oh-noes!';
   }
-  return <h3>Loading...</h3>;
+  return <Skeleton count={50} />;
 }
 
 export function Routes() {
