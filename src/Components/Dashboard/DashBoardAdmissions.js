@@ -8,10 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 
-import YourCoaching from '../../assets/images/yourCoachingHeavy.png';
-
 const DashBoardAdmissions = (props) => {
-  const { admissions, goToAdmissions, openOptionsModal, goToAddBatch } = props;
+  const { admissions, goToAdmissions, openOptionsModal, goToAddBatch, heroImage } = props;
 
   const options = {
     colors: ['var(--primary-blue)', 'rgba(0, 0, 0, 0.54)'],
@@ -54,7 +52,7 @@ const DashBoardAdmissions = (props) => {
         tabIndex='-1'
         onKeyDown={() => goToAdmissions()}
       >
-        <img src={YourCoaching} className='img-fluid' alt='yourcoaching' />
+        <img src={heroImage} className='img-fluid' alt='yourcoaching' />
       </div>
       <Row className='justify-content-center m-2 mb-4 p-2'>
         <Col className='text-center mt-3 p-0'>
@@ -131,4 +129,5 @@ DashBoardAdmissions.propTypes = {
   goToAdmissions: PropTypes.func.isRequired,
   goToAddBatch: PropTypes.func.isRequired,
   openOptionsModal: PropTypes.func.isRequired,
+  heroImage: PropTypes.string.isRequired,
 };

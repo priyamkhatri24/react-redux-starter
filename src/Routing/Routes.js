@@ -4,6 +4,14 @@ import Loadable from 'react-loadable';
 import Skeleton from 'react-loading-skeleton';
 import { AuthenticatedRoute } from './AuthenticatedRoute';
 import TeacherCourses from '../Components/Courses/TeacherCourses';
+// import EditProfileHOC from '../Components/Admissions/EditProfileHoC';
+
+const Admissions = Loadable({
+  loader: () => import(/* webpackChunkName: 'Admissions' */ '../Components/Admissions/Admissions'),
+  loading: Loading,
+});
+
+// import Admissions from '../Components/Admissions/Admissions';
 
 const ForgotPassword = Loadable({
   loader: () =>
@@ -243,12 +251,7 @@ const EditProfileHOC = Loadable({
     import(/* webpackChunkName: 'EditProfileHoc' */ '../Components/Admissions/EditProfileHoC'),
   loading: Loading,
 });
-// import EditProfileHOC from '../Components/Admissions/EditProfileHoC';
 
-const Admissions = Loadable({
-  loader: () => import(/* webpackChunkName: 'Admissions' */ '../Components/Admissions/Admissions'),
-  loading: Loading,
-});
 const Fees = Loadable({
   loader: () => import(/* webpackChunkName: 'Fees' */ '../Components/Fees/Fees'),
   loading: Loading,

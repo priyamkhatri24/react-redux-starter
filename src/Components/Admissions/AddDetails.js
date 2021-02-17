@@ -207,7 +207,7 @@ const AddDetails = (props) => {
         {detailArray.length > 0 &&
           detailArray.map((e) => {
             return e.isEditing ? (
-              <Card className='LiveClasses__Card mx-auto p-3 m-2'>
+              <Card className='LiveClasses__Card mx-auto p-3 m-2' style={{ width: '90%' }}>
                 <Row>
                   <Col xs={2}>
                     <PersonOutlineIcon />
@@ -367,7 +367,7 @@ const AddDetails = (props) => {
               </Accordion>
             );
           })}
-        <Card className='LiveClasses__Card mx-auto p-3'>
+        <Card className='LiveClasses__Card mx-auto p-3' style={{ width: '90%' }}>
           <Row>
             <Col xs={2}>
               <PersonOutlineIcon />

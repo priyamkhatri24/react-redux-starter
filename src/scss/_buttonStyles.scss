@@ -301,6 +301,11 @@
   font-family: 'Montserrat-Bold';
 }
 
+.btn-light:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 /**************************************Progress Bar Styles ********************************/
 
 .bg-testProgress {

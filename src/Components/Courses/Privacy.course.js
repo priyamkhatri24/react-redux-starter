@@ -40,25 +40,36 @@ const Privacy = (props) => {
   }, [clientId]);
 
   const deleteTheDamnCourse = () => {
-    post({ course_id: courseId }, '/deleteCourse')
-      .then((res) => {
-        if (res.success) {
-          push('/courses/teachercourse');
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops!',
-            text: `Unable to delete this course`,
+    Swal.fire({
+      title: 'Delete Course',
+      text: 'Do you wish to delete the Course?',
+      icon: 'question',
+      confirmButtonText: `Yes`,
+      showDenyButton: true,
+      customClass: 'Assignments__SweetAlert',
+    }).then((resp) => {
+      if (resp.isConfirmed) {
+        post({ course_id: courseId }, '/deleteCourse')
+          .then((res) => {
+            if (res.success) {
+              push('/courses/teachercourse');
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: `Unable to delete this course`,
+              });
+            }
+          })
+          .catch((e) => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops!',
+              text: `Unable to delete this course`,
+            });
           });
-        }
-      })
-      .catch((e) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops!',
-          text: `Unable to delete this course`,
-        });
-      });
+      }
+    });
   };
 
   const completeCourse = () => {
@@ -158,9 +169,18 @@ const Privacy = (props) => {
               placeholder='Select Batch'
               onClick={() => setShowModal(true)}
               readOnly
+              id='noBackGroundColor'
             />
             <span>Select Batch</span>
-            <i className='LiveClasses__show'>
+            <i
+              className='LiveClasses__show'
+              style={{
+                position: 'absolute',
+                top: '10%',
+                right: '3%',
+                color: 'rgba(0, 0, 0, 0.38);',
+              }}
+            >
               <ExpandMoreIcon />
             </i>
           </label>

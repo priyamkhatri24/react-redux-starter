@@ -1,4 +1,6 @@
-import React from 'react';
+/** @jsx jsx */
+
+import { jsx } from '@emotion/react';
 import { connect } from 'react-redux';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
@@ -9,13 +11,14 @@ import FaceIcon from '@material-ui/icons/Face';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import avatarImage from '../../assets/images/user.svg';
 import { admissionActions } from '../../redux/actions/admissions.action';
+import AdmissionStyle from './Admissions.style';
 
 const UserDataCard = (props) => {
   const { elem, history, setAdmissionUserProfileToStore } = props;
 
   return (
     <Card
-      className='m-2 Admissions__card'
+      css={AdmissionStyle.card}
       key={elem.user_id}
       onClick={() => {
         setAdmissionUserProfileToStore(elem);
@@ -23,7 +26,7 @@ const UserDataCard = (props) => {
       }}
     >
       <Row className='ml-auto mx-2 pt-1'>
-        <FaceIcon className='Fees__onlineIcon' />
+        <FaceIcon css={AdmissionStyle.onlineIcon} />
         {elem.role_id.split(',').map((e, i) => {
           return (
             // eslint-disable-next-line
@@ -42,26 +45,26 @@ const UserDataCard = (props) => {
               alt='avatar'
               height='38'
               width='38'
-              className='Fees__avatar'
+              css={AdmissionStyle.avatar}
             />
           </div>
           <div className='p-0'>
-            <p className='Fees__avatarHeading mb-0 mt-2 ml-2'>
+            <p css={AdmissionStyle.avatarHeading} className='mb-0 mt-2 ml-2'>
               {`${elem.first_name} ${elem.last_name}`}
             </p>
-            <p className='Fees__avatarStatus'>
-              <PhoneIcon className='Fees__onlineIcon' />
+            <p css={AdmissionStyle.avatarStatus}>
+              <PhoneIcon css={AdmissionStyle.onlineIcon} />
               +91-{elem.contact}
             </p>
           </div>
         </Col>
         <Col xs={4} className='p-0 my-auto text-right'>
           {elem.username ? (
-            <span className='Dashboard__noticeSubHeading my-auto'>
-              <PersonOutlineIcon className='Fees__onlineIcon' /> {elem.username}
+            <span css={AdmissionStyle.subHeading} className='my-auto'>
+              <PersonOutlineIcon css={AdmissionStyle.onlineIcon} /> {elem.username}
             </span>
           ) : (
-            <span className='Profile__batchStudents'>{elem.pin}</span>
+            <span css={AdmissionStyle.batchStudents}>{elem.pin}</span>
           )}
         </Col>
       </Row>

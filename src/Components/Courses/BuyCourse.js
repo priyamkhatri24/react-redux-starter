@@ -164,6 +164,7 @@ const BuyCourse = (props) => {
 
     const razorPayload = {
       status: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
+      client_id: clientId,
     };
 
     const getCredentials = get(razorPayload, '/getRazorPayCredentials');
@@ -187,6 +188,7 @@ const BuyCourse = (props) => {
         orderDetails.course_order_id,
         clientId,
         credentials.key_id,
+        credentials.fee_account_id,
       ).then((resp) => console.log(resp, 'razor'));
     });
   };

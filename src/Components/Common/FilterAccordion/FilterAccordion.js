@@ -1,3 +1,6 @@
+/** @jsx jsx */
+
+import { jsx, css } from '@emotion/react';
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Accordion from 'react-bootstrap/Accordion';
@@ -5,6 +8,7 @@ import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import CloseIcon from '@material-ui/icons/Close';
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
+import AdmissionStyle from '../../Admissions/Admissions.style';
 
 const CustomFilter = React.forwardRef(({ children, eventKey }, ref) => {
   const decoratedOnClick = useAccordionToggle(eventKey, () => console.log('toggle clicked'));
@@ -15,7 +19,7 @@ const CustomFilter = React.forwardRef(({ children, eventKey }, ref) => {
   );
 });
 
-export const FilterAccordion = (props) => {
+const FilterAccordion = (props) => {
   const trigger = useRef(null);
   const {
     filters,
@@ -99,10 +103,12 @@ export const FilterAccordion = (props) => {
           <>
             {Object.keys(filters).length > 0 && (
               <Card.Body className='p-0'>
-                <small className='text-left Homework__smallHeading mx-3 my-2'>Class</small>
+                <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
+                  Class
+                </small>
                 <Row className='mx-3'>
                   <section
-                    className='Homework__scrollable'
+                    css={AdmissionStyle.scrollable}
                     style={{ backgroundColor: 'rgba(241, 249, 255, 1)' }}
                   >
                     {Object.keys(currentClass).length === 0 &&
@@ -110,7 +116,7 @@ export const FilterAccordion = (props) => {
                         return (
                           <div
                             key={e.class_id}
-                            className='Homework__questionBubble'
+                            css={AdmissionStyle.questionBubble}
                             onClick={() => select('class', e)}
                             onKeyDown={() => select('class', e)}
                             role='button'
@@ -129,13 +135,13 @@ export const FilterAccordion = (props) => {
                     {Object.keys(currentClass).length > 0 && (
                       <>
                         <div
-                          className='Homework__questionBubble'
+                          css={AdmissionStyle.questionBubble}
                           style={{ backgroundColor: '#fff', color: '#000' }}
                         >
                           {currentClass.class_name}
                         </div>
                         <div
-                          className='Homework__questionBubble'
+                          css={AdmissionStyle.questionBubble}
                           onClick={() => remove('class')}
                           onKeyDown={() => remove('class')}
                           role='button'
@@ -155,10 +161,12 @@ export const FilterAccordion = (props) => {
                 <hr />
                 {currentTab === 'Users' ? (
                   <>
-                    <small className='text-left Homework__smallHeading mx-3 my-2'>Batch</small>
+                    <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
+                      Batch
+                    </small>
                     <Row className='mx-3'>
                       <section
-                        className='Homework__scrollable'
+                        css={AdmissionStyle.scrollable}
                         style={{ backgroundColor: 'rgba(241, 249, 255, 1)' }}
                       >
                         {Object.keys(currentBatch).length === 0 &&
@@ -166,7 +174,7 @@ export const FilterAccordion = (props) => {
                             return (
                               <div
                                 key={e.client_batch_id}
-                                className='Homework__subjectBubble Homework__selected'
+                                css={[AdmissionStyle.subjectBubble, AdmissionStyle.selected]}
                                 onClick={() => select('batch', e)}
                                 onKeyDown={() => select('batch', e)}
                                 role='button'
@@ -186,13 +194,13 @@ export const FilterAccordion = (props) => {
                         {Object.keys(currentBatch).length > 0 && (
                           <>
                             <div
-                              className='Homework__subjectBubble Homework__selected'
+                              css={[AdmissionStyle.subjectBubble, AdmissionStyle.selected]}
                               style={{ backgroundColor: '#fff', color: '#000' }}
                             >
                               {currentBatch.batch_name}
                             </div>
                             <div
-                              className='Homework__questionBubble'
+                              css={AdmissionStyle.questionBubble}
                               onClick={() => remove('batch')}
                               onKeyDown={() => remove('batch')}
                               role='button'
@@ -210,11 +218,13 @@ export const FilterAccordion = (props) => {
                       </section>
                     </Row>
                     <hr />
-                    <small className='text-left Homework__smallHeading mx-3 my-2'>Type</small>
+                    <small css={AdmissionStyle.smallHeading} className='text-left  mx-3 my-2'>
+                      Type
+                    </small>
 
                     <Row className='mx-3'>
                       <section
-                        className='Homework__scrollable'
+                        css={AdmissionStyle.scrollable}
                         style={{ backgroundColor: 'rgba(241, 249, 255, 1)' }}
                       >
                         {Object.keys(currentType).length === 0 &&
@@ -222,7 +232,7 @@ export const FilterAccordion = (props) => {
                             return (
                               <div
                                 key={e.role_id}
-                                className='Homework__subjectBubble Homework__selected'
+                                css={[AdmissionStyle.subjectBubble, AdmissionStyle.selected]}
                                 onClick={() => select('role', e)}
                                 onKeyDown={() => select('role', e)}
                                 role='button'
@@ -242,13 +252,13 @@ export const FilterAccordion = (props) => {
                         {Object.keys(currentType).length > 0 && (
                           <>
                             <div
-                              className='Homework__subjectBubble Homework__selected'
+                              css={[AdmissionStyle.subjectBubble, AdmissionStyle.selected]}
                               style={{ backgroundColor: '#fff', color: '#000' }}
                             >
                               {currentType.role}
                             </div>
                             <div
-                              className='Homework__questionBubble'
+                              css={AdmissionStyle.questionBubble}
                               onClick={() => remove('role')}
                               onKeyDown={() => remove('role')}
                               role='button'
@@ -266,11 +276,13 @@ export const FilterAccordion = (props) => {
                       </section>
                     </Row>
                     <hr />
-                    <small className='text-left Homework__smallHeading mx-3 my-2'>Status</small>
+                    <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
+                      Status
+                    </small>
 
                     <Row className='mx-3'>
                       <section
-                        className='Homework__scrollable'
+                        css={AdmissionStyle.scrollable}
                         style={{ backgroundColor: 'rgba(241, 249, 255, 1)' }}
                       >
                         {Object.keys(currentStatus).length === 0 &&
@@ -278,7 +290,7 @@ export const FilterAccordion = (props) => {
                             return (
                               <div
                                 key={e.key}
-                                className='Homework__subjectBubble Homework__selected'
+                                css={[AdmissionStyle.subjectBubble, AdmissionStyle.selected]}
                                 onClick={() => select('status', e)}
                                 onKeyDown={() => select('status', e)}
                                 role='button'
@@ -298,13 +310,13 @@ export const FilterAccordion = (props) => {
                         {Object.keys(currentStatus).length > 0 && (
                           <>
                             <div
-                              className='Homework__subjectBubble Homework__selected'
+                              css={[AdmissionStyle.subjectBubble, AdmissionStyle.selected]}
                               style={{ backgroundColor: '#fff', color: '#000' }}
                             >
                               {currentStatus.key}
                             </div>
                             <div
-                              className='Homework__questionBubble'
+                              css={AdmissionStyle.questionBubble}
                               onClick={() => remove('status')}
                               onKeyDown={() => remove('status')}
                               role='button'
@@ -324,11 +336,13 @@ export const FilterAccordion = (props) => {
                   </>
                 ) : (
                   <>
-                    <small className='text-left Homework__smallHeading mx-3 my-2'>Subject</small>
+                    <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
+                      Subject
+                    </small>
 
                     <Row className='mx-3'>
                       <section
-                        className='Homework__scrollable'
+                        css={AdmissionStyle.scrollable}
                         style={{ backgroundColor: 'rgba(241, 249, 255, 1)' }}
                       >
                         {Object.keys(currentSubject).length === 0 &&
@@ -336,7 +350,7 @@ export const FilterAccordion = (props) => {
                             return (
                               <div
                                 key={e.subject_id}
-                                className='Homework__subjectBubble Homework__selected'
+                                css={[AdmissionStyle.subjectBubble, AdmissionStyle.selected]}
                                 onClick={() => select('subject', e)}
                                 onKeyDown={() => select('subject', e)}
                                 role='button'
@@ -356,13 +370,13 @@ export const FilterAccordion = (props) => {
                         {Object.keys(currentSubject).length > 0 && (
                           <>
                             <div
-                              className='Homework__subjectBubble Homework__selected'
+                              css={[AdmissionStyle.subjectBubble, AdmissionStyle.selected]}
                               style={{ backgroundColor: '#fff', color: '#000' }}
                             >
                               {currentSubject.subject_name}
                             </div>
                             <div
-                              className='Homework__questionBubble'
+                              css={AdmissionStyle.questionBubble}
                               onClick={() => remove('subject')}
                               onKeyDown={() => remove('subject')}
                               role='button'
@@ -390,6 +404,8 @@ export const FilterAccordion = (props) => {
     </Accordion>
   );
 };
+
+export default FilterAccordion;
 
 FilterAccordion.propTypes = {
   filters: PropTypes.instanceOf(Object).isRequired,

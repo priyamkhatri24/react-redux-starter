@@ -115,6 +115,11 @@
     letter-spacing: 0.31px;
     color: var(--primary-blue);
   }
+
+  &__slimButton {
+    height: 20px;
+    width: 74px;
+  }
 }
 
 #limited + label {

@@ -113,7 +113,8 @@ const Basic = (props) => {
     });
 
     const deletedArray = [...deleteLearningArray, ...deletePrerequisiteArray];
-    if (allTags.length) getTagArrays(prunedTags, deletedArray);
+    if (instantLearning.length && instantpreRequisite.length)
+      getTagArrays(prunedTags, deletedArray);
   };
 
   return (

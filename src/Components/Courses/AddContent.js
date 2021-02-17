@@ -21,6 +21,7 @@ import {
   uploadImage,
   verifyIsImage,
   verifyIsVideo,
+  verifyIsFile,
 } from '../../Utilities';
 import {
   getCourseAddContentTestId,
@@ -187,6 +188,8 @@ const AddContent = (props) => {
       isFileAllowed = true;
     } else if (type === 'video' && verifyIsVideo.test(file.name.split('.')[1])) {
       isFileAllowed = true;
+    } else if (type === 'file' && verifyIsFile.test(file.name.split('.')[1])) {
+      isFileAllowed = true;
     } else {
       Swal.fire({
         icon: 'error',
@@ -283,8 +286,20 @@ const AddContent = (props) => {
         {Object.keys(content).length > 0 &&
           content.map((elem) => {
             return (
-              <Row className='LiveClasses__adminCard p-2 m-2' key={elem.id}>
-                <Col xs={2}>
+              <Row
+                className='LiveClasses__adminCard p-2 m-2'
+                key={elem.id}
+                style={{ border: '1px solid rgba(112, 112, 112, 1)', borderRadius: '5px' }}
+              >
+                <Col
+                  xs={2}
+                  onClick={() =>
+                    openTheContent(
+                      elem.content_type === 'file' ? elem.file_type : elem.content_type,
+                      elem,
+                    )
+                  } // eslint-disable-line
+                >
                   <AssignmentIcon />
                 </Col>
                 <Col xs={8}>
@@ -345,7 +360,7 @@ const AddContent = (props) => {
               { title: 'From Files', icon: <AttachFileIcon /> },
               { title: 'Assignment', icon: <AssignmentIcon /> },
               { title: 'Video', icon: <VideocamIcon /> },
-              { title: 'Resources', icon: <AttachFileIcon /> },
+              { title: 'Youtube Video', icon: <AttachFileIcon /> },
               { title: 'Live Class', icon: <PhotoCameraIcon /> },
             ].map((elem, i) => {
               return (

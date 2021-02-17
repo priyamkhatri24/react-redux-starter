@@ -11,4 +11,4 @@ export * from './VideoPlayer/VideoPlayer';
 export * from './ScrollableCards/CoursesCards';
 // export * from './FileViewer/FileViewer';
 export * from './AddButton/AddButton';
-export * from './FilterAccordion/FilterAccordion';
+// export * from './FilterAccordion/FilterAccordion';

@@ -103,6 +103,10 @@
   width: 100%;
   border-radius: 0.25rem;
 }
+
+input[readonly].form-control {
+  background-color: transparent;
+}
 .input-group .has-float-label:not(:last-child),
 .input-group .has-float-label:not(:last-child) .form-control {
   border-bottom-right-radius: 0;

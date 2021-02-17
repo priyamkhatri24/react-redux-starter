@@ -1,3 +1,6 @@
+/** @jsx jsx */
+
+import { jsx } from '@emotion/react';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactApexCharts from 'react-apexcharts';
@@ -16,6 +19,7 @@ import { apiValidation, get, post } from '../../Utilities';
 import { PageHeader } from '../Common';
 import userImage from '../../assets/images/user.svg';
 import UserDataCard from './UsersDataCard';
+import AdmissionStyle from './Admissions.style';
 
 const BatchDetails = (props) => {
   const {
@@ -104,7 +108,11 @@ const BatchDetails = (props) => {
             style={{ fontSize: '12px' }}
           >
             <Tab eventKey='Details' title='Details'>
-              <div className='LiveClasses__adminCard p-2 m-3' style={{ position: 'relative' }}>
+              <div
+                css={AdmissionStyle.adminCard}
+                className='p-2 m-3'
+                style={{ position: 'relative' }}
+              >
                 <div
                   className='Courses__edit text-center py-1'
                   onClick={() => openBatchNameModal()}

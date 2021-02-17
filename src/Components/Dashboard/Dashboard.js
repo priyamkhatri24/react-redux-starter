@@ -32,11 +32,10 @@ import { CoursesCards, DashboardCards } from '../Common';
 import camera from '../../assets/images/Dashboard/camera.svg';
 import analysis from '../../assets/images/Dashboard/analysis.svg';
 import student from '../../assets/images/Dashboard/student.svg';
-// import YourCoaching from '../../assets/images/yourCoachingHeavy.png';
 import Tests from '../Tests/Tests';
 import './Dashboard.scss';
 import { admissionActions } from '../../redux/actions/admissions.action';
-// import DashBoardAdmissions from './DashBoardAdmissions';
+import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 
 const DashBoardAdmissions = Loadable({
   loader: () => import('./DashBoardAdmissions'),
@@ -61,6 +60,7 @@ const Dashboard = (props) => {
     setTestEndTimeToStore,
     setCourseIdToStore,
     setAdmissionRoleArrayToStore,
+    branding,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
@@ -103,12 +103,12 @@ const Dashboard = (props) => {
     });
   }, [clientId, clientUserId]);
 
-  const logout = () => {
-    const { push } = history;
-    clearProfile();
-    clearClientIdDetails();
-    push({ pathname: '/login' });
-  };
+  // const logout = () => {
+  //   const { push } = history;
+  //   clearProfile();
+  //   clearClientIdDetails();
+  //   push({ pathname: '/login' });
+  // };
 
   const goToLiveClasses = () => {
     const { push } = history;
@@ -255,6 +255,7 @@ const Dashboard = (props) => {
                   goToAddBatch={goToAddBatch}
                   goToAdmissions={goToAdmissions}
                   openOptionsModal={openOptionsModal}
+                  heroImage={branding.branding.client_logo}
                 />
               ) || <Skeleton count={20} />}
             </>
@@ -626,6 +627,7 @@ const mapStateToProps = (state) => ({
   clientId: getClientId(state),
   clientUserId: getClientUserId(state),
   roleArray: getRoleArray(state),
+  branding: getCurrentBranding(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -682,4 +684,5 @@ Dashboard.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  branding: PropTypes.instanceOf(Object).isRequired,
 };

@@ -24,6 +24,7 @@ const Content = (props) => {
   const [isSectionUpdateValid, setIsSectionUpdateValid] = useState(false);
   const [createNewSection, setCreateNewSection] = useState(false);
   const [nayaSection, setNayaSection] = useState('');
+  const [tempInputValue, setTempInputValue] = useState('');
 
   useEffect(() => {
     const newSectionArray = sectionArray.map((e) => {

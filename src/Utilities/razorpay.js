@@ -25,6 +25,7 @@ export async function displayRazorpay(
   userFeeId,
   clientId,
   RazorpayKeyId,
+  accountId,
 ) {
   const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js');
 
@@ -52,6 +53,7 @@ export async function displayRazorpay(
     description: 'Test Transaction',
     image: brandImage,
     order_id: orderId,
+    account_id: accountId,
     async handler(response) {
       const data = {
         orderCreationId: orderId,
@@ -69,17 +71,7 @@ export async function displayRazorpay(
           order_id: orderId,
         });
       }
-
-      // const result = await axios.post('http://localhost:5000/payment/success', data);
-
-      // alert(result.data.msg);
     },
-    // handler: razorSuccess({
-    //   user_fee_id: userFeeId,
-    //   client_id: clientId,
-    //   order_id: orderId,
-    // }),
-
     prefill: {
       name: brandName,
       email: '',

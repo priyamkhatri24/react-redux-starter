@@ -1,4 +1,7 @@
+/** @jsx jsx */
+
 import React, { useEffect, useState } from 'react';
+import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
@@ -8,11 +11,12 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import Button from 'react-bootstrap/Button';
 import BatchesDataCard from './BatchesDataCard';
 import UserDataCard from './UsersDataCard';
-import { PageHeader, FilterAccordion, AddButton } from '../Common';
+import { PageHeader, AddButton } from '../Common';
+import FilterAccordion from '../Common/FilterAccordion/FilterAccordion';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get } from '../../Utilities';
-import './Admissions.scss';
 import { admissionActions } from '../../redux/actions/admissions.action';
+import AdmissionStyle from './Admissions.style';
 
 const Admissions = (props) => {
   const { clientId, history, setAdmissionRoleArrayToStore } = props;
@@ -189,9 +193,9 @@ const Admissions = (props) => {
           addBatchFilter={addBatchFilter}
           removeBatchFilter={removeBatchFilter}
         />
-        <div className='Admission__overlay' style={{ marginTop: '1rem' }}>
+        <div css={AdmissionStyle.overlay} style={{ marginTop: '1rem' }}>
           <hr className='w-25' style={{ borderTop: '5px solid rgba(0, 0, 0, 0.1)' }} />
-          <Row className='m-4 Fees__amount'>
+          <Row css={AdmissionStyle.amount} className='m-4'>
             <span className='mr-1'>{tab === 'Users' ? users.length : batches.length} </span> Results
             <span className='ml-auto'>
               <GetAppIcon />

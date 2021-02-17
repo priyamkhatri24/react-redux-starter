@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Tabs from 'react-bootstrap/Tabs';
@@ -32,6 +32,7 @@ const TeacherCourses = (props) => {
   const [courseModal, setCourseModal] = useState(false);
   const [courseTitle, setCourseTitle] = useState('');
   const [isValid, setValid] = useState(false);
+  const inputEl = useRef(null);
 
   useEffect(() => {
     get({ client_id: clientId }, '/getCoursesOfCoaching').then((res) => {
@@ -52,7 +53,12 @@ const TeacherCourses = (props) => {
     history.push({ pathname: '/courses/teachercourse/statistics', state: { id } });
   };
 
-  const showCourseModal = () => setCourseModal(true);
+  const showCourseModal = () => {
+    setCourseModal(true);
+    setTimeout(() => {
+      inputEl.current.focus();
+    }, 1000);
+  };
   const closeCourseModal = () => setCourseModal(false);
 
   const goToCreateCourse = () => {
@@ -165,7 +171,7 @@ const TeacherCourses = (props) => {
                             <>
                               <span key={e.batch_id}>{e.batch_name}</span>
                               {i !== course.current_batch.length - 1 ? (
-                                <span>,</span>
+                                <span>, </span>
                               ) : (
                                 <span> </span>
                               )}
@@ -174,7 +180,7 @@ const TeacherCourses = (props) => {
                         })}
                       </p>
                       <div
-                        className='ml-auto rounded'
+                        className='ml-auto rounded Courses__slimButton'
                         style={
                           course.course_status === 'published'
                             ? {}
@@ -185,11 +191,11 @@ const TeacherCourses = (props) => {
                       >
                         <span
                           style={{
-                            fontFamily: 'Montserrat-Medium',
-                            color: '#fff',
+                            fontFamily: 'Montserrat-SemiBold',
+                            color: 'rgba(0, 0, 0, 0.87)',
                             fontSize: '10px',
                           }}
-                          className='m-2'
+                          className='m-1 d-block text-center'
                         >
                           {course.course_status === 'published'
                             ? ' '
@@ -258,11 +264,6 @@ const TeacherCourses = (props) => {
         </Tabs>
 
         <Modal show={courseModal} centered onHide={closeCourseModal}>
-          <Modal.Header closeButton>
-            <span className='Scrollable__courseCardHeading my-auto' style={{ fontSize: '14px' }}>
-              Choose Title
-            </span>
-          </Modal.Header>
           <Modal.Body>
             <label className='has-float-label my-auto'>
               <input
@@ -270,6 +271,7 @@ const TeacherCourses = (props) => {
                 name='Course Title'
                 type='text'
                 placeholder='Course Title'
+                ref={inputEl}
                 onChange={(e) => setCourseTitle(e.target.value)}
               />
               <span>Course Title</span>
