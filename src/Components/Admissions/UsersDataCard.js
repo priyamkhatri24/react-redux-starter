@@ -1,6 +1,6 @@
-/** @jsx jsx */
-
+/** @jsxImportSource @emotion/react */
 import { jsx } from '@emotion/react';
+import React from 'react';
 import { connect } from 'react-redux';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';

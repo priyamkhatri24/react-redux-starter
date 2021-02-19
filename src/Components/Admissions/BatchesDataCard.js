@@ -1,5 +1,4 @@
-/** @jsx jsx */
-
+/** @jsxImportSource @emotion/react */
 import { jsx } from '@emotion/react';
 import React from 'react';
 import PropTypes from 'prop-types';

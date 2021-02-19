@@ -1,6 +1,5 @@
-/** @jsx jsx */
-
-import { jsx, css } from '@emotion/react';
+/** @jsxImportSource @emotion/react */
+// import { jsx, css } from '@emotion/react';
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Accordion from 'react-bootstrap/Accordion';
