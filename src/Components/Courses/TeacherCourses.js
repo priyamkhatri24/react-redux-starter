@@ -101,7 +101,7 @@ const TeacherCourses = (props) => {
           ? 1
           : result.section_array.length === 0
           ? 2
-          : result.course_description
+          : result.course_display_image
           ? 3
           : result.course_price
           ? 4
@@ -118,7 +118,7 @@ const TeacherCourses = (props) => {
   return (
     <>
       <PageHeader title='Courses' handleBack={goToDashboard} customBack />
-      <div style={{ marginTop: '5rem' }}>
+      <div style={{ marginTop: '4rem' }}>
         <Tabs
           defaultActiveKey='My Courses'
           className='Profile__Tabs'

@@ -128,7 +128,12 @@ const Display = (props) => {
             />
             {imageTitle && (
               <>
-                <img src={imageTitle} alt='upload your profile pic' className='img-fluid' />
+                <img
+                  src={imageTitle}
+                  alt='upload your profile pic'
+                  className='img-fluid'
+                  style={{ height: '60px', width: '95px', borderRadius: '5px' }}
+                />
               </>
             )}
             {!imageTitle && (

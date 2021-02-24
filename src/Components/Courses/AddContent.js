@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import Swal from 'sweetalert2';
 import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
@@ -283,35 +284,17 @@ const AddContent = (props) => {
       <PageHeader title={sectionName} customBack handleBack={handleBackButton} />
       <AddButton onlyUseButton triggerButton={openOptionsModal} />
       <div style={{ marginTop: '5rem' }}>
-        {Object.keys(content).length > 0 &&
-          content.map((elem) => {
-            return (
-              <Row
-                className='LiveClasses__adminCard p-2 m-2'
-                key={elem.id}
-                style={{ border: '1px solid rgba(112, 112, 112, 1)', borderRadius: '5px' }}
-              >
-                <Col
-                  xs={2}
-                  onClick={() =>
-                    openTheContent(
-                      elem.content_type === 'file' ? elem.file_type : elem.content_type,
-                      elem,
-                    )
-                  } // eslint-disable-line
+        <DragDropContext>
+          {Object.keys(content).length > 0 &&
+            content.map((elem) => {
+              return (
+                <Row
+                  className='LiveClasses__adminCard p-2 m-2'
+                  key={elem.id}
+                  style={{ border: '1px solid rgba(112, 112, 112, 1)', borderRadius: '5px' }}
                 >
-                  <AssignmentIcon />
-                </Col>
-                <Col xs={8}>
-                  <Button
-                    style={{
-                      backgroundColor: '#fff',
-                      borderColor: '#fff',
-                      padding: 0,
-                      textAlign: 'left',
-                      width: '100%',
-                    }}
-                    variant='light'
+                  <Col
+                    xs={2}
                     onClick={() =>
                       openTheContent(
                         elem.content_type === 'file' ? elem.file_type : elem.content_type,
@@ -319,35 +302,55 @@ const AddContent = (props) => {
                       )
                     } // eslint-disable-line
                   >
-                    <h6 className='LiveClasses__adminHeading mb-0'>{elem.name}</h6>
-                    <p className='LiveClasses__adminCardTime mb-0' />
+                    <AssignmentIcon />
+                  </Col>
+                  <Col xs={8}>
+                    <Button
+                      style={{
+                        backgroundColor: '#fff',
+                        borderColor: '#fff',
+                        padding: 0,
+                        textAlign: 'left',
+                        width: '100%',
+                      }}
+                      variant='light'
+                      onClick={() =>
+                        openTheContent(
+                          elem.content_type === 'file' ? elem.file_type : elem.content_type,
+                          elem,
+                        )
+                      } // eslint-disable-line
+                    >
+                      <h6 className='LiveClasses__adminHeading mb-0'>{elem.name}</h6>
+                      <p className='LiveClasses__adminCardTime mb-0' />
 
-                    <p className='LiveClasses__adminDuration mb-0'>
-                      Type:{' '}
-                      <span>
-                        {elem.content_type === 'file' ? elem.file_type : elem.content_type}
-                      </span>
-                    </p>
-                  </Button>
-                </Col>
-                <Col xs={2} className='d-flex justify-content-center align-items-center p-0'>
-                  <Button
-                    onClick={() => removeSection(elem)}
-                    style={{
-                      backgroundColor: '#fff',
-                      borderColor: '#fff',
-                      zIndex: '9',
-                      width: '100%',
-                      textAlign: 'center',
-                    }}
-                    variant='light'
-                  >
-                    <CloseIcon />
-                  </Button>
-                </Col>
-              </Row>
-            );
-          })}
+                      <p className='LiveClasses__adminDuration mb-0'>
+                        Type:{' '}
+                        <span>
+                          {elem.content_type === 'file' ? elem.file_type : elem.content_type}
+                        </span>
+                      </p>
+                    </Button>
+                  </Col>
+                  <Col xs={2} className='d-flex justify-content-center align-items-center p-0'>
+                    <Button
+                      onClick={() => removeSection(elem)}
+                      style={{
+                        backgroundColor: '#fff',
+                        borderColor: '#fff',
+                        zIndex: '9',
+                        width: '100%',
+                        textAlign: 'center',
+                      }}
+                      variant='light'
+                    >
+                      <CloseIcon />
+                    </Button>
+                  </Col>
+                </Row>
+              );
+            })}
+        </DragDropContext>
       </div>
       <Modal show={showModal} onHide={handleClose} centered>
         <Modal.Header closeButton>

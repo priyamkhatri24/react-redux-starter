@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
 import React, { useEffect, useState } from 'react';
-import { jsx } from '@emotion/react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
@@ -146,6 +145,8 @@ const Admissions = (props) => {
     history.push({ pathname: '/admissions/add/details' });
   };
 
+  const handleBack = () => history.push('/');
+
   return (
     <>
       <AddButton onlyUseButton triggerButton={handleOpen} />
@@ -157,6 +158,8 @@ const Admissions = (props) => {
         filter
         triggerFilters={isFilterTriggered}
         transparent
+        customBack
+        handleBack={handleBack}
       />
       <div
         style={{

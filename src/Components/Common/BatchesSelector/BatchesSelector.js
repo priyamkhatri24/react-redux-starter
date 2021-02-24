@@ -37,10 +37,10 @@ export const BatchesSelector = (props) => {
           {batches.map((elem) => {
             return (
               <Row
-                className='justify-content-center mb-1'
+                className='justify-content-start mb-1 mx-3'
                 key={`elem${elem.client_batch_id}${elem.batch_name}`}
               >
-                <Button variant='outline-secondary' size='sm' onClick={() => selectBatch(elem)}>
+                <Button variant='batchCustomNotSelected' onClick={() => selectBatch(elem)}>
                   {elem.batch_name}
                 </Button>
               </Row>
@@ -53,10 +53,10 @@ export const BatchesSelector = (props) => {
         {selectedBatches.map((elem) => {
           return (
             <Row
-              className='justify-content-center mb-1'
+              className='justify-content-start mb-1 mx-3'
               key={`e123${elem.client_batch_id}${elem.count}`}
             >
-              <Button variant='customLightBlue' size='sm' onClick={() => removeBatch(elem)}>
+              <Button variant='customLightBlue' onClick={() => removeBatch(elem)}>
                 {elem.batch_name}
               </Button>
             </Row>

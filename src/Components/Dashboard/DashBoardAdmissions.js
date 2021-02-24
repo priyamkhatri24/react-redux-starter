@@ -12,6 +12,9 @@ const DashBoardAdmissions = (props) => {
   const { admissions, goToAdmissions, openOptionsModal, goToAddBatch, heroImage } = props;
 
   const options = {
+    legend: {
+      show: false,
+    },
     colors: ['var(--primary-blue)', 'rgba(0, 0, 0, 0.54)'],
     chart: {
       type: 'bar',

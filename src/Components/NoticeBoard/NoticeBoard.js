@@ -381,7 +381,7 @@ const NoticeBoard = (props) => {
           <Row>
             <Col xs={2} className='p-4'>
               <img
-                src={elem.profile_image}
+                src={elem.profile_image ? elem.profile_image : userImage}
                 alt='profile'
                 className='Dashboard__noticeImage d-block mx-auto'
               />

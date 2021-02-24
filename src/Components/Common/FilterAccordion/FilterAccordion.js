@@ -183,8 +183,26 @@ const FilterAccordion = (props) => {
                                   color: 'rgba(112, 112, 112, 1)',
                                   border: '1px solid rgba(112, 112, 112, 1)',
                                   height: '30px',
+                                  display: 'inline-block',
+                                  maxWidth: '90%',
+                                  whiteSpace: 'no-wrap',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  textAlign: 'center',
+                                  lineHeight: '28px',
                                 }}
                               >
+                                {/* <span
+                                  style={{
+                                    display: 'inline-block',
+                                    maxWidth: '90%',
+                                    whiteSpace: 'no-wrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                  }}
+                                >
+                                  {e.batch_name}
+                                </span> */}
                                 {e.batch_name}
                               </div>
                             );

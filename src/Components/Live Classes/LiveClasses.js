@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
@@ -13,6 +15,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Button from 'react-bootstrap/Button';
 import Swal from 'sweetalert2';
+import LiveClassesStyle from './LiveClasses.style';
 
 import {
   getClientId,
@@ -24,7 +27,6 @@ import { get, post, apiValidation } from '../../Utilities';
 import { PageHeader, BatchesSelector } from '../Common';
 import Jitsi from './Jitsi';
 import { createBigBlueButtonStream, rejoinBigBlueButtonStream } from './bbb';
-import './LiveClasses.scss';
 
 class LiveClasses extends Component {
   constructor(props) {
@@ -294,8 +296,8 @@ class LiveClasses extends Component {
       recordings,
     } = this.state;
     return (
-      <div className='LiveClasses'>
-        <PageHeader title='Live Stream' transparent />
+      <div css={LiveClassesStyle.liveClasses}>
+        <PageHeader title='Live Stream' />
 
         {triggerJitsi && (
           <Jitsi
@@ -308,7 +310,7 @@ class LiveClasses extends Component {
           />
         )}
         <Tabs
-          style={{ marginTop: '6rem' }}
+          style={{ marginTop: '4rem' }}
           defaultActiveKey='Live Classes'
           className='Profile__Tabs'
           justify
@@ -321,30 +323,31 @@ class LiveClasses extends Component {
                     return (
                       <Card
                         key={elem.stream_id}
-                        className='LiveClasses__Card mx-auto p-2 mb-3 mb-lg-5'
+                        css={LiveClassesStyle.card}
+                        className='mx-auto p-2 mb-3 mb-lg-5'
                       >
-                        <div className='LiveClasses__adminCard p-2'>
-                          <h6 className='LiveClasses__adminHeading mb-0'>
+                        <div css={LiveClassesStyle.adminCard} className='p-2'>
+                          <h6 css={LiveClassesStyle.adminHeading} className='mb-0'>
                             {elem.first_name} {elem.last_name} is streaming Live
                           </h6>
-                          <p className='LiveClasses__adminCardTime mb-0'>
+                          <p css={LiveClassesStyle.adminCardTime} className='mb-0'>
                             {format(fromUnixTime(elem.created_at), 'HH:mm MMM dd, yyyy')}
                           </p>
 
-                          <p className='LiveClasses__adminDuration'>
+                          <p css={LiveClassesStyle.adminDuration}>
                             Duration:{' '}
-                            <span>
+                            <span css={LiveClassesStyle.adminDurationSpan}>
                               {`${Math.floor(elem.duration / 3600000)} hr ${Math.floor(
                                 (elem.duration % 3600) / 60,
                               )} min `}
                             </span>
                           </p>
 
-                          <p className='LiveClasses__adminBatches'>
+                          <p css={LiveClassesStyle.adminBatches}>
                             Streaming In :{' '}
                             {elem.batch_array.map((e, i) => {
                               return (
-                                <span key={`elem${e}`}>
+                                <span css={LiveClassesStyle.adminBatchesSpan} key={`elem${e}`}>
                                   {e}
                                   {i < elem.batch_array.length - 1 ? ',' : ''}
                                 </span>
@@ -377,26 +380,32 @@ class LiveClasses extends Component {
                 {doesLiveStreamExist &&
                   existingStream.map((elem) => {
                     return (
-                      <div className='LiveClasses__adminCard p-2 m-3' key={`elem${elem.stream_id}`}>
-                        <h6 className='LiveClasses__adminHeading mb-0'>Ongoing Live Stream</h6>
-                        <p className='LiveClasses__adminCardTime mb-0'>
+                      <div
+                        css={LiveClassesStyle.adminCard}
+                        className='p-2 m-3'
+                        key={`elem${elem.stream_id}`}
+                      >
+                        <h6 css={LiveClassesStyle.adminHeading} className='mb-0'>
+                          Ongoing Live Stream
+                        </h6>
+                        <p css={LiveClassesStyle.adminCardTime} className='mb-0'>
                           {format(fromUnixTime(elem.created_at), 'HH:mm MMM dd, yyyy')}
                         </p>
 
-                        <p className='LiveClasses__adminDuration'>
+                        <p css={LiveClassesStyle.adminDuration}>
                           Duration:{' '}
-                          <span>
+                          <span css={LiveClassesStyle.adminDurationSpan}>
                             {`${Math.floor(elem.duration / 3600000)} hr ${Math.floor(
                               (elem.duration % 3600) / 60,
                             )} min `}
                           </span>
                         </p>
 
-                        <p className='LiveClasses__adminBatches'>
+                        <p css={LiveClassesStyle.adminBatches}>
                           Streaming In :{' '}
                           {elem.batch_array.map((e, i) => {
                             return (
-                              <span key={`elem${e}`}>
+                              <span css={LiveClassesStyle.adminBatchesSpan} key={`elem${e}`}>
                                 {e}
                                 {i < elem.batch_array.length - 1 ? ',' : ''}
                               </span>
@@ -423,7 +432,7 @@ class LiveClasses extends Component {
 
                 {!doesLiveStreamExist && (
                   <>
-                    <Card className='LiveClasses__Card mx-auto mt-5 p-3'>
+                    <Card css={LiveClassesStyle.card} className='mx-auto mt-5 p-3'>
                       <label htmlFor='Select Batch' className='has-float-label my-auto'>
                         <input
                           className='form-control'
@@ -435,7 +444,7 @@ class LiveClasses extends Component {
                           value={inputValue}
                         />
                         <span>Select Batch</span>
-                        <i className='LiveClasses__show'>
+                        <i css={LiveClassesStyle.show}>
                           <ExpandMoreIcon />
                         </i>
                       </label>
@@ -475,8 +484,8 @@ class LiveClasses extends Component {
                   </>
                 )}
                 {adminBatches.length && (
-                  <div className='LiveClasses__adminInfo'>
-                    <h6 className='text-center my-4 my-md-5 LiveClasses__adminHeading'>
+                  <div css={LiveClassesStyle.adminInfo}>
+                    <h6 css={LiveClassesStyle.adminHeading} className='text-center my-4 my-md-5 '>
                       Institute&apos;s other Live Classes
                     </h6>
 
@@ -484,30 +493,31 @@ class LiveClasses extends Component {
                       return (
                         <Card
                           key={elem.stream_id}
-                          className='LiveClasses__Card mx-auto p-2 mb-3 mb-lg-5'
+                          css={LiveClassesStyle.card}
+                          className=' mx-auto p-2 mb-3 mb-lg-5'
                         >
-                          <div className='LiveClasses__adminCard p-2'>
-                            <h6 className='LiveClasses__adminHeading mb-0'>
+                          <div css={LiveClassesStyle.adminCard} className='p-2'>
+                            <h6 css={LiveClassesStyle.adminHeading} className='mb-0'>
                               {elem.first_name} {elem.last_name} is streaming Live
                             </h6>
-                            <p className='LiveClasses__adminCardTime mb-0'>
+                            <p css={LiveClassesStyle.adminCardTime} className='mb-0'>
                               {format(fromUnixTime(elem.created_at), 'HH:mm MMM dd, yyyy')}
                             </p>
 
-                            <p className='LiveClasses__adminDuration'>
+                            <p css={LiveClassesStyle.adminDuration}>
                               Duration:{' '}
-                              <span>
+                              <span css={LiveClassesStyle.adminDurationSpan}>
                                 {`${Math.floor(elem.duration / 3600000)} hr ${Math.floor(
                                   (elem.duration % 3600) / 60,
                                 )} min `}
                               </span>
                             </p>
 
-                            <p className='LiveClasses__adminBatches'>
+                            <p css={LiveClassesStyle.adminBatches}>
                               Streaming In :{' '}
                               {elem.batch_array.map((e, i) => {
                                 return (
-                                  <span key={`elem${e}`}>
+                                  <span css={LiveClassesStyle.adminBatchesSpan} key={`elem${e}`}>
                                     {e}
                                     {i < elem.batch_array.length - 1 ? ',' : ''}
                                   </span>
@@ -556,30 +566,31 @@ class LiveClasses extends Component {
                   return (
                     <Card
                       key={elem.stream_name}
-                      className='LiveClasses__Card mx-auto p-2 mb-3 mb-lg-5'
+                      css={LiveClassesStyle.card}
+                      className='mx-auto p-2 mb-3 mb-lg-5'
                     >
-                      <div className='LiveClasses__adminCard p-2'>
-                        <h6 className='LiveClasses__adminHeading mb-0'>
+                      <div css={LiveClassesStyle.adminCard} className='p-2'>
+                        <h6 css={LiveClassesStyle.adminHeading} className='mb-0'>
                           {elem.first_name} {elem.last_name} is streaming Live
                         </h6>
-                        <p className='LiveClasses__adminCardTime mb-0'>
+                        <p css={LiveClassesStyle.adminCardTime} className='mb-0'>
                           {format(fromUnixTime(elem.created_at), 'HH:mm MMM dd, yyyy')}
                         </p>
 
-                        <p className='LiveClasses__adminDuration'>
+                        <p css={LiveClassesStyle.adminDuration}>
                           Duration:{' '}
-                          <span>
+                          <span css={LiveClassesStyle.adminDurationSpan}>
                             {`${Math.floor(elem.duration / 3600000)} hr ${Math.floor(
                               (elem.duration % 3600) / 60,
                             )} min `}
                           </span>
                         </p>
 
-                        <p className='LiveClasses__adminBatches'>
+                        <p css={LiveClassesStyle.adminBatches}>
                           Streaming In :{' '}
                           {elem.batch_array.map((e, i) => {
                             return (
-                              <span key={`elem${e}`}>
+                              <span css={LiveClassesStyle.adminBatchesSpan} key={`elem${e}`}>
                                 {e}
                                 {i < elem.batch_array.length - 1 ? ',' : ''}
                               </span>

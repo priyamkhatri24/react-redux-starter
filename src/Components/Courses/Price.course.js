@@ -298,11 +298,14 @@ const Price = (props) => {
         {!isNewCoupon && (
           <Row className='w-50 m-2'>
             <Button
-              variant='dashboardBlueOnWhite'
-              className='p-1 mx-2'
+              variant='courseBlueOnWhite'
+              className='p-1 mx-2 my-auto'
               onClick={() => setIsNewCoupon(true)}
             >
-              Add Coupon
+              <span style={{ fontSize: '18px' }} className='my-auto'>
+                +
+              </span>
+              <span className='my-auto ml-2'>Add Coupon</span>
             </Button>
           </Row>
         )}

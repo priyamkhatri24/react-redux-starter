@@ -42,7 +42,20 @@
   background-color: var(--lighter-blue);
   color: #fff;
   font-family: 'Montserrat-Regular';
-  border-radius: 50px;
+  border-radius: 10px;
+  font-size: 12x;
+  line-height: 15px;
+  max-width: 128px;
+}
+
+.btn-batchCustomNotSelected {
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  font-family: 'Montserrat-Regular';
+  border-radius: 10px;
+  font-size: 12x;
+  line-height: 15px;
+  max-width: 128px;
 }
 
 .btn-customSkip {
@@ -197,6 +210,11 @@
 .active.btn-testBlueOnWhite {
   background-color: #fff;
   border-color: #fff;
+}
+
+.btn-testBlueOnWhite:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 .btn-testPallette {
