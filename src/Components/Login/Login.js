@@ -34,7 +34,7 @@ class Login extends Component {
   componentDidMount() {
     const domain =
       process.env.NODE_ENV === 'development'
-        ? { domain_name: 'portal.tca.ingeniumedu.com' }
+        ? { domain_name: 'abcd.ingeniumedu.com' }
         : { domain_name: window.location.hostname };
 
     const { fetchBranding } = this.props;

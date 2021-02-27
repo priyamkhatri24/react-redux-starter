@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import Swal from 'sweetalert2';
 import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
 import AssignmentIcon from '@material-ui/icons/Assignment';
-import CloseIcon from '@material-ui/icons/Close';
 import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
@@ -33,6 +30,7 @@ import {
 import { homeworkActions } from '../../redux/actions/homework.action';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { courseActions } from '../../redux/actions/course.action';
+import ContentRow from './ContentRow';
 
 const AddContent = (props) => {
   const {
@@ -279,12 +277,37 @@ const AddContent = (props) => {
     });
   };
 
+  const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return result;
+  };
+
+  const handleDragEnd = (result) => {
+    // dropped outside the list
+
+    if (!result.destination) {
+      return;
+    }
+
+    const items = reorder(content, result.source.index, result.destination.index);
+    setContent(items);
+  };
+
   return (
     <div>
       <PageHeader title={sectionName} customBack handleBack={handleBackButton} />
       <AddButton onlyUseButton triggerButton={openOptionsModal} />
       <div style={{ marginTop: '5rem' }}>
-        <DragDropContext>
+        <ContentRow
+          removeSection={removeSection}
+          openTheContent={openTheContent}
+          handleDragEnd={handleDragEnd}
+          content={content}
+        />
+        {/* <DragDropContext>
           {Object.keys(content).length > 0 &&
             content.map((elem) => {
               return (
@@ -350,7 +373,7 @@ const AddContent = (props) => {
                 </Row>
               );
             })}
-        </DragDropContext>
+        </DragDropContext> */}
       </div>
       <Modal show={showModal} onHide={handleClose} centered>
         <Modal.Header closeButton>

@@ -13,6 +13,7 @@ class QuestionCard extends Component {
       question: {},
       timer: 0,
       answer: '',
+      studentAnswer: '',
       checked: [],
       review: false,
     };
@@ -20,6 +21,7 @@ class QuestionCard extends Component {
 
   componentDidMount() {
     const { currentQuestion } = this.props;
+    console.log(currentQuestion, 'choot');
     if (Object.keys(currentQuestion).length > 0) {
       currentQuestion.option_array.sort(propComparator('order'));
 
@@ -59,7 +61,6 @@ class QuestionCard extends Component {
 
   componentWillUnmount() {
     clearInterval(this.sectionTimeIntervalId);
-
     // remove the focused if not save and next done
   }
 
@@ -100,7 +101,7 @@ class QuestionCard extends Component {
 
   submitAnswer = (e) => {
     const { question, answer, timer, checked } = this.state;
-    const { onSaveAndNext } = this.props;
+    const { onSaveAndNext, currentQuestion } = this.props;
     console.log(question, 'yessyr');
     if (e === 'Clear Response') {
       if (question.question_type === 'single') {
@@ -238,9 +239,12 @@ class QuestionCard extends Component {
             {Object.keys(question).length > 0 &&
               question.option_array.length > 0 &&
               question.question_type === 'single' &&
-              question.option_array.map((elem) => {
+              question.option_array.map((elem, i) => {
                 return (
-                  <div key={elem.order} className='QuestionTaker__questionOptions m-2'>
+                  <div key={elem.order} className='QuestionTaker__questionOptions m-2 d-flex'>
+                    <span className='my-auto mr-1'>
+                      {i === 0 ? 'A.' : i === 1 ? 'B.' : i === 2 ? 'C.' : 'D.'}
+                    </span>
                     <label
                       className={`QuestionTaker__customRadio p-2 w-100 ${
                         elem.isFocus ? 'QuestionTaker__focusedRadio' : 'w-75'
@@ -282,9 +286,13 @@ class QuestionCard extends Component {
             {Object.keys(question).length > 0 &&
               question.option_array.length > 0 &&
               question.question_type === 'multiple' &&
-              question.option_array.map((elem) => {
+              question.option_array.map((elem, i) => {
                 return (
-                  <div key={elem.order} className='QuestionTaker__questionOptions m-2'>
+                  <div key={elem.order} className='QuestionTaker__questionOptions d-flex m-2'>
+                    <span className='my-auto mr-1'>
+                      {i === 0 ? 'A.' : i === 1 ? 'B.' : i === 2 ? 'C.' : 'D.'}
+                    </span>
+
                     <label
                       htmlFor={elem.order}
                       className={`QuestionTaker__customRadio p-2 w-100 ${

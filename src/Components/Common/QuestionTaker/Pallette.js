@@ -46,6 +46,9 @@ const Pallette = (props) => {
   const handleChangeQuestion = (id) => {
     setCurrentQuestionId(id);
     changeQuestion(subject, id);
+    console.log(currentQuestion, currentQuestionId);
+
+    console.log(totalQuestions, 'bhosda');
   };
 
   return (
@@ -114,6 +117,7 @@ const Pallette = (props) => {
                 return (
                   <Button
                     variant='testPallette'
+                    style={currentQuestionId === elem.uuid ? { backgroundColor: '#2699FB' } : {}}
                     className={
                       elem.question_status === 'Attempted'
                         ? 'btn-greenTest'
