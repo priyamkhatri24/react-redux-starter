@@ -153,12 +153,13 @@ const Dashboard = (props) => {
     push('/questiontaker');
   };
 
-  const startLiveTest = (responseArray, startTime = 0, endTime = 0, testType) => {
+  const startLiveTest = (responseArray, startTime = 0, endTime = 0, testType, testId) => {
     const { push } = history;
     setTestResultArrayToStore(responseArray);
     setTestEndTimeToStore(endTime);
     setTestStartTimeToStore(startTime);
     setTestTypeToStore(testType);
+    setTestIdToStore(testId);
     push('/questiontaker');
   };
 

@@ -37,7 +37,7 @@ export function testsUpdate(state = initialState, action) {
         ...state,
         testresultArray: action.payload,
       };
-    case testConstants.CLEAR:
+    case testConstants.CLEARTESTS:
       return {
         ...state,
         testId: null,

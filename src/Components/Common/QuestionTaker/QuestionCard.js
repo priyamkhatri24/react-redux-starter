@@ -13,7 +13,6 @@ class QuestionCard extends Component {
       question: {},
       timer: 0,
       answer: '',
-      studentAnswer: '',
       checked: [],
       review: false,
     };
@@ -21,7 +20,6 @@ class QuestionCard extends Component {
 
   componentDidMount() {
     const { currentQuestion } = this.props;
-    console.log(currentQuestion, 'choot');
     if (Object.keys(currentQuestion).length > 0) {
       currentQuestion.option_array.sort(propComparator('order'));
 
@@ -31,12 +29,14 @@ class QuestionCard extends Component {
 
   componentDidUpdate(prevProps) {
     const { currentQuestion, onUnmount } = this.props;
+    const { answer } = this.state;
+    const { timer, question, review } = this.state;
+
     if (prevProps.currentQuestion !== currentQuestion) {
       const falseChecked = currentQuestion.option_array.map((elem) => {
         return false;
       });
 
-      const { timer, question, review } = this.state;
       this.setState({ timer: currentQuestion.timer, checked: falseChecked, review: false });
       onUnmount({
         time: timer,
@@ -45,6 +45,7 @@ class QuestionCard extends Component {
         review,
       });
       this.restartSectionTimer();
+      this.setState({ answer: '' });
     }
   }
 
@@ -86,6 +87,7 @@ class QuestionCard extends Component {
 
   selectedAnswer = (e) => {
     const { question } = this.state;
+    console.log(question);
     this.setState({ answer: e });
     const focusedQuestions = question;
     focusedQuestions.option_array = question.option_array.map((elem) => {
@@ -100,9 +102,9 @@ class QuestionCard extends Component {
   };
 
   submitAnswer = (e) => {
+    console.log();
     const { question, answer, timer, checked } = this.state;
-    const { onSaveAndNext, currentQuestion } = this.props;
-    console.log(question, 'yessyr');
+    const { onSaveAndNext } = this.props;
     if (e === 'Clear Response') {
       if (question.question_type === 'single') {
         const focusedQuestions = question;
@@ -215,7 +217,7 @@ class QuestionCard extends Component {
   }
 
   render() {
-    const { question, answer, checked } = this.state;
+    const { question, answer, checked, timer } = this.state;
     return (
       <>
         <Card
@@ -256,6 +258,7 @@ class QuestionCard extends Component {
                         name='testRadio'
                         value={elem.order}
                         onChange={(e) => this.selectedAnswer(e.target.value)}
+                        onClick={(e) => this.selectedAnswer(e.target.value)}
                         id={`testRadio${elem.order}`}
                       />
                       <div className='radioControl'>
@@ -275,8 +278,12 @@ class QuestionCard extends Component {
                     name='Answer'
                     type='text'
                     placeholder='Answer'
-                    value={answer}
-                    onChange={(e) => this.setState({ answer: e.target.value })}
+                    value={question.student_answer ? question.student_answer : ''}
+                    onChange={(e) => {
+                      const newQuestion = question;
+                      newQuestion.student_answer = e.target.value;
+                      this.setState({ answer: e.target.value, question: newQuestion });
+                    }}
                   />
                   <span>Answer</span>
                 </label>

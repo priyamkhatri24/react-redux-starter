@@ -125,6 +125,7 @@ const Tests = (props) => {
               parseInt(liveCheck[0].startTime, 10),
               liveCheck[0].endTime,
               'livetest',
+              elem.test_id,
             );
             console.log(response);
           }
@@ -167,9 +168,17 @@ const Tests = (props) => {
                   test_id: elem.test_id,
                   language_type: elem.language_type,
                 };
-                get(demoTestPayload, '/getTestQuestionsForStudentWithLanguage').then((r) =>
-                  console.log(r),
-                );
+                get(demoTestPayload, '/getTestQuestionsForStudentWithLanguage').then((r) => {
+                  console.log(r, 'r');
+                  const studentQuestions = apiValidation(r);
+                  startLive(
+                    studentQuestions,
+                    +new Date(),
+                    +new Date() + result.duration,
+                    'demotest',
+                    elem.test_id,
+                  );
+                });
               }
             });
           } else if (response.isDenied) {
@@ -191,7 +200,13 @@ const Tests = (props) => {
           get(demoTestPayload, '/getTestQuestionsForStudentWithLanguage').then((response) => {
             console.log(response);
             const studentQuestions = apiValidation(response);
-            startLive(studentQuestions, currentTime, testStartTime, 'demotest');
+            startLive(
+              studentQuestions,
+              result.current_time,
+              result.test_end_time,
+              'demotest',
+              elem.test_id,
+            );
           });
         } else if (dateResult > 0) {
           const testPayload = {

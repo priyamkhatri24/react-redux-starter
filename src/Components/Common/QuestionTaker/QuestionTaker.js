@@ -74,29 +74,40 @@ class QuestionTaker extends Component {
   }
 
   componentWillUnmount() {
-    const { history } = this.props;
+    const { history, clearTests } = this.props;
     window.removeEventListener('beforeunload', this.onUnload);
+    clearTests();
     history.push('/');
   }
 
-  onUnload = () => {
+  onUnload = (e) => {
     this.setState({
       result: [{ question_list: [], subject: '' }],
       currentTime: 0,
       testEndTime: 0,
     });
+    const message = 'o/';
+
+    (e || window.event).returnValue = message; // Gecko + IE
+    return message;
   };
 
   timerHasFinished = () => {
     const { result, testId } = this.state;
-    const { clientUserId, testType, testId: testID } = this.props;
+    const {
+      clientUserId,
+      testType,
+      testId: testID,
+      setTestStartTimeToStore,
+      setTestEndTimeToStore,
+    } = this.props;
     const finalArray = result
       .map((elem) => {
         const flattenedQuestionArray = elem.question_list.map((e) => {
           const payload = {};
 
           payload[e.question_id] = {
-            totalTime: e.timer.toString(),
+            totalTime: e.timer * 1000,
             finalAnswer: e.student_answer === null ? '' : e.student_answer,
             id: e.question_id.toString(),
             totalCount: e.noOfTimesVisited.toString(),
@@ -114,11 +125,16 @@ class QuestionTaker extends Component {
 
     const finalObject = Object.assign({}, ...finalArray);
 
+    console.log(finalObject, 'aja beti');
+
     const finalPayload = {
       client_user_id: clientUserId,
       test_id: testId,
       questions_array: JSON.stringify(finalObject),
     };
+
+    console.log('key ho rha h');
+
     post(finalPayload, '/studentTestActivity').then((res) => {
       if (res.success) {
         const updationPayload = {
@@ -126,6 +142,7 @@ class QuestionTaker extends Component {
           test_id: testID,
           test_status: 'submitted',
         };
+        console.log('key ho rha h');
         if (testType === 'demotest') {
           post(updationPayload, '/updateTestStatus').then((response) => {
             if (response.success) {
@@ -141,6 +158,9 @@ class QuestionTaker extends Component {
         }
       }
     });
+
+    setTestEndTimeToStore(0);
+    setTestStartTimeToStore(0);
   };
 
   testSubmissionAlert = () => {
@@ -360,6 +380,9 @@ const mapDispatchToProps = (dispatch) => {
     setTestResultArrayToStore: (payload) => {
       dispatch(testsActions.setTestResultArrayToStore(payload));
     },
+    clearTests: (payload) => {
+      dispatch(testsActions.clearTests());
+    },
   };
 };
 
@@ -375,4 +398,7 @@ QuestionTaker.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  setTestEndTimeToStore: PropTypes.func.isRequired,
+  setTestStartTimeToStore: PropTypes.func.isRequired,
+  clearTests: PropTypes.func.isRequired,
 };

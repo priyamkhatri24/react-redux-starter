@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import differenceInHours from 'date-fns/differenceInHours';
+import differenceInSeconds from 'date-fns/differenceInSeconds';
+import differenceInMinutes from 'date-fns/differenceInMinutes';
+import parseISO from 'date-fns/parseISO';
+import fromUnixTime from 'date-fns/fromUnixTime';
+
 import PropTypes from 'prop-types';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { useInterval } from '../../../Utilities';
@@ -16,11 +22,15 @@ const Timer = (props) => {
 
   useEffect(() => {
     const durationTime = endTime - startTime;
-    setDuration(durationTime);
-    setprogressBarDuration(durationTime);
-    setHours(Math.floor(durationTime / 3600));
-    setMinutes(Math.floor((durationTime % 3600) / 60));
-    setSeconds(Math.floor(durationTime % 60));
+    const endDate = fromUnixTime(endTime);
+    const startDate = fromUnixTime(startTime);
+    console.log(endDate, startDate);
+
+    setDuration(differenceInSeconds(endDate, startDate));
+    setprogressBarDuration(differenceInSeconds(endDate, startDate));
+    setHours(differenceInHours(endDate, startDate));
+    setMinutes(differenceInMinutes(endDate, startDate) % 60);
+    setSeconds(differenceInSeconds(endDate, startDate) % 60);
   }, [endTime, startTime]);
 
   useEffect(() => {
