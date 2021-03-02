@@ -36,6 +36,7 @@ import Tests from '../Tests/Tests';
 import './Dashboard.scss';
 import { admissionActions } from '../../redux/actions/admissions.action';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
+import { getComeBackFromTests } from '../../redux/reducers/firstTimeLogin.reducer';
 
 const DashBoardAdmissions = Loadable({
   loader: () => import('./DashBoardAdmissions'),
@@ -61,6 +62,7 @@ const Dashboard = (props) => {
     setCourseIdToStore,
     setAdmissionRoleArrayToStore,
     branding,
+    comeBackFromTests,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
@@ -79,6 +81,10 @@ const Dashboard = (props) => {
     else if (hours >= 17 && hours < 21) setTime('Good Evening,');
     else if (hours >= 21 && hours < 24) setTime('Good Evening,');
   };
+
+  useEffect(() => {
+    if (comeBackFromTests) history.push('/questiontaker');
+  }, [comeBackFromTests, history]);
 
   useEffect(() => {
     const payload = {
@@ -629,6 +635,7 @@ const mapStateToProps = (state) => ({
   clientUserId: getClientUserId(state),
   roleArray: getRoleArray(state),
   branding: getCurrentBranding(state),
+  comeBackFromTests: getComeBackFromTests(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -686,4 +693,5 @@ Dashboard.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   branding: PropTypes.instanceOf(Object).isRequired,
+  comeBackFromTests: PropTypes.bool.isRequired,
 };

@@ -174,7 +174,7 @@ const Tests = (props) => {
                   startLive(
                     studentQuestions,
                     +new Date(),
-                    +new Date() + result.duration,
+                    +new Date() + parseInt(result.duration, 10) / 1000,
                     'demotest',
                     elem.test_id,
                   );

@@ -19,6 +19,8 @@ import {
   getTestEndTime,
 } from '../../../redux/reducers/tests.reducer';
 import './QuestionTaker.scss';
+import { firstTimeLoginActions } from '../../../redux/actions/firsttimeLogin.action';
+import { getComeBackFromTests } from '../../../redux/reducers/firstTimeLogin.reducer';
 
 class QuestionTaker extends Component {
   constructor(props) {
@@ -38,14 +40,53 @@ class QuestionTaker extends Component {
       timerCurrentTime: 0,
       modalOpen: false,
       startingResult: false,
+      userWantsToLeave: false,
     };
   }
 
   componentDidMount() {
-    const { testId, testResultArray, testEndTime, testStartTime } = this.props;
-
-    if (testResultArray.length) {
-      const idAdd = testResultArray.map((elem) => {
+    const {
+      testId,
+      testResultArray,
+      testEndTime,
+      testStartTime,
+      comeBackFromTests,
+      history,
+      setComeBackFromTestsToStore,
+      clearTests,
+    } = this.props;
+    let idAdd;
+    if (comeBackFromTests) {
+      Swal.fire({
+        title: 'Are you Sure?',
+        text: 'You will lose all your progress.',
+        icon: 'question',
+        showDenyButton: true,
+        confirmButtonText: `Yes`,
+        denyButtonText: `No`,
+        customClass: 'Assignments__SweetAlert',
+      }).then((res) => {
+        if (res.isConfirmed) {
+          this.setState({ userWantsToLeave: true }, () => {
+            setComeBackFromTestsToStore(false);
+            clearTests();
+            history.push('/');
+          });
+        } else {
+          idAdd = testResultArray;
+          this.setState({
+            result: idAdd,
+            currentQuestion: testResultArray[0].question_list[0],
+            currentSubject: testResultArray[0].subject,
+            startingResult: true,
+            currentTime: testStartTime,
+            testEndTime,
+            testId,
+          });
+        }
+      });
+    } else if (testResultArray.length) {
+      idAdd = testResultArray.map((elem) => {
         elem.question_list.map((e, index) => {
           const newObj = e;
           newObj.uuid = index + 1;
@@ -68,15 +109,17 @@ class QuestionTaker extends Component {
         testEndTime,
         testId,
       });
-
-      window.addEventListener('beforeunload', this.onUnload);
     }
+    window.addEventListener('beforeunload', this.onUnload);
   }
 
   componentWillUnmount() {
-    const { history, clearTests } = this.props;
+    const { history, setComeBackFromTestsToStore, setTestResultArrayToStore } = this.props;
+    const { result, userWantsToLeave } = this.state;
     window.removeEventListener('beforeunload', this.onUnload);
-    clearTests();
+    // clearTests();
+    if (!userWantsToLeave) setComeBackFromTestsToStore(true);
+    setTestResultArrayToStore(result);
     history.push('/');
   }
 
@@ -174,6 +217,7 @@ class QuestionTaker extends Component {
       customClass: 'Assignments__SweetAlert',
     }).then((res) => {
       if (res.isConfirmed) {
+        this.setState({ userWantsToLeave: true });
         history.push('/');
       }
     });
@@ -361,6 +405,7 @@ const mapStateToProps = (state) => ({
   testResultArray: getTestResultArray(state),
   testStartTime: getTestStartTime(state),
   testEndTime: getTestEndTime(state),
+  comeBackFromTests: getComeBackFromTests(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -380,8 +425,11 @@ const mapDispatchToProps = (dispatch) => {
     setTestResultArrayToStore: (payload) => {
       dispatch(testsActions.setTestResultArrayToStore(payload));
     },
-    clearTests: (payload) => {
+    clearTests: () => {
       dispatch(testsActions.clearTests());
+    },
+    setComeBackFromTestsToStore: (payload) => {
+      dispatch(firstTimeLoginActions.setComeBackFromTestsToStore(payload));
     },
   };
 };
@@ -400,5 +448,8 @@ QuestionTaker.propTypes = {
   }).isRequired,
   setTestEndTimeToStore: PropTypes.func.isRequired,
   setTestStartTimeToStore: PropTypes.func.isRequired,
+  setComeBackFromTestsToStore: PropTypes.func.isRequired,
+  setTestResultArrayToStore: PropTypes.func.isRequired,
+  comeBackFromTests: PropTypes.bool.isRequired,
   clearTests: PropTypes.func.isRequired,
 };

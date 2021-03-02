@@ -2,8 +2,10 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Loadable from 'react-loadable';
 import Skeleton from 'react-loading-skeleton';
+import { Beforeunload } from 'react-beforeunload';
 import { AuthenticatedRoute } from './AuthenticatedRoute';
 import TeacherCourses from '../Components/Courses/TeacherCourses';
+
 // import EditProfileHOC from '../Components/Admissions/EditProfileHoC';
 
 const Admissions = Loadable({
@@ -284,7 +286,9 @@ export function Routes() {
       <AuthenticatedRoute exact path='/noticeboard' component={NoticeBoard} />
       <AuthenticatedRoute exact path='/profile' component={Profile} />
       <AuthenticatedRoute exact path='/editprofile' component={EditProfile} />
-      <AuthenticatedRoute exact path='/questiontaker' component={QuestionTaker} />
+      <Beforeunload onBeforeunload={() => "You'll lose your data!"}>
+        <AuthenticatedRoute exact path='/questiontaker' component={QuestionTaker} />
+      </Beforeunload>
       <AuthenticatedRoute exact path='/fees' component={Fees} />
       <AuthenticatedRoute exact path='/order' component={FeesOrder} />
       <AuthenticatedRoute exact path='/homework' component={HomeWorkCreator} />
