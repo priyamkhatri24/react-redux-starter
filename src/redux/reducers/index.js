@@ -9,6 +9,7 @@ import { homework } from './homeworkCreator.reducer';
 import { course } from './course.reducer';
 import { firstTimeLogin } from './firstTimeLogin.reducer';
 import { admission } from './admissions.reducer';
+import { studyBin } from './studybin.reducer';
 
 const rootReducer = (history) =>
   combineReducers({
@@ -22,6 +23,7 @@ const rootReducer = (history) =>
     course,
     firstTimeLogin,
     admission,
+    studyBin,
   });
 
 export default rootReducer;

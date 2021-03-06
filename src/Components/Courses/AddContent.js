@@ -205,12 +205,6 @@ const AddContent = (props) => {
       uploadImage(file).then((res) => {
         postImageToSection(file.name, res.filename, type);
       });
-      if (type === 'image') {
-        reader.onloadend = function getImage() {
-          const base64data = reader.result;
-          //   setImageTitle(base64data);
-        };
-      }
     }
   };
 

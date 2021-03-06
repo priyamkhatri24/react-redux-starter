@@ -7,10 +7,10 @@
     bottom: 0;
   }
 
-  &__wrap div {
-    box-shadow: 5px 5px 1px 0px gray;
-    margin: 0px;
-  }
+  // &__wrap div {
+  //   box-shadow: 5px 5px 1px 0px gray;
+  //   margin: 0px;
+  // }
 
   &__innerDiv {
     background-color: #bce0fd;
@@ -20,8 +20,8 @@
 
   &__innerDivLong {
     background-color: #bce0fd;
-    height: 11.25rem;
-    width: 10rem;
+    height: 14.5rem;
+    width: 11.5rem;
   }
 
   &__menuContents {
@@ -79,8 +79,8 @@
 
   &__closeIcon {
     position: absolute;
-    bottom: 5px;
-    left: 50%;
+    bottom: 5%;
+    right: 10%;
     z-index: 999;
     color: white;
   }

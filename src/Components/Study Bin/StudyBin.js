@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
@@ -14,6 +14,8 @@ import ppt from '../../assets/images/FilesFolders/ppt.svg';
 import xls from '../../assets/images/FilesFolders/xls.svg';
 import txt from '../../assets/images/FilesFolders/txt.svg';
 import youtube from '../../assets/images/FilesFolders/youtube.png';
+import videocam from '../../assets/images/FilesFolders/videocam.svg';
+import images from '../../assets/images/FilesFolders/Images.svg';
 import { get, apiValidation, post } from '../../Utilities';
 import {
   getClientId,
@@ -23,122 +25,74 @@ import {
 import { PageHeader } from '../Common';
 import './StudyBin.scss';
 import { AddButton } from '../Common/AddButton/AddButton';
+import { studyBinActions } from '../../redux/actions/studybin.actions';
+import { getStudyBinFolderIDArray } from '../../redux/reducers/studybin.reducer';
+import StudyBinMenu from './StudyBinMenu';
 
 const StudyBin = (props) => {
-  // const { clientUserId, clientId, history, roleArray } = props;
-  // const { state: { title, videoId } = {} } = props.location;
-
   const {
     location: { state: { title, videoId } = {} },
     clientUserId,
     clientId,
     history,
     roleArray,
+    studyBinFolderIdArray,
+    setFolderIdArrayToStore,
+    pushFolderIDToFolderIDArrayInStore,
+    popFolderIDFromFolderIDArrayInStore,
   } = props;
 
   const [fileArray, setFileArray] = useState([]);
   const [folderArray, setFolderArray] = useState([]);
-  const [insideFolder, setInsideFolder] = useState(true);
-  const [folderIdStack, setFolderIdStack] = useState([]);
+  const [folderIdStack, setFolderIdStack] = useState(studyBinFolderIdArray);
   const [showModal, setModal] = useState(false);
   const [folderName, setFolderName] = useState('');
-  const [rerender, setrerender] = useState(false);
+  const [searchString, setSearchString] = useState('');
+  const [categoryArray, setCategoryArray] = useState([]);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [imgLink, setImgLink] = useState('');
+  const [menuOptions, setMenuOptions] = useState({
+    id: 0,
+    type: '',
+    status: '',
+    finalBatches: [],
+    currentBatches: [],
+  });
+  const [openMenu, setOpenMenu] = useState(false);
+  const handleImageOpen = () => setShowImageModal(true);
+  const handleImageClose = () => setShowImageModal(false);
   const handleClose = () => setModal(false);
   const handleShow = () => setModal(true);
+  const handleMenuClose = () => setOpenMenu(false);
+  const handleMenuShow = () => setOpenMenu(true);
 
   const searchFolder = (search) => {
     console.log(search);
+    setSearchString(search);
   };
 
   const addNewFolder = () => {
     console.log('folder clicked');
     handleShow();
-    setrerender(true);
+    // setrerender(true);
   };
 
-  const addFolder = () => {
-    const payload = {
-      client_user_id: clientUserId,
-      primary_folder_id: folderIdStack[folderIdStack.length - 1],
-      folder_name: folderName,
+  const rerenderFilesAndFolders = () => {
+    const temp = {
+      client_user_id: 1605,
+      client_id: clientId,
     };
-
-    post(payload, '/addFolder')
-      .then((res) => {
-        if (res.success) {
-          handleClose();
-        }
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const addNewFile = (elem) => {
-    console.log('file clicked', elem.get('data'));
-    post(elem, '/upload')
-      .then((res) => console.log(res))
-      .catch((err) => console.error(err));
-  };
-
-  const getYoutubeFile = useCallback(() => {
-    console.log('bhosdj');
-    const payload = {
-      client_user_id: clientUserId,
-      folder_id: folderIdStack[folderIdStack.length - 1],
-      file_name: title,
-      file_link: videoId,
-      file_type: 'youtube',
-    };
-    post(payload, '/addFile')
-      .then((res) => {
-        console.log(res);
-        setrerender(true);
-      })
-      .catch((e) => console.log(e));
-  }, [clientUserId, folderIdStack, title, videoId]);
-
-  const addYoutubeLink = () => {
-    history.push('/addyoutubevideo');
-  };
-
-  const handleBack = () => {
-    if (folderIdStack.length > 0) {
-      const newFolderIdStack = folderIdStack.reverse().slice(1).reverse();
-      setFolderIdStack(newFolderIdStack);
-    }
-  };
-
-  useEffect(() => {
-    const payload = {
-      client_user_id: clientUserId,
-      clientId,
-    };
-
-    if (folderIdStack.length === 0 && insideFolder) {
-      if (roleArray.includes(3) || roleArray.includes(4)) {
-        const temp = {
-          client_user_id: 1605,
-          client_id: clientId,
-        };
-        get(temp, '/getPrimaryFoldersAndFiles') // instead of temp should be [payload]
-          .then((res) => {
-            const result = apiValidation(res);
-            setFileArray(result.files);
-            setFolderArray(result.folders);
-            setFolderIdStack((prevState) => [...prevState, result.client_folder_id]);
-            setInsideFolder(false);
-          })
-          .catch((err) => console.log(err));
-      } else {
-        get(payload, '/getFoldersAndFilesForStudent')
-          .then((res) => {
-            const result = apiValidation(res);
-            setFileArray(result.files);
-            setFolderArray(result.folders);
-            setInsideFolder(false);
-          })
-          .catch((err) => console.log(err));
-      }
-    } else if (folderIdStack.length !== 0 && insideFolder) {
+    if (folderIdStack.length < 1) {
+      get(temp, '/getPrimaryFoldersAndFiles') // instead of temp should be [payload]
+        .then((res) => {
+          const result = apiValidation(res);
+          setFileArray(result.files);
+          setFolderArray(result.folders);
+          //    setFolderIdStack((prevState) => [...prevState, result.client_folder_id]);
+          pushFolderIDToFolderIDArrayInStore(result.client_folder_id);
+        })
+        .catch((err) => console.log(err));
+    } else {
       const currentFolderId = folderIdStack[folderIdStack.length - 1];
       const newPayload = {
         folder_id: currentFolderId,
@@ -152,24 +106,140 @@ const StudyBin = (props) => {
         })
         .catch((err) => console.log(err));
     }
+  };
 
-    if (title && videoId && !rerender) {
-      getYoutubeFile();
+  const addFolder = () => {
+    const payload = {
+      client_user_id: clientUserId,
+      primary_folder_id: folderIdStack[folderIdStack.length - 1],
+      folder_name: folderName,
+    };
+
+    post(payload, '/addFolder')
+      .then((res) => {
+        if (res.success) {
+          rerenderFilesAndFolders();
+          handleClose();
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const addNewFile = (name, link) => {
+    console.log('file clicked', name);
+    const payload = {
+      client_user_id: clientUserId,
+      folder_id: folderIdStack[folderIdStack.length - 1],
+      file_name: name,
+      file_link: link,
+      file_type: 'file',
+    };
+    post(payload, '/addFile')
+      .then((res) => {
+        console.log(res);
+        rerenderFilesAndFolders();
+      })
+      .catch((e) => console.log(e));
+  };
+
+  // const getYoutubeFile = useCallback(() => {
+  //   console.log('bhosdj');
+  //   const payload = {
+  //     client_user_id: clientUserId,
+  //     folder_id: folderIdStack[folderIdStack.length - 1],
+  //     file_name: title,
+  //     file_link: videoId,
+  //     file_type: 'youtube',
+  //   };
+  //   post(payload, '/addFile')
+  //     .then((res) => {
+  //       console.log(res);
+  //       setrerender(true);
+  //     })
+  //     .catch((e) => console.log(e));
+  // }, [clientUserId, folderIdStack, title, videoId]);
+
+  const addYoutubeLink = () => {
+    history.push('/addyoutubevideo');
+  };
+
+  const handleBack = () => {
+    if (folderIdStack.length > 1) {
+      popFolderIDFromFolderIDArrayInStore();
+    } else {
+      history.push('/');
+      popFolderIDFromFolderIDArrayInStore();
     }
-  }, [
-    getYoutubeFile,
-    clientId,
-    clientUserId,
-    folderIdStack,
-    insideFolder,
-    title,
-    videoId,
-    roleArray,
-    rerender,
-  ]);
+  };
 
-  const goToVideoPlayer = (elem) => {
-    history.push({ pathname: `/videoplayer/${elem.file_link}`, state: { link: elem.file_link } });
+  useEffect(() => {
+    setFolderIdStack(studyBinFolderIdArray);
+  }, [studyBinFolderIdArray]);
+
+  useEffect(() => {
+    const payload = {
+      client_user_id: clientUserId,
+      clientId,
+    };
+
+    if (folderIdStack.length < 1) {
+      if (roleArray.includes(3) || roleArray.includes(4)) {
+        const temp = {
+          client_user_id: 1605,
+          client_id: clientId,
+        };
+        get(temp, '/getPrimaryFoldersAndFiles') // instead of temp should be [payload]
+          .then((res) => {
+            const result = apiValidation(res);
+            setFileArray(result.files);
+            setFolderArray(result.folders);
+            //    setFolderIdStack((prevState) => [...prevState, result.client_folder_id]);
+            pushFolderIDToFolderIDArrayInStore(result.client_folder_id);
+          })
+          .catch((err) => console.log(err));
+      } else {
+        get(payload, '/getFoldersAndFilesForStudent')
+          .then((res) => {
+            const result = apiValidation(res);
+            setFileArray(result.files);
+            setFolderArray(result.folders);
+          })
+          .catch((err) => console.log(err));
+      }
+    } else if (folderIdStack.length >= 1) {
+      const currentFolderId = folderIdStack[folderIdStack.length - 1];
+      const newPayload = {
+        folder_id: currentFolderId,
+        client_id: clientId,
+      };
+      get(newPayload, '/getFoldersAndFilesOfFolder')
+        .then((res) => {
+          const result = apiValidation(res);
+          setFileArray(result.files);
+          setFolderArray(result.folders);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [clientId, clientUserId, folderIdStack, roleArray, pushFolderIDToFolderIDArrayInStore]);
+
+  useEffect(() => {
+    get({ client_user_id: clientUserId }, '/getFileCategoriesForStudent').then((res) => {
+      console.log(res);
+      const result = apiValidation(res);
+      setCategoryArray(result);
+    });
+  }, [clientUserId]);
+
+  // useEffect(() => {
+  //   if (title && videoId && !rerender) {
+  //     getYoutubeFile();
+  //   }
+  // }, [getYoutubeFile, rerender, title, videoId]);
+
+  const goToVideoPlayer = (elem, type) => {
+    if (type === 'youtube') history.push({ pathname: `/videoplayer/${elem.file_link}` });
+    else if (type === 'video')
+      history.push({ pathname: `/videoplayer`, state: { videoLink: elem.file_link } });
   };
 
   const openFileView = (elem) => {
@@ -184,16 +254,15 @@ const StudyBin = (props) => {
           pathname: '/otherfileviewer',
           state: { filePath: elem.file_link, type: fileType },
         });
+  };
 
-    // history.push({
-    //   pathname: '/otherfileviewer',
-    //   state: { filePath: elem.file_link, type: fileType },
-    // });
+  const openImage = (elem) => {
+    setImgLink(elem.file_link);
+    handleImageOpen();
   };
 
   const openFolder = (elem) => {
-    setFolderIdStack((prevState) => [...prevState, elem.folder_id]);
-    setInsideFolder(true);
+    pushFolderIDToFolderIDArrayInStore(elem.folder_id);
   };
 
   const addButtonArray = [
@@ -202,47 +271,120 @@ const StudyBin = (props) => {
     { name: 'add Youtube Link', func: addYoutubeLink },
   ];
 
+  const openContextMenu = (elem, type) => {
+    setMenuOptions({
+      ...menuOptions,
+      type,
+      status: elem.status,
+      id: type === 'folder' ? elem.folder_id : elem.file_id,
+      finalBatches: elem.final_batch,
+      currentBatches: elem.current_batch,
+    });
+    handleMenuShow();
+  };
+
+  const enterCategory = (id) => {
+    history.push(`/studybin/categories/${id}`);
+  };
+
   return (
     <>
+      <StudyBinMenu
+        kholdo={openMenu}
+        handleClose={handleMenuClose}
+        rerenderFilesAndFolders={rerenderFilesAndFolders}
+        id={menuOptions.id}
+        type={menuOptions.type}
+        currentStatus={menuOptions.status}
+        finalBatches={menuOptions.finalBatches}
+        currentBatches={menuOptions.currentBatches}
+      />
       <div className='StudyBin'>
         <PageHeader
           title='Study Bin'
           search
           placeholder='Search for file or folder'
           searchFilter={searchFolder}
-          customBack={insideFolder}
+          customBack={folderIdStack.length > 1}
           handleBack={handleBack}
         />
         <div style={{ marginTop: '6rem' }} className='mx-4 mx-md-5'>
+          {folderIdStack.length === 1 && (
+            <div className='mb-3'>
+              <h6 className='StudyBin__heading'>
+                Categories <span>({categoryArray.length})</span>
+              </h6>
+              {categoryArray.map((elem) => {
+                return (
+                  <Row
+                    className='mr-1'
+                    onClick={() => enterCategory(elem.category_id)}
+                    key={elem.category_id}
+                  >
+                    <Col xs={2} className='my-auto'>
+                      <img
+                        src={elem.category_icon}
+                        alt='category icon'
+                        height='24px'
+                        width='24px'
+                      />
+                    </Col>
+                    <Col
+                      xs={10}
+                      style={{
+                        borderBottom: '1px solid rgba(112, 112, 112, 0.2)',
+                        padding: '0.5rem',
+                      }}
+                    >
+                      <span className='StudyBin__categoryText'>
+                        {elem.category} ({elem.no_of_files})
+                      </span>
+                    </Col>
+                  </Row>
+                );
+              })}
+            </div>
+          )}
           <h6 className='StudyBin__heading'>
             Folders <span>({folderArray.length})</span>
           </h6>
-          <Row>
-            {folderArray.map((elem) => {
-              return (
-                <Col
-                  xs={5}
-                  md={4}
-                  lg={3}
-                  key={elem.folder_id}
-                  className='p-2 StudyBin__box my-2 mx-2'
-                >
-                  <span className='Dashboard__verticalDots'>
-                    <MoreVertIcon />
-                  </span>
-                  <div
-                    className='m-2 text-center'
-                    onKeyDown={() => openFolder(elem)}
-                    onClick={() => openFolder(elem)}
-                    role='button'
-                    tabIndex='-1'
+          <Row className='justify-content-between'>
+            {folderArray
+              .filter((elem) => {
+                return elem.folder_name.includes(searchString);
+              })
+              .map((elem) => {
+                return (
+                  <Col
+                    xs={5}
+                    md={4}
+                    lg={3}
+                    key={elem.folder_id}
+                    className='p-2 StudyBin__box my-2 mx-2'
+                    style={elem.status === 'active' ? {} : { opacity: '0.4' }}
                   >
-                    <img src={folder} alt='folder' height='67' width='86' />
-                    <h6 className='text-center mt-3 StudyBin__folderName'>{elem.folder_name}</h6>
-                  </div>
-                </Col>
-              );
-            })}
+                    <span
+                      className='StudyBin__verticalDots'
+                      onClick={() => openContextMenu(elem, 'folder')}
+                      onKeyDown={() => openContextMenu(elem, 'folder')}
+                      tabIndex='-1'
+                      role='button'
+                    >
+                      <MoreVertIcon />
+                    </span>
+                    <div
+                      className='m-2 text-center'
+                      onKeyDown={() => openFolder(elem)}
+                      onClick={() => openFolder(elem)}
+                      role='button'
+                      tabIndex='-1'
+                    >
+                      <img src={folder} alt='folder' height='67' width='86' />
+                      <h6 className='text-center mt-3 StudyBin__folderName'>{elem.folder_name}</h6>
+                    </div>
+                  </Col>
+                );
+              })}
           </Row>
         </div>
 
@@ -250,71 +392,151 @@ const StudyBin = (props) => {
           <h6 className='StudyBin__heading'>
             Files <span>({fileArray.length})</span>
           </h6>
-          <Row>
-            {fileArray.map((elem) => {
-              return (
-                <Col
-                  xs={5}
-                  md={4}
-                  lg={3}
-                  key={elem.file_id}
-                  className='p-2 StudyBin__box my-2 mx-2'
-                >
-                  {elem.file_type === 'youtube' ? (
-                    <>
-                      <span className='Dashboard__verticalDots'>
-                        <MoreVertIcon />
-                      </span>
-                      <div
-                        className='m-2 text-center'
-                        onClick={() => goToVideoPlayer(elem)}
-                        onKeyDown={() => goToVideoPlayer(elem)}
-                        role='button'
-                        tabIndex='-1'
-                      >
-                        <img src={youtube} alt='youtube' height='67' width='67' />
-                        <h6 className='text-center mt-3 StudyBin__folderName'>{elem.file_name}</h6>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <span className='Dashboard__verticalDots'>
-                        <MoreVertIcon />
-                      </span>
-                      <div
-                        className='m-2 text-center'
-                        onClick={() => openFileView(elem)}
-                        role='button'
-                        tabIndex='-1'
-                        onKeyDown={() => openFileView(elem)}
-                      >
-                        <img
-                          src={
-                            elem.file_type === '.doc'
-                              ? doc
-                              : elem.file_type === '.docx'
-                              ? docx
-                              : elem.file_type === '.pdf'
-                              ? pdf
-                              : elem.file_type === '.ppt' || elem.file_type === '.pptx'
-                              ? ppt
-                              : elem.file_type === '.csv' ||
-                                elem.file_type === '.xls' ||
-                                elem.file_type === '.xlsx'
-                              ? xls
-                              : txt
-                          }
-                          alt='folder'
-                          height='67'
-                          width='86'
-                        />
-                        <h6 className='text-center mt-3 StudyBin__folderName'>{elem.file_name}</h6>
-                      </div>
-                    </>
-                  )}
-                </Col>
-              );
-            })}
+          <Row className='justify-content-between'>
+            {fileArray
+              .filter((elem) => {
+                return elem.file_name.includes(searchString);
+              })
+              .map((elem) => {
+                return (
+                  <Col
+                    xs={5}
+                    md={4}
+                    lg={3}
+                    key={elem.file_id}
+                    className='p-2 StudyBin__box my-2 mx-2'
+                  >
+                    {elem.file_type === 'youtube' ? (
+                      <>
+                        <span
+                          className='StudyBin__verticalDots'
+                          onClick={() => openContextMenu(elem, 'file')}
+                          onKeyDown={() => openContextMenu(elem, 'file')}
+                          tabIndex='-1'
+                          role='button'
+                        >
+                          <MoreVertIcon />
+                        </span>
+                        <div
+                          className='m-2 text-center'
+                          onClick={() => goToVideoPlayer(elem, 'youtube')}
+                          onKeyDown={() => goToVideoPlayer(elem, 'youtube')}
+                          role='button'
+                          tabIndex='-1'
+                        >
+                          <img src={youtube} alt='youtube' height='67' width='67' />
+                          <h6 className='text-center mt-3 StudyBin__folderName'>
+                            {elem.file_name}
+                          </h6>
+                        </div>
+                      </>
+                    ) : elem.file_type === 'video' || elem.file_type === '.mp4' ? (
+                      <>
+                        <span
+                          className='StudyBin__verticalDots'
+                          onClick={() => openContextMenu(elem, 'file')}
+                          onKeyDown={() => openContextMenu(elem, 'file')}
+                          tabIndex='-1'
+                          role='button'
+                        >
+                          <MoreVertIcon />
+                        </span>
+                        <div
+                          className='m-2 text-center'
+                          onClick={() => goToVideoPlayer(elem, 'video')}
+                          onKeyDown={() => goToVideoPlayer(elem, 'video')}
+                          role='button'
+                          tabIndex='-1'
+                        >
+                          <img src={videocam} alt='video' height='60' width='60' />
+                          <h6
+                            className='text-center mt-3 StudyBin__folderName'
+                            style={{ wordBreak: 'break-all' }}
+                          >
+                            {elem.file_name}
+                          </h6>
+                        </div>
+                      </>
+                    ) : elem.file_type === '.jpg' ||
+                      elem.file_type === '.png' ||
+                      elem.file_type === 'gallery' ? (
+                      // eslint-disable-next-line
+                      <>
+                        <span
+                          className='StudyBin__verticalDots'
+                          onClick={() => openContextMenu(elem, 'file')}
+                          onKeyDown={() => openContextMenu(elem, 'file')}
+                          tabIndex='-1'
+                          role='button'
+                        >
+                          <MoreVertIcon />
+                        </span>
+                        <div
+                          className='m-2 text-center'
+                          onClick={() => openImage(elem)}
+                          onKeyDown={() => openImage(elem)}
+                          role='button'
+                          tabIndex='-1'
+                        >
+                          <img src={images} alt='video' height='60' width='60' />
+                          <h6
+                            className='text-center mt-3 StudyBin__folderName'
+                            style={{ wordBreak: 'break-all' }}
+                          >
+                            {elem.file_name}
+                          </h6>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <span
+                          className='StudyBin__verticalDots'
+                          onClick={() => openContextMenu(elem, 'file')}
+                          onKeyDown={() => openContextMenu(elem, 'file')}
+                          tabIndex='-1'
+                          role='button'
+                        >
+                          <MoreVertIcon />
+                        </span>
+                        <div
+                          className='m-2 text-center'
+                          onClick={() => openFileView(elem)}
+                          role='button'
+                          tabIndex='-1'
+                          onKeyDown={() => openFileView(elem)}
+                        >
+                          <img
+                            src={
+                              elem.file_type === '.doc'
+                                ? doc
+                                : elem.file_type === '.docx'
+                                ? docx
+                                : elem.file_type === '.pdf'
+                                ? pdf
+                                : elem.file_type === '.ppt' || elem.file_type === '.pptx'
+                                ? ppt
+                                : elem.file_type === '.csv' ||
+                                  elem.file_type === '.xls' ||
+                                  elem.file_type === '.xlsx'
+                                ? xls
+                                : txt
+                            }
+                            alt='file'
+                            height='67'
+                            width='86'
+                          />
+                          <h6
+                            className='text-center mt-3 StudyBin__folderName'
+                            style={{ wordBreak: 'break-all' }}
+                          >
+                            {elem.file_name}
+                          </h6>
+                        </div>
+                      </>
+                    )}
+                  </Col>
+                );
+              })}
           </Row>
         </div>
       </div>
@@ -346,6 +568,15 @@ const StudyBin = (props) => {
           </Modal.Footer>
         )}
       </Modal>
+
+      <Modal show={showImageModal} onHide={handleImageClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Uploaded Image</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <img src={imgLink} alt='img' className='img-fluid' />
+        </Modal.Body>
+      </Modal>
     </>
   );
 };
@@ -354,9 +585,24 @@ const mapStateToProps = (state) => ({
   clientId: getClientId(state),
   clientUserId: getClientUserId(state),
   roleArray: getRoleArray(state),
+  studyBinFolderIdArray: getStudyBinFolderIDArray(state),
 });
 
-export default connect(mapStateToProps)(StudyBin);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setFolderIdArrayToStore: (payload) => {
+      dispatch(studyBinActions.setFolderIdArrayToStore(payload));
+    },
+    popFolderIDFromFolderIDArrayInStore: () => {
+      dispatch(studyBinActions.popFolderIDFromFolderIDArrayInStore());
+    },
+    pushFolderIDToFolderIDArrayInStore: (payload) => {
+      dispatch(studyBinActions.pushFolderIDToFolderIDArrayInStore(payload));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(StudyBin);
 
 StudyBin.propTypes = {
   clientId: PropTypes.number.isRequired,
@@ -366,4 +612,8 @@ StudyBin.propTypes = {
   }).isRequired,
   roleArray: PropTypes.instanceOf(Array).isRequired,
   location: PropTypes.instanceOf(Object).isRequired,
+  studyBinFolderIdArray: PropTypes.instanceOf(Array).isRequired,
+  pushFolderIDToFolderIDArrayInStore: PropTypes.func.isRequired,
+  popFolderIDFromFolderIDArrayInStore: PropTypes.func.isRequired,
+  setFolderIdArrayToStore: PropTypes.func.isRequired,
 };

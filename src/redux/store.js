@@ -29,5 +29,6 @@ store.subscribe(() => {
     testsUpdate: store.getState().testsUpdate,
     homework: store.getState().homework,
     course: store.getState().course,
+    studyBin: store.getState().studyBin,
   });
 });

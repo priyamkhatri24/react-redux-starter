@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import { PageHeader } from '../PageHeader/PageHeader';
-import { get, apiValidation } from '../../../Utilities';
+import { get, apiValidation, post } from '../../../Utilities';
 import './AddYoutube.scss';
+import { getStudyBinFolderIDArray } from '../../../redux/reducers/studybin.reducer';
+import { getClientUserId } from '../../../redux/reducers/clientUserId.reducer';
 
 const AddYoutube = (props) => {
+  const { studyBinFolderIdArray, clientUserId } = props;
   const [videoId, setVideoId] = useState('');
   const [key, setKey] = useState('');
   const [youtubeVideo, setYoutubeVideo] = useState({});
@@ -40,9 +44,27 @@ const AddYoutube = (props) => {
       });
   };
 
+  const addYoutubeLinkToStudyBin = () => {
+    const payload = {
+      client_user_id: clientUserId,
+      folder_id: studyBinFolderIdArray[studyBinFolderIdArray.length - 1],
+      file_name: youtubeVideo.snippet.title,
+      file_link: videoId,
+      file_type: 'youtube',
+    };
+    post(payload, '/addFile')
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((e) => console.log(e));
+  };
+
   const sendYoutubeData = () => {
+    if (!props.history.location.state) {
+      addYoutubeLinkToStudyBin();
+    }
     const route =
-      props.history.location.state.goTo === 'addContent'
+      props.history.location.state && props.history.location.state.goTo === 'addContent'
         ? '/courses/createcourse/addcontent'
         : '/studybin';
 
@@ -124,7 +146,12 @@ const AddYoutube = (props) => {
   );
 };
 
-export default AddYoutube;
+const mapStateToProps = (state) => ({
+  clientUserId: getClientUserId(state),
+  studyBinFolderIdArray: getStudyBinFolderIDArray(state),
+});
+
+export default connect(mapStateToProps)(AddYoutube);
 
 AddYoutube.propTypes = {
   history: PropTypes.shape({
@@ -135,4 +162,6 @@ AddYoutube.propTypes = {
       }),
     }),
   }).isRequired,
+  clientUserId: PropTypes.number.isRequired,
+  studyBinFolderIdArray: PropTypes.instanceOf(Array).isRequired,
 };

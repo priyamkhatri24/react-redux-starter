@@ -2,7 +2,6 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Loadable from 'react-loadable';
 import Skeleton from 'react-loading-skeleton';
-import { Beforeunload } from 'react-beforeunload';
 import { AuthenticatedRoute } from './AuthenticatedRoute';
 import TeacherCourses from '../Components/Courses/TeacherCourses';
 
@@ -77,6 +76,12 @@ const StudyBin = Loadable({
   loading: Loading,
 });
 // import StudyBin from '../Components/Study Bin/StudyBin';
+
+const Categories = Loadable({
+  loader: () => import(/* webpackChunkName: 'Categories' */ '../Components/Study Bin/Categories'),
+  loading: Loading,
+});
+// import Categories from '../Components/Study Bin/Categories';
 
 const AddYoutube = Loadable({
   loader: () =>
@@ -282,13 +287,12 @@ export function Routes() {
 
       <AuthenticatedRoute exact path='/liveclasses' component={LiveClasses} />
       <AuthenticatedRoute exact path='/studybin' component={StudyBin} />
+      <AuthenticatedRoute exact path='/studybin/categories/:id' component={Categories} />
       <AuthenticatedRoute exact path='/addyoutubevideo' component={AddYoutube} />
       <AuthenticatedRoute exact path='/noticeboard' component={NoticeBoard} />
       <AuthenticatedRoute exact path='/profile' component={Profile} />
       <AuthenticatedRoute exact path='/editprofile' component={EditProfile} />
-      <Beforeunload onBeforeunload={() => "You'll lose your data!"}>
-        <AuthenticatedRoute exact path='/questiontaker' component={QuestionTaker} />
-      </Beforeunload>
+      <AuthenticatedRoute exact path='/questiontaker' component={QuestionTaker} />
       <AuthenticatedRoute exact path='/fees' component={Fees} />
       <AuthenticatedRoute exact path='/order' component={FeesOrder} />
       <AuthenticatedRoute exact path='/homework' component={HomeWorkCreator} />
