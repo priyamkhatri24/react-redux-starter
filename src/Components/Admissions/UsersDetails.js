@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -19,6 +21,7 @@ import { getClientId, getClientUserId, getUserId } from '../../redux/reducers/cl
 import { apiValidation, get, post } from '../../Utilities';
 import userImage from '../../assets/images/user.svg';
 import { getAdmissionUserProfile } from '../../redux/reducers/admissions.reducer';
+import AdmissionStyle from './Admissions.style';
 
 const UserDetails = (props) => {
   const { history, clientId, userId, user, clientUserId } = props;
@@ -36,8 +39,15 @@ const UserDetails = (props) => {
     const payload = {
       client_user_id: clientUserId,
       batch_add: JSON.stringify(batches),
-      batch_remove: JSON.stringify(allBatches.filter((e) => e.user_id !== null)),
+      batch_remove: JSON.stringify(
+        allBatches.filter((e) => Object.prototype.hasOwnProperty.call(e, 'user_batch_id')),
+      ),
     };
+
+    console.log(batches);
+
+    console.log(allBatches.filter((e) => Object.prototype.hasOwnProperty.call(e, 'user_batch_id')));
+
     post(payload, '/changeBatchOfUser').then((resp) => {
       if (resp) {
         setShowBatchModal(false);
@@ -104,7 +114,11 @@ const UserDetails = (props) => {
         </Col>
         <Tabs defaultActiveKey='Details' className='Profile__Tabs' justify>
           <Tab eventKey='Details' title='Details'>
-            <div className='LiveClasses__adminCard p-2 m-3' style={{ position: 'relative' }}>
+            <div
+              css={AdmissionStyle.adminCard}
+              className='p-2 m-3'
+              style={{ position: 'relative' }}
+            >
               <div
                 className='Courses__edit text-center py-1'
                 onClick={() => history.push('/admissions/editprofile')}
@@ -191,17 +205,22 @@ const UserDetails = (props) => {
                 Change Batch <SwapHorizIcon />
               </Button>
             </Row>
-            <Row className='justify-content-center'>
+            <Row className='justify-content-between mx-2'>
               {batches.map((elem) => {
                 return (
-                  <Col xs={5} key={elem.client_batch_id} className='p-2 StudyBin__box my-2 mx-2'>
+                  <Col
+                    xs={5}
+                    key={elem.client_batch_id}
+                    css={AdmissionStyle.box}
+                    className='p-2 my-2 mx-2'
+                  >
                     <>
-                      <span className='Dashboard__verticalDots'>
+                      <span css={AdmissionStyle.verticalDots}>
                         <MoreVertIcon />
                       </span>
                       <div className='m-2 text-center'>
                         <img src={userImage} alt='batchpic' height='40' width='40' />
-                        <h6 className='text-center mt-3 Profile__batchName'>{elem.batch_name}</h6>
+                        <h6 className=' Profile__batchName text-center mt-3'>{elem.batch_name}</h6>
                         <p className='Profile__batchStudents mb-0'>{elem.number_of_students}</p>
                         <p className='Profile__students'>students</p>
                       </div>

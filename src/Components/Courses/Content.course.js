@@ -24,7 +24,6 @@ const Content = (props) => {
   const [isSectionUpdateValid, setIsSectionUpdateValid] = useState(false);
   const [createNewSection, setCreateNewSection] = useState(false);
   const [nayaSection, setNayaSection] = useState('');
-  const [tempInputValue, setTempInputValue] = useState('');
 
   useEffect(() => {
     const newSectionArray = sectionArray.map((e) => {
@@ -126,7 +125,11 @@ const Content = (props) => {
           return (
             <div className='LiveClasses__adminCard p-2 m-3' style={{ position: 'relative' }}>
               <div
-                className='Courses__edit text-center py-1'
+                className={
+                  section.length > 1
+                    ? 'Courses__edit text-center py-1'
+                    : 'Profile__edit text-center py-1'
+                }
                 onClick={() => updateSection(elem.section_id)}
                 role='button'
                 onKeyDown={() => {

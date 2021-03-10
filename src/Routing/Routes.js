@@ -264,6 +264,11 @@ const Fees = Loadable({
   loading: Loading,
 });
 
+const TeacherFees = Loadable({
+  loader: () => import(/* webpackChunkName: 'Fees' */ '../Components/Fees/TeacherFees'),
+  loading: Loading,
+});
+
 // eslint-disable-next-line
 function Loading({ error }) {
   if (error) {
@@ -294,6 +299,7 @@ export function Routes() {
       <AuthenticatedRoute exact path='/editprofile' component={EditProfile} />
       <AuthenticatedRoute exact path='/questiontaker' component={QuestionTaker} />
       <AuthenticatedRoute exact path='/fees' component={Fees} />
+      <AuthenticatedRoute exact path='/teacherfees' component={TeacherFees} />
       <AuthenticatedRoute exact path='/order' component={FeesOrder} />
       <AuthenticatedRoute exact path='/homework' component={HomeWorkCreator} />
       <AuthenticatedRoute exact path='/homework/savedtests' component={SavedSentTests} />

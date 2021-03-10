@@ -146,6 +146,11 @@ const Dashboard = (props) => {
     push('fees');
   };
 
+  const goToTeacherFees = () => {
+    const { push } = history;
+    push('teacherfees');
+  };
+
   const goToHomeWorkCreator = () => {
     const { push } = history;
     push({ pathname: '/homework', state: { letsGo: true } });
@@ -337,6 +342,23 @@ const Dashboard = (props) => {
             backGround='rgb(236,255,252)'
             buttonClick={goToCoursesForTeacher}
           />
+
+          <div
+            onClick={() => goToTeacherFees()}
+            role='button'
+            tabIndex='-1'
+            onKeyDown={() => goToFees()}
+          >
+            <DashboardCards
+              image={analysis}
+              heading='Fees'
+              subHeading='See fees history and amount to be paid for coming months.'
+              boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+              backGround='rgb(238,232,241)'
+              backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
+            />
+          </div>
+
           <DashboardCards
             image={student}
             coloredHeading='Study Bin'
@@ -458,16 +480,7 @@ const Dashboard = (props) => {
             backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
           />
 
-          <div onClick={() => goToFees()} role='button' tabIndex='-1' onKeyDown={() => goToFees()}>
-            <DashboardCards
-              image={analysis}
-              heading='Fees'
-              subHeading='See fees history and amount to be paid for coming months.'
-              boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-              backGround='rgb(238,232,241)'
-              backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
-            />
-          </div>
+
           <DashboardCards
             image={analysis}
             heading='Analysis'
@@ -563,7 +576,7 @@ const Dashboard = (props) => {
                 <Row>
                   <Col xs={2} className='p-4'>
                     <img
-                      src={elem.profile_image}
+                      src={elem.profile_image || userAvatar}
                       alt='profile'
                       className='Dashboard__noticeImage d-block mx-auto'
                     />

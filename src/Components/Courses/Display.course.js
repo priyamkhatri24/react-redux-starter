@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Swal from 'sweetalert2';
 import Card from 'react-bootstrap/Card';
 import CreateIcon from '@material-ui/icons/Create';
 import Row from 'react-bootstrap/Row';
@@ -8,8 +9,9 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import AddIcon from '@material-ui/icons/Add';
 import { courseActions } from '../../redux/actions/course.action';
-import { uploadImage } from '../../Utilities';
+import { uploadImage, verifyIsFile, verifyIsImage, verifyIsVideo } from '../../Utilities';
 import YCIcon from '../../assets/images/ycIcon.png';
+import { loadingActions } from '../../redux/actions/loading.action';
 
 const Display = (props) => {
   const {
@@ -18,6 +20,8 @@ const Display = (props) => {
     courseDesc,
     updateDisplayDetails,
     courseDisplayImage,
+    setLoadingPendingToStore,
+    setLoadingSuccessToStore,
   } = props;
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -33,18 +37,46 @@ const Display = (props) => {
   }, [courseTitle, courseDesc]);
 
   useEffect(() => {
-    if (courseDisplayImage) setImageTitle(courseDisplayImage);
+    if (courseDisplayImage) {
+      setImageTitle(courseDisplayImage);
+      courseImage.current = courseDisplayImage;
+    }
   }, [courseDisplayImage]);
 
   const getImageInput = (e, type) => {
     const reader = new FileReader();
     const file = e.target.files[0];
-    if (file) {
+
+    let isFileAllowed = false;
+    console.log(file);
+    if (type === 'image' && verifyIsImage.test(file.name.split('.')[1])) {
+      isFileAllowed = true;
+    } else if (type === 'video' && verifyIsVideo.test(file.name.split('.')[1])) {
+      isFileAllowed = true;
+    } else if (type === 'file' && verifyIsFile.test(file.name.split('.')[1])) {
+      isFileAllowed = true;
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid File Type!',
+        text: `The supported file types are ${
+          type === 'image'
+            ? 'gif, jpeg, jpg, tiff, png, webp, bmp'
+            : type === 'video'
+            ? 'mov,mp3, mp4 , mpg, avi, wmv, flv, 3gp'
+            : 'doc, docx, xls, xlsx, ppt, pptx, txt, pdf'
+        }`,
+      });
+    }
+    if (file && isFileAllowed) {
       reader.readAsDataURL(e.target.files[0]);
+      setLoadingPendingToStore();
+
       uploadImage(file).then((res) => {
         type === 'image'
           ? (courseImage.current = res.filename)
           : (courseVideo.current = res.filename);
+        setLoadingSuccessToStore();
       });
       if (type === 'image') {
         reader.onloadend = function getImage() {
@@ -122,7 +154,6 @@ const Display = (props) => {
               id='file-input'
               type='file'
               onChange={(e) => getImageInput(e, 'image')}
-              accept='image/*'
               style={{ display: 'none' }}
               ref={courseImageRef}
             />
@@ -181,12 +212,16 @@ const Display = (props) => {
               id='file-input'
               type='file'
               onChange={(e) => getImageInput(e, 'video')}
-              accept='image/*'
               style={{ display: 'none' }}
               ref={courseVideoRef}
             />
             {courseVideo.current && (
-              <img src={YCIcon} alt='upload your profile pic' className='img-fluid' />
+              <img
+                src={YCIcon}
+                alt='upload your profile pic'
+                className='img-fluid'
+                style={{ height: '60px', width: '95px' }}
+              />
             )}
             {!courseVideo.current && (
               <div
@@ -253,6 +288,14 @@ const mapDispatchToProps = (dispatch) => {
     setCourseCurrentSlideToStore: (payload) => {
       dispatch(courseActions.setCourseCurrentSlideToStore(payload));
     },
+
+    setLoadingPendingToStore: (payload) => {
+      dispatch(loadingActions.pending());
+    },
+
+    setLoadingSuccessToStore: (payload) => {
+      dispatch(loadingActions.success());
+    },
   };
 };
 
@@ -264,6 +307,9 @@ Display.propTypes = {
   courseDesc: PropTypes.string,
   updateDisplayDetails: PropTypes.func.isRequired,
   courseDisplayImage: PropTypes.string,
+
+  setLoadingPendingToStore: PropTypes.func.isRequired,
+  setLoadingSuccessToStore: PropTypes.func.isRequired,
 };
 
 Display.defaultProps = {

@@ -12,6 +12,7 @@ import Form from 'react-bootstrap/Form';
 import { courseActions } from '../../redux/actions/course.action';
 import { BatchesSelector } from '../Common';
 import { apiValidation, get, post } from '../../Utilities';
+import { getCourseObject } from '../../redux/reducers/course.reducer';
 
 const Privacy = (props) => {
   const {
@@ -20,11 +21,14 @@ const Privacy = (props) => {
     courseId,
     clientUserId,
     history: { push },
+    courseObject,
   } = props;
   const [batches, setBatches] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [courseStatus, setCourseStatus] = useState(courseObject.course_status);
+
   const handleClose = () => setShowModal(false);
 
   const getSelectedBatches = (selectBatches) => {
@@ -107,6 +111,7 @@ const Privacy = (props) => {
 
     post(payload, '/assignCourse').then((res) => {
       if (res.success) {
+        setCourseStatus('published');
         Swal.fire({
           icon: 'success',
           title: 'Published!',
@@ -120,6 +125,33 @@ const Privacy = (props) => {
         });
       }
     });
+  };
+
+  const unPublishCourse = () => {
+    post({ course_id: courseId }, '/unpublishCourse')
+      .then((res) => {
+        if (res.success) {
+          setCourseStatus('completed');
+          Swal.fire({
+            icon: 'info',
+            title: 'Unpublished!',
+            text: `Your course has been successfully unpublished.`,
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops!',
+            text: `Unable to finish. There seems to be a problem in our servers`,
+          });
+        }
+      })
+      .catch((e) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops!',
+          text: `Unable to finish. Please check your internet connection`,
+        });
+      });
   };
 
   return (
@@ -178,7 +210,7 @@ const Privacy = (props) => {
                 position: 'absolute',
                 top: '10%',
                 right: '3%',
-                color: 'rgba(0, 0, 0, 0.38);',
+                color: 'rgba(0, 0, 0, 0.38)',
               }}
             >
               <ExpandMoreIcon />
@@ -195,10 +227,41 @@ const Privacy = (props) => {
             onClick={() => setShowWelcome(!showWelcome)}
           />
         </Row>
-        <p className='mx-2 Courses__motiDetail mb-0'>Course Status </p>
+        <Row className='mb-3 Courses__createCourse mx-2'>
+          Course Status
+          <div
+            className='ml-auto rounded Courses__slimButton'
+            style={
+              courseStatus === 'published'
+                ? { background: '#00ff00' }
+                : courseStatus === 'completed'
+                ? { background: 'rgba(255, 0, 0, 0.87)' }
+                : { background: ' rgba(0, 0, 0, 0.54)' }
+            }
+          >
+            <span
+              style={{
+                fontFamily: 'Montserrat-SemiBold',
+                color: 'rgba(0, 0, 0, 0.87)',
+                fontSize: '10px',
+              }}
+              className='d-block text-center'
+            >
+              {courseStatus === 'published'
+                ? 'Published'
+                : courseStatus === 'completed'
+                ? 'Unpublished'
+                : 'Incomplete'}
+            </span>
+          </div>
+        </Row>
+
         <Row className='m-2 w-25'>
-          <Button variant='primaryOutline' onClick={() => publishCourse()}>
-            Publish
+          <Button
+            variant='primaryOutline'
+            onClick={courseStatus === 'published' ? () => unPublishCourse() : () => publishCourse()}
+          >
+            {courseStatus === 'published' ? 'Unpublish' : 'Publish'}
           </Button>
         </Row>
         <p className='mt-2 mx-2 Courses__chotiDetail'>
@@ -238,6 +301,10 @@ const Privacy = (props) => {
   );
 };
 
+const mapStateToProps = (state) => ({
+  courseObject: getCourseObject(state),
+});
+
 const mapDispatchToProps = (dispatch) => {
   return {
     setCourseCurrentSlideToStore: (payload) => {
@@ -246,7 +313,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(Privacy);
+export default connect(mapStateToProps, mapDispatchToProps)(Privacy);
 
 Privacy.propTypes = {
   setCourseCurrentSlideToStore: PropTypes.func.isRequired,
@@ -256,4 +323,5 @@ Privacy.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  courseObject: PropTypes.instanceOf(Object).isRequired,
 };

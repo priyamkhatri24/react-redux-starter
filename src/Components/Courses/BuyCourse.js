@@ -11,6 +11,8 @@ import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Swal from 'sweetalert2';
+import PlyrComponent from 'plyr-react';
+import 'plyr-react/dist/plyr.css';
 import StarIcon from '@material-ui/icons/Star';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
@@ -39,6 +41,7 @@ const BuyCourse = (props) => {
     },
   } = props;
   const [course, setCourse] = useState({});
+  const [courseVideo, setCourseVideo] = useState({});
   const [coursePrice, setCoursePrice] = useState(0);
   const [whiteStarArray, setWhiteStarArray] = useState([]);
   const [starArray, setStarArray] = useState([]);
@@ -56,6 +59,10 @@ const BuyCourse = (props) => {
     Fees__orderRed: order.status === 'pending' || order.status === 'due',
   });
 
+  const options = {
+    autoplay: true,
+  };
+
   useEffect(() => {
     const payload = {
       client_user_id: history.location.state.clientUserId,
@@ -66,6 +73,18 @@ const BuyCourse = (props) => {
       console.log(res);
       const result = apiValidation(res);
       setCourse(result);
+      if (result.course_preview_vedio) {
+        const source = {
+          type: 'video',
+          sources: [
+            {
+              src: result.course_preview_vedio,
+            },
+          ],
+        };
+
+        setCourseVideo(source);
+      }
       setCoursePrice(result.discount_price);
       const numberOfStars = Math.round(parseInt(result.course_rating, 10));
       setStarArray(
@@ -265,6 +284,12 @@ const BuyCourse = (props) => {
               {course.course_type === 'free' ? 'Subscribe' : 'Buy Now'}
             </Button>
           </Row>
+          <div
+            className='mx-auto my-4'
+            style={{ height: '180px', width: '273px', borderRadius: '5px' }}
+          >
+            {courseVideo && <PlyrComponent source={courseVideo} options={options} />}
+          </div>
           <p className='Courses__heading m-3'>What will I learn?</p>
           {course.tag_array
             .filter((e) => e.tag_type === 'learning')

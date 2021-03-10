@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import './AddButton.scss';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
@@ -8,9 +9,16 @@ import PersonAddRoundedIcon from '@material-ui/icons/PersonAddRounded';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { uploadImage } from '../../../Utilities';
+import { loadingActions } from '../../../redux/actions/loading.action';
 
-export const AddButton = (props) => {
-  const { addButtonArray, onlyUseButton, triggerButton } = props;
+const AddButton = (props) => {
+  const {
+    addButtonArray,
+    onlyUseButton,
+    triggerButton,
+    setLoadingPendingToStore,
+    setLoadingSuccessToStore,
+  } = props;
   const courseFileRef = useRef(null);
 
   const [openMenu, setOpenMenu] = useState(false);
@@ -24,6 +32,7 @@ export const AddButton = (props) => {
   // };
 
   const upload = (elem, e) => {
+    setLoadingPendingToStore();
     const reader = new FileReader();
     const file = e.target.files[0];
     if (file) {
@@ -31,6 +40,7 @@ export const AddButton = (props) => {
       uploadImage(file).then((res) => {
         console.log('fileu;lod ', res);
         elem.func(file.name, res.filename);
+        setLoadingSuccessToStore();
       });
     }
   };
@@ -140,10 +150,26 @@ export const AddButton = (props) => {
   );
 };
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setLoadingPendingToStore: (payload) => {
+      dispatch(loadingActions.pending());
+    },
+
+    setLoadingSuccessToStore: (payload) => {
+      dispatch(loadingActions.success());
+    },
+  };
+};
+
+export default connect(null, mapDispatchToProps)(AddButton);
+
 AddButton.propTypes = {
   addButtonArray: PropTypes.instanceOf(Array),
   onlyUseButton: PropTypes.bool,
   triggerButton: PropTypes.func,
+  setLoadingPendingToStore: PropTypes.func.isRequired,
+  setLoadingSuccessToStore: PropTypes.func.isRequired,
 };
 
 AddButton.defaultProps = {

@@ -10,6 +10,7 @@ import { course } from './course.reducer';
 import { firstTimeLogin } from './firstTimeLogin.reducer';
 import { admission } from './admissions.reducer';
 import { studyBin } from './studybin.reducer';
+import { loading } from './loading.reducer';
 
 const rootReducer = (history) =>
   combineReducers({
@@ -24,6 +25,7 @@ const rootReducer = (history) =>
     firstTimeLogin,
     admission,
     studyBin,
+    loading,
   });
 
 export default rootReducer;

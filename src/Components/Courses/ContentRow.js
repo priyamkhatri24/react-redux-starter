@@ -96,8 +96,8 @@ const ContentRow = (props) => {
               {content.length > 0 &&
                 content.map((elem, i) => {
                   return (
-                    <div key={elem.file_link}>
-                      <Draggable draggableId={elem.file_link} index={i}>
+                    <div key={elem.id}>
+                      <Draggable draggableId={elem.id.toString()} index={i}>
                         {(provided, snapshot) => (
                           <div
                             className=''

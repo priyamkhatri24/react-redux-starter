@@ -10,7 +10,8 @@ import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import VideocamIcon from '@material-ui/icons/Videocam';
-import { AddButton, PageHeader } from '../Common';
+import { PageHeader } from '../Common';
+import AddButton from '../Common/AddButton/AddButton';
 import {
   apiValidation,
   get,
@@ -196,7 +197,9 @@ const AddContent = (props) => {
         text: `The supported file types are ${
           type === 'image'
             ? 'gif, jpeg, jpg, tiff, png, webp, bmp'
-            : 'mov,mp3, mp4 , mpg, avi, wmv, flv, 3gp'
+            : type === 'video'
+            ? 'mov,mp3, mp4 , mpg, avi, wmv, flv, 3gp'
+            : 'doc, docx, xls, xlsx, ppt, pptx, txt, pdf'
         }`,
       });
     }
@@ -287,7 +290,24 @@ const AddContent = (props) => {
     }
 
     const items = reorder(content, result.source.index, result.destination.index);
-    setContent(items);
+    const newItems = items.map((e, i) => {
+      const elem = {
+        priority_order: i + 1,
+        id: e.id,
+        content_type: e.content_type,
+      };
+      return elem;
+    });
+
+    const payload = {
+      section_id: sectionId,
+      content_array: JSON.stringify(newItems),
+    };
+    post(payload, '/rearrangeSectionContent').then((res) => {
+      if (res.success) {
+        setContent(items);
+      }
+    });
   };
 
   return (

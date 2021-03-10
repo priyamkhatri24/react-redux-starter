@@ -21,17 +21,23 @@ const StudyBinMenu = (props) => {
     id,
     currentBatches,
     finalBatches,
+    currentFolderName,
   } = props;
   const [showRenameModal, setShowRenameModal] = useState(false);
   const handleRenameClose = () => setShowRenameModal(false);
   const handleRenameOpen = () => setShowRenameModal(true);
-  const [newName, setNewName] = useState('');
+  const [newName, setNewName] = useState(currentFolderName);
   const [batches, setBatches] = useState([]);
   const [allBatches, setAllBatches] = useState([]);
   const [showBatchModal, setShowBatchModal] = useState(false);
 
   const openBatchModal = () => setShowBatchModal(true);
   const closeBatchModal = () => setShowBatchModal(false);
+
+  useEffect(() => {
+    console.log(currentFolderName);
+    setNewName(currentFolderName);
+  }, [currentFolderName]);
 
   useEffect(() => {
     setBatches(currentBatches);
@@ -77,7 +83,7 @@ const StudyBinMenu = (props) => {
       payload = {
         folder_id: id,
         status: `${
-          elem === 'deleted' ? 'deleted' : currentStatus === 'active' ? 'inactive' : 'active'
+          elem === 'Delete' ? 'deleted' : currentStatus === 'active' ? 'inactive' : 'active'
         }`,
       };
 
@@ -185,18 +191,18 @@ const StudyBinMenu = (props) => {
           <label className='has-float-label my-auto'>
             <input
               className='form-control'
-              name='Change Name'
+              name='Name'
               type='text'
-              placeholder='Change Name'
+              placeholder='Name'
               onChange={(e) => setNewName(e.target.value)}
               value={newName}
             />
-            <span>Change Name</span>
+            <span>Name</span>
           </label>
         </Modal.Body>
         <Modal.Footer>
           <Button variant='dashboardBlueOnWhite' onClick={() => renameElement()}>
-            Change
+            OK
           </Button>
         </Modal.Footer>
       </Modal>
@@ -233,4 +239,5 @@ StudyBinMenu.propTypes = {
   id: PropTypes.number.isRequired,
   currentBatches: PropTypes.instanceOf(Array).isRequired,
   finalBatches: PropTypes.instanceOf(Array).isRequired,
+  currentFolderName: PropTypes.string.isRequired,
 };

@@ -10,5 +10,5 @@ export * from './VideoPlayer/VideoPlayer';
 // export * from './FileViewer/PDFFileViewer';
 export * from './ScrollableCards/CoursesCards';
 // export * from './FileViewer/FileViewer';
-export * from './AddButton/AddButton';
+export * from './Loader/Loading';
 // export * from './FilterAccordion/FilterAccordion';
