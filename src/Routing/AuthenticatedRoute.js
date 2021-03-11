@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-curly-newline */
+/*eslint-disable*/
 
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';

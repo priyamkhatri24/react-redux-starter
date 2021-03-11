@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Swal from 'sweetalert2';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Tabs from 'react-bootstrap/Tabs';
@@ -10,6 +12,7 @@ import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import CreateIcon from '@material-ui/icons/Create';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
 import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
+import { firstTimeLoginActions } from '../../redux/actions/firsttimeLogin.action';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { PageHeader } from '../Common';
@@ -25,6 +28,7 @@ const Profile = (props) => {
     clearProfile,
     history,
     clearClientIdDetails,
+    setFirstTimeLoginToStore,
   } = props;
   const [batches, setBatches] = useState([]);
 
@@ -38,10 +42,18 @@ const Profile = (props) => {
         if (result) {
           clearProfile();
           clearClientIdDetails();
+          setFirstTimeLoginToStore(false);
           history.push({ pathname: '/login' });
         }
       })
-      .catch(() => alert('Logout Unsuccessful. Please check your network connection.'));
+      .catch(() => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops!',
+          text: `Unable to logout. I have no idea why tho :(`,
+          timer: 3000,
+        });
+      });
   };
 
   useEffect(() => {
@@ -94,7 +106,7 @@ const Profile = (props) => {
               <p className='LiveClasses__adminDuration '>{userProfile.contact}</p>
 
               <h6 className='LiveClasses__adminHeading mb-0'>Username</h6>
-              <p className='LiveClasses__adminDuration '>userame aega yahan</p>
+              <p className='LiveClasses__adminDuration '>{userProfile.userName}</p>
 
               <Row className='justify-content-end mb-2 mb-lg-4 mr-2'>
                 <Button variant='customPrimary' size='sm' onClick={() => logout()}>
@@ -147,7 +159,35 @@ const mapDispatchToProps = (dispatch) => {
     clearProfile: () => {
       dispatch(userProfileActions.clearUserProfile());
     },
+    setFirstTimeLoginToStore: () => {
+      dispatch(firstTimeLoginActions.setFirstTimeLoginToStore());
+    },
   };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+
+Profile.propTypes = {
+  clientId: PropTypes.number.isRequired,
+  clientUserId: PropTypes.number.isRequired,
+  userProfile: PropTypes.shape({
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string,
+    userName: PropTypes.string.isRequired,
+    contact: PropTypes.string.isRequired,
+    profileImage: PropTypes.string,
+  }),
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+  clearProfile: PropTypes.func.isRequired,
+  clearClientIdDetails: PropTypes.func.isRequired,
+  setFirstTimeLoginToStore: PropTypes.func.isRequired,
+};
+
+Profile.defaultProps = {
+  userProfile: PropTypes.shape({
+    lastName: '',
+    profileImage: '',
+  }),
+};

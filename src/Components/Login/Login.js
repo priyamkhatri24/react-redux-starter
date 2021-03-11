@@ -18,7 +18,7 @@ import {
   getBrandingError,
   getBrandingPending,
 } from '../../redux/reducers/branding.reducer';
-import { getBranding, getColor } from './Login.service';
+import { getBranding, getColor, getContact } from './Login.service';
 import Welcome from './Welcome/Welcome';
 
 class Login extends Component {
@@ -32,7 +32,11 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    const domain = { domain_name: 'ingenium.surge.sh' }; // { domain_name: window.location.hostname };
+    const domain =
+      process.env.NODE_ENV === 'development'
+        ? { domain_name: 'abcd.ingeniumedu.com' }
+        : { domain_name: window.location.hostname };
+
     const { fetchBranding } = this.props;
     fetchBranding(domain);
   }
@@ -67,7 +71,7 @@ class Login extends Component {
           .then((res) => {
             const result = apiValidation(res);
 
-            if (result.is_ad) {
+            if (result.is_ad === 'true') {
               this.setState({ welcomeData: result });
               this.handleComponent('Welcome');
             } else {
@@ -114,11 +118,14 @@ class Login extends Component {
       currentbranding: {
         branding: { client_id: clientId },
       },
+      fetchContact,
     } = this.props;
     const requestBody = {
       contact: param,
       client_id: clientId,
     };
+
+    fetchContact(param);
 
     post(requestBody, '/enterNumberAndLogin')
       .then((res) => {
@@ -191,6 +198,7 @@ const mapDispatchToProps = (dispatch) =>
     {
       fetchBranding: getBranding,
       fetchColors: getColor,
+      fetchContact: getContact,
     },
     dispatch,
   );
@@ -215,4 +223,5 @@ Login.propTypes = {
 
   fetchBranding: PropTypes.func.isRequired,
   fetchColors: PropTypes.func.isRequired,
+  fetchContact: PropTypes.func.isRequired,
 };

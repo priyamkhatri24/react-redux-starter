@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import cx from 'classnames';
 import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
@@ -40,12 +41,17 @@ const FeesCard = (props) => {
     get(payload, '/fetchOrderById').then((res) => {
       const result = apiValidation(res);
       goToOrderDetails(result);
-      console.log(result);
     });
   };
 
   return (
-    <div className={feesClass} onClick={() => getOrderDetails()}>
+    <div
+      className={feesClass}
+      onClick={() => getOrderDetails()}
+      onKeyDown={() => getOrderDetails()}
+      role='button'
+      tabIndex='-1'
+    >
       <h1 className='Fees__status mb-0 px-3'>
         {status === 'marked'
           ? 'Marked As Paid'
@@ -74,3 +80,9 @@ const FeesCard = (props) => {
 };
 
 export default FeesCard;
+
+FeesCard.propTypes = {
+  data: PropTypes.instanceOf(Object).isRequired,
+  clientId: PropTypes.number.isRequired,
+  goToOrderDetails: PropTypes.func.isRequired,
+};

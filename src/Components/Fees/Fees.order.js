@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import cx from 'classnames';
@@ -7,7 +8,11 @@ import checkmark from '../../assets/images/order/icons8-checked.svg';
 import caution from '../../assets/images/order/icons8-medium-risk-50.png';
 
 const FeesOrder = (props) => {
-  const { order } = props.history.location.state;
+  const {
+    history: {
+      location: { state: order },
+    },
+  } = props;
 
   const statusClass = cx({
     Fees__orderStatus: true,
@@ -64,3 +69,13 @@ const FeesOrder = (props) => {
 };
 
 export default FeesOrder;
+
+FeesOrder.propTypes = {
+  history: PropTypes.shape({
+    location: PropTypes.shape({
+      state: PropTypes.shape({
+        order: PropTypes.instanceOf(Object).isRequired,
+      }),
+    }),
+  }).isRequired,
+};

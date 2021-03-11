@@ -21,7 +21,7 @@ function setTestResultArrayToStore(payload) {
 }
 
 function clearTests() {
-  return { type: testConstants.CLEAR };
+  return { type: testConstants.CLEARTESTS };
 }
 
 export const testsActions = {

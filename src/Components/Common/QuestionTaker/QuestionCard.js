@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
@@ -28,12 +29,14 @@ class QuestionCard extends Component {
 
   componentDidUpdate(prevProps) {
     const { currentQuestion, onUnmount } = this.props;
+    const { answer } = this.state;
+    const { timer, question, review } = this.state;
+
     if (prevProps.currentQuestion !== currentQuestion) {
       const falseChecked = currentQuestion.option_array.map((elem) => {
         return false;
       });
 
-      const { timer, question, review } = this.state;
       this.setState({ timer: currentQuestion.timer, checked: falseChecked, review: false });
       onUnmount({
         time: timer,
@@ -42,6 +45,7 @@ class QuestionCard extends Component {
         review,
       });
       this.restartSectionTimer();
+      this.setState({ answer: '' });
     }
   }
 
@@ -58,7 +62,6 @@ class QuestionCard extends Component {
 
   componentWillUnmount() {
     clearInterval(this.sectionTimeIntervalId);
-
     // remove the focused if not save and next done
   }
 
@@ -84,6 +87,7 @@ class QuestionCard extends Component {
 
   selectedAnswer = (e) => {
     const { question } = this.state;
+    console.log(question);
     this.setState({ answer: e });
     const focusedQuestions = question;
     focusedQuestions.option_array = question.option_array.map((elem) => {
@@ -98,9 +102,9 @@ class QuestionCard extends Component {
   };
 
   submitAnswer = (e) => {
+    console.log();
     const { question, answer, timer, checked } = this.state;
     const { onSaveAndNext } = this.props;
-    console.log(question, 'yessyr');
     if (e === 'Clear Response') {
       if (question.question_type === 'single') {
         const focusedQuestions = question;
@@ -201,17 +205,19 @@ class QuestionCard extends Component {
 
       return false;
     }
+    return null;
   };
 
   handleChecked(order) {
-    const checkedArray = [...this.state.checked];
+    const { checked } = this.state;
+    const checkedArray = [...checked];
     checkedArray[order - 1] = !checkedArray[order - 1];
     this.setState({ checked: checkedArray });
     console.log('CHANGE!');
   }
 
   render() {
-    const { question } = this.state;
+    const { question, answer, checked, timer } = this.state;
     return (
       <>
         <Card
@@ -235,9 +241,12 @@ class QuestionCard extends Component {
             {Object.keys(question).length > 0 &&
               question.option_array.length > 0 &&
               question.question_type === 'single' &&
-              question.option_array.map((elem) => {
+              question.option_array.map((elem, i) => {
                 return (
-                  <div key={elem.order} className='QuestionTaker__questionOptions m-2'>
+                  <div key={elem.order} className='QuestionTaker__questionOptions m-2 d-flex'>
+                    <span className='my-auto mr-1'>
+                      {i === 0 ? 'A.' : i === 1 ? 'B.' : i === 2 ? 'C.' : 'D.'}
+                    </span>
                     <label
                       className={`QuestionTaker__customRadio p-2 w-100 ${
                         elem.isFocus ? 'QuestionTaker__focusedRadio' : 'w-75'
@@ -249,6 +258,7 @@ class QuestionCard extends Component {
                         name='testRadio'
                         value={elem.order}
                         onChange={(e) => this.selectedAnswer(e.target.value)}
+                        onClick={(e) => this.selectedAnswer(e.target.value)}
                         id={`testRadio${elem.order}`}
                       />
                       <div className='radioControl'>
@@ -268,8 +278,12 @@ class QuestionCard extends Component {
                     name='Answer'
                     type='text'
                     placeholder='Answer'
-                    value={this.state.answer}
-                    onChange={(e) => this.setState({ answer: e.target.value })}
+                    value={question.student_answer ? question.student_answer : ''}
+                    onChange={(e) => {
+                      const newQuestion = question;
+                      newQuestion.student_answer = e.target.value;
+                      this.setState({ answer: e.target.value, question: newQuestion });
+                    }}
                   />
                   <span>Answer</span>
                 </label>
@@ -279,13 +293,17 @@ class QuestionCard extends Component {
             {Object.keys(question).length > 0 &&
               question.option_array.length > 0 &&
               question.question_type === 'multiple' &&
-              question.option_array.map((elem) => {
+              question.option_array.map((elem, i) => {
                 return (
-                  <div key={elem.order} className='QuestionTaker__questionOptions m-2'>
+                  <div key={elem.order} className='QuestionTaker__questionOptions d-flex m-2'>
+                    <span className='my-auto mr-1'>
+                      {i === 0 ? 'A.' : i === 1 ? 'B.' : i === 2 ? 'C.' : 'D.'}
+                    </span>
+
                     <label
                       htmlFor={elem.order}
                       className={`QuestionTaker__customRadio p-2 w-100 ${
-                        this.state.checked[elem.order - 1] ? 'QuestionTaker__focusedRadio' : 'w-75'
+                        checked[elem.order - 1] ? 'QuestionTaker__focusedRadio' : 'w-75'
                       }`}
                     >
                       <div className='radioControl'>
@@ -295,7 +313,7 @@ class QuestionCard extends Component {
                         onChange={() => this.handleChecked(elem.order)}
                         id={elem.order}
                         type='checkbox'
-                        checked={this.state.checked[elem.order - 1]}
+                        checked={checked[elem.order - 1]}
                       />
                       {elem.image && <img src={elem.image} alt='option' className='img-fluid' />}
                     </label>
@@ -320,3 +338,9 @@ class QuestionCard extends Component {
 }
 
 export default QuestionCard;
+
+QuestionCard.propTypes = {
+  currentQuestion: PropTypes.instanceOf(Object).isRequired,
+  onUnmount: PropTypes.func.isRequired,
+  onSaveAndNext: PropTypes.func.isRequired,
+};

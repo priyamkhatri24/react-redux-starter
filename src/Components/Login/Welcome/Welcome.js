@@ -50,7 +50,7 @@ const Welcome = (props) => {
           })}
         </Carousel>
 
-        {data.features && (
+        {data.features.length > 0 && (
           <div className='Welcome__features'>
             <Row className='Welcome__featuresRow mx-auto pt-2 px-1'>
               <Col className='text-center p-0'>
@@ -74,7 +74,7 @@ const Welcome = (props) => {
         )}
       </div>
 
-      {data.result && (
+      {data.result.length > 0 && (
         <div className='Welcome__result'>
           <h3 className='text-center Welcome__resultHeading my-5'>Results</h3>
 
@@ -89,7 +89,7 @@ const Welcome = (props) => {
         </div>
       )}
 
-      {data.gallery && (
+      {data.gallery.length > 0 && (
         <div className='Welcome__Gallery'>
           <h3 className='text-center Welcome__resultHeading my-5'>Gallery</h3>
           <Carousel
@@ -135,7 +135,7 @@ const Welcome = (props) => {
         </div>
       )}
 
-      {data.batches && (
+      {data.batches.length > 0 && (
         <div className='Welcome__batch'>
           <h3 className='text-center Welcome__resultHeading my-5'>Batches</h3>
           <Row className='Welcome__batchRow'>
@@ -166,7 +166,7 @@ const Welcome = (props) => {
         </div>
       )}
       <div className='Welcome__batchRow'>
-        {data.testimonial && (
+        {data.testimonial.length > 0 && (
           <div className='Welcome__testimonials'>
             <h3 className='text-center Welcome__resultHeading my-5'>Testimonials</h3>
             <Carousel
@@ -196,7 +196,7 @@ const Welcome = (props) => {
           </div>
         )}
 
-        {data.team && (
+        {data.team.length > 0 && (
           <div className='Welcome__result'>
             <h3 className='text-center Welcome__resultHeading my-5'>Team</h3>
             <ScrollableCards data={data.team} />
@@ -224,7 +224,7 @@ const Welcome = (props) => {
         )}
       </div>
 
-      {data.address && (
+      {data.address.length > 0 && (
         <div className='Welcome__address pb-4 mb-2'>
           <h3 className='text-center Welcome__resultHeading my-5'>Address &amp; Contact</h3>
 

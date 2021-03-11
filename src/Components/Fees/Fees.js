@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
 import Row from 'react-bootstrap/Row';
@@ -41,7 +42,6 @@ const Fees = (props) => {
   useEffect(() => {
     get({ client_user_id: clientUserId }, '/getFeeDataForStudent').then((res) => {
       const result = apiValidation(res);
-      console.log(result);
       setFees(result);
     });
   }, [clientUserId]);
@@ -53,7 +53,6 @@ const Fees = (props) => {
     get(payload, '/fetchOrderById').then((res) => {
       const result = apiValidation(res);
       history.push({ pathname: '/order', state: { order: result } });
-      console.log(result);
     });
   };
 
@@ -239,3 +238,36 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(Fees);
+
+Fees.propTypes = {
+  clientId: PropTypes.number.isRequired,
+  clientUserId: PropTypes.number.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+  currentbranding: PropTypes.shape({
+    branding: PropTypes.shape({
+      client_id: PropTypes.number,
+      client_logo: PropTypes.string,
+      client_color: PropTypes.string,
+      client_icon: PropTypes.string,
+      client_title: PropTypes.string,
+      client_name: PropTypes.string,
+      client_address: PropTypes.string,
+      client_contact: PropTypes.string,
+    }),
+  }).isRequired,
+  userProfile: PropTypes.shape({
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string,
+    contact: PropTypes.string.isRequired,
+    profileImage: PropTypes.string,
+  }),
+};
+
+Fees.defaultProps = {
+  userProfile: PropTypes.shape({
+    lastName: '',
+    profileImage: '',
+  }),
+};

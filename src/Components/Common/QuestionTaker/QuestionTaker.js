@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Modal from 'react-bootstrap/Modal';
@@ -18,6 +19,8 @@ import {
   getTestEndTime,
 } from '../../../redux/reducers/tests.reducer';
 import './QuestionTaker.scss';
+import { firstTimeLoginActions } from '../../../redux/actions/firsttimeLogin.action';
+import { getComeBackFromTests } from '../../../redux/reducers/firstTimeLogin.reducer';
 
 class QuestionTaker extends Component {
   constructor(props) {
@@ -37,14 +40,53 @@ class QuestionTaker extends Component {
       timerCurrentTime: 0,
       modalOpen: false,
       startingResult: false,
+      userWantsToLeave: false,
     };
   }
 
   componentDidMount() {
-    const { testId, testResultArray, testEndTime, testStartTime } = this.props;
-
-    if (testResultArray.length) {
-      const idAdd = testResultArray.map((elem) => {
+    const {
+      testId,
+      testResultArray,
+      testEndTime,
+      testStartTime,
+      comeBackFromTests,
+      history,
+      setComeBackFromTestsToStore,
+      clearTests,
+    } = this.props;
+    let idAdd;
+    if (comeBackFromTests) {
+      Swal.fire({
+        title: 'Are you Sure?',
+        text: 'You will lose all your progress.',
+        icon: 'question',
+        showDenyButton: true,
+        confirmButtonText: `Yes`,
+        denyButtonText: `No`,
+        customClass: 'Assignments__SweetAlert',
+      }).then((res) => {
+        if (res.isConfirmed) {
+          this.setState({ userWantsToLeave: true }, () => {
+            setComeBackFromTestsToStore(false);
+            clearTests();
+            history.push('/');
+          });
+        } else {
+          idAdd = testResultArray;
+          this.setState({
+            result: idAdd,
+            currentQuestion: testResultArray[0].question_list[0],
+            currentSubject: testResultArray[0].subject,
+            startingResult: true,
+            currentTime: testStartTime,
+            testEndTime,
+            testId,
+          });
+        }
+      });
+    } else if (testResultArray.length) {
+      idAdd = testResultArray.map((elem) => {
         elem.question_list.map((e, index) => {
           const newObj = e;
           newObj.uuid = index + 1;
@@ -67,48 +109,48 @@ class QuestionTaker extends Component {
         testEndTime,
         testId,
       });
-
-      window.addEventListener('beforeunload', this.onUnload);
     }
+    window.addEventListener('beforeunload', this.onUnload);
   }
 
   componentWillUnmount() {
+    const { history, setComeBackFromTestsToStore, setTestResultArrayToStore } = this.props;
+    const { result, userWantsToLeave } = this.state;
     window.removeEventListener('beforeunload', this.onUnload);
-    this.props.history.push('/');
+    // clearTests();
+    if (!userWantsToLeave) setComeBackFromTestsToStore(true);
+    setTestResultArrayToStore(result);
+    history.push('/');
   }
 
-  onUnload = () => {
-    // const {
-    //   history,
-    //   setTestEndTimeToStore,
-    //   setTestIdToStore,
-    //   setTestResultArrayToStore,
-    //   setTestTypeToStore,
-    //   setTestStartTimeToStore,
-    // } = this.props;
+  onUnload = (e) => {
     this.setState({
       result: [{ question_list: [], subject: '' }],
       currentTime: 0,
       testEndTime: 0,
     });
-    // setTestEndTimeToStore(0);
-    // setTestIdToStore(null);
-    // setTestResultArrayToStore([]);
-    // setTestTypeToStore(null);
-    // setTestStartTimeToStore(0);
-    // history.push('/');
+    const message = 'o/';
+
+    (e || window.event).returnValue = message; // Gecko + IE
+    return message;
   };
 
   timerHasFinished = () => {
-    console.log('it has finished');
-    console.log(this.state.result);
-    const finalArray = this.state.result
+    const { result, testId } = this.state;
+    const {
+      clientUserId,
+      testType,
+      testId: testID,
+      setTestStartTimeToStore,
+      setTestEndTimeToStore,
+    } = this.props;
+    const finalArray = result
       .map((elem) => {
         const flattenedQuestionArray = elem.question_list.map((e) => {
           const payload = {};
 
           payload[e.question_id] = {
-            totalTime: e.timer.toString(),
+            totalTime: e.timer * 1000,
             finalAnswer: e.student_answer === null ? '' : e.student_answer,
             id: e.question_id.toString(),
             totalCount: e.noOfTimesVisited.toString(),
@@ -126,26 +168,31 @@ class QuestionTaker extends Component {
 
     const finalObject = Object.assign({}, ...finalArray);
 
-    console.log(finalObject, 'stiingi');
+    console.log(finalObject, 'aja beti');
+
     const finalPayload = {
-      client_user_id: this.props.clientUserId,
-      test_id: this.state.testId,
+      client_user_id: clientUserId,
+      test_id: testId,
       questions_array: JSON.stringify(finalObject),
     };
+
+    console.log('key ho rha h');
+
     post(finalPayload, '/studentTestActivity').then((res) => {
       if (res.success) {
         const updationPayload = {
-          client_user_id: this.props.clientUserId,
-          test_id: this.props.testId,
+          client_user_id: clientUserId,
+          test_id: testID,
           test_status: 'submitted',
         };
-        if (this.props.testType === 'demotest') {
+        console.log('key ho rha h');
+        if (testType === 'demotest') {
           post(updationPayload, '/updateTestStatus').then((response) => {
             if (response.success) {
               this.testSubmissionAlert();
             }
           });
-        } else if (this.props.testType === 'homework' || this.props.testType === 'livetest') {
+        } else if (testType === 'homework' || testType === 'livetest') {
           post(updationPayload, '/submitTest').then((response) => {
             if (response.success) {
               this.testSubmissionAlert();
@@ -154,18 +201,24 @@ class QuestionTaker extends Component {
         }
       }
     });
+
+    setTestEndTimeToStore(0);
+    setTestStartTimeToStore(0);
   };
 
   testSubmissionAlert = () => {
+    const { history } = this.props;
+
     Swal.fire({
       title: 'Well Done!',
       text: 'Test successfully submitted',
       icon: 'success',
       confirmButtonText: `Next`,
       customClass: 'Assignments__SweetAlert',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.props.history.push('/');
+    }).then((res) => {
+      if (res.isConfirmed) {
+        this.setState({ userWantsToLeave: true });
+        history.push('/');
       }
     });
   };
@@ -176,7 +229,9 @@ class QuestionTaker extends Component {
   };
 
   changeQuestion = (subject, questionId) => {
-    const currentSubject = this.state.result.filter((elem) => {
+    const { result } = this.state;
+
+    const currentSubject = result.filter((elem) => {
       return elem.subject === subject;
     });
 
@@ -192,10 +247,11 @@ class QuestionTaker extends Component {
 
   questionCardUnmount = (elem) => {
     console.log(elem, 'njj');
+    const { result, currentSubject } = this.state;
     if (elem.uuid) {
-      const tempResult = [...this.state.result];
+      const tempResult = [...result];
       const newResult = tempResult.map((res) => {
-        if (res.subject === this.state.currentSubject) {
+        if (res.subject === currentSubject) {
           res.question_list.forEach((e) => {
             if (e.uuid === elem.uuid && e.student_answer === null) {
               e.noOfTimesVisited = elem.count;
@@ -273,7 +329,15 @@ class QuestionTaker extends Component {
   handleFinishClose = () => this.setState({ modalOpen: false });
 
   render() {
-    const { currentTime, testEndTime, result, currentQuestion } = this.state;
+    const {
+      currentTime,
+      testEndTime,
+      result,
+      currentQuestion,
+      startingResult,
+      modalOpen,
+      timerCurrentTime,
+    } = this.state;
     return (
       <div className='QuestionTaker'>
         <div className='mx-2 mt-3 d-flex'>
@@ -296,7 +360,7 @@ class QuestionTaker extends Component {
           questions={result}
           changeQuestion={this.changeQuestion}
           currentQuestion={currentQuestion}
-          startingResult={this.state.startingResult}
+          startingResult={startingResult}
         />
 
         <QuestionCard
@@ -305,14 +369,14 @@ class QuestionTaker extends Component {
           onSaveAndNext={this.onSaveAndNext}
         />
 
-        <Modal show={this.state.modalOpen} centered onHide={this.handleFinishClose}>
+        <Modal show={modalOpen} centered onHide={this.handleFinishClose}>
           <Modal.Body className='text-center'>
             {currentTime !== 0 && testEndTime !== 0 && (
               <>
                 <p className='QuestionTaker__timeRemaining mt-3'>Time Remaining</p>
                 <Timer
                   startTime={Date.now()}
-                  endTime={Date.now() + this.state.timerCurrentTime}
+                  endTime={Date.now() + timerCurrentTime}
                   isFinished={this.timerHasFinished}
                 />
               </>
@@ -341,6 +405,7 @@ const mapStateToProps = (state) => ({
   testResultArray: getTestResultArray(state),
   testStartTime: getTestStartTime(state),
   testEndTime: getTestEndTime(state),
+  comeBackFromTests: getComeBackFromTests(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -360,7 +425,31 @@ const mapDispatchToProps = (dispatch) => {
     setTestResultArrayToStore: (payload) => {
       dispatch(testsActions.setTestResultArrayToStore(payload));
     },
+    clearTests: () => {
+      dispatch(testsActions.clearTests());
+    },
+    setComeBackFromTestsToStore: (payload) => {
+      dispatch(firstTimeLoginActions.setComeBackFromTestsToStore(payload));
+    },
   };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(QuestionTaker);
+
+QuestionTaker.propTypes = {
+  clientUserId: PropTypes.number.isRequired,
+  testId: PropTypes.number.isRequired,
+  testType: PropTypes.string.isRequired,
+  testResultArray: PropTypes.instanceOf(Array).isRequired,
+  testStartTime: PropTypes.number.isRequired,
+  testEndTime: PropTypes.number.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+  setTestEndTimeToStore: PropTypes.func.isRequired,
+  setTestStartTimeToStore: PropTypes.func.isRequired,
+  setComeBackFromTestsToStore: PropTypes.func.isRequired,
+  setTestResultArrayToStore: PropTypes.func.isRequired,
+  comeBackFromTests: PropTypes.bool.isRequired,
+  clearTests: PropTypes.func.isRequired,
+};

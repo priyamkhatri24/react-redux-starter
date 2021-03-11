@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { connect } from 'react-redux';
@@ -20,7 +21,7 @@ const HomeWorkCreator = (props) => {
     currentSlide,
     setQuestionArrayToStore,
     setCurrentSlide,
-    setSelectedQuestionArrayToStore,
+    clearTests,
   } = props;
   const [slide, setSlide] = useState(0);
   const [homeworkQuestionsArray, setQuestionArray] = useState([]);
@@ -32,16 +33,9 @@ const HomeWorkCreator = (props) => {
 
   useEffect(() => {
     if (history.location.state.letsGo) {
-      setQuestionArrayToStore([]);
-      setSelectedQuestionArrayToStore([]);
-      setCurrentSlide(0);
+      clearTests();
     }
-  }, [
-    history.location.state.letsGo,
-    setCurrentSlide,
-    setQuestionArrayToStore,
-    setSelectedQuestionArrayToStore,
-  ]);
+  }, [history.location.state.letsGo, clearTests]);
 
   const fetchQuestions = (result) => {
     setQuestionArray(result);
@@ -68,6 +62,7 @@ const HomeWorkCreator = (props) => {
           showThumbs={false}
           autoPlay={false}
           showStatus={false}
+          swipeable={false}
           selectedItem={slide}
           renderIndicator={(onClickHandler, isSelected, index, label) => {
             if (isSelected) {
@@ -86,7 +81,7 @@ const HomeWorkCreator = (props) => {
                 onKeyDown={onClickHandler}
                 value={index}
                 key={index}
-                role='button'
+                role='button' // eslint-disable-line
                 tabIndex={0}
                 title={`${label} ${index + 1}`}
                 aria-label={`${label} ${index + 1}`}
@@ -110,16 +105,41 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setSelectedQuestionArrayToStore: (payload) => {
-      dispatch(homeworkActions.setSelectedQuestionArrayToStore(payload));
-    },
     setCurrentSlide: (payload) => {
       dispatch(homeworkActions.setCurrentSlide(payload));
     },
     setQuestionArrayToStore: (payload) => {
       dispatch(homeworkActions.setQuestionArrayToStore(payload));
     },
+    clearTests: () => {
+      dispatch(homeworkActions.clearTests());
+    },
   };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeWorkCreator);
+
+HomeWorkCreator.propTypes = {
+  setCurrentSlide: PropTypes.func.isRequired,
+  clearTests: PropTypes.func.isRequired,
+  currentSlide: PropTypes.number.isRequired,
+  history: PropTypes.shape({
+    location: PropTypes.shape({
+      state: PropTypes.shape({
+        letsGo: PropTypes.bool,
+      }),
+    }),
+  }),
+  setQuestionArrayToStore: PropTypes.func.isRequired,
+  questionArray: PropTypes.instanceOf(Array).isRequired,
+};
+
+HomeWorkCreator.defaultProps = {
+  history: PropTypes.shape({
+    location: PropTypes.shape({
+      state: PropTypes.shape({
+        letsGo: false,
+      }),
+    }),
+  }),
+};

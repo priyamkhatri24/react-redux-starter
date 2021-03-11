@@ -23,6 +23,11 @@ function setProfileImageToStore(payload) {
 function setTokenToStore(payload) {
   return { type: userProfileConstants.TOKEN, payload };
 }
+
+function setUserNameToStore(payload) {
+  return { type: userProfileConstants.USERNAME, payload };
+}
+
 // action to logout user by making userProfile as null
 
 function clearUserProfile() {
@@ -36,4 +41,5 @@ export const userProfileActions = {
   setContactToStore,
   setTokenToStore,
   clearUserProfile,
+  setUserNameToStore,
 };

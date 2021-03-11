@@ -6,6 +6,11 @@ import { userProfile } from './userProfile.reducer';
 import { testsUpdate } from './tests.reducer';
 import { color } from './color.reducer';
 import { homework } from './homeworkCreator.reducer';
+import { course } from './course.reducer';
+import { firstTimeLogin } from './firstTimeLogin.reducer';
+import { admission } from './admissions.reducer';
+import { studyBin } from './studybin.reducer';
+import { loading } from './loading.reducer';
 
 const rootReducer = (history) =>
   combineReducers({
@@ -16,6 +21,11 @@ const rootReducer = (history) =>
     color,
     testsUpdate,
     homework,
+    course,
+    firstTimeLogin,
+    admission,
+    studyBin,
+    loading,
   });
 
 export default rootReducer;

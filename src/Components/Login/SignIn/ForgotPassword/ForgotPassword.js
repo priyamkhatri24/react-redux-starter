@@ -13,6 +13,7 @@ const ForgotPassword = (props) => {
     location: {
       state: { image, userId, contact },
     },
+    history,
   } = props;
 
   const verifyOTP = (otp) => {
@@ -59,7 +60,12 @@ const ForgotPassword = (props) => {
     };
 
     post(requestBody, '/changePassword')
-      .then((res) => console.log(res)) // navigate to dashboard
+      .then((res) => {
+        console.log(res);
+        if (res.success) {
+          history.push('/login');
+        }
+      }) // navigate to dashboard
       .catch((e) => console.error(e));
   };
 
@@ -99,4 +105,5 @@ ForgotPassword.propTypes = {
       contact: PropTypes.string.isRequired,
     }),
   }).isRequired,
+  history: PropTypes.instanceOf(Object).isRequired,
 };

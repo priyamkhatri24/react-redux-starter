@@ -5,6 +5,7 @@ const initialState = {
   lastName: null,
   contact: null,
   profileImage: null,
+  userName: null,
   token: null,
 };
 
@@ -32,6 +33,12 @@ export function userProfile(state = initialState, action) {
         profileImage: action.payload,
       };
 
+    case userProfileConstants.USERNAME:
+      return {
+        ...state,
+        userName: action.payload,
+      };
+
     case userProfileConstants.TOKEN:
       return {
         ...state,
@@ -45,6 +52,7 @@ export function userProfile(state = initialState, action) {
         lastName: null,
         contact: null,
         profileImage: null,
+        userName: null,
         token: null,
       };
 

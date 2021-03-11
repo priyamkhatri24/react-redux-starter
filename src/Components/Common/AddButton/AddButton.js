@@ -1,70 +1,136 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import './AddButton.scss';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import classNames from 'classnames';
 import PersonAddRoundedIcon from '@material-ui/icons/PersonAddRounded';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import { uploadImage } from '../../../Utilities';
+import { loadingActions } from '../../../redux/actions/loading.action';
 
-export const AddButton = (props) => {
-  const { addButtonArray } = props;
+const AddButton = (props) => {
+  const {
+    addButtonArray,
+    onlyUseButton,
+    triggerButton,
+    setLoadingPendingToStore,
+    setLoadingSuccessToStore,
+  } = props;
+  const courseFileRef = useRef(null);
+
   const [openMenu, setOpenMenu] = useState(false);
   const divlengthClass = classNames({
     AddButton__innerDiv: !openMenu,
     AddButton__innerDivLong: openMenu,
   });
 
-  const uploadFile = (elem, e) => {
-    const formdata = new FormData();
-    formdata.append('data', e.target.files[0]);
-    // reader.readAsDataURL(e.target.files[0]);
-    // reader.onloadend = function getFile() {
-    //   const base64data = reader.result;
-    elem.func(formdata);
-    // };
+  // const getImageInput = (e) => {
+
+  // };
+
+  const upload = (elem, e) => {
+    setLoadingPendingToStore();
+    const reader = new FileReader();
+    const file = e.target.files[0];
+    if (file) {
+      reader.readAsDataURL(e.target.files[0]);
+      uploadImage(file).then((res) => {
+        console.log('fileu;lod ', res);
+        elem.func(file.name, res.filename);
+        setLoadingSuccessToStore();
+      });
+    }
+  };
+
+  const openMenuOrTriggerFunction = () => {
+    if (onlyUseButton) {
+      triggerButton();
+    } else {
+      setOpenMenu(true);
+    }
   };
 
   return (
-    <div className='AddButton__wrap'>
+    <div className='AddButton__wrap' style={{ zIndex: '999' }}>
       <div className='AddButton__folded'>
         <div className={divlengthClass}>
           {!openMenu && (
             <AddIcon
               className='AddButton__addIcon'
-              onClick={() => setOpenMenu(true)}
-              onKeyDown={() => setOpenMenu(true)}
+              onClick={() => openMenuOrTriggerFunction()}
+              onKeyDown={() => openMenuOrTriggerFunction()}
               role='button'
               tabIndex='-1'
             />
           )}
           {openMenu && (
-            <>
+            <div className='pt-5'>
               {addButtonArray.map((elem) => {
                 return (
                   <>
+                    <input
+                      type='file'
+                      name='upload-photo'
+                      id='upload-photo'
+                      onChange={(e) => upload(addButtonArray[0], e)}
+                      style={{ display: 'none' }}
+                      ref={courseFileRef}
+                    />
                     {elem.name === 'add File' ? (
-                      <>
-                        <label htmlFor='upload-photo'>Browse...</label>
-                        <input
-                          type='file'
-                          name='upload-photo'
-                          id='upload-photo'
-                          onChange={(e) => uploadFile(elem, e)}
-                        />
-                      </>
+                      <Row
+                        className='AddButton__menuContents mx-1 mt-2'
+                        key={elem.name}
+                        onClick={() => courseFileRef.current.click()}
+                      >
+                        <Col xs={8} className='p-0 my-auto'>
+                          {elem.name}
+                        </Col>
+                        <Col xs={4}>
+                          <span
+                            style={{
+                              height: '28px',
+                              width: '28px',
+                              border: '1px solid #fff',
+                              borderRadius: '50%',
+                              padding: '8px',
+                              backgroundColor: '#fff',
+                              color: '#000',
+                            }}
+                            className='my-auto'
+                          >
+                            <PersonAddRoundedIcon />
+                          </span>
+                        </Col>
+                      </Row>
                     ) : (
-                      <p
-                        className='AddButton__menuContents mr-1 mt-4'
+                      <Row
+                        className='AddButton__menuContents mx-1 mt-4'
                         key={elem.name}
                         onClick={elem.func}
-                        onKeyDown={elem.func}
-                        role='button'
-                        tabIndex='-1'
                       >
-                        {elem.name}{' '}
-                        <span>
-                          <PersonAddRoundedIcon />
-                        </span>
-                      </p>
+                        <Col xs={8} className='p-0 my-auto'>
+                          {elem.name}
+                        </Col>
+                        <Col xs={4}>
+                          <span
+                            style={{
+                              height: '28px',
+                              width: '28px',
+                              border: '1px solid #fff',
+                              borderRadius: '50%',
+                              padding: '8px',
+                              backgroundColor: '#fff',
+                              color: '#000',
+                            }}
+                            className='my-auto'
+                          >
+                            <PersonAddRoundedIcon />
+                          </span>
+                        </Col>
+                      </Row>
                     )}
                   </>
                 );
@@ -76,10 +142,38 @@ export const AddButton = (props) => {
                 role='button'
                 tabIndex='-1'
               />
-            </>
+            </div>
           )}
         </div>
       </div>
     </div>
   );
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setLoadingPendingToStore: (payload) => {
+      dispatch(loadingActions.pending());
+    },
+
+    setLoadingSuccessToStore: (payload) => {
+      dispatch(loadingActions.success());
+    },
+  };
+};
+
+export default connect(null, mapDispatchToProps)(AddButton);
+
+AddButton.propTypes = {
+  addButtonArray: PropTypes.instanceOf(Array),
+  onlyUseButton: PropTypes.bool,
+  triggerButton: PropTypes.func,
+  setLoadingPendingToStore: PropTypes.func.isRequired,
+  setLoadingSuccessToStore: PropTypes.func.isRequired,
+};
+
+AddButton.defaultProps = {
+  onlyUseButton: false,
+  addButtonArray: [],
+  triggerButton: () => {},
 };

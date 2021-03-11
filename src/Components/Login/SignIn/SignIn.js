@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
 import PhoneNo from '../PhoneNo/PhoneNo';
 import footerIngenium from '../../../assets/images/ingiLOGO.png';
@@ -8,16 +9,20 @@ import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
 import { get, post, apiValidation } from '../../../Utilities';
 import { clientUserIdActions } from '../../../redux/actions/clientUserId.action';
 import { userProfileActions } from '../../../redux/actions/userProfile.action';
+import { firstTimeLoginActions } from '../../../redux/actions/firsttimeLogin.action';
+import { getFirstTimeLoginState } from '../../../redux/reducers/firstTimeLogin.reducer';
 
 const SignIn = (props) => {
   const {
     location: {
       state: { image, userInfo, contact },
     },
+    firstTimeLogin,
+    setFirstTimeLoginToStore,
+    history,
   } = props;
 
   const { currentbranding: { branding: { client_id: clientId = '' } = {} } = {} } = props;
-
   const [currentComponent, setComponent] = useState('username');
   const [validUser, checkValidUser] = useState(false);
   const [loginParams, setLoginParams] = useState({
@@ -26,6 +31,11 @@ const SignIn = (props) => {
     user_id: 0,
   });
   const [userStatus, setUserStatus] = useState('');
+
+  useEffect(() => {
+    // checks whether the user is logged for the first time only
+    if (firstTimeLogin) history.push('/');
+  }, [firstTimeLogin, history]);
 
   const getUserName = (param) => {
     const userParam = userInfo.filter((e) => {
@@ -54,10 +64,18 @@ const SignIn = (props) => {
       .then((res) => {
         const result = apiValidation(res);
         if (result.status === 'Wrong username') {
-          alert('Please Check your Internet Connection');
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops!',
+            text: `Please check your internet connection.`,
+          });
           push({ pathname: '/login' });
         } else if (result === 'success') {
-          alert('The Username Has been sent to your registered mobile number');
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: `The Username Has been sent to your registered mobile number`,
+          });
         }
       })
       .catch((e) => console.error(e));
@@ -75,9 +93,11 @@ const SignIn = (props) => {
         .then((res) => {
           const { push } = props.history;
           const result = apiValidation(res);
+
           if (result.status === 'Wrong password. Login failed') {
             checkValidUser(true);
           }
+
           const {
             token,
             user: {
@@ -90,6 +110,53 @@ const SignIn = (props) => {
               user_user_id: userUserId,
               user_id: userId,
               profile_image: profileImage,
+              username: userName,
+            },
+          } = result;
+          console.log(result, userName, result.user);
+
+          props.setCLientUserIdToStore(clientUserId);
+          props.setUserIdToStore(userId);
+          props.setUserUserIdToStore(userUserId);
+          props.setRoleArrayToStore(roleArray);
+          props.setFirstNameToStore(firstName);
+          props.setLastNameToStore(lastName);
+          props.setProfileImageToStore(profileImage);
+          props.setContactToStore(userContact);
+          props.setTokenToStore(token);
+          props.setClientIdToStore(clientID);
+          props.setUserNameToStore(userName);
+          push({ pathname: '/' });
+          setFirstTimeLoginToStore(true);
+        })
+        .catch((err) => console.log(err));
+    } else if (userStatus === 'pending') {
+      console.log('brooo');
+      console.log(loginParams);
+      console.log(param);
+      const payload = {
+        user_name: loginParams.user_name,
+        password: param,
+        user_id: loginParams.user_id,
+      };
+
+      post(payload, '/signupAfterOtpForWeb').then((res) => {
+        const result = apiValidation(res);
+
+        if (result.status === 'signup successful') {
+          const {
+            token,
+            user: {
+              client_user_id: clientUserId,
+              client_client_id: clientID,
+              contact: userContact,
+              first_name: firstName,
+              role_array: roleArray,
+              last_name: lastName,
+              user_user_id: userUserId,
+              user_id: userId,
+              profile_image: profileImage,
+              username: userName,
             },
           } = result;
 
@@ -103,11 +170,11 @@ const SignIn = (props) => {
           props.setContactToStore(userContact);
           props.setTokenToStore(token);
           props.setClientIdToStore(clientID);
-          push({ pathname: '/' });
-        })
-        .catch((err) => console.log(err));
-    } else if (userStatus === 'pending') {
-      console.log('brooo');
+          props.setUserNameToStore(userName);
+          props.history.push({ pathname: '/' });
+          setFirstTimeLoginToStore(true);
+        }
+      });
     }
   };
 
@@ -128,7 +195,11 @@ const SignIn = (props) => {
             state: { image, contact, userId: loginParams.user_id },
           });
         } else {
-          alert('Please Check Your Internet Connection');
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops!',
+            text: `Please check your internet connection.`,
+          });
         }
       })
       .catch((e) => console.err(e));
@@ -172,6 +243,7 @@ const SignIn = (props) => {
 
 const mapStateToProps = (state) => ({
   currentbranding: getCurrentBranding(state),
+  firstTimeLogin: getFirstTimeLoginState(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -203,8 +275,14 @@ const mapDispatchToProps = (dispatch) => {
     setProfileImageToStore: (payload) => {
       dispatch(userProfileActions.setProfileImageToStore(payload));
     },
+    setUserNameToStore: (payload) => {
+      dispatch(userProfileActions.setUserNameToStore(payload));
+    },
     setTokenToStore: (payload) => {
       dispatch(userProfileActions.setTokenToStore(payload));
+    },
+    setFirstTimeLoginToStore: (payload) => {
+      dispatch(firstTimeLoginActions.setFirstTimeLoginToStore(payload));
     },
   };
 };
@@ -215,7 +293,7 @@ SignIn.propTypes = {
   location: PropTypes.shape({
     state: PropTypes.shape({
       image: PropTypes.string,
-      userInfo: PropTypes.array.isRequired,
+      userInfo: PropTypes.instanceOf(Array),
       contact: PropTypes.string.isRequired,
     }),
   }),
@@ -240,6 +318,9 @@ SignIn.propTypes = {
   setContactToStore: PropTypes.func.isRequired,
   setTokenToStore: PropTypes.func.isRequired,
   setClientIdToStore: PropTypes.func.isRequired,
+  setUserNameToStore: PropTypes.func.isRequired,
+  firstTimeLogin: PropTypes.bool.isRequired,
+  setFirstTimeLoginToStore: PropTypes.func.isRequired,
 };
 
 SignIn.defaultProps = {

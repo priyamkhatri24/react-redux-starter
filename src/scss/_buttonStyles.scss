@@ -16,6 +16,17 @@
   font-size: 12px;
 }
 
+.btn-customPrimaryWithShadow {
+  background-color: var(--primary-blue, rgba(38, 153, 251, 1));
+  color: #fff;
+  font-family: 'Montserrat-Regular';
+  width: 9.375rem;
+  height: 2.25rem;
+  font-size: 0.875rem;
+  border-radius: 50px;
+  box-shadow: 0px 6px 10px 0px var(--lighter-blue);
+}
+
 .btn-customSecondary {
   background-color: #fff;
   color: var(--primary-blue);
@@ -31,7 +42,20 @@
   background-color: var(--lighter-blue);
   color: #fff;
   font-family: 'Montserrat-Regular';
-  border-radius: 50px;
+  border-radius: 10px;
+  font-size: 12x;
+  line-height: 15px;
+  max-width: 128px;
+}
+
+.btn-batchCustomNotSelected {
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  font-family: 'Montserrat-Regular';
+  border-radius: 10px;
+  font-size: 12x;
+  line-height: 15px;
+  max-width: 128px;
 }
 
 .btn-customSkip {
@@ -70,6 +94,19 @@
 
 .btn-dashboardBlueOnWhite:focus {
   color: var(--lighter-blue);
+}
+
+.btn-courseBlueOnWhite {
+  border-radius: 5px;
+  background-color: #fff;
+  color: var(--primary-blue);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  font-family: 'Montserrat-Medium';
+  font-size: 14px;
+  line-height: 16px;
+  height: 28px;
+  width: 120px;
+  padding: 0 10px 0 10px;
 }
 
 .btn-noticeBoardPost {
@@ -124,6 +161,20 @@
   color: var(--primary-blue);
 }
 
+.btn-boldTextSecondary {
+  background-color: #fff;
+  color: rgba(0, 0, 0, 0.54);
+  border-radius: 50px;
+  padding-top: 0;
+  padding-bottom: 0;
+  font-family: 'Montserrat-Bold';
+  font-size: 14px;
+}
+
+.btn-boldTextSecondary:hover {
+  color: var(--primary-blue);
+}
+
 .btn-redBoldText {
   background-color: #fff;
   color: #ff0000;
@@ -159,6 +210,11 @@
 .active.btn-testBlueOnWhite {
   background-color: #fff;
   border-color: #fff;
+}
+
+.btn-testBlueOnWhite:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 .btn-testPallette {
@@ -237,6 +293,35 @@
   border-radius: 14px;
   height: 28px;
   padding-left: 28px;
+}
+
+.btn-greenButtonLong {
+  background-color: rgba(37, 230, 0, 1);
+  border-radius: 5px;
+  width: 90%;
+  color: #fff;
+  font-family: 'Montserrat-Medium';
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.btn-primaryOutline {
+  border-radius: 5px;
+  border: 1px solid var(--primary-blue);
+  color: var(--primary-blue);
+  font-family: 'Montserrat-Bold';
+}
+
+.btn-redOutline {
+  border-radius: 5px;
+  border: 1px solid #ff0000de;
+  color: #ff0000de;
+  font-family: 'Montserrat-Bold';
+}
+
+.btn-light:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 /**************************************Progress Bar Styles ********************************/

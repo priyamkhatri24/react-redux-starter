@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
@@ -8,6 +9,7 @@ import {
   getUserId,
 } from '../../../../redux/reducers/clientUserId.reducer';
 import { getCurrentBranding } from '../../../../redux/reducers/branding.reducer';
+import { getUserProfile } from '../../../../redux/reducers/userProfile.reducer';
 import userAvatar from '../../../../assets/images/user.svg';
 import './AdmissionForm.scss';
 import { BackButton, DynamicForm } from '../../../Common';
@@ -40,7 +42,7 @@ const AdmissionForm = (props) => {
   //   { label: 'Date of Birth', value: '', type: 'input', name: 'DOB' },
   // ];
 
-  const { clientId, clientUserId, currentbranding, userId, history } = props;
+  const { clientId, clientUserId, currentbranding, userId, history, userProfile } = props;
   const [image, setImage] = useState(userAvatar);
   const [admissionFormData, setAdmissionFormData] = useState([]);
   const firstName = useRef({});
@@ -129,7 +131,7 @@ const AdmissionForm = (props) => {
       client_user_id: clientUserId,
       user_id: userId,
       client_id: clientId,
-      contact: currentbranding.branding.client_contact,
+      contact: userProfile.contact, // bnde ka
       question_array: JSON.stringify(questionArray),
       first_name: firstName.current.value,
       last_name: lastName.current.value,
@@ -138,16 +140,16 @@ const AdmissionForm = (props) => {
       parent_contact: parentContact.current.value,
       auto_approval: autoApproval.current,
     };
-    console.log(currentbranding);
     console.log(payload);
 
     post(payload, '/submitAdmissonForm').then((res) => {
       if (res.success) {
         if (autoApproval.current === 'true') {
           Swal.fire({
-            icon: 'Success',
+            icon: 'success',
             text:
-              'Thank you for filling the admission form. You will receive your username on your registered number, use it to login',
+              'Thank you for filling the admission form. ' +
+              'You will receive your username on your registered number, use it to login',
           }).then((response) => {
             if (response.isConfirmed) history.push('/login');
           });
@@ -197,6 +199,22 @@ const mapStateToProps = (state) => ({
   clientUserId: getClientUserId(state),
   currentbranding: getCurrentBranding(state),
   userId: getUserId(state),
+  userProfile: getUserProfile(state),
 });
 
 export default connect(mapStateToProps)(AdmissionForm);
+
+AdmissionForm.propTypes = {
+  clientId: PropTypes.number.isRequired,
+  clientUserId: PropTypes.number.isRequired,
+  currentbranding: PropTypes.shape({
+    branding: PropTypes.shape({
+      client_contact: PropTypes.string,
+    }),
+  }).isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+  userId: PropTypes.number.isRequired,
+  userProfile: PropTypes.instanceOf(Object).isRequired,
+};

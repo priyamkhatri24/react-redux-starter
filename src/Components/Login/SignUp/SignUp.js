@@ -27,9 +27,17 @@ const SignUp = (props) => {
       .then((res) => {
         const result = apiValidation(res);
         if (result.verification_status === 'wrong otp entered') {
-          alert('Invalid OTP!');
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Invalid OTP',
+          });
         } else if (result.verification_status === 'otp expired') {
-          alert('OTP expired');
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'The OTP has expired. Click resend to get a new OTP',
+          });
         } else if (result.verification_status === 'otp verified') {
           const { user_status: userStatus, user_id: userId, client_user_id: clientUserId } = result;
           props.setUserIdToStore(userId);

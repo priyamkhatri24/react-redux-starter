@@ -26,4 +26,17 @@
       font-size: $spacer * 1.25;
     }
   }
+
+  &__verticalDots {
+    position: absolute;
+    top: 15px;
+    right: 5px;
+  }
+
+  &__categoryText {
+    font-size: $spacer * 0.75;
+    line-height: 15px;
+    font-family: $semiBold;
+    color: $headingGrey;
+  }
 }

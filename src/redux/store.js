@@ -9,10 +9,15 @@ import rootReducer from './reducers';
 const loggerMiddleware = createLogger();
 const persistedState = loadState();
 
+let middleware = [routerMiddleware(history), thunkMiddleware];
+if (process.env.NODE_ENV === 'development') {
+  middleware = [...middleware, loggerMiddleware];
+}
+
 export const store = createStore(
   rootReducer(history),
   persistedState,
-  applyMiddleware(routerMiddleware(history), thunkMiddleware, loggerMiddleware),
+  applyMiddleware(...middleware),
 );
 
 store.subscribe(() => {
@@ -23,5 +28,7 @@ store.subscribe(() => {
     color: store.getState().color,
     testsUpdate: store.getState().testsUpdate,
     homework: store.getState().homework,
+    course: store.getState().course,
+    studyBin: store.getState().studyBin,
   });
 });

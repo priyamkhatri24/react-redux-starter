@@ -1,37 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <base href="/" />
+    <!-- for local host -->
+
     <meta charset="utf-8" />
     <!-- <link rel="icon" href="%PUBLIC_URL%/favicon.ico" id="dynamic-favicons" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta name="description" content="Web Portal - Ingenium Technologies - Sidhant Dhar" />
+    <meta
+      name="description"
+      content="Web Portal - Ingenium Technologies - Empowering Coaching Institutes - Digital Transformation -  Sidhant Dhar"
+    />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      <link rel="preload" as="font" href="%PUBLIC_URL%/media/logo192.png">
+      <link rel="preload" as="font" href="%PUBLIC_URL%/media/192.png" crossorigin="anonymous"> -->
+
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
     <!-----------------------------SCRIPT TO LOAD DYNAMIC MANIFEST------------------------------------------------------->
-    <script>
-      var full = window.location.host; // subdomain.domain.com
+    <script async>
+      const full = window.location.host; // subdomain.domain.com
       const testDomain = 'ingenium.surge.sh';
-      const serverURL  = 'http://13.126.247.152:3000'
-      const fullURL = `${serverURL}/getManifestDataOfClient?domain_name=${testDomain}`;
-      fetch(fullURL).then(res => res.json()).then(resp => {
-        link = document.createElement('link');
-        link.rel = 'manifest';
-        link.id = 'dynamic-manifest'
-        document.getElementsByTagName('head')[0].appendChild(link);
-        const currentManifest = document.querySelector('#default-manifest');
-        currentManifest.parentNode.removeChild(currentManifest);
-        const manifestData = JSON.stringify(resp.result);
-        const blob = new Blob([manifestData], { type: 'application/json' });
-        const manifestURL = URL.createObjectURL(blob);
-        document.querySelector('#dynamic-manifest').setAttribute('href', manifestURL);
-      });
+      const serverURL = 'https://class.ingeniumedu.com';
+      const fullURL = `${serverURL}/getManifestDataOfClient?domain_name=${full}`;
+      console.log(fullURL);
+      fetch(fullURL)
+        .then((res) => res.json())
+        .then((resp) => {
+          link = document.createElement('link');
+          link.rel = 'manifest';
+          link.id = 'dynamic-manifest';
+          document.getElementsByTagName('head')[0].appendChild(link);
+          const currentManifest = document.querySelector('#default-manifest');
+          currentManifest.parentNode.removeChild(currentManifest);
+          const manifestData = JSON.stringify(resp.result);
+          const blob = new Blob([manifestData], { type: 'application/json' });
+          const manifestURL = URL.createObjectURL(blob);
+          document.querySelector('#dynamic-manifest').setAttribute('href', manifestURL);
+        });
     </script>
 
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" id='default-manifest'/>
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" id="default-manifest" />
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.

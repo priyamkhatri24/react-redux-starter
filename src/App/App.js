@@ -6,11 +6,13 @@ import { connect } from 'react-redux';
 import { getCurrentcolor } from '../redux/reducers/color.reducer';
 import { getCurrentBranding } from '../redux/reducers/branding.reducer';
 import { setGlobalColors, changeFaviconAndDocumentTitle } from '../Utilities';
+import { Loader } from '../Components/Common';
 import './App.scss';
 import { history, Routes } from '../Routing';
+import { getCurrentLoadingStatus } from '../redux/reducers/loading.reducer';
 
 function App(props) {
-  const { color, currentbranding } = props;
+  const { color, currentbranding, isLoading } = props;
 
   useEffect(() => {
     if (Object.keys(color.color) !== 0) {
@@ -26,6 +28,7 @@ function App(props) {
 
   return (
     <Container fluid className='p-0 m-0 overflow-hidden'>
+      {isLoading && <Loader />}
       <ConnectedRouter history={history}>
         <Routes />
       </ConnectedRouter>
@@ -36,6 +39,7 @@ function App(props) {
 const mapStateToProps = (state) => ({
   color: getCurrentcolor(state),
   currentbranding: getCurrentBranding(state),
+  isLoading: getCurrentLoadingStatus(state),
 });
 
 export default connect(mapStateToProps)(App);
@@ -49,7 +53,7 @@ App.propTypes = {
       superLight: PropTypes.string,
     }),
   }).isRequired,
-
+  isLoading: PropTypes.bool.isRequired,
   currentbranding: PropTypes.shape({
     branding: PropTypes.instanceOf(Object).isRequired,
   }).isRequired,

@@ -1,0 +1,151 @@
+.Courses {
+  @import '../../scss/bootstrap';
+
+  &__heading {
+    color: $headingGrey;
+    line-height: $spacer * 1.25;
+    font-family: $medium;
+  }
+
+  &__subHeading {
+    font-family: $regular;
+    line-height: 15px;
+    color: $dashboardBlack;
+    font-size: $spacer * 0.75;
+  }
+
+  &__accordionHeading {
+    border-radius: 5px;
+    border: 1px solid $dashboardGrey;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
+    font-family: $medium;
+    font-size: $spacer * 0.875;
+    line-height: $spacer * 1.25;
+  }
+
+  &__couponHeading {
+    color: $dashboardBlack;
+    font-family: $regular;
+    font-size: $spacer * 0.75;
+  }
+
+  &__viewCourseImage {
+    max-width: 100%;
+    width: 95px;
+    height: 61px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+
+  // &__playerWrapper {
+  //   position: relative;
+  //   padding-top: 56.25%; /* 720 / 1280 = 0.5625 */
+  // }
+
+  // &__reactPlayer {
+  //   position: absolute;
+  //   top: 0;
+  //   left: 0;
+  // }
+
+  &__coloredNumber {
+    color: var(--primary-blue);
+    border: 1px solid var(--primary-blue);
+    font-size: $spacer;
+    // width: $spacer * 1.45;
+    // height: $spacer * 1.45;
+    // text-align: center;
+    // line-height: $spacer * 1.25;
+    // border-radius: 0.5rem * 1.25; /* or 50% width & line-height */
+
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    padding: 1px;
+
+    background: #fff;
+    text-align: center;
+  }
+
+  &__createCourse {
+    font-family: $bold;
+    line-height: 18px;
+    color: $headingGrey;
+    font-size: $spacer * 0.875;
+  }
+
+  &__chotiDetail {
+    font-family: $regular;
+    color: $lightGrey;
+    line-height: 15px;
+    font-size: $spacer * 0.75;
+  }
+
+  &__motiDetail {
+    font-family: $regular;
+    font-size: $spacer * 0.875;
+    line-height: 18px;
+    color: $black;
+  }
+
+  &__edit {
+    position: absolute;
+    top: 10px;
+    right: 45px;
+    width: 50px;
+    border-radius: 20px 0 0 20px;
+    background-color: $lightestBlue;
+  }
+
+  &__tinySubHeading {
+    font-family: $regular;
+    font-size: $spacer * 0.625;
+    color: $lightGrey;
+    line-height: 13px;
+  }
+
+  &__rupeeAmount {
+    font-size: $spacer * 0.875;
+    font-family: $regular;
+    color: var(--primary-blue);
+  }
+
+  &__couponSmallColor {
+    font-size: $spacer * 0.625;
+    letter-spacing: 0.31px;
+    color: var(--primary-blue);
+  }
+
+  &__slimButton {
+    height: 20px;
+    width: 74px;
+  }
+}
+
+#limited + label {
+  font-family: 'Montserrat-Regular';
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.38);
+  line-height: 18px;
+}
+
+#forever + label {
+  font-family: 'Montserrat-Regular';
+  font-size: 14px;
+  color: var(--primary-blue);
+  line-height: 18px;
+}
+
+#limitedNumber + label {
+  font-family: 'Montserrat-Regular';
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.38);
+  line-height: 18px;
+}
+
+#unlimited + label {
+  font-family: 'Montserrat-Regular';
+  font-size: 14px;
+  color: var(--primary-blue);
+  line-height: 18px;
+}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import fromUnixTime from 'date-fns/fromUnixTime';
@@ -124,6 +125,7 @@ const Tests = (props) => {
               parseInt(liveCheck[0].startTime, 10),
               liveCheck[0].endTime,
               'livetest',
+              elem.test_id,
             );
             console.log(response);
           }
@@ -166,9 +168,17 @@ const Tests = (props) => {
                   test_id: elem.test_id,
                   language_type: elem.language_type,
                 };
-                get(demoTestPayload, '/getTestQuestionsForStudentWithLanguage').then((r) =>
-                  console.log(r),
-                );
+                get(demoTestPayload, '/getTestQuestionsForStudentWithLanguage').then((r) => {
+                  console.log(r, 'r');
+                  const studentQuestions = apiValidation(r);
+                  startLive(
+                    studentQuestions,
+                    +new Date(),
+                    +new Date() + parseInt(result.duration, 10) / 1000,
+                    'demotest',
+                    elem.test_id,
+                  );
+                });
               }
             });
           } else if (response.isDenied) {
@@ -190,7 +200,13 @@ const Tests = (props) => {
           get(demoTestPayload, '/getTestQuestionsForStudentWithLanguage').then((response) => {
             console.log(response);
             const studentQuestions = apiValidation(response);
-            startLive(studentQuestions, currentTime, testStartTime, 'demotest');
+            startLive(
+              studentQuestions,
+              result.current_time,
+              result.test_end_time,
+              'demotest',
+              elem.test_id,
+            );
           });
         } else if (dateResult > 0) {
           const testPayload = {
@@ -353,3 +369,9 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(Tests);
+
+Tests.propTypes = {
+  startHomework: PropTypes.func.isRequired,
+  startLive: PropTypes.func.isRequired,
+  clientUserId: PropTypes.number.isRequired,
+};
