@@ -67,6 +67,14 @@ class QuestionCard extends Component {
 
   /** ********Timer logic***** */
 
+  handleChecked(order) {
+    const { checked } = this.state;
+    const checkedArray = [...checked];
+    checkedArray[order - 1] = !checkedArray[order - 1];
+    this.setState({ checked: checkedArray });
+    console.log('CHANGE!');
+  }
+
   restartSectionTimer = () => {
     if (this.sectionTimeIntervalId !== 0) {
       clearInterval(this.sectionTimeIntervalId);
@@ -207,14 +215,6 @@ class QuestionCard extends Component {
     }
     return null;
   };
-
-  handleChecked(order) {
-    const { checked } = this.state;
-    const checkedArray = [...checked];
-    checkedArray[order - 1] = !checkedArray[order - 1];
-    this.setState({ checked: checkedArray });
-    console.log('CHANGE!');
-  }
 
   render() {
     const { question, answer, checked, timer } = this.state;
