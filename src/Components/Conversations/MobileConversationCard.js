@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Container, Row, Col, Card, Image, Media } from 'react-bootstrap';
+import { Container, Row, Col, Card, Image, Media, Badge } from 'react-bootstrap';
 
 const MobileConversationCard = function ({ name, subTitle }) {
   return (
@@ -15,8 +15,15 @@ const MobileConversationCard = function ({ name, subTitle }) {
               roundedCircle
             />
             <Media.Body>
-              <b>{name}</b>
-              <p className='card-subtitle'>{subTitle}</p>
+              <Row>
+                <Col xs={10}>
+                  <b>{name}</b>
+                  <p className='card-subtitle'>{subTitle}</p>
+                </Col>
+                <Col xs={2} className='my-auto'>
+                  <Badge variant='success'>2</Badge>
+                </Col>
+              </Row>
             </Media.Body>
           </Media>
         </Col>
