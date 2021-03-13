@@ -21,7 +21,7 @@ const MobileConversationCard = function ({ name, subTitle }) {
                   <p className='card-subtitle'>{subTitle}</p>
                 </Col>
                 <Col xs={2} className='my-auto'>
-                  <Badge variant='success'>2</Badge>
+                  <Badge variant='success'>55</Badge>
                 </Col>
               </Row>
             </Media.Body>
