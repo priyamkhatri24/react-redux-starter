@@ -5,3 +5,14 @@
 .dropdown-toggle::after {
   display: none !important;
 }
+
+.card-subtitle {
+  color: grey;
+  padding-top: 0.4rem;
+  font-size: 13px;
+}
+
+.conversation-container {
+  border: 1px solid #efefef;
+  border-radius: 5px;
+}
