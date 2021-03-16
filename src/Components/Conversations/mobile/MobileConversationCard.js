@@ -4,9 +4,9 @@ import { Container, Row, Col, Card, Image, Media, Badge } from 'react-bootstrap'
 
 const MobileConversationCard = function ({ name, subTitle }) {
   return (
-    <Container fluid className='mt-1 mb-1'>
-      <Row noGutters>
-        <Col xs={12}>
+    <Row noGutters>
+      <Col xs={12}>
+        <div className='mt-1 mb-1'>
           <Media as='li' className='conversation-container p-2'>
             <Image
               src='https://i.pravatar.cc/40'
@@ -26,9 +26,9 @@ const MobileConversationCard = function ({ name, subTitle }) {
               </Row>
             </Media.Body>
           </Media>
-        </Col>
-      </Row>
-    </Container>
+        </div>
+      </Col>
+    </Row>
   );
 };
 
