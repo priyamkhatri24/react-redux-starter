@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { Container, Row, Col, Card, Image, Media, Badge } from 'react-bootstrap';
 
-const MobileConversationCard = function ({ name, subTitle }) {
+const MobileConversationCard = function ({ name, subTitle, unreadCount }) {
   const history = useHistory();
 
   return (
@@ -27,9 +27,22 @@ const MobileConversationCard = function ({ name, subTitle }) {
                   <b>{name}</b>
                   <p className='card-subtitle'>{subTitle}</p>
                 </Col>
-                <Col xs={2} className='my-auto'>
-                  <Badge variant='success'>55</Badge>
-                </Col>
+                {unreadCount > 0 && (
+                  <Col xs={2} className='my-auto'>
+                    <div
+                      className='text-center'
+                      style={{
+                        fontSize: '13px',
+                        backgroundColor: 'green',
+                        color: '#fff',
+                        borderRadius: '50%',
+                        padding: '5px',
+                      }}
+                    >
+                      {unreadCount}
+                    </div>
+                  </Col>
+                )}
               </Row>
             </Media.Body>
           </Media>
@@ -42,6 +55,7 @@ const MobileConversationCard = function ({ name, subTitle }) {
 MobileConversationCard.propTypes = {
   name: PropTypes.string.isRequired,
   subTitle: PropTypes.string.isRequired,
+  unreadCount: PropTypes.number.isRequired,
 };
 
 export default MobileConversationCard;

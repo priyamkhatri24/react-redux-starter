@@ -14,7 +14,7 @@ const Message = function ({ username, thumbnail, message, userIsAuthor }) {
 
       {!userIsAuthor && (
         <Media as='div' className='p-2'>
-          <Image src={thumbnail} width={30} className='align-self-center mr-3' roundedCircle />
+          <Image src={thumbnail} width={30} className='align-self-start mr-3 mt-2' roundedCircle />
           <Media.Body>
             <Row>
               <Col>

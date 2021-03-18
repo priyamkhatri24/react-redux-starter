@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import ConversationCard from './desktop/ConversationCard';
 import MobileConversationCard from './mobile/MobileConversationCard';
@@ -7,6 +7,28 @@ import ConversationsHeader from './ConversationsHeader';
 import './Conversations.scss';
 
 const Conversations = function () {
+  const [conversations, setConversations] = useState([]);
+
+  useEffect(function () {
+    setConversations([
+      {
+        name: 'Aakash Gupta',
+        subTitle: 'Hello, how are you?',
+        unreadCount: 5,
+      },
+      {
+        name: 'Kaushik ASP',
+        subTitle: 'Assignments are pending',
+        unreadCount: 15,
+      },
+      {
+        name: 'Master',
+        subTitle: 'Where are you?',
+        unreadCount: 0,
+      },
+    ]);
+  }, []);
+
   return (
     <Container fluid>
       <Row className='d-none d-md-flex'>
@@ -25,9 +47,13 @@ const Conversations = function () {
 
           <div className='conversations-container overflow-auto mt-3'>
             <ul className='list-unstyled'>
-              <MobileConversationCard name='Aakash Gupta' subTitle='Hello, how are you?' />
-              <MobileConversationCard name='Kaushik ASP' subTitle='Assignments are pending' />
-              <MobileConversationCard name='Master' subTitle='Where are you?' />
+              {conversations.map((data) => (
+                <MobileConversationCard
+                  name={data.name}
+                  subTitle={data.subTitle}
+                  unreadCount={data.unreadCount}
+                />
+              ))}
             </ul>
           </div>
         </Col>
