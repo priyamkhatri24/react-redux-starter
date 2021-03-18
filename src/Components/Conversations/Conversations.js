@@ -3,7 +3,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import ConversationCard from './desktop/ConversationCard';
 import MobileConversationCard from './mobile/MobileConversationCard';
 import FocusedConversation from './desktop/FocusedConversation';
-import ChatHeader from './ChatHeader';
+import ConversationsHeader from './ConversationsHeader';
 import './Conversations.scss';
 
 const Conversations = function () {
@@ -19,7 +19,7 @@ const Conversations = function () {
         </Col>
       </Row>
       <Row className='d-block d-md-none'>
-        <ChatHeader />
+        <ConversationsHeader />
         <Col md={3}>
           {/* <h5 className='heading pt-2'>Chats</h5> */}
 

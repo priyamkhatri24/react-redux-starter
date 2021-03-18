@@ -1,13 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
 import { Container, Row, Col, Card, Image, Media, Badge } from 'react-bootstrap';
 
 const MobileConversationCard = function ({ name, subTitle }) {
+  const history = useHistory();
+
   return (
     <Row noGutters>
       <Col xs={12}>
         <div className='mt-1 mb-1'>
-          <Media as='li' className='conversation-container p-2'>
+          <Media
+            as='li'
+            className='conversation-container p-2'
+            onClick={() => history.push('/conversation')}
+          >
             <Image
               src='https://i.pravatar.cc/40'
               width={40}

@@ -1,9 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Container, Row, Col, Card, Image, Media, Badge } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
-const ChatHeader = function () {
+const ConversationsHeader = function () {
   const history = useHistory();
 
   return (
@@ -32,4 +31,4 @@ const ChatHeader = function () {
   );
 };
 
-export default ChatHeader;
+export default ConversationsHeader;
