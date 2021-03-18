@@ -9,7 +9,7 @@ import {
   Dropdown,
   ButtonGroup,
 } from 'react-bootstrap';
-import Messages from '../Messages';
+import Messages from '../Messages/Messages';
 import './FocusedConversation.scss';
 
 const ConversationInput = function () {
@@ -25,11 +25,10 @@ const ConversationInput = function () {
             variant='primary'
             title={<i className='material-icons'>attachment</i>}
           >
-            <Dropdown.Item eventKey='1'>Action</Dropdown.Item>
-            <Dropdown.Item eventKey='2'>Another action</Dropdown.Item>
-            <Dropdown.Item eventKey='3'>Something else here</Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Item eventKey='4'>Separated link</Dropdown.Item>
+            <Dropdown.Item eventKey='1'>Image</Dropdown.Item>
+            <Dropdown.Item eventKey='2'>Video</Dropdown.Item>
+            <Dropdown.Item eventKey='3'>Document</Dropdown.Item>
+            <Dropdown.Item eventKey='4'>Audio</Dropdown.Item>
           </DropdownButton>
           <FormControl as='textarea' aria-label='With textarea' />
           <Button className='rounded-btn'>
@@ -43,10 +42,10 @@ const ConversationInput = function () {
 
 const FocusedConversation = function () {
   return (
-    <Container className='d-flex flex-column justify-content-between conversations-container'>
+    <div className='d-flex flex-column justify-content-between'>
       <Messages />
       <ConversationInput />
-    </Container>
+    </div>
   );
 };
 

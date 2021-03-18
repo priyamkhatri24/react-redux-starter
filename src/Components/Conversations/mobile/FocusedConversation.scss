@@ -1,22 +1,23 @@
 .input-container {
-    border: 1px solid #efefef;
-    border-radius: 5rem;
-    padding: 0px 10px;
+  border: 1px solid #efefef;
+  border-radius: 5rem;
+  padding: 0px 10px;
 
-    textarea {
-        border: none;
-    }
+  textarea {
+    border: none;
+  }
 
-    .material-icons {
-        font-size: 18px;
-    }
+  .material-icons {
+    font-size: 18px;
+  }
 
-    .rounded-btn, #dropdown-button-drop-up {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-    }
+  .rounded-btn,
+  #dropdown-button-drop-up {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
 }

@@ -3,6 +3,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import MobileConversationCard from './mobile/MobileConversationCard';
 import FocusedConversation from './mobile/FocusedConversation';
 import ConversationHeader from './ConversationHeader';
+import Messages from './Messages/Messages';
 import './Conversations.scss';
 
 const Conversation = function () {
@@ -14,7 +15,7 @@ const Conversation = function () {
         participantsCount={5}
       />
       <Row>
-        <Col md={10}>
+        <Col md={12}>
           <FocusedConversation />
         </Col>
       </Row>
