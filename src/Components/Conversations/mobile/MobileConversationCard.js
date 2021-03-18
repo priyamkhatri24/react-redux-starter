@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
-import { Container, Row, Col, Card, Image, Media, Badge } from 'react-bootstrap';
+import { Row, Col, Image, Media } from 'react-bootstrap';
 
 const MobileConversationCard = function ({ name, subTitle, unreadCount }) {
   const history = useHistory();
