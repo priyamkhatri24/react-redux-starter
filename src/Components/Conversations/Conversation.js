@@ -8,18 +8,20 @@ import './Conversations.scss';
 
 const Conversation = function () {
   return (
-    <div>
-      <ConversationHeader
-        thumbnail='https://i.pravatar.cc/40'
-        name='Master Group'
-        participantsCount={5}
-      />
+    <>
+      <div className='fixed-top' style={{ zIndex: 2, backgroundColor: '#fff' }}>
+        <ConversationHeader
+          thumbnail='https://i.pravatar.cc/40'
+          name='Master Group'
+          participantsCount={5}
+        />
+      </div>
       <Row>
         <Col md={12}>
           <FocusedConversation />
         </Col>
       </Row>
-    </div>
+    </>
   );
 };
 

@@ -14,9 +14,9 @@ import './FocusedConversation.scss';
 
 const ConversationInput = function () {
   return (
-    <Row>
+    <Row className='fixed-bottom pb-2' style={{ backgroundColor: '#fff', zIndex: 2 }}>
       <Col xs={12}>
-        <div className='d-flex flex-row input-container align-items-center mb-1'>
+        <div className='d-flex flex-row input-container align-items-center'>
           <DropdownButton
             as={ButtonGroup}
             key='up'
@@ -30,7 +30,7 @@ const ConversationInput = function () {
             <Dropdown.Item eventKey='3'>Document</Dropdown.Item>
             <Dropdown.Item eventKey='4'>Audio</Dropdown.Item>
           </DropdownButton>
-          <FormControl as='textarea' aria-label='With textarea' />
+          <FormControl as='text' aria-label='With text' />
           <Button className='rounded-btn'>
             <i className='material-icons'>send</i>
           </Button>
@@ -42,10 +42,10 @@ const ConversationInput = function () {
 
 const FocusedConversation = function () {
   return (
-    <div className='d-flex flex-column justify-content-between'>
+    <>
       <Messages />
       <ConversationInput />
-    </div>
+    </>
   );
 };
 

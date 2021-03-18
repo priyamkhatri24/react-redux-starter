@@ -26,9 +26,199 @@ const Messages = function () {
         thumbnail='https://i.pravatar.cc/30'
         userIsAuthor
       />
-      <span ref={messagesEnd} style={{ visibility: 'hidden' }}>
-        END
-      </span>
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+        userIsAuthor
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+        userIsAuthor
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+        userIsAuthor
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+        userIsAuthor
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+        userIsAuthor
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+        userIsAuthor
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+        userIsAuthor
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+        userIsAuthor
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+        userIsAuthor
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+        userIsAuthor
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+        userIsAuthor
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+        userIsAuthor
+      />
+      <span ref={messagesEnd} style={{ visibility: 'hidden' }} />
     </div>
   );
 };

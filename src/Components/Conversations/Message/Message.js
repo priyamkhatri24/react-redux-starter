@@ -5,7 +5,7 @@ import './Message.scss';
 
 const Message = function ({ username, thumbnail, message, userIsAuthor }) {
   return (
-    <div className='mb-2'>
+    <div className='mb-2 message'>
       {userIsAuthor && (
         <div className='d-flex justify-content-end'>
           <p className='text-right p-3 message-by-user'>{message.content}</p>
