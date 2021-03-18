@@ -1,21 +1,20 @@
 import React from 'react';
 import { Container, Row, Col, Media, Image } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import './Message.scss';
 
-const Message = function () {
-  const history = useHistory();
-
+const Message = function ({ username, thumbnail, message, userIsAuthor }) {
   return (
-    <Row className='mb-2'>
-      <Col>
+    <div className='mb-2'>
+      {userIsAuthor && (
+        <div className='d-flex justify-content-end'>
+          <p className='text-right p-3 message-by-user'>{message.content}</p>
+        </div>
+      )}
+
+      {!userIsAuthor && (
         <Media as='div' className='p-2'>
-          <Image
-            src='https://i.pravatar.cc/30'
-            width={30}
-            className='align-self-center mr-3'
-            roundedCircle
-          />
+          <Image src={thumbnail} width={30} className='align-self-center mr-3' roundedCircle />
           <Media.Body>
             <Row>
               <Col>
@@ -27,16 +26,30 @@ const Message = function () {
                     borderRadius: '5px',
                   }}
                 >
-                  <b>Jane Doe</b>
-                  <p className='card-subtitle'>Hello</p>
+                  <b>{username}</b>
+                  <p className='card-subtitle'>{message.content}</p>
                 </div>
               </Col>
             </Row>
           </Media.Body>
         </Media>
-      </Col>
-    </Row>
+      )}
+    </div>
   );
+};
+
+Message.propTypes = {
+  username: PropTypes.string.isRequired,
+  thumbnail: PropTypes.string.isRequired,
+  message: PropTypes.objectOf({
+    type: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired,
+  }).isRequired,
+  userIsAuthor: PropTypes.bool,
+};
+
+Message.defaultProps = {
+  userIsAuthor: false,
 };
 
 export default Message;

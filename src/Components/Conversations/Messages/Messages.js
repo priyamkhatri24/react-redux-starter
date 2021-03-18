@@ -10,30 +10,25 @@ const Messages = function () {
 
   return (
     <div className='messages-container container-fluid'>
-      <Row>
-        <Col>
-          <Message />
-          <Message />
-          <Message />
-          <Message />
-          <Message />
-          <Message />
-          <Message />
-          <Message />
-          <Message />
-          <Message />
-          <Message />
-          <Message />
-          <Message />
-          <Message />
-          <Message />
-          <Message />
-          <Message />
-          <span ref={messagesEnd} style={{ visibility: 'hidden' }}>
-            END
-          </span>
-        </Col>
-      </Row>
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+      />
+      <Message
+        username='Kaushik'
+        message={{ type: 'text', content: 'Hello' }}
+        thumbnail='https://i.pravatar.cc/30'
+        userIsAuthor
+      />
+      <span ref={messagesEnd} style={{ visibility: 'hidden' }}>
+        END
+      </span>
     </div>
   );
 };
