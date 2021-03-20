@@ -1,14 +1,15 @@
 import React from 'react';
-import { Container, Row, Col, Media, Image } from 'react-bootstrap';
+import { Row, Col, Media, Image } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import './Message.scss';
 
-const Message = function ({ username, thumbnail, message, userIsAuthor }) {
+const Message = function ({ username, thumbnail, message, userIsAuthor, timestamp }) {
   return (
     <div className='mb-2 message'>
       {userIsAuthor && (
-        <div className='d-flex justify-content-end'>
-          <p className='text-right p-3 message-by-user'>{message.content}</p>
+        <div className='d-flex flex-column align-items-end'>
+          <p className='text-right p-2 message-by-author'>{message.content}</p>
+          {/* <p className='timestamp'>{timestamp}</p> */}
         </div>
       )}
 
@@ -19,15 +20,18 @@ const Message = function ({ username, thumbnail, message, userIsAuthor }) {
             <Row>
               <Col>
                 <div
-                  className='message-content pt-2 pb-2 pl-2 pr-4'
+                  className='message-content pt-2 pb-0 pl-2 pr-4'
                   style={{
                     display: 'inline-block',
                     boxShadow: '0px 5px 5px 0px rgba(50, 50, 50, 0.2)',
                     borderRadius: '5px',
                   }}
                 >
-                  <b>{username}</b>
-                  <p className='card-subtitle'>{message.content}</p>
+                  <small>
+                    <b>{username}</b>
+                  </small>
+                  <p className='message-by-user'>{message.content}</p>
+                  {/* <p className='timestamp'>{timestamp}</p> */}
                 </div>
               </Col>
             </Row>
@@ -46,6 +50,7 @@ Message.propTypes = {
     content: PropTypes.string.isRequired,
   }).isRequired,
   userIsAuthor: PropTypes.bool,
+  timestamp: PropTypes.string.isRequired,
 };
 
 Message.defaultProps = {

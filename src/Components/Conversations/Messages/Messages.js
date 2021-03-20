@@ -6,23 +6,9 @@ import './Messages.scss';
 const Messages = function ({ list }) {
   const messagesEnd = useRef(null);
 
-  // useEffect(function () {
-  //   messagesEnd.current.scrollIntoView();
-  //   setMessages([
-  //     {
-  //       username: 'Kaushik',
-  //       message: { type: 'text', content: 'Hello' },
-  //       thumbnail: 'https://i.pravatar.cc/30',
-  //       userIsAuthor: false,
-  //     },
-  //     {
-  //       username: 'Pramudit',
-  //       message: { type: 'text', content: 'Hey!' },
-  //       thumbnail: 'https://i.pravatar.cc/30',
-  //       userIsAuthor: true,
-  //     },
-  //   ]);
-  // }, []);
+  useEffect(function () {
+    messagesEnd.current.scrollIntoView();
+  });
 
   return (
     <div className='messages-container container-fluid'>
@@ -32,6 +18,7 @@ const Messages = function ({ list }) {
           message={data.message}
           thumbnail={data.thumbnail}
           userIsAuthor={data.userIsAuthor}
+          timestamp={data.timestamp}
         />
       ))}
       <span ref={messagesEnd} style={{ visibility: 'hidden' }} />
@@ -48,6 +35,7 @@ Messages.propTypes = {
     }),
     thumbnail: PropTypes.string.isRequired,
     userIsAuthor: PropTypes.bool.isRequired,
+    timestamp: PropTypes.string.isRequired,
   }).isRequired,
 };
 
