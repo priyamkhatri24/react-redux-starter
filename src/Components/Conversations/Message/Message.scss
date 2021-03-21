@@ -4,19 +4,74 @@
   }
 
   .message-by-author {
-    background-color: #7fc4fd;
+    background-color: #f1f9ff;
+    box-shadow: 0.5px 0.5px 1px 0px #00000026;
     border-radius: 5px;
-    font-size: 13px;
+    font-size: 14px;
+    font-family: 'Montserrat-Regular';
+    color: #000;
+    margin-bottom: 0px;
   }
 
-  .message-by-user {
-    border-radius: 5px;
-    font-size: 13px;
+  .image-by-author {
+    @extend .message-by-author;
+    max-width: 80%;
+
+    .image-message {
+      width: 100%;
+    }
+  }
+
+  .video-by-author {
+    @extend .message-by-author;
+    max-width: 80%;
+
+    .video-message {
+      width: 100%;
+    }
   }
 
   .timestamp {
     font-size: 10px;
     text-align: right;
     margin-bottom: 0px;
+  }
+
+  .message-content {
+    background-color: #fcfcfc;
+    box-shadow: 0.5px 0.5px 1px 0px #00000026;
+    border-radius: 5px;
+    display: inline-block;
+    max-width: 80%;
+
+    .username {
+      font-size: 12px;
+      font-family: 'Montserrat-Bold';
+      margin-bottom: 6px;
+    }
+
+    .message-by-user {
+      font-size: 14px;
+      font-family: 'Montserrat-Regular';
+      margin-bottom: 0px;
+      color: #000;
+    }
+
+    .image-by-user {
+      @extend .message-by-user;
+
+      .image-message {
+        width: 100%;
+      }
+    }
+
+    .video-by-user {
+      @extend .message-by-user;
+      max-width: 80%;
+
+      .video-message {
+        width: 100%;
+      }
+    }
   }
 }

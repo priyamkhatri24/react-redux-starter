@@ -32,9 +32,7 @@ const Conversations = function ({ conversations, setConversations, setConversati
   };
 
   const onConversationSelected = function (id, name, thumbnail) {
-    console.log('Clicked');
     setConversation({ id, messages: [], name, thumbnail, participantsCount: null });
-    // localStorage.setItem('selectedConversation', id);
     history.push('/conversation');
   };
 

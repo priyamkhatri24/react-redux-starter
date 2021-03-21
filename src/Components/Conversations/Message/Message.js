@@ -1,37 +1,96 @@
 import React from 'react';
-import { Row, Col, Media, Image } from 'react-bootstrap';
 import PropTypes from 'prop-types';
+import { Row, Col, Media, Image } from 'react-bootstrap';
+import ReactPlayer from 'react-player';
 import './Message.scss';
 
-const Message = function ({ username, thumbnail, message, userIsAuthor, timestamp }) {
+const ImageMessage = function ({ content, userIsAuthor }) {
   return (
-    <div className='mb-2 message'>
+    <div className={`${userIsAuthor ? 'p-2 image-by-author' : 'p-1 image-by-user'}`}>
+      <Image className='image-message' src={content} />
+    </div>
+  );
+};
+
+ImageMessage.propTypes = {
+  content: PropTypes.string.isRequired,
+  userIsAuthor: PropTypes.bool.isRequired,
+};
+
+const TextMessage = function ({ content, userIsAuthor }) {
+  return userIsAuthor ? (
+    <p className='message-by-author p-2'>{content}</p>
+  ) : (
+    <p className='message-by-user'>{content}</p>
+  );
+};
+
+TextMessage.propTypes = {
+  content: PropTypes.string.isRequired,
+  userIsAuthor: PropTypes.bool.isRequired,
+};
+
+const VideoMessage = function ({ content, userIsAuthor }) {
+  return (
+    <div className={`${userIsAuthor ? 'p-2 video-by-author' : 'p-1 video-by-user'}`}>
+      <ReactPlayer
+        className='video-message'
+        controls
+        url={[{ src: content, type: 'video/mp4' }]}
+        width='100%'
+        height='100%'
+      />
+    </div>
+  );
+};
+
+VideoMessage.propTypes = {
+  content: PropTypes.string.isRequired,
+  userIsAuthor: PropTypes.bool.isRequired,
+};
+
+const AudioMessage = function ({ content, userIsAuthor }) {};
+
+AudioMessage.propTypes = {
+  content: PropTypes.string.isRequired,
+  userIsAuthor: PropTypes.bool.isRequired,
+};
+
+const DocumentMessage = function ({ content, userIsAuthor }) {};
+
+DocumentMessage.propTypes = {
+  content: PropTypes.string.isRequired,
+  userIsAuthor: PropTypes.bool.isRequired,
+};
+
+const TYPE_COMPONENT_MAPPING = {
+  image: ImageMessage,
+  text: TextMessage,
+  video: VideoMessage,
+  audio: AudioMessage,
+  doc: DocumentMessage,
+};
+
+const Message = function ({ id, username, thumbnail, message, userIsAuthor, timestamp }) {
+  const messageComponent = TYPE_COMPONENT_MAPPING[message.type];
+
+  return (
+    <div className='mb-2 message' key={id}>
       {userIsAuthor && (
         <div className='d-flex flex-column align-items-end'>
-          <p className='text-right p-2 message-by-author'>{message.content}</p>
-          {/* <p className='timestamp'>{timestamp}</p> */}
+          {messageComponent({ content: message.content, userIsAuthor })}
         </div>
       )}
 
       {!userIsAuthor && (
-        <Media as='div' className='p-2'>
+        <Media as='div'>
           <Image src={thumbnail} width={30} className='align-self-start mr-3 mt-2' roundedCircle />
           <Media.Body>
             <Row>
               <Col>
-                <div
-                  className='message-content pt-2 pb-0 pl-2 pr-4'
-                  style={{
-                    display: 'inline-block',
-                    boxShadow: '0px 5px 5px 0px rgba(50, 50, 50, 0.2)',
-                    borderRadius: '5px',
-                  }}
-                >
-                  <small>
-                    <b>{username}</b>
-                  </small>
-                  <p className='message-by-user'>{message.content}</p>
-                  {/* <p className='timestamp'>{timestamp}</p> */}
+                <div className='message-content pt-1 pb-1 pl-2 pr-2'>
+                  <p className='username'>{username}</p>
+                  {messageComponent({ content: message.content, userIsAuthor })}
                 </div>
               </Col>
             </Row>
@@ -43,6 +102,7 @@ const Message = function ({ username, thumbnail, message, userIsAuthor, timestam
 };
 
 Message.propTypes = {
+  id: PropTypes.number.isRequired,
   username: PropTypes.string.isRequired,
   thumbnail: PropTypes.string.isRequired,
   message: PropTypes.objectOf({

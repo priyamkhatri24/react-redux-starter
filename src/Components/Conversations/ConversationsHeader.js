@@ -10,7 +10,7 @@ const ConversationsHeader = function () {
       <Col xs={12}>
         <div
           className='p-2 d-flex align-items-center justify-content-between'
-          style={{ boxShadow: '0px 5px 5px 0px rgba(50, 50, 50, 0.2)' }}
+          style={{ boxShadow: '0px 2px 2px 0px #00000029' }}
         >
           <div className='d-flex align-items-center'>
             <i

@@ -14,6 +14,7 @@ const Messages = function ({ list }) {
     <div className='messages-container container-fluid'>
       {list.map((data) => (
         <Message
+          id={data.id}
           username={data.username}
           message={data.message}
           thumbnail={data.thumbnail}
@@ -28,6 +29,7 @@ const Messages = function ({ list }) {
 
 Messages.propTypes = {
   list: PropTypes.arrayOf({
+    id: PropTypes.number.isRequired,
     username: PropTypes.string.isRequired,
     message: PropTypes.objectOf({
       type: PropTypes.string.isRequired,

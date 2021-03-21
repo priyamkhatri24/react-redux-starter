@@ -1,11 +1,17 @@
 .input-container {
-  border: 1px solid #efefef;
   border-radius: 5rem;
   padding: 5px 10px;
   margin: 0px 15px;
+  box-shadow: 0.5px 0.5px 1px 0px #00000026;
 
-  input {
+  #chat-input {
     border: none;
+
+    &::placeholder {
+      font-family: 'Montserrat-Regular';
+      font-size: 16px;
+      color: #0000008a;
+    }
   }
 
   .material-icons {
@@ -20,5 +26,9 @@
     width: 30px;
     height: 30px;
     border-radius: 50%;
+  }
+
+  .dropup .dropdown-toggle::after {
+    display: none;
   }
 }

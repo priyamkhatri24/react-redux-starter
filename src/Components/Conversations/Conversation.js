@@ -47,8 +47,10 @@ const ConversationInput = function ({ sendMessage }) {
             <Dropdown.Item eventKey='4'>Audio</Dropdown.Item>
           </DropdownButton>
           <FormControl
+            placeholder='Type a message'
             as='input'
-            aria-label='With text'
+            id='chat-input'
+            aria-label='Input field for your message'
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
@@ -90,31 +92,43 @@ const Conversation = function ({ conversation, setConversation, clientUserId }) 
       console.log(apiData);
       const { message_array: messageArray, participants_count: participantsCount } = apiData;
       console.log(messageArray);
+      const messages = messageArray
+        .map((data) => ({
+          id: data.chat_id,
+          message: {
+            type: 'text',
+            content: data.text,
+          },
+          thumbnail: data.sent_by.display_picture || 'https://i.pravatar.cc/40',
+          userIsAuthor: data.sent_by.client_user_id === clientUserId,
+          timestamp: data.sent_time,
+          username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
+        }))
+        .reverse();
+
+      messages.push({
+        id: 123123,
+        message: {
+          type: 'video',
+          content: 'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1616310047622.mp4',
+        },
+        thumbnail: 'https://i.pravatar.cc/40',
+        username: 'asd',
+        timestamp: '',
+        userIsAuthor: true,
+      });
+
       setConversation({
         id: conversation.id,
         participantsCount,
         name: conversation.name,
         thumbnail: conversation.thumbnail,
-        messages: messageArray
-          .map((data) => ({
-            message: {
-              type: 'text',
-              content: data.text,
-            },
-            thumbnail: data.sent_by.display_picture || 'https://i.pravatar.cc/40',
-            userIsAuthor: data.sent_by.client_user_id === clientUserId,
-            timestamp: data.sent_time,
-            username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
-          }))
-          .reverse(),
+        messages,
       });
     });
   };
 
   const sendMessage = function (message) {
-    console.log('send message comign', message);
-    console.log(socket);
-    console.log(socket.emit);
     socket.emit('sendMessage', {
       sender_id: clientUserId,
       conversation_id: conversation.id,
@@ -139,14 +153,6 @@ const Conversation = function ({ conversation, setConversation, clientUserId }) 
       ...conversation,
       messages,
     });
-
-    // socketInstance.emit('sendMessage', {
-    //   sender_id: 1801,
-    //   conversation_id: 1,
-    //   chat_text: 'asdasd',
-    //   type: 'message',
-    //   attachments_array: [],
-    // });
   };
 
   return (

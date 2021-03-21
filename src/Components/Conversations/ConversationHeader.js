@@ -11,7 +11,7 @@ const ConversationHeader = function ({ thumbnail, name, participantsCount = 0 })
       <Col xs={12}>
         <div
           className='p-2 d-flex align-items-center justify-content-between'
-          style={{ boxShadow: '0px 5px 5px 0px rgba(50, 50, 50, 0.2)' }}
+          style={{ boxShadow: '0px 2px 2px 0px #00000029' }}
         >
           <div className='d-flex align-items-center'>
             <i
@@ -31,12 +31,30 @@ const ConversationHeader = function ({ thumbnail, name, participantsCount = 0 })
                   className='align-self-center mr-3'
                   roundedCircle
                 />
-                <Media.Body>
+                <Media.Body className='align-self-center'>
                   <Row>
                     <Col xs={12}>
-                      <b>{name}</b>
+                      <p
+                        style={{
+                          fontSize: '12px',
+                          fontFamily: 'Montserrat-Bold',
+                          color: '#000',
+                          marginBottom: '0px',
+                        }}
+                      >
+                        {name}
+                      </p>
                       {participantsCount > 1 && (
-                        <p className='card-subtitle'>{participantsCount} participants</p>
+                        <p
+                          style={{
+                            fontSize: '10px',
+                            fontFamily: 'Montserrat-Regular',
+                            color: '#0000008A',
+                            marginBottom: '0px',
+                          }}
+                        >
+                          {participantsCount} participants
+                        </p>
                       )}
                     </Col>
                   </Row>
