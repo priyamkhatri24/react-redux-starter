@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import io from 'socket.io-client';
 
 import {
-  Container,
   Row,
   Col,
   FormControl,
@@ -19,6 +18,7 @@ import { getConversation } from '../../redux/reducers/conversations.reducer';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import ConversationHeader from './ConversationHeader';
 import Messages from './Messages/Messages';
+import Message from './Message/Message';
 import './Conversation.scss';
 
 const ConversationInput = function ({ sendMessage }) {
@@ -89,9 +89,7 @@ const Conversation = function ({ conversation, setConversation, clientUserId }) 
   const fetchMessages = function () {
     get(null, `/getChtOfConversation?conversation_id=${conversation.id}`).then((res) => {
       const apiData = apiValidation(res);
-      console.log(apiData);
       const { message_array: messageArray, participants_count: participantsCount } = apiData;
-      console.log(messageArray);
       const messages = messageArray
         .map((data) => ({
           id: data.chat_id,
@@ -109,13 +107,18 @@ const Conversation = function ({ conversation, setConversation, clientUserId }) 
       messages.push({
         id: 123123,
         message: {
-          type: 'video',
-          content: 'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1616310047622.mp4',
+          type: 'post',
+          content: {
+            title: 'The favourite dog',
+            desc: `Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut 
+            labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea`,
+            cover: 'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1616312003018.png',
+          },
         },
         thumbnail: 'https://i.pravatar.cc/40',
         username: 'asd',
         timestamp: '',
-        userIsAuthor: true,
+        userIsAuthor: false,
       });
 
       setConversation({
@@ -195,15 +198,7 @@ Conversation.propTypes = {
     name: PropTypes.string.isRequired,
     thumbnail: PropTypes.string.isRequired,
     participantsCount: PropTypes.number,
-    messages: PropTypes.arrayOf({
-      username: PropTypes.string.isRequired,
-      message: PropTypes.objectOf({
-        type: PropTypes.string.isRequired,
-        content: PropTypes.string.isRequired,
-      }),
-      thumbnail: PropTypes.string.isRequired,
-      userIsAuthor: PropTypes.bool.isRequired,
-    }).isRequired,
+    messages: PropTypes.arrayOf(PropTypes.objectOf(Message).isRequired).isRequired,
   }).isRequired,
 };
 

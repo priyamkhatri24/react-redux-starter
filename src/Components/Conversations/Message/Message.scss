@@ -31,6 +31,51 @@
     }
   }
 
+  .audio-message {
+    max-width: 100%;
+  }
+
+  .post-message {
+    .post-title {
+      font-size: 16px;
+      font-family: 'Montserrat-bold';
+      color: #000;
+      line-height: 19px;
+      margin-bottom: 6px;
+    }
+    .post-desc {
+      font-size: 12px;
+      font-family: 'Montserrat-Regular';
+      color: #000;
+      line-height: 15px;
+      margin-bottom: 10px;
+    }
+
+    .post-footer {
+      span {
+        display: flex;
+        align-items: center;
+        color: #0000008a;
+        font-size: 12px;
+        font-family: 'Montserrat-Medium';
+
+        .material-icons {
+          font-size: 16px;
+          margin-right: 5px;
+        }
+
+        .favorite {
+          color: #ff0000de;
+        }
+
+        .chat-bubble,
+        .share {
+          color: #0000008a;
+        }
+      }
+    }
+  }
+
   .timestamp {
     font-size: 10px;
     text-align: right;
@@ -72,6 +117,10 @@
       .video-message {
         width: 100%;
       }
+    }
+
+    .audio-message {
+      max-width: 100%;
     }
   }
 }

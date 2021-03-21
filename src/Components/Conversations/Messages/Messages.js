@@ -28,17 +28,7 @@ const Messages = function ({ list }) {
 };
 
 Messages.propTypes = {
-  list: PropTypes.arrayOf({
-    id: PropTypes.number.isRequired,
-    username: PropTypes.string.isRequired,
-    message: PropTypes.objectOf({
-      type: PropTypes.string.isRequired,
-      content: PropTypes.string.isRequired,
-    }),
-    thumbnail: PropTypes.string.isRequired,
-    userIsAuthor: PropTypes.bool.isRequired,
-    timestamp: PropTypes.string.isRequired,
-  }).isRequired,
+  list: PropTypes.arrayOf(PropTypes.objectOf(Message).isRequired).isRequired,
 };
 
 export default Messages;
