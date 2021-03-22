@@ -30,6 +30,9 @@ store.subscribe(() => {
     homework: store.getState().homework,
     course: store.getState().course,
     studyBin: store.getState().studyBin,
-    conversations: store.getState().conversations,
+    conversations: {
+      conversations: store.getState().conversations.conversations,
+      conversation: store.getState().conversations.conversation,
+    },
   });
 });

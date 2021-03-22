@@ -1,8 +1,20 @@
 .input-container {
   border-radius: 5rem;
+  width: 100%;
   padding: 5px 10px;
   margin: 0px 15px;
   box-shadow: 0.5px 0.5px 1px 0px #00000026;
+
+  .upload-actions {
+    display: flex;
+
+    .material-icons {
+      color: #8d8e94;
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+    }
+  }
 
   #chat-input {
     border: none;
@@ -18,7 +30,6 @@
     font-size: 18px;
   }
 
-  .rounded-btn,
   #dropdown-button-drop-up {
     display: flex;
     align-items: center;
@@ -30,5 +41,18 @@
 
   .dropup .dropdown-toggle::after {
     display: none;
+  }
+}
+
+.rounded-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+
+  .material-icons {
+    font-size: 18px;
   }
 }

@@ -1,5 +1,6 @@
 export const conversationsConstants = {
   CONNECTION: 'CONNECTION',
+  SET_SOCKET: 'SET_SOCKET',
   CONVERSATIONS: 'CONVERSATIONS',
   CLEAR: 'CLEAR',
   SET_MESSAGES: 'SET_MESSAGES',

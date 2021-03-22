@@ -7,7 +7,7 @@ const Messages = function ({ list }) {
   const messagesEnd = useRef(null);
 
   useEffect(function () {
-    messagesEnd.current.scrollIntoView();
+    setTimeout(() => messagesEnd.current.scrollIntoView({ behavior: 'smooth' }), 500);
   });
 
   return (

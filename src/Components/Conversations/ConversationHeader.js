@@ -18,8 +18,8 @@ const ConversationHeader = function ({ thumbnail, name, participantsCount = 0 })
               className='material-icons mr-3'
               role='button'
               tabIndex={0}
-              onClick={() => history.goBack()}
-              onKeyDown={() => history.goBack()}
+              onClick={() => history.push('/conversations')}
+              onKeyDown={() => history.push('/conversations')}
             >
               arrow_back
             </i>

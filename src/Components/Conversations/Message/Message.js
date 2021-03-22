@@ -149,13 +149,6 @@ Message.propTypes = {
         title: PropTypes.string.isRequired,
         desc: PropTypes.string.isRequired,
         cover: PropTypes.string.isRequired,
-        // attachments: PropTypes.arrayOf(
-        //   PropTypes.objectOf({
-        //     url: PropTypes.string.isRequired,
-        //     type: PropTypes.string.isRequired,
-        //     name: PropTypes.string.isRequired,
-        //   }),
-        // ),
       }).isRequired,
     ]),
   }).isRequired,

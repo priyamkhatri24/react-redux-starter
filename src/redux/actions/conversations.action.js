@@ -1,7 +1,7 @@
 import { conversationsConstants } from '../../constants';
 
 function setSocket(payload) {
-  return { type: conversationsConstants.CONNECTION, payload };
+  return { type: conversationsConstants.SET_SOCKET, payload };
 }
 
 function setConversations(payload) {

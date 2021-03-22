@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import io from 'socket.io-client';
 import PropTypes from 'prop-types';
 import { Container, Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
@@ -9,11 +10,33 @@ import MobileConversationCard from './mobile/MobileConversationCard';
 import FocusedConversation from './desktop/FocusedConversation';
 import ConversationsHeader from './ConversationsHeader';
 import { conversationsActions } from '../../redux/actions/conversations.action';
-import { getConversations } from '../../redux/reducers/conversations.reducer';
+import { getConversations, getSocket } from '../../redux/reducers/conversations.reducer';
 import './Conversations.scss';
 
-const Conversations = function ({ conversations, setConversations, setConversation }) {
+const SERVER = 'http://13.126.247.152:3000';
+
+const Conversations = function ({
+  conversations,
+  setConversations,
+  setConversation,
+  socket,
+  setSocket,
+}) {
   const history = useHistory();
+
+  useEffect(function () {
+    fetchConversations();
+    const socketInstance = io(SERVER, { transports: ['websocket'] });
+    socketInstance.on('connect', () => {
+      console.log(socketInstance.id, 'connect');
+    });
+
+    socketInstance.on('disconnect', () => {
+      console.log(socketInstance.id, 'disconnected');
+    });
+
+    setSocket({ socket: socketInstance });
+  }, []);
 
   const fetchConversations = function () {
     get(null, '/getConversationsOfUser?client_user_id=1801').then((res) => {
@@ -36,10 +59,6 @@ const Conversations = function ({ conversations, setConversations, setConversati
     history.push('/conversation');
   };
 
-  useEffect(function () {
-    fetchConversations();
-  }, []);
-
   return (
     <Container fluid>
       <Row className='d-none d-md-flex'>
@@ -59,6 +78,7 @@ const Conversations = function ({ conversations, setConversations, setConversati
               <ul className='list-unstyled'>
                 {conversations.map((data) => (
                   <MobileConversationCard
+                    key={data.id}
                     name={data.name}
                     subTitle={data.subTitle}
                     unreadCount={data.unreadCount}
@@ -80,6 +100,7 @@ const Conversations = function ({ conversations, setConversations, setConversati
 
 const mapStateToProps = (state) => ({
   conversations: getConversations(state),
+  socket: getSocket(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -90,22 +111,23 @@ const mapDispatchToProps = (dispatch) => {
     setConversation: (conversation) => {
       dispatch(conversationsActions.setConversation(conversation));
     },
+    setSocket: (socket) => {
+      dispatch(conversationsActions.setSocket(socket));
+    },
   };
 };
 
 Conversations.propTypes = {
   setConversations: PropTypes.func.isRequired,
   setConversation: PropTypes.func.isRequired,
-  conversations: PropTypes.arrayOf({
-    name: PropTypes.string.isRequired,
-    unreadCount: PropTypes.number,
-    id: PropTypes.number.isRequired,
-    subTitle: PropTypes.string,
-  }),
+  setSocket: PropTypes.func.isRequired,
+  socket: PropTypes.objectOf(PropTypes.any),
+  conversations: PropTypes.arrayOf(PropTypes.object.isRequired),
 };
 
 Conversations.defaultProps = {
   conversations: [],
+  socket: {},
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Conversations);

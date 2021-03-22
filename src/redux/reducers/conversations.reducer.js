@@ -1,17 +1,17 @@
 import { conversationsConstants } from '../../constants';
 
 const initialState = {
-  socket: null,
+  socket: {},
   conversations: [],
   conversation: null,
 };
 
 export function conversations(state = initialState, action) {
   switch (action.type) {
-    case conversationsConstants.CONNECTION:
+    case conversationsConstants.SET_SOCKET:
       return {
         ...state,
-        socket: action.payload,
+        socket: action.payload.socket,
       };
 
     case conversationsConstants.CONVERSATIONS:
@@ -56,6 +56,7 @@ export function conversations(state = initialState, action) {
       return {
         socket: null,
         conversations: [],
+        conversation: {},
       };
     default:
       return state;
