@@ -65,6 +65,26 @@ class QuestionCard extends Component {
     // remove the focused if not save and next done
   }
 
+  /** ********Timer logic***** */
+
+  restartSectionTimer = () => {
+    if (this.sectionTimeIntervalId !== 0) {
+      clearInterval(this.sectionTimeIntervalId);
+    }
+    this.sectionTimeIntervalId = setInterval(this.sectionTimerHandler, 1000);
+    this.setState({ timer: 0 });
+  };
+
+  sectionTimerHandler = () => {
+    this.setState((prevState) => {
+      return {
+        timer: prevState.timer + 1,
+      };
+    });
+  };
+
+  /** *********** */
+
   selectedAnswer = (e) => {
     const { question } = this.state;
     console.log(question);
@@ -188,24 +208,6 @@ class QuestionCard extends Component {
     return null;
   };
 
-  /** ********Timer logic***** */
-
-  restartSectionTimer = () => {
-    if (this.sectionTimeIntervalId !== 0) {
-      clearInterval(this.sectionTimeIntervalId);
-    }
-    this.sectionTimeIntervalId = setInterval(this.sectionTimerHandler, 1000);
-    this.setState({ timer: 0 });
-  };
-
-  sectionTimerHandler = () => {
-    this.setState((prevState) => {
-      return {
-        timer: prevState.timer + 1,
-      };
-    });
-  };
-
   handleChecked(order) {
     const { checked } = this.state;
     const checkedArray = [...checked];
@@ -213,8 +215,6 @@ class QuestionCard extends Component {
     this.setState({ checked: checkedArray });
     console.log('CHANGE!');
   }
-
-  /** *********** */
 
   render() {
     const { question, answer, checked, timer } = this.state;

@@ -287,16 +287,6 @@ const FeePlans = Loadable({
 
 // import StudentFee from '../Components/Fees/StudentFee';
 
-const Conversations = Loadable({
-  loader: () => import(/* webpackChunkName: 'Fees' */ '../Components/Conversations/Conversations'),
-  loading: Loading,
-});
-
-const Conversation = Loadable({
-  loader: () => import(/* webpackChunkName: 'Fees' */ '../Components/Conversations/Conversation'),
-  loading: Loading,
-});
-
 // eslint-disable-next-line
 function Loading({ error }) {
   if (error) {
@@ -355,11 +345,6 @@ export function Routes() {
       <AuthenticatedRoute exact path='/admissions/add/class' component={SelectClass} />
       <AuthenticatedRoute exact path='/admissions/add/batch' component={AddBatch} />
       <AuthenticatedRoute exact path='/admissions/editprofile' component={EditProfileHOC} />
-
-      {/* Chat routes */}
-
-      <AuthenticatedRoute exact path='/conversations' component={Conversations} />
-      <AuthenticatedRoute exact path='/conversation' component={Conversation} />
 
       <Route path='/fileviewer' component={FileView} />
       <Route path='/otherfileviewer' component={TempViewFile} />

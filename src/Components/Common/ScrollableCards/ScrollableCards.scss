@@ -124,10 +124,10 @@
 
   /****************Fee Cards*****************/
 
-  &__recentlyUsed {
+  &__recentlyUsed{
     font-size: $spacer * 0.875;
     line-height: 20px;
-    color: $headingGrey;
+    color:$headingGrey;
     font-family: $semiBold;
   }
 
@@ -137,10 +137,11 @@
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
   }
 
-  &__feecardHeading {
-    font-size: $spacer * 0.625;
+  &__feecardHeading{
+    font-size: $spacer*0.625;
     line-height: 15px;
     color: $dashboardBlack;
     font-family: $semiBold;
   }
+
 }
