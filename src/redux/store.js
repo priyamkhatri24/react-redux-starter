@@ -31,5 +31,6 @@ store.subscribe(() => {
     course: store.getState().course,
     studyBin: store.getState().studyBin,
     fees: store.getState().fees,
+    conversations: store.getState().conversations,
   });
 });
