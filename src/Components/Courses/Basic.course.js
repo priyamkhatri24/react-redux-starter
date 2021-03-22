@@ -201,13 +201,13 @@ const Basic = (props) => {
                   <label className='has-float-label my-auto'>
                     <input
                       className='form-control'
-                      name='Enter your answer'
+                      name='Example: Basic Maths'
                       type='text'
                       value={e.tag_name}
-                      placeholder='Enter your answer'
+                      placeholder='Example: Basic Maths'
                       onChange={(elem) => modify(elem.target.value, e.meriId, 'prerequisite')}
                     />
-                    <span>Enter your answer</span>
+                    <span>Example: Basic Maths</span>
                   </label>
                   <span
                     className='ml-auto'
@@ -228,13 +228,13 @@ const Basic = (props) => {
           <label className='has-float-label my-auto'>
             <input
               className='form-control'
-              name='Enter your answer'
+              name='Example: Basic Maths'
               type='text'
               value={currentPrerequisite}
-              placeholder='Enter your answer'
+              placeholder='Example: Basic Maths'
               onChange={(elem) => setCurrentRequisite(elem.target.value)}
             />
-            <span>Enter your answer</span>
+            <span>Example: Basic Maths</span>
           </label>
         </Row>
         {isPrequisiteValid && <small className='text-danger d-block'>This field is required</small>}

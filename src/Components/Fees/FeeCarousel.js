@@ -9,10 +9,10 @@ const FeeCarousel = (props) => {
   const [carouselDetails, setCarouseletails] = useState([]);
 
   useEffect(() => {
-    console.log(carouselObject);
     if (Object.keys(carouselObject).length > 0) {
       const carouselArray = [
         {
+          key: 1,
           style: {
             boxshadow: '0px 6px 12px 0px rgba(0, 0, 0, 0.16)',
             backGround: 'linear-gradient(107deg, rgba(174,0,0,0.24) 0%, rgba(174,0,0,1) 100%)',
@@ -24,6 +24,7 @@ const FeeCarousel = (props) => {
         },
 
         {
+          key: 2,
           style: {
             boxshadow: '0px 6px 12px 0px rgba(0, 0, 0, 0.16)',
             backGround:
@@ -36,6 +37,7 @@ const FeeCarousel = (props) => {
         },
 
         {
+          key: 3,
           style: {
             boxshadow: '0px 6px 12px 0px rgba(0, 0, 0, 0.16)',
             backGround: 'linear-gradient(107deg, rgba(255,179,0,0.24) 0%, rgba(255,179,0,1) 100%)',
@@ -59,12 +61,13 @@ const FeeCarousel = (props) => {
       transitionTime={200}
       dynamicHeight={false}
       infiniteLoop
-      className='Welcome__Carousel'
+      className='Welcome__Carousel pb-2 mb-2'
     >
       {carouselDetails.length &&
         carouselDetails.map((elem) => {
           return (
             <div
+              key={elem.key}
               style={{
                 height: '120px',
                 width: '330px',

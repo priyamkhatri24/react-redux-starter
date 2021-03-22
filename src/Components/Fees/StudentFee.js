@@ -1,104 +1,75 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Swal from 'sweetalert2';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import PhoneIcon from '@material-ui/icons/Phone';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Button from 'react-bootstrap/Button';
 import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
-import { get, apiValidation, displayRazorpay } from '../../Utilities';
-import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
+import { apiValidation, get, post } from '../../Utilities';
 import { BackButton } from '../Common';
 import avatarImage from '../../assets/images/avatarImage.jpg';
-import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
-import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import FeesCard from './FeesCard';
 import './Fees.scss';
+import '../Common/ScrollableCards/ScrollableCards.scss';
+import { getClientUserId, getClientId } from '../../redux/reducers/clientUserId.reducer';
 
-const Fees = (props) => {
-  const {
-    clientUserId,
-    clientId,
-    userProfile,
-    currentbranding: {
-      branding: {
-        client_color: clientColor,
-        client_name: clientName,
-        client_logo: clientLogo,
-        client_address: clientAddress,
-        client_contact: clientContact,
-      },
-    },
-    history,
-  } = props;
+const StudentFee = (props) => {
+  const { history, clientId, clientUserId } = props;
   const [fees, setFees] = useState([]);
   const [showModal, setShowModal] = useState(false);
-
-  useEffect(() => {
-    get({ client_user_id: clientUserId }, '/getFeeDataForStudent').then((res) => {
-      const result = apiValidation(res);
-      setFees(result);
-    });
-  }, [clientUserId]);
-
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
 
-  const razorSuccess = (payload) => {
-    get(payload, '/fetchOrderById').then((res) => {
+  const [showRecordPaymentModal, setShowRecordPaymentModal] = useState(false);
+  const [replaceOptions, setOptions] = useState('');
+  const [paymentsummary, setPaymentSummary] = useState({});
+  const handleRecordPaymentClose = () => setShowRecordPaymentModal(false);
+  const handleRecordPaymentOpen = () => setShowRecordPaymentModal(true);
+
+  const getFeeData = useCallback(() => {
+    get(
+      { client_user_id: history.location.state.studentData.client_user_id },
+      '/getFeeDataForStudent',
+    ).then((res) => {
       const result = apiValidation(res);
-      history.push({ pathname: '/order', state: { order: result } });
+      setFees(result);
     });
-  };
+  }, [history]);
 
-  const startPayment = () => {
-    const paymentArray = fees.fee_data.filter((elem) => {
-      return elem.status === 'due' || elem.status === 'pending';
-    });
-
-    const currentPayment = paymentArray[0];
-
-    if (currentPayment.status === 'pending') {
-      Swal.fire({
-        icon: 'error',
-        title: 'Pending',
-        text: 'You have a pending payment. Please wait while your bank processes the payment.',
-      });
-    } else if (currentPayment.status === 'due') {
-      const razorPayload = {
-        status: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
-        client_id: clientId,
-      };
-
-      get(razorPayload, '/getRazorPayCredentials').then((cred) => {
-        const credentials = apiValidation(cred);
-
-        displayRazorpay(
-          currentPayment.order_id,
-          currentPayment.amount * 100,
-          'INR',
-          clientLogo,
-          clientColor,
-          clientName,
-          clientAddress,
-          clientContact,
-          razorSuccess,
-          currentPayment.user_fee_id,
-          clientId,
-          credentials.key_id,
-          credentials.fee_account_id,
-        ).then((res) => console.log(res, 'razor'));
-      });
-    }
-  };
+  useEffect(() => {
+    getFeeData();
+  }, [getFeeData]);
 
   const goToOrderDetails = (order) => {
     history.push({ pathname: '/order', state: { order } });
+  };
+
+  const recordPayment = () => {
+    const result = fees.fee_data.find((e) => e.status === 'due');
+    setPaymentSummary(result);
+    handleRecordPaymentOpen();
+  };
+
+  const makePayment = () => {
+    const payload = {
+      user_fee_id: paymentsummary.user_fee_id,
+      fee_order_id: paymentsummary.fee_order_id,
+      client_user_id: clientUserId,
+      status: replaceOptions,
+    };
+
+    post(payload, '/waiveFeeOfStudent').then((res) => {
+      if (res.success) {
+        getFeeData();
+        handleRecordPaymentClose();
+      }
+    });
   };
 
   return (
@@ -110,7 +81,11 @@ const Fees = (props) => {
           </div>
           <div className='m-1 '>
             <img
-              src={userProfile.profileImage ? userProfile.profileImage : avatarImage}
+              src={
+                history.location.state.studentData.profile_image
+                  ? history.location.state.studentData.profile_image
+                  : avatarImage
+              }
               alt='avatar'
               height='38'
               width='38'
@@ -118,10 +93,13 @@ const Fees = (props) => {
             />
           </div>
           <div className='p-0'>
-            <p className='Fees__avatarHeading mb-0 mt-2 ml-2'>{`${userProfile.firstName} ${userProfile.lastName}`}</p>
+            <p className='Fees__avatarHeading mb-0 mt-2 ml-2'>
+              {`${history.location.state.studentData.first_name}
+             ${history.location.state.studentData.last_name}`}
+            </p>
             <p className='Fees__avatarStatus'>
               <PhoneIcon className='Fees__onlineIcon' />
-              +91-{userProfile.contact}
+              +91-{history.location.state.studentData.contact}
             </p>
           </div>
           <div className='ml-auto'>
@@ -149,17 +127,18 @@ const Fees = (props) => {
                   key={elem.user_fee_id}
                   clientId={clientId}
                   goToOrderDetails={goToOrderDetails}
+                  studentFeeCard
                 />
               );
             })}
         </div>
         <footer className='Fees__footer text-center'>
           {fees.due_amount > 0 ? (
-            <Button variant='customPrimary' className='mt-4' onClick={() => startPayment()}>
-              Pay
+            <Button variant='customPrimary' className='mt-4' onClick={() => recordPayment()}>
+              Record Payment
             </Button>
           ) : (
-            <p className='text-center'>No dues to be paid</p>
+            <p className='text-center'>No dues</p>
           )}
         </footer>
       </div>
@@ -237,48 +216,67 @@ const Fees = (props) => {
           </Card>
         </Modal.Body>
       </Modal>
+
+      <Modal show={showRecordPaymentModal} onHide={handleRecordPaymentClose} centered>
+        <Modal.Body>
+          <p className='Scrollable__recentlyUsed m-2'>Payment Summary:</p>
+          <Card>
+            <Row className='m-2'>
+              <span className='Scrollable__feecardHeading m-2 mb-0'>{paymentsummary.fee_tag}</span>{' '}
+              <span
+                className='ml-auto Scrollable__feecardHeading mx-2 mt-2 mb-0 '
+                style={{ color: 'var(--primary-blue)' }}
+              >
+                &#8377; {paymentsummary.amount}
+              </span>
+            </Row>
+          </Card>
+
+          <p className='Scrollable__recentlyUsed m-2'>Record Payment:</p>
+          <Form className='Enquiry__form mt-3 mr-4 '>
+            <div className='mb-3'>
+              <Form.Check
+                type='radio'
+                id='feePlanReplace'
+                label='Mark as paid'
+                value='marked'
+                name='feePlan'
+                onChange={(e) => setOptions(e.target.value)}
+              />
+
+              <Form.Check
+                type='radio'
+                label='Mark as waived'
+                id='feePlanNoReplace'
+                value='waived'
+                name='feePlan'
+                onChange={(e) => setOptions(e.target.value)}
+              />
+            </div>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='boldTextSecondary' onClick={() => handleRecordPaymentClose()}>
+            Cancel
+          </Button>
+          <Button variant='boldText' onClick={() => makePayment()}>
+            Record
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
 
 const mapStateToProps = (state) => ({
-  clientUserId: getClientUserId(state),
   clientId: getClientId(state),
-  userProfile: getUserProfile(state),
-  currentbranding: getCurrentBranding(state),
+  clientUserId: getClientUserId(state),
 });
 
-export default connect(mapStateToProps)(Fees);
+export default connect(mapStateToProps)(StudentFee);
 
-Fees.propTypes = {
+StudentFee.propTypes = {
+  history: PropTypes.instanceOf(Object).isRequired,
   clientId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }).isRequired,
-  currentbranding: PropTypes.shape({
-    branding: PropTypes.shape({
-      client_id: PropTypes.number,
-      client_logo: PropTypes.string,
-      client_color: PropTypes.string,
-      client_icon: PropTypes.string,
-      client_title: PropTypes.string,
-      client_name: PropTypes.string,
-      client_address: PropTypes.string,
-      client_contact: PropTypes.string,
-    }),
-  }).isRequired,
-  userProfile: PropTypes.shape({
-    firstName: PropTypes.string.isRequired,
-    lastName: PropTypes.string,
-    contact: PropTypes.string.isRequired,
-    profileImage: PropTypes.string,
-  }),
-};
-
-Fees.defaultProps = {
-  userProfile: PropTypes.shape({
-    lastName: '',
-    profileImage: '',
-  }),
 };

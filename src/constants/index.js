@@ -9,3 +9,4 @@ export * from './firstTimeLogin.constants';
 export * from './admissions.constants';
 export * from './studybin.constants';
 export * from './Loading.constants';
+export * from './fees.constants';

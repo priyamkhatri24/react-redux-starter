@@ -265,9 +265,27 @@ const Fees = Loadable({
 });
 
 const TeacherFees = Loadable({
-  loader: () => import(/* webpackChunkName: 'Fees' */ '../Components/Fees/TeacherFees'),
+  loader: () => import(/* webpackChunkName: 'TeacherFees' */ '../Components/Fees/TeacherFees'),
   loading: Loading,
 });
+
+const FeeUserDetails = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'FeeUserDetails' */ '../Components/Fees/FeeUserDetails'),
+  loading: Loading,
+});
+
+const StudentFee = Loadable({
+  loader: () => import(/* webpackChunkName: 'StudentFee' */ '../Components/Fees/StudentFee'),
+  loading: Loading,
+});
+
+const FeePlans = Loadable({
+  loader: () => import(/* webpackChunkName: 'StudentFee' */ '../Components/Fees/FeePlans'),
+  loading: Loading,
+});
+
+// import StudentFee from '../Components/Fees/StudentFee';
 
 // eslint-disable-next-line
 function Loading({ error }) {
@@ -300,6 +318,9 @@ export function Routes() {
       <AuthenticatedRoute exact path='/questiontaker' component={QuestionTaker} />
       <AuthenticatedRoute exact path='/fees' component={Fees} />
       <AuthenticatedRoute exact path='/teacherfees' component={TeacherFees} />
+      <AuthenticatedRoute exact path='/fees/users' component={FeeUserDetails} />
+      <AuthenticatedRoute exact path='/fees/students' component={StudentFee} />
+      <AuthenticatedRoute exact path='/fees/Feeplans' component={FeePlans} />
       <AuthenticatedRoute exact path='/order' component={FeesOrder} />
       <AuthenticatedRoute exact path='/homework' component={HomeWorkCreator} />
       <AuthenticatedRoute exact path='/homework/savedtests' component={SavedSentTests} />

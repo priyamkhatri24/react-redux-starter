@@ -161,13 +161,13 @@ const Content = (props) => {
                     <label className='has-float-label my-auto'>
                       <input
                         className='form-control'
-                        name='Enter your answer'
+                        name='Name'
                         type='text'
                         value={elem.section_name}
-                        placeholder='Enter your answer'
+                        placeholder='Name'
                         onChange={(e) => updateSectionName(e.target.value, elem.section_id)}
                       />
-                      <span>Enter your answer</span>
+                      <span>Name</span>
                     </label>
                   </Row>
                   <Row className='m-2'>
@@ -224,13 +224,13 @@ const Content = (props) => {
                 <label className='has-float-label my-auto'>
                   <input
                     className='form-control'
-                    name='Enter your answer'
+                    name='Name'
                     type='text'
                     value={nayaSection}
-                    placeholder='Enter your answer'
+                    placeholder='Name'
                     onChange={(e) => setNayaSection(e.target.value)}
                   />
-                  <span>Enter your answer</span>
+                  <span>Name</span>
                 </label>
               </Row>
 
