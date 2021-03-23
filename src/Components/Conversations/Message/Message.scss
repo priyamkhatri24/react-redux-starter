@@ -31,6 +31,11 @@
     }
   }
 
+  .doc-by-author {
+    @extend .message-by-author;
+    max-width: 80%;
+  }
+
   .audio-message {
     max-width: 100%;
   }
@@ -121,6 +126,11 @@
 
     .audio-message {
       max-width: 100%;
+    }
+
+    .doc-by-user {
+      @extend .message-by-user;
+      max-width: 80%;
     }
   }
 }

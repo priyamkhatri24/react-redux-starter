@@ -1,0 +1,35 @@
+.has-float-label > input[type='text'] {
+  height: 40px;
+  font-size: 14px;
+  font-family: 'Montserrat-Regular';
+}
+
+.has-float-label > input[type='text']:focus {
+  border-color: #2699fb;
+  font-family: 'Montserrat-Regular';
+  font-size: 14px;
+}
+
+.has-float-label > input[type='text']:focus + span {
+  color: #2699fb;
+}
+
+.has-float-label .form-control:placeholder-shown:not(:focus) + * {
+  top: 0.8rem;
+}
+
+.create-post-container {
+  font-family: 'Montserrat-Regular';
+
+  p {
+    font-family: 'Montserrat-Medium';
+  }
+}
+
+.add-cta {
+  font-family: 'Montserrat-Medium';
+}
+
+.heading {
+  font-family: 'Montserrat-Medium';
+}

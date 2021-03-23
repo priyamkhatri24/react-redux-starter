@@ -175,7 +175,7 @@ const Conversation = function ({ conversation, setConversation, clientUserId, so
         type: 'post',
         content: {
           title: data.title,
-          desc: '',
+          desc: data.text,
         },
       };
     }
@@ -216,7 +216,7 @@ const Conversation = function ({ conversation, setConversation, clientUserId, so
       socket.emit('sendMessage', {
         sender_id: clientUserId,
         conversation_id: conversation.id,
-        chat_text: null,
+        text: null,
         type: 'message',
         attachments_array: [{ url: filename, type: fileType, name: file.name }],
       });
@@ -238,7 +238,7 @@ const Conversation = function ({ conversation, setConversation, clientUserId, so
       socket.emit('sendMessage', {
         sender_id: clientUserId,
         conversation_id: conversation.id,
-        chat_text: message,
+        text: message,
         type: 'message',
         attachments_array: [],
       });
@@ -252,15 +252,6 @@ const Conversation = function ({ conversation, setConversation, clientUserId, so
       thumbnail: '',
       timestamp: Date.now().toString(),
     });
-
-    if (socket)
-      socket.emit('sendMessage', {
-        sender_id: 1801,
-        conversation_id: conversation.id,
-        chat_text: message,
-        type: 'message',
-        attachments_array: [],
-      });
   };
 
   return (
@@ -287,15 +278,20 @@ const Conversation = function ({ conversation, setConversation, clientUserId, so
         {activeTab === 'discussions' && (
           <Col md={12} style={{ marginTop: '150px' }}>
             <div className='p-2 discussions-container'>
-              <Button
-                size='lg'
-                variant='primary'
-                block
-                className='add-post-btn'
-                onClick={() => history.push('/create-post')}
-              >
-                <i className='material-icons'>add</i> Add new post
-              </Button>
+              <p className='text-center' style={{ fontSize: '12px', width: '100%' }}>
+                You do not have any discussions yet!
+              </p>
+              <div className='p-2 fixed-bottom'>
+                <Button
+                  size='lg'
+                  variant='primary'
+                  block
+                  className='add-post-btn'
+                  onClick={() => history.push('/create-post')}
+                >
+                  <i className='material-icons'>add</i> Add new post
+                </Button>
+              </div>
             </div>
           </Col>
         )}

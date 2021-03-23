@@ -8,7 +8,9 @@ import './Message.scss';
 const ImageMessage = function ({ content, userIsAuthor }) {
   return (
     <div className={`${userIsAuthor ? 'p-2 image-by-author' : 'p-1 image-by-user'}`}>
-      <Image className='image-message' src={content} />
+      <a href={content}>
+        <Image className='image-message' src={content} />
+      </a>
     </div>
   );
 };
@@ -63,7 +65,23 @@ AudioMessage.propTypes = {
   userIsAuthor: PropTypes.bool.isRequired,
 };
 
-const DocumentMessage = function ({ content, userIsAuthor }) {};
+const DocumentMessage = function ({ content, userIsAuthor }) {
+  return (
+    <div
+      className={`p-2 d-flex flex-row align-items-center ${
+        userIsAuthor ? 'doc-by-author' : 'doc-by-user'
+      }`}
+    >
+      <i className='material-icons'>insert_drive_file</i>
+      <p className='ml-2' style={{ marginBottom: '0px' }}>
+        {content.split('/').slice(-1)[0]}
+      </p>
+      <a href={content} style={{ color: '#000' }} className='ml-3 d-flex align-items-center'>
+        <i className='material-icons'>download</i>
+      </a>
+    </div>
+  );
+};
 
 DocumentMessage.propTypes = {
   content: PropTypes.string.isRequired,

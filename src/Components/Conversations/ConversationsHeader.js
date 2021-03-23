@@ -1,8 +1,9 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-const ConversationsHeader = function () {
+const ConversationsHeader = function ({ title }) {
   const history = useHistory();
 
   return (
@@ -22,13 +23,21 @@ const ConversationsHeader = function () {
             >
               arrow_back
             </i>
-            <h5 className='heading pt-2'>Chats</h5>
+            <h5 className='heading pt-2'>{title}</h5>
           </div>
           <i className='material-icons justify-self-end'>more_vert</i>
         </div>
       </Col>
     </Row>
   );
+};
+
+ConversationsHeader.propTypes = {
+  title: PropTypes.string,
+};
+
+ConversationsHeader.defaultProps = {
+  title: 'Chats',
 };
 
 export default ConversationsHeader;
