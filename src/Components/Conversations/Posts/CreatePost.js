@@ -18,7 +18,7 @@ const CreatePost = function ({}) {
     formDataObj.type = 'post';
     formDataObj.conversation_id = 2;
     formDataObj.title_text = formDataObj.title;
-    formDataObj.chat_text = formDataObj.description;
+    formDataObj.text = formDataObj.description;
 
     post(formDataObj, '/sendMessageInChat').then((resp) => {
       console.log('resp', resp);

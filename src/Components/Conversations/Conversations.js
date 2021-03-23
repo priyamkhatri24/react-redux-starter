@@ -41,7 +41,7 @@ const Conversations = function ({
 
     const newConversations = [...conversations];
     const conversation = newConversations[conversationIndex];
-    conversation.subTitle = data.chat_text;
+    conversation.subTitle = data.text;
     newConversations.splice(conversationIndex, 1);
     newConversations.unshift(conversation);
     setConversations(newConversations);
