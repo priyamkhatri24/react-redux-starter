@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import io from 'socket.io-client';
 import PropTypes from 'prop-types';
 import { Container, Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
@@ -11,32 +10,52 @@ import FocusedConversation from './desktop/FocusedConversation';
 import ConversationsHeader from './ConversationsHeader';
 import { conversationsActions } from '../../redux/actions/conversations.action';
 import { getConversations, getSocket } from '../../redux/reducers/conversations.reducer';
+import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import './Conversations.scss';
-
-const SERVER = 'http://13.126.247.152:3000';
 
 const Conversations = function ({
   conversations,
   setConversations,
   setConversation,
   socket,
-  setSocket,
+  clientUserId,
 }) {
   const history = useHistory();
 
   useEffect(function () {
     fetchConversations();
-    const socketInstance = io(SERVER, { transports: ['websocket'] });
-    socketInstance.on('connect', () => {
-      console.log(socketInstance.id, 'connect');
-    });
 
-    socketInstance.on('disconnect', () => {
-      console.log(socketInstance.id, 'disconnected');
-    });
+    socket.emit('user-connected', { client_user_id: clientUserId });
+    console.log(socket);
+    socket.on('receiveMessage', addMessageToConversation);
 
-    setSocket({ socket: socketInstance });
+    return () => {
+      socket.off('receiveMessage', addMessageToConversation);
+    };
   }, []);
+
+  const addMessageToConversation = function (data) {
+    console.log(data, 'receiveMessage emitted from Conversations');
+    const conversationIndex = conversations.findIndex((c) => c.id === data.conversation_id);
+    if (conversationIndex === -1) return;
+
+    const newConversations = [...conversations];
+    const conversation = newConversations[conversationIndex];
+    conversation.subTitle = data.chat_text;
+    newConversations.splice(conversationIndex, 1);
+    newConversations.unshift(conversation);
+    setConversations(newConversations);
+  };
+
+  function send() {
+    socket.emit('sendMessage', {
+      sender_id: 1801,
+      conversation_id: 2,
+      chat_text: `Hello last message - ${Math.random()}`,
+      type: 'message',
+      attachments_array: [],
+    });
+  }
 
   const fetchConversations = function () {
     get(null, '/getConversationsOfUser?client_user_id=1801').then((res) => {
@@ -49,6 +68,7 @@ const Conversations = function ({
           thumbnail: conversation.display_picture || 'https://i.pravatar.cc/40',
           subTitle: conversation.last_message || '',
           unreadCount: conversation.unread_message_count || 0,
+          messages: [],
         })),
       );
     });
@@ -92,6 +112,9 @@ const Conversations = function ({
               <p className='text-center'>Seems like you dont have any chats</p>
             )}
           </div>
+          {/* <button type='button' onClick={() => send()}>
+            Send
+          </button> */}
         </Col>
       </Row>
     </Container>
@@ -101,6 +124,7 @@ const Conversations = function ({
 const mapStateToProps = (state) => ({
   conversations: getConversations(state),
   socket: getSocket(state),
+  clientUserId: getClientUserId(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -111,23 +135,19 @@ const mapDispatchToProps = (dispatch) => {
     setConversation: (conversation) => {
       dispatch(conversationsActions.setConversation(conversation));
     },
-    setSocket: (socket) => {
-      dispatch(conversationsActions.setSocket(socket));
-    },
   };
 };
 
 Conversations.propTypes = {
   setConversations: PropTypes.func.isRequired,
   setConversation: PropTypes.func.isRequired,
-  setSocket: PropTypes.func.isRequired,
-  socket: PropTypes.objectOf(PropTypes.any),
+  clientUserId: PropTypes.number.isRequired,
+  socket: PropTypes.objectOf(PropTypes.any).isRequired,
   conversations: PropTypes.arrayOf(PropTypes.object.isRequired),
 };
 
 Conversations.defaultProps = {
   conversations: [],
-  socket: {},
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Conversations);

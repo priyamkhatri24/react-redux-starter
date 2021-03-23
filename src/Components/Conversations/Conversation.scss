@@ -56,3 +56,31 @@
     font-size: 18px;
   }
 }
+
+.nav-tabs {
+  display: flex;
+  justify-content: space-around;
+  align-self: center;
+}
+
+.nav-tabs .nav-link {
+  font-size: 12px;
+  color: #0000008a;
+  font-family: 'Montserrat-Medium';
+}
+
+.nav-tabs .nav-link.active {
+  color: #2699fb;
+  border-bottom: 3px solid #2699fb;
+}
+
+.discussions-container {
+  display: flex;
+
+  .add-post-btn {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

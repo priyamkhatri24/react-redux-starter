@@ -7,7 +7,15 @@ const Messages = function ({ list }) {
   const messagesEnd = useRef(null);
 
   useEffect(function () {
-    setTimeout(() => messagesEnd.current.scrollIntoView({ behavior: 'smooth' }), 500);
+    setTimeout(
+      () =>
+        messagesEnd.current !== null && messagesEnd.current.scrollIntoView({ behavior: 'smooth' }),
+      500,
+    );
+  }, []);
+
+  useEffect(function () {
+    messagesEnd.current !== null && messagesEnd.current.scrollIntoView({ behavior: 'smooth' });
   });
 
   return (

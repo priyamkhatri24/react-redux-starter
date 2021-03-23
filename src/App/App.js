@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import Container from 'react-bootstrap/Container';
 import { ConnectedRouter } from 'connected-react-router';
 import { connect } from 'react-redux';
+import io from 'socket.io-client';
 import { getCurrentcolor } from '../redux/reducers/color.reducer';
 import { getCurrentBranding } from '../redux/reducers/branding.reducer';
+import { conversationsActions } from '../redux/actions/conversations.action';
 import { setGlobalColors, changeFaviconAndDocumentTitle } from '../Utilities';
 import { Loader } from '../Components/Common';
 import './App.scss';
@@ -12,7 +14,22 @@ import { history, Routes } from '../Routing';
 import { getCurrentLoadingStatus } from '../redux/reducers/loading.reducer';
 
 function App(props) {
-  const { color, currentbranding, isLoading } = props;
+  const { color, currentbranding, isLoading, setSocket } = props;
+
+  useEffect(() => {
+    const SERVER = 'http://13.126.247.152:3000';
+    const socket = io(SERVER, { transports: ['websocket'] });
+    socket.on('connect', () => {
+      console.log(socket.id, 'connect');
+    });
+
+    socket.on('disconnect', () => {
+      console.log(socket.id, 'disconnected');
+    });
+
+    setSocket({ socket });
+    // return () => socket.emit('disconnect');
+  }, []);
 
   useEffect(() => {
     if (Object.keys(color.color) !== 0) {
@@ -36,15 +53,24 @@ function App(props) {
   );
 }
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setSocket: (socket) => {
+      dispatch(conversationsActions.setSocket(socket));
+    },
+  };
+};
+
 const mapStateToProps = (state) => ({
   color: getCurrentcolor(state),
   currentbranding: getCurrentBranding(state),
   isLoading: getCurrentLoadingStatus(state),
 });
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
 
 App.propTypes = {
+  setSocket: PropTypes.func.isRequired,
   color: PropTypes.shape({
     color: PropTypes.shape({
       primary: PropTypes.string,

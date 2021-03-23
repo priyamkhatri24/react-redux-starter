@@ -270,12 +270,20 @@ const TeacherFees = Loadable({
 });
 
 const Conversations = Loadable({
-  loader: () => import(/* webpackChunkName: 'Fees' */ '../Components/Conversations/Conversations'),
+  loader: () =>
+    import(/* webpackChunkName: 'Conversations' */ '../Components/Conversations/Conversations'),
   loading: Loading,
 });
 
 const Conversation = Loadable({
-  loader: () => import(/* webpackChunkName: 'Fees' */ '../Components/Conversations/Conversation'),
+  loader: () =>
+    import(/* webpackChunkName: 'Conversation' */ '../Components/Conversations/Conversation'),
+  loading: Loading,
+});
+
+const CreatePost = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'CreatePost' */ '../Components/Conversations/Posts/CreatePost'),
   loading: Loading,
 });
 
@@ -339,6 +347,7 @@ export function Routes() {
 
       <AuthenticatedRoute exact path='/conversations' component={Conversations} />
       <AuthenticatedRoute exact path='/conversation' component={Conversation} />
+      <AuthenticatedRoute exact path='/create-post' component={CreatePost} />
 
       <Route path='/fileviewer' component={FileView} />
       <Route path='/otherfileviewer' component={TempViewFile} />

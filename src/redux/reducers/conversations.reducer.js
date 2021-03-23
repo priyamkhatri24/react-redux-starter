@@ -1,7 +1,7 @@
 import { conversationsConstants } from '../../constants';
 
 const initialState = {
-  socket: {},
+  socket: null,
   conversations: [],
   conversation: null,
 };
