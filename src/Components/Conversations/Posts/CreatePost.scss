@@ -28,8 +28,32 @@
 
 .add-cta {
   font-family: 'Montserrat-Medium';
+
+  &:focus {
+    box-shadow: none;
+  }
 }
 
 .heading {
   font-family: 'Montserrat-Medium';
+}
+
+.bottom-sheet {
+  background-color: #bce0fd;
+
+  height: 120px;
+
+  .title {
+    font-size: 14px;
+    font-family: 'Montserrat-Medium';
+  }
+
+  .material-icons {
+    font-size: 20px;
+  }
+  .icon-action {
+    font-size: 10px;
+    font-family: 'Montserrat-Regular';
+    color: #161616;
+  }
 }
