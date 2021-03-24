@@ -44,22 +44,6 @@ const ConversationInput = function ({ sendMessage, onFileUpload }) {
     setMessage('');
   };
 
-  useEffect(() => {
-    navigator.getUserMedia(
-      { audio: true },
-      () => {
-        console.log('Permission Granted');
-        setRecordingState({ ...recordingState, isBlocked: false });
-      },
-      () => {
-        console.log('Permission Denied');
-        setRecordingState({ ...recordingState, isBlocked: true });
-      },
-    );
-
-    setRecorder(new MicRecorder({ bitRate: 128 }));
-  }, []);
-
   const openFilePicker = function (type) {
     let accept = '*';
     setFileType(type);
@@ -77,16 +61,25 @@ const ConversationInput = function ({ sendMessage, onFileUpload }) {
   };
 
   const startRecording = function () {
-    if (recordingState.isBlocked) {
-      console.log('Permission Denied');
-    } else {
-      recorder
-        .start()
-        .then(() => {
-          setRecordingState({ ...recordingState, isRecording: true });
-        })
-        .catch((e) => console.error(e));
-    }
+    const newRecorder = new MicRecorder({ bitRate: 128 });
+    navigator.getUserMedia(
+      { audio: true },
+      () => {
+        console.log('Permission Granted');
+        newRecorder
+          .start()
+          .then(() => {
+            setRecordingState({ ...recordingState, isRecording: true, isBlocked: false });
+          })
+          .catch((e) => console.error(e));
+      },
+      () => {
+        console.log('Permission Denied');
+        setRecordingState({ ...recordingState, isBlocked: true });
+      },
+    );
+
+    setRecorder(newRecorder);
   };
 
   const stopRecording = () => {

@@ -41,13 +41,12 @@
 .image-preview,
 .doc-preview {
   position: relative;
-  width: auto;
-  height: 50px;
+  width: 100%;
   margin-right: 15px;
 
   .doc-name {
-    height: 55px;
-    min-width: 90px;
+    width: 100%;
+    min-height: 120px;
     font-size: 10px;
     width: auto;
     display: flex;
@@ -71,7 +70,7 @@
 }
 
 .file-preview {
-  display: flex;
+  margin-bottom: 120px;
 }
 
 .bottom-sheet {

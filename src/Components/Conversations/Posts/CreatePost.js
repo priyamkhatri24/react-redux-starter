@@ -1,33 +1,32 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Button, Image } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { conversationsActions } from '../../../redux/actions/conversations.action';
+import { getConversation } from '../../../redux/reducers/conversations.reducer';
+import { getClientUserId } from '../../../redux/reducers/clientUserId.reducer';
+import Conversation from '../Conversation';
 import ConversationsHeader from '../ConversationsHeader';
 import { post, uploadFiles } from '../../../Utilities';
 import './CreatePost.scss';
 
 function useOutsideAlerter(ref, cb) {
   useEffect(() => {
-    /**
-     * Alert if clicked on outside of element
-     */
     function handleClickOutside(event) {
       if (ref.current && !ref.current.contains(event.target)) {
         cb();
-        // alert("You clicked outside of me!");
       }
     }
 
-    // Bind the event listener
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      // Unbind the event listener on clean up
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [ref]);
 }
 
-const CreatePost = function ({}) {
+const CreatePost = function ({ clientUserId, conversation }) {
   const history = useHistory();
   const wrapperRef = useRef(null);
   const fileSelectorRef = useRef(null);
@@ -36,29 +35,30 @@ const CreatePost = function ({}) {
   const [fileType, setFileType] = useState('');
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   useOutsideAlerter(wrapperRef, () => {
-    // alert('You clicked outside of me!');
     setShowBottomSheet(false);
   });
 
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    uploadFiles(selectedFiles.map((sf) => sf.file)).then((resp) => {
+    const formatAttachments = (array) => array.map((a) => a);
+
+    uploadFiles(selectedFiles).then((resp) => {
       console.log(resp);
+      const attachments = formatAttachments(resp.attachments_array);
+      const formDataObj = {};
+      formDataObj.client_user_id = clientUserId;
+      formDataObj.type = 'post';
+      formDataObj.conversation_id = conversation.id;
+      formDataObj.title_text = form.title;
+      formDataObj.text = form.description;
+      formDataObj.attachments_array = attachments;
 
-      // const formDataObj = {};
-      // formDataObj.client_user_id = 1606;
-      // formDataObj.type = 'post';
-      // formDataObj.conversation_id = 2;
-      // formDataObj.title_text = form.title;
-      // formDataObj.text = form.description;
-      // formDataObj.attachments_array =
-
-      // post(formDataObj, '/createPost').then((resp) => {
-      //   console.log('resp', resp);
-      //   history.push('/conversation');
-      // });
-      // console.log(formDataObj);
+      post(formDataObj, '/createPost').then((res) => {
+        console.log('res', res);
+        history.push('/conversation');
+      });
+      console.log(formDataObj);
     });
   };
 
@@ -97,17 +97,17 @@ const CreatePost = function ({}) {
   };
 
   const ImageFile = (url, index) => (
-    <div className='image-preview'>
+    <div className='image-preview mt-2 mb-2'>
       <Button size='sm' variant='link' onClick={(e) => removeFile(index)} className='remove-btn'>
         <span className='material-icons'>highlight_off</span>
       </Button>
-      <Image src={url} height='50px' rounded />
+      <Image src={url} width='100%' rounded />
     </div>
   );
 
   const DocFile = (name, index) => (
-    <div className='doc-preview'>
-      <span className='doc-name'>{name.slice(0, 10)}...</span>
+    <div className='doc-preview mt-2 mb-2'>
+      <span className='doc-name p-3'>{name}</span>
       <Button size='sm' variant='link' onClick={(e) => removeFile(index)} className='remove-btn'>
         <span className='material-icons'>highlight_off</span>
       </Button>
@@ -160,8 +160,10 @@ const CreatePost = function ({}) {
               </div>
             </div>
           </div>
-
-          <div className={`p-2 fixed-bottom transition ${!showBottomSheet ? 'd-block' : 'd-none'}`}>
+          <div
+            className={`p-2 fixed-bottom transition ${!showBottomSheet ? 'd-block' : 'd-none'}`}
+            style={{ backgroundColor: '#fff' }}
+          >
             <Button variant='primary' type='submit' block>
               Submit
             </Button>
@@ -219,6 +221,22 @@ const CreatePost = function ({}) {
   );
 };
 
-CreatePost.propTypes = {};
+const mapStateToProps = (state) => ({
+  conversation: getConversation(state),
+  clientUserId: getClientUserId(state),
+});
 
-export default CreatePost;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setConversation: (conversation) => {
+      dispatch(conversationsActions.setConversation(conversation));
+    },
+  };
+};
+
+CreatePost.propTypes = {
+  clientUserId: PropTypes.number.isRequired,
+  conversation: PropTypes.objectOf(Conversation).isRequired,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreatePost);
