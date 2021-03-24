@@ -44,7 +44,6 @@ const CreatePost = function ({ clientUserId, conversation }) {
     const formatAttachments = (array) => array.map((a) => a);
 
     uploadFiles(selectedFiles).then((resp) => {
-      console.log(resp);
       const attachments = formatAttachments(resp.attachments_array);
       const formDataObj = {};
       formDataObj.client_user_id = clientUserId;
@@ -55,10 +54,9 @@ const CreatePost = function ({ clientUserId, conversation }) {
       formDataObj.attachments_array = attachments;
 
       post(formDataObj, '/createPost').then((res) => {
-        console.log('res', res);
         history.push('/conversation');
       });
-      console.log(formDataObj);
+      // console.log(formDataObj);
     });
   };
 

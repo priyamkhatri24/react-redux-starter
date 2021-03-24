@@ -9,13 +9,15 @@ const Messages = function ({ list }) {
   useEffect(function () {
     setTimeout(
       () =>
-        messagesEnd.current !== null && messagesEnd.current.scrollIntoView({ behavior: 'smooth' }),
+        // { behavior: 'smooth' }
+        messagesEnd.current !== null && messagesEnd.current.scrollIntoView(),
       500,
     );
   }, []);
 
   useEffect(function () {
-    messagesEnd.current !== null && messagesEnd.current.scrollIntoView({ behavior: 'smooth' });
+    // { behavior: 'smooth' }
+    messagesEnd.current !== null && messagesEnd.current.scrollIntoView();
   });
 
   return (
