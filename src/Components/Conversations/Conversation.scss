@@ -84,3 +84,14 @@
     justify-content: center;
   }
 }
+
+.camera-btn {
+  padding: 0px;
+  margin: 0px;
+
+  &:focus,
+  &:hover {
+    text-decoration: none;
+    box-shadow: none;
+  }
+}

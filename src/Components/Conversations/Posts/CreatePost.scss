@@ -38,10 +38,57 @@
   font-family: 'Montserrat-Medium';
 }
 
+.image-preview,
+.doc-preview {
+  position: relative;
+  width: auto;
+  height: 50px;
+  margin-right: 15px;
+
+  .doc-name {
+    height: 55px;
+    min-width: 90px;
+    font-size: 10px;
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #efefef;
+    border-radius: 5px;
+  }
+
+  .remove-btn {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    padding: 2.5px;
+    margin: 0px;
+
+    .material-icons {
+      font-size: 15px;
+    }
+  }
+}
+
+.file-preview {
+  display: flex;
+}
+
 .bottom-sheet {
   background-color: #bce0fd;
 
   height: 120px;
+
+  .action-btn {
+    color: #161616;
+    text-decoration: none;
+
+    &:focus {
+      color: #161616;
+      text-decoration: none;
+      box-shadow: none;
+    }
+  }
 
   .title {
     font-size: 14px;
