@@ -287,6 +287,11 @@ const CreatePost = Loadable({
   loading: Loading,
 });
 
+const Post = Loadable({
+  loader: () => import(/* webpackChunkName: 'Post' */ '../Components/Conversations/Posts/Post'),
+  loading: Loading,
+});
+
 // eslint-disable-next-line
 function Loading({ error }) {
   if (error) {
@@ -348,6 +353,7 @@ export function Routes() {
       <AuthenticatedRoute exact path='/conversations' component={Conversations} />
       <AuthenticatedRoute exact path='/conversation' component={Conversation} />
       <AuthenticatedRoute exact path='/create-post' component={CreatePost} />
+      <AuthenticatedRoute exact path='/posts/:id' component={Post} />
 
       <Route path='/fileviewer' component={FileView} />
       <Route path='/otherfileviewer' component={TempViewFile} />

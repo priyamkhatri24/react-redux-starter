@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Message from '../Message/Message';
 import './Messages.scss';
 
-const Messages = function ({ list }) {
+const Messages = function ({ list, onReactionToMessage }) {
   const messagesEnd = useRef(null);
 
   useEffect(function () {
@@ -30,6 +30,7 @@ const Messages = function ({ list }) {
           thumbnail={data.thumbnail}
           userIsAuthor={data.userIsAuthor}
           timestamp={data.timestamp}
+          onReactionToMessage={onReactionToMessage}
         />
       ))}
       <span ref={messagesEnd} style={{ visibility: 'hidden' }} />
@@ -39,6 +40,7 @@ const Messages = function ({ list }) {
 
 Messages.propTypes = {
   list: PropTypes.arrayOf(PropTypes.objectOf(Message).isRequired).isRequired,
+  onReactionToMessage: PropTypes.func.isRequired,
 };
 
 export default Messages;

@@ -41,23 +41,29 @@ const CreatePost = function ({ clientUserId, conversation }) {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    const formatAttachments = (array) => array.map((a) => a);
+    const formDataObj = {};
+    formDataObj.client_user_id = clientUserId;
+    formDataObj.type = 'post';
+    formDataObj.conversation_id = conversation.id;
+    formDataObj.title_text = form.title;
+    formDataObj.text = form.description;
 
-    uploadFiles(selectedFiles).then((resp) => {
-      const attachments = formatAttachments(resp.attachments_array);
-      const formDataObj = {};
-      formDataObj.client_user_id = clientUserId;
-      formDataObj.type = 'post';
-      formDataObj.conversation_id = conversation.id;
-      formDataObj.title_text = form.title;
-      formDataObj.text = form.description;
-      formDataObj.attachments_array = attachments;
+    if (selectedFiles.length > 0) {
+      const formatAttachments = (array) => array.map((a) => a);
 
+      uploadFiles(selectedFiles).then((resp) => {
+        const attachments = JSON.stringify(formatAttachments(resp.attachments_array));
+        formDataObj.attachments_array = attachments;
+        post(formDataObj, '/createPost').then((res) => {
+          history.push('/conversation');
+        });
+        // console.log(formDataObj);
+      });
+    } else {
       post(formDataObj, '/createPost').then((res) => {
         history.push('/conversation');
       });
-      // console.log(formDataObj);
-    });
+    }
   };
 
   const openFilePicker = (type) => {

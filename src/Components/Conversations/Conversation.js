@@ -14,9 +14,9 @@ import {
   Modal,
 } from 'react-bootstrap';
 import MicRecorder from 'mic-recorder-to-mp3';
-import { get, apiValidation, uploadImage } from '../../Utilities';
+import { get, apiValidation, uploadImage, post } from '../../Utilities';
 import { conversationsActions } from '../../redux/actions/conversations.action';
-import { getConversation, getSocket } from '../../redux/reducers/conversations.reducer';
+import { getConversation, getSocket, getPosts } from '../../redux/reducers/conversations.reducer';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import ConversationHeader from './ConversationHeader';
 import Messages from './Messages/Messages';
@@ -185,19 +185,28 @@ ConversationInput.propTypes = {
   onFileUpload: PropTypes.func.isRequired,
 };
 
-const Conversation = function ({ conversation, setConversation, clientUserId, socket }) {
+const CONVERSATION_TYPES = {
+  CHAT: 'chats',
+  POST: 'discussions',
+};
+
+const Conversation = function ({
+  conversation,
+  setConversation,
+  clientUserId,
+  socket,
+  setPosts,
+  posts = [],
+}) {
   const history = useHistory();
-  const [activeTab, setActiveTab] = useState('chats');
+  const [activeTab, setActiveTab] = useState(CONVERSATION_TYPES.CHAT);
 
   useEffect(() => {
     fetchMessages();
-
-    return () => (socket ? socket.off('receiveMessage', onReceiveMessage) : null);
+    socket.emit('join', { conversation_id: conversation.id });
+    socket.on('conversationMessage', onReceiveMessage);
+    return () => socket.emit('leave', { conversation_id: conversation.id });
   }, []);
-
-  useEffect(() => {
-    if (socket) socket.on('receiveMessage', onReceiveMessage);
-  }, [conversation]);
 
   const addMessage = function (message) {
     const newConversation = { ...conversation };
@@ -213,48 +222,34 @@ const Conversation = function ({ conversation, setConversation, clientUserId, so
   const onReceiveMessage = function (data) {
     console.log(data, `receiveMessage emitted from  ${conversation.id}`);
     console.log(conversation);
-    //     attachments_array: []
-    // chat_text: "Mellow"
-    // conversation_id: 2
-    // sender_id: 1801
-    // type: "message"
-
     addMessage({
-      id: Math.random(),
-      message: {
-        type: 'text',
-        content: data.text,
-      },
-      thumbnail: 'https://i.pravatar.cc/40',
+      id: data.chat_id,
+      message: getMessageByType(data),
+      thumbnail: data.sent_by.display_picture || 'https://i.pravatar.cc/40',
       userIsAuthor: false,
-      timestamp: '',
-      username: `New User`,
+      timestamp: data.sent_time,
+      username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
     });
-    // addMessage({
-    //   id: data.chat_id,
-    //   message: getMessageByType(data),
-    //   thumbnail: data.sent_by.display_picture || 'https://i.pravatar.cc/40',
-    //   userIsAuthor: data.sent_by.client_user_id === clientUserId,
-    //   timestamp: data.sent_time,
-    //   username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
-    // });
   };
 
   const getMessageByType = function (data) {
-    if (data.attachments_array.length > 0) {
-      return {
-        type: data.attachments_array[0].file_type,
-        content: data.attachments_array[0].file_url,
-      };
-    }
-
     if (data.type === 'post') {
+      console.log(data);
+
       return {
         type: 'post',
         content: {
           title: data.title,
           desc: data.text,
+          cover: data.attachments_array.length === 0 ? '' : data.attachments_array[0].file_url,
         },
+      };
+    }
+
+    if (data.attachments_array.length > 0) {
+      return {
+        type: data.attachments_array[0].file_type,
+        content: data.attachments_array[0].file_url,
       };
     }
 
@@ -265,8 +260,12 @@ const Conversation = function ({ conversation, setConversation, clientUserId, so
   };
 
   const fetchMessages = function () {
-    get(null, `/getChtOfConversation?conversation_id=${conversation.id}`).then((res) => {
+    get(
+      null,
+      `/getChtOfConversation?conversation_id=${conversation.id}&client_user_id=${clientUserId}`,
+    ).then((res) => {
       const apiData = apiValidation(res);
+      console.log(apiData, 'apiData');
       const { message_array: messageArray, participants_count: participantsCount } = apiData;
       const messages = messageArray.map((data) => ({
         id: data.chat_id,
@@ -286,6 +285,55 @@ const Conversation = function ({ conversation, setConversation, clientUserId, so
       });
     });
   };
+
+  const reactToMessage = function (messageId) {
+    console.log('reacting');
+    post(
+      {
+        reaction_id: 1,
+        client_user_id: clientUserId,
+        chat_id: messageId,
+        conversation_id: conversation.id,
+      },
+      '/addReactionToPost',
+    )
+      .then((res) => {
+        // const newConversation = { ...conversation };
+        const { messages } = conversation;
+        const index = messages.findIndex((message) => message.id === messageId);
+        const message = messages[index];
+        messages[index] = message;
+        console.log(message);
+        // console.log(messages);
+        // const newMessages = [...messages];
+        // newMessages.push(message);
+        // console.log(newMessages);
+        // newConversation.messages = newMessages;
+        setConversation(conversation);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  };
+
+  function fetchPosts() {
+    get(
+      null,
+      `/getPostsOfConversation?client_user_id=${clientUserId}&conversation_id=${conversation.id}`,
+    ).then((res) => {
+      const apiData = apiValidation(res);
+      const messages = apiData.map((data) => ({
+        id: data.chat_id,
+        message: getMessageByType(data),
+        thumbnail: data.sent_by.display_picture || 'https://i.pravatar.cc/40',
+        userIsAuthor: data.sent_by.client_user_id === clientUserId,
+        timestamp: data.sent_time,
+        username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
+      }));
+
+      setPosts(messages);
+    });
+  }
 
   const uploadFile = function (file, fileType) {
     uploadImage(file).then((res) => {
@@ -332,6 +380,15 @@ const Conversation = function ({ conversation, setConversation, clientUserId, so
     });
   };
 
+  const onTabSelected = (tab) => {
+    if (tab === CONVERSATION_TYPES.CHAT) {
+      fetchMessages();
+    } else {
+      fetchPosts();
+    }
+    setActiveTab(tab);
+  };
+
   return (
     <>
       <div className='fixed-top' style={{ zIndex: 2, backgroundColor: '#fff' }}>
@@ -340,26 +397,33 @@ const Conversation = function ({ conversation, setConversation, clientUserId, so
           name={conversation.name}
           participantsCount={conversation.participantsCount}
           activeTab={activeTab}
-          onTabSelected={(tab) => setActiveTab(tab)}
+          onTabSelected={onTabSelected}
         />
       </div>
       <Row>
-        {activeTab === 'chats' && (
+        {activeTab === CONVERSATION_TYPES.CHAT && (
           <Col md={12}>
-            <Messages list={conversation.messages} />
+            <Messages
+              list={conversation.messages}
+              onReactionToMessage={(messageId) => reactToMessage(messageId)}
+            />
             <ConversationInput
               sendMessage={(message) => sendMessage(message)}
               onFileUpload={(file, type) => uploadFile(file, type)}
+              onReactionToMessage={(reaction, id) => reactToMessage(reaction, id)}
             />
           </Col>
         )}
-        {activeTab === 'discussions' && (
+        {activeTab === CONVERSATION_TYPES.POST && (
           <Col md={12} style={{ marginTop: '150px' }}>
             <div className='p-2 discussions-container'>
-              <p className='text-center' style={{ fontSize: '12px', width: '100%' }}>
-                You do not have any discussions yet!
-              </p>
-              <div className='p-2 fixed-bottom'>
+              {posts.length === 0 && (
+                <p className='text-center' style={{ fontSize: '12px', width: '100%' }}>
+                  You do not have any discussions yet!
+                </p>
+              )}
+              {posts.length > 0 && <Messages list={posts} />}
+              <div className='p-2 fixed-bottom' style={{ backgroundColor: '#fff' }}>
                 <Button
                   size='lg'
                   variant='primary'
@@ -382,6 +446,7 @@ const mapStateToProps = (state) => ({
   conversation: getConversation(state),
   clientUserId: getClientUserId(state),
   socket: getSocket(state),
+  posts: getPosts(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -389,11 +454,15 @@ const mapDispatchToProps = (dispatch) => {
     setConversation: (conversation) => {
       dispatch(conversationsActions.setConversation(conversation));
     },
+    setPosts: (posts) => {
+      dispatch(conversationsActions.setPosts(posts));
+    },
   };
 };
 
 Conversation.propTypes = {
   setConversation: PropTypes.func.isRequired,
+  setPosts: PropTypes.func.isRequired,
   clientUserId: PropTypes.number.isRequired,
   socket: PropTypes.objectOf(PropTypes.any).isRequired,
   conversation: PropTypes.objectOf({
@@ -403,6 +472,7 @@ Conversation.propTypes = {
     participantsCount: PropTypes.number,
     messages: PropTypes.arrayOf(PropTypes.objectOf(Message).isRequired).isRequired,
   }).isRequired,
+  posts: PropTypes.arrayOf(PropTypes.objectOf(Message).isRequired).isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Conversation);

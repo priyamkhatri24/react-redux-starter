@@ -1,139 +1,149 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, Media, Image } from 'react-bootstrap';
+import { Row, Col, Media, Image, Button } from 'react-bootstrap';
 import ReactPlayer from 'react-player';
 import ReactAudioPlayer from 'react-audio-player';
 import './Message.scss';
 
-const ImageMessage = function ({ content, userIsAuthor }) {
-  return (
+const Message = function ({
+  id,
+  username,
+  thumbnail,
+  message,
+  userIsAuthor,
+  timestamp,
+  onReactionToMessage,
+}) {
+  const MessageFooter = () => {
+    const d = new Date(0);
+    d.setUTCSeconds(timestamp);
+
+    return (
+      <div className='message-footer'>
+        <span className='text-right'>{d.toLocaleString()}</span>
+      </div>
+    );
+  };
+
+  const ImageMessage = () => (
     <div className={`${userIsAuthor ? 'p-2 image-by-author' : 'p-1 image-by-user'}`}>
-      <a href={content}>
-        <Image className='image-message' src={content} />
+      <a href={message.content}>
+        <Image className='image-message' src={message.content} />
       </a>
+      <div className='mt-1'>
+        <MessageFooter />
+      </div>
     </div>
   );
-};
 
-ImageMessage.propTypes = {
-  content: PropTypes.string.isRequired,
-  userIsAuthor: PropTypes.bool.isRequired,
-};
+  const TextMessage = function () {
+    return userIsAuthor ? (
+      <>
+        <p className='message-by-author p-2 mb-1'>{message.content}</p>
+        <MessageFooter />
+      </>
+    ) : (
+      <>
+        <p className='message-by-user mb-1'>{message.content}</p>
+        <MessageFooter />
+      </>
+    );
+  };
 
-const TextMessage = function ({ content, userIsAuthor }) {
-  return userIsAuthor ? (
-    <p className='message-by-author p-2'>{content}</p>
-  ) : (
-    <p className='message-by-user'>{content}</p>
-  );
-};
-
-TextMessage.propTypes = {
-  content: PropTypes.string.isRequired,
-  userIsAuthor: PropTypes.bool.isRequired,
-};
-
-const VideoMessage = function ({ content, userIsAuthor }) {
-  return (
-    <div className={`${userIsAuthor ? 'p-2 video-by-author' : 'p-1 video-by-user'}`}>
-      <ReactPlayer
-        className='video-message'
-        controls
-        url={[{ src: content, type: 'video/mp4' }]}
-        width='100%'
-        height='100%'
-      />
-    </div>
-  );
-};
-
-VideoMessage.propTypes = {
-  content: PropTypes.string.isRequired,
-  userIsAuthor: PropTypes.bool.isRequired,
-};
-
-const AudioMessage = function ({ content, userIsAuthor }) {
-  return (
-    <div className={`${userIsAuthor ? 'p-2 audio-by-author' : 'p-1 audio-by-user'}`}>
-      <ReactAudioPlayer className='audio-message' controls src={content} />
-    </div>
-  );
-};
-
-AudioMessage.propTypes = {
-  content: PropTypes.string.isRequired,
-  userIsAuthor: PropTypes.bool.isRequired,
-};
-
-const DocumentMessage = function ({ content, userIsAuthor }) {
-  return (
-    <div
-      className={`p-2 d-flex flex-row align-items-center ${
-        userIsAuthor ? 'doc-by-author' : 'doc-by-user'
-      }`}
-    >
-      <i className='material-icons'>insert_drive_file</i>
-      <p className='ml-2' style={{ marginBottom: '0px' }}>
-        {content.split('/').slice(-1)[0]}
-      </p>
-      <a href={content} style={{ color: '#000' }} className='ml-3 d-flex align-items-center'>
-        <i className='material-icons'>download</i>
-      </a>
-    </div>
-  );
-};
-
-DocumentMessage.propTypes = {
-  content: PropTypes.string.isRequired,
-  userIsAuthor: PropTypes.bool.isRequired,
-};
-
-const PostMessage = function ({ content, userIsAuthor }) {
-  return (
-    <>
-      <div className={`post-message ${userIsAuthor ? 'p-3 image-by-author' : 'p-2 image-by-user'}`}>
-        <h5 className='post-title'>{content.title}</h5>
-        <p className='post-desc'>{content.desc}</p>
-        <Image className='image-message' src={content.cover} />
-        <div className='post-footer d-flex flex-row align-items-center justify-content-between mt-1'>
-          <span className='p-1'>
-            <i className='material-icons favorite'>favorite</i> 25
-          </span>
-          <span className='p-1'>
-            <i className='material-icons chat-bubble'>chat_bubble_outline</i> 25
-          </span>
-          <span className='p-1'>
-            <i className='material-icons share'>share</i>
-          </span>
+  const VideoMessage = function () {
+    return (
+      <div className={`${userIsAuthor ? 'p-2 video-by-author' : 'p-1 video-by-user'}`}>
+        <ReactPlayer
+          className='video-message'
+          controls
+          url={[{ src: message.content, type: 'video/mp4' }]}
+          width='100%'
+          height='100%'
+        />
+        <div className='mt-1'>
+          <MessageFooter />
         </div>
       </div>
-    </>
-  );
-};
+    );
+  };
 
-PostMessage.propTypes = {
-  content: PropTypes.string.isRequired,
-  userIsAuthor: PropTypes.bool.isRequired,
-};
+  const AudioMessage = function () {
+    return (
+      <div className={`${userIsAuthor ? 'p-2 audio-by-author' : 'p-1 audio-by-user'}`}>
+        <ReactAudioPlayer className='audio-message' controls src={message.content} />
+        <MessageFooter />
+      </div>
+    );
+  };
 
-const TYPE_COMPONENT_MAPPING = {
-  image: ImageMessage,
-  text: TextMessage,
-  video: VideoMessage,
-  audio: AudioMessage,
-  doc: DocumentMessage,
-  post: PostMessage,
-};
+  const DocumentMessage = function () {
+    return (
+      <div className={`${userIsAuthor ? 'doc-by-author' : 'doc-by-user'}`}>
+        <div className='p-2 d-flex flex-row align-items-center'>
+          <i className='material-icons'>insert_drive_file</i>
+          <p className='ml-2' style={{ marginBottom: '0px' }}>
+            {message.content.split('/').slice(-1)[0]}
+          </p>
+          <a
+            href={message.content}
+            style={{ color: '#000' }}
+            className='ml-3 d-flex align-items-center'
+          >
+            <i className='material-icons'>download</i>
+          </a>
+        </div>
+        <div className='pt-2 pr-2 pb-2'>
+          <MessageFooter />
+        </div>
+      </div>
+    );
+  };
 
-const Message = function ({ id, username, thumbnail, message, userIsAuthor, timestamp }) {
+  const PostMessage = function () {
+    return (
+      <>
+        <div
+          className={`post-message ${userIsAuthor ? 'p-3 image-by-author' : 'p-2 image-by-user'}`}
+        >
+          <a href={`/posts/${id}`}>
+            <h5 className='post-title'>{message.content.title}</h5>
+            <p className='post-desc'>{message.content.desc}</p>
+            <Image className='image-message' src={message.content.cover} />
+          </a>
+          <div className='post-footer d-flex flex-row align-items-center justify-content-between mt-1'>
+            <span className='p-1'>
+              <Button variant='link' size='sm' onClick={() => onReactionToMessage(id)}>
+                <i className='material-icons favorite'>favorite</i> 25
+              </Button>
+            </span>
+            <span className='p-1'>
+              <i className='material-icons chat-bubble'>chat_bubble_outline</i> 25
+            </span>
+            <span className='p-1'>
+              <i className='material-icons share'>share</i>
+            </span>
+          </div>
+          <MessageFooter />
+        </div>
+      </>
+    );
+  };
+
+  const TYPE_COMPONENT_MAPPING = {
+    image: ImageMessage,
+    text: TextMessage,
+    video: VideoMessage,
+    audio: AudioMessage,
+    doc: DocumentMessage,
+    post: PostMessage,
+  };
+
   const messageComponent = TYPE_COMPONENT_MAPPING[message.type];
 
   return (
-    <div className='mb-2 message' key={id}>
+    <div className='mb-3 message' key={id}>
       {userIsAuthor && (
-        <div className='d-flex flex-column align-items-end'>
-          {messageComponent({ content: message.content, userIsAuthor })}
-        </div>
+        <div className='d-flex flex-column align-items-end'>{messageComponent()}</div>
       )}
 
       {!userIsAuthor && (
@@ -144,7 +154,7 @@ const Message = function ({ id, username, thumbnail, message, userIsAuthor, time
               <Col>
                 <div className='message-content pt-1 pb-1 pl-2 pr-2'>
                   <p className='username'>{username}</p>
-                  {messageComponent({ content: message.content, userIsAuthor })}
+                  {messageComponent()}
                 </div>
               </Col>
             </Row>
@@ -157,6 +167,7 @@ const Message = function ({ id, username, thumbnail, message, userIsAuthor, time
 
 Message.propTypes = {
   id: PropTypes.number.isRequired,
+  onReactionToMessage: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired,
   thumbnail: PropTypes.string.isRequired,
   message: PropTypes.objectOf({

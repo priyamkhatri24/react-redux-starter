@@ -41,6 +41,13 @@
   }
 
   .post-message {
+    a {
+      &:hover,
+      &:active {
+        text-decoration: none;
+      }
+    }
+
     .post-title {
       font-size: 16px;
       font-family: 'Montserrat-bold';
@@ -93,6 +100,7 @@
     border-radius: 5px;
     display: inline-block;
     max-width: 80%;
+    min-width: 40%;
 
     .username {
       font-size: 12px;
@@ -132,5 +140,16 @@
       @extend .message-by-user;
       max-width: 80%;
     }
+  }
+}
+
+.message-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+
+  span {
+    font-size: 8px;
+    font-family: 'Montserrat-Regular';
   }
 }

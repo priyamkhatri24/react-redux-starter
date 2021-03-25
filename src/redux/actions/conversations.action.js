@@ -16,11 +16,21 @@ function setMessages(payload) {
   return { type: conversationsConstants.SET_MESSAGES, payload };
 }
 
+function setPost(payload) {
+  return { type: conversationsConstants.SET_POST, payload };
+}
+
+function setPosts(payload) {
+  return { type: conversationsConstants.SET_POSTS, payload };
+}
+
 export const conversationsActions = {
   setSocket,
   setConversations,
   setConversation,
   setMessages,
+  setPost,
+  setPosts,
   //   setUserIdToStore,
   //   setCLientUserIdToStore,
   //   setUserUserIdToStore,

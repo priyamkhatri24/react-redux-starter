@@ -4,6 +4,8 @@ const initialState = {
   socket: null,
   conversations: [],
   conversation: null,
+  post: {},
+  posts: [],
 };
 
 export function conversations(state = initialState, action) {
@@ -24,6 +26,18 @@ export function conversations(state = initialState, action) {
       return {
         ...state,
         conversation: action.payload,
+      };
+
+    case conversationsConstants.SET_POST:
+      return {
+        ...state,
+        post: action.payload,
+      };
+
+    case conversationsConstants.SET_POSTS:
+      return {
+        ...state,
+        posts: action.payload,
       };
     // case userConstants.USERID:
     //   return {
@@ -68,6 +82,10 @@ export const getSocket = (state) => state.conversations.socket;
 export const getConversations = (state) => state.conversations.conversations;
 
 export const getConversation = (state) => state.conversations.conversation;
+
+export const getPost = (state) => state.conversations.post;
+
+export const getPosts = (state) => state.conversations.posts;
 
 // export const getUserId = (state) => state.clientUserIdUpdate.userId;
 // export const getClientUserId = (state) => state.clientUserIdUpdate.clientUserId;

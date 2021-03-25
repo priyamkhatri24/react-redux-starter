@@ -29,9 +29,9 @@ const Conversations = function ({
     console.log(socket);
     socket.on('receiveMessage', addMessageToConversation);
 
-    return () => {
-      socket.off('receiveMessage', addMessageToConversation);
-    };
+    // return () => {
+    //   socket.off('receiveMessage', addMessageToConversation);
+    // };
   }, []);
 
   const addMessageToConversation = function (data) {
