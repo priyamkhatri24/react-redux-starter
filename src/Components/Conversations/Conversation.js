@@ -294,22 +294,23 @@ const Conversation = function ({
   };
 
   const reactToMessage = function (messageId, userHasReacted) {
-    if (!userHasReacted) {
-      post(
-        {
-          reaction_id: 1,
-          client_user_id: clientUserId,
-          chat_id: messageId,
-          conversation_id: conversation.id,
-        },
-        '/addReaction',
-      )
-        .then((res) => {
-          const newConversation = { ...conversation };
-          const { messages } = newConversation;
-          const index = messages.findIndex((message) => message.id === messageId);
-          const message = messages[index];
-          const { reactions } = message;
+    post(
+      {
+        reaction_id: 1,
+        client_user_id: clientUserId,
+        chat_id: messageId,
+        conversation_id: conversation.id,
+      },
+      '/addReactionToChat',
+    )
+      .then((res) => {
+        const newConversation = { ...conversation };
+        const { messages } = newConversation;
+        const index = messages.findIndex((message) => message.id === messageId);
+        const message = messages[index];
+        const { reactions } = message;
+
+        if (!userHasReacted) {
           if (reactions.length > 0) {
             reactions[0].count += 1;
           } else {
@@ -320,42 +321,19 @@ const Conversation = function ({
               url: 'abc.com',
             });
           }
-          message.reactions = reactions;
           message.userHasReacted = true;
-          messages[index] = message;
-          setConversation(newConversation);
-        })
-        .catch((e) => {
-          console.error(e);
-        });
-    } else {
-      post(
-        {
-          reaction_id: 1,
-          client_user_id: clientUserId,
-          chat_id: messageId,
-          conversation_id: conversation.id,
-        },
-        '/deleteReaction',
-      )
-        .then((res) => {
-          const newConversation = { ...conversation };
-          const { messages } = newConversation;
-          const index = messages.findIndex((message) => message.id === messageId);
-          const message = messages[index];
-          const { reactions } = message;
-          if (reactions.length > 0) {
-            reactions[0].count -= 1;
-          }
-          message.reactions = reactions;
-          message.userHasReacted = true;
-          messages[index] = message;
-          setConversation(newConversation);
-        })
-        .catch((e) => {
-          console.error(e);
-        });
-    }
+        } else {
+          message.userHasReacted = false;
+          reactions[0].count -= 1;
+        }
+
+        message.reactions = reactions;
+        messages[index] = message;
+        setConversation(newConversation);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   };
 
   function fetchPosts() {
@@ -454,9 +432,7 @@ const Conversation = function ({
           <Col md={12}>
             <Messages
               list={conversation.messages}
-              onReactionToMessage={(messageId, userHasReacted) =>
-                reactToMessage(messageId, userHasReacted)
-              }
+              onReactionToMessage={(id, reacted) => reactToMessage(id, reacted)}
             />
             <ConversationInput
               sendMessage={(message) => sendMessage(message)}
