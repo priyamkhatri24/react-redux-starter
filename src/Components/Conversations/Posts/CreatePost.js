@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Button, Image } from 'react-bootstrap';
+import { Form, Button, Image, Spinner } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { conversationsActions } from '../../../redux/actions/conversations.action';
@@ -31,6 +31,7 @@ const CreatePost = function ({ clientUserId, conversation }) {
   const wrapperRef = useRef(null);
   const fileSelectorRef = useRef(null);
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({});
   const [fileType, setFileType] = useState('');
   const [showBottomSheet, setShowBottomSheet] = useState(false);
@@ -40,6 +41,7 @@ const CreatePost = function ({ clientUserId, conversation }) {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     const formDataObj = {};
     formDataObj.client_user_id = clientUserId;
@@ -57,12 +59,14 @@ const CreatePost = function ({ clientUserId, conversation }) {
         post(formDataObj, '/createPost').then((res) => {
           history.push('/conversation');
         });
+        setIsLoading(false);
         // console.log(formDataObj);
       });
     } else {
       post(formDataObj, '/createPost').then((res) => {
         history.push('/conversation');
       });
+      setIsLoading(false);
     }
   };
 
@@ -168,8 +172,14 @@ const CreatePost = function ({ clientUserId, conversation }) {
             className={`p-2 fixed-bottom transition ${!showBottomSheet ? 'd-block' : 'd-none'}`}
             style={{ backgroundColor: '#fff' }}
           >
-            <Button variant='primary' type='submit' block>
-              Submit
+            <Button
+              variant='primary'
+              type='submit'
+              block
+              disabled={isLoading || form.title === '' || form.title === undefined}
+              className='d-flex flex-row align-items-center justify-content-center'
+            >
+              Submit {isLoading && <Spinner className='ml-2' animation='border' size='sm' />}
             </Button>
           </div>
 

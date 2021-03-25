@@ -274,6 +274,13 @@ const Conversation = function ({
         userIsAuthor: data.sent_by.client_user_id === clientUserId,
         timestamp: data.sent_time,
         username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
+        reactions: data.reactions.map((r) => ({
+          count: r.no_of_reactions,
+          id: r.reaction_id,
+          name: r.reaction_name,
+          url: r.reaction_url,
+        })),
+        userHasReacted: data.hasUserReacted,
       }));
 
       setConversation({
@@ -286,34 +293,69 @@ const Conversation = function ({
     });
   };
 
-  const reactToMessage = function (messageId) {
-    console.log('reacting');
-    post(
-      {
-        reaction_id: 1,
-        client_user_id: clientUserId,
-        chat_id: messageId,
-        conversation_id: conversation.id,
-      },
-      '/addReactionToPost',
-    )
-      .then((res) => {
-        // const newConversation = { ...conversation };
-        const { messages } = conversation;
-        const index = messages.findIndex((message) => message.id === messageId);
-        const message = messages[index];
-        messages[index] = message;
-        console.log(message);
-        // console.log(messages);
-        // const newMessages = [...messages];
-        // newMessages.push(message);
-        // console.log(newMessages);
-        // newConversation.messages = newMessages;
-        setConversation(conversation);
-      })
-      .catch((e) => {
-        console.error(e);
-      });
+  const reactToMessage = function (messageId, userHasReacted) {
+    if (!userHasReacted) {
+      post(
+        {
+          reaction_id: 1,
+          client_user_id: clientUserId,
+          chat_id: messageId,
+          conversation_id: conversation.id,
+        },
+        '/addReaction',
+      )
+        .then((res) => {
+          const newConversation = { ...conversation };
+          const { messages } = newConversation;
+          const index = messages.findIndex((message) => message.id === messageId);
+          const message = messages[index];
+          const { reactions } = message;
+          if (reactions.length > 0) {
+            reactions[0].count += 1;
+          } else {
+            reactions.push({
+              count: 1,
+              id: 1,
+              name: 'like',
+              url: 'abc.com',
+            });
+          }
+          message.reactions = reactions;
+          message.userHasReacted = true;
+          messages[index] = message;
+          setConversation(newConversation);
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    } else {
+      post(
+        {
+          reaction_id: 1,
+          client_user_id: clientUserId,
+          chat_id: messageId,
+          conversation_id: conversation.id,
+        },
+        '/deleteReaction',
+      )
+        .then((res) => {
+          const newConversation = { ...conversation };
+          const { messages } = newConversation;
+          const index = messages.findIndex((message) => message.id === messageId);
+          const message = messages[index];
+          const { reactions } = message;
+          if (reactions.length > 0) {
+            reactions[0].count -= 1;
+          }
+          message.reactions = reactions;
+          message.userHasReacted = true;
+          messages[index] = message;
+          setConversation(newConversation);
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    }
   };
 
   function fetchPosts() {
@@ -329,6 +371,13 @@ const Conversation = function ({
         userIsAuthor: data.sent_by.client_user_id === clientUserId,
         timestamp: data.sent_time,
         username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
+        reactions: data.reactions.map((r) => ({
+          count: r.no_of_reactions,
+          id: r.reaction_id,
+          name: r.reaction_name,
+          url: r.reaction_url,
+          userHasReacted: false,
+        })),
       }));
 
       setPosts(messages);
@@ -405,12 +454,13 @@ const Conversation = function ({
           <Col md={12}>
             <Messages
               list={conversation.messages}
-              onReactionToMessage={(messageId) => reactToMessage(messageId)}
+              onReactionToMessage={(messageId, userHasReacted) =>
+                reactToMessage(messageId, userHasReacted)
+              }
             />
             <ConversationInput
               sendMessage={(message) => sendMessage(message)}
               onFileUpload={(file, type) => uploadFile(file, type)}
-              onReactionToMessage={(reaction, id) => reactToMessage(reaction, id)}
             />
           </Col>
         )}

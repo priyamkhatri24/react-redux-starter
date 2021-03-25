@@ -13,6 +13,8 @@ const Message = function ({
   userIsAuthor,
   timestamp,
   onReactionToMessage,
+  reactions,
+  userHasReacted,
 }) {
   const MessageFooter = () => {
     const d = new Date(0);
@@ -112,9 +114,17 @@ const Message = function ({
           </a>
           <div className='post-footer d-flex flex-row align-items-center justify-content-between mt-1'>
             <span className='p-1'>
-              <Button variant='link' size='sm' onClick={() => onReactionToMessage(id)}>
-                <i className='material-icons favorite'>favorite</i> 25
-              </Button>
+              <i
+                className={`material-icons ${userHasReacted ? 'red' : 'grey'}`}
+                role='button'
+                tabIndex={0}
+                onKeyPress={(e) => e.key === 13 && onReactionToMessage(id, userHasReacted)}
+                onClick={() => onReactionToMessage(id, userHasReacted)}
+              >
+                {userHasReacted ? 'favorite' : 'favorite_border'}
+              </i>{' '}
+              {userHasReacted && reactions[0].count}
+              {!userHasReacted && 0}
             </span>
             <span className='p-1'>
               <i className='material-icons chat-bubble'>chat_bubble_outline</i> 25
@@ -123,7 +133,9 @@ const Message = function ({
               <i className='material-icons share'>share</i>
             </span>
           </div>
-          <MessageFooter />
+          <div className='mt-3'>
+            <MessageFooter />
+          </div>
         </div>
       </>
     );
@@ -165,6 +177,13 @@ const Message = function ({
   );
 };
 
+const reactions = PropTypes.shape({
+  count: PropTypes.number.isRequired,
+  id: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
+});
+
 Message.propTypes = {
   id: PropTypes.number.isRequired,
   onReactionToMessage: PropTypes.func.isRequired,
@@ -182,11 +201,14 @@ Message.propTypes = {
     ]),
   }).isRequired,
   userIsAuthor: PropTypes.bool,
+  userHasReacted: PropTypes.bool.isRequired,
   timestamp: PropTypes.string.isRequired,
+  reactions: PropTypes.arrayOf(reactions),
 };
 
 Message.defaultProps = {
   userIsAuthor: false,
+  reactions: [],
 };
 
 export default Message;

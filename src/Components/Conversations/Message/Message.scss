@@ -76,13 +76,17 @@
           margin-right: 5px;
         }
 
-        .favorite {
+        .red {
           color: #ff0000de;
+        }
+
+        .grey {
+          color: #0000008a;
         }
 
         .chat-bubble,
         .share {
-          color: #0000008a;
+          @extend .grey;
         }
       }
     }

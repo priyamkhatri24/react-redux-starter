@@ -31,6 +31,8 @@ const Messages = function ({ list, onReactionToMessage }) {
           userIsAuthor={data.userIsAuthor}
           timestamp={data.timestamp}
           onReactionToMessage={onReactionToMessage}
+          reactions={data.reactions}
+          userHasReacted={data.userHasReacted}
         />
       ))}
       <span ref={messagesEnd} style={{ visibility: 'hidden' }} />
