@@ -139,6 +139,14 @@ const SavedSentTests = Loadable({
 });
 // import SavedSentTests from '../Components/HomeWorkCreator/SavedSentTests';
 
+const SavedSentTestsUsingFilters = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'SavedSentTestsUsingFilters' */ '../Components/HomeWorkCreator/SavedSentTestsUsingFilters'
+    ),
+  loading: Loading,
+});
+
 const FinalQuestions = Loadable({
   loader: () =>
     import(/* webpackChunkName: 'FinalQuestions' */ '../Components/HomeWorkCreator/FinalQuestions'),
@@ -281,11 +289,16 @@ const StudentFee = Loadable({
 });
 
 const FeePlans = Loadable({
-  loader: () => import(/* webpackChunkName: 'StudentFee' */ '../Components/Fees/FeePlans'),
+  loader: () => import(/* webpackChunkName: 'FeePlans' */ '../Components/Fees/FeePlans'),
   loading: Loading,
 });
 
 // import StudentFee from '../Components/Fees/StudentFee';
+
+const EditFeePlan = Loadable({
+  loader: () => import(/* webpackChunkName: 'EditFeePlan' */ '../Components/Fees/EditFeePlan'),
+  loading: Loading,
+});
 
 // eslint-disable-next-line
 function Loading({ error }) {
@@ -321,9 +334,11 @@ export function Routes() {
       <AuthenticatedRoute exact path='/fees/users' component={FeeUserDetails} />
       <AuthenticatedRoute exact path='/fees/students' component={StudentFee} />
       <AuthenticatedRoute exact path='/fees/Feeplans' component={FeePlans} />
+      <AuthenticatedRoute exact path='/fees/edit/studentfeeplan' component={EditFeePlan} />
       <AuthenticatedRoute exact path='/order' component={FeesOrder} />
       <AuthenticatedRoute exact path='/homework' component={HomeWorkCreator} />
       <AuthenticatedRoute exact path='/homework/savedtests' component={SavedSentTests} />
+      <AuthenticatedRoute exact path='/homework/savedsent' component={SavedSentTestsUsingFilters} />
       <AuthenticatedRoute exact path='/homework/preview' component={FinalQuestions} />
       <AuthenticatedRoute exact path='/homework/create' component={CreateQuestion} />
       <AuthenticatedRoute exact path='/homework/assign' component={HomeWorkAssigner} />

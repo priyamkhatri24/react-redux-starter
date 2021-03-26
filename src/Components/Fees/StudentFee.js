@@ -8,6 +8,7 @@ import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import PhoneIcon from '@material-ui/icons/Phone';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import EditIcon from '@material-ui/icons/Edit';
 import Button from 'react-bootstrap/Button';
 import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
@@ -18,9 +19,19 @@ import FeesCard from './FeesCard';
 import './Fees.scss';
 import '../Common/ScrollableCards/ScrollableCards.scss';
 import { getClientUserId, getClientId } from '../../redux/reducers/clientUserId.reducer';
+import { feeActions } from '../../redux/actions/fees.actions';
 
 const StudentFee = (props) => {
-  const { history, clientId, clientUserId } = props;
+  const {
+    history,
+    clientId,
+    clientUserId,
+    setFeeStudentClientUserIdToStore,
+    setFeePlanTypeToStore,
+    setFeeMonthlyPlanArrayToStore,
+    setFeeCustomPlanArrayToStore,
+    setFeeOneTimePlanArrayToStore,
+  } = props;
   const [fees, setFees] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const handleShow = () => setShowModal(true);
@@ -39,8 +50,26 @@ const StudentFee = (props) => {
     ).then((res) => {
       const result = apiValidation(res);
       setFees(result);
+      setFeePlanTypeToStore(result.plan_type === 'custom' ? 'Custom' : 'Monthly');
+      console.log('wtf');
+      setFeeOneTimePlanArrayToStore(result.one_time_plan_array);
+      if (result.plan_type === 'custom') {
+        setFeeCustomPlanArrayToStore(result.plan_array);
+        console.log('bhsodike kuch bhi!');
+      } else {
+        setFeeMonthlyPlanArrayToStore(result.plan_array);
+        console.log('ghia');
+      }
+      setFeeStudentClientUserIdToStore(history.location.state.studentData.client_user_id);
     });
-  }, [history]);
+  }, [
+    history,
+    setFeeStudentClientUserIdToStore,
+    setFeeCustomPlanArrayToStore,
+    setFeePlanTypeToStore,
+    setFeeMonthlyPlanArrayToStore,
+    setFeeOneTimePlanArrayToStore,
+  ]);
 
   useEffect(() => {
     getFeeData();
@@ -70,6 +99,10 @@ const StudentFee = (props) => {
         handleRecordPaymentClose();
       }
     });
+  };
+
+  const goToEditFeePlan = () => {
+    history.push('/fees/edit/studentfeeplan');
   };
 
   return (
@@ -144,8 +177,17 @@ const StudentFee = (props) => {
       </div>
 
       <Modal show={showModal} onHide={handleClose} centered keyboard={false}>
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title>Plan Summary</Modal.Title>
+          <span
+            className='ml-auto my-auto'
+            onClick={() => goToEditFeePlan()}
+            onKeyDown={() => goToEditFeePlan()}
+            role='button'
+            tabIndex='-1'
+          >
+            <EditIcon />
+          </span>
         </Modal.Header>
         <Modal.Body>
           <Card>
@@ -273,10 +315,35 @@ const mapStateToProps = (state) => ({
   clientUserId: getClientUserId(state),
 });
 
-export default connect(mapStateToProps)(StudentFee);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setFeeStudentClientUserIdToStore: (payload) => {
+      dispatch(feeActions.setFeeStudentClientUserIdToStore(payload));
+    },
+    setFeeMonthlyPlanArrayToStore: (payload) => {
+      dispatch(feeActions.setFeeMonthlyPlanArrayToStore(payload));
+    },
+    setFeeCustomPlanArrayToStore: (payload) => {
+      dispatch(feeActions.setFeeCustomPlanArrayToStore(payload));
+    },
+    setFeeOneTimePlanArrayToStore: (payload) => {
+      dispatch(feeActions.setFeeOneTimePlanArrayToStore(payload));
+    },
+    setFeePlanTypeToStore: (payload) => {
+      dispatch(feeActions.setFeePlanTypeToStore(payload));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(StudentFee);
 
 StudentFee.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   clientId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
+  setFeeOneTimePlanArrayToStore: PropTypes.func.isRequired,
+  setFeeCustomPlanArrayToStore: PropTypes.func.isRequired,
+  setFeeMonthlyPlanArrayToStore: PropTypes.func.isRequired,
+  setFeePlanTypeToStore: PropTypes.func.isRequired,
+  setFeeStudentClientUserIdToStore: PropTypes.func.isRequired,
 };

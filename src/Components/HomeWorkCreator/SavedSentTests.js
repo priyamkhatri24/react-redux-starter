@@ -23,11 +23,12 @@ const SavedSentTests = (props) => {
     clientUserId,
     clientId,
     roleArray,
-    history: { location: { state: { classId, goTo } } = {} } = {},
+    history: { location: { state: { classId, goTo = null } } = {} } = {},
     setCurrentSlide,
     setQuestionArrayToStore,
     setCourseAddContentTestIdToStore,
     history,
+    clearTests,
   } = props;
   const [sentTests, setSentTests] = useState([]);
   const [savedTests, setSavedTests] = useState([]);
@@ -64,6 +65,7 @@ const SavedSentTests = (props) => {
     get({ test_id: testId }, '/getTestQuestions').then((res) => {
       console.log(res);
       const result = apiValidation(res);
+      clearTests();
       setCurrentSlide(1);
       setQuestionArrayToStore(result);
       history.push('/homework');
@@ -165,6 +167,9 @@ const mapDispatchToProps = (dispatch) => {
     setCourseAddContentTestIdToStore: (payload) => {
       dispatch(courseActions.setCourseAddContentTestIdToStore(payload));
     },
+    clearTests: () => {
+      dispatch(homeworkActions.clearTests());
+    },
   };
 };
 
@@ -186,4 +191,5 @@ SavedSentTests.propTypes = {
   setCurrentSlide: PropTypes.func.isRequired,
   setQuestionArrayToStore: PropTypes.func.isRequired,
   setCourseAddContentTestIdToStore: PropTypes.func.isRequired,
+  clearTests: PropTypes.func.isRequired,
 };

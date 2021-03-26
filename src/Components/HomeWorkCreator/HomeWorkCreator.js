@@ -32,10 +32,10 @@ const HomeWorkCreator = (props) => {
   }, [currentSlide, questionArray]);
 
   useEffect(() => {
-    if (history.location.state.letsGo) {
+    if (history.location.state && history.location.state.letsGo) {
       clearTests();
     }
-  }, [history.location.state.letsGo, clearTests]);
+  }, [history, clearTests]);
 
   const fetchQuestions = (result) => {
     setQuestionArray(result);

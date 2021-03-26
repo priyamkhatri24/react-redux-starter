@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
-import Card from 'react-bootstrap/Card';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import Row from 'react-bootstrap/Row';
 import Modal from 'react-bootstrap/Modal';
@@ -17,124 +15,7 @@ import { getfeePlanType } from '../../redux/reducers/fees.reducer';
 import '../Common/ScrollableCards/ScrollableCards.scss';
 import './Fees.scss';
 import MonthlyCustomPlan from './MonthlyCustomPlan';
-
-const OneTimeCharge = (props) => {
-  const { tags, setTagAmount, setTagName, tagAmount, tagName } = props;
-  const [showModal, setShowModal] = useState(false);
-  const [showOtherTagName, setOtherTagName] = useState(false);
-  const handleClose = () => setShowModal(false);
-
-  return (
-    <Card
-      style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)', borderRadius: '10px' }}
-      className='m-2 p-2'
-    >
-      <p className='Scrollable__recentlyUsed m-2'>One Time charge name</p>
-
-      <Row className='m-2'>
-        <label htmlFor='Enter Type' className='w-100 has-float-label my-auto'>
-          <input
-            className='form-control'
-            name='Enter Type'
-            type='text'
-            placeholder='Enter Type (eg: Registration fee)'
-            onClick={() => setShowModal(true)}
-            readOnly
-            value={tagName || ''}
-            id='noBackGroundColor'
-          />
-          <span>Enter Type (eg: Registration fee)</span>
-          <i
-            className='LiveClasses__show'
-            style={{
-              position: 'absolute',
-              top: '10%',
-              right: '3%',
-              color: 'rgba(0, 0, 0, 0.38)',
-            }}
-          >
-            <ExpandMoreIcon />
-          </i>
-        </label>
-      </Row>
-      <label className='has-float-label mx-2 my-3'>
-        <input
-          className='form-control'
-          name='Enter amount'
-          type='number'
-          placeholder='Enter amount'
-          value={tagAmount}
-          onChange={(e) => setTagAmount(e.target.value)}
-        />
-        <span>Enter amount</span>
-      </label>
-      <Modal show={showModal} onHide={handleClose} centered>
-        <Modal.Header closeButton>
-          <span className='Scrollable__recentlyUsed my-auto'>
-            Please select the type of this one time charge.
-          </span>
-        </Modal.Header>
-        <Modal.Body>
-          {!showOtherTagName && (
-            <>
-              {tags.map((e) => {
-                return (
-                  <Card
-                    key={e.tag_id}
-                    style={{ borderRadius: '5px', border: '1px solid rgba(0, 0, 0, 0.12)' }}
-                    className='p-1 m-1'
-                    onClick={() => {
-                      setTagName(e.tag_name);
-                      handleClose();
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: '14px',
-                        lineHeight: '24px',
-                        color: 'rgba(0, 0, 0, 0.87)',
-                        fontFamily: 'Montserrat-Regular',
-                      }}
-                    >
-                      {e.tag_name}
-                    </span>
-                  </Card>
-                );
-              })}
-
-              <Button variant='boldText' onClick={() => setOtherTagName(true)}>
-                Specify some other?
-              </Button>
-            </>
-          )}
-          {showOtherTagName && (
-            <label className='has-float-label mx-2 my-3'>
-              <input
-                className='form-control'
-                name='Enter Name'
-                type='text'
-                placeholder='Enter Name'
-                value={tagName}
-                onChange={(e) => setTagName(e.target.value)}
-              />
-              <span>Enter Name</span>
-            </label>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant='boldTextSecondary' onClick={handleClose}>
-            Cancel
-          </Button>
-          {showOtherTagName && (
-            <Button variant='boldText' onClick={handleClose}>
-              Done
-            </Button>
-          )}
-        </Modal.Footer>
-      </Modal>
-    </Card>
-  );
-};
+import OneTimeCharge from './OneTimeCharge';
 
 const FeePlans = (props) => {
   const { history, clientId, clientUserId, feePlanType } = props;
@@ -477,12 +358,4 @@ FeePlans.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   feePlanType: PropTypes.string.isRequired,
-};
-
-OneTimeCharge.propTypes = {
-  tags: PropTypes.instanceOf(Array).isRequired,
-  setTagAmount: PropTypes.func.isRequired,
-  setTagName: PropTypes.func.isRequired,
-  tagName: PropTypes.string.isRequired,
-  tagAmount: PropTypes.string.isRequired,
 };

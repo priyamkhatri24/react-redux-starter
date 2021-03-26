@@ -156,6 +156,11 @@ const Dashboard = (props) => {
     push({ pathname: '/homework', state: { letsGo: true } });
   };
 
+  const goToSentTests = (type) => {
+    const { push } = history;
+    push({ pathname: '/homework/savedsent', state: { testsType: type } });
+  };
+
   const startHomework = (responseArray, testId) => {
     const { push } = history;
     setTestResultArrayToStore(responseArray);
@@ -291,7 +296,7 @@ const Dashboard = (props) => {
               <section className='Dashboard__scrollableCard'>
                 <div>
                   <Row>
-                    <Col xs={8} className='pr-0'>
+                    <Col xs={8} className='pr-0' onClick={() => goToSentTests('sent')}>
                       <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
                         Sent assignments
                       </p>
@@ -311,7 +316,7 @@ const Dashboard = (props) => {
                 </div>
                 <div>
                   <Row>
-                    <Col xs={8} className='pr-0'>
+                    <Col xs={8} className='pr-0' onClick={() => goToSentTests('saved')}>
                       <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
                         Saved assignments
                       </p>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import Tabs from 'react-bootstrap/Tabs';
@@ -13,6 +13,7 @@ import '../Common/ScrollableCards/ScrollableCards.scss';
 import RangeSlider from 'react-bootstrap-range-slider';
 import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 import './Fees.scss';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const CustomInput = ({ value, onClick }) => (
   <Row className='mx-auto'>
@@ -45,19 +46,26 @@ const MonthlyCustomPlan = (props) => {
     setCustomFeePlanArray,
     activeTab,
     changeTab,
+    EditFeePlan,
+    minNoOfInstallments,
+    planDeleted,
   } = props;
-
-  const [newFeeArray, setNewFeeArray] = useState([...customFeePlanArray]);
 
   const generateInstallments = useCallback(() => {
     const tempArray = [...customFeePlanArray];
 
     if (noOfInstallments >= customFeePlanArray.length) {
-      const noOfElems = noOfInstallments - newFeeArray.length;
-      let idIndex = newFeeArray.length;
-      console.log(idIndex);
+      const noOfElems = noOfInstallments - customFeePlanArray.length;
+      let idIndex = customFeePlanArray.length;
       for (let i = 0; i < noOfElems; i++) {
-        tempArray.push({ id: idIndex, amount: 0, due_date: '', date: null, isRead: false });
+        tempArray.push({
+          id: idIndex,
+          amount: 0,
+          due_date: customFeePlanArray[customFeePlanArray.length - 1].due_date,
+          date: customFeePlanArray[customFeePlanArray.length - 1].date,
+          isRead: false,
+          status: 'due',
+        });
         idIndex += 1;
       }
       tempArray.length = noOfInstallments;
@@ -66,13 +74,10 @@ const MonthlyCustomPlan = (props) => {
     }
 
     setCustomFeePlanArray(tempArray);
-    setNewFeeArray(tempArray);
-    console.log(tempArray, 'nik rerender');
   }, [setCustomFeePlanArray, noOfInstallments]);
 
   useEffect(() => {
     generateInstallments();
-    console.log(customFeePlanArray);
   }, [generateInstallments]);
 
   return (
@@ -129,13 +134,13 @@ const MonthlyCustomPlan = (props) => {
           <div className='m-2 p-4'>
             <RangeSlider
               max={11}
-              min={1}
+              min={minNoOfInstallments}
               value={noOfInstallments}
               onChange={(e) => setNoOfInstallments(e.target.value)}
               tooltip='on'
             />
           </div>
-          {newFeeArray.map((elem, i) => {
+          {customFeePlanArray.map((elem, i) => {
             return (
               <div key={elem.key}>
                 <p
@@ -144,14 +149,27 @@ const MonthlyCustomPlan = (props) => {
                 >
                   Installment {i + 1}
                 </p>
-                <Row>
+                <Row
+                  style={
+                    EditFeePlan && elem.status !== 'due'
+                      ? {
+                          pointerEvents: 'none',
+                          backgroundColor: '#3AFF00',
+                          opacity: '0.26',
+                          margin: 0,
+                        }
+                      : {}
+                  }
+                >
                   <Col xs={6}>
                     <DatePicker
                       minDate={
-                        i === 0 ? addDays(new Date(), 1) : addDays(newFeeArray[i - 1].date, 1)
+                        i === 0
+                          ? addDays(new Date(), 1)
+                          : addDays(customFeePlanArray[i - 1].date, 1)
                       }
                       selected={elem.date}
-                      disabled={i === 0 ? false : !newFeeArray[i - 1].isRead}
+                      disabled={i === 0 ? false : !customFeePlanArray[i - 1].isRead}
                       dateFormat='dd/MM/yyyy'
                       onChange={(currdate) => {
                         const newFeeAmount = customFeePlanArray.map((element) => {
@@ -208,7 +226,7 @@ const MonthlyCustomPlan = (props) => {
             <span className='ml-auto'>
               Total &#8377;{' '}
               <span style={{ color: 'var(--primary-blue)' }}>
-                {newFeeArray.reduce((acc, val) => {
+                {customFeePlanArray.reduce((acc, val) => {
                   return acc + parseInt(val.amount, 10);
                 }, 0)}
               </span>
@@ -216,6 +234,21 @@ const MonthlyCustomPlan = (props) => {
           </p>
         </Tab>
       </Tabs>
+      {EditFeePlan && (
+        <Row
+          style={{ color: 'rgba(255, 0, 0, 0.87)', fontFamily: 'Montserrat-SemiBold' }}
+          className='m-2'
+        >
+          <span
+            onClick={() => planDeleted()}
+            onKeyDown={() => planDeleted()}
+            role='button '
+            tabIndex='-1'
+          >
+            <DeleteIcon /> <span className='my-auto'>Delete</span>
+          </span>
+        </Row>
+      )}
     </Card>
   );
 };
@@ -232,10 +265,19 @@ MonthlyCustomPlan.propTypes = {
   monthlyFeeAmount: PropTypes.string.isRequired,
   monthlyFeeDate: PropTypes.instanceOf(Date).isRequired,
   setMonthlyFeeDate: PropTypes.func.isRequired,
-  noOfInstallments: PropTypes.string.isRequired,
+  noOfInstallments: PropTypes.number.isRequired,
   setNoOfInstallments: PropTypes.func.isRequired,
   customFeePlanArray: PropTypes.instanceOf(Array).isRequired,
   setCustomFeePlanArray: PropTypes.func.isRequired,
   activeTab: PropTypes.string.isRequired,
   changeTab: PropTypes.func.isRequired,
+  EditFeePlan: PropTypes.bool,
+  minNoOfInstallments: PropTypes.number,
+  planDeleted: PropTypes.func,
+};
+
+MonthlyCustomPlan.defaultProps = {
+  EditFeePlan: false,
+  minNoOfInstallments: 1,
+  planDeleted: () => {},
 };
