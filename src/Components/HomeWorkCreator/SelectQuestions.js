@@ -243,7 +243,7 @@ const SelectQuestions = (props) => {
                 <Form.Group as={Row}>
                   <Col xs='9'>
                     <RangeSlider
-                      max={totalQuestions}
+                      max={90}
                       min={1}
                       value={noOfQuestions}
                       onChange={(e) => setNoOfQuestions(e.target.value)}

@@ -18,10 +18,12 @@ import {
   getRoleArray,
 } from '../../redux/reducers/clientUserId.reducer';
 import { get, apiValidation } from '../../Utilities';
+import '../Live Classes/LiveClasses.scss';
+import './HomeWorkCreator.scss';
 
 const CustomInput = ({ value, onClick }) => (
   <Row className='m-2 justify-content-center'>
-    <label htmlFor='Select Date' className='w-100 has-float-label my-auto'>
+    <label htmlFor='Select Date' className='has-float-label my-auto w-100'>
       <input
         className='form-control'
         name='Select Date'
@@ -126,7 +128,7 @@ const HomeWorkAssigner = (props) => {
     setDurationValue(durationString);
   };
   return (
-    <>
+    <div style={{ height: '90vh' }}>
       <PageHeader title='Assign Test' />
       <Card style={{ marginTop: '5rem', padding: '1rem' }} className='mx-2 Homework__selectCard'>
         <Row className='m-2'>
@@ -159,7 +161,7 @@ const HomeWorkAssigner = (props) => {
             </i>
           </label>
         </Row>
-        <Row className='mx-2 justify-content-center w-100'>
+        <Row className='m-0 justify-content-center'>
           <DatePicker
             selected={startDate}
             dateFormat='dd/MM/yyyy'
@@ -301,7 +303,7 @@ const HomeWorkAssigner = (props) => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </div>
   );
 };
 

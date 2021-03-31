@@ -197,17 +197,16 @@
     color: $headingGrey;
   }
 
-  &__datePicker > div{
+  &__datePicker > div {
     width: 100%;
   }
 
-  &__smallNotification{
+  &__smallNotification {
     color: $lightGrey;
     font-family: $medium;
     line-height: 13px;
     font-size: $spacer * 0.625;
   }
-
 }
 
 .vertical-timeline::before {
@@ -224,12 +223,12 @@
 Selects the label following the radio checkbox that
 was checked
 */
-[name="feePlan"]:checked + label {
+[name='feePlan']:checked + label {
   background-color: var(--primary-blue);
-  color: #fff
+  color: #fff;
 }
 
-[name="feePlan"] + label {
+[name='feePlan'] + label {
   border-radius: 5px;
   font-family: 'Montserrat-Medium';
   font-size: 0.875rem;
@@ -239,28 +238,27 @@ was checked
   width: 100%;
 }
 
-
 /*
 Changes styles for the label following the radio checkbox that has focus
 
 - click the viewable area and press tab or press a radio button
 - use the arrow keys to change the selected radio button
 */
-[name="feePlan"]:focus + label {
+[name='feePlan']:focus + label {
   border: 1px solid var(--primary-blue);
 }
 
-[name="feePlan"] {
+[name='feePlan'] {
   position: fixed;
   opacity: 0;
 }
 
-.feeNav{
+.feeNav {
   justify-content: center;
   border-radius: 5px;
 }
 
-.feeNav .nav-link{
+.feeNav .nav-link {
   border: 1px solid var(--primary-blue);
   width: 125px;
   height: 30px;
@@ -272,15 +270,15 @@ Changes styles for the label following the radio checkbox that has focus
   border-radius: 0 5px 5px 0;
 }
 
-.feeNav .active{
+.feeNav .active {
   color: #fff;
   background-color: var(--primary-blue);
 }
 
-.nav-link:first-child{
+.nav-link:first-child {
   border-radius: 5px 0 0 5px;
 }
 
 .react-datepicker-popper {
-    z-index: 999;
+  z-index: 999;
 }
