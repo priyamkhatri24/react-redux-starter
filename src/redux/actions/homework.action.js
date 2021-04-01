@@ -28,6 +28,18 @@ function setCurrentSubjectArrayToStore(payload) {
   return { type: homeworkConstants.CURRENTSUBJECTARRAY, payload };
 }
 
+function setTestClassSubjectToStore(payload) {
+  return { type: homeworkConstants.TESTCLASSSUBJECT, payload };
+}
+
+function setTestIsDraftToStore(payload) {
+  return { type: homeworkConstants.TESTISDRAFT, payload };
+}
+
+function setHomeworkLanguageTypeToStore(payload) {
+  return { type: homeworkConstants.HOMEWORKLANGUAGETYPE, payload };
+}
+
 function clearTests() {
   return { type: homeworkConstants.CLEARTESTS };
 }
@@ -41,4 +53,7 @@ export const homeworkActions = {
   setCurrentChapterArrayToStore,
   setCurrentSubjectArrayToStore,
   clearTests,
+  setTestClassSubjectToStore,
+  setTestIsDraftToStore,
+  setHomeworkLanguageTypeToStore,
 };

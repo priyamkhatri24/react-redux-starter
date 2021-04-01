@@ -26,7 +26,12 @@ const SavedSentTestsUsingFilters = (props) => {
     clientUserId,
     roleArray,
     setQuestionArrayToStore,
-    setCurrentSlide,
+    setTestIsDraftToStore,
+    setTestClassSubjectToStore,
+    setCurrentChapterArrayToStore,
+    setTestNameToStore,
+    setTestIdToStore,
+    setHomeworkLanguageTypeToStore,
   } = props;
   const [isToggle, setToggle] = useState(0);
   const [filters, setFilters] = useState({});
@@ -108,14 +113,20 @@ const SavedSentTestsUsingFilters = (props) => {
     setFilterPayload(updatedPayload);
   };
 
-  const getQuestions = (testId) => {
-    console.log(testId);
+  const getQuestions = (testId, name, language) => {
     get({ test_id: testId }, '/getTestQuestions').then((res) => {
       console.log(res);
       const result = apiValidation(res);
-      setCurrentSlide(1);
+      //    setCurrentSlide(1);
       setQuestionArrayToStore(result);
-      history.push('/homework');
+      setTestIsDraftToStore(testsType === 'saved' ? 1 : 0);
+      setTestClassSubjectToStore(res.class_subject);
+      setCurrentChapterArrayToStore(res.chapter_array);
+      setTestNameToStore(name);
+      setTestIdToStore(testId);
+      setHomeworkLanguageTypeToStore(language);
+
+      history.push('/homework/viewonly');
     });
   };
 
@@ -159,8 +170,8 @@ const SavedSentTestsUsingFilters = (props) => {
             {tests.map((elem) => {
               return (
                 <div
-                  onClick={() => getQuestions(elem.test_id)}
-                  onKeyDown={() => getQuestions(elem.test_id)}
+                  onClick={() => getQuestions(elem.test_id, elem.test_name, elem.language_type)}
+                  onKeyDown={() => getQuestions(elem.test_id, elem.test_name, elem.language_type)}
                   role='button'
                   tabIndex='-1'
                   key={elem.test_id}
@@ -187,8 +198,24 @@ const mapDispatchToProps = (dispatch) => {
     setQuestionArrayToStore: (payload) => {
       dispatch(homeworkActions.setQuestionArrayToStore(payload));
     },
-    setCurrentSlide: (payload) => {
-      dispatch(homeworkActions.setCurrentSlide(payload));
+
+    setTestIsDraftToStore: (payload) => {
+      dispatch(homeworkActions.setTestIsDraftToStore(payload));
+    },
+    setTestClassSubjectToStore: (payload) => {
+      dispatch(homeworkActions.setTestClassSubjectToStore(payload));
+    },
+    setTestNameToStore: (payload) => {
+      dispatch(homeworkActions.setTestNameToStore(payload));
+    },
+    setTestIdToStore: (payload) => {
+      dispatch(homeworkActions.setTestIdToStore(payload));
+    },
+    setHomeworkLanguageTypeToStore: (payload) => {
+      dispatch(homeworkActions.setHomeworkLanguageTypeToStore(payload));
+    },
+    setCurrentChapterArrayToStore: (payload) => {
+      dispatch(homeworkActions.setCurrentChapterArrayToStore(payload));
     },
     setCourseAddContentTestIdToStore: (payload) => {
       dispatch(courseActions.setCourseAddContentTestIdToStore(payload));
@@ -203,6 +230,11 @@ SavedSentTestsUsingFilters.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   clientId: PropTypes.number.isRequired,
   roleArray: PropTypes.instanceOf(Array).isRequired,
-  setCurrentSlide: PropTypes.func.isRequired,
   setQuestionArrayToStore: PropTypes.func.isRequired,
+  setTestIsDraftToStore: PropTypes.func.isRequired,
+  setTestClassSubjectToStore: PropTypes.func.isRequired,
+  setCurrentChapterArrayToStore: PropTypes.func.isRequired,
+  setTestNameToStore: PropTypes.func.isRequired,
+  setTestIdToStore: PropTypes.func.isRequired,
+  setHomeworkLanguageTypeToStore: PropTypes.func.isRequired,
 };

@@ -27,7 +27,7 @@ function authHeaderGet() {
 
 const testUrl =
   process.env.NODE_ENV === 'development'
-    ? 'http://13.126.247.152:3000'
+    ? 'http://portal.tca.ingeniumedu.com'
     : 'https://class.ingeniumedu.com';
 // const testUrl = 'https://portal.tca.ingeniumedu.com';
 

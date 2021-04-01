@@ -6,7 +6,7 @@ import MathJax from 'react-mathjax-preview';
 import Card from 'react-bootstrap/Card';
 
 const FinalQuestionCard = (props) => {
-  const { question, index, updateQuestionMarks, showMarks, sectionName } = props;
+  const { question, index, updateQuestionMarks, showMarks, sectionName, isViewOnly } = props;
 
   return (
     <Card className='m-1' key={question.question_id}>
@@ -65,55 +65,57 @@ const FinalQuestionCard = (props) => {
           <hr />
         </>
       )}
-      <Row className='mx-0' style={showMarks ? {} : { pointerEvents: 'none', opacity: '0.4' }}>
-        {[
-          {
-            id: 1,
-            name: 'Correct',
-            value: question.question_positive_marks,
-            color: 'rgba(0, 151, 0, 1)',
-          },
-          {
-            id: 2,
-            name: 'Incorrect',
-            value: question.question_negative_marks,
-            color: 'rgba(255, 0, 0, 1)',
-          },
-          {
-            id: 3,
-            name: 'Unanswered',
-            value: question.question_unanswered_marks,
-            color: 'rgba(86, 66, 61, 1)',
-          },
-        ].map((elem) => {
-          return (
-            <Col xs={4} className='text-center' key={elem.id}>
-              <label
-                className='has-float-label my-3 mx-1 '
-                style={{ fontSize: '10px', color: elem.color }}
-              >
-                <input
-                  className='form-control'
-                  name={elem.name}
-                  type='number'
-                  placeholder={elem.name}
-                  value={elem.value}
-                  onChange={(e) =>
-                    updateQuestionMarks(
-                      question.question_id,
-                      elem.name,
-                      e.target.value,
-                      sectionName,
-                    )
-                  } //eslint-disable-line
-                  style={{ borderColor: elem.color }}
-                />
-                <span style={{ color: elem.color }}>{elem.name}</span>
-              </label>
-            </Col>
-          );
-        })}
-      </Row>
+      {!isViewOnly && (
+        <Row className='mx-0' style={showMarks ? {} : { pointerEvents: 'none', opacity: '0.4' }}>
+          {[
+            {
+              id: 1,
+              name: 'Correct',
+              value: question.question_positive_marks,
+              color: 'rgba(0, 151, 0, 1)',
+            },
+            {
+              id: 2,
+              name: 'Incorrect',
+              value: question.question_negative_marks,
+              color: 'rgba(255, 0, 0, 1)',
+            },
+            {
+              id: 3,
+              name: 'Unanswered',
+              value: question.question_unanswered_marks,
+              color: 'rgba(86, 66, 61, 1)',
+            },
+          ].map((elem) => {
+            return (
+              <Col xs={4} className='text-center' key={elem.id}>
+                <label
+                  className='has-float-label my-3 mx-1 '
+                  style={{ fontSize: '10px', color: elem.color }}
+                >
+                  <input
+                    className='form-control'
+                    name={elem.name}
+                    type='number'
+                    placeholder={elem.name}
+                    value={elem.value}
+                    onChange={(e) =>
+                      updateQuestionMarks(
+                        question.question_id,
+                        elem.name,
+                        e.target.value,
+                        sectionName,
+                      )
+                    } //eslint-disable-line
+                    style={{ borderColor: elem.color }}
+                  />
+                  <span style={{ color: elem.color }}>{elem.name}</span>
+                </label>
+              </Col>
+            );
+          })}
+        </Row>
+      )}
     </Card>
   );
 };
@@ -123,11 +125,14 @@ export default FinalQuestionCard;
 FinalQuestionCard.propTypes = {
   question: PropTypes.instanceOf(Object).isRequired,
   index: PropTypes.number.isRequired,
-  updateQuestionMarks: PropTypes.func.isRequired,
+  updateQuestionMarks: PropTypes.func,
   showMarks: PropTypes.bool.isRequired,
   sectionName: PropTypes.string,
+  isViewOnly: PropTypes.bool,
 };
 
 FinalQuestionCard.defaultProps = {
   sectionName: '',
+  updateQuestionMarks: () => {},
+  isViewOnly: false,
 };

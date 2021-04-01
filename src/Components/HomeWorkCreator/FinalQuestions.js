@@ -17,6 +17,7 @@ import SectionDivider from './SectionDivider';
 import { apiValidation, get, post } from '../../Utilities';
 import FinalQuestionCard from './FinalQuestionCard';
 import MarkingSchemeDecider from './MarkingSchemeDecider';
+import { homeworkActions } from '../../redux/actions/homework.action';
 
 const testInstructions =
   '1. The marking scheme is displayed on top, for each question.' +
@@ -35,7 +36,14 @@ const testInstructions =
   "\n11. By clicking on 'Start Exam', you agree that you have read all the instructions and you abide by them.";
 
 const PreviewQuestions = (props) => {
-  const { selectedQuestionArray, history, testName, testId, clientUserId } = props;
+  const {
+    selectedQuestionArray,
+    history,
+    testName,
+    testId,
+    clientUserId,
+    setTestClassSubjectToStore,
+  } = props;
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [assignmentName, setAssignmentName] = useState(testName);
   const [activeSection, setActiveSection] = useState('No Sections');
@@ -95,6 +103,7 @@ const PreviewQuestions = (props) => {
       });
     } else {
       get({ test_id: testId }, '/getTestQuestionsForHomeWorkCreator').then((res) => {
+        setTestClassSubjectToStore(res.class_subject);
         const result = apiValidation(res);
         const withMarks = result.map((e) => {
           e.question_positive_marks = 0;
@@ -409,7 +418,15 @@ const mapStateToProps = (state) => ({
   clientUserId: getClientUserId(state),
 });
 
-export default connect(mapStateToProps)(PreviewQuestions);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setTestClassSubjectToStore: (payload) => {
+      dispatch(homeworkActions.setTestClassSubjectToStore(payload));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PreviewQuestions);
 
 PreviewQuestions.propTypes = {
   selectedQuestionArray: PropTypes.instanceOf(Array).isRequired,
@@ -424,4 +441,5 @@ PreviewQuestions.propTypes = {
   testName: PropTypes.string.isRequired,
   testId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
+  setTestClassSubjectToStore: PropTypes.func.isRequired,
 };

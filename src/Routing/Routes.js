@@ -170,6 +170,14 @@ const HomeWorkAssigner = Loadable({
 });
 // import HomeWorkAssigner from '../Components/HomeWorkCreator/HomeWorkAssigner';
 
+const HomeWorkViewOnly = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'HomeWorkViewOnly' */ '../Components/HomeWorkCreator/HomeWorkViewOnly'
+    ),
+  loading: Loading,
+});
+
 const ViewCourses = Loadable({
   loader: () => import(/* webpackChunkName: 'ViewCourses' */ '../Components/Courses/ViewCourses'),
   loading: Loading,
@@ -342,6 +350,7 @@ export function Routes() {
       <AuthenticatedRoute exact path='/homework/preview' component={FinalQuestions} />
       <AuthenticatedRoute exact path='/homework/create' component={CreateQuestion} />
       <AuthenticatedRoute exact path='/homework/assign' component={HomeWorkAssigner} />
+      <AuthenticatedRoute exact path='/homework/viewonly' component={HomeWorkViewOnly} />
       <AuthenticatedRoute exact path='/courses' component={ViewCourses} />
       <AuthenticatedRoute exact path='/courses/buyCourse' component={BuyCourse} />
       <AuthenticatedRoute exact path='/courses/mycourse' component={Mycourse} />

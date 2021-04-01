@@ -30,6 +30,8 @@ const QuestionList = (props) => {
     currentSubjectArray,
     setTestIdToStore,
     setTestNameToStore,
+    setTestIsDraftToStore,
+    setHomeworkLanguageTypeToStore,
   } = props;
   const [questions, setQuestions] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
@@ -86,6 +88,8 @@ const QuestionList = (props) => {
           if (!isDraft) {
             setTestIdToStore(res.test_id);
             setTestNameToStore(res.test_name);
+            setTestIsDraftToStore(1);
+            setHomeworkLanguageTypeToStore('english');
           }
           newSelectedQuestions.push(question);
           setSelectedQuestionArrayToStore(newSelectedQuestions);
@@ -189,6 +193,12 @@ const mapDispatchToProps = (dispatch) => {
     setTestNameToStore: (payload) => {
       dispatch(homeworkActions.setTestNameToStore(payload));
     },
+    setTestIsDraftToStore: (payload) => {
+      dispatch(homeworkActions.setTestIsDraftToStore(payload));
+    },
+    setHomeworkLanguageTypeToStore: (payload) => {
+      dispatch(homeworkActions.setHomeworkLanguageTypeToStore(payload));
+    },
   };
 };
 
@@ -207,6 +217,8 @@ QuestionList.propTypes = {
   selectedQuestionArray: PropTypes.instanceOf(Array),
   testId: PropTypes.number,
   testName: PropTypes.string.isRequired,
+  setTestIsDraftToStore: PropTypes.func.isRequired,
+  setHomeworkLanguageTypeToStore: PropTypes.func.isRequired,
 };
 
 QuestionList.defaultProps = {

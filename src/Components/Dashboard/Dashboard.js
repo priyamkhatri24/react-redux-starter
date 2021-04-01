@@ -31,6 +31,7 @@ import { CoursesCards, DashboardCards } from '../Common';
 // import offlineAssignment from '../../assets/images/Dashboard/offline.svg';
 import camera from '../../assets/images/Dashboard/camera.svg';
 import analysis from '../../assets/images/Dashboard/analysis.svg';
+import analysisHands from '../../assets/images/Dashboard/analysishands.svg';
 import student from '../../assets/images/Dashboard/student.svg';
 import Tests from '../Tests/Tests';
 import './Dashboard.scss';
@@ -215,6 +216,11 @@ const Dashboard = (props) => {
     history.push({ pathname: '/admissions/add/details' });
   };
 
+  const goToTeacherAnalysis = () => {
+    const { push } = history;
+    push('/analysis/teacher');
+  };
+
   return (
     <>
       <div className='Dashboard__headerCard'>
@@ -348,21 +354,25 @@ const Dashboard = (props) => {
             buttonClick={goToCoursesForTeacher}
           />
 
-          <div
-            onClick={() => goToTeacherFees()}
-            role='button'
-            tabIndex='-1'
-            onKeyDown={() => goToFees()}
-          >
-            <DashboardCards
-              image={analysis}
-              heading='Fees'
-              subHeading='See fees history and amount to be paid for coming months.'
-              boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-              backGround='rgb(238,232,241)'
-              backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
-            />
-          </div>
+          <DashboardCards
+            image={analysis}
+            heading='Fees'
+            subHeading='See fees history and amount to be paid for coming months.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(238,232,241)'
+            backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
+            buttonClick={goToTeacherFees}
+          />
+
+          <DashboardCards
+            image={analysisHands}
+            heading='Analysis'
+            subHeading='See detailed reports of every student and assignments.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(235,245,246)'
+            backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
+            buttonClick={goToTeacherAnalysis}
+          />
 
           <DashboardCards
             image={student}
@@ -476,14 +486,7 @@ const Dashboard = (props) => {
             backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
           />
 
-          <DashboardCards
-            image={analysis}
-            heading='Admissions'
-            subHeading='Manage students, teachers and batches from a single place.'
-            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-            backGround='rgb(235,245,246)'
-            backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
-          />
+
 
 
           <DashboardCards
