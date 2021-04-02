@@ -10,6 +10,7 @@ import { getConversation, getSocket, getPosts } from '../../redux/reducers/conve
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import ConversationHeader from './ConversationHeader';
 import ConversationInput from './ConversationInput';
+import { formatMessages, formatMessage } from './formatter';
 import Messages from './Messages/Messages';
 import Message from './Message/Message';
 import './Conversation.scss';
@@ -52,42 +53,15 @@ const Conversation = function ({
   const onReceiveMessage = function (data) {
     console.log(data, `receiveMessage emitted from  ${conversation.id}`);
     console.log(conversation);
-    addMessage({
-      id: data.chat_id,
-      message: getMessageByType(data),
-      thumbnail: data.sent_by.display_picture || 'https://i.pravatar.cc/40',
-      userIsAuthor: false,
-      timestamp: data.sent_time,
-      username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
-    });
-  };
-
-  const getMessageByType = function (data) {
-    if (data.type === 'post') {
-      console.log(data);
-
-      return {
-        type: 'post',
-        content: {
-          title: data.title,
-          desc: data.text,
-          cover: data.attachments_array.length === 0 ? '' : data.attachments_array[0].file_url,
-        },
-      };
-    }
-
-    if (data.attachments_array.length > 0) {
-      return {
-        type: data.attachments_array[0].file_type,
-        name: data.attachments_array[0].file_name,
-        content: data.attachments_array[0].file_url,
-      };
-    }
-
-    return {
-      type: 'text',
-      content: data.text,
-    };
+    // {
+    //   id: data.chat_id,
+    //   message: formatMessageContent(data),
+    //   thumbnail: data.sent_by.display_picture || 'https://i.pravatar.cc/40',
+    //   userIsAuthor: false,
+    //   timestamp: data.sent_time,
+    //   username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
+    // }
+    addMessage(formatMessage(data, false));
   };
 
   const fetchMessages = function () {
@@ -98,22 +72,7 @@ const Conversation = function ({
       const apiData = apiValidation(res);
       console.log(apiData, 'apiData');
       const { message_array: messageArray, participants_count: participantsCount } = apiData;
-      const messages = messageArray.map((data) => ({
-        id: data.chat_id,
-        message: getMessageByType(data),
-        thumbnail: data.sent_by.display_picture || 'https://i.pravatar.cc/40',
-        userIsAuthor: data.sent_by.client_user_id === clientUserId,
-        timestamp: data.sent_time,
-        username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
-        reactions: data.reactions.map((r) => ({
-          count: r.no_of_reactions,
-          id: r.reaction_id,
-          name: r.reaction_name,
-          url: r.reaction_url,
-        })),
-        userHasReacted: data.hasUserReacted,
-      }));
-
+      const messages = formatMessages(messageArray, clientUserId);
       setConversation({
         id: conversation.id,
         participantsCount,
@@ -123,6 +82,17 @@ const Conversation = function ({
       });
     });
   };
+
+  function fetchPosts() {
+    get(
+      null,
+      `/getPostsOfConversation?client_user_id=${clientUserId}&conversation_id=${conversation.id}`,
+    ).then((res) => {
+      const apiData = apiValidation(res);
+      const messages = formatMessages(apiData, clientUserId);
+      setPosts(messages);
+    });
+  }
 
   const reactToMessage = function (messageId, userHasReacted) {
     post(
@@ -166,33 +136,6 @@ const Conversation = function ({
         console.error(e);
       });
   };
-
-  function fetchPosts() {
-    get(
-      null,
-      `/getPostsOfConversation?client_user_id=${clientUserId}&conversation_id=${conversation.id}`,
-    ).then((res) => {
-      const apiData = apiValidation(res);
-      const messages = apiData.map((data) => ({
-        id: data.chat_id,
-        message: getMessageByType(data),
-        thumbnail: data.sent_by.display_picture || 'https://i.pravatar.cc/40',
-        userIsAuthor: data.sent_by.client_user_id === clientUserId,
-        timestamp: data.sent_time,
-        username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
-        reactions: data.reactions.map((r) => ({
-          count: r.no_of_reactions,
-          id: r.reaction_id,
-          name: r.reaction_name,
-          url: r.reaction_url,
-          userHasReacted: false,
-        })),
-        userHasReacted: data.hasUserReacted,
-      }));
-
-      setPosts(messages);
-    });
-  }
 
   const uploadFile = function (file, fileType) {
     if (!file) return;
@@ -247,20 +190,20 @@ const Conversation = function ({
   };
 
   const sendMessage = function (message) {
-    if (socket)
-      socket.emit(
-        'sendMessage',
-        {
-          sender_id: clientUserId,
-          conversation_id: conversation.id,
-          text: message,
-          type: 'message',
-          attachments_array: [],
-        },
-        (data) => {
-          console.log('ack', data);
-        },
-      );
+    socket.emit(
+      'sendMessage',
+      {
+        sender_id: clientUserId,
+        conversation_id: conversation.id,
+        text: message,
+        type: 'message',
+        attachments_array: [],
+        primary_chat_id: reply?.id,
+      },
+      (data) => {
+        console.log('ack', data);
+      },
+    );
 
     addMessage({
       message: {
@@ -270,6 +213,7 @@ const Conversation = function ({
       userIsAuthor: true,
       thumbnail: '',
       timestamp: Date.now().toString(),
+      reply,
     });
   };
 

@@ -11,6 +11,7 @@ import ConversationsHeader from './ConversationsHeader';
 import { conversationsActions } from '../../redux/actions/conversations.action';
 import { getConversations, getSocket } from '../../redux/reducers/conversations.reducer';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
+import { formatConversations } from './formatter';
 import './Conversations.scss';
 
 const Conversations = function ({
@@ -28,10 +29,6 @@ const Conversations = function ({
     socket.emit('user-connected', { client_user_id: clientUserId });
     console.log(socket);
     socket.on('receiveMessage', addMessageToConversation);
-
-    // return () => {
-    //   socket.off('receiveMessage', addMessageToConversation);
-    // };
   }, []);
 
   const addMessageToConversation = function (data) {
@@ -47,35 +44,17 @@ const Conversations = function ({
     setConversations(newConversations);
   };
 
-  function send() {
-    socket.emit('sendMessage', {
-      sender_id: 1801,
-      conversation_id: 2,
-      chat_text: `Hello last message - ${Math.random()}`,
-      type: 'message',
-      attachments_array: [],
-    });
-  }
-
   const fetchConversations = function () {
     get(null, `/getConversationsOfUser?client_user_id=${clientUserId}`).then((res) => {
       console.log(res);
       const data = apiValidation(res);
-      setConversations(
-        data.map((conversation) => ({
-          id: conversation.conversation_id,
-          name: conversation.name,
-          thumbnail: conversation.display_picture || 'https://i.pravatar.cc/40',
-          subTitle: conversation.last_message || '',
-          unreadCount: conversation.unread_message_count || 0,
-          messages: [],
-        })),
-      );
+      setConversations(formatConversations(data));
     });
   };
 
-  const onConversationSelected = function (id, name, thumbnail) {
-    setConversation({ id, messages: [], name, thumbnail, participantsCount: null });
+  const onConversationSelected = function (conversation) {
+    conversation.messages = [];
+    setConversation(conversation);
     history.push('/conversation');
   };
 
@@ -103,7 +82,7 @@ const Conversations = function ({
                     subTitle={data.subTitle}
                     unreadCount={data.unreadCount}
                     thumbnail={data.thumbnail}
-                    onClick={() => onConversationSelected(data.id, data.name, data.thumbnail)}
+                    onClick={() => onConversationSelected(data)}
                   />
                 ))}
               </ul>
@@ -112,9 +91,6 @@ const Conversations = function ({
               <p className='text-center'>Seems like you dont have any chats</p>
             )}
           </div>
-          {/* <button type='button' onClick={() => send()}>
-            Send
-          </button> */}
         </Col>
       </Row>
     </Container>
