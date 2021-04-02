@@ -1,0 +1,22 @@
+* {
+  font-family: 'Montserrat-Regular';
+}
+
+.like-btn {
+  font-size: 12px;
+  color: #0000008a;
+  font-family: 'Montserrat-Bold';
+}
+
+#comment-input {
+  font-size: 16px;
+
+  &::placeholder {
+    color: #0000008a;
+  }
+}
+
+.replying-to {
+  background-color: #f5f5f5;
+  width: 100%;
+}

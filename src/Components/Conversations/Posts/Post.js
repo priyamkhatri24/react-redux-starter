@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { createMatchSelector } from 'connected-react-router';
 import PropTypes from 'prop-types';
 import { Image, Media, Carousel } from 'react-bootstrap';
@@ -9,6 +9,7 @@ import { getConversation, getPost } from '../../../redux/reducers/conversations.
 import { getClientUserId } from '../../../redux/reducers/clientUserId.reducer';
 import Conversation from '../Conversation';
 import ConversationsHeader from '../ConversationsHeader';
+import Comments from './Comments';
 import { get, apiValidation, post as postNetworkCall } from '../../../Utilities';
 import './Post.scss';
 import '../Message/Message.scss';
@@ -18,9 +19,9 @@ const Post = function ({
   conversation,
   match,
   setPost,
-  post = { message: { content: {} }, sent_by: {}, attachments: [], reactions: [] },
+  post = { message: { content: {} }, sent_by: {}, attachments: [], reactions: [], comments: [] },
 }) {
-  const history = useHistory();
+  const commentsInputRef = useRef(null);
 
   useEffect(() => {
     fetchPost();
@@ -66,7 +67,7 @@ const Post = function ({
   };
 
   function fetchPost() {
-    get(null, `/getPostDetails?chat_id=${match.params.id}&conversation_id=${clientUserId}`).then(
+    get(null, `/getPostDetails?chat_id=${match.params.id}&client_user_id=${clientUserId}`).then(
       (res) => {
         const data = apiValidation(res);
         console.log(data);
@@ -80,6 +81,7 @@ const Post = function ({
               cover: data.attachments_array.length === 0 ? '' : data.attachments_array[0].file_url,
             },
           },
+          comments: data.comments,
           attachments: data.attachments_array,
           thumbnail: data.sent_by.display_picture || 'https://i.pravatar.cc/40',
           userIsAuthor: data.sent_by.client_user_id === clientUserId,
@@ -116,7 +118,6 @@ const Post = function ({
   };
 
   const postMarkup = () => {
-    console.log(post.reactions);
     return (
       <div className='post-message'>
         <div className='post-header p-3'>
@@ -147,7 +148,7 @@ const Post = function ({
             {post.reactions.length === 0 && 0}
           </span>
           <span className='p-1'>
-            <i className='material-icons chat-bubble'>chat_bubble_outline</i> 25
+            <i className='material-icons chat-bubble'>chat_bubble_outline</i> {post.comments.length}
           </span>
           <span className='p-1'>
             <i className='material-icons share'>share</i>
@@ -157,11 +158,17 @@ const Post = function ({
     );
   };
 
+  const a = (list) =>
+    setPost({
+      ...post,
+      comments: list,
+    });
+
   return (
     <div>
       <ConversationsHeader title='' />
       <>
-        <Media as='div' className='p-1 mt-2'>
+        <Media as='div' className='p-1 pl-3 mt-2'>
           <Image src={post.thumbnail} width={30} className='align-self-start' roundedCircle />
           <Media.Body>
             <div className='message-content pt-1 pb-1 pl-2 pr-2'>
@@ -170,6 +177,14 @@ const Post = function ({
           </Media.Body>
         </Media>
         {postMarkup()}
+        <Comments
+          clientUserId={clientUserId}
+          postId={post.id}
+          list={post.comments}
+          onCommentUpdate={(list) => a(list)}
+          thumbnail={post.thumbnail}
+          username={post.username}
+        />
       </>
     </div>
   );

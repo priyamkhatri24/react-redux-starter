@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, Media, Image, Button } from 'react-bootstrap';
+import { Row, Col, Media, Image, Button, Spinner } from 'react-bootstrap';
 import ReactPlayer from 'react-player';
 import ReactAudioPlayer from 'react-audio-player';
+import Draggable from 'react-draggable';
+
 import './Message.scss';
 
 const Message = function ({
@@ -15,6 +17,8 @@ const Message = function ({
   onReactionToMessage,
   reactions,
   userHasReacted,
+  isLoading,
+  onSlide,
 }) {
   const MessageFooter = () => {
     const d = new Date(0);
@@ -22,7 +26,8 @@ const Message = function ({
 
     return (
       <div className='message-footer'>
-        <span className='text-right'>{d.toLocaleString()}</span>
+        <span className='text-right mr-2'>{d.toLocaleString()}</span>
+        {isLoading && <Spinner animation='border' variant='primary' size='sm' />}
       </div>
     );
   };
@@ -40,15 +45,15 @@ const Message = function ({
 
   const TextMessage = function () {
     return userIsAuthor ? (
-      <>
-        <p className='message-by-author p-2 mb-1'>{message.content}</p>
+      <div className='message-by-author p-2 mb-1'>
+        <p className='mb-0'>{message.content}</p>
         <MessageFooter />
-      </>
+      </div>
     ) : (
-      <>
-        <p className='message-by-user mb-1'>{message.content}</p>
+      <div className='message-by-user mb-1'>
+        <p className='mb-0'>{message.content}</p>
         <MessageFooter />
-      </>
+      </div>
     );
   };
 
@@ -84,7 +89,7 @@ const Message = function ({
         <div className='p-2 d-flex flex-row align-items-center'>
           <i className='material-icons'>insert_drive_file</i>
           <p className='ml-2' style={{ marginBottom: '0px' }}>
-            {message.content.split('/').slice(-1)[0]}
+            {message.name}
           </p>
           <a
             href={message.content}
@@ -153,27 +158,42 @@ const Message = function ({
   const messageComponent = TYPE_COMPONENT_MAPPING[message.type];
 
   return (
-    <div className='mb-3 message' key={id}>
-      {userIsAuthor && (
-        <div className='d-flex flex-column align-items-end'>{messageComponent()}</div>
-      )}
+    <Draggable
+      axis='x'
+      handle='.handle'
+      defaultPosition={{ x: 0, y: 0 }}
+      position={{ x: 0, y: 0 }}
+      grid={[25, 25]}
+      scale={1}
+      onStop={(e) => onSlide({ id, message, userIsAuthor, username })}
+    >
+      <div className='mb-3 message handle' key={id}>
+        {userIsAuthor && (
+          <div className='d-flex flex-column align-items-end'>{messageComponent()}</div>
+        )}
 
-      {!userIsAuthor && (
-        <Media as='div'>
-          <Image src={thumbnail} width={30} className='align-self-start mr-3 mt-2' roundedCircle />
-          <Media.Body>
-            <Row>
-              <Col>
-                <div className='message-content pt-1 pb-1 pl-2 pr-2'>
-                  <p className='username'>{username}</p>
-                  {messageComponent()}
-                </div>
-              </Col>
-            </Row>
-          </Media.Body>
-        </Media>
-      )}
-    </div>
+        {!userIsAuthor && (
+          <Media as='div'>
+            <Image
+              src={thumbnail}
+              width={30}
+              className='align-self-start mr-3 mt-2'
+              roundedCircle
+            />
+            <Media.Body>
+              <Row>
+                <Col>
+                  <div className='message-content pt-1 pb-1 pl-2 pr-2'>
+                    <p className='username'>{username}</p>
+                    {messageComponent()}
+                  </div>
+                </Col>
+              </Row>
+            </Media.Body>
+          </Media>
+        )}
+      </div>
+    </Draggable>
   );
 };
 
@@ -204,11 +224,14 @@ Message.propTypes = {
   userHasReacted: PropTypes.bool.isRequired,
   timestamp: PropTypes.string.isRequired,
   reactions: PropTypes.arrayOf(reactions),
+  isLoading: PropTypes.bool,
+  onSlide: PropTypes.func.isRequired,
 };
 
 Message.defaultProps = {
   userIsAuthor: false,
   reactions: [],
+  isLoading: false,
 };
 
 export default Message;

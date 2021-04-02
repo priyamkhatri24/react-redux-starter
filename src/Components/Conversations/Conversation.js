@@ -1,189 +1,18 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Webcam from 'react-webcam';
-import {
-  Row,
-  Col,
-  FormControl,
-  Button,
-  DropdownButton,
-  Dropdown,
-  ButtonGroup,
-  Modal,
-} from 'react-bootstrap';
-import MicRecorder from 'mic-recorder-to-mp3';
+import { Row, Col, Button } from 'react-bootstrap';
+import { v4 as uuidv4 } from 'uuid';
 import { get, apiValidation, uploadImage, post } from '../../Utilities';
 import { conversationsActions } from '../../redux/actions/conversations.action';
 import { getConversation, getSocket, getPosts } from '../../redux/reducers/conversations.reducer';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import ConversationHeader from './ConversationHeader';
+import ConversationInput from './ConversationInput';
 import Messages from './Messages/Messages';
 import Message from './Message/Message';
 import './Conversation.scss';
-
-const ConversationInput = function ({ sendMessage, onFileUpload }) {
-  const [message, setMessage] = useState('');
-  const [recordingState, setRecordingState] = useState({
-    isRecording: false,
-    blobURL: '',
-    isBlocked: false,
-  });
-  const [recorder, setRecorder] = useState(null);
-  const [fileType, setFileType] = useState('');
-  const fileSelector = useRef();
-  const cameraSelector = useRef();
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const send = function () {
-    sendMessage(message);
-    setMessage('');
-  };
-
-  const openFilePicker = function (type) {
-    let accept = '*';
-    setFileType(type);
-
-    if (type === 'image') {
-      accept = 'image/png,image/jpeg,image/jpg';
-    } else if (type === 'audio') {
-      accept = 'audio/mp3';
-    } else if (type === 'video') {
-      accept = 'video/mp4';
-    }
-
-    fileSelector.current.accept = accept;
-    fileSelector.current.click();
-  };
-
-  const startRecording = function () {
-    const newRecorder = new MicRecorder({ bitRate: 128 });
-    navigator.getUserMedia(
-      { audio: true },
-      () => {
-        console.log('Permission Granted');
-        newRecorder
-          .start()
-          .then(() => {
-            setRecordingState({ ...recordingState, isRecording: true, isBlocked: false });
-          })
-          .catch((e) => console.error(e));
-      },
-      () => {
-        console.log('Permission Denied');
-        setRecordingState({ ...recordingState, isBlocked: true });
-      },
-    );
-
-    setRecorder(newRecorder);
-  };
-
-  const stopRecording = () => {
-    recorder
-      .stop()
-      .getMp3()
-      .then(([buffer, blob]) => {
-        const file = new File(buffer, 'recording.mp3', {
-          type: blob.type,
-          lastModified: Date.now(),
-        });
-        const blobURL = URL.createObjectURL(file);
-        setRecordingState({ ...recordingState, blobURL, isRecording: false });
-        onFileUpload(file, 'audio');
-      })
-      .catch((e) => console.log(e));
-  };
-
-  const captureImage = function () {
-    function urltoFile(url, filename, mimeType) {
-      return fetch(url)
-        .then(function (res) {
-          return res.arrayBuffer();
-        })
-        .then(function (buf) {
-          return onFileUpload(new File([buf], 'image.png'), 'image');
-        });
-    }
-
-    urltoFile(cameraSelector.current.getScreenshot());
-  };
-
-  return (
-    <>
-      <Row className='fixed-bottom pb-2' style={{ backgroundColor: '#fff', zIndex: 2 }}>
-        <Col xs={12}>
-          <div className='d-flex flex-row align-items-center justify-content-between'>
-            <div className='d-flex flex-row input-container align-items-center'>
-              <DropdownButton
-                onSelect={(e) => openFilePicker(e)}
-                as={ButtonGroup}
-                key='up'
-                id='dropdown-button-drop-up'
-                drop='up'
-                variant='primary'
-                title={<i className='material-icons'>attachment</i>}
-              >
-                <Dropdown.Item eventKey='image'>Image</Dropdown.Item>
-                <Dropdown.Item eventKey='video'>Video</Dropdown.Item>
-                <Dropdown.Item eventKey='doc'>Document</Dropdown.Item>
-                <Dropdown.Item eventKey='audio'>Audio</Dropdown.Item>
-              </DropdownButton>
-              <input
-                type='file'
-                ref={fileSelector}
-                style={{ display: 'none' }}
-                onChange={(e) => onFileUpload(fileSelector.current.files[0], fileType)}
-              />
-              <FormControl
-                placeholder='Type a message'
-                as='input'
-                id='chat-input'
-                aria-label='Input field for your message'
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-              />
-              <span className='upload-actions'>
-                <i className='material-icons pr-2'>insert_emoticon</i>
-                <Button variant='link' size='sm' className='camera-btn' onClick={handleShow}>
-                  <i className='material-icons'>photo_camera</i>
-                </Button>
-              </span>
-            </div>
-            {!!message && (
-              <Button className='rounded-btn mr-2' onClick={() => send()}>
-                <i className='material-icons'>send</i>
-              </Button>
-            )}
-            {!message && !recordingState.isRecording && (
-              <Button className='rounded-btn mr-2' onClick={() => startRecording()}>
-                <i className='material-icons'>mic_none</i>
-              </Button>
-            )}
-            {!message && recordingState.isRecording && (
-              <Button className='rounded-btn mr-2' onClick={() => stopRecording()}>
-                <i className='material-icons'>close</i>
-              </Button>
-            )}
-          </div>
-        </Col>
-      </Row>
-
-      <Modal show={show} onHide={handleClose} centered size='xl' style={{ height: '100%' }}>
-        <Webcam ref={cameraSelector} />
-        <Button onClick={() => captureImage()}>Capture</Button>
-      </Modal>
-    </>
-  );
-};
-
-ConversationInput.propTypes = {
-  sendMessage: PropTypes.func.isRequired,
-  onFileUpload: PropTypes.func.isRequired,
-};
 
 const CONVERSATION_TYPES = {
   CHAT: 'chats',
@@ -200,6 +29,7 @@ const Conversation = function ({
 }) {
   const history = useHistory();
   const [activeTab, setActiveTab] = useState(CONVERSATION_TYPES.CHAT);
+  const [reply, setReply] = useState(null);
 
   useEffect(() => {
     fetchMessages();
@@ -249,6 +79,7 @@ const Conversation = function ({
     if (data.attachments_array.length > 0) {
       return {
         type: data.attachments_array[0].file_type,
+        name: data.attachments_array[0].file_name,
         content: data.attachments_array[0].file_url,
       };
     }
@@ -356,6 +187,7 @@ const Conversation = function ({
           url: r.reaction_url,
           userHasReacted: false,
         })),
+        userHasReacted: data.hasUserReacted,
       }));
 
       setPosts(messages);
@@ -363,38 +195,72 @@ const Conversation = function ({
   }
 
   const uploadFile = function (file, fileType) {
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    const tempId = uuidv4();
+    console.log('url', url);
+    const newMessage = {
+      id: tempId,
+      message: {
+        type: fileType,
+        content: url,
+      },
+      userIsAuthor: true,
+      thumbnail: '',
+      timestamp: Date.now().toString(),
+      isLoading: true,
+    };
+
+    const newConversation = { ...conversation };
+    const { messages } = newConversation;
+    console.log(messages);
+    const newMessages = [...messages];
+    newMessages.push(newMessage);
+    console.log(newMessages);
+    newConversation.messages = newMessages;
+    setConversation(newConversation);
+
     uploadImage(file).then((res) => {
       console.log(res.filename);
       const { filename } = res;
-      socket.emit('sendMessage', {
-        sender_id: clientUserId,
-        conversation_id: conversation.id,
-        text: null,
-        type: 'message',
-        attachments_array: [{ url: filename, type: fileType, name: file.name }],
-      });
-
-      addMessage({
-        message: {
-          type: fileType,
-          content: filename,
+      socket.emit(
+        'sendMessage',
+        {
+          sender_id: clientUserId,
+          conversation_id: conversation.id,
+          text: null,
+          type: 'message',
+          attachments_array: [{ url: filename, type: fileType, name: file.name }],
         },
-        userIsAuthor: true,
-        thumbnail: '',
-        timestamp: Date.now().toString(),
-      });
+        (error, data) => {
+          console.log('ack', data);
+          const index = newMessages.findIndex((message) => message.id === tempId);
+          console.log(index);
+          if (index === -1) return;
+          newMessages[index].id = data.chat_id;
+          newMessages[index].isLoading = false;
+          conversation.messages = newMessages;
+          setConversation(conversation);
+        },
+      );
     });
   };
 
   const sendMessage = function (message) {
     if (socket)
-      socket.emit('sendMessage', {
-        sender_id: clientUserId,
-        conversation_id: conversation.id,
-        text: message,
-        type: 'message',
-        attachments_array: [],
-      });
+      socket.emit(
+        'sendMessage',
+        {
+          sender_id: clientUserId,
+          conversation_id: conversation.id,
+          text: message,
+          type: 'message',
+          attachments_array: [],
+        },
+        (data) => {
+          console.log('ack', data);
+        },
+      );
 
     addMessage({
       message: {
@@ -405,6 +271,11 @@ const Conversation = function ({
       thumbnail: '',
       timestamp: Date.now().toString(),
     });
+  };
+
+  const replyToMessage = (message) => {
+    console.log(message);
+    setReply(message);
   };
 
   const onTabSelected = (tab) => {
@@ -433,10 +304,13 @@ const Conversation = function ({
             <Messages
               list={conversation.messages}
               onReactionToMessage={(id, reacted) => reactToMessage(id, reacted)}
+              onSlide={(message) => replyToMessage(message)}
             />
             <ConversationInput
               sendMessage={(message) => sendMessage(message)}
               onFileUpload={(file, type) => uploadFile(file, type)}
+              reply={reply}
+              onRemoveReply={() => setReply(null)}
             />
           </Col>
         )}

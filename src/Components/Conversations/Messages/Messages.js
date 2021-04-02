@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Message from '../Message/Message';
 import './Messages.scss';
 
-const Messages = function ({ list, onReactionToMessage }) {
+const Messages = function ({ list, onReactionToMessage, onSlide }) {
   const messagesEnd = useRef(null);
 
   useEffect(function () {
@@ -33,6 +33,8 @@ const Messages = function ({ list, onReactionToMessage }) {
           onReactionToMessage={onReactionToMessage}
           reactions={data.reactions}
           userHasReacted={data.userHasReacted}
+          isLoading={data.isLoading}
+          onSlide={onSlide}
         />
       ))}
       <span ref={messagesEnd} style={{ visibility: 'hidden' }} />
@@ -43,6 +45,11 @@ const Messages = function ({ list, onReactionToMessage }) {
 Messages.propTypes = {
   list: PropTypes.arrayOf(PropTypes.objectOf(Message).isRequired).isRequired,
   onReactionToMessage: PropTypes.func.isRequired,
+  onSlide: PropTypes.func,
+};
+
+Messages.defaultProps = {
+  onSlide: () => {},
 };
 
 export default Messages;
