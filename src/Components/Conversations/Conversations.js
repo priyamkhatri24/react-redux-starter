@@ -53,7 +53,6 @@ const Conversations = function ({
   };
 
   const onConversationSelected = function (conversation) {
-    conversation.messages = [];
     setConversation(conversation);
     history.push('/conversation');
   };

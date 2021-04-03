@@ -31,6 +31,7 @@ const Conversation = function ({
   const history = useHistory();
   const [activeTab, setActiveTab] = useState(CONVERSATION_TYPES.CHAT);
   const [reply, setReply] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchMessages();
@@ -70,17 +71,55 @@ const Conversation = function ({
       `/getChtOfConversation?conversation_id=${conversation.id}&client_user_id=${clientUserId}`,
     ).then((res) => {
       const apiData = apiValidation(res);
+      const {
+        next: { page },
+      } = res;
       console.log(apiData, 'apiData');
       const { message_array: messageArray, participants_count: participantsCount } = apiData;
-      const messages = formatMessages(messageArray, clientUserId);
+      const newMessages = formatMessages(messageArray, clientUserId);
+      const { messages: prevMessages } = conversation;
+      console.log(page);
       setConversation({
         id: conversation.id,
         participantsCount,
         name: conversation.name,
         thumbnail: conversation.thumbnail,
-        messages,
+        messages: newMessages.concat(prevMessages),
+        page,
       });
     });
+  };
+
+  const fetchMoreMessages = (page) => {
+    const { id } = conversation;
+    console.log('fetching more messages');
+    console.log('page', page);
+    if (!isLoading && page > 1) {
+      setIsLoading(true);
+      get(
+        null,
+        `/getChtOfConversation?conversation_id=${id}&client_user_id=${clientUserId}&page=${page}`,
+      ).then((res) => {
+        console.log(
+          `/getChtOfConversation?conversation_id=${id}&client_user_id=${clientUserId}&page=${page}`,
+        );
+        const apiData = apiValidation(res);
+        const { next: { page: nextPage } = { page: null } } = res;
+        console.log(apiData, 'apiData');
+        console.log(nextPage, 'nextPage');
+        const { message_array: messageArray } = apiData;
+        const newMessages = formatMessages(messageArray, clientUserId);
+        const { messages: prevMessages } = conversation;
+        console.log(newMessages);
+        console.log(newMessages.concat(prevMessages));
+        setConversation({
+          ...conversation,
+          messages: newMessages.concat(prevMessages),
+          page: nextPage,
+        });
+        setIsLoading(false);
+      });
+    }
   };
 
   function fetchPosts() {
@@ -89,10 +128,42 @@ const Conversation = function ({
       `/getPostsOfConversation?client_user_id=${clientUserId}&conversation_id=${conversation.id}`,
     ).then((res) => {
       const apiData = apiValidation(res);
+      const { next: { page: nextPage } = { page: null } } = res;
       const messages = formatMessages(apiData, clientUserId);
+      setConversation({ ...conversation, page: nextPage });
       setPosts(messages);
     });
   }
+
+  const fetchMorePosts = (page) => {
+    const { id } = conversation;
+    console.log('fetching more post');
+    console.log('page', page);
+    if (!isLoading && page > 1) {
+      setIsLoading(true);
+      get(
+        null,
+        `/getPostsOfConversation?conversation_id=${id}&client_user_id=${clientUserId}&page=${page}`,
+      ).then((res) => {
+        console.log(
+          `/getPostsOfConversation?conversation_id=${id}&client_user_id=${clientUserId}&page=${page}`,
+        );
+        const apiData = apiValidation(res);
+        const { next: { page: nextPage } = { page: null } } = res;
+        console.log(apiData, 'apiData');
+        console.log(nextPage, 'nextPage');
+        const newMessages = formatMessages(apiData, clientUserId);
+        console.log(newMessages);
+        console.log(newMessages.concat(posts));
+        setPosts(newMessages.concat(posts));
+        setConversation({
+          ...conversation,
+          page: nextPage,
+        });
+        setIsLoading(false);
+      });
+    }
+  };
 
   const reactToMessage = function (messageId, userHasReacted) {
     post(
@@ -249,6 +320,9 @@ const Conversation = function ({
               list={conversation.messages}
               onReactionToMessage={(id, reacted) => reactToMessage(id, reacted)}
               onSlide={(message) => replyToMessage(message)}
+              isLoading={isLoading}
+              nextPage={conversation.page}
+              loadMore={(page) => fetchMoreMessages(page)}
             />
             <ConversationInput
               sendMessage={(message) => sendMessage(message)}
@@ -259,14 +333,14 @@ const Conversation = function ({
           </Col>
         )}
         {activeTab === CONVERSATION_TYPES.POST && (
-          <Col md={12} style={{ marginTop: '150px' }}>
+          <Col md={12}>
             <div className='p-2 discussions-container'>
-              {posts.length === 0 && (
-                <p className='text-center' style={{ fontSize: '12px', width: '100%' }}>
-                  You do not have any discussions yet!
-                </p>
-              )}
-              {posts.length > 0 && <Messages list={posts} />}
+              <Messages
+                list={posts}
+                isLoading={isLoading}
+                nextPage={conversation.page}
+                loadMore={(page) => fetchMorePosts(page)}
+              />
               <div className='p-2 fixed-bottom' style={{ backgroundColor: '#fff' }}>
                 <Button
                   size='lg'
@@ -291,6 +365,7 @@ const mapStateToProps = (state) => ({
   clientUserId: getClientUserId(state),
   socket: getSocket(state),
   posts: getPosts(state),
+  // page: getPage(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -301,6 +376,9 @@ const mapDispatchToProps = (dispatch) => {
     setPosts: (posts) => {
       dispatch(conversationsActions.setPosts(posts));
     },
+    // setPage: (page) => {
+    //   dispatch(conversationsActions.setPage(page));
+    // },
   };
 };
 
@@ -315,6 +393,7 @@ Conversation.propTypes = {
     thumbnail: PropTypes.string.isRequired,
     participantsCount: PropTypes.number,
     messages: PropTypes.arrayOf(PropTypes.objectOf(Message).isRequired).isRequired,
+    page: PropTypes.number.isRequired,
   }).isRequired,
   posts: PropTypes.arrayOf(PropTypes.objectOf(Message).isRequired).isRequired,
 };

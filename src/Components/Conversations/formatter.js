@@ -69,4 +69,5 @@ export const formatConversations = (list) =>
     subTitle: conversation.last_message || '',
     unreadCount: conversation.unread_message_count || 0,
     messages: [],
+    page: 1,
   }));

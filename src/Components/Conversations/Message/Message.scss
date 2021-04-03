@@ -1,6 +1,6 @@
 .message {
   &:last-of-type {
-    margin-bottom: 4rem !important;
+    // margin-bottom: 4rem !important;
   }
 
   .message-by-author {
@@ -15,19 +15,21 @@
 
   .image-by-author {
     @extend .message-by-author;
-    max-width: 80%;
+    height: 180px;
+    width: auto;
 
     .image-message {
-      width: 100%;
+      height: 150px;
     }
   }
 
   .video-by-author {
     @extend .message-by-author;
-    max-width: 80%;
+    height: 180px;
+    width: auto;
 
     .video-message {
-      width: 100%;
+      height: 150px;
     }
   }
 
@@ -41,6 +43,14 @@
   }
 
   .post-message {
+    background-color: #f1f9ff;
+    box-shadow: 0.5px 0.5px 1px 0px #00000026;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: 'Montserrat-Regular';
+    color: #000;
+    margin-bottom: 0px;
+
     a {
       &:hover,
       &:active {
@@ -61,6 +71,14 @@
       color: #000;
       line-height: 15px;
       margin-bottom: 10px;
+    }
+
+    .image-message {
+      // height: 50px !important;
+      text-align: center;
+      overflow: hidden;
+      height: 150px !important;
+      width: auto;
     }
 
     .post-footer {
@@ -121,18 +139,21 @@
 
     .image-by-user {
       @extend .message-by-user;
+      height: 180px;
+      width: auto;
 
       .image-message {
-        width: 100%;
+        height: 150px;
       }
     }
 
     .video-by-user {
       @extend .message-by-user;
-      max-width: 80%;
+      height: 180px;
+      width: auto;
 
       .video-message {
-        width: 100%;
+        height: 150px;
       }
     }
 

@@ -3,7 +3,15 @@ import { conversationsConstants } from '../../constants';
 const initialState = {
   socket: null,
   conversations: [],
-  conversation: null,
+  conversation: {
+    id: null,
+    name: '',
+    thumbnail: '',
+    subTitle: '',
+    unreadCount: 0,
+    messages: [],
+    page: 1,
+  },
   post: {},
   posts: [],
 };

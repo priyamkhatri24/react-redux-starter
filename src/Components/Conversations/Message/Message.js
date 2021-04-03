@@ -64,8 +64,8 @@ const Message = function ({
           className='video-message'
           controls
           url={[{ src: message.content, type: 'video/mp4' }]}
-          width='100%'
-          height='100%'
+          width='auto'
+          height='150px'
         />
         <div className='mt-1'>
           <MessageFooter />
@@ -109,13 +109,13 @@ const Message = function ({
   const PostMessage = function () {
     return (
       <>
-        <div
-          className={`post-message ${userIsAuthor ? 'p-3 image-by-author' : 'p-2 image-by-user'}`}
-        >
+        <div className={`${userIsAuthor ? 'p-3 ' : 'p-2 '} post-message `}>
           <a href={`/posts/${id}`}>
             <h5 className='post-title'>{message.content.title}</h5>
             <p className='post-desc'>{message.content.desc}</p>
-            <Image className='image-message' src={message.content.cover} />
+            <div className='d-flex justify-content-center'>
+              <Image className='image-message' src={message.content.cover} />
+            </div>
           </a>
           <div className='post-footer d-flex flex-row align-items-center justify-content-between mt-1'>
             <span className='p-1'>
@@ -158,42 +158,44 @@ const Message = function ({
   const messageComponent = TYPE_COMPONENT_MAPPING[message.type];
 
   return (
-    <Draggable
-      axis='x'
-      handle='.handle'
-      defaultPosition={{ x: 0, y: 0 }}
-      position={{ x: 0, y: 0 }}
-      grid={[25, 25]}
-      scale={1}
-      onStop={(e) => onSlide({ id, message, userIsAuthor, username })}
-    >
-      <div className='mb-3 message handle' key={id}>
-        {userIsAuthor && (
-          <div className='d-flex flex-column align-items-end'>{messageComponent()}</div>
-        )}
-
-        {!userIsAuthor && (
-          <Media as='div'>
-            <Image
-              src={thumbnail}
-              width={30}
-              className='align-self-start mr-3 mt-2'
-              roundedCircle
-            />
-            <Media.Body>
-              <Row>
-                <Col>
-                  <div className='message-content pt-1 pb-1 pl-2 pr-2'>
-                    <p className='username'>{username}</p>
-                    {messageComponent()}
-                  </div>
-                </Col>
-              </Row>
-            </Media.Body>
-          </Media>
-        )}
-      </div>
-    </Draggable>
+    <div className='mb-3'>
+      <Draggable
+        axis='x'
+        handle='.handle'
+        defaultPosition={{ x: 0, y: 0 }}
+        position={{ x: 0, y: 0 }}
+        grid={[25, 25]}
+        scale={1}
+        onStop={(e) => onSlide({ id, message, userIsAuthor, username })}
+        onClick={() => {}}
+      >
+        <div className='message handle' key={id}>
+          {userIsAuthor && (
+            <div className='d-flex flex-column align-items-end'>{messageComponent()}</div>
+          )}
+          {!userIsAuthor && (
+            <Media as='div'>
+              <Image
+                src={thumbnail}
+                width={30}
+                className='align-self-start mr-3 mt-2'
+                roundedCircle
+              />
+              <Media.Body>
+                <Row>
+                  <Col>
+                    <div className='message-content pt-1 pb-1 pl-2 pr-2'>
+                      <p className='username'>{username}</p>
+                      {messageComponent()}
+                    </div>
+                  </Col>
+                </Row>
+              </Media.Body>
+            </Media>
+          )}
+        </div>
+      </Draggable>
+    </div>
   );
 };
 
