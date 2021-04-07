@@ -1,7 +1,8 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Spinner } from 'react-bootstrap';
-import InfiniteScroll from 'react-infinite-scroll-component';
+// import InfiniteScroll from 'react-infinite-scroll-component';
+import InfiniteScroll from 'react-infinite-scroller';
 import Message from '../Message/Message';
 import './Messages.scss';
 
@@ -23,43 +24,49 @@ const Messages = function ({ list, onReactionToMessage, onSlide, isLoading, load
     }
   });
 
+  const loader = () => (
+    <div style={{ height: '100px' }} className='d-flex align-items-center justify-content-center'>
+      <Spinner animation='border' variant='primary' />
+    </div>
+  );
+
   return (
-    <div className='messages-container container-fluid mt-5 mb-5'>
+    <div
+      className='messages-container container-fluid mt-5 mb-5'
+      style={{ height: '80vh', overflow: 'auto' }}
+    >
       <InfiniteScroll
-        inverse
+        isReverse
         dataLength={list.length}
-        next={() => loadMore(nextPage)}
+        loadMore={() => loadMore(nextPage)}
         hasMore={!!nextPage}
+        initialLoad={false}
+        useWindow={false}
         /* eslint react/jsx-wrap-multilines: 0 */
-        loader={
-          <div
-            style={{ height: '100px' }}
-            className='d-flex align-items-center justify-content-center'
-          >
-            <Spinner animation='border' variant='primary' />
-          </div>
-        }
-        endMessage={<div style={{ height: '100px' }} />}
-        style={{ display: 'flex', flexDirection: 'column-reverse' }}
-        height='80vh'
+        loader={loader()}
+        // }
+        // scrollableTarget='parent'
+        // style={{ display: 'flex', flexDirection: 'column-reverse' }}
+        // height='80vh'
       >
-        {list
-          .map((data) => (
-            <Message
-              id={data.id}
-              username={data.username}
-              message={data.message}
-              thumbnail={data.thumbnail}
-              userIsAuthor={data.userIsAuthor}
-              timestamp={data.timestamp}
-              onReactionToMessage={onReactionToMessage}
-              reactions={data.reactions}
-              userHasReacted={data.userHasReacted}
-              isLoading={data.isLoading}
-              onSlide={onSlide}
-            />
-          ))
-          .reverse()}
+        <div style={{ height: '100px' }} />
+        {list.map((data) => (
+          <Message
+            id={data.id}
+            key={data.id}
+            username={data.username}
+            message={data.message}
+            thumbnail={data.thumbnail}
+            userIsAuthor={data.userIsAuthor}
+            timestamp={data.timestamp}
+            onReactionToMessage={onReactionToMessage}
+            reactions={data.reactions}
+            comments={data.comments}
+            userHasReacted={data.userHasReacted}
+            isLoading={data.isLoading}
+            onSlide={onSlide}
+          />
+        ))}
       </InfiniteScroll>
 
       <span ref={messagesEnd} style={{ visibility: 'hidden' }} />

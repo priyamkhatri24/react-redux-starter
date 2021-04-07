@@ -208,7 +208,11 @@ ConversationInput.propTypes = {
       name: PropTypes.string,
       content: PropTypes.string.isRequired,
     }),
-  }).isRequired,
+  }),
+};
+
+ConversationInput.defaultProps = {
+  reply: {},
 };
 
 export default ConversationInput;

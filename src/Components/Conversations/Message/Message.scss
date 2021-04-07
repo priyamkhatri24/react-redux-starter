@@ -1,7 +1,5 @@
 .message {
-  &:last-of-type {
-    // margin-bottom: 4rem !important;
-  }
+  transition: transform 0.8s ease;
 
   .message-by-author {
     background-color: #f1f9ff;

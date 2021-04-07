@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+// import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
+// import PropTypes from 'prop-types';
 import { Row, Col, Button } from 'react-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
 import { get, apiValidation, uploadImage, post } from '../../Utilities';
@@ -12,7 +14,6 @@ import ConversationHeader from './ConversationHeader';
 import ConversationInput from './ConversationInput';
 import { formatMessages, formatMessage } from './formatter';
 import Messages from './Messages/Messages';
-import Message from './Message/Message';
 import './Conversation.scss';
 
 const CONVERSATION_TYPES = {
@@ -20,18 +21,40 @@ const CONVERSATION_TYPES = {
   POST: 'discussions',
 };
 
-const Conversation = function ({
-  conversation,
-  setConversation,
-  clientUserId,
-  socket,
-  setPosts,
-  posts = [],
-}) {
-  const history = useHistory();
+// const mapStateToProps = (state) => ({
+//   conversation: getConversation(state),
+//   clientUserId: getClientUserId(state),
+//   socket: getSocket(state),
+//   posts: getPosts(state),
+// });
+
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     setConversation: (conversation) => {
+//       dispatch(conversationsActions.setConversation(conversation));
+//     },
+//     setPosts: (posts) => {
+//       dispatch(conversationsActions.setPosts(posts));
+//     },
+//   };
+// };
+
+const Conversation = () => {
+  // const history = useHistory();
+
+  const dispatch = useDispatch();
+
+  const conversation = useSelector((state) => getConversation(state));
+  const clientUserId = useSelector((state) => getClientUserId(state));
+  const socket = useSelector((state) => getSocket(state));
+  const posts = useSelector((state) => getPosts(state));
+
   const [activeTab, setActiveTab] = useState(CONVERSATION_TYPES.CHAT);
   const [reply, setReply] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const setConversation = (data) => dispatch(conversationsActions.setConversation(data));
+  const setPosts = (data) => dispatch(conversationsActions.setPosts(data));
 
   useEffect(() => {
     fetchMessages();
@@ -40,7 +63,7 @@ const Conversation = function ({
     return () => socket.emit('leave', { conversation_id: conversation.id });
   }, []);
 
-  const addMessage = function (message) {
+  const addMessage = (message) => {
     const newConversation = { ...conversation };
     const { messages } = newConversation;
     console.log(messages);
@@ -51,7 +74,7 @@ const Conversation = function ({
     setConversation(newConversation);
   };
 
-  const onReceiveMessage = function (data) {
+  const onReceiveMessage = (data) => {
     console.log(data, `receiveMessage emitted from  ${conversation.id}`);
     console.log(conversation);
     // {
@@ -65,7 +88,7 @@ const Conversation = function ({
     addMessage(formatMessage(data, false));
   };
 
-  const fetchMessages = function () {
+  const fetchMessages = () => {
     get(
       null,
       `/getChtOfConversation?conversation_id=${conversation.id}&client_user_id=${clientUserId}`,
@@ -76,15 +99,15 @@ const Conversation = function ({
       } = res;
       console.log(apiData, 'apiData');
       const { message_array: messageArray, participants_count: participantsCount } = apiData;
-      const newMessages = formatMessages(messageArray, clientUserId);
-      const { messages: prevMessages } = conversation;
+      const messages = formatMessages(messageArray, clientUserId);
+      const { id, name, thumbnail } = conversation;
       console.log(page);
       setConversation({
-        id: conversation.id,
+        id,
         participantsCount,
-        name: conversation.name,
-        thumbnail: conversation.thumbnail,
-        messages: newMessages.concat(prevMessages),
+        name,
+        thumbnail,
+        messages,
         page,
       });
     });
@@ -122,7 +145,7 @@ const Conversation = function ({
     }
   };
 
-  function fetchPosts() {
+  const fetchPosts = () => {
     get(
       null,
       `/getPostsOfConversation?client_user_id=${clientUserId}&conversation_id=${conversation.id}`,
@@ -133,7 +156,7 @@ const Conversation = function ({
       setConversation({ ...conversation, page: nextPage });
       setPosts(messages);
     });
-  }
+  };
 
   const fetchMorePosts = (page) => {
     const { id } = conversation;
@@ -165,7 +188,7 @@ const Conversation = function ({
     }
   };
 
-  const reactToMessage = function (messageId, userHasReacted) {
+  const reactToMessage = (messageId, userHasReacted) => {
     post(
       {
         reaction_id: 1,
@@ -208,7 +231,7 @@ const Conversation = function ({
       });
   };
 
-  const uploadFile = function (file, fileType) {
+  const uploadFile = (file, fileType) => {
     if (!file) return;
     const url = URL.createObjectURL(file);
     const tempId = uuidv4();
@@ -260,7 +283,7 @@ const Conversation = function ({
     });
   };
 
-  const sendMessage = function (message) {
+  const sendMessage = (message) => {
     socket.emit(
       'sendMessage',
       {
@@ -336,7 +359,8 @@ const Conversation = function ({
           <Col md={12}>
             <div className='p-2 discussions-container'>
               <Messages
-                list={posts}
+                onReactionToMessage={(id, reacted) => {}}
+                list={posts || []}
                 isLoading={isLoading}
                 nextPage={conversation.page}
                 loadMore={(page) => fetchMorePosts(page)}
@@ -347,7 +371,7 @@ const Conversation = function ({
                   variant='primary'
                   block
                   className='add-post-btn'
-                  onClick={() => history.push('/create-post')}
+                  // onClick={() => history.push('/create-post')}
                 >
                   <i className='material-icons'>add</i> Add new post
                 </Button>
@@ -360,42 +384,21 @@ const Conversation = function ({
   );
 };
 
-const mapStateToProps = (state) => ({
-  conversation: getConversation(state),
-  clientUserId: getClientUserId(state),
-  socket: getSocket(state),
-  posts: getPosts(state),
-  // page: getPage(state),
-});
+// Conversation.propTypes = {
+//   setConversation: PropTypes.func.isRequired,
+//   setPosts: PropTypes.func.isRequired,
+//   clientUserId: PropTypes.number.isRequired,
+//   socket: PropTypes.objectOf(PropTypes.any).isRequired,
+//   conversation: PropTypes.objectOf({
+//     id: PropTypes.number.isRequired,
+//     name: PropTypes.string.isRequired,
+//     thumbnail: PropTypes.string.isRequired,
+//     participantsCount: PropTypes.number,
+//     messages: PropTypes.arrayOf(PropTypes.objectOf(Message).isRequired).isRequired,
+//     page: PropTypes.number.isRequired,
+//   }).isRequired,
+//   posts: PropTypes.arrayOf(PropTypes.objectOf(Message).isRequired).isRequired,
+// };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setConversation: (conversation) => {
-      dispatch(conversationsActions.setConversation(conversation));
-    },
-    setPosts: (posts) => {
-      dispatch(conversationsActions.setPosts(posts));
-    },
-    // setPage: (page) => {
-    //   dispatch(conversationsActions.setPage(page));
-    // },
-  };
-};
-
-Conversation.propTypes = {
-  setConversation: PropTypes.func.isRequired,
-  setPosts: PropTypes.func.isRequired,
-  clientUserId: PropTypes.number.isRequired,
-  socket: PropTypes.objectOf(PropTypes.any).isRequired,
-  conversation: PropTypes.objectOf({
-    id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-    thumbnail: PropTypes.string.isRequired,
-    participantsCount: PropTypes.number,
-    messages: PropTypes.arrayOf(PropTypes.objectOf(Message).isRequired).isRequired,
-    page: PropTypes.number.isRequired,
-  }).isRequired,
-  posts: PropTypes.arrayOf(PropTypes.objectOf(Message).isRequired).isRequired,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Conversation);
+// export default connect(mapStateToProps, mapDispatchToProps)(Conversation);
+export default Conversation;

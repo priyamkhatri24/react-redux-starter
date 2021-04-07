@@ -40,6 +40,7 @@ export const formatMessages = (list, clientUserId) =>
       name: r.reaction_name,
       url: r.reaction_url,
     })),
+    comments: data.comments,
     userHasReacted: data.hasUserReacted,
   }));
 
