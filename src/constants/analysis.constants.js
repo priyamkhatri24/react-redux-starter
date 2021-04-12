@@ -1,0 +1,3 @@
+export const analysisConstants = {
+  ANALYSISASSIGNMENTOBJECT: 'ANALYSIS_ASSIGNMENT_OBJECT',
+};

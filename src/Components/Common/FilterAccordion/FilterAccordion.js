@@ -46,7 +46,11 @@ const FilterAccordion = (props) => {
     switch (type) {
       case 'class':
         setCurrentClass(e);
-        currentTab === 'Users' || currentTab === 'savedtests' || currentTab === 'senttests'
+        currentTab === 'Users' ||
+        currentTab === 'savedtests' ||
+        currentTab === 'senttests' ||
+        currentTab === 'Assignments' ||
+        currentTab === 'Students'
           ? addFilter(type, e.class_id)
           : addBatchFilter(type, e.class_id);
         break;
@@ -101,7 +105,11 @@ const FilterAccordion = (props) => {
       default:
         console.log('hello');
     }
-    currentTab === 'Users' || currentTab === 'senttests' || currentTab === 'savedtests'
+    currentTab === 'Users' ||
+    currentTab === 'senttests' ||
+    currentTab === 'savedtests' ||
+    currentTab === 'Assignments' ||
+    currentTab === 'Students'
       ? removeFilter(type)
       : removeBatchFilter(type);
   };
@@ -367,6 +375,84 @@ const FilterAccordion = (props) => {
                   </>
                 ) : currentTab === 'savedtests' ? (
                   <></>
+                ) : currentTab === 'Assignments' || currentTab === 'Students' ? (
+                  <>
+                    <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
+                      Batch
+                    </small>
+                    <Row className='mx-3'>
+                      <section
+                        css={AdmissionStyle.scrollable}
+                        style={{ backgroundColor: 'rgba(241, 249, 255, 1)' }}
+                      >
+                        {Object.keys(currentBatch).length === 0 &&
+                          filters.batch.map((e) => {
+                            return (
+                              <div
+                                key={e.client_batch_id}
+                                css={[AdmissionStyle.subjectBubble, AdmissionStyle.selected]}
+                                onClick={() => select('batch', e)}
+                                onKeyDown={() => select('batch', e)}
+                                role='button'
+                                tabIndex='-1'
+                                style={{
+                                  backgroundColor: 'rgba(241, 249, 255, 1)',
+                                  color: 'rgba(112, 112, 112, 1)',
+                                  border: '1px solid rgba(112, 112, 112, 1)',
+                                  height: '30px',
+                                  display: 'inline-block',
+                                  maxWidth: '90%',
+                                  whiteSpace: 'no-wrap',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  textAlign: 'center',
+                                  lineHeight: '28px',
+                                }}
+                              >
+                                {/* <span
+                                  style={{
+                                    display: 'inline-block',
+                                    maxWidth: '90%',
+                                    whiteSpace: 'no-wrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                  }}
+                                >
+                                  {e.batch_name}
+                                </span> */}
+                                {e.batch_name}
+                              </div>
+                            );
+                          })}
+
+                        {Object.keys(currentBatch).length > 0 && (
+                          <>
+                            <div
+                              css={[AdmissionStyle.subjectBubble, AdmissionStyle.selected]}
+                              style={{ backgroundColor: '#fff', color: '#000' }}
+                            >
+                              {currentBatch.batch_name}
+                            </div>
+                            <div
+                              css={AdmissionStyle.questionBubble}
+                              onClick={() => remove('batch')}
+                              onKeyDown={() => remove('batch')}
+                              role='button'
+                              tabIndex='-1'
+                              style={{
+                                backgroundColor: 'rgba(241, 249, 255, 1)',
+                                color: '#000',
+                                border: '1px solid rgba(112, 112, 112, 1)',
+                              }}
+                            >
+                              <CloseIcon />
+                            </div>
+                          </>
+                        )}
+                      </section>
+                    </Row>
+                    <hr />
+                  </>
                 ) : (
                   <>
                     <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>

@@ -308,6 +308,23 @@ const EditFeePlan = Loadable({
   loading: Loading,
 });
 
+const TeacherAnalysis = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'TeacherAnalysis' */ '../Components/Analysis/TeacherAnalysis'),
+  loading: Loading,
+});
+
+const AssignmentList = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'AssignmentList' */ '../Components/Analysis/AssignmentList'),
+  loading: Loading,
+});
+
+const FourZeroFour = Loadable({
+  loader: () => import(/* webpackChunkName: 'AssignmentList' */ '../Components/ErrorPages/404'),
+  loading: Loading,
+});
+
 // eslint-disable-next-line
 function Loading({ error }) {
   if (error) {
@@ -369,13 +386,15 @@ export function Routes() {
       <AuthenticatedRoute exact path='/admissions/add/class' component={SelectClass} />
       <AuthenticatedRoute exact path='/admissions/add/batch' component={AddBatch} />
       <AuthenticatedRoute exact path='/admissions/editprofile' component={EditProfileHOC} />
+      <AuthenticatedRoute exact path='/analysis/teacher' component={TeacherAnalysis} />
+      <AuthenticatedRoute exact path='/analysis/assignment' component={AssignmentList} />
 
       <Route path='/fileviewer' component={FileView} />
       <Route path='/otherfileviewer' component={TempViewFile} />
 
       {/* redirect user to Dashboard page if route does not exist */}
 
-      <Route component={Dashboard} />
+      <Route component={FourZeroFour} />
     </Switch>
   );
 }

@@ -1,0 +1,15 @@
+.Analysis {
+  @import '../../scss/bootstrap';
+
+  &__bigNumbers {
+    font-family: $semiBold;
+    color: $lightGrey;
+    font-size: $spacer * 1.5;
+  }
+
+  &__cardLabel {
+    font-family: $medium;
+    color: $lightGrey;
+    font-size: $spacer * 0.625;
+  }
+}
