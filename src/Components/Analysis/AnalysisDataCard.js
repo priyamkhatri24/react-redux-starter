@@ -45,7 +45,7 @@ const AnalysisDataCard = (props) => {
       </Row>
     </Card>
   ) : (
-    <Card className='m-2 p-1'>
+    <Card className='m-2 p-1' onClick={() => buttonClick(elem)}>
       <p className='LiveClasses__adminHeading mb-0 mt-2 mx-2'>
         {elem.first_name} {elem.last_name}
       </p>

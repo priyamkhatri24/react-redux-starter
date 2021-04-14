@@ -6,7 +6,15 @@ import MathJax from 'react-mathjax-preview';
 import Card from 'react-bootstrap/Card';
 
 const FinalQuestionCard = (props) => {
-  const { question, index, updateQuestionMarks, showMarks, sectionName, isViewOnly } = props;
+  const {
+    question,
+    index,
+    updateQuestionMarks,
+    showMarks,
+    sectionName,
+    isViewOnly,
+    isAnalysis,
+  } = props;
 
   return (
     <Card className='m-1' key={question.question_id}>
@@ -55,14 +63,23 @@ const FinalQuestionCard = (props) => {
                 </Row>
               );
             })}
-
-          {question.question_solution_text && (
-            <p className='Homework__options text-left m-2'>Solution:</p>
-          )}
+          {question.question_answer && <p className='Homework__options text-left m-2'>Solution:</p>}
           <div className='d-flex mx-3 mb-2 Homework__multipleOptions text-left'>
-            <MathJax math={String.raw`${question.question_solution_text}`} />
+            <MathJax math={String.raw`${question.question_answer}`} />
           </div>
-          <hr />
+
+          {isAnalysis && (
+            <>
+              <p className='Homework__options text-left m-2'>Option Marked:</p>
+              <div className='d-flex mx-3 mb-2 Homework__multipleOptions text-left'>
+                <MathJax math={String.raw`${question.student_answer}`} />
+              </div>
+              <p className='Homework__options text-left m-2'>
+                Time Taken: {Math.floor(question.time_taken / 60000)} minutes{' '}
+                {(question.time_taken / 1000) % 60} seconds
+              </p>
+            </>
+          )}
         </>
       )}
       {!isViewOnly && (
@@ -129,10 +146,12 @@ FinalQuestionCard.propTypes = {
   showMarks: PropTypes.bool.isRequired,
   sectionName: PropTypes.string,
   isViewOnly: PropTypes.bool,
+  isAnalysis: PropTypes.bool,
 };
 
 FinalQuestionCard.defaultProps = {
   sectionName: '',
   updateQuestionMarks: () => {},
   isViewOnly: false,
+  isAnalysis: false,
 };

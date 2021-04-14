@@ -15,7 +15,12 @@ import AnalysisDataCard from './AnalysisDataCard';
 import { analysisActions } from '../../redux/actions/analysis.action';
 
 const TeacherAnalysis = (props) => {
-  const { history, clientId, setAnalysisAssignmentObjectToStore } = props;
+  const {
+    history,
+    clientId,
+    setAnalysisAssignmentObjectToStore,
+    setAnalysisStudentObjectToStore,
+  } = props;
   const [searchString, setSearchString] = useState('');
   const [filters, setFilters] = useState({});
   const [assignments, setAssignments] = useState([]);
@@ -104,6 +109,11 @@ const TeacherAnalysis = (props) => {
 
   const handleBack = () => history.push('/');
 
+  const goToStudentDetails = (elem) => {
+    setAnalysisStudentObjectToStore(elem);
+    history.push('/analysis/studentlist');
+  };
+
   return (
     <>
       <PageHeader
@@ -175,7 +185,14 @@ const TeacherAnalysis = (props) => {
             ) : (
               <>
                 {students.map((elem) => {
-                  return <AnalysisDataCard elem={elem} key={elem.client_user_id} IsStudent />;
+                  return (
+                    <AnalysisDataCard
+                      elem={elem}
+                      key={elem.client_user_id}
+                      IsStudent
+                      buttonClick={goToStudentDetails}
+                    />
+                  );
                 })}
               </>
             )}
@@ -195,6 +212,9 @@ const mapDispatchToProps = (dispatch) => {
     setAnalysisAssignmentObjectToStore: (payload) => {
       dispatch(analysisActions.setAnalysisAssignmentObjectToStore(payload));
     },
+    setAnalysisStudentObjectToStore: (payload) => {
+      dispatch(analysisActions.setAnalysisStudentObjectToStore(payload));
+    },
   };
 };
 
@@ -204,4 +224,5 @@ TeacherAnalysis.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   clientId: PropTypes.number.isRequired,
   setAnalysisAssignmentObjectToStore: PropTypes.func.isRequired,
+  setAnalysisStudentObjectToStore: PropTypes.func.isRequired,
 };

@@ -12,4 +12,40 @@
     color: $lightGrey;
     font-size: $spacer * 0.625;
   }
+
+  &__studentHeading {
+    font-family: $semiBold;
+    color: $lightGrey;
+    font-size: $spacer * 1.5;
+  }
+
+  &__studentSubHeading {
+    font-family: $semiBold;
+    font-size: $spacer;
+    text-transform: capitalize;
+  }
+
+  &__studentMarks {
+    font-family: $medium;
+    color: $primaryBlue;
+    font-size: $spacer * 1.25;
+  }
+
+  &__noOfStudents {
+    font-family: $regular;
+    color: $dashboardBlack;
+    font-size: $spacer * 0.875;
+  }
+
+  &__tableHeading {
+    font-family: $bold;
+    font-size: $spacer * 0.625;
+    color: $dashboardBlack;
+  }
+
+  &__tableData {
+    font-family: $regular;
+    font-size: $spacer * 0.625;
+    color: $dashboardBlack;
+  }
 }

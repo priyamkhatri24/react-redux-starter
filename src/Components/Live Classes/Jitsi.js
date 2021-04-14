@@ -39,7 +39,7 @@ const Jitsi = (props) => {
     });
 
     const script = document.createElement('script');
-    script.src = 'https://tcalive.ingeniumedu.com/external_api.js';
+    script.src = 'https://tcaliveaws.ingeniumedu.com/external_api.js';
     script.async = true;
     script.onload = resolveLoadJitsiScriptPromise;
     document.body.appendChild(script);

@@ -143,4 +143,26 @@
     color: $dashboardBlack;
     font-family: $semiBold;
   }
+
+  /*****************************Analysis Cards**********************************/
+
+  &__analysisHeading {
+    border-left: 1px solid $primaryBlue;
+    border-bottom: 1px solid $primaryBlue;
+    border-top: 1px solid $primaryBlue;
+    height: 20%;
+    border-radius: 10px 0 0 10px;
+    font-size: $spacer * 0.625;
+    font-family: $medium;
+  }
+
+  &__analysisValue {
+    border: 1px solid $primaryBlue;
+    height: 30%;
+    width: 30%;
+    border-radius: 5px;
+    font-family: $regular;
+    color: $lightGrey;
+    font-size: $spacer * 1.5;
+  }
 }

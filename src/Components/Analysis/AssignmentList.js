@@ -11,9 +11,15 @@ import { apiValidation, get, propComparator } from '../../Utilities';
 import userAvatar from '../../assets/images/user.svg';
 import '../Dashboard/Dashboard.scss';
 import './Analysis.scss';
+import { analysisActions } from '../../redux/actions/analysis.action';
 
 const AssignmentList = (props) => {
-  const { analysisAssignmentObject } = props;
+  const {
+    analysisAssignmentObject,
+    setAnalysisTestObjectToStore,
+    setAnalysisSubjectArrayToStore,
+    history,
+  } = props;
   const [students, setStudents] = useState([]);
   const [topButtons, setTopButtons] = useState([
     {
@@ -77,6 +83,24 @@ const AssignmentList = (props) => {
       const final = [...attempted, ...notAttempted];
       setStudents(final);
     }
+  };
+
+  const goToStudentAnalysis = (elem) => {
+    const payload = {
+      test_id: analysisAssignmentObject.test_id,
+      client_user_id: elem.client_user_id,
+    };
+    const subjectAnalysis = get(payload, '/getSubjectAnalysisOfTestForStudentLatest');
+
+    const testAnalysis = get(payload, '/getTestAnalysisForStudentLatest');
+
+    Promise.all([subjectAnalysis, testAnalysis]).then((res) => {
+      const subjects = apiValidation(res[0]);
+      setAnalysisSubjectArrayToStore(subjects);
+      setAnalysisTestObjectToStore({ ...res[1], name: `${elem.first_name} ${elem.last_name}` });
+      console.log(subjects);
+      history.push('/analysis/studentanalysis');
+    });
   };
 
   return (
@@ -147,6 +171,7 @@ const AssignmentList = (props) => {
                 borderBottom: '1px solid rgba(0, 0, 0, 0.54)',
                 fontFamily: 'Montserrat-Regular',
               }}
+              onClick={() => goToStudentAnalysis(elem)}
             >
               <Col xs={2}>
                 <img src={userAvatar} alt='profile' className='Dashboard__noticeImage d-block' />
@@ -170,8 +195,22 @@ const mapStateToProps = (state) => ({
   analysisAssignmentObject: getAnalysisAssignmentObject(state),
 });
 
-export default connect(mapStateToProps)(AssignmentList);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setAnalysisTestObjectToStore: (payload) => {
+      dispatch(analysisActions.setAnalysisTestObjectToStore(payload));
+    },
+    setAnalysisSubjectArrayToStore: (payload) => {
+      dispatch(analysisActions.setAnalysisSubjectArrayToStore(payload));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AssignmentList);
 
 AssignmentList.propTypes = {
   analysisAssignmentObject: PropTypes.instanceOf(Object).isRequired,
+  setAnalysisSubjectArrayToStore: PropTypes.func.isRequired,
+  setAnalysisTestObjectToStore: PropTypes.func.isRequired,
+  history: PropTypes.instanceOf(Object).isRequired,
 };

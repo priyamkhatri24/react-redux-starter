@@ -320,8 +320,24 @@ const AssignmentList = Loadable({
   loading: Loading,
 });
 
+const StudentAnalysis = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'StudentAnalysis' */ '../Components/Analysis/StudentAnalysis'),
+  loading: Loading,
+});
+
+const StudentList = Loadable({
+  loader: () => import(/* webpackChunkName: 'StudentList' */ '../Components/Analysis/StudentList'),
+  loading: Loading,
+});
+
 const FourZeroFour = Loadable({
-  loader: () => import(/* webpackChunkName: 'AssignmentList' */ '../Components/ErrorPages/404'),
+  loader: () => import(/* webpackChunkName: 'FourZeroFour' */ '../Components/ErrorPages/404'),
+  loading: Loading,
+});
+
+const ErrorCode = Loadable({
+  loader: () => import(/* webpackChunkName: 'ErrorCode' */ '../Components/ErrorPages/ErrorCode'),
   loading: Loading,
 });
 
@@ -388,13 +404,20 @@ export function Routes() {
       <AuthenticatedRoute exact path='/admissions/editprofile' component={EditProfileHOC} />
       <AuthenticatedRoute exact path='/analysis/teacher' component={TeacherAnalysis} />
       <AuthenticatedRoute exact path='/analysis/assignment' component={AssignmentList} />
+      <AuthenticatedRoute exact path='/analysis/studentanalysis' component={StudentAnalysis} />
+      <AuthenticatedRoute exact path='/analysis/studentlist' component={StudentList} />
 
       <Route path='/fileviewer' component={FileView} />
       <Route path='/otherfileviewer' component={TempViewFile} />
 
-      {/* redirect user to Dashboard page if route does not exist */}
+      {/* If error occurs */}
 
-      <Route component={FourZeroFour} />
+      {/* <Route exact path='/error' component={ErrorCode} /> */}
+
+      {/* redirect user to FourZeroFour page if route does not exist */}
+
+      {/* <Route component={FourZeroFour} /> */}
+      <Route component={Dashboard} />
     </Switch>
   );
 }
