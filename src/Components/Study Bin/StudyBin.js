@@ -312,7 +312,7 @@ const StudyBin = (props) => {
           handleBack={handleBack}
         />
         <div style={{ marginTop: '6rem' }} className='mx-4 mx-md-5'>
-          {folderIdStack.length === 1 && (
+          {(folderIdStack.length === 1 || roleArray.includes(1)) && (
             <div className='mb-3'>
               <h6 className='StudyBin__heading'>
                 Categories <span>({categoryArray.length})</span>

@@ -1,12 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { jsx } from '@emotion/react';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import differenceInHours from 'date-fns/differenceInHours';
-import differenceInSeconds from 'date-fns/differenceInSeconds';
-import differenceInMinutes from 'date-fns/differenceInMinutes';
-import parseISO from 'date-fns/parseISO';
-import fromUnixTime from 'date-fns/fromUnixTime';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
