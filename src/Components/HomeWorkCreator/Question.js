@@ -56,17 +56,15 @@ const Question = (props) => {
             question.option_array.map((e, i) => {
               return (
                 <div className='d-flex mx-3 mb-2 Homework__multipleOptions' key={e.order}>
-                  <span className='mr-2 my-auto'>{i + 1}.</span>{' '}
+                  <span className='mr-2 my-auto'>{String.fromCharCode(i + 65)}.</span>{' '}
                   <MathJax math={String.raw`${e.text}`} />
                 </div>
               );
             })}
 
-          {question.question_solution_text && (
-            <p className='Homework__options text-left m-2'>Solution:</p>
-          )}
+          {question.question_answer && <p className='Homework__options text-left m-2'>Solution:</p>}
           <div className='d-flex mx-3 mb-2 Homework__multipleOptions text-left'>
-            <MathJax math={String.raw`${question.question_solution_text}`} />
+            <MathJax math={String.raw`${question.question_answer}`} />
           </div>
           <hr />
           <Row className='m-1 mb-3'>

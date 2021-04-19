@@ -210,7 +210,7 @@ const HomeWorkAssigner = (props) => {
     const payload = {
       is_public: postTo.filter((e) => e.isSelected === true)[0].id !== 1,
       test_id: testId,
-      test_name: testName,
+      test_name: currentTestName,
       test_date: getUnixTime(startDate),
       test_type: testType,
       language_type: homeworkLanguageType,

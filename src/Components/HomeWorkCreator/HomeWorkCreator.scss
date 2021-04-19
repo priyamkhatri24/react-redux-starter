@@ -205,3 +205,19 @@
 .react-datepicker-wrapper {
   width: 100%;
 }
+
+[name='selectAll'] {
+  height: 20px;
+  width: 20px;
+  margin-right: 2px;
+}
+
+[name='selectAll'] + label {
+  font-family: 'Montserrat-Medium';
+  font-size: 0.875rem;
+  width: 100%;
+  color: var(--primary-blue);
+  margin-left: 5px;
+  margin-top: auto;
+  margin-bottom: auto;
+}

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 import { connect } from 'react-redux';
 import Question from './Question';
 import { homeworkActions } from '../../redux/actions/homework.action';
@@ -36,6 +37,7 @@ const QuestionList = (props) => {
   const [questions, setQuestions] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [isDraft, setDraft] = useState(0);
+  const [selectAllQuestions, setSelectAllQuestions] = useState(false);
 
   useEffect(() => {
     const draft = testId === null ? 0 : 1;
@@ -121,17 +123,28 @@ const QuestionList = (props) => {
     }
   };
 
-  const clearSelectedQuestions = () => {
-    setSelectedQuestionArrayToStore([]);
-    const resetQuestions = questions.map((e) => {
-      e.isSelected = false;
-      return e;
-    });
-    setQuestions(resetQuestions);
-  };
-
   const goToNextSlide = () => {
     setCurrentSlide(2);
+  };
+
+  const selectAll = (value) => {
+    setSelectAllQuestions(value);
+    if (value) {
+      setSelectedQuestionArrayToStore(questions);
+      const allQuestions = questions.map((e) => {
+        e.isSelected = true;
+        return e;
+      });
+      setQuestions(allQuestions);
+      setCurrentSlide(2);
+    } else {
+      setSelectedQuestionArrayToStore([]);
+      const resetQuestions = questions.map((e) => {
+        e.isSelected = false;
+        return e;
+      });
+      setQuestions(resetQuestions);
+    }
   };
 
   return (
@@ -140,18 +153,19 @@ const QuestionList = (props) => {
         <span className='text-left Homework__questionIndex my-auto'>
           {selectedQuestions.length} selected of {questions.length}
         </span>
-        <div className='ml-auto my-auto'>
+        <div className='ml-auto my-auto d-flex'>
           <Button variant='customPrimarySmol' onClick={() => goToNextSlide()}>
             Next
           </Button>
 
-          <Button
-            variant='customPrimarySmol'
-            className='ml-2'
-            onClick={() => clearSelectedQuestions()}
-          >
-            Clear
-          </Button>
+          <Form.Check
+            type='checkbox'
+            checked={selectAllQuestions}
+            onChange={(e) => selectAll(!selectAllQuestions)}
+            className='my-auto ml-1'
+            label='Select All'
+            name='selectAll'
+          />
         </div>
       </div>
       <hr />

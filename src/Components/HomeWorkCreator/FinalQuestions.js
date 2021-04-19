@@ -43,6 +43,7 @@ const PreviewQuestions = (props) => {
     testId,
     clientUserId,
     setTestClassSubjectToStore,
+    setTestNameToStore,
   } = props;
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [assignmentName, setAssignmentName] = useState(testName);
@@ -308,6 +309,16 @@ const PreviewQuestions = (props) => {
     });
   };
 
+  const changeAssignmentName = (name) => {
+    setAssignmentName(name);
+    setTestNameToStore(name);
+    post({ test_id: testId, is_draft: 1, test_name: name }, '/addTestFromHomeworkCreator').then(
+      (res) => {
+        console.log(res);
+      },
+    );
+  };
+
   return (
     <>
       <PageHeader title='Preview' />
@@ -319,7 +330,7 @@ const PreviewQuestions = (props) => {
             type='text'
             placeholder='Assignment Name'
             value={assignmentName}
-            onChange={(e) => setAssignmentName(e.target.value)}
+            onChange={(e) => changeAssignmentName(e.target.value)}
           />
           <span>Assignment Name</span>
         </label>
@@ -423,6 +434,10 @@ const mapDispatchToProps = (dispatch) => {
     setTestClassSubjectToStore: (payload) => {
       dispatch(homeworkActions.setTestClassSubjectToStore(payload));
     },
+
+    setTestNameToStore: (payload) => {
+      dispatch(homeworkActions.setTestNameToStore(payload));
+    },
   };
 };
 
@@ -442,4 +457,5 @@ PreviewQuestions.propTypes = {
   testId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
   setTestClassSubjectToStore: PropTypes.func.isRequired,
+  setTestNameToStore: PropTypes.func.isRequired,
 };
