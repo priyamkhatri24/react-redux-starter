@@ -9,6 +9,7 @@
 
   &__jumbo {
     width: 50%;
+    max-height: 20vh;
     @include media-breakpoint-down(md) {
       width: 75%;
     }

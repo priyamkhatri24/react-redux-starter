@@ -7421,6 +7421,11 @@ interpret@^1.0.0:
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.4.0.tgz#665ab8bc4da27a774a40584e812e3e0fa45b1a1e"
   integrity sha512-agE4QfB2Lkp9uICn7BAqoscw4SZP9kTE2hxiFI3jBPmXJfdqiahTbUuKGsMoN2GtqL9AxhYioAcVvgsb1HvRbA==
 
+intl-tel-input@^17.0.12:
+  version "17.0.12"
+  resolved "https://registry.yarnpkg.com/intl-tel-input/-/intl-tel-input-17.0.12.tgz#057c35b57871bd6d6932ac28428d086e63d6cc89"
+  integrity sha512-jl3DkDQg/aaIPK2hrvtgX2eYgtkz5LxCQW57Ru1Hpdt9MA9VE8PnGUllaMsAm6SeJODHBdMok7XFZR8/M1yytg==
+
 invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
@@ -8789,6 +8794,11 @@ lodash-es@^4.17.11, lodash-es@^4.17.14, lodash-es@^4.17.15:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.15.tgz#21bd96839354412f23d7a10340e5eac6ee455d78"
   integrity sha512-rlrc3yU3+JNOpZ9zj5pQtxnx2THmvRykwL4Xlxoa8I9lHBlVbbyPhgyPMioxVZ4NqyxaVVtaJnzsyOidQIhyyQ==
+
+lodash-es@latest:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
+  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
 
 lodash._reinterpolate@^3.0.0:
   version "3.0.0"
@@ -11441,6 +11451,13 @@ react-intersection-observer@^8.26.2:
   version "8.31.0"
   resolved "https://registry.yarnpkg.com/react-intersection-observer/-/react-intersection-observer-8.31.0.tgz#0ed21aaf93c4c0475b22b0ccaba6169076d01605"
   integrity sha512-XraIC/tkrD9JtrmVA7ypEN1QIpKc52mXBH1u/bz/aicRLo8QQEJQAMUTb8mz4B6dqpPwyzgjrr7Ljv/2ACDtqw==
+
+react-intl-tel-input-v2@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/react-intl-tel-input-v2/-/react-intl-tel-input-v2-1.0.8.tgz#b85f1050c22fe95e3e28ad69a32b7266309a9713"
+  integrity sha512-f7Hf/XGud3/h1NZzprMexboJghTTcgAQ7nZXl/OO/Q98QGu3vxYnqfTOZneUgUzj7zdMG/B5YM+TezpB8rk0xw==
+  dependencies:
+    lodash-es latest
 
 react-is@^16.12.0, react-is@^16.13.1, react-is@^16.3.2, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.9.0:
   version "16.13.1"
