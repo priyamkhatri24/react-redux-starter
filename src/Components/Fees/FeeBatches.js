@@ -106,7 +106,11 @@ const FeeBatches = (props) => {
                 <>
                   <div
                     css={AdmissionStyle.questionBubble}
-                    style={{ backgroundColor: '#fff', color: '#000' }}
+                    style={{
+                      backgroundColor: '#fff',
+                      color: '#000',
+                      border: '1px solid rgba(112, 112, 112, 1)',
+                    }}
                   >
                     {currentClass.class_name}
                   </div>
@@ -166,7 +170,11 @@ const FeeBatches = (props) => {
                   <>
                     <div
                       css={[AdmissionStyle.subjectBubble, AdmissionStyle.selected]}
-                      style={{ backgroundColor: '#fff', color: '#000' }}
+                      style={{
+                        backgroundColor: '#fff',
+                        color: '#000',
+                        border: '1px solid rgba(112, 112, 112, 1)',
+                      }}
                     >
                       {currentSubject.subject_name}
                     </div>

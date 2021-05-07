@@ -38,6 +38,7 @@ import './Dashboard.scss';
 import { admissionActions } from '../../redux/actions/admissions.action';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import { getComeBackFromTests } from '../../redux/reducers/firstTimeLogin.reducer';
+import { studyBinActions } from '../../redux/actions/studybin.actions';
 
 const DashBoardAdmissions = Loadable({
   loader: () => import('./DashBoardAdmissions'),
@@ -64,6 +65,7 @@ const Dashboard = (props) => {
     setAdmissionRoleArrayToStore,
     branding,
     comeBackFromTests,
+    setFolderIdArrayToStore,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
@@ -134,6 +136,7 @@ const Dashboard = (props) => {
 
   const goToStudyBin = () => {
     const { push } = history;
+    setFolderIdArrayToStore([]);
     push({ pathname: '/studybin' });
   };
 
@@ -688,6 +691,9 @@ const mapDispatchToProps = (dispatch) => {
     setAdmissionRoleArrayToStore: (payload) => {
       dispatch(admissionActions.setAdmissionRoleArrayToStore(payload));
     },
+    setFolderIdArrayToStore: (payload) => {
+      dispatch(studyBinActions.setFolderIDArrayToStore(payload));
+    },
   };
 };
 
@@ -705,6 +711,7 @@ Dashboard.propTypes = {
   setTestTypeToStore: PropTypes.func.isRequired,
   setCourseIdToStore: PropTypes.func.isRequired,
   setAdmissionRoleArrayToStore: PropTypes.func.isRequired,
+  setFolderIdArrayToStore: PropTypes.func.isRequired,
   userProfile: PropTypes.shape({
     firstName: PropTypes.string.isRequired,
     profileImage: PropTypes.string,

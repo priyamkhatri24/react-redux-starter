@@ -444,7 +444,13 @@ class LiveClasses extends Component {
                           value={inputValue}
                         />
                         <span>Select Batch</span>
-                        <i css={LiveClassesStyle.show}>
+                        <i
+                          css={LiveClassesStyle.show}
+                          onClick={() => this.setState({ showModal: true })}
+                          onKeyDown={() => this.setState({ showModal: true })}
+                          role='button'
+                          tabIndex='-1'
+                        >
                           <ExpandMoreIcon />
                         </i>
                       </label>

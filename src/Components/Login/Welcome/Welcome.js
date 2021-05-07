@@ -180,14 +180,14 @@ const Welcome = (props) => {
               {data.testimonial.map((elem) => {
                 return (
                   <div key={`elem+${elem.client_testimonial_id} `}>
-                    <p className='m-5 Welcome__testimonialText text-light'>{elem.text}</p>
+                    <p className='m-5 Welcome__testimonialText'>{elem.text}</p>
                     <Row className='justify-content-center mb-3'>
                       <img
                         src={elem.image_url}
                         alt='student'
                         className='Welcome__testimonialImage mr-1'
                       />
-                      <span className='Welcome__testimonialName text-light'>{elem.name}</span>
+                      <span className='Welcome__testimonialName'>{elem.name}</span>
                     </Row>
                   </div>
                 );

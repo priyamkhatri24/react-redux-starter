@@ -416,8 +416,8 @@ export function Routes() {
 
       {/* redirect user to FourZeroFour page if route does not exist */}
 
-      {/* <Route component={FourZeroFour} /> */}
-      <Route component={Dashboard} />
+      <Route component={FourZeroFour} />
+      {/* <Route component={Dashboard} /> */}
     </Switch>
   );
 }
