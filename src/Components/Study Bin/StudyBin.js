@@ -127,6 +127,7 @@ const StudyBin = (props) => {
     console.log('file clicked', name);
     // https://stackoverflow.com/questions/190852/how-can-i-get-file-extensions-with-javascript - visioN
     const extension = name.slice(((name.lastIndexOf('.') - 1) >>> 0) + 2); // eslint-disable-line
+    console.log(extension);
     const payload = {
       client_user_id: clientUserId,
       folder_id: folderIdStack[folderIdStack.length - 1],
@@ -135,7 +136,7 @@ const StudyBin = (props) => {
       file_type:
         extension === 'doc'
           ? '.doc'
-          : extension === '.docx'
+          : extension === 'docx'
           ? '.docx'
           : extension === 'pdf'
           ? '.pdf'

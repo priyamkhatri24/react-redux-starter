@@ -44,6 +44,8 @@ const Mycourse = (props) => {
   const [analysis, setAnalysis] = useState({});
   const [showAnalysisModal, setShowAnalysisModal] = useState(false);
   const [isVideo, setVideo] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [imgLink, setImgLink] = useState('');
   const [source, setSource] = useState({
     type: 'video',
     sources: [
@@ -53,6 +55,9 @@ const Mycourse = (props) => {
       },
     ],
   });
+
+  const handleImageOpen = () => setShowImageModal(true);
+  const handleImageClose = () => setShowImageModal(false);
 
   useEffect(() => {
     if (!courseId) history.push('/');
@@ -71,19 +76,32 @@ const Mycourse = (props) => {
     }
   }, [courseId, clientUserId]);
 
+  const openImage = (elem) => {
+    setImgLink(elem.file_link);
+    handleImageOpen();
+  };
+
   const displayContent = (elem, type) => {
     if (type === 'file') {
-      if (elem.file_type === 'video') {
-        setVideo(true);
-        const newSource = JSON.parse(JSON.stringify(source));
-        newSource.sources = [{ src: elem.file_link }];
-        setSource(newSource);
+      // if (elem.file_type === 'video') {
+      //   setVideo(true);
+      //   const newSource = JSON.parse(JSON.stringify(source));
+      //   newSource.sources = [{ src: elem.file_link }];
+      //   setSource(newSource);
+      // }
+      console.log(elem);
+      if (elem.file_type === 'gallery') {
+        openImage(elem);
+      } else if (elem.file_type === '.pdf') {
+        history.push({
+          pathname: '/fileviewer',
+          state: { filePath: elem.file_link },
+        });
+      } else if (elem.file_type === 'youtube') {
+        history.push({ pathname: `/videoplayer/${elem.file_link}` });
+      } else if (elem.file_type === 'video') {
+        history.push({ pathname: `/videoplayer`, state: { videoLink: elem.file_link } });
       } else {
-        // history.push({
-        //   pathname: '/fileviewer',
-        //   state: { filePath: elem.file_link },
-        // });
-
         history.push({
           pathname: '/otherfileviewer',
           state: { filePath: elem.file_link },
@@ -355,7 +373,9 @@ const Mycourse = (props) => {
                                 <Col xs={2}>{i + 1}.</Col>
                                 <Col xs={10} className='p-0'>
                                   <p className='mb-0'>{elem.name}</p>
-                                  <small>Type : {elem.content_type}</small>
+                                  <small>
+                                    Type : {elem.file_type ? elem.file_type : elem.content_type}
+                                  </small>
                                 </Col>
                               </Row>
                             );
@@ -427,6 +447,15 @@ const Mycourse = (props) => {
             Cancel
           </Button>
         </Modal.Footer>
+      </Modal>
+
+      <Modal show={showImageModal} onHide={handleImageClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Uploaded Image</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <img src={imgLink} alt='img' className='img-fluid' />
+        </Modal.Body>
       </Modal>
     </div>
   );

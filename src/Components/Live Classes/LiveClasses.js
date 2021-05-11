@@ -6,6 +6,7 @@ import Card from 'react-bootstrap/Card';
 import { connect } from 'react-redux';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DeleteIcon from '@material-ui/icons/Delete';
+import DurationPicker from 'react-duration-picker';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import fromUnixTime from 'date-fns/fromUnixTime';
@@ -37,7 +38,7 @@ class LiveClasses extends Component {
       studentBatches: [],
       selectedBatches: [],
       existingStream: [],
-      duration: null,
+      duration: {},
       showModal: false,
       inputValue: '',
       domain: 'tcalive.ingenimedu.com',
@@ -49,6 +50,11 @@ class LiveClasses extends Component {
       doesLiveStreamExist: false,
       doesBBBexist: false,
       recordings: [],
+      showZoomModal: false,
+      zoomMeeting: '',
+      zoomPassCode: '',
+      showDurationModal: false,
+      durationValue: '',
     };
   }
 
@@ -63,8 +69,8 @@ class LiveClasses extends Component {
       get(payload, '/getLiveStreamsForStudent').then((res) => {
         const result = apiValidation(res);
         const tempfilter = result.filter((e) => e.stream_type !== 'zoom');
-        // this.setState({ studentBatches: result });
-        this.setState({ studentBatches: tempfilter });
+        this.setState({ studentBatches: result });
+        // this.setState({ studentBatches: tempfilter });
       });
     }
 
@@ -153,6 +159,8 @@ class LiveClasses extends Component {
         role,
       );
       this.setState({ doesBBBexist: true });
+    } else if (element.stream_type === 'zoom') {
+      window.open(`https://zoom.us/j/${element.meeting_id}?pwd=${element.password}`);
     } else console.error('invalid stream type');
   };
 
@@ -175,6 +183,8 @@ class LiveClasses extends Component {
         element.client_user_client_user_id,
       );
       this.setState({ doesBBBexist: true });
+    } else if (element.stream_type === 'zoom') {
+      window.open(`https://zoom.us/j/${element.meeting_id}?pwd=${element.password}`);
     } else console.error('invalid stream type');
   };
 
@@ -241,7 +251,10 @@ class LiveClasses extends Component {
     console.log(id);
     const { duration, selectedBatches, jitsiFirstName, jitsiLastName } = this.state;
     const { clientUserId, clientId } = this.props;
-    const durationArray = duration.split(':');
+    // const durationArray = duration.split(':');
+    const durationArray = [];
+    durationArray.push(duration.hours, duration.minutes, duration.seconds);
+    console.log(durationArray);
     const milliseconds =
       (durationArray[0] * 3600 + durationArray[1] * 60 + durationArray[2]) * 1000;
     if (Number.isNaN(Number(milliseconds))) {
@@ -276,6 +289,58 @@ class LiveClasses extends Component {
   //   const { clientUserId, clientId } = this.props;
   // };
 
+  closeZoomModal = () => this.setState({ showZoomModal: false });
+
+  openZoomModal = () => this.setState({ showZoomModal: true });
+
+  createZoomMeeting = () => {
+    const { zoomMeeting, zoomPassCode, selectedBatches } = this.state;
+    const { clientUserId } = this.props;
+    const batchIdArray = JSON.stringify(selectedBatches.map((elem) => elem.client_batch_id));
+
+    const payload = {
+      meeting_id: zoomMeeting,
+      client_user_id: clientUserId,
+      password: zoomPassCode,
+      batch_array: batchIdArray,
+    };
+
+    post(payload, '/addZoomMeeting').then((res) => {
+      console.log(res);
+      if (res.success) {
+        this.closeZoomModal();
+        Swal.fire({
+          title: 'Success',
+          text: 'Meeting Created Successfully',
+          icon: 'success',
+          confirmButtonText: `Go To Meeting?`,
+          showCloseButton: true,
+          showCancelButton: true,
+          cancelButtonText: `No`,
+          customClass: 'Assignments__SweetAlert',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.open(`https://zoom.us/j/${zoomMeeting}?pwd=${zoomPassCode}`);
+          }
+        });
+      }
+    });
+  };
+
+  onDurationChange = (duration) => {
+    console.log(duration);
+    this.setState({ duration });
+  };
+
+  closeDurationModal = () => {
+    const { duration } = this.state;
+    this.setState({ showDurationModal: false });
+    const durationString = `${duration.hours < 10 ? `0${duration.hours}` : duration.hours}:${
+      duration.minutes < 10 ? `0${duration.minutes}` : duration.minutes
+    }:${duration.seconds < 10 ? `0${duration.seconds}` : duration.seconds}`;
+    this.setState({ durationValue: durationString });
+  };
+
   render() {
     const {
       adminBatches,
@@ -294,6 +359,11 @@ class LiveClasses extends Component {
       existingStream,
       studentBatches,
       recordings,
+      showZoomModal,
+      zoomMeeting,
+      zoomPassCode,
+      showDurationModal,
+      durationValue,
     } = this.state;
     return (
       <div css={LiveClassesStyle.liveClasses}>
@@ -458,34 +528,49 @@ class LiveClasses extends Component {
                         <input
                           className='form-control mt-4'
                           name='Duration'
-                          type='time'
-                          step='1'
+                          type='text'
                           placeholder='Duration'
-                          onChange={(e) => this.setState({ duration: e.target.value })}
+                          readOnly
+                          value={durationValue}
+                          onClick={() => this.setState({ showDurationModal: true })}
                         />
                         <span className='mt-4'>Duration</span>
                       </label>
                     </Card>
-                    <Row className='justify-content-center mt-4 mt-lg-5'>
-                      <Button
-                        variant='customPrimary'
-                        size='sm'
-                        className='mr-2 mr-lg-5'
-                        onClick={(e) => this.createStream(e.target.id)}
-                        disabled={!selectedBatches.length || !duration}
-                        id='alpha'
-                      >
-                        Go Live Alpha!
-                      </Button>
-                      <Button
-                        variant='customPrimary'
-                        size='sm'
-                        onClick={(e) => this.createStream(e.target.id)}
-                        disabled={!selectedBatches.length || !duration}
-                        id='beta'
-                      >
-                        Go Live Beta!
-                      </Button>
+                    <Row className='justify-content-center mt-4 mt-lg-5 mx-2'>
+                      <Col className='text-center p-0'>
+                        <Button
+                          variant='customPrimarySmol'
+                          size='sm'
+                          onClick={(e) => this.createStream(e.target.id)}
+                          disabled={!selectedBatches.length || !duration}
+                          id='alpha'
+                        >
+                          Go Live Alpha!
+                        </Button>
+                      </Col>
+                      <Col className='text-center p-0'>
+                        <Button
+                          variant='customPrimarySmol'
+                          size='sm'
+                          onClick={(e) => this.createStream(e.target.id)}
+                          disabled={!selectedBatches.length || !duration}
+                          id='beta'
+                        >
+                          Go Live Beta!
+                        </Button>
+                      </Col>
+                      <Col className='text-center p-0'>
+                        <Button
+                          variant='customPrimarySmol'
+                          size='sm'
+                          onClick={(e) => this.openZoomModal()}
+                          disabled={!selectedBatches.length || !duration}
+                          id='beta'
+                        >
+                          Go Live Zoom!
+                        </Button>
+                      </Col>
                     </Row>
                   </>
                 )}
@@ -558,6 +643,64 @@ class LiveClasses extends Component {
                   />
                   <Modal.Footer>
                     <Button variant='dashboardBlueOnWhite' onClick={this.handleClose}>
+                      Next
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+
+                <Modal show={showZoomModal} centered onHide={this.closeZoomModal}>
+                  <Modal.Header closeButton>
+                    <span
+                      className='Scrollable__courseCardHeading my-auto'
+                      style={{ fontSize: '14px' }}
+                    >
+                      Meeting Details
+                    </span>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <Row className='mx-2'>
+                      <label className='has-float-label my-auto w-100'>
+                        <input
+                          className='form-control'
+                          name='Meeting ID'
+                          type='text'
+                          placeholder='Meeting ID'
+                          onChange={(e) => this.setState({ zoomMeeting: e.target.value })}
+                          value={zoomMeeting}
+                        />
+                        <span>Meeting ID</span>
+                      </label>
+                    </Row>
+                    <Row className='mx-2 mt-2'>
+                      <label className='has-float-label my-auto w-100'>
+                        <input
+                          className='form-control'
+                          name='Enter Passcode'
+                          type='text'
+                          placeholder='Enter Passcode'
+                          onChange={(e) => this.setState({ zoomPassCode: e.target.value })}
+                          value={zoomPassCode}
+                        />
+                        <span>Enter Passcode</span>
+                      </label>
+                    </Row>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant='boldTextSecondary' onClick={() => this.closeZoomModal()}>
+                      Cancel
+                    </Button>
+                    <Button variant='boldText' onClick={() => this.createZoomMeeting()}>
+                      Submit
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+                <Modal show={showDurationModal} onHide={this.closeDurationModal} centered>
+                  <DurationPicker
+                    onChange={this.onDurationChange}
+                    initialDuration={{ hours: 1, minutes: 2, seconds: 3 }}
+                  />
+                  <Modal.Footer>
+                    <Button variant='dashboardBlueOnWhite' onClick={this.closeDurationModal}>
                       Next
                     </Button>
                   </Modal.Footer>

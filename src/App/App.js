@@ -27,7 +27,7 @@ function App(props) {
   }, [color, currentbranding]);
 
   return (
-    <Container fluid className='p-0 m-0 overflow-hidden'>
+    <Container fluid className='p-0 m-0 overflow-hidden rootContainer mx-auto'>
       {isLoading && <Loader />}
       <ConnectedRouter history={history}>
         <Routes />
