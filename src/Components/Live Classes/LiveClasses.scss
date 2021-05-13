@@ -58,4 +58,9 @@
     font-size: $spacer * 0.875;
     color: $headingGrey;
   }
+
+  &__passcode {
+    font-family: $bold;
+    font-size: 1.5rem;
+  }
 }

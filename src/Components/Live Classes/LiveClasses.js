@@ -16,6 +16,8 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Button from 'react-bootstrap/Button';
 import Swal from 'sweetalert2';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import CheckIcon from '@material-ui/icons/Check';
 import LiveClassesStyle from './LiveClasses.style';
 
 import {
@@ -55,6 +57,8 @@ class LiveClasses extends Component {
       zoomPassCode: '',
       showDurationModal: false,
       durationValue: '',
+      zoomPasscodeModal: false,
+      copiedToClipboard: false,
     };
   }
 
@@ -160,7 +164,11 @@ class LiveClasses extends Component {
       );
       this.setState({ doesBBBexist: true });
     } else if (element.stream_type === 'zoom') {
-      window.open(`https://zoom.us/j/${element.meeting_id}?pwd=${element.password}`);
+      console.log(element);
+      this.setState({ zoomPassCode: element.password, zoomMeeting: element.meeting_id }, () => {
+        this.openZoomPasscodeModal();
+      });
+      //  window.open(`https://zoom.us/j/${element.meeting_id}?pwd=${element.password}`);
     } else console.error('invalid stream type');
   };
 
@@ -289,9 +297,9 @@ class LiveClasses extends Component {
   //   const { clientUserId, clientId } = this.props;
   // };
 
-  closeZoomModal = () => this.setState({ showZoomModal: false });
+  closeZoomPasscodeModal = () => this.setState({ zoomPasscodeModal: false });
 
-  openZoomModal = () => this.setState({ showZoomModal: true });
+  openZoomPasscodeModal = () => this.setState({ zoomPasscodeModal: true });
 
   createZoomMeeting = () => {
     const { zoomMeeting, zoomPassCode, selectedBatches } = this.state;
@@ -341,6 +349,16 @@ class LiveClasses extends Component {
     this.setState({ durationValue: durationString });
   };
 
+  closeZoomPasscodeModal = () => this.setState({ zoomPasscodeModal: false });
+
+  openZoomPasscodeModal = () => this.setState({ zoomPasscodeModal: true });
+
+  copyToClipboard = () => {
+    const { zoomPassCode } = this.state;
+    navigator.clipboard.writeText(zoomPassCode);
+    this.setState({ copiedToClipboard: true });
+  };
+
   render() {
     const {
       adminBatches,
@@ -364,6 +382,8 @@ class LiveClasses extends Component {
       zoomPassCode,
       showDurationModal,
       durationValue,
+      zoomPasscodeModal,
+      copiedToClipboard,
     } = this.state;
     return (
       <div css={LiveClassesStyle.liveClasses}>
@@ -442,6 +462,53 @@ class LiveClasses extends Component {
                     Oops! There are no videos being streamed currently.
                   </p>
                 )}
+                <Modal show={zoomPasscodeModal} onHide={this.closeZoomPasscodeModal} centered>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Copy PassCode</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <Row>
+                      <Col xs={7} className='text-center' css={LiveClassesStyle.passcode}>
+                        {zoomPassCode}
+                      </Col>
+                      <Col
+                        cs={5}
+                        className='text-center my-auto'
+                        onClick={() => this.copyToClipboard()}
+                      >
+                        {copiedToClipboard ? (
+                          <span
+                            style={{
+                              fontFamily: 'Montserrat-Medium',
+                              fontSize: '14px',
+                              color: 'rgba(58, 255, 0, 0.87)',
+                            }}
+                          >
+                            <CheckIcon />
+                            Copied To Clipboard!
+                          </span>
+                        ) : (
+                          <Button variant='dark'>
+                            <AssignmentIcon /> Copy
+                          </Button>
+                        )}
+                      </Col>
+                    </Row>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant='boldTextSecondary' onClick={this.closeZoomPasscodeModal}>
+                      Cancel
+                    </Button>
+                    <Button
+                      variant='boldText'
+                      onClick={() =>
+                        window.open(`https://zoom.us/j/${zoomMeeting}?pwd=${zoomPassCode}`)
+                      } //eslint-disable-line
+                    >
+                      Attend Meeting Now!
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
               </div>
             )}
 
