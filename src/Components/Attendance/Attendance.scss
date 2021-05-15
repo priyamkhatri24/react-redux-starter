@@ -1,0 +1,25 @@
+.Attendance {
+  @import '../../scss/bootstrap';
+
+  &__batchName {
+    font-family: $medium;
+    font-size: $spacer * 0.875;
+    color: $headingGrey;
+    line-height: $spacer * 1.25;
+    text-transform: capitalize;
+  }
+
+  &__batchCount {
+    font-family: $bold;
+    color: var(--primary-blue);
+    font-size: $spacer * 1.5;
+    line-height: 29px;
+  }
+
+  &__batchStudents {
+    font-family: $regular;
+    line-height: 15px;
+    font-size: $spacer * 0.75;
+    color: $dashboardBlack;
+  }
+}

@@ -341,6 +341,17 @@ const ErrorCode = Loadable({
   loading: Loading,
 });
 
+const Attendance = Loadable({
+  loader: () => import(/* webpackChunkName: 'Attendance' */ '../Components/Attendance/Attendance'),
+  loading: Loading,
+});
+
+const AttendanceBatch = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'Attendancebatch' */ '../Components/Attendance/AttendanceBatch'),
+  loading: Loading,
+});
+
 // eslint-disable-next-line
 function Loading({ error }) {
   if (error) {
@@ -406,6 +417,8 @@ export function Routes() {
       <AuthenticatedRoute exact path='/analysis/assignment' component={AssignmentList} />
       <AuthenticatedRoute exact path='/analysis/studentanalysis' component={StudentAnalysis} />
       <AuthenticatedRoute exact path='/analysis/studentlist' component={StudentList} />
+      <AuthenticatedRoute exact path='/attendance' component={Attendance} />
+      <AuthenticatedRoute exact path='/attendance/batch' component={AttendanceBatch} />
 
       <Route path='/fileviewer' component={FileView} />
       <Route path='/otherfileviewer' component={TempViewFile} />

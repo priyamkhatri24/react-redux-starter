@@ -32,5 +32,6 @@ store.subscribe(() => {
     studyBin: store.getState().studyBin,
     fees: store.getState().fees,
     analysis: store.getState().analysis,
+    attendance: store.getState().attendance,
   });
 });

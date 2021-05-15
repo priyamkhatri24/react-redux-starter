@@ -11,3 +11,4 @@ export * from './studybin.constants';
 export * from './Loading.constants';
 export * from './fees.constants';
 export * from './analysis.constants';
+export * from './attendance.constants';

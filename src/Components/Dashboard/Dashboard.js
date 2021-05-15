@@ -26,7 +26,7 @@ import { userProfileActions } from '../../redux/actions/userProfile.action';
 import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { testsActions } from '../../redux/actions/tests.action';
 import { courseActions } from '../../redux/actions/course.action';
-// import hands from '../../assets/images/Dashboard/hands.svg';
+import hands from '../../assets/images/Dashboard/hands.svg';
 import { CoursesCards, DashboardCards } from '../Common';
 // import offlineAssignment from '../../assets/images/Dashboard/offline.svg';
 import camera from '../../assets/images/Dashboard/camera.svg';
@@ -111,13 +111,6 @@ const Dashboard = (props) => {
       console.log(result);
     });
   }, [clientId, clientUserId]);
-
-  // const logout = () => {
-  //   const { push } = history;
-  //   clearProfile();
-  //   clearClientIdDetails();
-  //   push({ pathname: '/login' });
-  // };
 
   const goToLiveClasses = () => {
     const { push } = history;
@@ -222,6 +215,11 @@ const Dashboard = (props) => {
   const goToTeacherAnalysis = () => {
     const { push } = history;
     push('/analysis/teacher');
+  };
+
+  const gotToAttendance = () => {
+    const { push } = history;
+    push('/attendance');
   };
 
   return (
@@ -386,8 +384,14 @@ const Dashboard = (props) => {
             buttonClick={goToStudyBin}
           />
 
-          {/* <div className='Dashboard__attendance p-4'>
-            <div className='w-75 Dashboard__attendanceCard mx-auto pt-4'>
+          <div
+            className='Dashboard__attendance p-4'
+            onClick={() => gotToAttendance()}
+            onKeyDown={() => gotToAttendance()}
+            tabIndex='-1'
+            role='button'
+          >
+            <div className='w-75 Dashboard__attendanceCard mx-auto p-4'>
               <img src={hands} alt='hands' className='mx-auto d-block' />
               <Row className='m-3'>
                 <span className='Dashboard__todaysHitsText my-auto'>Attendance</span>
@@ -400,11 +404,11 @@ const Dashboard = (props) => {
                 Record attendance of the students and notify parents via SMS daily.
               </p>
 
-              <hr />
+              {/* <hr />
 
-              <p>Recent Attendance</p>
+              <p>Recent Attendance</p> */}
             </div>
-          </div> */}
+          </div>
 
           <div
             className='Dashboard__noticeBoard mx-auto p-3'
@@ -487,18 +491,6 @@ const Dashboard = (props) => {
             boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
             backGround='rgb(247,236,255)'
             backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
-          />
-
-
-
-
-          <DashboardCards
-            image={analysis}
-            heading='Analysis'
-            subHeading='See detailed reports of every student and assignments.'
-            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-            backGround='rgb(248,252,255)'
-            backgroundImg='linear-gradient(90deg, rgba(248,252,255,1) 0%, rgba(188,224,253,1) 100%)'
           />
 
           <DashboardCards
