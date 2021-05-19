@@ -53,8 +53,27 @@ const UserDetails = (props) => {
         setShowBatchModal(false);
         get(batchPayload, '/getBatchInformationOfUser').then((res) => {
           const result = apiValidation(res);
-          setBatches(result.current_batch);
-          setAllBatches(result.final_batch);
+          if (res.success === 1) {
+            setBatches(result.current_batch);
+            setAllBatches(result.final_batch);
+            Swal.fire({
+              icon: 'success',
+              title: 'Batches Changed!',
+              text: `You have successfully added ${result.current_batch.length} batch(es)!`,
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops!',
+              text: `Unable to change Batches`,
+            });
+          }
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops!',
+          text: `Unable to change Batches`,
         });
       }
     });

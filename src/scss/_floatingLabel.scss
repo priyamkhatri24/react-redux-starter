@@ -133,7 +133,8 @@ input[readonly].form-control {
 .has-float-label > input[type='password'],
 .has-float-label > input[type='date'],
 .has-float-label > input[type='number'],
-.has-float-label > input[type='text'] {
+.has-float-label > input[type='text'],
+.has-float-label > input[type='time'] {
   border-color: rgba(0, 0, 0, 0.54);
   border-radius: 5px;
   color: rgba(0, 0, 0, 0.87);

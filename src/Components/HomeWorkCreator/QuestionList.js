@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 import { connect } from 'react-redux';
 import Question from './Question';
 import { homeworkActions } from '../../redux/actions/homework.action';
@@ -30,10 +31,13 @@ const QuestionList = (props) => {
     currentSubjectArray,
     setTestIdToStore,
     setTestNameToStore,
+    setTestIsDraftToStore,
+    setHomeworkLanguageTypeToStore,
   } = props;
   const [questions, setQuestions] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [isDraft, setDraft] = useState(0);
+  const [selectAllQuestions, setSelectAllQuestions] = useState(false);
 
   useEffect(() => {
     const draft = testId === null ? 0 : 1;
@@ -86,6 +90,8 @@ const QuestionList = (props) => {
           if (!isDraft) {
             setTestIdToStore(res.test_id);
             setTestNameToStore(res.test_name);
+            setTestIsDraftToStore(1);
+            setHomeworkLanguageTypeToStore('english');
           }
           newSelectedQuestions.push(question);
           setSelectedQuestionArrayToStore(newSelectedQuestions);
@@ -117,17 +123,28 @@ const QuestionList = (props) => {
     }
   };
 
-  const clearSelectedQuestions = () => {
-    setSelectedQuestionArrayToStore([]);
-    const resetQuestions = questions.map((e) => {
-      e.isSelected = false;
-      return e;
-    });
-    setQuestions(resetQuestions);
-  };
-
   const goToNextSlide = () => {
     setCurrentSlide(2);
+  };
+
+  const selectAll = (value) => {
+    setSelectAllQuestions(value);
+    if (value) {
+      setSelectedQuestionArrayToStore(questions);
+      const allQuestions = questions.map((e) => {
+        e.isSelected = true;
+        return e;
+      });
+      setQuestions(allQuestions);
+      setCurrentSlide(2);
+    } else {
+      setSelectedQuestionArrayToStore([]);
+      const resetQuestions = questions.map((e) => {
+        e.isSelected = false;
+        return e;
+      });
+      setQuestions(resetQuestions);
+    }
   };
 
   return (
@@ -136,18 +153,19 @@ const QuestionList = (props) => {
         <span className='text-left Homework__questionIndex my-auto'>
           {selectedQuestions.length} selected of {questions.length}
         </span>
-        <div className='ml-auto my-auto'>
+        <div className='ml-auto my-auto d-flex'>
           <Button variant='customPrimarySmol' onClick={() => goToNextSlide()}>
             Next
           </Button>
 
-          <Button
-            variant='customPrimarySmol'
-            className='ml-2'
-            onClick={() => clearSelectedQuestions()}
-          >
-            Clear
-          </Button>
+          <Form.Check
+            type='checkbox'
+            checked={selectAllQuestions}
+            onChange={(e) => selectAll(!selectAllQuestions)}
+            className='my-auto ml-1'
+            label='Select All'
+            name='selectAll'
+          />
         </div>
       </div>
       <hr />
@@ -189,6 +207,12 @@ const mapDispatchToProps = (dispatch) => {
     setTestNameToStore: (payload) => {
       dispatch(homeworkActions.setTestNameToStore(payload));
     },
+    setTestIsDraftToStore: (payload) => {
+      dispatch(homeworkActions.setTestIsDraftToStore(payload));
+    },
+    setHomeworkLanguageTypeToStore: (payload) => {
+      dispatch(homeworkActions.setHomeworkLanguageTypeToStore(payload));
+    },
   };
 };
 
@@ -207,6 +231,8 @@ QuestionList.propTypes = {
   selectedQuestionArray: PropTypes.instanceOf(Array),
   testId: PropTypes.number,
   testName: PropTypes.string.isRequired,
+  setTestIsDraftToStore: PropTypes.func.isRequired,
+  setHomeworkLanguageTypeToStore: PropTypes.func.isRequired,
 };
 
 QuestionList.defaultProps = {

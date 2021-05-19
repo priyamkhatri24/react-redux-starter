@@ -57,6 +57,12 @@ const LiveClassesStyle = {
     font-size: ${spacer * 0.875}rem;
     color: ${colors.headingGrey};
   `,
+
+  passcode: css`
+    font-size: ${spacer * 2}rem;
+    font-family: ${fonts.bold};
+    color: ${colors.lightGrey};
+  `,
 };
 
 export default LiveClassesStyle;

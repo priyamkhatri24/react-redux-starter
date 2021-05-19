@@ -39,7 +39,7 @@ const Jitsi = (props) => {
     });
 
     const script = document.createElement('script');
-    script.src = 'https://tcalive.ingeniumedu.com/external_api.js';
+    script.src = 'https://tcaliveaws.ingeniumedu.com/external_api.js';
     script.async = true;
     script.onload = resolveLoadJitsiScriptPromise;
     document.body.appendChild(script);
@@ -75,7 +75,11 @@ const Jitsi = (props) => {
         SHOW_JITSI_WATERMARK: false,
         JITSI_WATERMARK_LINK: '',
       },
-      configOverwrite: { startWithAudioMuted: true, startWithVideoMuted: true },
+      configOverwrite: {
+        startWithAudioMuted: true,
+        startWithVideoMuted: true,
+        disableDeepLinking: true,
+      },
       userInfo: {
         displayName: `${firstName} ${lastName}`,
       },
@@ -88,6 +92,9 @@ const Jitsi = (props) => {
         TOOLBAR_BUTTONS: toolBarOptions,
         SHOW_JITSI_WATERMARK: false,
         JITSI_WATERMARK_LINK: '',
+      },
+      configOverwrite: {
+        disableDeepLinking: true,
       },
       userInfo: {
         displayName: `${firstName} ${lastName}`,

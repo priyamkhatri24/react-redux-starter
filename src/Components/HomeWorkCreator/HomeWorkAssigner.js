@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Swal from 'sweetalert2';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -9,19 +10,32 @@ import DurationPicker from 'react-duration-picker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import getUnixTime from 'date-fns/getUnixTime';
+import addSeconds from 'date-fns/addSeconds';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { BatchesSelector, PageHeader } from '../Common';
-import { getTestName } from '../../redux/reducers/homeworkCreator.reducer';
+import {
+  getCurrentChapterArray,
+  getHomeworkLanguageType,
+  getSelectedQuestionArray,
+  getTestClassSubject,
+  getTestId,
+  getTestIsDraft,
+  getTestName,
+} from '../../redux/reducers/homeworkCreator.reducer';
 import {
   getClientId,
   getClientUserId,
   getRoleArray,
 } from '../../redux/reducers/clientUserId.reducer';
-import { get, apiValidation } from '../../Utilities';
+import { get, apiValidation, post } from '../../Utilities';
+import '../Live Classes/LiveClasses.scss';
+import './HomeWorkCreator.scss';
+import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 
 const CustomInput = ({ value, onClick }) => (
   <Row className='m-2 justify-content-center'>
-    <label htmlFor='Select Date' className='w-100 has-float-label my-auto'>
+    <label htmlFor='Select Date' className='has-float-label my-auto w-100'>
       <input
         className='form-control'
         name='Select Date'
@@ -40,7 +54,20 @@ const CustomInput = ({ value, onClick }) => (
 );
 
 const HomeWorkAssigner = (props) => {
-  const { testName, clientId, clientUserId, roleArray } = props;
+  const {
+    testName,
+    clientId,
+    clientUserId,
+    roleArray,
+    testId,
+    testIsDraft,
+    testClassSubject,
+    currentChapterArray,
+    userProfile,
+    homeworkLanguageType,
+    selectedQuestionArray,
+    history,
+  } = props;
   const [currentTestName, setTestName] = useState('');
   const [batches, setBatches] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
@@ -51,15 +78,24 @@ const HomeWorkAssigner = (props) => {
   const [startDate, setStartDate] = useState(new Date());
   const [currentAssignentType, setCurrentAssignmentType] = useState('');
   const [durationValue, setDurationValue] = useState('');
+  const [startTime, setStartTime] = useState('');
   const [assignmentType, setAssignmentType] = useState([
-    { id: 1, text: 'Homework', isSelected: false },
-    { id: 2, text: 'Live Test', isSelected: false },
-    { id: 3, text: 'Demo Test', isSelected: false },
+    { id: 1, text: 'Homework', isSelected: true, value: 'homework' },
+    { id: 2, text: 'Live Test', isSelected: false, value: 'live test' },
+    { id: 3, text: 'Demo Test', isSelected: false, value: 'demo test' },
   ]);
   const [postTo, setPostTo] = useState([
-    { id: 1, text: 'In App', isSelected: false },
+    { id: 1, text: 'In App', isSelected: true },
     { id: 2, text: 'Welcome', isSelected: false },
   ]);
+
+  const [showAnalysis, setShowAnalysis] = useState([
+    { id: 1, text: 'No', isSelected: true },
+    { id: 2, text: 'Yes', isSelected: false },
+  ]);
+
+  const [analysisDate, setAnalysisDate] = useState(new Date());
+  const [analysisStartTime, setAnalysisStartTime] = useState('');
 
   useEffect(() => {
     setTestName(testName);
@@ -117,6 +153,15 @@ const HomeWorkAssigner = (props) => {
     setPostTo(newSubjectAraay);
   };
 
+  const selectAnalysis = (elem) => {
+    const newSubjectAraay = showAnalysis.map((e) => {
+      e.isSelected = false;
+      if (e.id === elem) e.isSelected = !e.isSelected;
+      return e;
+    });
+    setShowAnalysis(newSubjectAraay);
+  };
+
   const closeDurationModal = () => {
     setDurationModal(false);
     console.log(duration);
@@ -125,8 +170,112 @@ const HomeWorkAssigner = (props) => {
     }:${duration.seconds < 10 ? `0${duration.seconds}` : duration.seconds}`;
     setDurationValue(durationString);
   };
+
+  const assignTestFinally = () => {
+    const testType = assignmentType.filter((e) => e.isSelected === true)[0].value;
+    const testDuration = (duration.hours * 3600 + duration.minutes * 60 + duration.seconds) * 1000;
+    const startDateMidnight = new Date(startDate.toDateString());
+    const startTimeInSeconds = startTime.split(':').reduce((acc, curr) => {
+      return acc * 60 + parseInt(curr, 10);
+    }, 0);
+    const startTimeDate = addSeconds(startDateMidnight, startTimeInSeconds);
+    let answerKey = null;
+
+    if (testType === 'live test' && showAnalysis[1].isSelected) {
+      const analysisTimeInSeconds = analysisStartTime.split(':').reduce((acc, curr) => {
+        return acc * 60 + parseInt(curr, 10);
+      }, 0);
+      const analysisDateMidnight = new Date(analysisDate.toDateString());
+      answerKey = addSeconds(analysisDateMidnight, analysisTimeInSeconds);
+    }
+
+    /** *************Logic for notfications*************** */
+
+    const topicArray = selectedBatches.map((e) => {
+      return process.env.NODE_ENV === 'development'
+        ? `developmentbatch${e.client_batch_id}.0`
+        : `productionbatch${e.client_batch_id}.0`;
+    });
+
+    const message = `${currentAssignentType} has been assigned to ${selectedBatches.reduce(
+      (acc, curr, i) => {
+        return i === selectedBatches.length - 1
+          ? `${acc + curr.batch_name} `
+          : `${acc + curr.batch_name}, `;
+      },
+      '',
+    )}`;
+
+    /** ************************************************* */
+    const payload = {
+      is_public: postTo.filter((e) => e.isSelected === true)[0].id !== 1,
+      test_id: testId,
+      test_name: currentTestName,
+      test_date: getUnixTime(startDate),
+      test_type: testType,
+      language_type: homeworkLanguageType,
+      is_draft: testIsDraft,
+      teacher_id: clientUserId,
+      client_id: clientId,
+      name: `${userProfile.firstName} ${userProfile.lastName}`,
+      batch_array: JSON.stringify(selectedBatches.map((e) => e.client_batch_id)),
+      questions_array: JSON.stringify(selectedQuestionArray.map((e) => e.question_id)),
+      class_subject: JSON.stringify(testClassSubject.class_subject_array), // class_subject_array
+      chapter_array: JSON.stringify(currentChapterArray),
+      test_duration: testType === 'homework' ? null : testDuration,
+      start_time: testType !== 'live test' ? null : getUnixTime(startTimeDate),
+      answer_key: answerKey,
+    };
+
+    post(payload, '/addTest').then((res) => {
+      console.log(res);
+      if (res.success) {
+        const messagePayload = {
+          message,
+          title: currentAssignentType,
+          type: 'batch_notification',
+          batch_array: JSON.stringify(selectedBatches.map((e) => e.client_batch_id)),
+          topic_array: JSON.stringify(topicArray),
+          client_id: clientId,
+          client_user_id: clientUserId,
+        };
+        if (postTo.filter((e) => e.isSelected === true)[0].id === 1) {
+          post(messagePayload, '/sendNotification').then((resp) => {
+            if (resp.success === 1) {
+              Swal.fire({
+                title: 'Success',
+                text: 'Assignment assigned Successfully!',
+                icon: 'success',
+                confirmButtonText: `Done`,
+                customClass: 'Assignments__SweetAlert',
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  history.push({ pathname: '/homework/savedsent', state: 'sent' });
+                }
+              });
+            }
+          });
+        } else {
+          Swal.fire({
+            title: 'Success',
+            text: 'Assignment assigned Successfully!',
+            icon: 'success',
+            confirmButtonText: `Done`,
+            customClass: 'Assignments__SweetAlert',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              history.push({ pathname: '/homework/savedsent', state: { testType: 'sent' } });
+            }
+          });
+        }
+      }
+    });
+
+    console.log(payload);
+  };
+
   return (
-    <>
+    <div style={{ height: '90vh' }}>
       <PageHeader title='Assign Test' />
       <Card style={{ marginTop: '5rem', padding: '1rem' }} className='mx-2 Homework__selectCard'>
         <Row className='m-2'>
@@ -159,7 +308,7 @@ const HomeWorkAssigner = (props) => {
             </i>
           </label>
         </Row>
-        <Row className='mx-2 justify-content-center w-100'>
+        <Row className='m-0 justify-content-center'>
           <DatePicker
             selected={startDate}
             dateFormat='dd/MM/yyyy'
@@ -191,38 +340,92 @@ const HomeWorkAssigner = (props) => {
           </section>
         </Row>
         {currentAssignentType === 'Live Test' && (
-          <Row className='justify-content-center mt-3'>
-            <Col xs={5} className='m-auto p-0'>
-              <label htmlFor='Select Duration' className='w-100 has-float-label my-auto'>
-                <input
-                  className='form-control'
-                  name='Select Duration'
-                  type='text'
-                  placeholder='Select Duration'
-                  onClick={() => setDurationModal(true)}
-                  readOnly
-                  value={durationValue}
-                />
-                <span>Select Duration</span>
-                <i className='LiveClasses__show'>
-                  <ExpandMoreIcon />
-                </i>
-              </label>
-            </Col>
-            <Col xs={5} className='m-auto p-0'>
-              <label className='has-float-label my-auto w-100' htmlFor='Duration'>
-                <input
-                  className='form-control'
-                  name='Duration'
-                  type='time'
-                  step='1'
-                  placeholder='Duration'
-                  onChange={(e) => setDuration(e.target.value)}
-                />
-                <span className='mt-4'>Duration</span>
-              </label>
-            </Col>
-          </Row>
+          <>
+            <Row className='justify-content-center mt-3'>
+              <Col xs={5} className='m-auto p-0'>
+                <label htmlFor='Select Duration' className='w-100 has-float-label my-auto'>
+                  <input
+                    className='form-control'
+                    name='Select Duration'
+                    type='text'
+                    placeholder='Select Duration'
+                    onClick={() => setDurationModal(true)}
+                    readOnly
+                    value={durationValue}
+                  />
+                  <span>Select Duration</span>
+                  <i className='LiveClasses__show'>
+                    <ExpandMoreIcon />
+                  </i>
+                </label>
+              </Col>
+              <Col xs={5} className='m-auto p-0'>
+                <label className='has-float-label my-auto w-100'>
+                  <input
+                    className='form-control'
+                    name='Start Time'
+                    type='time'
+                    step='1'
+                    placeholder='Start Time'
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                  />
+                  <span>Start Time</span>
+                </label>
+              </Col>
+            </Row>
+            <Row className='mx-2'>
+              <small className='text-left Homework__smallHeading mx-3 mb-2 mt-4'>
+                Where Do You want to post this assignment
+              </small>
+
+              {showAnalysis.map((e) => {
+                return (
+                  <div
+                    key={e.id}
+                    className={
+                      e.isSelected
+                        ? 'Homework__subjectBubble Homework__selected'
+                        : 'Homework__subjectBubble Homework__unselected'
+                    }
+                    onClick={() => selectAnalysis(e.id)}
+                    onKeyDown={() => selectAnalysis(e.id)}
+                    role='button'
+                    tabIndex='-1'
+                  >
+                    {e.text}
+                  </div>
+                );
+              })}
+            </Row>
+            {showAnalysis.filter((e) => e.isSelected === true)[0].id === 2 && (
+              <Row className='justify-content-center mt-3'>
+                <Col xs={5} className='m-auto p-0'>
+                  <DatePicker
+                    minDate={startDate}
+                    selected={analysisDate}
+                    dateFormat='dd/MM/yyyy'
+                    onChange={(date) => setAnalysisDate(date)}
+                    customInput={<CustomInput />}
+                  />
+                </Col>
+                <Col xs={5} className='m-auto p-0'>
+                  <label className='has-float-label my-auto w-100'>
+                    <input
+                      className='form-control'
+                      name='Analysis Time'
+                      type='time'
+                      step='1'
+                      placeholder='Analysis Time'
+                      value={analysisStartTime}
+                      onChange={(e) => setAnalysisStartTime(e.target.value)}
+                    />
+                    <span>Analysis Time</span>
+                  </label>
+                </Col>
+              </Row>
+            )}
+          </>
         )}
 
         {currentAssignentType === 'Demo Test' && (
@@ -272,7 +475,9 @@ const HomeWorkAssigner = (props) => {
         </Row>
       </Card>
       <Row className='justify-content-center mt-4'>
-        <Button variant='customPrimary'>Send</Button>
+        <Button variant='customPrimary' onClick={() => assignTestFinally()}>
+          Send
+        </Button>
       </Row>
       <Modal show={showModal} onHide={handleClose} centered>
         <Modal.Header closeButton>
@@ -301,7 +506,7 @@ const HomeWorkAssigner = (props) => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </div>
   );
 };
 
@@ -310,6 +515,13 @@ const mapStateToProps = (state) => ({
   clientId: getClientId(state),
   clientUserId: getClientUserId(state),
   roleArray: getRoleArray(state),
+  testId: getTestId(state),
+  testIsDraft: getTestIsDraft(state),
+  testClassSubject: getTestClassSubject(state),
+  currentChapterArray: getCurrentChapterArray(state),
+  userProfile: getUserProfile(state),
+  selectedQuestionArray: getSelectedQuestionArray(state),
+  homeworkLanguageType: getHomeworkLanguageType(state),
 });
 
 export default connect(mapStateToProps)(HomeWorkAssigner);
@@ -319,6 +531,14 @@ HomeWorkAssigner.propTypes = {
   clientId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
   roleArray: PropTypes.instanceOf(Array).isRequired,
+  testId: PropTypes.number.isRequired,
+  testIsDraft: PropTypes.number.isRequired,
+  testClassSubject: PropTypes.instanceOf(Object).isRequired,
+  currentChapterArray: PropTypes.instanceOf(Array).isRequired,
+  userProfile: PropTypes.instanceOf(Object).isRequired,
+  selectedQuestionArray: PropTypes.instanceOf(Array).isRequired,
+  homeworkLanguageType: PropTypes.string.isRequired,
+  history: PropTypes.instanceOf(Object).isRequired,
 };
 
 CustomInput.propTypes = {

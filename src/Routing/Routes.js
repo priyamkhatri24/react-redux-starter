@@ -139,6 +139,14 @@ const SavedSentTests = Loadable({
 });
 // import SavedSentTests from '../Components/HomeWorkCreator/SavedSentTests';
 
+const SavedSentTestsUsingFilters = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'SavedSentTestsUsingFilters' */ '../Components/HomeWorkCreator/SavedSentTestsUsingFilters'
+    ),
+  loading: Loading,
+});
+
 const FinalQuestions = Loadable({
   loader: () =>
     import(/* webpackChunkName: 'FinalQuestions' */ '../Components/HomeWorkCreator/FinalQuestions'),
@@ -161,6 +169,14 @@ const HomeWorkAssigner = Loadable({
   loading: Loading,
 });
 // import HomeWorkAssigner from '../Components/HomeWorkCreator/HomeWorkAssigner';
+
+const HomeWorkViewOnly = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'HomeWorkViewOnly' */ '../Components/HomeWorkCreator/HomeWorkViewOnly'
+    ),
+  loading: Loading,
+});
 
 const ViewCourses = Loadable({
   loader: () => import(/* webpackChunkName: 'ViewCourses' */ '../Components/Courses/ViewCourses'),
@@ -265,7 +281,82 @@ const Fees = Loadable({
 });
 
 const TeacherFees = Loadable({
-  loader: () => import(/* webpackChunkName: 'Fees' */ '../Components/Fees/TeacherFees'),
+  loader: () => import(/* webpackChunkName: 'TeacherFees' */ '../Components/Fees/TeacherFees'),
+  loading: Loading,
+});
+
+const FeeUserDetails = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'FeeUserDetails' */ '../Components/Fees/FeeUserDetails'),
+  loading: Loading,
+});
+
+const StudentFee = Loadable({
+  loader: () => import(/* webpackChunkName: 'StudentFee' */ '../Components/Fees/StudentFee'),
+  loading: Loading,
+});
+
+const FeePlans = Loadable({
+  loader: () => import(/* webpackChunkName: 'FeePlans' */ '../Components/Fees/FeePlans'),
+  loading: Loading,
+});
+
+// import StudentFee from '../Components/Fees/StudentFee';
+
+const EditFeePlan = Loadable({
+  loader: () => import(/* webpackChunkName: 'EditFeePlan' */ '../Components/Fees/EditFeePlan'),
+  loading: Loading,
+});
+
+const TeacherAnalysis = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'TeacherAnalysis' */ '../Components/Analysis/TeacherAnalysis'),
+  loading: Loading,
+});
+
+const AssignmentList = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'AssignmentList' */ '../Components/Analysis/AssignmentList'),
+  loading: Loading,
+});
+
+const StudentAnalysis = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'StudentAnalysis' */ '../Components/Analysis/StudentAnalysis'),
+  loading: Loading,
+});
+
+const StudentList = Loadable({
+  loader: () => import(/* webpackChunkName: 'StudentList' */ '../Components/Analysis/StudentList'),
+  loading: Loading,
+});
+
+const FourZeroFour = Loadable({
+  loader: () => import(/* webpackChunkName: 'FourZeroFour' */ '../Components/ErrorPages/404'),
+  loading: Loading,
+});
+
+const ErrorCode = Loadable({
+  loader: () => import(/* webpackChunkName: 'ErrorCode' */ '../Components/ErrorPages/ErrorCode'),
+  loading: Loading,
+});
+
+const Attendance = Loadable({
+  loader: () => import(/* webpackChunkName: 'Attendance' */ '../Components/Attendance/Attendance'),
+  loading: Loading,
+});
+
+const AttendanceBatch = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'Attendancebatch' */ '../Components/Attendance/AttendanceBatch'),
+  loading: Loading,
+});
+
+const SelectedDateAttendance = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'Attendancebatch' */ '../Components/Attendance/SelectedDateAttendance'
+    ),
   loading: Loading,
 });
 
@@ -300,12 +391,18 @@ export function Routes() {
       <AuthenticatedRoute exact path='/questiontaker' component={QuestionTaker} />
       <AuthenticatedRoute exact path='/fees' component={Fees} />
       <AuthenticatedRoute exact path='/teacherfees' component={TeacherFees} />
+      <AuthenticatedRoute exact path='/fees/users' component={FeeUserDetails} />
+      <AuthenticatedRoute exact path='/fees/students' component={StudentFee} />
+      <AuthenticatedRoute exact path='/fees/Feeplans' component={FeePlans} />
+      <AuthenticatedRoute exact path='/fees/edit/studentfeeplan' component={EditFeePlan} />
       <AuthenticatedRoute exact path='/order' component={FeesOrder} />
       <AuthenticatedRoute exact path='/homework' component={HomeWorkCreator} />
       <AuthenticatedRoute exact path='/homework/savedtests' component={SavedSentTests} />
+      <AuthenticatedRoute exact path='/homework/savedsent' component={SavedSentTestsUsingFilters} />
       <AuthenticatedRoute exact path='/homework/preview' component={FinalQuestions} />
       <AuthenticatedRoute exact path='/homework/create' component={CreateQuestion} />
       <AuthenticatedRoute exact path='/homework/assign' component={HomeWorkAssigner} />
+      <AuthenticatedRoute exact path='/homework/viewonly' component={HomeWorkViewOnly} />
       <AuthenticatedRoute exact path='/courses' component={ViewCourses} />
       <AuthenticatedRoute exact path='/courses/buyCourse' component={BuyCourse} />
       <AuthenticatedRoute exact path='/courses/mycourse' component={Mycourse} />
@@ -324,13 +421,25 @@ export function Routes() {
       <AuthenticatedRoute exact path='/admissions/add/class' component={SelectClass} />
       <AuthenticatedRoute exact path='/admissions/add/batch' component={AddBatch} />
       <AuthenticatedRoute exact path='/admissions/editprofile' component={EditProfileHOC} />
+      <AuthenticatedRoute exact path='/analysis/teacher' component={TeacherAnalysis} />
+      <AuthenticatedRoute exact path='/analysis/assignment' component={AssignmentList} />
+      <AuthenticatedRoute exact path='/analysis/studentanalysis' component={StudentAnalysis} />
+      <AuthenticatedRoute exact path='/analysis/studentlist' component={StudentList} />
+      <AuthenticatedRoute exact path='/attendance' component={Attendance} />
+      <AuthenticatedRoute exact path='/attendance/batch' component={AttendanceBatch} />
+      <AuthenticatedRoute exact path='/attendance/date' component={SelectedDateAttendance} />
 
       <Route path='/fileviewer' component={FileView} />
       <Route path='/otherfileviewer' component={TempViewFile} />
 
-      {/* redirect user to Dashboard page if route does not exist */}
+      {/* If error occurs */}
 
-      <Route component={Dashboard} />
+      <Route exact path='/error' component={ErrorCode} />
+
+      {/* redirect user to FourZeroFour page if route does not exist */}
+
+      <Route component={FourZeroFour} />
+      {/* <Route component={Dashboard} /> */}
     </Switch>
   );
 }

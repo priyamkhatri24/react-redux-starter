@@ -113,7 +113,7 @@ class Login extends Component {
     this.setState({ currentComponent: param });
   };
 
-  getPhoneNo = (param) => {
+  getPhoneNo = (param, countryCode = null) => {
     const {
       currentbranding: {
         branding: { client_id: clientId },
@@ -123,6 +123,7 @@ class Login extends Component {
     const requestBody = {
       contact: param,
       client_id: clientId,
+      country_code: countryCode,
     };
 
     fetchContact(param);

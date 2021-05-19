@@ -1,0 +1,24 @@
+.ErrorPages {
+  @import '../../scss/bootstrap';
+
+  &__heading {
+    font-size: 76px;
+    // line-height: 19px;
+    font-family: $medium;
+    color: $headingGrey;
+  }
+
+  &__subHeading {
+    font-size: 34px;
+    line-height: 19px;
+    font-family: $medium;
+    color: $headingGrey;
+  }
+
+  &__errorText {
+    color: $headingGrey;
+    font-family: $regular;
+    font-size: $spacer;
+    line-height: 19px;
+  }
+}

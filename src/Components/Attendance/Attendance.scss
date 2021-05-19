@@ -1,0 +1,56 @@
+.Attendance {
+  @import '../../scss/bootstrap';
+
+  &__batchName {
+    font-family: $medium;
+    font-size: $spacer * 0.875;
+    color: $headingGrey;
+    line-height: $spacer * 1.25;
+    text-transform: capitalize;
+  }
+
+  &__batchCount {
+    font-family: $bold;
+    color: var(--primary-blue);
+    font-size: $spacer * 1.5;
+    line-height: 29px;
+  }
+
+  &__batchStudents {
+    font-family: $regular;
+    line-height: 15px;
+    font-size: $spacer * 0.75;
+    color: $dashboardBlack;
+  }
+
+  &__dot {
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    display: inline-block;
+    font-family: $regular;
+    color: $lightGrey;
+    font-size: $spacer * 0.75;
+    line-height: 15px;
+    padding: 5px;
+  }
+
+  &__bulletNames {
+    font-family: $medium;
+    color: #000;
+    font-size: $spacer * 0.625;
+    line-height: 13px;
+  }
+
+  &__headingSmall {
+    font-size: $spacer * 0.75;
+    font-family: $medium;
+    color: var(--primary-blue);
+    line-height: 15px;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 0; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
+}

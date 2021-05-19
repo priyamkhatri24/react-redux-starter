@@ -30,5 +30,8 @@ store.subscribe(() => {
     homework: store.getState().homework,
     course: store.getState().course,
     studyBin: store.getState().studyBin,
+    fees: store.getState().fees,
+    analysis: store.getState().analysis,
+    attendance: store.getState().attendance,
   });
 });

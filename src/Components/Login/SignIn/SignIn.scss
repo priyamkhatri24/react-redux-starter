@@ -35,4 +35,13 @@
     color: rgba($color: $black, $alpha: 0.6);
     line-height: 15px;
   }
+
+  /************** Select User ******/
+
+  &__selectUserHeading {
+    font-family: $medium;
+    font-family: $spacer * 1.25;
+    line-height: $spacer * 1.5;
+    letter-spacing: 0.26px;
+  }
 }

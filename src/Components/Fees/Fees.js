@@ -70,19 +70,30 @@ const Fees = (props) => {
         text: 'You have a pending payment. Please wait while your bank processes the payment.',
       });
     } else if (currentPayment.status === 'due') {
-      displayRazorpay(
-        currentPayment.order_id,
-        currentPayment.amount * 100,
-        'INR',
-        clientLogo,
-        clientColor,
-        clientName,
-        clientAddress,
-        clientContact,
-        razorSuccess,
-        currentPayment.user_fee_id,
-        clientId,
-      ).then((res) => console.log(res, 'razor'));
+      const razorPayload = {
+        status: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
+        client_id: clientId,
+      };
+
+      get(razorPayload, '/getRazorPayCredentials').then((cred) => {
+        const credentials = apiValidation(cred);
+
+        displayRazorpay(
+          currentPayment.order_id,
+          currentPayment.amount * 100,
+          'INR',
+          clientLogo,
+          clientColor,
+          clientName,
+          clientAddress,
+          clientContact,
+          razorSuccess,
+          currentPayment.user_fee_id,
+          clientId,
+          credentials.key_id,
+          credentials.fee_account_id,
+        ).then((res) => console.log(res, 'razor'));
+      });
     }
   };
 

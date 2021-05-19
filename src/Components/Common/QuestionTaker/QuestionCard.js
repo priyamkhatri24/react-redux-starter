@@ -312,7 +312,7 @@ class QuestionCard extends Component {
                       <input
                         onChange={() => this.handleChecked(elem.order)}
                         id={elem.order}
-                        type='checkbox'
+                        type=''
                         checked={checked[elem.order - 1]}
                       />
                       {elem.image && <img src={elem.image} alt='option' className='img-fluid' />}

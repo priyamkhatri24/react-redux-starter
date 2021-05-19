@@ -26,17 +26,19 @@ import { userProfileActions } from '../../redux/actions/userProfile.action';
 import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { testsActions } from '../../redux/actions/tests.action';
 import { courseActions } from '../../redux/actions/course.action';
-// import hands from '../../assets/images/Dashboard/hands.svg';
+import hands from '../../assets/images/Dashboard/hands.svg';
 import { CoursesCards, DashboardCards } from '../Common';
 // import offlineAssignment from '../../assets/images/Dashboard/offline.svg';
 import camera from '../../assets/images/Dashboard/camera.svg';
 import analysis from '../../assets/images/Dashboard/analysis.svg';
+import analysisHands from '../../assets/images/Dashboard/analysishands.svg';
 import student from '../../assets/images/Dashboard/student.svg';
 import Tests from '../Tests/Tests';
 import './Dashboard.scss';
 import { admissionActions } from '../../redux/actions/admissions.action';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import { getComeBackFromTests } from '../../redux/reducers/firstTimeLogin.reducer';
+import { studyBinActions } from '../../redux/actions/studybin.actions';
 
 const DashBoardAdmissions = Loadable({
   loader: () => import('./DashBoardAdmissions'),
@@ -63,9 +65,11 @@ const Dashboard = (props) => {
     setAdmissionRoleArrayToStore,
     branding,
     comeBackFromTests,
+    setFolderIdArrayToStore,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
+  const [attendance, setAttendance] = useState([]);
   const [allCourses, setAllCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
   const [admissions, setAdmissions] = useState({});
@@ -97,6 +101,7 @@ const Dashboard = (props) => {
         const result = apiValidation(res);
         setNotices(result.notice);
         setAdmissions(result.admission);
+        setAttendance(result.attendance);
       })
       .catch((err) => console.error(err));
     partsOfDay();
@@ -108,13 +113,6 @@ const Dashboard = (props) => {
       console.log(result);
     });
   }, [clientId, clientUserId]);
-
-  // const logout = () => {
-  //   const { push } = history;
-  //   clearProfile();
-  //   clearClientIdDetails();
-  //   push({ pathname: '/login' });
-  // };
 
   const goToLiveClasses = () => {
     const { push } = history;
@@ -133,6 +131,7 @@ const Dashboard = (props) => {
 
   const goToStudyBin = () => {
     const { push } = history;
+    setFolderIdArrayToStore([]);
     push({ pathname: '/studybin' });
   };
 
@@ -154,6 +153,11 @@ const Dashboard = (props) => {
   const goToHomeWorkCreator = () => {
     const { push } = history;
     push({ pathname: '/homework', state: { letsGo: true } });
+  };
+
+  const goToSentTests = (type) => {
+    const { push } = history;
+    push({ pathname: '/homework/savedsent', state: { testsType: type } });
   };
 
   const startHomework = (responseArray, testId) => {
@@ -208,6 +212,16 @@ const Dashboard = (props) => {
       ? setAdmissionRoleArrayToStore(['3'])
       : setAdmissionRoleArrayToStore(['4']);
     history.push({ pathname: '/admissions/add/details' });
+  };
+
+  const goToTeacherAnalysis = () => {
+    const { push } = history;
+    push('/analysis/teacher');
+  };
+
+  const gotToAttendance = () => {
+    const { push } = history;
+    push('/attendance');
   };
 
   return (
@@ -291,7 +305,7 @@ const Dashboard = (props) => {
               <section className='Dashboard__scrollableCard'>
                 <div>
                   <Row>
-                    <Col xs={8} className='pr-0'>
+                    <Col xs={8} className='pr-0' onClick={() => goToSentTests('sent')}>
                       <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
                         Sent assignments
                       </p>
@@ -311,7 +325,7 @@ const Dashboard = (props) => {
                 </div>
                 <div>
                   <Row>
-                    <Col xs={8} className='pr-0'>
+                    <Col xs={8} className='pr-0' onClick={() => goToSentTests('saved')}>
                       <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
                         Saved assignments
                       </p>
@@ -343,21 +357,25 @@ const Dashboard = (props) => {
             buttonClick={goToCoursesForTeacher}
           />
 
-          <div
-            onClick={() => goToTeacherFees()}
-            role='button'
-            tabIndex='-1'
-            onKeyDown={() => goToFees()}
-          >
-            <DashboardCards
-              image={analysis}
-              heading='Fees'
-              subHeading='See fees history and amount to be paid for coming months.'
-              boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-              backGround='rgb(238,232,241)'
-              backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
-            />
-          </div>
+          <DashboardCards
+            image={analysis}
+            heading='Fees'
+            subHeading='See fees history and amount to be paid for coming months.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(238,232,241)'
+            backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
+            buttonClick={goToTeacherFees}
+          />
+
+          <DashboardCards
+            image={analysisHands}
+            heading='Analysis'
+            subHeading='See detailed reports of every student and assignments.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(235,245,246)'
+            backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
+            buttonClick={goToTeacherAnalysis}
+          />
 
           <DashboardCards
             image={student}
@@ -368,10 +386,16 @@ const Dashboard = (props) => {
             buttonClick={goToStudyBin}
           />
 
-          {/* <div className='Dashboard__attendance p-4'>
+          <div
+            className='Dashboard__attendance p-4'
+            onClick={() => gotToAttendance()}
+            onKeyDown={() => gotToAttendance()}
+            tabIndex='-1'
+            role='button'
+          >
             <div className='w-75 Dashboard__attendanceCard mx-auto pt-4'>
               <img src={hands} alt='hands' className='mx-auto d-block' />
-              <Row className='m-3'>
+              <Row className='m-3 px-4'>
                 <span className='Dashboard__todaysHitsText my-auto'>Attendance</span>
                 <span className='ml-auto'>
                   <ChevronRightIcon />
@@ -384,9 +408,27 @@ const Dashboard = (props) => {
 
               <hr />
 
-              <p>Recent Attendance</p>
+              <p className='Dashboard__attendanceRecents ml-1'>Recent Attendance</p>
+              <Row className='mx-2'>
+                {attendance.map((elem) => {
+                  return (
+                    <div className='d-flex flex-column mx-1' key={elem.batch_id}>
+                      <img
+                        src={userAvatar}
+                        alt='batch'
+                        height='35px'
+                        width='35px'
+                        className='Dashboard__noticeImage d-block mx-auto'
+                      />
+                      <p className='Dashboard__attendanceRecents text-center mt-1'>
+                        {elem.batch_name}
+                      </p>
+                    </div>
+                  );
+                })}
+              </Row>
             </div>
-          </div> */}
+          </div>
 
           <div
             className='Dashboard__noticeBoard mx-auto p-3'
@@ -469,25 +511,6 @@ const Dashboard = (props) => {
             boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
             backGround='rgb(247,236,255)'
             backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
-          />
-
-          <DashboardCards
-            image={analysis}
-            heading='Admissions'
-            subHeading='Manage students, teachers and batches from a single place.'
-            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-            backGround='rgb(235,245,246)'
-            backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
-          />
-
-
-          <DashboardCards
-            image={analysis}
-            heading='Analysis'
-            subHeading='See detailed reports of every student and assignments.'
-            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-            backGround='rgb(248,252,255)'
-            backgroundImg='linear-gradient(90deg, rgba(248,252,255,1) 0%, rgba(188,224,253,1) 100%)'
           />
 
           <DashboardCards
@@ -680,6 +703,9 @@ const mapDispatchToProps = (dispatch) => {
     setAdmissionRoleArrayToStore: (payload) => {
       dispatch(admissionActions.setAdmissionRoleArrayToStore(payload));
     },
+    setFolderIdArrayToStore: (payload) => {
+      dispatch(studyBinActions.setFolderIDArrayToStore(payload));
+    },
   };
 };
 
@@ -697,6 +723,7 @@ Dashboard.propTypes = {
   setTestTypeToStore: PropTypes.func.isRequired,
   setCourseIdToStore: PropTypes.func.isRequired,
   setAdmissionRoleArrayToStore: PropTypes.func.isRequired,
+  setFolderIdArrayToStore: PropTypes.func.isRequired,
   userProfile: PropTypes.shape({
     firstName: PropTypes.string.isRequired,
     profileImage: PropTypes.string,

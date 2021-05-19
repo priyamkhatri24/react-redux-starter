@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { history } from '../Routing/History';
 
 function authHeaderPost() {
   // return authorization header with jwt token
@@ -27,7 +28,7 @@ function authHeaderGet() {
 
 const testUrl =
   process.env.NODE_ENV === 'development'
-    ? 'http://13.126.247.152:3000'
+    ? 'https://portal.tca.ingeniumedu.com'
     : 'https://class.ingeniumedu.com';
 // const testUrl = 'https://portal.tca.ingeniumedu.com';
 
@@ -41,6 +42,7 @@ export const post = (requestBody, endpoint) => {
     .post(testUrl + endpoint, transformRequest(requestBody), authHeaderPost())
     .then((result) => result.data)
     .catch((err) => {
+      history.push('/error');
       console.error(`The error is ${err}`);
     });
 };
@@ -51,6 +53,7 @@ export const get = (requestBody = null, endpoint) => {
     .get(testUrl + endpoint, { params: requestBody, headers: authHeaderGet() })
     .then((result) => result.data)
     .catch((err) => {
+      history.push('/error');
       console.error(`The error is ${err}`);
     });
 };
@@ -63,6 +66,7 @@ export const uploadImage = (file) => {
     .post(`${testUrl}/upload`, fd, authHeaderPost())
     .then((result) => result.data)
     .catch((err) => {
+      history.push('./error');
       console.error(`The error is ${err}`);
     });
 };

@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button';
 import './BatchesSelector.scss';
 
 export const BatchesSelector = (props) => {
-  const { batches, getSelectedBatches, title, selectBatches, sendBoth } = props;
+  const { batches, getSelectedBatches, title, selectBatches, sendBoth, isStudentFee } = props;
   const [selectedBatches, setSelectedBatches] = useState([...selectBatches]);
 
   useEffect(() => {
@@ -56,7 +56,11 @@ export const BatchesSelector = (props) => {
               className='justify-content-start mb-1 mx-3'
               key={`e123${elem.client_batch_id}${elem.count}`}
             >
-              <Button variant='customLightBlue' onClick={() => removeBatch(elem)}>
+              <Button
+                variant='customLightBlue'
+                onClick={() => removeBatch(elem)}
+                style={isStudentFee && elem.is_fee === 'true' ? { opacity: '0.6' } : {}}
+              >
                 {elem.batch_name}
               </Button>
             </Row>
@@ -73,8 +77,10 @@ BatchesSelector.propTypes = {
   batches: PropTypes.instanceOf(Array).isRequired,
   title: PropTypes.string.isRequired,
   sendBoth: PropTypes.bool,
+  isStudentFee: PropTypes.bool,
 };
 
 BatchesSelector.defaultProps = {
   sendBoth: false,
+  isStudentFee: false,
 };

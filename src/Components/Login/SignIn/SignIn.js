@@ -11,6 +11,7 @@ import { clientUserIdActions } from '../../../redux/actions/clientUserId.action'
 import { userProfileActions } from '../../../redux/actions/userProfile.action';
 import { firstTimeLoginActions } from '../../../redux/actions/firsttimeLogin.action';
 import { getFirstTimeLoginState } from '../../../redux/reducers/firstTimeLogin.reducer';
+import SelectUser from './SelectUser';
 
 const SignIn = (props) => {
   const {
@@ -214,7 +215,8 @@ const SignIn = (props) => {
       />
 
       {currentComponent === 'username' && (
-        <PhoneNo placeholder='username' getData={getUserName} forgotPlaceholder={forgotUsername} />
+        //  <PhoneNo placeholder='username' getData={getUserName} forgotPlaceholder={forgotUsername} />
+        <SelectUser userInfo={userInfo} getUserName={getUserName} />
       )}
 
       {currentComponent === 'password' && (

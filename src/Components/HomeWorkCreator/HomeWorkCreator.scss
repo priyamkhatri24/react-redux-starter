@@ -171,4 +171,53 @@
   &__previewText {
     font-family: $regular;
   }
+
+  &__finalSection {
+    font-family: $medium;
+    line-height: 19px;
+    font-size: $spacer;
+    color: #000;
+  }
+
+  &__finalSectionSmall {
+    font-family: $medium;
+    font-size: $spacer * 0.625;
+    line-height: 20px;
+    color: $lightGrey;
+  }
+
+  &__markingPrompt {
+    font-size: $spacer * 0.75;
+    line-height: 15px;
+    font-family: $regular;
+    color: $lightGrey;
+  }
+
+  &__markingHeading {
+    font-size: $spacer;
+    font-family: $semiBold;
+    color: $lightGrey;
+    line-height: 28px;
+    letter-spacing: 0.49px;
+  }
+}
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+[name='selectAll'] {
+  height: 20px;
+  width: 20px;
+  margin-right: 2px;
+}
+
+[name='selectAll'] + label {
+  font-family: 'Montserrat-Medium';
+  font-size: 0.875rem;
+  width: 100%;
+  color: var(--primary-blue);
+  margin-left: 5px;
+  margin-top: auto;
+  margin-bottom: auto;
 }

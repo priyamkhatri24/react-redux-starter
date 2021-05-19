@@ -4,6 +4,7 @@ import Row from 'react-bootstrap/Row';
 import userAvatar from '../../assets/images/user.svg';
 import { BackButton, DynamicForm } from '../Common';
 import { uploadImage } from '../../Utilities';
+import '../Login/AdmissionChat/AdmissionForm/AdmissionForm.scss';
 
 const EditProfile = (props) => {
   const { fromAdmissions, data, updateAdmissionProfile, profileImagePath } = props;
@@ -26,7 +27,8 @@ const EditProfile = (props) => {
 
   useEffect(() => {
     console.log(data);
-    setDataArray(data);
+    if (fromAdmissions) setDataArray(data);
+    console.log(fromAdmissions);
     setImage(profileImagePath === '' ? userAvatar : profileImagePath);
   }, [fromAdmissions, data, profileImagePath]);
 

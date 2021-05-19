@@ -19,18 +19,20 @@ export function createBigBlueButtonStream(
     client_id: clientId,
   };
 
-  post(payload, '/addBigBlueButtonLiveStream')
+  post(payload, '/addBigBlueButtonLiveStreamLatest')
     .then((res) => {
       const result = apiValidation(res);
       const stringName = `${firstName.trim()} ${lastName.trim()}`;
       const name = stringName.replace(' ', '%20').trim();
+      const meetingUrl = result.meeting_url;
+      const { secret } = result;
       if (result) {
         const joinChecksum = sha1(
-          `joinfullName=${name}&meetingID=${result.meeting_id}&userID=${clientUserId}&password=${result.moderator_password}&allowStartStopRecording=true&redirect=true3L3ge85tg64smJueuHlp9tEB5Bjxp3NTj4oygr6aT8`,
+          `joinfullName=${name}&meetingID=${result.meeting_id}&userID=${clientUserId}&password=${result.moderator_password}&allowStartStopRecording=true&redirect=true${secret}`,
         );
 
         window.open(
-          `https://live.ingeniumedu.com/bigbluebutton/api/join?fullName=${name}&meetingID=${result.meeting_id}&userID=${clientUserId}&password=${result.moderator_password}&allowStartStopRecording=true&redirect=true&checksum=${joinChecksum}`,
+          `${meetingUrl}bigbluebutton/api/join?fullName=${name}&meetingID=${result.meeting_id}&userID=${clientUserId}&password=${result.moderator_password}&allowStartStopRecording=true&redirect=true&checksum=${joinChecksum}`,
           '_blank',
         );
       } else {
@@ -44,18 +46,18 @@ export function rejoinBigBlueButtonStream(firstName, lastName, streamId, clientU
   const stringName = `${firstName.trim()} ${lastName.trim()}`;
   const name = stringName.replace(' ', '%20').trim();
 
-  get({ stream_id: streamId }, '/joinLiveStream')
+  get({ stream_id: streamId }, '/joinLiveStreamLatest')
     .then((res) => {
       const result = apiValidation(res);
       let password = '';
       if (role === 'teacher') password = result.moderator_password;
       else if (role === 'student') password = result.attendee_password;
       const joinChecksum = sha1(
-        `joinfullName=${name}&meetingID=${result.meeting_id}&userID=${clientUserId}&password=${password}&allowStartStopRecording=true&redirect=true3L3ge85tg64smJueuHlp9tEB5Bjxp3NTj4oygr6aT8`,
+        `joinfullName=${name}&meetingID=${result.meeting_id}&userID=${clientUserId}&password=${password}&allowStartStopRecording=true&redirect=true${result.secret}`,
       );
 
       window.open(
-        `https://live.ingeniumedu.com/bigbluebutton/api/join?fullName=${name}&meetingID=${result.meeting_id}&userID=${clientUserId}&password=${password}&allowStartStopRecording=true&redirect=true&checksum=${joinChecksum}`,
+        `${result.meeting_url}bigbluebutton/api/join?fullName=${name}&meetingID=${result.meeting_id}&userID=${clientUserId}&password=${password}&allowStartStopRecording=true&redirect=true&checksum=${joinChecksum}`,
         '_blank',
       );
     })
