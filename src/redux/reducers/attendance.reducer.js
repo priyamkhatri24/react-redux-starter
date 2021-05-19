@@ -2,7 +2,7 @@ import { attendanceConstants } from '../../constants';
 
 const initialState = {
   attendanceBatch: {},
-  attendanceSelectedDate: '',
+  attendanceSelectedDate: new Date(),
 };
 
 export function attendance(state = initialState, action) {

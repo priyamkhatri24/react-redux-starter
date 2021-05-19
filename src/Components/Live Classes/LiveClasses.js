@@ -301,16 +301,27 @@ class LiveClasses extends Component {
 
   openZoomPasscodeModal = () => this.setState({ zoomPasscodeModal: true });
 
+  closeZoomModal = () => this.setState({ showZoomModal: false });
+
+  openZoomModal = () => this.setState({ showZoomModal: true });
+
   createZoomMeeting = () => {
-    const { zoomMeeting, zoomPassCode, selectedBatches } = this.state;
+    const { zoomMeeting, zoomPassCode, selectedBatches, duration } = this.state;
     const { clientUserId } = this.props;
     const batchIdArray = JSON.stringify(selectedBatches.map((elem) => elem.client_batch_id));
+
+    const durationArray = [];
+    durationArray.push(duration.hours, duration.minutes, duration.seconds);
+    console.log(durationArray);
+    const milliseconds =
+      (durationArray[0] * 3600 + durationArray[1] * 60 + durationArray[2]) * 1000;
 
     const payload = {
       meeting_id: zoomMeeting,
       client_user_id: clientUserId,
       password: zoomPassCode,
       batch_array: batchIdArray,
+      duration: milliseconds,
     };
 
     post(payload, '/addZoomMeeting').then((res) => {

@@ -111,6 +111,13 @@
     color: $dashboardBlack;
   }
 
+  &__attendanceRecents {
+    font-size: $spacer * 0.625;
+    font-family: $semiBold;
+    color: $dashboardBlack;
+    line-height: 13px;
+  }
+
   &__noticeBoard {
     position: relative;
     width: 95%;

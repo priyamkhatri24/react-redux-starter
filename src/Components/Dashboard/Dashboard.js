@@ -69,6 +69,7 @@ const Dashboard = (props) => {
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
+  const [attendance, setAttendance] = useState([]);
   const [allCourses, setAllCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
   const [admissions, setAdmissions] = useState({});
@@ -100,6 +101,7 @@ const Dashboard = (props) => {
         const result = apiValidation(res);
         setNotices(result.notice);
         setAdmissions(result.admission);
+        setAttendance(result.attendance);
       })
       .catch((err) => console.error(err));
     partsOfDay();
@@ -391,9 +393,9 @@ const Dashboard = (props) => {
             tabIndex='-1'
             role='button'
           >
-            <div className='w-75 Dashboard__attendanceCard mx-auto p-4'>
+            <div className='w-75 Dashboard__attendanceCard mx-auto pt-4'>
               <img src={hands} alt='hands' className='mx-auto d-block' />
-              <Row className='m-3'>
+              <Row className='m-3 px-4'>
                 <span className='Dashboard__todaysHitsText my-auto'>Attendance</span>
                 <span className='ml-auto'>
                   <ChevronRightIcon />
@@ -404,9 +406,27 @@ const Dashboard = (props) => {
                 Record attendance of the students and notify parents via SMS daily.
               </p>
 
-              {/* <hr />
+              <hr />
 
-              <p>Recent Attendance</p> */}
+              <p className='Dashboard__attendanceRecents ml-1'>Recent Attendance</p>
+              <Row className='mx-2'>
+                {attendance.map((elem) => {
+                  return (
+                    <div className='d-flex flex-column mx-1' key={elem.batch_id}>
+                      <img
+                        src={userAvatar}
+                        alt='batch'
+                        height='35px'
+                        width='35px'
+                        className='Dashboard__noticeImage d-block mx-auto'
+                      />
+                      <p className='Dashboard__attendanceRecents text-center mt-1'>
+                        {elem.batch_name}
+                      </p>
+                    </div>
+                  );
+                })}
+              </Row>
             </div>
           </div>
 

@@ -61,6 +61,7 @@
     "redux-thunk": "^2.3.0",
     "screenfull": "^5.0.2",
     "sweetalert2": "^10.9.0",
+    "swiper": "^6.6.1",
     "web-vitals": "^1.1.0",
     "workbox-background-sync": "^6.1.0",
     "workbox-broadcast-update": "^6.1.0",
@@ -129,5 +130,5 @@
       "git push sid-origin auto"
     ]
   },
-  "buildDate": 1620902349414
+  "buildDate": 1621252276246
 }

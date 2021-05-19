@@ -42,7 +42,7 @@ export const post = (requestBody, endpoint) => {
     .post(testUrl + endpoint, transformRequest(requestBody), authHeaderPost())
     .then((result) => result.data)
     .catch((err) => {
-      history.push('./error');
+      history.push('/error');
       console.error(`The error is ${err}`);
     });
 };
@@ -53,7 +53,7 @@ export const get = (requestBody = null, endpoint) => {
     .get(testUrl + endpoint, { params: requestBody, headers: authHeaderGet() })
     .then((result) => result.data)
     .catch((err) => {
-      history.push('./error');
+      history.push('/error');
       console.error(`The error is ${err}`);
     });
 };

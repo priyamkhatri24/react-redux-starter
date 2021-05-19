@@ -352,6 +352,14 @@ const AttendanceBatch = Loadable({
   loading: Loading,
 });
 
+const SelectedDateAttendance = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'Attendancebatch' */ '../Components/Attendance/SelectedDateAttendance'
+    ),
+  loading: Loading,
+});
+
 // eslint-disable-next-line
 function Loading({ error }) {
   if (error) {
@@ -419,18 +427,19 @@ export function Routes() {
       <AuthenticatedRoute exact path='/analysis/studentlist' component={StudentList} />
       <AuthenticatedRoute exact path='/attendance' component={Attendance} />
       <AuthenticatedRoute exact path='/attendance/batch' component={AttendanceBatch} />
+      <AuthenticatedRoute exact path='/attendance/date' component={SelectedDateAttendance} />
 
       <Route path='/fileviewer' component={FileView} />
       <Route path='/otherfileviewer' component={TempViewFile} />
 
       {/* If error occurs */}
 
-      {/* <Route exact path='/error' component={ErrorCode} /> */}
+      <Route exact path='/error' component={ErrorCode} />
 
       {/* redirect user to FourZeroFour page if route does not exist */}
 
-      {/* <Route component={FourZeroFour} /> */}
-      <Route component={Dashboard} />
+      <Route component={FourZeroFour} />
+      {/* <Route component={Dashboard} /> */}
     </Switch>
   );
 }

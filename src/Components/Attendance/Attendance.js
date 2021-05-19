@@ -42,51 +42,41 @@ const Attendance = (props) => {
   return (
     <>
       <PageHeader title='Attendance' search searchFilter={searchUsers} />
-      <Tabs
-        defaultActiveKey='Details'
-        className='Profile__Tabs'
-        justify
-        style={{ marginTop: '4rem' }}
-      >
-        <Tab eventKey='Details' title='Details'>
-          {batches.length > 0 ? (
-            batches.map((elem) => {
-              return (
-                <Card
-                  className='m-2'
-                  style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)', borderRadius: '10px' }}
-                  key={elem.client_batch_id}
-                  onClick={() => goToBatch(elem)}
-                >
-                  <Row className='p-2 align-items-center'>
-                    <Col xs={3} className='text-center'>
-                      <img
-                        src={userAvatar}
-                        className='img-fluid'
-                        alt='profile'
-                        width='40'
-                        height='40'
-                      />
-                    </Col>
-                    <Col xs={6}>
-                      <p className='Attendance__batchName m-0'>{elem.batch_name}</p>
-                    </Col>
-                    <Col xs={3} className='text-center'>
-                      <p className='m-0 Attendance__batchCount'>{elem.count}</p>
-                      <p className='m-0 Attendance__batchStudents'>Students</p>
-                    </Col>
-                  </Row>
-                </Card>
-              );
-            })
-          ) : (
-            <p>There Are No batches Added Currently</p>
-          )}
-        </Tab>
-        <Tab eventKey='Batches' title='Batches'>
-          nadur
-        </Tab>
-      </Tabs>
+      <div style={{ marginTop: '5rem' }}>
+        {batches.length > 0 ? (
+          batches.map((elem) => {
+            return (
+              <Card
+                className='m-2'
+                style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)', borderRadius: '10px' }}
+                key={elem.client_batch_id}
+                onClick={() => goToBatch(elem)}
+              >
+                <Row className='p-2 align-items-center'>
+                  <Col xs={3} className='text-center'>
+                    <img
+                      src={userAvatar}
+                      className='img-fluid'
+                      alt='profile'
+                      width='40'
+                      height='40'
+                    />
+                  </Col>
+                  <Col xs={6}>
+                    <p className='Attendance__batchName m-0'>{elem.batch_name}</p>
+                  </Col>
+                  <Col xs={3} className='text-center'>
+                    <p className='m-0 Attendance__batchCount'>{elem.count}</p>
+                    <p className='m-0 Attendance__batchStudents'>Students</p>
+                  </Col>
+                </Row>
+              </Card>
+            );
+          })
+        ) : (
+          <p>There Are No batches Added Currently</p>
+        )}
+      </div>
     </>
   );
 };
