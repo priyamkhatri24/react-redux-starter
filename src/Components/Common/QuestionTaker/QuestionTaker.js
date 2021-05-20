@@ -158,6 +158,8 @@ class QuestionTaker extends Component {
             questionType: e.question_type.toString(),
             status: e.question_status.toString(),
             result: (e.isCorrect ? 1 : 0).toString(),
+            question_positive_marks: e.question_positive_marks,
+            question_negative_marks: e.question_negative_marks,
           };
 
           return payload;
@@ -178,7 +180,7 @@ class QuestionTaker extends Component {
 
     console.log('key ho rha h');
 
-    post(finalPayload, '/studentTestActivity').then((res) => {
+    post(finalPayload, '/studentTestActivityLatest').then((res) => {
       if (res.success) {
         const updationPayload = {
           client_user_id: clientUserId,
