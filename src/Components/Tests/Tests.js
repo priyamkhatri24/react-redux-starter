@@ -59,7 +59,7 @@ const Tests = (props) => {
       language_type: elem.language_type,
     };
 
-    get(payload, '/getTestQuestionsForStudentWithLanguage').then((res) => {
+    get(payload, '/getTestQuestionsForStudentWithLanguageLatest').then((res) => {
       Swal.fire({
         title: 'Your Homework is Loaded',
         text: 'hello',
@@ -107,7 +107,7 @@ const Tests = (props) => {
         language_type: elem.language_type,
       };
 
-      get(payload, '/getTestQuestionsForStudentWithLanguage').then((res) => {
+      get(payload, '/getTestQuestionsForStudentWithLanguageLatest').then((res) => {
         Swal.fire({
           title: 'Your Live Test is Loaded',
           text: 'hello',
@@ -168,7 +168,7 @@ const Tests = (props) => {
                   test_id: elem.test_id,
                   language_type: elem.language_type,
                 };
-                get(demoTestPayload, '/getTestQuestionsForStudentWithLanguage').then((r) => {
+                get(demoTestPayload, '/getTestQuestionsForStudentWithLanguageLatest').then((r) => {
                   console.log(r, 'r');
                   const studentQuestions = apiValidation(r);
                   startLive(
@@ -197,7 +197,7 @@ const Tests = (props) => {
             test_id: elem.test_id,
             language_type: elem.language_type,
           };
-          get(demoTestPayload, '/getTestQuestionsForStudentWithLanguage').then((response) => {
+          get(demoTestPayload, '/getTestQuestionsForStudentWithLanguageLatest').then((response) => {
             console.log(response);
             const studentQuestions = apiValidation(response);
             startLive(
