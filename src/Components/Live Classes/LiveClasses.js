@@ -95,6 +95,15 @@ class LiveClasses extends Component {
           this.setState({ batches: result });
         })
         .catch((e) => console.log(e));
+
+      get({ client_user_id: clientUserId }, '/getCurrentLiveStreamsForTeacher').then((res) => {
+        console.log(res, 'res');
+        const result = apiValidation(res);
+        this.setState({
+          zoomMeeting: result.permanent_zoom_meeting_id,
+          zoomPassCode: result.permanent_zoom_password,
+        });
+      });
     }
 
     if (roleArray.includes(4)) {

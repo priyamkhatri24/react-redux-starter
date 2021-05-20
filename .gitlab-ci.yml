@@ -15,7 +15,7 @@ build:
     - yarn -v
     - ls -la -F
     - yarn
-    - yarn build --prod
+    - CI=false yarn build --prod
   cache:
     paths:
       - node_modules/
