@@ -363,7 +363,7 @@ const SelectedDateAttendance = Loadable({
 // eslint-disable-next-line
 function Loading({ error }) {
   if (error) {
-    return 'oh-noes!';
+    return <ErrorCode />;
   }
   return <Skeleton count={50} />;
 }

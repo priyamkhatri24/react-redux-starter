@@ -30,14 +30,16 @@ const UserDetails = (props) => {
   const [showBatchModal, setShowBatchModal] = useState(false);
 
   const openBatchModal = () => setShowBatchModal(true);
-  const closeBatchModal = () => {
+  const closeBatchModal = () => setShowBatchModal(false);
+
+  const submitBatchModal = () => {
     const batchPayload = {
       client_id: clientId,
-      client_user_id: clientUserId,
+      client_user_id: user.client_user_id,
     };
 
     const payload = {
-      client_user_id: clientUserId,
+      client_user_id: user.client_user_id,
       batch_add: JSON.stringify(batches),
       batch_remove: JSON.stringify(
         allBatches.filter((e) => Object.prototype.hasOwnProperty.call(e, 'user_batch_id')),
@@ -82,7 +84,7 @@ const UserDetails = (props) => {
   useEffect(() => {
     const batchPayload = {
       client_id: clientId,
-      client_user_id: clientUserId,
+      client_user_id: user.client_user_id,
     };
 
     get(batchPayload, '/getBatchInformationOfUser').then((res) => {
@@ -91,7 +93,7 @@ const UserDetails = (props) => {
       setBatches(result.current_batch);
       setAllBatches(result.final_batch);
     });
-  }, [clientId, clientUserId]);
+  }, [clientId, clientUserId, user]);
 
   const getSelectedBatches = (allbatches, selectedBatches) => {
     setBatches(selectedBatches);
@@ -255,12 +257,12 @@ const UserDetails = (props) => {
               <BatchesSelector
                 batches={allBatches}
                 getSelectedBatches={getSelectedBatches}
-                title='Courses'
+                title='Batches'
                 selectBatches={batches}
                 sendBoth
               />
               <Modal.Footer>
-                <Button variant='boldText' onClick={() => closeBatchModal()}>
+                <Button variant='boldText' onClick={() => submitBatchModal()}>
                   Done
                 </Button>
               </Modal.Footer>
