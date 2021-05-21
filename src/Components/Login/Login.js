@@ -20,6 +20,7 @@ import {
 } from '../../redux/reducers/branding.reducer';
 import { getBranding, getColor, getContact } from './Login.service';
 import Welcome from './Welcome/Welcome';
+import WelcomeCarousel from './Welcome/WelcomeCarousel';
 
 class Login extends Component {
   constructor(props) {
@@ -181,7 +182,8 @@ class Login extends Component {
         )}
 
         {currentComponent === 'Welcome' && (
-          <Welcome data={welcomeData} changeComponent={this.handleComponent} />
+          // <Welcome data={welcomeData} changeComponent={this.handleComponent} />
+          <WelcomeCarousel changeComponent={this.handleComponent} />
         )}
       </>
     );

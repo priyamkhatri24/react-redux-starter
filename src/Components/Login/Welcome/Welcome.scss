@@ -159,6 +159,21 @@
   &__signInButton {
     background-color: var(--superlight-blue);
   }
+
+  /*************New Carousel Styles****************/
+
+  &__carouselSubHeading {
+    font-family: $medium;
+    line-height: 24px;
+    color: var(--primary-blue);
+    margin-top: $spacer * 6;
+  }
+
+  &__carouselHeading {
+    font-family: $extraBold;
+    line-height: 29px;
+    color: var(--primary-blue);
+  }
 }
 
 .carousel .slide {
