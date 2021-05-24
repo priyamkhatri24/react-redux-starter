@@ -534,6 +534,7 @@ const Dashboard = (props) => {
             buyCourseId={goToBuyCourse}
             myCourseId={goToMyCourse}
           />
+
           <DashboardCards
             image={camera}
             heading='Live Classes'
