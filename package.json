@@ -42,6 +42,7 @@
     "react-datepicker": "^3.3.0",
     "react-dom": "17.0.1",
     "react-duration-picker": "^1.1.1",
+    "react-image-crop": "^8.6.9",
     "react-intl-tel-input-v2": "^1.0.8",
     "react-loadable": "^5.5.0",
     "react-loading-skeleton": "^2.1.1",

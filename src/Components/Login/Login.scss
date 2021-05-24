@@ -36,4 +36,34 @@
     color: rgba($color: $black, $alpha: 0.6);
     line-height: 15px;
   }
+
+  /***************Signup Form Styles********/
+
+  &__signupHeading {
+    font-family: $bold;
+    font-size: $spacer * 1.5;
+    line-height: 29px;
+    color: $headingGrey;
+  }
+
+  &__photoPlaceHolder {
+    width: 70px;
+    height: 70px;
+    background-color: $disabledGrey;
+    color: $dashboardBlack;
+    font-size: $spacer * 0.75;
+    line-height: 15px;
+    font-family: $semiBold;
+    text-align: center;
+    border-radius: 70px;
+    padding: 18px;
+    position: relative;
+  }
+
+  &__camera {
+    position: absolute;
+    font-size: $spacer;
+    color: $headingGrey;
+    right: 0;
+  }
 }

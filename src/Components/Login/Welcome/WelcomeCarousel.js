@@ -40,7 +40,7 @@ const WelcomeCarousel = (props) => {
         spaceBetween={30}
         centeredSlides
         autoplay={{
-          delay: 2500,
+          delay: 3000,
           disableOnInteraction: false,
         }}
         pagination={{
@@ -58,11 +58,12 @@ const WelcomeCarousel = (props) => {
               <div className='d-flex justify-content-center'>
                 <img src={elem.image} alt='Carousel' className='img-fluid' />
               </div>
-              <p className='mt-2 text-center'>{elem.text}</p>
+              <p className='mt-4 text-center Welcome__carouselText'>{elem.text}</p>
             </SwiperSlide>
           );
         })}
       </Swiper>
+      <Button variant='JumboLogin'>Log In / Sign Up</Button>
     </>
   );
 };
