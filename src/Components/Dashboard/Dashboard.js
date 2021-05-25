@@ -575,7 +575,7 @@ const Dashboard = (props) => {
             </span>
             <Row className='mt-2'>
               <Col xs={8}>
-                <p className='Dashboard__todaysHitsText'>Notice Board</p>
+                <p className='Dashboard__todaysHitsText noticeboard_heading'>Notice Board</p>
                 {(roleArray.includes(3) || roleArray.includes(4)) && (
                   <Button variant='noticeBoardPost'>
                     <BorderColorIcon />
@@ -583,7 +583,7 @@ const Dashboard = (props) => {
                   </Button>
                 )}
               </Col>
-              <Col xs={4}>
+              <Col className='noticeboard_img' xs={4}>
                 <img src={dashboardAssignmentImage} alt='notice' height='80' width='80' />
               </Col>
             </Row>
@@ -605,7 +605,7 @@ const Dashboard = (props) => {
                       className='Dashboard__noticeImage d-block mx-auto'
                     />
                   </Col>
-                  <Col xs={10} className='pt-4'>
+                  <Col xs={10} className='pt-4' style={{ paddingLeft: '30px' }}>
                     <p className='Dashboard__scrollableCardHeading m-0'>
                       {`${elem.first_name} ${elem.last_name}`}
                     </p>
