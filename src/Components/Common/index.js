@@ -8,6 +8,7 @@ export * from './PageHeader/PageHeader';
 export * from './BatchesSelector/BatchesSelector';
 export * from './BatchesSelector/StudentSelector';
 export * from './VideoPlayer/VideoPlayer';
+export * from './LoginDetailsSkeleton/LoginDetailsSkeleton';
 // export * from './FileViewer/PDFFileViewer';
 export * from './ScrollableCards/CoursesCards';
 export * from './ScrollableCards/FeeScrollableCards';

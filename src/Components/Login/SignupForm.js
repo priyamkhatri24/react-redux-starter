@@ -10,56 +10,18 @@ import Signup from '../../assets/images/Login/ProfilePic.svg';
 import './Login.scss';
 import { uploadImage } from '../../Utilities';
 
-// This function is used to convert base64 encoding to mime type (blob)
-function base64ToBlob(base64, mime = '') {
-  const sliceSize = 1024;
-  const byteChars = window.atob(base64);
-  const byteArrays = [];
-
-  for (let offset = 0, len = byteChars.length; offset < len; offset += sliceSize) {
-    const slice = byteChars.slice(offset, offset + sliceSize);
-
-    const byteNumbers = new Array(slice.length);
-    for (let i = 0; i < slice.length; i++) {
-      byteNumbers[i] = slice.charCodeAt(i);
-    }
-
-    const byteArray = new Uint8Array(byteNumbers);
-
-    byteArrays.push(byteArray);
-  }
-
-  return new Blob(byteArrays, { type: mime });
-}
-
-function generateDownload(canvas, crop) {
+function generateImageURL(canvas, crop) {
   if (!crop || !canvas) {
     return;
   }
 
-  const jpegFile = canvas.toDataURL('image/jpeg');
+  canvas.toBlob((blob) => {
+    const finalFile = new File([blob], 'image.png');
 
-  const jpegFile64 = jpegFile.replace(/^data:image\/(png|jpeg);base64,/, '');
-  const jpegBlob = base64ToBlob(jpegFile64, 'image/jpeg');
-
-  uploadImage(jpegBlob).then((res) => {
-    console.log('fileu;lod ', res);
+    uploadImage(finalFile).then((res) => {
+      console.log('fileu;lod ', res);
+    });
   });
-
-  // canvas.toBlob(
-  //   (blob) => {
-  //     const previewUrl = window.URL.createObjectURL(blob);
-
-  //     const anchor = document.createElement('a');
-  //     anchor.download = 'cropPreview.png';
-  //     anchor.href = URL.createObjectURL(blob);
-  //     anchor.click();
-
-  //     window.URL.revokeObjectURL(previewUrl);
-  //   },
-  //   'image/png',
-  //   1,
-  // );
 }
 
 const SignupForm = () => {
@@ -124,7 +86,7 @@ const SignupForm = () => {
 
   const uploadProfileImage = () => {
     console.log(previewCanvasRef.current);
-    generateDownload(previewCanvasRef.current, completedCrop);
+    generateImageURL(previewCanvasRef.current, completedCrop);
   };
 
   return (
