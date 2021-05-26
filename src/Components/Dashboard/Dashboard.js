@@ -393,9 +393,9 @@ const Dashboard = (props) => {
             tabIndex='-1'
             role='button'
           >
-            <div className='w-75 Dashboard__attendanceCard mx-auto pt-4'>
+            <div className='Dashboard__attendanceCard mx-auto pt-4'>
               <img src={hands} alt='hands' className='mx-auto d-block' />
-              <Row className='m-3 px-4'>
+              <Row className='m-3'>
                 <span className='Dashboard__todaysHitsText my-auto'>Attendance</span>
                 <span className='ml-auto'>
                   <ChevronRightIcon />
@@ -444,13 +444,13 @@ const Dashboard = (props) => {
               <Col xs={8}>
                 <p className='Dashboard__todaysHitsText'>Notice Board</p>
                 {(roleArray.includes(3) || roleArray.includes(4)) && (
-                  <Button variant='noticeBoardPost'>
+                  <Button variant='noticeBoardPost' className='admission_button'>
                     <BorderColorIcon />
                     <span className='m-2'>Write a post</span>
                   </Button>
                 )}
               </Col>
-              <Col xs={4}>
+              <Col xs={4} className='noticeboard_img'>
                 <img src={dashboardAssignmentImage} alt='notice' height='80' width='80' />
               </Col>
             </Row>
@@ -472,7 +472,7 @@ const Dashboard = (props) => {
                       className='Dashboard__noticeImage d-block mx-auto'
                     />
                   </Col>
-                  <Col xs={10} className='pt-4'>
+                  <Col xs={10} className='pt-4' style={{ paddingLeft: '30px' }}>
                     <p className='Dashboard__scrollableCardHeading m-0'>
                       {`${elem.first_name} ${elem.last_name}`}
                     </p>

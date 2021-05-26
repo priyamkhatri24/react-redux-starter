@@ -104,6 +104,7 @@
     border-radius: 10px;
     border-left: 30px solid var(--lighter-blue);
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
+    width: 87%;
   }
 
   &__attendanceSubHeading {
@@ -122,7 +123,7 @@
 
   &__noticeBoard {
     position: relative;
-    width: 95%;
+    width: 85%;
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
     border-radius: 10px;
   }
@@ -142,7 +143,7 @@
   &__notice {
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
     border-radius: 5px;
-    width: 75%;
+    width: 100%;
     margin: auto;
     margin-bottom: 10px;
   }
@@ -174,14 +175,59 @@
     font-family: $bold;
   }
 }
-
-.noticeboard_img{
+.react_chart{
+  width: 50%;
+  margin:auto;
+}
+.noticeboard_img {
   text-align: right;
   padding-right: 30px;
+  padding-left: 0px;
+  width: 70%;
 }
-.noticeboard_heading{
+.noticeboard_heading {
   padding-top: 30px;
 }
-// .notice_content{
-//   padding-left: 30px;
-// }
+.admission_heroImage{
+  width: 50%;
+  margin: auto;
+}
+.DashboardCard_Image{
+  padding-left: 0px;
+}
+.admission_cards{
+  width: 85%;
+}
+.admission_button{
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+@media screen and (max-width: 700px){
+  
+  .noticeboard_img {
+    width: 100%;
+  }
+  .react_chart{
+    width: 100%;
+    margin:auto;
+  }
+  .admission_cards{
+    width: 100%;
+  }
+  .admission_button{
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+}
+
+@media screen and (max-width:320){
+  .react_chart{
+    width: 100%;
+    margin:auto;
+  }
+  .admission_cards{
+    width: 100%;
+  }
+}
