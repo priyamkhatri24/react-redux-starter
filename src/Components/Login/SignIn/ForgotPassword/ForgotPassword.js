@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { OTPInput } from '../../../Common';
+import { LoginDetailsSkeleton, OTPInput } from '../../../Common';
 import PhoneNo from '../../PhoneNo/PhoneNo';
+import passwordImage from '../../../../assets/images/Login/password.svg';
 import './ForgotPassword.scss';
 import { get, post, apiValidation } from '../../../../Utilities';
 
 const ForgotPassword = (props) => {
   const [resendText, setResendText] = useState('Resend?');
   const [currentComponent, setComponent] = useState('otp');
+  const [newPassword, setNewPassword] = useState('');
+  const [verify, setVerify] = useState(false);
 
   const {
     location: {
@@ -52,11 +55,10 @@ const ForgotPassword = (props) => {
       .catch((e) => console.error(e));
   };
 
-  const resetPassword = (param) => {
-    console.log(param);
+  const resetPassword = () => {
     const requestBody = {
       user_id: userId,
-      password: param,
+      password: newPassword,
     };
 
     post(requestBody, '/changePassword')
@@ -81,15 +83,26 @@ const ForgotPassword = (props) => {
       )}
 
       {currentComponent === 'createPassword' && (
-        <div style={{ marginTop: '150px' }}>
-          <img
-            src={image}
-            alt='coachingLogo'
-            className='Signin__jumbo img-fluid rounded mx-auto d-block'
-          />
+        // <div style={{ marginTop: '150px' }}>
+        //   <img
+        //     src={image}
+        //     alt='coachingLogo'
+        //     className='Signin__jumbo img-fluid rounded mx-auto d-block'
+        //   />
 
-          <PhoneNo placeholder='Password' getData={resetPassword} password status='pending' />
-        </div>
+        //   <PhoneNo placeholder='Password' getData={resetPassword} password status='pending' />
+        // </div>
+        <LoginDetailsSkeleton
+          placeholder='Password'
+          image={passwordImage}
+          heading='Create Password'
+          setClick={resetPassword}
+          password
+          status='pending'
+          value={newPassword}
+          setValue={setNewPassword}
+          isVerify={verify}
+        />
       )}
     </div>
   );

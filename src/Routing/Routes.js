@@ -46,11 +46,6 @@ const SignupForm = Loadable({
   loading: Loading,
 });
 
-const EnterPhone = Loadable({
-  loader: () => import(/* webpackChunkName: 'EnterPhone' */ '../Components/Login/EnterPhone'),
-  loading: Loading,
-});
-
 const SignIn = Loadable({
   loader: () => import(/* webpackChunkName: 'SignIn' */ '../Components/Login/SignIn/SignIn'),
   loading: Loading,
@@ -386,7 +381,6 @@ export function Routes() {
       <Route path='/signup' component={SignUp} />
       <Route exact path='/login' component={Login} />
       <Route exact path='/login/signup' component={SignupForm} />
-      <Route exact path='/login/phone' component={EnterPhone} />
       <Route path='/admission' component={AdmissionChat} />
       <Route path='/admissionform' component={AdmissionForm} />
       <Route path='/forgotpassword' component={ForgotPassword} />

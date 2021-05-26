@@ -6,6 +6,7 @@ import './Login.scss';
 import Preloader from './Preloader/Preloader';
 import footerIngenium from '../../assets/images/ingiLOGO.png';
 import PhoneNo from './PhoneNo/PhoneNo';
+import EnterPhone from './EnterPhone';
 import {
   post,
   get,
@@ -21,6 +22,8 @@ import {
 import { getBranding, getColor, getContact } from './Login.service';
 import Welcome from './Welcome/Welcome';
 import WelcomeCarousel from './Welcome/WelcomeCarousel';
+import SignupForm from './SignupForm';
+import DummyDashboard from './DummyDashboard';
 
 class Login extends Component {
   constructor(props) {
@@ -127,9 +130,9 @@ class Login extends Component {
       country_code: countryCode,
     };
 
-    fetchContact(param);
+    fetchContact(param, countryCode);
 
-    post(requestBody, '/enterNumberAndLogin')
+    post(requestBody, '/enterNumberAndLoginLatest')
       .then((res) => {
         if (res.result.is_user === true) {
           this.goToLoginOrSignUp('signin', requestBody.contact, res.result.user_info);
@@ -147,10 +150,11 @@ class Login extends Component {
     const { image } = this.state;
 
     if (path === 'signup') {
-      push({
-        pathname: '/signup',
-        state: { contact },
-      });
+      this.setState({ currentComponent: 'SignupForm' });
+      // push({
+      //   pathname: '/signup',
+      //   state: { contact },
+      // });
     } else {
       push({
         pathname: '/signin',
@@ -161,18 +165,20 @@ class Login extends Component {
 
   render() {
     const { currentComponent, image, welcomeData } = this.state;
+    const {
+      history,
+      currentbranding: {
+        branding: { client_id: clientId },
+      },
+    } = this.props;
 
     return (
       <>
-        {currentComponent !== 'Welcome' && (
+        {currentComponent === 'Preloader' && (
           <div className='text-center Login'>
             <img src={image} alt='coachingLogo' className='Login__jumbo' />
 
             {currentComponent === 'Preloader' && <Preloader />}
-
-            {currentComponent === 'PhoneNo' && (
-              <PhoneNo getData={this.getPhoneNo} placeholder='Mobile number' />
-            )}
 
             <footer className='py-4 Login__footer '>
               <h6 className='Login__footerText'>Powered By</h6>
@@ -181,9 +187,24 @@ class Login extends Component {
           </div>
         )}
 
+        {currentComponent === 'PhoneNo' && (
+          // <PhoneNo getData={this.getPhoneNo} placeholder='Mobile number' />
+          <EnterPhone getData={this.getPhoneNo} placeholder='Mobile number' />
+        )}
+
         {currentComponent === 'Welcome' && (
           // <Welcome data={welcomeData} changeComponent={this.handleComponent} />
           <WelcomeCarousel changeComponent={this.handleComponent} />
+        )}
+
+        {currentComponent === 'SignupForm' && (
+          // <Welcome data={welcomeData} changeComponent={this.handleComponent} />
+          <SignupForm history={history} />
+        )}
+
+        {currentComponent === 'Dummy' && (
+          // <Welcome data={welcomeData} changeComponent={this.handleComponent} />
+          <DummyDashboard clientId={clientId} />
         )}
       </>
     );

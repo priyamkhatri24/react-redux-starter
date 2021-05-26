@@ -9,6 +9,25 @@
       font-size: 24px;
     }
   }
+
+  &__phoneNoOnly {
+    @include media-breakpoint-down(md) {
+      margin-left: 1rem;
+      margin-right: 1rem;
+    }
+  }
+
+  &__phoneNoInput {
+    @include media-breakpoint-up(md) {
+      width: 75%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+}
+
+.iti {
+  width: 100%;
 }
 
 .iti > input::placeholder {
@@ -26,4 +45,5 @@
   font-size: 14px;
   height: 32px;
   line-height: 24px;
+  width: 100%;
 }

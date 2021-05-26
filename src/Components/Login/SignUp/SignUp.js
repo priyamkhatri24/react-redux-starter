@@ -6,24 +6,28 @@ import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
 import { post, get, apiValidation } from '../../../Utilities';
 import { OTPInput } from '../../Common';
 import { clientUserIdActions } from '../../../redux/actions/clientUserId.action';
+import { getUserProfile } from '../../../redux/reducers/userProfile.reducer';
 
 const SignUp = (props) => {
   const [resendText, setResendText] = useState('Resend?');
 
   const {
-    location: {
-      state: { contact },
-    },
+    userProfile,
     currentbranding: { branding: { client_id: clientId = '' } = {} } = {},
   } = props;
 
   const verifyOTP = (otp) => {
     const requestBody = {
       client_id: clientId,
-      phone_number: contact,
+      phone_number: userProfile.contact,
       filled_otp: otp,
+      country_code: userProfile.countryCode,
+      first_name: userProfile.firstName,
+      last_name: userProfile.lastName,
+      profile_image: userProfile.profileImage,
+      email: userProfile.email,
     };
-    get(requestBody, '/verifyLoginOTP')
+    get(requestBody, '/verifyLoginOTPLatest')
       .then((res) => {
         const result = apiValidation(res);
         if (result.verification_status === 'wrong otp entered') {
@@ -79,7 +83,7 @@ const SignUp = (props) => {
   const resendOtp = () => {
     const requestBody = {
       client_id: clientId,
-      contact,
+      contact: userProfile.contact,
     };
     post(requestBody, '/resendOTPForCRM')
       .then((res) => {
@@ -95,7 +99,7 @@ const SignUp = (props) => {
   return (
     <div className='text-center'>
       <OTPInput
-        contact={contact}
+        contact={userProfile.contact}
         resendOtp={resendOtp}
         verifyOTP={verifyOTP}
         resendText={resendText}
@@ -106,6 +110,7 @@ const SignUp = (props) => {
 
 const mapStateToProps = (state) => ({
   currentbranding: getCurrentBranding(state),
+  userProfile: getUserProfile(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -140,6 +145,7 @@ SignUp.propTypes = {
 
   setUserIdToStore: PropTypes.func.isRequired,
   setCLientUserIdToStore: PropTypes.func.isRequired,
+  userProfile: PropTypes.instanceOf(Object).isRequired,
 };
 
 SignUp.defaultProps = {

@@ -69,13 +69,15 @@ export const OTPInput = (props) => {
           <span>{count}</span>
         </p>
       )}
-      <Button
-        variant='custom'
-        disabled={!(otp.length === 4)}
-        onClick={otp.length === 4 ? () => verifyOTP(otp) : null}
-      >
-        Verify
-      </Button>
+      <div className='justify-content-center mx-4 pb-3'>
+        <Button
+          variant='loginPrimary'
+          disabled={!(otp.length === 4)}
+          onClick={otp.length === 4 ? () => verifyOTP(otp) : null}
+        >
+          Verify
+        </Button>
+      </div>
     </div>
   );
 };

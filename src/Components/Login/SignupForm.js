@@ -1,4 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
@@ -8,31 +10,48 @@ import Modal from 'react-bootstrap/Modal';
 import 'react-image-crop/dist/ReactCrop.css';
 import Signup from '../../assets/images/Login/ProfilePic.svg';
 import './Login.scss';
-import { uploadImage } from '../../Utilities';
+import { post, uploadImage } from '../../Utilities';
+import { userProfileActions } from '../../redux/actions/userProfile.action';
+import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
+import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 
-function generateImageURL(canvas, crop) {
+const generateImageURL = (canvas, crop) => {
   if (!crop || !canvas) {
-    return;
+    return '';
   }
 
-  canvas.toBlob((blob) => {
-    const finalFile = new File([blob], 'image.png');
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      const finalFile = new File([blob], 'image.png');
 
-    uploadImage(finalFile).then((res) => {
-      console.log('fileu;lod ', res);
+      uploadImage(finalFile).then((res) => {
+        console.log('fileu;lod ', res);
+        resolve(res.filename);
+      });
     });
   });
-}
+};
 
-const SignupForm = () => {
+const SignupForm = (props) => {
+  const {
+    setFirstNameToStore,
+    setLastNameToStore,
+    setEmailToStore,
+    history,
+    setProfileImageToStore,
+    clientId,
+    userProfile,
+  } = props;
+
   const [details, setDetails] = useState({ first_name: '', last_name: '', email: '' });
   const profileImageRef = useRef(null);
   const [upImg, setUpImg] = useState();
   const imgRef = useRef(null);
   const previewCanvasRef = useRef(null);
-  const [crop, setCrop] = useState({ unit: '%', width: 30, aspect: 16 / 9 });
+  const [crop, setCrop] = useState({ unit: '%', width: 30, aspect: 1 / 1 });
   const [completedCrop, setCompletedCrop] = useState(null);
   const [imageModal, setImageModal] = useState(false);
+  const [profileImage, setProfileImage] = useState('');
 
   const handleClose = () => setImageModal(false);
   const handleOpen = () => setImageModal(true);
@@ -84,9 +103,33 @@ const SignupForm = () => {
     );
   }, [completedCrop]);
 
-  const uploadProfileImage = () => {
+  const uploadProfileImage = async () => {
     console.log(previewCanvasRef.current);
-    generateImageURL(previewCanvasRef.current, completedCrop);
+    let url;
+    generateImageURL(previewCanvasRef.current, completedCrop).then((res) => {
+      console.log(res, 'resp');
+      setProfileImage(res);
+    });
+    console.log(url);
+    setProfileImage(url);
+    handleClose();
+  };
+
+  const goToOtp = () => {
+    const payload = {
+      contact: userProfile.contact,
+      client_id: clientId,
+    };
+    post(payload, '/enterNumberAndSendOTPForCRM').then((res) => {
+      console.log(res);
+      if (res.success) {
+        setFirstNameToStore(details.first_name);
+        setLastNameToStore(details.last_name);
+        setEmailToStore(details.email);
+        setProfileImageToStore(profileImage);
+        history.push('/signup');
+      }
+    });
   };
 
   return (
@@ -99,26 +142,46 @@ const SignupForm = () => {
           <img src={Signup} alt='login person' width='120px' height='125px' />
         </Col>
       </Row>
-      <div
-        className='Login__photoPlaceHolder mt-4 ml-4'
-        onClick={() => profileImageRef.current.click()}
-        onKeyDown={() => profileImageRef.current.click()}
-        tabIndex='-1'
-        role='button'
-      >
-        Add Photo
-        <span className='Login__camera'>
-          <PhotoCameraIcon />
-        </span>
-        <input
-          type='file'
-          name='upload-photo'
-          id='upload-photo'
-          onChange={onSelectFile}
-          style={{ display: 'none' }}
-          ref={profileImageRef}
-        />
-      </div>
+      <input
+        type='file'
+        name='upload-photo'
+        id='upload-photo'
+        onChange={onSelectFile}
+        style={{ display: 'none' }}
+        ref={profileImageRef}
+      />
+      {profileImage ? (
+        <div
+          style={{ position: 'relative', width: '70px', height: '70px', borderRadius: '70px' }}
+          className='ml-4 mt-4'
+          onClick={() => profileImageRef.current.click()}
+          onKeyDown={() => profileImageRef.current.click()}
+          tabIndex='-1'
+          role='button'
+        >
+          <img
+            src={profileImage}
+            alt='profile'
+            style={{ width: '70px', height: '70px', borderRadius: '70px' }}
+          />
+          <span className='Login__camera'>
+            <PhotoCameraIcon />
+          </span>
+        </div>
+      ) : (
+        <div
+          className='Login__photoPlaceHolder mt-4 ml-4'
+          onClick={() => profileImageRef.current.click()}
+          onKeyDown={() => profileImageRef.current.click()}
+          tabIndex='-1'
+          role='button'
+        >
+          Add Photo
+          <span className='Login__camera'>
+            <PhotoCameraIcon />
+          </span>
+        </div>
+      )}
       <small
         className='ml-4'
         style={{
@@ -185,7 +248,7 @@ const SignupForm = () => {
           />
           <span>Email address(optional)</span>
         </label>
-        <Button variant='loginPrimary' className='mt-5'>
+        <Button variant='loginPrimary' className='mt-5' onClick={() => goToOtp()}>
           Send OTP
         </Button>
       </div>
@@ -232,4 +295,36 @@ const SignupForm = () => {
   );
 };
 
-export default SignupForm;
+const mapStateToProps = (state) => ({
+  userProfile: getUserProfile(state),
+  clientId: getClientId(state),
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setFirstNameToStore: (payload) => {
+      dispatch(userProfileActions.setFirstNameToStore(payload));
+    },
+    setLastNameToStore: (payload) => {
+      dispatch(userProfileActions.setLastNameToStore(payload));
+    },
+    setEmailToStore: (payload) => {
+      dispatch(userProfileActions.setEmailToStore(payload));
+    },
+    setProfileImageToStore: (payload) => {
+      dispatch(userProfileActions.setProfileImageToStore(payload));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignupForm);
+
+SignupForm.propTypes = {
+  setFirstNameToStore: PropTypes.func.isRequired,
+  setLastNameToStore: PropTypes.func.isRequired,
+  setEmailToStore: PropTypes.func.isRequired,
+  setProfileImageToStore: PropTypes.func.isRequired,
+  history: PropTypes.instanceOf(Object).isRequired,
+  userProfile: PropTypes.instanceOf(Object).isRequired,
+  clientId: PropTypes.number.isRequired,
+};

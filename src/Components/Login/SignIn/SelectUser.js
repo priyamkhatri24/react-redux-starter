@@ -20,7 +20,7 @@ const SelectUser = (props) => {
 
   return (
     <>
-      <h4 className='Signin__selectUserHeading my-4'>Select User</h4>
+      <h4 className='Signin__selectUserHeading my-4 text-center'>Select User</h4>
       {userInfo.map((elem) => {
         return (
           <Card

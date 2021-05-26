@@ -1,12 +1,14 @@
 import { userProfileConstants } from '../../constants';
 
 const initialState = {
-  firstName: null,
-  lastName: null,
-  contact: null,
-  profileImage: null,
+  firstName: '',
+  lastName: '',
+  contact: '',
+  profileImage: '',
   userName: null,
   token: null,
+  email: '',
+  countryCode: '',
 };
 
 export function userProfile(state = initialState, action) {
@@ -33,6 +35,18 @@ export function userProfile(state = initialState, action) {
         profileImage: action.payload,
       };
 
+    case userProfileConstants.EMAIL:
+      return {
+        ...state,
+        email: action.payload,
+      };
+
+    case userProfileConstants.COUNTRYCODE:
+      return {
+        ...state,
+        countryCode: action.payload,
+      };
+
     case userProfileConstants.USERNAME:
       return {
         ...state,
@@ -48,12 +62,14 @@ export function userProfile(state = initialState, action) {
     case userProfileConstants.LOGOUT:
       return {
         ...state,
-        firstName: null,
-        lastName: null,
-        contact: null,
-        profileImage: null,
+        firstName: '',
+        lastName: '',
+        contact: '',
+        profileImage: '',
         userName: null,
         token: null,
+        email: '',
+        countryCode: '',
       };
 
     default:

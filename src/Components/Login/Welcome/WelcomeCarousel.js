@@ -23,12 +23,13 @@ SwiperCore.use([Autoplay, Pagination, Navigation]);
 
 const WelcomeCarousel = (props) => {
   const { changeComponent, currentbranding } = props;
+
   return (
     <>
       <Button
         variant='customSkip'
         className='Welcome__skip'
-        onClick={() => changeComponent('PhoneNo')}
+        onClick={() => changeComponent('Dummy')}
       >
         Skip
       </Button>
@@ -63,7 +64,9 @@ const WelcomeCarousel = (props) => {
           );
         })}
       </Swiper>
-      <Button variant='JumboLogin'>Log In / Sign Up</Button>
+      <Button variant='JumboLogin' onClick={() => changeComponent('PhoneNo')}>
+        Log In / Sign Up
+      </Button>
     </>
   );
 };
