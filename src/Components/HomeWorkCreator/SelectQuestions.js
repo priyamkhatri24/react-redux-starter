@@ -273,7 +273,7 @@ const SelectQuestions = (props) => {
                 >
                   Add from saved/sent tests.
                 </div>
-                <div
+                {/* <div
                   className='Homework__smallHeading text-left ml-3 mb-1'
                   onClick={() => goToCreateQuestion()}
                   onKeyDown={() => goToCreateQuestion()}
@@ -281,7 +281,7 @@ const SelectQuestions = (props) => {
                   tabIndex='-1'
                 >
                   Add Questions Manually.
-                </div>
+                </div> */}
               </Card>
             </>
           )}

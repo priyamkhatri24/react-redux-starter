@@ -124,7 +124,7 @@ const Jitsi = (props) => {
     return () => jitsi?.dispose?.();
   }, []);
 
-  return <div id={jitsiContainerId} style={{ height: '90%', width: '100%' }} />;
+  return <div id={jitsiContainerId} style={{ height: '90%', width: '100%', marginTop: '4rem' }} />;
 };
 
 export default Jitsi;

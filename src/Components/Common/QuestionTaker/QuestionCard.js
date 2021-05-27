@@ -235,7 +235,12 @@ class QuestionCard extends Component {
             <MathJax math={String.raw`${question.question_text}`} />
           </div>
           {question.question_image && (
-            <img src={question.question_image} alt='question' className='img-fluid m-2' />
+            <img
+              src={question.question_image}
+              alt='question'
+              className='m-2'
+              style={{ maxWidth: '90vw', maxHeight: '30vh' }}
+            />
           )}
           <div className='mt-4'>
             {Object.keys(question).length > 0 &&
@@ -265,7 +270,14 @@ class QuestionCard extends Component {
                         <MathJax math={String.raw`${elem.option_text_array[0]}`} />
                       </div>
                     </label>
-                    {elem.image && <img src={elem.image} alt='option' className='img-fluid m-2' />}
+                    {elem.image && (
+                      <img
+                        src={elem.image}
+                        alt='option'
+                        className='img-fluid m-2'
+                        style={{ maxWidth: '90vw', maxHeight: '20vh' }}
+                      />
+                    )}
                   </div>
                 );
               })}
@@ -315,7 +327,14 @@ class QuestionCard extends Component {
                         type=''
                         checked={checked[elem.order - 1]}
                       />
-                      {elem.image && <img src={elem.image} alt='option' className='img-fluid' />}
+                      {elem.image && (
+                        <img
+                          src={elem.image}
+                          alt='option'
+                          className='img-fluid'
+                          style={{ maxWidth: '90vw', maxHeight: '20vh' }}
+                        />
+                      )}
                     </label>
                   </div>
                 );
