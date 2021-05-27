@@ -325,7 +325,7 @@ const StudyBin = (props) => {
                     onClick={() => enterCategory(elem.category_id)}
                     key={elem.category_id}
                   >
-                    <Col xs={2} className='my-auto'>
+                    <Col xs={2} className='my-auto' style={{ textAlign: 'center' }}>
                       <img
                         src={elem.category_icon}
                         alt='category icon'
@@ -365,7 +365,7 @@ const StudyBin = (props) => {
               <h6 className='StudyBin__heading'>
                 Folders <span>({folderArray.length})</span>
               </h6>
-              <Row className='justify-content-between'>
+              <Row className='justify-content-between container_studybin'>
                 {folderArray
                   .filter((elem) => {
                     return elem.folder_name.includes(searchString);
@@ -396,8 +396,11 @@ const StudyBin = (props) => {
                           role='button'
                           tabIndex='-1'
                         >
-                          <img src={folder} alt='folder' height='67' width='86' />
-                          <h6 className='text-center mt-3 StudyBin__folderName'>
+                          <img src={folder} alt='folder' className='folder_icon' />
+                          <h6
+                            className='text-center mt-3 StudyBin__folderName'
+                            style={{ lineHeight: '1' }}
+                          >
                             {elem.folder_name}
                           </h6>
                         </div>
@@ -412,7 +415,7 @@ const StudyBin = (props) => {
               <h6 className='StudyBin__heading mt-4'>
                 Files <span>({fileArray.length})</span>
               </h6>
-              <Row className='justify-content-between'>
+              <Row className='justify-content-between container_studybin'>
                 {fileArray
                   .filter((elem) => {
                     return elem.file_name.includes(searchString);
@@ -424,7 +427,7 @@ const StudyBin = (props) => {
                         md={4}
                         lg={3}
                         key={elem.file_id}
-                        className='p-2 StudyBin__box my-2 mx-2'
+                        className='p-2 StudyBin__box my-2 mx-1'
                         style={elem.status === 'active' ? {} : { opacity: '0.4' }}
                       >
                         {elem.file_type === 'youtube' ? (
@@ -446,7 +449,10 @@ const StudyBin = (props) => {
                               tabIndex='-1'
                             >
                               <img src={youtube} alt='youtube' height='67' width='67' />
-                              <h6 className='text-center mt-3 StudyBin__folderName'>
+                              <h6
+                                className='text-center mt-3 StudyBin__folderName'
+                                style={{ lineHeight: '1' }}
+                              >
                                 {elem.file_name}
                               </h6>
                             </div>
@@ -472,7 +478,7 @@ const StudyBin = (props) => {
                               <img src={videocam} alt='video' height='60' width='60' />
                               <h6
                                 className='text-center mt-3 StudyBin__folderName'
-                                style={{ wordBreak: 'break-all' }}
+                                style={{ wordBreak: 'break-all', lineHeight: '1' }}
                               >
                                 {elem.file_name}
                               </h6>
@@ -502,7 +508,7 @@ const StudyBin = (props) => {
                               <img src={images} alt='video' height='60' width='60' />
                               <h6
                                 className='text-center mt-3 StudyBin__folderName'
-                                style={{ wordBreak: 'break-all' }}
+                                style={{ wordBreak: 'break-all', lineHeight: '1' }}
                               >
                                 {elem.file_name}
                               </h6>

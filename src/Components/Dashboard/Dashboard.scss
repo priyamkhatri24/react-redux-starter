@@ -175,9 +175,9 @@
     font-family: $bold;
   }
 }
-.react_chart{
+.react_chart {
   width: 50%;
-  margin:auto;
+  margin: auto;
 }
 .noticeboard_img {
   text-align: right;
@@ -188,46 +188,44 @@
 .noticeboard_heading {
   padding-top: 30px;
 }
-.admission_heroImage{
+.admission_heroImage {
   width: 50%;
   margin: auto;
 }
-.DashboardCard_Image{
+.DashboardCard_Image {
   padding-left: 0px;
 }
-.admission_cards{
+.admission_cards {
   width: 85%;
 }
-.admission_button{
+.admission_button {
   padding-left: 20px;
   padding-right: 20px;
 }
 
-@media screen and (max-width: 700px){
-  
+@media screen and (max-width: 700px) {
   .noticeboard_img {
     width: 100%;
   }
-  .react_chart{
+  .react_chart {
     width: 100%;
-    margin:auto;
+    margin: auto;
   }
-  .admission_cards{
+  .admission_cards {
     width: 100%;
   }
-  .admission_button{
+  .admission_button {
     padding-left: 5px;
     padding-right: 5px;
   }
-
 }
 
-@media screen and (max-width:320){
-  .react_chart{
+@media screen and (max-width: 320) {
+  .react_chart {
     width: 100%;
-    margin:auto;
+    margin: auto;
   }
-  .admission_cards{
+  .admission_cards {
     width: 100%;
   }
 }

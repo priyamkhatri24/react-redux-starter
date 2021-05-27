@@ -25,6 +25,7 @@ export const DashboardCards = (props) => {
     boxShadow: boxshadow,
     background: backGround,
     backgroundImage: backgroundImg,
+    width: '85%',
   };
 
   return (

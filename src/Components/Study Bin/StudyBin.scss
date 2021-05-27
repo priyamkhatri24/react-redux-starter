@@ -34,9 +34,18 @@
   }
 
   &__categoryText {
-    font-size: $spacer * 0.75;
+    font-size: $spacer * 1;
     line-height: 15px;
     font-family: $semiBold;
     color: $headingGrey;
   }
+}
+
+.folder_icon{
+ height:auto;
+ width:40%;
+}
+.container_studybin::after{
+  content:'';
+  flex: 0 0 26%;
 }
