@@ -30,10 +30,11 @@
   }
 
   &__todaysHitsText {
-    font-size: $spacer * 0.875;
+    font-size: x-large;
     font-family: 'Montserrat-SemiBold';
     color: $headingGrey;
     line-height: $spacer * 1.25;
+    padding-top: 15px;
   }
 
   &__innovation {
@@ -86,10 +87,11 @@
   }
 
   &__scrollableCardHeading {
-    font-size: $spacer * 0.75;
+    font-size: $spacer * 1;
     color: $headingGrey;
     line-height: $spacer * 1.25;
     font-family: 'Montserrat-SemiBold';
+    padding-bottom: 7px;
   }
 
   &__scrollableCardText {
@@ -102,10 +104,11 @@
     border-radius: 10px;
     border-left: 30px solid var(--lighter-blue);
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
+    width: 87%;
   }
 
   &__attendanceSubHeading {
-    font-size: $spacer * 0.75;
+    font-size: $spacer * 0.925;
     font-family: 'Montserrat-Regular';
     line-height: 15px;
     color: $dashboardBlack;
@@ -120,7 +123,7 @@
 
   &__noticeBoard {
     position: relative;
-    width: 95%;
+    width: 85%;
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
     border-radius: 10px;
   }
@@ -132,7 +135,7 @@
   }
 
   &__noticeBoardText {
-    font-size: $spacer * 0.75;
+    font-size: large;
     color: $dashboardBlack;
     font-family: 'Montserrat-Medium';
   }
@@ -140,16 +143,19 @@
   &__notice {
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
     border-radius: 5px;
+    width: 100%;
+    margin: auto;
+    margin-bottom: 10px;
   }
 
   &__noticeImage {
-    height: 38px;
-    width: 38px;
+    height: auto;
+    width: 50px;
     border-radius: 25px;
   }
 
   &__noticeSubHeading {
-    font-size: $spacer * 0.625;
+    font-size: $spacer * 0.825;
     font-family: 'Montserrat-Light';
     color: $headingGrey;
     line-height: 13px;
@@ -158,7 +164,7 @@
   &__noticeText {
     background-color: var(--lightest-blue);
     font-family: 'Montserrat-Medium';
-    font-size: $spacer * 0.75;
+    font-size: $spacer * 0.85;
     color: $headingGrey;
     border-radius: 0 0 5px 5px;
   }
@@ -167,5 +173,61 @@
     color: var(--primary-blue);
     font-size: $spacer * 1.5;
     font-family: $bold;
+  }
+}
+.react_chart{
+  width: 50%;
+  margin:auto;
+}
+.noticeboard_img {
+  text-align: right;
+  padding-right: 30px;
+  padding-left: 0px;
+  width: 70%;
+}
+.noticeboard_heading {
+  padding-top: 30px;
+}
+.admission_heroImage{
+  width: 50%;
+  margin: auto;
+}
+.DashboardCard_Image{
+  padding-left: 0px;
+}
+.admission_cards{
+  width: 85%;
+}
+.admission_button{
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+@media screen and (max-width: 700px){
+  
+  .noticeboard_img {
+    width: 100%;
+  }
+  .react_chart{
+    width: 100%;
+    margin:auto;
+  }
+  .admission_cards{
+    width: 100%;
+  }
+  .admission_button{
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+}
+
+@media screen and (max-width:320){
+  .react_chart{
+    width: 100%;
+    margin:auto;
+  }
+  .admission_cards{
+    width: 100%;
   }
 }

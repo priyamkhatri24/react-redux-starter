@@ -42,7 +42,7 @@ const DashBoardAdmissions = (props) => {
   };
 
   return (
-    <div className='Dashboard__noticeBoard mx-auto p-3 mt-3'>
+    <div className='Dashboard__noticeBoard admission_cards mx-auto p-3 mt-3'>
       <span className='Dashboard__verticalDots'>
         <MoreVertIcon />
       </span>
@@ -54,18 +54,27 @@ const DashBoardAdmissions = (props) => {
         role='button'
         tabIndex='-1'
         onKeyDown={() => goToAdmissions()}
+        className='admission_heroImage'
       >
         <img src={heroImage} className='img-fluid' alt='yourcoaching' />
       </div>
       <Row className='justify-content-center m-2 mb-4 p-2'>
         <Col className='text-center mt-3 p-0'>
-          <Button variant='noticeBoardPost' onClick={() => openOptionsModal()}>
+          <Button
+            variant='noticeBoardPost'
+            className='admission_button'
+            onClick={() => openOptionsModal()}
+          >
             <PersonAddIcon />
             <span>Add User</span>
           </Button>
         </Col>
         <Col className='text-center mt-3 p-0'>
-          <Button variant='noticeBoardPost' onClick={() => goToAddBatch()}>
+          <Button
+            variant='noticeBoardPost'
+            className='admission_button'
+            onClick={() => goToAddBatch()}
+          >
             <PersonAddIcon />
             <span>Add Batch</span>
           </Button>
@@ -76,6 +85,7 @@ const DashBoardAdmissions = (props) => {
         role='button'
         tabIndex='-1'
         onKeyDown={() => goToAdmissions()}
+        className='admission_charts'
       >
         {[
           {
@@ -101,7 +111,7 @@ const DashBoardAdmissions = (props) => {
           ];
           return (
             <Card key={elem.title} className='my-3 mx-2'>
-              <Row className='p-2'>
+              <Row className='p-2 react_chart'>
                 <Col xs={4} className='text-center p-2 my-auto'>
                   <p
                     className='Dashboard__attendanceSubHeading'
