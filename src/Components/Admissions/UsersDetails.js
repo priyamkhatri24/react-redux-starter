@@ -22,6 +22,7 @@ import { apiValidation, get, post } from '../../Utilities';
 import userImage from '../../assets/images/user.svg';
 import { getAdmissionUserProfile } from '../../redux/reducers/admissions.reducer';
 import AdmissionStyle from './Admissions.style';
+import '../Live Classes/LiveClasses.scss';
 
 const UserDetails = (props) => {
   const { history, clientId, userId, user, clientUserId } = props;

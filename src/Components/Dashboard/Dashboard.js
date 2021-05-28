@@ -224,6 +224,11 @@ const Dashboard = (props) => {
     push('/attendance');
   };
 
+  const goToDisplayPage = () => {
+    const { push } = history;
+    push('/displaypage');
+  };
+
   return (
     <>
       <div className='Dashboard__headerCard'>
@@ -384,6 +389,16 @@ const Dashboard = (props) => {
             subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             buttonClick={goToStudyBin}
+          />
+
+          <DashboardCards
+            image={student}
+            heading='My display page'
+            color='rgba(255, 236, 222, 1)'
+            subHeading='This is like your website. Choose what want to show your guests.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backgroundImg='linear-gradient(90deg, rgba(255, 236, 222, 1) 0%, rgba(255, 145, 61, 1)'
+            buttonClick={goToDisplayPage}
           />
 
           <div
@@ -674,40 +689,38 @@ const mapStateToProps = (state) => ({
   comeBackFromTests: getComeBackFromTests(state),
 });
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    clearClientIdDetails: () => {
-      dispatch(clientUserIdActions.clearClientIdDetails());
-    },
-    clearProfile: () => {
-      dispatch(userProfileActions.clearUserProfile());
-    },
-    setTestIdToStore: (payload) => {
-      dispatch(testsActions.setTestIdToStore(payload));
-    },
-    setTestTypeToStore: (payload) => {
-      dispatch(testsActions.setTestTypeToStore(payload));
-    },
-    setTestStartTimeToStore: (payload) => {
-      dispatch(testsActions.setTestStartTimeToStore(payload));
-    },
-    setTestEndTimeToStore: (payload) => {
-      dispatch(testsActions.setTestEndTimeToStore(payload));
-    },
-    setTestResultArrayToStore: (payload) => {
-      dispatch(testsActions.setTestResultArrayToStore(payload));
-    },
-    setCourseIdToStore: (payload) => {
-      dispatch(courseActions.setCourseIdToStore(payload));
-    },
-    setAdmissionRoleArrayToStore: (payload) => {
-      dispatch(admissionActions.setAdmissionRoleArrayToStore(payload));
-    },
-    setFolderIdArrayToStore: (payload) => {
-      dispatch(studyBinActions.setFolderIDArrayToStore(payload));
-    },
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  clearClientIdDetails: () => {
+    dispatch(clientUserIdActions.clearClientIdDetails());
+  },
+  clearProfile: () => {
+    dispatch(userProfileActions.clearUserProfile());
+  },
+  setTestIdToStore: (payload) => {
+    dispatch(testsActions.setTestIdToStore(payload));
+  },
+  setTestTypeToStore: (payload) => {
+    dispatch(testsActions.setTestTypeToStore(payload));
+  },
+  setTestStartTimeToStore: (payload) => {
+    dispatch(testsActions.setTestStartTimeToStore(payload));
+  },
+  setTestEndTimeToStore: (payload) => {
+    dispatch(testsActions.setTestEndTimeToStore(payload));
+  },
+  setTestResultArrayToStore: (payload) => {
+    dispatch(testsActions.setTestResultArrayToStore(payload));
+  },
+  setCourseIdToStore: (payload) => {
+    dispatch(courseActions.setCourseIdToStore(payload));
+  },
+  setAdmissionRoleArrayToStore: (payload) => {
+    dispatch(admissionActions.setAdmissionRoleArrayToStore(payload));
+  },
+  setFolderIdArrayToStore: (payload) => {
+    dispatch(studyBinActions.setFolderIDArrayToStore(payload));
+  },
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
 

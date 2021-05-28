@@ -33,5 +33,6 @@ store.subscribe(() => {
     fees: store.getState().fees,
     analysis: store.getState().analysis,
     attendance: store.getState().attendance,
+    displayPage: store.getState().displayPage,
   });
 });

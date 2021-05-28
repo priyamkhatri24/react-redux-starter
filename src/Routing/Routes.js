@@ -365,6 +365,18 @@ const SelectedDateAttendance = Loadable({
   loading: Loading,
 });
 
+const DisplayPage = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'DisplayPage' */ '../Components/DisplayPage/DisplayPage'),
+  loading: Loading,
+});
+
+const DisplayPageEdit = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'DisplayPage' */ '../Components/DisplayPage/DisplayPageEdit'),
+  loading: Loading,
+});
+
 // eslint-disable-next-line
 function Loading({ error }) {
   if (error) {
@@ -434,6 +446,8 @@ export function Routes() {
       <AuthenticatedRoute exact path='/attendance' component={Attendance} />
       <AuthenticatedRoute exact path='/attendance/batch' component={AttendanceBatch} />
       <AuthenticatedRoute exact path='/attendance/date' component={SelectedDateAttendance} />
+      <AuthenticatedRoute exact path='/displaypage' component={DisplayPage} />
+      <AuthenticatedRoute exact path='/displaypage/editprofile' component={DisplayPageEdit} />
 
       <Route path='/fileviewer' component={FileView} />
       <Route path='/otherfileviewer' component={TempViewFile} />
