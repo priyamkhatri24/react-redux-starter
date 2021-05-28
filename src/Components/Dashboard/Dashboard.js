@@ -465,14 +465,14 @@ const Dashboard = (props) => {
             {notices.map((elem) => (
               <div key={`elem${elem.notice_id}`} className='Dashboard__notice'>
                 <Row>
-                  <Col xs={2} className='p-4'>
+                  <Col xs={3} className='p-4'>
                     <img
                       src={elem.profile_image ? elem.profile_image : userAvatar}
                       alt='profile'
                       className='Dashboard__noticeImage d-block mx-auto'
                     />
                   </Col>
-                  <Col xs={10} className='pt-4' style={{ paddingLeft: '30px' }}>
+                  <Col xs={9} className='pt-4' style={{ paddingLeft: '30px' }}>
                     <p className='Dashboard__scrollableCardHeading m-0'>
                       {`${elem.first_name} ${elem.last_name}`}
                     </p>

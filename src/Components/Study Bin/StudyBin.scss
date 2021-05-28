@@ -41,11 +41,11 @@
   }
 }
 
-.folder_icon{
- height:auto;
- width:40%;
+.folder_icon {
+  height: auto;
+  width: 40%;
 }
-.container_studybin::after{
-  content:'';
+.container_studybin::after {
+  content: '';
   flex: 0 0 26%;
 }

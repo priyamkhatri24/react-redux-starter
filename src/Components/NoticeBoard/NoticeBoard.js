@@ -21,6 +21,7 @@ import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import userImage from '../../assets/images/user.svg';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import './NoticeBoard.scss';
+import '../Dashboard/Dashboard.scss';
 
 const NoticeBoard = (props) => {
   const { clientUserId, clientId, roleArray, currentbranding, userProfile } = props;
@@ -321,7 +322,7 @@ const NoticeBoard = (props) => {
       {(roleArray.includes(3) || roleArray.includes(4)) && (
         <Card style={{ marginTop: '6rem' }} className='LiveClasses__Card mx-auto p-3'>
           <Row>
-            <Col xs={2}>
+            <Col xs={2} style={{ textAlign: 'center' }}>
               <img
                 src={userProfile.profileImage ? userProfile.profileImage : userImage}
                 width='40'
@@ -369,24 +370,34 @@ const NoticeBoard = (props) => {
           )}
         </Card>
       )}
+      {roleArray.includes(3) || roleArray.includes(4) ? null : <div className='pt-4' />}
       <Row className='mt-5 ml-3 mb-3'>
-        <span className='Dashboard__noticeBoardText my-auto'>Latest Notices</span>
-        <span className='ml-auto' style={{ color: 'rgba(117, 117, 117, 1)' }}>
-          <ChevronRightIcon />
+        <span
+          className='Dashboard__noticeBoardText'
+          style={{ marginLeft: '9%', fontSize: '1.75rem' }}
+        >
+          Latest Notices
         </span>
+        {/* <span className='ml-auto' style={{ color: 'rgba(117, 117, 117, 1)' }}>
+          <ChevronRightIcon />
+        </span> */}
       </Row>
 
       {filteredNotices.map((elem) => (
-        <div key={`elem${elem.notice_id}`} className='Dashboard__notice mx-2'>
+        <div
+          key={`elem${elem.notice_id}`}
+          className='Dashboard__notice mx-auto'
+          style={{ width: '80%' }}
+        >
           <Row>
-            <Col xs={2} className='p-4'>
+            <Col xs={3} className='p-4'>
               <img
                 src={elem.profile_image ? elem.profile_image : userImage}
                 alt='profile'
                 className='Dashboard__noticeImage d-block mx-auto'
               />
             </Col>
-            <Col xs={10} className='pt-4'>
+            <Col xs={9} className='pt-4'>
               <p className='Dashboard__scrollableCardHeading m-0'>
                 {`${elem.first_name} ${elem.last_name}`}
               </p>
@@ -395,7 +406,7 @@ const NoticeBoard = (props) => {
               </p>
             </Col>
           </Row>
-          <p className='p-2 Dashboard__noticeText'>{elem.notice_text}</p>
+          <p className='p-2 Dashboard__noticeText notice-text'>{elem.notice_text}</p>
         </div>
       ))}
 
