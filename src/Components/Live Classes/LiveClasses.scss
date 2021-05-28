@@ -41,6 +41,8 @@
     font-family: 'Montserrat-Regular';
     color: $dashboardGrey;
     font-weight: 700;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   &__adminDuration > span {

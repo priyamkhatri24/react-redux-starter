@@ -66,7 +66,7 @@ export const uploadImage = (file) => {
     .post(`${testUrl}/upload`, fd, authHeaderPost())
     .then((result) => result.data)
     .catch((err) => {
-      history.push('./error');
+      history.push('/error');
       console.error(`The error is ${err}`);
     });
 };

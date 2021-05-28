@@ -17,6 +17,13 @@
       min-width: 200px;
     }
   }
+
+  &__aspectCardContent {
+    min-width: 200px;
+    height: 113px;
+    border-radius: 5px;
+  }
+
   &__card::-webkit-scrollbar {
     display: none;
   }

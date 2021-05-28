@@ -41,6 +41,11 @@ const Login = Loadable({
 });
 // import Login from '../Components/Login/Login';
 
+const SignupForm = Loadable({
+  loader: () => import(/* webpackChunkName: 'SignUpForm' */ '../Components/Login/SignupForm'),
+  loading: Loading,
+});
+
 const SignIn = Loadable({
   loader: () => import(/* webpackChunkName: 'SignIn' */ '../Components/Login/SignIn/SignIn'),
   loading: Loading,
@@ -355,8 +360,20 @@ const AttendanceBatch = Loadable({
 const SelectedDateAttendance = Loadable({
   loader: () =>
     import(
-      /* webpackChunkName: 'Attendancebatch' */ '../Components/Attendance/SelectedDateAttendance'
+      /* webpackChunkName: 'SelectedDate' */ '../Components/Attendance/SelectedDateAttendance'
     ),
+  loading: Loading,
+});
+
+const DisplayPage = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'DisplayPage' */ '../Components/DisplayPage/DisplayPage'),
+  loading: Loading,
+});
+
+const DisplayPageEdit = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'DisplayPage' */ '../Components/DisplayPage/DisplayPageEdit'),
   loading: Loading,
 });
 
@@ -374,7 +391,8 @@ export function Routes() {
       <AuthenticatedRoute exact path='/' component={Dashboard} />
       <Route path='/signin' component={SignIn} />
       <Route path='/signup' component={SignUp} />
-      <Route path='/login' component={Login} />
+      <Route exact path='/login' component={Login} />
+      <Route exact path='/login/signup' component={SignupForm} />
       <Route path='/admission' component={AdmissionChat} />
       <Route path='/admissionform' component={AdmissionForm} />
       <Route path='/forgotpassword' component={ForgotPassword} />
@@ -428,6 +446,8 @@ export function Routes() {
       <AuthenticatedRoute exact path='/attendance' component={Attendance} />
       <AuthenticatedRoute exact path='/attendance/batch' component={AttendanceBatch} />
       <AuthenticatedRoute exact path='/attendance/date' component={SelectedDateAttendance} />
+      <AuthenticatedRoute exact path='/displaypage' component={DisplayPage} />
+      <AuthenticatedRoute exact path='/displaypage/editprofile' component={DisplayPageEdit} />
 
       <Route path='/fileviewer' component={FileView} />
       <Route path='/otherfileviewer' component={TempViewFile} />

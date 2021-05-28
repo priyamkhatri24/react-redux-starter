@@ -28,6 +28,14 @@ function setUserNameToStore(payload) {
   return { type: userProfileConstants.USERNAME, payload };
 }
 
+function setEmailToStore(payload) {
+  return { type: userProfileConstants.EMAIL, payload };
+}
+
+function setCountryCodeToStore(payload) {
+  return { type: userProfileConstants.COUNTRYCODE, payload };
+}
+
 // action to logout user by making userProfile as null
 
 function clearUserProfile() {
@@ -42,4 +50,6 @@ export const userProfileActions = {
   setTokenToStore,
   clearUserProfile,
   setUserNameToStore,
+  setEmailToStore,
+  setCountryCodeToStore,
 };

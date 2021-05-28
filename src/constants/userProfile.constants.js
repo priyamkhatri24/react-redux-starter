@@ -6,4 +6,6 @@ export const userProfileConstants = {
   TOKEN: 'TOKEN',
   USERNAME: 'USERNAME',
   LOGOUT: 'LOGOUT',
+  EMAIL: 'PROFILE_EMAIL',
+  COUNTRYCODE: 'PROFILE_COUNTRY_CODE',
 };
