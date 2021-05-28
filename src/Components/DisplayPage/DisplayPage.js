@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import CreateIcon from '@material-ui/icons/Create';
 import './DisplayPage.scss';
-import { PageHeader } from '../Common';
+import { PageHeader, AspectCards } from '../Common';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get } from '../../Utilities';
 import { displayActions } from '../../redux/actions/displaypage.action';
@@ -58,12 +58,24 @@ const DisplayPage = (props) => {
               .map((elem) => {
                 return (
                   <>
-                    <h6 className='LiveClasses__adminHeading mb-0'>{elem.name}</h6>
-                    <p className='LiveClasses__adminDuration'>{elem.filled_detail}</p>
+                    <h6 className='LiveClasses__adminHeading mb-0'>{elem.filled_detail}</h6>
+                    <p className='LiveClasses__adminDuration'>{elem.name}</p>
                   </>
                 );
               })}
         </div>
+
+        {banners.map((elem) => {
+          return (
+            <React.Fragment key={elem.homepage_section_id}>
+              <h5 style={{ fontFamily: 'Montserrat-Medium', lineHeight: '24px' }} className='m-3'>
+                {elem.section_name}
+              </h5>
+
+              <AspectCards data={elem.file_array} />
+            </React.Fragment>
+          );
+        })}
       </div>
     </>
   );

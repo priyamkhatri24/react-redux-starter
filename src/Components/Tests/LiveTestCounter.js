@@ -31,7 +31,7 @@ const LiveTestCounter = (props) => {
         isAllowed(true, id, result.test_start_time, parseInt(result.test_end_time, 10));
       }
     });
-  }, [id, isAllowed]);
+  }, []);
 
   useInterval(() => {
     if (seconds > 0) {
