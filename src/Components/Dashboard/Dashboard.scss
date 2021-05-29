@@ -30,11 +30,10 @@
   }
 
   &__todaysHitsText {
-    font-size: x-large;
+    
     font-family: 'Montserrat-SemiBold';
     color: $headingGrey;
     line-height: $spacer * 1.25;
-    padding-top: 15px;
   }
 
   &__innovation {
@@ -108,7 +107,6 @@
   }
 
   &__attendanceSubHeading {
-    font-size: $spacer * 0.925;
     font-family: 'Montserrat-Regular';
     line-height: 15px;
     color: $dashboardBlack;
@@ -201,6 +199,12 @@
   padding-left: 20px;
   padding-right: 20px;
 }
+.Dashboard__attendanceSubHeading{
+  font-size: 15px;
+}
+.Dashboard__todaysHitsText{
+  font-size: x-large;
+}
 
 @media screen and (max-width: 700px) {
   .noticeboard_img {
@@ -219,7 +223,7 @@
   }
 }
 
-@media screen and (max-width: 320) {
+@media screen and (max-width: 320px) {
   .react_chart {
     width: 100%;
     margin: auto;
@@ -227,4 +231,14 @@
   .admission_cards {
     width: 100%;
   }
+}
+
+@media screen and (max-width: 450px) {
+  .Dashboard__attendanceSubHeading{
+    font-size: 12px;
+  }
+  .Dashboard__todaysHitsText{
+    font-size: 20px;
+  }
+
 }
