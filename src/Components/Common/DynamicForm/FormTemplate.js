@@ -37,7 +37,8 @@ const FormTemplate = (props) => {
   const renderSelect = (input) => {
     return (
       <Fragment key={input.name}>
-        <Field name={input.name} validate={isRequired('This field is required')}>
+        <Field name={input.name}>
+          {/* validate={isRequired('This field is required')} */}
           {(property) => {
             const { field } = property;
 
@@ -165,7 +166,6 @@ const FormTemplate = (props) => {
         <label htmlFor={input.name} className='has-float-label my-auto'>
           <Field
             name={input.name}
-            validate={isRequired('This field is required')}
             type='text'
             placeholder={input.label}
             className={input.message ? `form-control my-2` : 'form-control my-4'}
@@ -174,17 +174,18 @@ const FormTemplate = (props) => {
           <span>{input.label}</span>
         </label>
         {input.message && (
-          <span
+          <div
             style={{
               fontSize: '14px',
               color: 'rgba(0, 0, 0, 0.54)',
               lineHeight: '18px',
               fontFamily: 'Montserrat-Medium',
               textAlign: 'left',
+              marginBottom: '20px',
             }}
           >
             {input.message}
-          </span>
+          </div>
         )}
         <ErrorMessage name={input.name}>
           {(msg) => (

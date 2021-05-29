@@ -1,3 +1,20 @@
 .Display {
   @import '../../scss/bootstrap';
+
+  &__details {
+    font-size: $spacer * 0.75;
+    line-height: 15px;
+    color: 'rgba(22, 22, 22, 1)';
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-family: $medium;
+  }
+
+  &__name {
+    font-family: $regular;
+    font-size: $spacer * 0.625;
+    line-height: 13px;
+    color: rgba(22, 22, 22, 1);
+    text-transform: capitalize;
+  }
 }

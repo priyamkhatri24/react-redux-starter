@@ -446,7 +446,7 @@ const Dashboard = (props) => {
           </div>
 
           <div
-            className='Dashboard__noticeBoard mx-auto p-3'
+            className='Dashboard__noticeBoard mx-auto p-lg-3 p-2 mb-3'
             onClick={() => goToNoticeBoard()}
             role='button'
             tabIndex='-1'
@@ -456,10 +456,10 @@ const Dashboard = (props) => {
               <MoreVertIcon />
             </span>
             <Row className='mt-2'>
-              <Col xs={8}>
+              <Col xs={8} className='p-lg-0 pl-4'>
                 <p className='Dashboard__todaysHitsText'>Notice Board</p>
                 {(roleArray.includes(3) || roleArray.includes(4)) && (
-                  <Button variant='noticeBoardPost' className='admission_button'>
+                  <Button variant='noticeBoardPost'>
                     <BorderColorIcon />
                     <span className='m-2'>Write a post</span>
                   </Button>
@@ -470,7 +470,7 @@ const Dashboard = (props) => {
               </Col>
             </Row>
 
-            <Row className='mt-5 ml-1 mb-3'>
+            <Row className='mt-5 mx-2 mb-3'>
               <span className='Dashboard__noticeBoardText my-auto'>Latest Notices</span>
               <span className='ml-auto' style={{ color: 'rgba(117, 117, 117, 1)' }}>
                 <ChevronRightIcon />
@@ -480,18 +480,18 @@ const Dashboard = (props) => {
             {notices.map((elem) => (
               <div key={`elem${elem.notice_id}`} className='Dashboard__notice'>
                 <Row>
-                  <Col xs={3} className='p-4'>
+                  <Col xs={3} className='p-lg-4 py-3 text-center pr-0'>
                     <img
                       src={elem.profile_image ? elem.profile_image : userAvatar}
                       alt='profile'
                       className='Dashboard__noticeImage d-block mx-auto'
                     />
                   </Col>
-                  <Col xs={9} className='pt-4' style={{ paddingLeft: '30px' }}>
+                  <Col xs={9} className='pt-lg-4 py-3 pl-0 my-auto'>
                     <p className='Dashboard__scrollableCardHeading m-0'>
                       {`${elem.first_name} ${elem.last_name}`}
                     </p>
-                    <p className='Dashboard__noticeSubHeading'>
+                    <p className='Dashboard__noticeSubHeading mb-0'>
                       {format(fromUnixTime(elem.time_of_notice), 'hh:m bbbb, do MMM yyy')}
                     </p>
                   </Col>
@@ -603,7 +603,7 @@ const Dashboard = (props) => {
               </Col>
             </Row>
 
-            <Row className='mt-5 ml-1 mb-3'>
+            <Row className='mt-5 mx-2 mb-3'>
               <span className='Dashboard__noticeBoardText my-auto'>Latest Notices</span>
               <span className='ml-auto' style={{ color: 'rgba(117, 117, 117, 1)' }}>
                 <ChevronRightIcon />
@@ -613,18 +613,18 @@ const Dashboard = (props) => {
             {notices.map((elem) => (
               <div key={`elem${elem.notice_id}`} className='Dashboard__notice'>
                 <Row>
-                  <Col xs={2} className='p-4'>
+                  <Col xs={3} className='p-lg-4 py-3 text-center pr-0'>
                     <img
-                      src={elem.profile_image || userAvatar}
+                      src={elem.profile_image ? elem.profile_image : userAvatar}
                       alt='profile'
                       className='Dashboard__noticeImage d-block mx-auto'
                     />
                   </Col>
-                  <Col xs={10} className='pt-4' style={{ paddingLeft: '30px' }}>
+                  <Col xs={9} className='pt-lg-4 py-3 pl-0 my-auto'>
                     <p className='Dashboard__scrollableCardHeading m-0'>
                       {`${elem.first_name} ${elem.last_name}`}
                     </p>
-                    <p className='Dashboard__noticeSubHeading'>
+                    <p className='Dashboard__noticeSubHeading mb-0'>
                       {format(fromUnixTime(elem.time_of_notice), 'hh:m bbbb, do MMM yyy')}
                     </p>
                   </Col>

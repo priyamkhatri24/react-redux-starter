@@ -179,16 +179,22 @@ const AddContent = (props) => {
     });
   };
 
+  function reverse(s) {
+    return [...s].reverse().join('');
+  }
+
   const getImageInput = (e, type) => {
     const reader = new FileReader();
     const file = e.target.files[0];
     let isFileAllowed = false;
     console.log(file);
-    if (type === 'image' && verifyIsImage.test(file.name.split('.')[1])) {
+    const s = reverse(reverse(file.name).split('.')[0]);
+
+    if (type === 'image' && verifyIsImage.test(s)) {
       isFileAllowed = true;
-    } else if (type === 'video' && verifyIsVideo.test(file.name.split('.')[1])) {
+    } else if (type === 'video' && verifyIsVideo.test(s)) {
       isFileAllowed = true;
-    } else if (type === 'file' && verifyIsFile.test(file.name.split('.')[1])) {
+    } else if (type === 'file' && verifyIsFile.test(s)) {
       isFileAllowed = true;
     } else {
       Swal.fire({

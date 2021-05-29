@@ -25,7 +25,6 @@ export const DashboardCards = (props) => {
     boxShadow: boxshadow,
     background: backGround,
     backgroundImage: backgroundImg,
-    width: '85%',
   };
 
   return (
@@ -44,7 +43,7 @@ export const DashboardCards = (props) => {
         <Col xs={8}>
           <p className='Dashboard__todaysHitsText'>
             {coloredHeading && <span style={{ color }}>{coloredHeading}</span>}{' '}
-            <span className='DashboardCard_heading'>{heading}</span>
+            <span className='DashboardCards__heading'>{heading}</span>
           </p>
           <p className='Dashboard__attendanceSubHeading'>{subHeading}</p>
 

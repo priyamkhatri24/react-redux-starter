@@ -85,6 +85,7 @@ export const LoginDetailsSkeleton = (props) => {
                 placeholder={placeholder}
                 onChange={(event) => setValue(event.target.value)}
                 value={value}
+                ref={(input) => input && input.focus()}
               />
               <span>{placeholder}</span>
               {password &&

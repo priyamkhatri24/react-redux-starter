@@ -8,26 +8,7 @@ export const AspectCards = (props) => {
   const { data, clickCard, clickAddCard, section } = props;
 
   return (
-    <section className='Scrollable__card'>
-      {data.length > 0 &&
-        data.map((elem) => {
-          return (
-            <Card
-              className='Scrollable__aspectCardContent text-center m-2'
-              key={`elem+${elem.homepage_section_file_id}`}
-              style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)' }}
-              onClick={() => clickCard(elem)}
-            >
-              <img
-                src={elem.file_link}
-                alt='student'
-                height='113px'
-                width='200px'
-                style={{ borderRadius: '5px' }}
-              />
-            </Card>
-          );
-        })}
+    <section className='Scrollable__card' style={{ flexDirection: 'row-reverse' }}>
       <Card
         className='Scrollable__aspectCardContent text-center m-2 justify-content-center align-items-center'
         style={{
@@ -43,6 +24,27 @@ export const AspectCards = (props) => {
           <AddIcon /> ADD
         </span>
       </Card>
+      <div style={{ display: 'flex' }}>
+        {data.length > 0 &&
+          data.map((elem) => {
+            return (
+              <Card
+                className='Scrollable__aspectCardContent text-center m-2'
+                key={`elem+${elem.homepage_section_file_id}`}
+                style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)' }}
+                onClick={() => clickCard(elem)}
+              >
+                <img
+                  src={elem.file_link}
+                  alt='student'
+                  height='113px'
+                  width='200px'
+                  style={{ borderRadius: '5px' }}
+                />
+              </Card>
+            );
+          })}
+      </div>
     </section>
   );
 };

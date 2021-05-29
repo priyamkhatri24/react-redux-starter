@@ -6,10 +6,11 @@ import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import CreateIcon from '@material-ui/icons/Create';
 import Modal from 'react-bootstrap/Modal';
+import Swal from 'sweetalert2';
 import './DisplayPage.scss';
 import { PageHeader, AspectCards, Cropper } from '../Common';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
-import { apiValidation, get, post, propComparator } from '../../Utilities';
+import { apiValidation, get, post, propComparator, verifyIsImage } from '../../Utilities';
 import { displayActions } from '../../redux/actions/displaypage.action';
 import AdmissionStyle from '../Admissions/Admissions.style';
 import '../Live Classes/LiveClasses.scss';
@@ -64,12 +65,28 @@ const DisplayPage = (props) => {
     );
   };
 
+  function reverse(s) {
+    return [...s].reverse().join('');
+  }
+
   const onSelectFile = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
+    let isFileAllowed = false;
+    const file = e.target.files[0];
+
+    const s = reverse(reverse(file.name).split('.')[0]);
+    if (verifyIsImage.test(s)) isFileAllowed = true;
+
+    if (file && isFileAllowed) {
       const reader = new FileReader();
       reader.addEventListener('load', () => setUpImg(reader.result));
       reader.readAsDataURL(e.target.files[0]);
       handleCropperOpen();
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid File Type!',
+        text: `The supported file types are ${'gif, jpeg, jpg, tiff, png, webp, bmp'}`,
+      });
     }
   };
 
@@ -111,8 +128,8 @@ const DisplayPage = (props) => {
               .map((elem) => {
                 return (
                   <React.Fragment key={elem.name}>
-                    <h6 className='LiveClasses__adminHeading mb-0'>{elem.filled_detail}</h6>
-                    <p className='LiveClasses__adminDuration'>{elem.name}</p>
+                    <h6 className='Display__details mb-0'>{elem.filled_detail}</h6>
+                    <p className='Display__name'>{elem.name}</p>
                   </React.Fragment>
                 );
               })}

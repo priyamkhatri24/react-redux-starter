@@ -30,10 +30,14 @@
   }
 
   &__todaysHitsText {
-    
     font-family: 'Montserrat-SemiBold';
     color: $headingGrey;
     line-height: $spacer * 1.25;
+    font-size: x-large;
+
+    @include media-breakpoint-down(md) {
+      font-size: $spacer * 0.875;
+    }
   }
 
   &__innovation {
@@ -91,6 +95,11 @@
     line-height: $spacer * 1.25;
     font-family: 'Montserrat-SemiBold';
     padding-bottom: 7px;
+
+    @include media-breakpoint-down(md) {
+      font-size: $spacer * 0.75;
+      padding-bottom: 0;
+    }
   }
 
   &__scrollableCardText {
@@ -124,6 +133,10 @@
     width: 85%;
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
     border-radius: 10px;
+
+    @include media-breakpoint-down(sm) {
+      width: 95%;
+    }
   }
 
   &__verticalDots {
@@ -136,6 +149,11 @@
     font-size: large;
     color: $dashboardBlack;
     font-family: 'Montserrat-Medium';
+
+    @include media-breakpoint-down(md) {
+      font-size: $spacer * 0.75;
+      line-height: 15px;
+    }
   }
 
   &__notice {
@@ -156,13 +174,18 @@
     font-family: 'Montserrat-Light';
     color: $headingGrey;
     line-height: 13px;
+
+    @include media-breakpoint-down(sm) {
+      font-size: $spacer * 0.625;
+    }
   }
 
   &__noticeText {
     background-color: var(--lightest-blue);
     font-family: 'Montserrat-Medium';
-    font-size: $spacer * 0.85;
+    font-size: $spacer * 0.75;
     color: $headingGrey;
+    line-height: 15px;
     border-radius: 0 0 5px 5px;
   }
 
@@ -195,15 +218,14 @@
 .admission_cards {
   width: 85%;
 }
+
 .admission_button {
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-right: 15px;
+  padding-left: 15px;
 }
-.Dashboard__attendanceSubHeading{
+
+.Dashboard__attendanceSubHeading {
   font-size: 15px;
-}
-.Dashboard__todaysHitsText{
-  font-size: x-large;
 }
 
 @media screen and (max-width: 700px) {
@@ -217,10 +239,6 @@
   .admission_cards {
     width: 100%;
   }
-  .admission_button {
-    padding-left: 5px;
-    padding-right: 5px;
-  }
 }
 
 @media screen and (max-width: 320px) {
@@ -231,14 +249,15 @@
   .admission_cards {
     width: 100%;
   }
+
+  .admission_button {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
 }
 
 @media screen and (max-width: 450px) {
-  .Dashboard__attendanceSubHeading{
+  .Dashboard__attendanceSubHeading {
     font-size: 12px;
   }
-  .Dashboard__todaysHitsText{
-    font-size: 20px;
-  }
-
 }

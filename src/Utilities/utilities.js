@@ -89,6 +89,15 @@ export function prodOrDev() {
 export const propComparator = (propName) => (a, b) =>
   a[propName] === b[propName] ? 0 : a[propName] < b[propName] ? -1 : 1;
 
+export const useFocus = () => {
+  const htmlElRef = useRef(null);
+  const setFocus = () => {
+    htmlElRef.current && htmlElRef.current.focus();
+  };
+
+  return [htmlElRef, setFocus];
+};
+
 // // function to validate file. Ideally should be server side but ab kya kar sakte h lol.
 
 // export const verifyFileExtension = (type, acceptedFile) => {

@@ -79,10 +79,10 @@ class Login extends Component {
               this.setState({ welcomeData: result });
               this.handleComponent('Welcome');
             } else {
-              this.handleComponent('PhoneNo');
+              this.handleComponent('Welcome');
             }
           })
-          .catch(() => this.handleComponent('PhoneNo'));
+          .catch(() => this.handleComponent('Welcome'));
       }, 3000);
     }
   }

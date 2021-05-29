@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
@@ -18,7 +18,6 @@ const PhoneNo = (props) => {
   const [isValid, setValid] = useState(false);
   const [isFocused, setFocus] = useState(false);
   const [showPassword, setPasswordShown] = useState(true);
-
   const { placeholder, status, password, getData, forgotPlaceholder } = props;
 
   const setClick = () => {

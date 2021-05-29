@@ -23,6 +23,8 @@
 
   &__adminHeading {
     font-family: 'Montserrat-SemiBold';
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   &__adminCard {
