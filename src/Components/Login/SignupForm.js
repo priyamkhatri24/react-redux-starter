@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Swal from 'sweetalert2';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import Button from 'react-bootstrap/Button';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -23,6 +24,7 @@ const SignupForm = (props) => {
     setProfileImageToStore,
     clientId,
     userProfile,
+    changeComponent,
   } = props;
 
   const [details, setDetails] = useState({ first_name: '', last_name: '', email: '' });
@@ -50,12 +52,22 @@ const SignupForm = (props) => {
     };
     post(payload, '/enterNumberAndSendOTPForCRM').then((res) => {
       console.log(res);
-      if (res.success) {
+      if (res.success && res.result.status === 'sending successful') {
         setFirstNameToStore(details.first_name);
         setLastNameToStore(details.last_name);
         setEmailToStore(details.email);
         setProfileImageToStore(profileImage);
         history.push('/signup');
+      } else if (res.success && res.result.status === 'Already exists') {
+        Swal.fire({
+          icon: 'info',
+          title: 'Oops!',
+          text: `A user already exists for this number`,
+        }).then((resp) => {
+          if (resp.isConfirmed) {
+            changeComponent('PhoneNo');
+          }
+        });
       }
     });
   };
@@ -225,4 +237,5 @@ SignupForm.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   userProfile: PropTypes.instanceOf(Object).isRequired,
   clientId: PropTypes.number.isRequired,
+  changeComponent: PropTypes.func.isRequired,
 };

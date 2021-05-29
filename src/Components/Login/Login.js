@@ -199,7 +199,7 @@ class Login extends Component {
 
         {currentComponent === 'SignupForm' && (
           // <Welcome data={welcomeData} changeComponent={this.handleComponent} />
-          <SignupForm history={history} />
+          <SignupForm history={history} changeComponent={this.handleComponent} />
         )}
 
         {currentComponent === 'Dummy' && (

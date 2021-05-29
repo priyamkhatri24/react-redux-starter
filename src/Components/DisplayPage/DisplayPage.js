@@ -29,7 +29,6 @@ const DisplayPage = (props) => {
   const closeDeleteModal = () => setShowModal(false);
 
   const [cropperImageModal, setCropperImageModal] = useState(false);
-  const [profileImage, setProfileImage] = useState('');
   const [currentSection, setCurrentSection] = useState({});
   const profileImageRef = useRef(null);
   const [upImg, setUpImg] = useState();
