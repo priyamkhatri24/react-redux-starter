@@ -19,3 +19,10 @@
   font-size: x-large;
   font-weight: 200;
 }
+
+@media screen and (max-width: 450px) {
+  .DashboardCard_heading {
+    font-size: 20px;
+  }
+
+}
