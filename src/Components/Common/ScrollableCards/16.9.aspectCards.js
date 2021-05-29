@@ -5,7 +5,7 @@ import AddIcon from '@material-ui/icons/Add';
 import './ScrollableCards.scss';
 
 export const AspectCards = (props) => {
-  const { data } = props;
+  const { data, clickCard, clickAddCard, section } = props;
 
   return (
     <section className='Scrollable__card'>
@@ -16,6 +16,7 @@ export const AspectCards = (props) => {
               className='Scrollable__aspectCardContent text-center m-2'
               key={`elem+${elem.homepage_section_file_id}`}
               style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)' }}
+              onClick={() => clickCard(elem)}
             >
               <img
                 src={elem.file_link}
@@ -36,6 +37,7 @@ export const AspectCards = (props) => {
           fontFamily: 'Montserrat-Medium',
           color: 'var(--primary-blue)',
         }}
+        onClick={() => clickAddCard(section)}
       >
         <span className='my-auto'>
           <AddIcon /> ADD
@@ -47,4 +49,7 @@ export const AspectCards = (props) => {
 
 AspectCards.propTypes = {
   data: PropTypes.instanceOf(Array).isRequired,
+  clickCard: PropTypes.func.isRequired,
+  clickAddCard: PropTypes.func.isRequired,
+  section: PropTypes.instanceOf(Object).isRequired,
 };

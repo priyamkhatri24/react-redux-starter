@@ -15,4 +15,5 @@ export * from './ScrollableCards/CoursesCards';
 export * from './ScrollableCards/FeeScrollableCards';
 // export * from './FileViewer/FileViewer';
 export * from './Loader/Loading';
+export * from './CropperModal/Cropper';
 // export * from './FilterAccordion/FilterAccordion';

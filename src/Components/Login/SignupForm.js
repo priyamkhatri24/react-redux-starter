@@ -1,36 +1,18 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import Button from 'react-bootstrap/Button';
-import ReactCrop from 'react-image-crop';
-import Modal from 'react-bootstrap/Modal';
 import 'react-image-crop/dist/ReactCrop.css';
 import Signup from '../../assets/images/Login/ProfilePic.svg';
 import './Login.scss';
-import { post, uploadImage } from '../../Utilities';
+import { post } from '../../Utilities';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
-
-const generateImageURL = (canvas, crop) => {
-  if (!crop || !canvas) {
-    return '';
-  }
-
-  return new Promise((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      const finalFile = new File([blob], 'image.png');
-
-      uploadImage(finalFile).then((res) => {
-        console.log('fileu;lod ', res);
-        resolve(res.filename);
-      });
-    });
-  });
-};
+import { Cropper } from '../Common';
 
 const SignupForm = (props) => {
   const {
@@ -46,10 +28,6 @@ const SignupForm = (props) => {
   const [details, setDetails] = useState({ first_name: '', last_name: '', email: '' });
   const profileImageRef = useRef(null);
   const [upImg, setUpImg] = useState();
-  const imgRef = useRef(null);
-  const previewCanvasRef = useRef(null);
-  const [crop, setCrop] = useState({ unit: '%', width: 30, aspect: 1 / 1 });
-  const [completedCrop, setCompletedCrop] = useState(null);
   const [imageModal, setImageModal] = useState(false);
   const [profileImage, setProfileImage] = useState('');
 
@@ -63,56 +41,6 @@ const SignupForm = (props) => {
       reader.readAsDataURL(e.target.files[0]);
       handleOpen();
     }
-  };
-
-  const onLoad = useCallback((img) => {
-    imgRef.current = img;
-  }, []);
-
-  useEffect(() => {
-    if (!completedCrop || !previewCanvasRef.current || !imgRef.current) {
-      return;
-    }
-
-    const image = imgRef.current;
-    const canvas = previewCanvasRef.current;
-    // eslint-disable-next-line
-    const crop = completedCrop;
-
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-    const ctx = canvas.getContext('2d');
-    const pixelRatio = window.devicePixelRatio;
-
-    canvas.width = crop.width * pixelRatio;
-    canvas.height = crop.height * pixelRatio;
-
-    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    ctx.imageSmoothingQuality = 'high';
-
-    ctx.drawImage(
-      image,
-      crop.x * scaleX,
-      crop.y * scaleY,
-      crop.width * scaleX,
-      crop.height * scaleY,
-      0,
-      0,
-      crop.width,
-      crop.height,
-    );
-  }, [completedCrop]);
-
-  const uploadProfileImage = async () => {
-    console.log(previewCanvasRef.current);
-    let url;
-    generateImageURL(previewCanvasRef.current, completedCrop).then((res) => {
-      console.log(res, 'resp');
-      setProfileImage(res);
-    });
-    console.log(url);
-    setProfileImage(url);
-    handleClose();
   };
 
   const goToOtp = () => {
@@ -252,45 +180,15 @@ const SignupForm = (props) => {
           Send OTP
         </Button>
       </div>
-      <Modal show={imageModal} onHide={handleClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Crop Image</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Row className='mx-2 justify-content-between'>
-            <Col xs={12}>
-              <ReactCrop
-                src={upImg}
-                onImageLoaded={onLoad}
-                crop={crop}
-                onChange={(c) => setCrop(c)}
-                onComplete={(c) => setCompletedCrop(c)}
-              />
-            </Col>
-            <Col xs={12}>
-              <h3>Preview</h3>
-              <div>
-                <canvas
-                  ref={previewCanvasRef}
-                  // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
-                  style={{
-                    width: Math.round(completedCrop?.width ?? 0),
-                    height: Math.round(completedCrop?.height ?? 0),
-                  }}
-                />
-              </div>
-            </Col>
-          </Row>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant='boldTextSecondary' onClick={() => handleClose()}>
-            Cancel
-          </Button>
-          <Button variant='boldText' onClick={() => uploadProfileImage()}>
-            Ok
-          </Button>
-        </Modal.Footer>
-      </Modal>
+
+      <Cropper
+        sourceImage={upImg}
+        imageModal={imageModal}
+        handleClose={handleClose}
+        setProfileImage={setProfileImage}
+        aspectTop={1}
+        aspectBottom={1}
+      />
     </>
   );
 };
