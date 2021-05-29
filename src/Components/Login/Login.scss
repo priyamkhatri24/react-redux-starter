@@ -44,6 +44,10 @@
     font-size: $spacer * 1.5;
     line-height: 29px;
     color: $headingGrey;
+    padding-left:8px;
+    @include media-breakpoint-up(md){
+     padding-left: 12%;
+    }
   }
 
   &__photoPlaceHolder {

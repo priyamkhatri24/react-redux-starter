@@ -33,6 +33,7 @@ const WelcomeCarousel = (props) => {
       >
         Skip
       </Button>
+
       <h5 className='Welcome__carouselSubHeading text-center'>Welcome to</h5>
       <h3 className='Welcome__carouselHeading text-center my-3'>
         {currentbranding.branding.client_name}
@@ -64,6 +65,7 @@ const WelcomeCarousel = (props) => {
           );
         })}
       </Swiper>
+
       <Button variant='JumboLogin' onClick={() => changeComponent('PhoneNo')}>
         Log In / Sign Up
       </Button>
