@@ -86,7 +86,7 @@ const SignIn = (props) => {
   //     .catch((e) => console.error(e));
   // };
 
-  const getPassword = () => {
+  const getPassword = (pass = null) => {
     if (userStatus === 'active') {
       const reqBody = {
         user_name: loginParams.user_name,
@@ -192,23 +192,22 @@ const SignIn = (props) => {
       contact,
     };
 
-    post(requestBody, '/resendOTP')
-      .then((res) => {
-        const result = apiValidation(res);
-        if (result.status === 'sending successful') {
-          push({
-            pathname: '/forgotpassword',
-            state: { image, contact, userId: loginParams.user_id },
-          });
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops!',
-            text: `Please check your internet connection.`,
-          });
-        }
-      })
-      .catch((e) => console.err(e));
+    post(requestBody, '/resendOTP').then((res) => {
+      const result = apiValidation(res);
+      if (result.status === 'sending successful') {
+        push({
+          pathname: '/forgotpassword',
+          state: { image, contact, userId: loginParams.user_id, loginParams, userStatus },
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops!',
+          text: `Please check your internet connection.`,
+        });
+      }
+    });
+    // .catch((e) => console.err(e));
   };
 
   return (
@@ -222,23 +221,11 @@ const SignIn = (props) => {
             style={{ marginTop: '125px' }}
           />
 
-          {/* <PhoneNo
-            placeholder='username'
-            getData={getUserName}
-            forgotPlaceholder={forgotUsername}
-          /> */}
           <SelectUser userInfo={userInfo} getUserName={getUserName} />
         </>
       )}
 
       {currentComponent === 'password' && userStatus === 'active' && (
-        // <PhoneNo
-        //   placeholder='Password'
-        //   getData={getPassword}
-        //   password
-        //   status={userStatus}
-        //   forgotPlaceholder={forgotPassword}
-        // />
         <LoginDetailsSkeleton
           placeholder='Password'
           image={passwordImage}

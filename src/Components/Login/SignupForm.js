@@ -52,22 +52,12 @@ const SignupForm = (props) => {
     };
     post(payload, '/enterNumberAndSendOTPForCRM').then((res) => {
       console.log(res);
-      if (res.success && res.result.status === 'sending successful') {
+      if (res.success) {
         setFirstNameToStore(details.first_name);
         setLastNameToStore(details.last_name);
         setEmailToStore(details.email);
         setProfileImageToStore(profileImage);
         history.push('/signup');
-      } else if (res.success && res.result.status === 'Already exists') {
-        Swal.fire({
-          icon: 'info',
-          title: 'Oops!',
-          text: `A user already exists for this number`,
-        }).then((resp) => {
-          if (resp.isConfirmed) {
-            changeComponent('PhoneNo');
-          }
-        });
       }
     });
   };
