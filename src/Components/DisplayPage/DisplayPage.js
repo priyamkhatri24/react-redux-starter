@@ -108,7 +108,12 @@ const DisplayPage = (props) => {
     <>
       <PageHeader title='Display Page' />
       <div className='Display' style={{ marginTop: '4rem' }}>
-        <Button variant='courseBlueOnWhite' style={{ width: '90%' }} className='d-block mx-auto'>
+        <Button
+          variant='courseBlueOnWhite'
+          style={{ width: '90%' }}
+          className='d-block mx-auto'
+          onClick={() => history.push('/displaypage/preview')}
+        >
           Click here to preview display page
         </Button>
 

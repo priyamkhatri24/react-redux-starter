@@ -5,31 +5,42 @@ import AddIcon from '@material-ui/icons/Add';
 import './ScrollableCards.scss';
 
 export const AspectCards = (props) => {
-  const { data, clickCard, clickAddCard, section } = props;
+  const { data, clickCard, clickAddCard, section, noAddCard, bigAspectCard } = props;
 
   return (
-    <section className='Scrollable__card' style={{ flexDirection: 'row-reverse' }}>
-      <Card
-        className='Scrollable__aspectCardContent text-center m-2 justify-content-center align-items-center'
-        style={{
-          boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)',
-          fontSize: '17px',
-          lineHeight: '20px',
-          fontFamily: 'Montserrat-Medium',
-          color: 'var(--primary-blue)',
-        }}
-        onClick={() => clickAddCard(section)}
-      >
-        <span className='my-auto'>
-          <AddIcon /> ADD
-        </span>
-      </Card>
+    <section
+      className='Scrollable__card'
+      style={
+        noAddCard ? { minHeight: '113px' } : { flexDirection: 'row-reverse', minHeight: '113px' }
+      }
+    >
+      {!noAddCard && (
+        <Card
+          className='Scrollable__aspectCardContent text-center m-2 justify-content-center align-items-center'
+          style={{
+            boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)',
+            fontSize: '17px',
+            lineHeight: '20px',
+            fontFamily: 'Montserrat-Medium',
+            color: 'var(--primary-blue)',
+          }}
+          onClick={() => clickAddCard(section)}
+        >
+          <span className='my-auto'>
+            <AddIcon /> ADD
+          </span>
+        </Card>
+      )}
       <div style={{ display: 'flex' }}>
         {data.length > 0 &&
           data.map((elem) => {
             return (
               <Card
-                className='Scrollable__aspectCardContent text-center m-2'
+                className={
+                  bigAspectCard
+                    ? 'text-center m-2 Scrollable__aspectCardBig'
+                    : 'Scrollable__aspectCardContent text-center m-2'
+                }
                 key={`elem+${elem.homepage_section_file_id}`}
                 style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)' }}
                 onClick={() => clickCard(elem)}
@@ -37,8 +48,8 @@ export const AspectCards = (props) => {
                 <img
                   src={elem.file_link}
                   alt='student'
-                  height='113px'
-                  width='200px'
+                  height={bigAspectCard ? '177px' : '113px'}
+                  width={bigAspectCard ? '315px' : '200px'}
                   style={{ borderRadius: '5px' }}
                 />
               </Card>
@@ -54,4 +65,11 @@ AspectCards.propTypes = {
   clickCard: PropTypes.func.isRequired,
   clickAddCard: PropTypes.func.isRequired,
   section: PropTypes.instanceOf(Object).isRequired,
+  noAddCard: PropTypes.bool,
+  bigAspectCard: PropTypes.bool,
+};
+
+AspectCards.defaultProps = {
+  noAddCard: false,
+  bigAspectCard: false,
 };

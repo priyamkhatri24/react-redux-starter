@@ -377,6 +377,11 @@ const DisplayPageEdit = Loadable({
   loading: Loading,
 });
 
+const DummyDashboard = Loadable({
+  loader: () => import(/* webpackChunkName: 'DisplayPage' */ '../Components/Login/DummyDashboard'),
+  loading: Loading,
+});
+
 // eslint-disable-next-line
 function Loading({ error }) {
   if (error) {
@@ -448,6 +453,7 @@ export function Routes() {
       <AuthenticatedRoute exact path='/attendance/date' component={SelectedDateAttendance} />
       <AuthenticatedRoute exact path='/displaypage' component={DisplayPage} />
       <AuthenticatedRoute exact path='/displaypage/editprofile' component={DisplayPageEdit} />
+      <AuthenticatedRoute exact path='/displaypage/preview' component={DummyDashboard} />
 
       <Route path='/fileviewer' component={FileView} />
       <Route path='/otherfileviewer' component={TempViewFile} />

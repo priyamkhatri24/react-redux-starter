@@ -24,6 +24,11 @@
     border-radius: 5px;
   }
 
+  &__aspectCardBig {
+    min-width: 315px;
+    height: 177px;
+  }
+
   &__card::-webkit-scrollbar {
     display: none;
   }

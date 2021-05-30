@@ -204,7 +204,11 @@ class Login extends Component {
 
         {currentComponent === 'Dummy' && (
           // <Welcome data={welcomeData} changeComponent={this.handleComponent} />
-          <DummyDashboard clientId={clientId} />
+          <DummyDashboard
+            clientId={clientId}
+            history={history}
+            changeComponent={this.handleComponent}
+          />
         )}
       </>
     );
