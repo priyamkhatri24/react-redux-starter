@@ -7,6 +7,7 @@ import { get } from '../../Utilities';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import YCIcon from '../../assets/images/ycIcon.png';
 import '../Dashboard/Dashboard.scss';
+import './DummyDashboard.scss';
 
 const DummyDashboard = (props) => {
   const {
@@ -27,6 +28,7 @@ const DummyDashboard = (props) => {
         <h4 className='Dashboard__headingText'>firstName</h4> */}
 
         <img src={branding.client_logo || YCIcon} className='img-fluid' alt='profile' />
+        <h3 className='brand_tagline'>Every learners dream</h3>
       </div>
     </>
   );
