@@ -365,7 +365,7 @@ const StudyBin = (props) => {
               <h6 className='StudyBin__heading'>
                 Folders <span>({folderArray.length})</span>
               </h6>
-              <Row className='justify-content-between container_studybin'>
+              <Row className='container_studybin'>
                 {folderArray
                   .filter((elem) => {
                     return elem.folder_name.includes(searchString);
@@ -415,7 +415,7 @@ const StudyBin = (props) => {
               <h6 className='StudyBin__heading mt-4'>
                 Files <span>({fileArray.length})</span>
               </h6>
-              <Row className='justify-content-between container_studybin'>
+              <Row className='container_studybin'>
                 {fileArray
                   .filter((elem) => {
                     return elem.file_name.includes(searchString);
@@ -475,7 +475,7 @@ const StudyBin = (props) => {
                               role='button'
                               tabIndex='-1'
                             >
-                              <img src={videocam} alt='video' height='60' width='60' />
+                              <img src={videocam} alt='video' height='67' width='67' />
                               <h6
                                 className='text-center mt-3 StudyBin__folderName'
                                 style={{ wordBreak: 'break-all', lineHeight: '1' }}
@@ -505,7 +505,7 @@ const StudyBin = (props) => {
                               role='button'
                               tabIndex='-1'
                             >
-                              <img src={images} alt='video' height='60' width='60' />
+                              <img src={images} alt='video' height='67' width='67' />
                               <h6
                                 className='text-center mt-3 StudyBin__folderName'
                                 style={{ wordBreak: 'break-all', lineHeight: '1' }}

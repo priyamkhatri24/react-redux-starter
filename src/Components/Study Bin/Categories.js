@@ -125,7 +125,7 @@ const Categories = (props) => {
         currentBatches={menuOptions.currentBatches}
       />
       <div style={{ marginTop: '5rem' }} className='mx-4 mx-md-5'>
-        <Row className='justify-content-between container_studybin'>
+        <Row className='container_studybin'>
           {files
             .filter((elem) => {
               return elem.file_name.includes(searchString);

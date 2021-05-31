@@ -320,7 +320,10 @@ const NoticeBoard = (props) => {
       />
 
       {(roleArray.includes(3) || roleArray.includes(4)) && (
-        <Card style={{ marginTop: '6rem' }} className='LiveClasses__Card mx-auto p-3'>
+        <Card
+          style={{ marginTop: '6rem' }}
+          className='LiveClasses__Card NoticeBoard__inputCard mx-auto p-3'
+        >
           <Row>
             <Col xs={2} style={{ textAlign: 'center' }}>
               <img
@@ -372,12 +375,7 @@ const NoticeBoard = (props) => {
       )}
       {roleArray.includes(3) || roleArray.includes(4) ? null : <div className='pt-4' />}
       <Row className='mt-5 ml-3 mb-3'>
-        <span
-          className='Dashboard__noticeBoardText'
-          style={{ marginLeft: '9%', fontSize: '1.75rem' }}
-        >
-          Latest Notices
-        </span>
+        <span className='Dashboard__noticeBoardText NoticeBoard__HeadingText'>Latest Notices</span>
         {/* <span className='ml-auto' style={{ color: 'rgba(117, 117, 117, 1)' }}>
           <ChevronRightIcon />
         </span> */}
@@ -386,10 +384,9 @@ const NoticeBoard = (props) => {
       {filteredNotices.map((elem) => (
         <div
           key={`elem${elem.notice_id}`}
-          className='Dashboard__notice mx-auto'
-          style={{ width: '80%' }}
+          className='Dashboard__notice NoticeBoard__notice mx-auto'
         >
-          <Row>
+          <Row className='NoticeBoard__NoticeHead'>
             <Col xs={3} className='p-4'>
               <img
                 src={elem.profile_image ? elem.profile_image : userImage}

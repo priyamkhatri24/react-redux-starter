@@ -456,7 +456,7 @@ const Dashboard = (props) => {
               <MoreVertIcon />
             </span>
             <Row className='mt-2'>
-              <Col xs={8} className='p-lg-0 pl-4'>
+              <Col xs={8} className='pl-4'>
                 <p className='Dashboard__todaysHitsText'>Notice Board</p>
                 {(roleArray.includes(3) || roleArray.includes(4)) && (
                   <Button variant='noticeBoardPost'>
