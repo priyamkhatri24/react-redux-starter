@@ -142,7 +142,7 @@ const AdmissionForm = (props) => {
     };
     console.log(payload);
 
-    post(payload, '/submitAdmissonForm').then((res) => {
+    post(payload, '/submitAdmissonFormLatest').then((res) => {
       if (res.success) {
         if (autoApproval.current === 'true') {
           Swal.fire({
@@ -151,7 +151,7 @@ const AdmissionForm = (props) => {
               'Thank you for filling the admission form. ' +
               'You will receive your username on your registered number, use it to login',
           }).then((response) => {
-            if (response.isConfirmed) history.push('/login');
+            if (response.isConfirmed) history.push('/');
           });
         } else if (autoApproval.current === 'false') {
           Swal.fire({
@@ -159,7 +159,7 @@ const AdmissionForm = (props) => {
             text:
               'Thank you for filling the admission form. Please wait while the institute approves your information',
           }).then((response) => {
-            if (response.isConfirmed) history.push('/login');
+            if (response.isConfirmed) history.push('/');
           });
         }
       } else {
@@ -176,7 +176,7 @@ const AdmissionForm = (props) => {
     <div className='AdmissionForm'>
       <Row className='ml-4 mt-4'>
         <BackButton color='#000' />
-        <span className='ml-3 AdmissionForm__navHeading'>Enquiry Form</span>
+        <span className='ml-3 AdmissionForm__navHeading'>Admission Form</span>
       </Row>
       <div className='AdmissionForm__fileUpload text-center'>
         <label htmlFor='file-input'>

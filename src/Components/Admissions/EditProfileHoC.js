@@ -6,6 +6,7 @@ import { getAdmissionUserProfile } from '../../redux/reducers/admissions.reducer
 import { getClientId, getClientUserId, getUserId } from '../../redux/reducers/clientUserId.reducer';
 import EditProfile from '../Profile/EditProfile';
 import { post } from '../../Utilities';
+import { userProfileActions } from '../../redux/actions/userProfile.action';
 
 const EditProfileHOC = (props) => {
   const { history, user, clientId, clientUserId, userId } = props;
