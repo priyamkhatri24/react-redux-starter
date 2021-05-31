@@ -32,9 +32,9 @@
     top: 10px;
     right: 5px;
 
-    @include media-breakpoint-down(sm){
-      top:5px;
-      right:1px;
+    @include media-breakpoint-down(sm) {
+      top: 5px;
+      right: 1px;
     }
   }
 
@@ -44,19 +44,18 @@
     font-family: $semiBold;
     color: $headingGrey;
 
-    @include media-breakpoint-down(md){
+    @include media-breakpoint-down(md) {
       font-size: 12px;
       line-height: 15px;
     }
   }
-  
 }
 
 .folder_icon {
   height: 67px;
   width: 67px;
 }
-.container_studybin{
+.container_studybin {
   justify-content: space-evenly;
 }
 .container_studybin::after {
