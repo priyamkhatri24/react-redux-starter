@@ -2,7 +2,7 @@
   @import '../../scss/bootstrap';
 
   &__coachingName {
-    font-size: $spacer * 1.5;
+    font-size: $spacer * 1.5; // 1rem = 16px
     line-height: 29px;
     font-family: $extraBold;
     color: $white;

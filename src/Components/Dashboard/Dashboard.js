@@ -5,12 +5,18 @@ import Skeleton from 'react-loading-skeleton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import format from 'date-fns/format';
+import Swal from 'sweetalert2';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
+import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
+import PhoneIcon from '@material-ui/icons/Phone';
+import LinkIcon from '@material-ui/icons/Link';
 import { connect } from 'react-redux';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
@@ -27,7 +33,7 @@ import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { testsActions } from '../../redux/actions/tests.action';
 import { courseActions } from '../../redux/actions/course.action';
 import hands from '../../assets/images/Dashboard/hands.svg';
-import { CoursesCards, DashboardCards } from '../Common';
+import { AspectCards, CoursesCards, DashboardCards } from '../Common';
 // import offlineAssignment from '../../assets/images/Dashboard/offline.svg';
 import camera from '../../assets/images/Dashboard/camera.svg';
 import analysis from '../../assets/images/Dashboard/analysis.svg';
@@ -39,6 +45,15 @@ import { admissionActions } from '../../redux/actions/admissions.action';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import { getComeBackFromTests } from '../../redux/reducers/firstTimeLogin.reducer';
 import { studyBinActions } from '../../redux/actions/studybin.actions';
+import fb from '../../assets/images/dummyDashboard/fb.png';
+import linkedin from '../../assets/images/dummyDashboard/linkedin.svg';
+import insta from '../../assets/images/dummyDashboard/instagram.svg';
+import share from '../../assets/images/dummyDashboard/share.svg';
+import whatsapp from '../../assets/images/dummyDashboard/whatsapp.svg';
+import youtube from '../../assets/images/dummyDashboard/youtube.png';
+import telegram from '../../assets/images/dummyDashboard/telegram.svg';
+import form from '../../assets/images/dummyDashboard/form.svg';
+import '../Login/DummyDashboard.scss';
 
 const DashBoardAdmissions = Loadable({
   loader: () => import('./DashBoardAdmissions'),
@@ -73,6 +88,8 @@ const Dashboard = (props) => {
   const [allCourses, setAllCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
   const [admissions, setAdmissions] = useState({});
+  const [data, setData] = useState({});
+  const [hasLoaded, setHasLoaded] = useState(false);
   const [optionsModal, setOptionsModal] = useState(false);
   const openOptionsModal = () => setOptionsModal(true);
   const closeOptionsModal = () => setOptionsModal(false);
@@ -96,12 +113,15 @@ const Dashboard = (props) => {
       client_user_id: clientUserId,
     };
 
-    get(payload, '/getRecentData')
+    get(payload, '/getRecentDataLatest')
       .then((res) => {
         const result = apiValidation(res);
+        console.log(result);
         setNotices(result.notice);
         setAdmissions(result.admission);
         setAttendance(result.attendance);
+        setData(result);
+        setHasLoaded(true);
       })
       .catch((err) => console.error(err));
     partsOfDay();
@@ -113,6 +133,28 @@ const Dashboard = (props) => {
       console.log(result);
     });
   }, [clientId, clientUserId]);
+
+  const shareThis = () => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: `Come Join Us`,
+          // eslint-disable-next-line
+          text: `Hey, ${data.client_name} is a fast, simple and fun app that I use for learning and growing everyday`,
+          url: window.location.href,
+        })
+        .then(() => {
+          console.log('Thanks for sharing!');
+        })
+        .catch(console.error);
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops!',
+        text: `Sharing is not supported on device.`,
+      });
+    }
+  };
 
   const goToLiveClasses = () => {
     const { push } = history;
@@ -231,12 +273,16 @@ const Dashboard = (props) => {
 
   return (
     <>
-      <div className='Dashboard__headerCard'>
+      <div className='Dashboard__headerCard pb-3 mb-4'>
         <Row className='pt-4 pr-4'>
           <span className='ml-auto'>
             <MoreVertIcon />
           </span>
         </Row>
+        {hasLoaded && <h3 className='Dummy__coachingName text-center'>{data.client_name}</h3>}
+        {hasLoaded && (
+          <p className='Dummy__tagline mb-4 text-center mb-5'>{data.client_tag_line}</p>
+        )}
         <Row className='mx-auto px-2 mt-4'>
           <Col xs={4} onClick={() => goToProfile()}>
             <img
@@ -501,6 +547,27 @@ const Dashboard = (props) => {
             ))}
           </div>
 
+          <Card className='m-2 mt-4' style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}>
+            <Row className='mx-0 justify-content-center mt-2'>
+              <Col xs={7} className='text-left p-2'>
+                <h6 className='Dummy__connect'>Share app with friends</h6>
+                <p className='mb-0 Dummy__joinDetails'>Enjoying the application?</p>
+                <p className='Dummy__joinSmall'>Share with your friends</p>
+                <Button
+                  variant='customPrimarySmol'
+                  className='mb-3'
+                  style={{ padding: '10px 20px' }}
+                  onClick={() => shareThis()}
+                >
+                  Share
+                </Button>
+              </Col>
+              <Col xs={5} className='p-2 mt-3 text-center'>
+                <img src={share} alt='form' className='img-fluid' />
+              </Col>
+            </Row>
+          </Card>
+
           {/* <CoursesCards
             allCourses={allCourses}
             myCourses={myCourses}
@@ -542,6 +609,129 @@ const Dashboard = (props) => {
       {/* *****************************Student View ********************************* */}
       {(roleArray.includes(1) || roleArray.includes(2)) && (
         <>
+          {hasLoaded && (
+            <div className='m-2 mt-4'>
+              <AspectCards
+                data={data.posters}
+                clickCard={() => {}}
+                clickAddCard={() => {}}
+                section='notice'
+                noAddCard
+                bigAspectCard
+              />
+
+              <>
+                <h6
+                  style={{
+                    fontFamily: 'Montserrat-Medium',
+                    lineHeight: '20px',
+                    textAlign: 'left',
+                    fontSize: '14px',
+                  }}
+                  className='mx-3 mt-4 mb-0'
+                >
+                  Our Star Performers
+                </h6>
+                <AspectCards
+                  data={data.star_performers}
+                  clickCard={() => {}}
+                  clickAddCard={() => {}}
+                  section='notice'
+                  noAddCard
+                />
+              </>
+
+              <>
+                <h6
+                  style={{
+                    fontFamily: 'Montserrat-Medium',
+                    lineHeight: '20px',
+                    textAlign: 'left',
+                    fontSize: '14px',
+                  }}
+                  className='mx-3 mt-4 mb-0'
+                >
+                  Testimonials
+                </h6>
+                <AspectCards
+                  data={data.testimonials}
+                  clickCard={() => {}}
+                  clickAddCard={() => {}}
+                  section='notice'
+                  noAddCard
+                />
+              </>
+            </div>
+          )}
+          {hasLoaded && (
+            <div className='text-left m-3 mt-5'>
+              <h5 className='Dummy__aboutus'>About us</h5>
+              <p className='Dummy__aboutData'>{data.about_us}</p>
+
+              <h6 className='Dummy__connect'>Connect with us</h6>
+
+              <section className='Scrollable__card ' style={{ minHeight: '40px' }}>
+                {[
+                  {
+                    key: 1,
+                    name: 'insta',
+                    link: data.instagram_link,
+                    image: insta,
+                  },
+
+                  { key: 2, name: 'fb', link: data.facebook_link, image: fb },
+                  {
+                    key: 3,
+                    name: 'watsapp',
+                    link: data.whatsapp_link,
+                    image: whatsapp,
+                  },
+                  {
+                    key: 4,
+                    name: 'you',
+                    link: data.youtube_link,
+                    image: youtube,
+                  },
+                  {
+                    key: 5,
+                    name: 'tele',
+                    link: data.telegram_link,
+                    image: telegram,
+                  },
+                  {
+                    key: 6,
+                    name: 'linked',
+                    link: data.linkedin_link,
+                    image: linkedin,
+                  },
+                ]
+                  .filter((e) => e.link)
+                  .map((elem) => {
+                    return (
+                      <a href={elem.link} className='text-center m-3' key={elem.key}>
+                        <img src={elem.image} alt={elem.link} className='Dummy__socialLinks' />
+                      </a>
+                    );
+                  })}
+                <a
+                  href={data.other_link}
+                  className='text-center m-3'
+                  style={{
+                    backgroundColor: 'rgba(112, 112, 112, 1)',
+                    color: '#fff',
+                    height: '36px',
+                    width: '36px',
+                    borderRadius: '36px',
+                    padding: '4px',
+                  }}
+                  key={7}
+                >
+                  <LinkIcon />
+                </a>
+              </section>
+            </div>
+          )}
+
           <CoursesCards
             allCourses={allCourses}
             myCourses={myCourses}
@@ -641,6 +831,89 @@ const Dashboard = (props) => {
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             buttonClick={goToStudyBin}
           />
+
+          <Card className='m-3' style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}>
+            <Row className='mx-0 justify-content-center mt-2'>
+              <Col xs={8} className='text-left p-2'>
+                <h6 className='Dummy__joinUs'>Join us NOW!</h6>
+                <p className='mb-0 Dummy__joinDetails'>Your are not in any batch yet</p>
+                <p className='Dummy__joinSmall'>Fill admission form to join us.</p>
+              </Col>
+              <Col xs={4} className='p-2'>
+                <img src={form} alt='form' className='img-fluid' />
+              </Col>
+              <Button
+                variant='customPrimarySmol'
+                className='mb-3'
+                onClick={() => history.push('/admissionform')}
+              >
+                Fill admission form
+              </Button>
+            </Row>
+          </Card>
+
+          <Card className='m-3 mt-4' style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}>
+            <Row className='mx-0 justify-content-center mt-2'>
+              <Col xs={7} className='text-left p-2'>
+                <h6 className='Dummy__connect'>Share app with friends</h6>
+                <p className='mb-0 Dummy__joinDetails'>Enjoying the application?</p>
+                <p className='Dummy__joinSmall'>Share with your friends</p>
+                <Button
+                  variant='customPrimarySmol'
+                  className='mb-3'
+                  style={{ padding: '10px 20px' }}
+                  onClick={() => shareThis()}
+                >
+                  Share
+                </Button>
+              </Col>
+              <Col xs={5} className='p-2 mt-3 text-center'>
+                <img src={share} alt='form' className='img-fluid' />
+              </Col>
+            </Row>
+          </Card>
+
+          {hasLoaded && Object.keys(data.address).length > 0 && (
+            <Card className='m-3 mt-4' style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}>
+              <Row className='mx-3 justify-content-left mt-2'>
+                <h6 className='Dummy__joinUs'>Contact us</h6>
+              </Row>
+              {data.address.location && (
+                <Row className='mx-0 justify-content-center mt-2'>
+                  <Col xs={2} className='pr-0'>
+                    <LocationOnIcon />
+                  </Col>
+                  <Col xs={10} className='text-left p-0 my-auto pr-4'>
+                    <p className='mb-0 Dummy__joinDetails'>{data.address.location}</p>
+                    <p className='Dummy__joinSmall'>Address</p>
+                  </Col>
+                </Row>
+              )}
+
+              {data.address.client_contact && (
+                <Row className='mx-0 justify-content-center mt-2'>
+                  <Col xs={2} className='pr-0'>
+                    <PhoneIcon />
+                  </Col>
+                  <Col xs={10} className='text-left p-0 my-auto pr-4'>
+                    <p className='mb-0 Dummy__joinDetails'>{data.address.client_contact}</p>
+                    <p className='Dummy__joinSmall'>Phone</p>
+                  </Col>
+                </Row>
+              )}
+              {data.address.client_email && (
+                <Row className='mx-0 justify-content-center mt-2'>
+                  <Col xs={2} className='pr-0'>
+                    <AlternateEmailIcon />
+                  </Col>
+                  <Col xs={10} className='text-left p-0 my-auto pr-4'>
+                    <p className='mb-0 Dummy__joinDetails'>{data.address.client_email}</p>
+                    <p className='Dummy__joinSmall'>Email</p>
+                  </Col>
+                </Row>
+              )}
+            </Card>
+          )}
         </>
       )}
       <Modal show={optionsModal} onHide={closeOptionsModal} centered>

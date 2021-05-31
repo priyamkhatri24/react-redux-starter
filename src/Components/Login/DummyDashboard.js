@@ -6,8 +6,12 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Swal from 'sweetalert2';
+import fromUnixTime from 'date-fns/fromUnixTime';
+import format from 'date-fns/format';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import PhoneIcon from '@material-ui/icons/Phone';
 import LinkIcon from '@material-ui/icons/Link';
 import { apiValidation, get } from '../../Utilities';
@@ -26,6 +30,7 @@ import form from '../../assets/images/dummyDashboard/form.svg';
 import '../Common/ScrollableCards/ScrollableCards.scss';
 import { AspectCards } from '../Common';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
+import userAvatar from '../../assets/images/user.svg';
 
 const DummyDashboard = (props) => {
   const {
@@ -36,12 +41,14 @@ const DummyDashboard = (props) => {
   } = props;
 
   const [dummyData, setDummyData] = useState({});
+  const [notices, setNotices] = useState([]);
 
   useEffect(() => {
     get({ client_id: clientId }, '/getRecentDataLatest').then((res) => {
       console.log(res);
       const result = apiValidation(res);
       setDummyData(result);
+      setNotices(result.notice);
     });
   }, [clientId]);
 
@@ -152,7 +159,7 @@ const DummyDashboard = (props) => {
           </>
         </div>
         <div className='text-left m-3'>
-          <h5 className='Dummy__aboutus'>About us</h5>
+          <h5 className='Dummy__aboutus mt-5'>About us</h5>
           <p className='Dummy__aboutData'>{dummyData.about_us}</p>
 
           <h6 className='Dummy__connect'>Connect with us</h6>
@@ -195,7 +202,7 @@ const DummyDashboard = (props) => {
               .filter((e) => e.link)
               .map((elem) => {
                 return (
-                  <a href={elem.link} className='text-center m-3'>
+                  <a href={elem.link} className='text-center m-3' key={elem.key}>
                     <img src={elem.image} alt={elem.link} className='Dummy__socialLinks' />
                   </a>
                 );
@@ -209,12 +216,64 @@ const DummyDashboard = (props) => {
                 height: '36px',
                 width: '36px',
                 borderRadius: '36px',
+                padding: '4px',
               }}
             >
               <LinkIcon />
             </a>
           </section>
         </div>
+
+        <div
+          className='Dashboard__noticeBoard mx-auto p-3'
+          onClick={() => {}}
+          role='button'
+          tabIndex='-1'
+          onKeyDown={() => {}}
+        >
+          <span className='Dashboard__verticalDots'>
+            <MoreVertIcon />
+          </span>
+          <Row className='mt-2'>
+            <Col xs={8}>
+              <p className='Dashboard__todaysHitsText text-left'>Notice Board</p>
+            </Col>
+            <Col className='noticeboard_img' xs={4}>
+              {/* <img src={dashboardAssignmentImage} alt='notice' height='80' width='80' /> */}
+            </Col>
+          </Row>
+
+          <Row className='mt-5 mx-2 mb-3'>
+            <span className='Dashboard__noticeBoardText my-auto'>Latest Notices</span>
+            <span className='ml-auto' style={{ color: 'rgba(117, 117, 117, 1)' }}>
+              <ChevronRightIcon />
+            </span>
+          </Row>
+
+          {notices.map((elem) => (
+            <div key={`elem${elem.notice_id}`} className='Dashboard__notice'>
+              <Row>
+                <Col xs={3} className='p-lg-4 py-3 text-center pr-0'>
+                  <img
+                    src={elem.profile_image ? elem.profile_image : userAvatar}
+                    alt='profile'
+                    className='Dashboard__noticeImage d-block mx-auto'
+                  />
+                </Col>
+                <Col xs={9} className='pt-lg-4 py-3 pl-0 my-auto'>
+                  <p className='Dashboard__scrollableCardHeading text-left m-0'>
+                    {`${elem.first_name} ${elem.last_name}`}
+                  </p>
+                  <p className='Dashboard__noticeSubHeading text-left mb-0'>
+                    {format(fromUnixTime(elem.time_of_notice), 'hh:m bbbb, do MMM yyy')}
+                  </p>
+                </Col>
+              </Row>
+              <p className='p-2 Dashboard__noticeText text-left'>{elem.notice_text}</p>
+            </div>
+          ))}
+        </div>
+
         <Card className='m-3' style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}>
           <Row className='mx-0 justify-content-center mt-2'>
             <Col xs={8} className='text-left p-2'>

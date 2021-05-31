@@ -78,7 +78,7 @@ const StudyBin = (props) => {
 
   const rerenderFilesAndFolders = () => {
     const temp = {
-      client_user_id: 1605,
+      client_user_id: clientUserId,
       client_id: clientId,
     };
     if (folderIdStack.length < 1) {
@@ -194,7 +194,7 @@ const StudyBin = (props) => {
     if (folderIdStack.length < 1) {
       if (roleArray.includes(3) || roleArray.includes(4)) {
         const temp = {
-          client_user_id: 1605,
+          client_user_id: clientUserId,
           client_id: clientId,
         };
         get(temp, '/getPrimaryFoldersAndFiles') // instead of temp should be [payload]
