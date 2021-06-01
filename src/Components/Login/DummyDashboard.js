@@ -74,6 +74,8 @@ const DummyDashboard = (props) => {
     }
   };
 
+  const imgUrl = branding.client_logo;
+
   return (
     Object.keys(dummyData).length > 0 && (
       <div className='text-center'>
@@ -82,7 +84,7 @@ const DummyDashboard = (props) => {
           <p className='Dummy__tagline mb-4'>{dummyData.client_tag_line}</p>
 
           <img
-            src={YCIcon}
+            src={imgUrl || YCIcon}
             className='img-fluid'
             alt='profile'
             width='100px'
