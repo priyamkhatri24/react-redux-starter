@@ -1,5 +1,8 @@
 import axios from 'axios';
 import { history } from '../Routing/History';
+import { apiValidation } from './utilities';
+
+const AWS = require('aws-sdk');
 
 function authHeaderPost() {
   // return authorization header with jwt token
@@ -58,15 +61,49 @@ export const get = (requestBody = null, endpoint) => {
     });
 };
 
+// export const uploadImage = (file) => {
+//   const fd = new FormData();
+//   fd.append('upl', file);
+//   console.log(file);
+//   return axios
+//     .post(`${testUrl}/upload`, fd, authHeaderPost())
+//     .then((result) => result.data)
+//     .catch((err) => {
+//       history.push('/error');
+//       console.error(`The error is ${err}`);
+//     });
+// };
+
 export const uploadImage = (file) => {
-  const fd = new FormData();
-  fd.append('upl', file);
   console.log(file);
-  return axios
-    .post(`${testUrl}/upload`, fd, authHeaderPost())
-    .then((result) => result.data)
-    .catch((err) => {
-      history.push('/error');
-      console.error(`The error is ${err}`);
+
+  return new Promise((resolve, rej) => {
+    get(null, '/getAwsCredentialsWithBucketConfiguration').then((res) => {
+      const result = apiValidation(res);
+      AWS.config.update({
+        accessKeyId: result.key,
+        secretAccessKey: result.secret,
+        region: result.region,
+      }); // for simplicity. In prod, use loadConfigFromFile, or env variables
+
+      const bucket = new AWS.S3({
+        params: {
+          Bucket: result.bucket_name,
+        },
+      });
+      const params = { Key: file.name, ContentType: file.type, Body: file };
+
+      bucket
+        .upload(params)
+        .on('httpUploadProgress', (evt) => {
+          console.log('Progress:', evt.loaded, '/', evt.total);
+        })
+        .send((err, data) => {
+          console.log(err, data);
+          const obj = {};
+          obj.filename = data.Location;
+          resolve(obj);
+        });
     });
+  });
 };
