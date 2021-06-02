@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { getCurrentcolor } from '../redux/reducers/color.reducer';
 import { getCurrentBranding } from '../redux/reducers/branding.reducer';
 import { setGlobalColors, changeFaviconAndDocumentTitle } from '../Utilities';
-import { Loader } from '../Components/Common';
+import { Loader } from '../Components/Common/Loader/Loading';
 import './App.scss';
 import { history, Routes } from '../Routing';
 import { getCurrentLoadingStatus } from '../redux/reducers/loading.reducer';
@@ -29,7 +29,7 @@ function MainApp(props) {
 
   return (
     <Container fluid className='p-0 m-0 overflow-hidden rootContainer mx-auto'>
-      {isLoading && <Loader />}
+      <Loader />
       <ConnectedRouter history={history}>
         <Routes />
       </ConnectedRouter>
