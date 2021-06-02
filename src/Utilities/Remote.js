@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { history } from '../Routing/History';
 import { apiValidation } from './utilities';
+import { loadingActions } from '../redux/actions/loading.action';
 
 const AWS = require('aws-sdk');
 

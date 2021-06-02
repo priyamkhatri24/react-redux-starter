@@ -1,6 +1,13 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { getAmountLoaded, getTotalLoaded } from '../../../redux/reducers/loading.reducer';
 
-export const Loader = () => {
+const mapStateToProps = (state) => ({
+  totalLoaded: getTotalLoaded(state),
+  amountLoaded: getAmountLoaded(state),
+});
+
+export const Loader = connect(mapStateToProps)(() => {
   return (
     <div
       className='d-flex  justify-content-center align-items-center'
@@ -24,4 +31,4 @@ export const Loader = () => {
       </div>
     </div>
   );
-};
+});
