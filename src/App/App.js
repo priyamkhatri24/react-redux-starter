@@ -29,7 +29,7 @@ function MainApp(props) {
 
   return (
     <Container fluid className='p-0 m-0 overflow-hidden rootContainer mx-auto'>
-      <Loader />
+      {isLoading && <Loader />}
       <ConnectedRouter history={history}>
         <Routes />
       </ConnectedRouter>

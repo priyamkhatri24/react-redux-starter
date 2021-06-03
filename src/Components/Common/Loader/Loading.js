@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import ProgressBar from 'react-bootstrap/ProgressBar';
-import { useInterval } from '../../../Utilities';
+import { connect } from 'react-redux';
+import { getAmountLoaded, getTotalLoaded } from '../../../redux/reducers/loading.reducer';
 import './Loading.scss';
 
-export const Loader = () => {
-  const [count, setCount] = useState(0);
-  useInterval(() => {
-    if (count >= 100) {
-      return;
-    }
-    setCount(count + 1);
-  }, 20);
+const mapStateToProps = (state) => ({
+  totalLoaded: getTotalLoaded(state),
+  amountLoaded: getAmountLoaded(state),
+});
+
+export const Loader = connect(mapStateToProps)((props) => {
+  const { totalLoaded, amountLoaded } = props;
 
   return (
     <div
@@ -28,8 +28,8 @@ export const Loader = () => {
     >
       <div className='Preloader mx-auto' style={{ width: '40%' }}>
         <h6 className='m-lg-3 m-5 text-center'>Uploading...</h6>
-        <ProgressBar animated now={count} label={`${count}%`} max={100} />
+        <ProgressBar animated now={amountLoaded} label={`${amountLoaded}%`} max={totalLoaded} />
       </div>
     </div>
   );
-};
+});

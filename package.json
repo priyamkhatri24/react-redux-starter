@@ -16,6 +16,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "apexcharts": "^3.23.1",
+    "aws-sdk": "^2.919.0",
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
     "ckeditor5-math": "^24.0.0",
@@ -131,5 +132,5 @@
       "git push sid-origin auto"
     ]
   },
-  "buildDate": 1622536446014
+  "buildDate": 1622454264300
 }
