@@ -3,7 +3,9 @@
  * source: https://css-tricks.com/snippets/javascript/get-url-variables/
  * @param  {String} url The URL
  * @return {Object}     The URL parameters
+ *
  */
+
 export const getParams = function getParams(url) {
   const params = {};
   const parser = document.createElement('a');

@@ -4,7 +4,7 @@ const initialState = {
   isLoading: false,
   isLoadingError: false,
   totalLoaded: 100,
-  amountLoaded: 10,
+  amountLoaded: 0,
 };
 
 export function loading(state = initialState, action) {

@@ -14,11 +14,7 @@ if (process.env.NODE_ENV === 'development') {
   middleware = [...middleware, loggerMiddleware];
 }
 
-export const store = createStore(
-  rootReducer(history),
-  persistedState,
-  applyMiddleware(...middleware),
-);
+const store = createStore(rootReducer(history), persistedState, applyMiddleware(...middleware));
 
 store.subscribe(() => {
   saveState({
@@ -36,3 +32,5 @@ store.subscribe(() => {
     displayPage: store.getState().displayPage,
   });
 });
+
+export default store;

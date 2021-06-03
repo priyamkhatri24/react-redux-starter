@@ -17,11 +17,11 @@ import {
   get,
   post,
   propComparator,
-  uploadImage,
   verifyIsImage,
   verifyIsVideo,
   verifyIsFile,
 } from '../../Utilities';
+import { uploadingImage } from '../../Utilities/customUpload';
 import {
   getCourseAddContentTestId,
   getCourseCurrentSectionId,
@@ -211,7 +211,7 @@ const AddContent = (props) => {
     }
     if (file && isFileAllowed) {
       reader.readAsDataURL(e.target.files[0]);
-      uploadImage(file).then((res) => {
+      uploadingImage(file).then((res) => {
         postImageToSection(file.name, res.filename, type);
       });
     }

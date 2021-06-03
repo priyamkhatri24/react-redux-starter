@@ -9,7 +9,8 @@ import { Redirect } from 'react-router-dom';
 import EnquiryDetails from './EnquiryDetails/EnquiryDetails';
 import avatarImage from '../../../../assets/images/avatarImage.jpg';
 import { ChatDots } from '../../../Common';
-import { useTimeout, get, apiValidation } from '../../../../Utilities';
+import { useTimeout, apiValidation } from '../../../../Utilities';
+import { get } from '../../../../Utilities/Remote';
 import { getClientUserId } from '../../../../redux/reducers/clientUserId.reducer';
 
 const Enquiry = (props) => {

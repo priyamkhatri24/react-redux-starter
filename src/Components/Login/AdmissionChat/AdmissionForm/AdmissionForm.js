@@ -13,7 +13,7 @@ import { getUserProfile } from '../../../../redux/reducers/userProfile.reducer';
 import userAvatar from '../../../../assets/images/user.svg';
 import './AdmissionForm.scss';
 import { BackButton, DynamicForm } from '../../../Common';
-import { get, uploadImage, post } from '../../../../Utilities';
+import { get, uploadImage, post } from '../../../../Utilities/Remote';
 
 const AdmissionForm = (props) => {
   // const dataArray = [
