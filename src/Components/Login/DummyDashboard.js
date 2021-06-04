@@ -109,56 +109,65 @@ const DummyDashboard = (props) => {
           Register Now!
         </Button>
         <div className='m-2 mt-4'>
-          <AspectCards
-            data={dummyData.posters}
-            clickCard={() => {}}
-            clickAddCard={() => {}}
-            section='notice'
-            noAddCard
-            bigAspectCard
-          />
+          {dummyData.posters.length > 0 && (
+            <>
+              <AspectCards
+                data={dummyData.posters}
+                clickCard={() => {}}
+                clickAddCard={() => {}}
+                section='notice'
+                noAddCard
+                bigAspectCard
+              />
+            </>
+          )}
 
           <>
-            <h6
-              style={{
-                fontFamily: 'Montserrat-Medium',
-                lineHeight: '20px',
-                textAlign: 'left',
-                fontSize: '14px',
-              }}
-              className='mx-3 mt-4 mb-0'
-            >
-              Our Star Performers
-            </h6>
-            <AspectCards
-              data={dummyData.star_performers}
-              clickCard={() => {}}
-              clickAddCard={() => {}}
-              section='notice'
-              noAddCard
-            />
+            {dummyData.star_performers.length > 0 && (
+              <>
+                <h6
+                  style={{
+                    fontFamily: 'Montserrat-Medium',
+                    lineHeight: '20px',
+                    textAlign: 'left',
+                    fontSize: '14px',
+                  }}
+                  className='mx-3 mt-4 mb-0'
+                >
+                  Our Star Performers
+                </h6>
+                <AspectCards
+                  data={dummyData.star_performers}
+                  clickCard={() => {}}
+                  clickAddCard={() => {}}
+                  section='notice'
+                  noAddCard
+                />
+              </>
+            )}
           </>
-
-          <>
-            <h6
-              style={{
-                fontFamily: 'Montserrat-Medium',
-                lineHeight: '20px',
-                textAlign: 'left',
-                fontSize: '14px',
-              }}
-              className='mx-3 mt-4 mb-0'
-            >
-              Testimonials
-            </h6>
-            <AspectCards
-              data={dummyData.testimonials}
-              clickCard={() => {}}
-              clickAddCard={() => {}}
-              section='notice'
-              noAddCard
-            />
-          </>
+          {dummyData.testimonials.length > 0 && (
+            <>
+              <h6
+                style={{
+                  fontFamily: 'Montserrat-Medium',
+                  lineHeight: '20px',
+                  textAlign: 'left',
+                  fontSize: '14px',
+                }}
+                className='mx-3 mt-4 mb-0'
+              >
+                Testimonials
+              </h6>
+              <AspectCards
+                data={dummyData.testimonials}
+                clickCard={() => {}}
+                clickAddCard={() => {}}
+                section='notice'
+                noAddCard
+              />
+            </>
+          )}
         </div>
         <div className='text-left m-3'>
           <h5 className='Dummy__aboutus mt-5'>About us</h5>

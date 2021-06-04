@@ -385,7 +385,11 @@ const DummyDashboard = Loadable({
 // eslint-disable-next-line
 function Loading({ error }) {
   if (error) {
-    return <ErrorCode />;
+    return (
+      <div style={{ fontFamily: 'Montserrat-Medium', textAlign: 'center' }}>
+        Unable to load the webpage. Please reload the page and try again.
+      </div>
+    );
   }
   return <Skeleton count={50} />;
 }
