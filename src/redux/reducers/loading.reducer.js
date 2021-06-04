@@ -3,7 +3,7 @@ import { loadingConstants } from '../../constants';
 const initialState = {
   isLoading: false,
   isLoadingError: false,
-  totalLoaded: 0,
+  totalLoaded: 100,
   amountLoaded: 0,
 };
 

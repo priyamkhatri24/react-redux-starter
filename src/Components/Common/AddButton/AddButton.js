@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import PersonAddRoundedIcon from '@material-ui/icons/PersonAddRounded';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { uploadImage } from '../../../Utilities';
+import { uploadingImage } from '../../../Utilities/customUpload';
 import { loadingActions } from '../../../redux/actions/loading.action';
 
 const AddButton = (props) => {
@@ -32,15 +32,16 @@ const AddButton = (props) => {
   // };
 
   const upload = (elem, e) => {
-    setLoadingPendingToStore();
+    //  setLoadingPendingToStore();
     const reader = new FileReader();
     const file = e.target.files[0];
     if (file) {
       reader.readAsDataURL(e.target.files[0]);
-      uploadImage(file).then((res) => {
+
+      uploadingImage(file).then((res) => {
         console.log('fileu;lod ', res);
         elem.func(file.name, res.filename);
-        setLoadingSuccessToStore();
+        //    setLoadingSuccessToStore();
       });
     }
   };

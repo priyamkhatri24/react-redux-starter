@@ -19,7 +19,7 @@ import Swal from 'sweetalert2';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import CheckIcon from '@material-ui/icons/Check';
 import LiveClassesStyle from './LiveClasses.style';
-
+import Readmore from '../Common/Readmore';
 import {
   getClientId,
   getClientUserId,
@@ -455,14 +455,7 @@ class LiveClasses extends Component {
 
                           <p css={LiveClassesStyle.adminBatches}>
                             Streaming In :{' '}
-                            {elem.batch_array.map((e, i) => {
-                              return (
-                                <span css={LiveClassesStyle.adminBatchesSpan} key={`elem${e}`}>
-                                  {e}
-                                  {i < elem.batch_array.length - 1 ? ',' : ''}
-                                </span>
-                              );
-                            })}
+                            <Readmore maxcharactercount={100} batchesArray={elem.batch_array} />
                           </p>
                           <Row className='justify-content-center mb-2 mb-lg-4'>
                             <Button
@@ -560,14 +553,7 @@ class LiveClasses extends Component {
 
                         <p css={LiveClassesStyle.adminBatches}>
                           Streaming In :{' '}
-                          {elem.batch_array.map((e, i) => {
-                            return (
-                              <span css={LiveClassesStyle.adminBatchesSpan} key={`elem${e}`}>
-                                {e}
-                                {i < elem.batch_array.length - 1 ? ',' : ''}
-                              </span>
-                            );
-                          })}
+                          <Readmore maxcharactercount={100} batchesArray={elem.batch_array} />
                         </p>
                         <Row className='justify-content-center mb-2 mb-lg-4'>
                           <Col xs={9} className='text-center'>
@@ -693,14 +679,7 @@ class LiveClasses extends Component {
 
                             <p css={LiveClassesStyle.adminBatches}>
                               Streaming In :{' '}
-                              {elem.batch_array.map((e, i) => {
-                                return (
-                                  <span css={LiveClassesStyle.adminBatchesSpan} key={`elem${e}`}>
-                                    {e}
-                                    {i < elem.batch_array.length - 1 ? ',' : ''}
-                                  </span>
-                                );
-                              })}
+                              <Readmore maxcharactercount={100} batchesArray={elem.batch_array} />
                             </p>
                             <Row className='justify-content-center mb-2 mb-lg-4'>
                               <Button
@@ -824,14 +803,7 @@ class LiveClasses extends Component {
 
                         <p css={LiveClassesStyle.adminBatches}>
                           Streaming In :{' '}
-                          {elem.batch_array.map((e, i) => {
-                            return (
-                              <span css={LiveClassesStyle.adminBatchesSpan} key={`elem${e}`}>
-                                {e}
-                                {i < elem.batch_array.length - 1 ? ',' : ''}
-                              </span>
-                            );
-                          })}
+                          <Readmore maxcharactercount={100} batchesArray={elem.batch_array} />
                         </p>
                         <Row className='justify-content-center mb-2 mb-lg-4'>
                           <Button
@@ -872,3 +844,12 @@ LiveClasses.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   userProfile: PropTypes.instanceOf(Object).isRequired,
 };
+
+// {elem.batch_array.map((e, i) => {
+//   return (
+//     <span css={LiveClassesStyle.adminBatchesSpan} key={`elem${e}`}>
+//       {e}
+//       {i < elem.batch_array.length - 1 ? ',' : ''}
+//     </span>
+//   );
+// })}

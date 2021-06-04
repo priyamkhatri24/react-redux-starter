@@ -11,12 +11,14 @@ import fromUnixTime from 'date-fns/fromUnixTime';
 import format from 'date-fns/format';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { getCourseId } from '../../redux/reducers/course.reducer';
-import { apiValidation, get, post } from '../../Utilities';
+import { get, post } from '../../Utilities/Remote';
+import { apiValidation } from '../../Utilities';
 import { PageHeader } from '../Common';
 import placeholder from '../../assets/images/ycIcon.png';
 import { courseActions } from '../../redux/actions/course.action';
 import './Courses.scss';
 import '../Profile/Profile.scss';
+import Readmore from '../Common/Readmore';
 
 const TeacherCourses = (props) => {
   const {
@@ -38,6 +40,7 @@ const TeacherCourses = (props) => {
     get({ client_id: clientId }, '/getCoursesOfCoaching').then((res) => {
       const result = apiValidation(res);
       setCourses(result);
+      console.log(result);
     });
     get({ client_id: clientId }, '/getPublishedCoursesOfCoaching').then((res) => {
       const result = apiValidation(res);
@@ -114,6 +117,8 @@ const TeacherCourses = (props) => {
   const goToDashboard = () => {
     history.push('/');
   };
+  const newarray = courses.map((course) => course.current_batch).map((e) => e.batch_name);
+  console.log(newarray, 'newarray');
 
   return (
     <>
@@ -166,18 +171,9 @@ const TeacherCourses = (props) => {
                         style={{ fontSize: '12px', color: 'rgba(22, 22, 22, 1)' }}
                       >
                         To:{' '}
-                        {course.current_batch.map((e, i) => {
-                          return (
-                            <>
-                              <span key={e.batch_id}>{e.batch_name}</span>
-                              {i !== course.current_batch.length - 1 ? (
-                                <span>, </span>
-                              ) : (
-                                <span> </span>
-                              )}
-                            </>
-                          );
-                        })}
+                        {course.current_batch.length > 0 && (
+                          <Readmore maxcharactercount={100} batchesArray={newarray} />
+                        )}
                       </p>
                       <div
                         className='ml-auto rounded Courses__slimButton'
@@ -322,3 +318,16 @@ TeacherCourses.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
 };
+
+// {course.current_batch.map((e, i) => {
+//   return (
+//     <>
+//       <span key={e.batch_id}>{e.batch_name}</span>
+//       {i !== course.current_batch.length - 1 ? (
+//         <span>, </span>
+//       ) : (
+//         <span> </span>
+//       )}
+//     </>
+//   );
+// })}
