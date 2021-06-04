@@ -251,7 +251,7 @@ class LiveClasses extends Component {
       batch_array: batches,
       client_id: clientId,
     };
-
+    // addLiveStreamLatest
     post(payload, '/addLiveStream')
       .then((res) => {
         const result = apiValidation(res);
