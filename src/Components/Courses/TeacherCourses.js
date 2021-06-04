@@ -13,7 +13,7 @@ import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.
 import { getCourseId } from '../../redux/reducers/course.reducer';
 import { get, post } from '../../Utilities/Remote';
 import { apiValidation } from '../../Utilities';
-import { PageHeader } from '../Common';
+import { Readmore, PageHeader } from '../Common';
 import placeholder from '../../assets/images/ycIcon.png';
 import { courseActions } from '../../redux/actions/course.action';
 import './Courses.scss';
@@ -39,6 +39,7 @@ const TeacherCourses = (props) => {
     get({ client_id: clientId }, '/getCoursesOfCoaching').then((res) => {
       const result = apiValidation(res);
       setCourses(result);
+      console.log(result);
     });
     get({ client_id: clientId }, '/getPublishedCoursesOfCoaching').then((res) => {
       const result = apiValidation(res);
@@ -167,18 +168,12 @@ const TeacherCourses = (props) => {
                         style={{ fontSize: '12px', color: 'rgba(22, 22, 22, 1)' }}
                       >
                         To:{' '}
-                        {course.current_batch.map((e, i) => {
-                          return (
-                            <>
-                              <span key={e.batch_id}>{e.batch_name}</span>
-                              {i !== course.current_batch.length - 1 ? (
-                                <span>, </span>
-                              ) : (
-                                <span> </span>
-                              )}
-                            </>
-                          );
-                        })}
+                        {course.current_batch.length > 0 && (
+                          <Readmore
+                            maxcharactercount={100}
+                            batchesArray={course.current_batch.map((e) => e.batch_name)}
+                          />
+                        )}
                       </p>
                       <div
                         className='ml-auto rounded Courses__slimButton'
@@ -243,18 +238,12 @@ const TeacherCourses = (props) => {
                         }}
                       >
                         To:{' '}
-                        {course.current_batch.map((e, i) => {
-                          return (
-                            <>
-                              <span key={e.batch_id}>{e.batch_name}</span>
-                              {i !== course.current_batch.length - 1 ? (
-                                <span>,</span>
-                              ) : (
-                                <span> </span>
-                              )}
-                            </>
-                          );
-                        })}
+                        {course.current_batch.length > 0 && (
+                          <Readmore
+                            maxcharactercount={100}
+                            batchesArray={course.current_batch.map((e) => e.batch_name)}
+                          />
+                        )}
                       </p>
                     </Row>
                   </Col>
@@ -323,3 +312,16 @@ TeacherCourses.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
 };
+
+// {course.current_batch.map((e, i) => {
+//   return (
+//     <>
+//       <span key={e.batch_id}>{e.batch_name}</span>
+//       {i !== course.current_batch.length - 1 ? (
+//         <span>, </span>
+//       ) : (
+//         <span> </span>
+//       )}
+//     </>
+//   );
+// })}

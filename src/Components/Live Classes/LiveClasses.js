@@ -19,7 +19,6 @@ import Swal from 'sweetalert2';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import CheckIcon from '@material-ui/icons/Check';
 import LiveClassesStyle from './LiveClasses.style';
-
 import {
   getClientId,
   getClientUserId,
@@ -27,7 +26,7 @@ import {
 } from '../../redux/reducers/clientUserId.reducer';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { get, post, apiValidation } from '../../Utilities';
-import { PageHeader, BatchesSelector } from '../Common';
+import { PageHeader, BatchesSelector, Readmore } from '../Common';
 import Jitsi from './Jitsi';
 import { createBigBlueButtonStream, rejoinBigBlueButtonStream } from './bbb';
 
@@ -468,14 +467,7 @@ class LiveClasses extends Component {
 
                           <p css={LiveClassesStyle.adminBatches}>
                             Streaming In :{' '}
-                            {elem.batch_array.map((e, i) => {
-                              return (
-                                <span css={LiveClassesStyle.adminBatchesSpan} key={`elem${e}`}>
-                                  {e}
-                                  {i < elem.batch_array.length - 1 ? ',' : ''}
-                                </span>
-                              );
-                            })}
+                            <Readmore maxcharactercount={100} batchesArray={elem.batch_array} />
                           </p>
                           <Row className='justify-content-center mb-2 mb-lg-4'>
                             <Button
@@ -567,14 +559,7 @@ class LiveClasses extends Component {
 
                     <p css={LiveClassesStyle.adminBatches}>
                       Streaming In :{' '}
-                      {existingStream.batch_array.map((e, i) => {
-                        return (
-                          <span css={LiveClassesStyle.adminBatchesSpan} key={`elem${e}`}>
-                            {e}
-                            {i < existingStream.batch_array.length - 1 ? ',' : ''}
-                          </span>
-                        );
-                      })}
+                      <Readmore maxcharactercount={100} batchesArray={existingStream.batch_array} />
                     </p>
                     <Row className='justify-content-center mb-2 mb-lg-4'>
                       <Col xs={9} className='text-center'>
@@ -699,14 +684,7 @@ class LiveClasses extends Component {
 
                             <p css={LiveClassesStyle.adminBatches}>
                               Streaming In :{' '}
-                              {elem.batch_array.map((e, i) => {
-                                return (
-                                  <span css={LiveClassesStyle.adminBatchesSpan} key={`elem${e}`}>
-                                    {e}
-                                    {i < elem.batch_array.length - 1 ? ',' : ''}
-                                  </span>
-                                );
-                              })}
+                              <Readmore maxcharactercount={100} batchesArray={elem.batch_array} />
                             </p>
                             <Row className='justify-content-center mb-2 mb-lg-4'>
                               <Button
@@ -830,14 +808,7 @@ class LiveClasses extends Component {
 
                         <p css={LiveClassesStyle.adminBatches}>
                           Streaming In :{' '}
-                          {elem.batch_array.map((e, i) => {
-                            return (
-                              <span css={LiveClassesStyle.adminBatchesSpan} key={`elem${e}`}>
-                                {e}
-                                {i < elem.batch_array.length - 1 ? ',' : ''}
-                              </span>
-                            );
-                          })}
+                          <Readmore maxcharactercount={100} batchesArray={elem.batch_array} />
                         </p>
                         <Row className='justify-content-center mb-2 mb-lg-4'>
                           <Button
@@ -878,3 +849,12 @@ LiveClasses.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   userProfile: PropTypes.instanceOf(Object).isRequired,
 };
+
+// {elem.batch_array.map((e, i) => {
+//   return (
+//     <span css={LiveClassesStyle.adminBatchesSpan} key={`elem${e}`}>
+//       {e}
+//       {i < elem.batch_array.length - 1 ? ',' : ''}
+//     </span>
+//   );
+// })}
