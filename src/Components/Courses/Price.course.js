@@ -167,7 +167,8 @@ const Price = (props) => {
   };
 
   const addCourseFee = () => {
-    if (!isFree && discountCoursePrice > currentCoursePrice) {
+    console.log(discountCoursePrice, currentCoursePrice);
+    if (!isFree && Number(discountCoursePrice) > Number(currentCoursePrice)) {
       Swal.fire({
         icon: 'error',
         title: 'Oops!',

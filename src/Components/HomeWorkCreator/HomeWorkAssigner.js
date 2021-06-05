@@ -374,11 +374,11 @@ const HomeWorkAssigner = (props) => {
                 </label>
               </Col>
             </Row>
-            <Row className='mx-2'>
-              <small className='text-left Homework__smallHeading mx-3 mb-2 mt-4'>
-                Where Do You want to post this assignment
-              </small>
+            <small className='text-left Homework__smallHeading mx-3 mb-2 mt-4'>
+              Do you wish to add Analysis
+            </small>
 
+            <Row className='mx-2'>
               {showAnalysis.map((e) => {
                 return (
                   <div

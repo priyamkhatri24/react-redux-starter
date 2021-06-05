@@ -46,6 +46,13 @@ const Question = (props) => {
 
           <div className='Homework__questionHeading text-left m-2'>
             <MathJax math={String.raw`${question.question_text}`} />
+            {question.question_image && (
+              <img
+                src={question.question_image}
+                alt='question'
+                style={{ maxWidth: '90vw', maxHeight: '30vh' }}
+              />
+            )}
           </div>
 
           {question.question_type !== 'subjective' && (
@@ -55,10 +62,20 @@ const Question = (props) => {
           {question.question_type !== 'subjective' &&
             question.option_array.map((e, i) => {
               return (
-                <div className='d-flex mx-3 mb-2 Homework__multipleOptions' key={e.order}>
-                  <span className='mr-2 my-auto'>{String.fromCharCode(i + 65)}.</span>{' '}
-                  <MathJax math={String.raw`${e.text}`} />
-                </div>
+                <>
+                  <div className='d-flex mx-3 mb-2 Homework__multipleOptions' key={e.order}>
+                    <span className='mr-2 my-auto'>{String.fromCharCode(i + 65)}.</span>{' '}
+                    <MathJax math={String.raw`${e.text}`} />
+                  </div>
+                  {e.image && (
+                    <img
+                      src={e.image}
+                      alt='option'
+                      className='img-fluid m-2'
+                      style={{ maxWidth: '90vw', maxHeight: '20vh' }}
+                    />
+                  )}
+                </>
               );
             })}
 

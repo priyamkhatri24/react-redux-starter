@@ -162,7 +162,7 @@ const BuyCourse = (props) => {
       const result = apiValidation(res);
       if (result.coupon_status === 'true') {
         let newPrice = coursePrice - result.price;
-        if (newPrice <= 0) newPrice = 1;
+        if (newPrice <= 0) newPrice = 0;
         setCoursePrice(newPrice);
         setCouponId(result.coupon_id);
         setCouponMessage(result.message);
@@ -224,6 +224,30 @@ const BuyCourse = (props) => {
       const result = apiValidation(res);
       setOrder(result);
       openFeeModal();
+    });
+  };
+
+  const basSubscribe = () => {
+    const payload = {
+      client_user_id: history.location.state.clientUserId,
+      course_id: history.location.state.id,
+      coupon_id: couponId,
+    };
+    post(payload, '/subscribeStudentToCourse').then((res) => {
+      if (res.success === 1) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Subscribed!',
+          text: `You have successfully subscribed to ${course.course_title}.`,
+        });
+        history.push('/');
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops!',
+          text: `Unable to subscribe to this course`,
+        });
+      }
     });
   };
 
@@ -398,7 +422,10 @@ const BuyCourse = (props) => {
           <Button variant='boldTextSecondary' onClick={() => closeCouponModal()}>
             Cancel
           </Button>
-          <Button variant='boldText' onClick={() => payToRazorBaba()}>
+          <Button
+            variant='boldText'
+            onClick={coursePrice ? () => payToRazorBaba() : () => basSubscribe()}
+          >
             Pay
           </Button>
         </Modal.Footer>

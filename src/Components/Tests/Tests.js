@@ -97,6 +97,7 @@ const Tests = (props) => {
   );
 
   const startLiveTest = (elem) => {
+    console.log(elem, allowLiveTest);
     const liveCheck = allowLiveTest.filter((e) => {
       return e.id === elem.test_id;
     });
