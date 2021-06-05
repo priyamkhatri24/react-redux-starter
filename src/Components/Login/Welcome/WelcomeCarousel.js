@@ -66,7 +66,11 @@ const WelcomeCarousel = (props) => {
         })}
       </Swiper>
 
-      <Button variant='JumboLogin' onClick={() => changeComponent('PhoneNo')}>
+      <Button
+        variant='JumboLogin'
+        onClick={() => changeComponent('PhoneNo')}
+        style={{ zIndex: '999' }}
+      >
         Log In / Sign Up
       </Button>
     </>
