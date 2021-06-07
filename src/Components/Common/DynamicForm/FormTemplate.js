@@ -110,37 +110,37 @@ const FormTemplate = (props) => {
   //   );
   // };
 
-  // const renderDate = (input) => {
-  //   return (
-  //     <Fragment key={input.name}>
-  //       <div className='my-4 FormTemplate__input mx-auto'>
-  //         <Field name={input.name}>
-  //           {(property) => {
-  //             const { field } = property;
-  //             const { errors, touched } = property.form;
-  //             const hasError = errors[input.name] && touched[input.name] ? 'hasError' : '';
+  const renderDate = (input) => {
+    return (
+      <Fragment key={input.name}>
+        <div className='my-auto FormTemplate__input mx-auto'>
+          <Field name={input.name}>
+            {(property) => {
+              const { field } = property;
+              const { errors, touched } = property.form;
+              const hasError = errors[input.name] && touched[input.name] ? 'hasError' : '';
 
-  //             return (
-  //               <label htmlFor={field.name} className='has-float-label my-auto'>
-  //                 <input
-  //                   className={`form-control ${hasError}`}
-  //                   {...field}
-  //                   type='date'
-  //                   placeholder={input.label}
-  //                   id={field.name}
-  //                 />
-  //                 <span>{input.label}</span>
-  //               </label>
-  //               // <div>
-  //               //   <textarea {...field} id={hasError} />
-  //               // </div>
-  //             );
-  //           }}
-  //         </Field>
-  //       </div>
-  //     </Fragment>
-  //   );
-  // };
+              return (
+                <label htmlFor={field.name} className='has-float-label my-auto'>
+                  <input
+                    className={`form-control ${hasError}`}
+                    {...field}
+                    type='date'
+                    placeholder={input.label}
+                    id={field.name}
+                  />
+                  <span>{input.label}</span>
+                </label>
+                // <div>
+                //   <textarea {...field} id={hasError} />
+                // </div>
+              );
+            }}
+          </Field>
+        </div>
+      </Fragment>
+    );
+  };
 
   const getInitialValues = (inputs) => {
     // declare an empty initialValues object
@@ -216,7 +216,11 @@ const FormTemplate = (props) => {
       }) => (
         <form onSubmit={handleSubmit} className='mx-4 mb-4 '>
           {fields.map((input) => {
-            return input.type === 'select' ? renderSelect(input) : renderInputField(input);
+            return input.type === 'select'
+              ? renderSelect(input)
+              : input.type === 'date'
+              ? renderDate(input)
+              : renderInputField(input);
           })}
           {Object.keys(errors).length > 0 && (
             <small className='text-danger d-block my-3' style={{ fontFamily: 'Montserrat-Medium' }}>

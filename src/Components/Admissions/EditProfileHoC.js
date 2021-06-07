@@ -13,35 +13,42 @@ const EditProfileHOC = (props) => {
   const [formDataArray, setFormDataArray] = useState([]);
 
   useEffect(() => {
+    const currentUser = history.location.state.user;
+    console.log(currentUser, 'Hello');
     let teacherArray = [];
     const dataArray = [
-      { label: 'First Name', value: user.first_name, type: 'input', name: 'first_name' },
-      { label: 'Last Name', value: user.last_name, type: 'input', name: 'last_name' },
+      { label: 'First Name', value: currentUser.first_name, type: 'input', name: 'first_name' },
+      { label: 'Last Name', value: currentUser.last_name, type: 'input', name: 'last_name' },
       {
         label: 'Gender',
-        value: 'Gender',
+        value: currentUser.gender,
         type: 'select',
         name: 'gender',
         data: ['Male', 'Female'],
       },
-      { label: 'Email address', value: user.email, type: 'input', name: 'email' },
+      { label: 'Email address', value: currentUser.email, type: 'input', name: 'email' },
       {
         label: 'Residential Address',
-        value: user.address,
+        value: currentUser.address,
         type: 'input',
         name: 'address',
       },
       {
         label: 'Date of Birth',
-        value: user.birthday,
+        value: currentUser.birthday,
         type: 'date',
         name: 'birthday',
       },
-      { label: "Parent's Name", value: user.parent_name, type: 'input', name: 'parent_name' },
+      {
+        label: "Parent's Name",
+        value: currentUser.parent_name,
+        type: 'input',
+        name: 'parent_name',
+      },
       {
         label: "Parent's Contact",
-        value: user.parent_contact,
-        type: 'number',
+        value: currentUser.parent_contact,
+        type: 'input',
         name: 'parent_contact',
       },
     ];
@@ -53,6 +60,7 @@ const EditProfileHOC = (props) => {
     }
 
     setFormDataArray(user.role_id !== '1' ? teacherArray : dataArray);
+    console.log(formDataArray, 'formdata');
   }, [user]);
 
   const getFormData = (values, image) => {

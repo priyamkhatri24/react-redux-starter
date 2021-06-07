@@ -143,9 +143,13 @@ const UserDetails = (props) => {
             >
               <div
                 className='Courses__edit text-center py-1'
-                onClick={() => history.push('/admissions/editprofile')}
+                onClick={() =>
+                  history.push({ pathname: '/admissions/editprofile', state: { user } })
+                }
                 role='button'
-                onKeyDown={() => history.push('/admissions/editprofile')}
+                onKeyDown={() =>
+                  history.push({ pathname: '/admissions/editprofile', state: { user } })
+                }
                 tabIndex='-1'
               >
                 <CreateIcon />

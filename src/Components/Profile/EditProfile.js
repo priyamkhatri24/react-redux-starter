@@ -37,7 +37,7 @@ const EditProfile = (props) => {
   const profileImage = useRef('');
   const [image, setImage] = useState(userAvatar);
   const [dataArray, setDataArray] = useState([
-    { label: 'First Name', value: '', type: 'input', name: 'first_name' },
+    { label: 'First Name', value: 'ahkjshak', type: 'input', name: 'first_name' },
     { label: 'Last Name', value: '', type: 'input', name: 'last_name' },
     {
       label: 'Gender',
