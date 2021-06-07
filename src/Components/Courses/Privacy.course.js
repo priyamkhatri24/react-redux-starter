@@ -43,6 +43,8 @@ const Privacy = (props) => {
     });
   }, [clientId]);
 
+  // getcourseDetails
+
   const deleteTheDamnCourse = () => {
     Swal.fire({
       title: 'Delete Course',

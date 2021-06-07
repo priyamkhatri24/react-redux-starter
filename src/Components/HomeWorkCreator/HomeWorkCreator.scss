@@ -221,3 +221,8 @@
   margin-top: auto;
   margin-bottom: auto;
 }
+
+#react-mathjax-preview > .react-mathjax-preview-result > img {
+  width: 90px;
+  height: 90px;
+}

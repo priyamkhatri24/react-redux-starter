@@ -15,7 +15,8 @@ const generateImageURL = (canvas, crop) => {
 
   return new Promise((resolve, reject) => {
     canvas.toBlob((blob) => {
-      const finalFile = new File([blob], 'image.png');
+      const newFileName = `${Math.random().toString(16).slice(2)}.png`;
+      const finalFile = new File([blob], newFileName);
 
       uploadImage(finalFile).then((res) => {
         console.log('fileu;lod ', res);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Row from 'react-bootstrap/Row';
@@ -74,6 +74,25 @@ const NoticeBoard = (props) => {
     return null;
   };
 
+  const getNotices = useCallback(() => {
+    let isAdmin = false;
+    if (roleArray.includes(4)) isAdmin = true;
+
+    const payload = {
+      client_user_id: clientUserId,
+      client_id: clientId,
+      is_admin: isAdmin,
+    };
+
+    get(payload, '/getAllNoticesOfUser')
+      .then((res) => {
+        const result = apiValidation(res);
+        setNotices(result);
+        setFilteredNotices(result);
+      })
+      .catch((err) => console.error(err));
+  }, [clientId, clientUserId, roleArray]);
+
   const handleClose = (option) => {
     if (option === 'everyone') {
       setNoticeType('everyone');
@@ -111,7 +130,10 @@ const NoticeBoard = (props) => {
               console.log(noticeMessagePayload, newPayload);
 
               Promise.all([notificationPromise, SMSPromise])
-                .then((response) => console.log(response))
+                .then((response) => {
+                  console.log(response);
+                  getNotices();
+                })
                 .catch((err) => console.log('Promise.all ka err', err));
             }
           })
@@ -186,7 +208,11 @@ const NoticeBoard = (props) => {
             if (sendSMS) SMSPromise = post(noticeMessagePayload, '/sendNoticeMessageToStudents');
 
             Promise.all([notificationPromise, SMSPromise])
-              .then((resp) => console.log(resp))
+              .then((resp) => {
+                console.log(resp);
+                getNotices();
+                closeBatchModal();
+              })
               .catch((err) => console.log('Promise.all ka err', err));
           }
         })
@@ -250,7 +276,7 @@ const NoticeBoard = (props) => {
 
           const SMSPayload = {
             message: newNotice,
-            user_array: UserUserIdArray,
+            user_array: JSON.stringify(UserUserIdArray),
             coaching_name: currentbranding.branding.client_name,
           };
 
@@ -261,7 +287,11 @@ const NoticeBoard = (props) => {
           console.log(SMSPayload, newPayload);
 
           Promise.all([notificationPromise, SMSPromise])
-            .then((response) => console.log(response))
+            .then((response) => {
+              console.log(response);
+              getNotices();
+              closeStudentModal();
+            })
             .catch((err) => console.log('Promise.all ka err', err));
         }
       })
@@ -283,23 +313,7 @@ const NoticeBoard = (props) => {
   };
 
   useEffect(() => {
-    let isAdmin = false;
-    if (roleArray.includes(4)) isAdmin = true;
-
-    const payload = {
-      client_user_id: clientUserId,
-      client_id: clientId,
-      is_admin: isAdmin,
-    };
-
-    get(payload, '/getAllNoticesOfUser')
-      .then((res) => {
-        const result = apiValidation(res);
-        setNotices(result);
-        setFilteredNotices(result);
-      })
-      .catch((err) => console.error(err));
-
+    getNotices();
     const coachingPayload = { client_id: clientId };
 
     get(coachingPayload, '/getAllBatchesOfCoaching')
@@ -308,7 +322,7 @@ const NoticeBoard = (props) => {
         setBatches(result);
       })
       .catch((e) => console.log(e));
-  }, [clientId, clientUserId, roleArray]);
+  }, [clientId, clientUserId, roleArray, getNotices]);
 
   return (
     <div>
