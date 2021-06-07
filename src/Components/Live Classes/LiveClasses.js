@@ -19,7 +19,6 @@ import Swal from 'sweetalert2';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import CheckIcon from '@material-ui/icons/Check';
 import LiveClassesStyle from './LiveClasses.style';
-import Readmore from '../Common/Readmore';
 import {
   getClientId,
   getClientUserId,
@@ -27,7 +26,7 @@ import {
 } from '../../redux/reducers/clientUserId.reducer';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { get, post, apiValidation } from '../../Utilities';
-import { PageHeader, BatchesSelector } from '../Common';
+import { PageHeader, BatchesSelector, Readmore } from '../Common';
 import Jitsi from './Jitsi';
 import { createBigBlueButtonStream, rejoinBigBlueButtonStream } from './bbb';
 
@@ -39,12 +38,13 @@ class LiveClasses extends Component {
       adminBatches: [],
       studentBatches: [],
       selectedBatches: [],
-      existingStream: [],
+      existingStream: {},
       duration: {},
       showModal: false,
       inputValue: '',
       domain: 'tcalive.ingenimedu.com',
       triggerJitsi: false,
+      jitsiToken: null,
       jitsiRoomName: '',
       jitsiFirstName: props.userProfile.firstName,
       jitsiLastName: props.userProfile.lastName,
@@ -72,9 +72,7 @@ class LiveClasses extends Component {
       };
       get(payload, '/getLiveStreamsForStudent').then((res) => {
         const result = apiValidation(res);
-        const tempfilter = result.filter((e) => e.stream_type !== 'zoom');
         this.setState({ studentBatches: result });
-        // this.setState({ studentBatches: tempfilter });
       });
     }
 
@@ -82,12 +80,6 @@ class LiveClasses extends Component {
       const payload = {
         client_user_id: clientUserId,
       };
-
-      get(payload, '/getLiveStreamsForTeacher').then((res) => {
-        const result = apiValidation(res);
-
-        if (result.length) this.setState({ existingStream: result, doesLiveStreamExist: true });
-      });
 
       get(payload, '/getBatchesOfTeacher')
         .then((res) => {
@@ -99,10 +91,19 @@ class LiveClasses extends Component {
       get({ client_user_id: clientUserId }, '/getCurrentLiveStreamsForTeacher').then((res) => {
         console.log(res, 'res');
         const result = apiValidation(res);
-        this.setState({
-          zoomMeeting: result.permanent_zoom_meeting_id,
-          zoomPassCode: result.permanent_zoom_password,
-        });
+        if (result.is_active === 'true') {
+          this.setState({
+            existingStream: result,
+            doesLiveStreamExist: true,
+            zoomMeeting: result.permanent_zoom_meeting_id,
+            zoomPassCode: result.permanent_zoom_password,
+          });
+        } else {
+          this.setState({
+            zoomMeeting: result.permanent_zoom_meeting_id,
+            zoomPassCode: result.permanent_zoom_password,
+          });
+        }
       });
     }
 
@@ -141,10 +142,9 @@ class LiveClasses extends Component {
         client_user_id: clientUserId,
       };
 
-      get(payload, '/getLiveStreamsForTeacher').then((res) => {
+      get(payload, '/getCurrentLiveStreamsForTeacher').then((res) => {
         const result = apiValidation(res);
-
-        if (result.length)
+        if (result.is_active === 'true')
           this.setState({ existingStream: result, doesLiveStreamExist: true, doesBBBexist: false });
       });
     }
@@ -183,7 +183,7 @@ class LiveClasses extends Component {
 
   rejoinLiveStream = (element) => {
     const { domain, jitsiFirstName, jitsiLastName } = this.state;
-
+    console.log(element);
     if (element.stream_type === 'jitsi') {
       let strippedDomain = domain;
       if (element.server_url) strippedDomain = element.server_url.split('/')[2]; //eslint-disable-line
@@ -191,6 +191,7 @@ class LiveClasses extends Component {
         jitsiRoomName: element.stream_link,
         domain: strippedDomain,
         triggerJitsi: true,
+        jitsiToken: element.moderator_password,
       });
     } else if (element.stream_type === 'big_blue_button') {
       rejoinBigBlueButtonStream(
@@ -214,7 +215,7 @@ class LiveClasses extends Component {
     post(payload, '/deleteLiveStream')
       .then((res) => {
         const result = apiValidation(res);
-        if (result) this.setState({ existingStream: [], doesLiveStreamExist: false });
+        if (result) this.setState({ existingStream: {}, doesLiveStreamExist: false });
       })
       .catch((e) => console.error(e));
   };
@@ -242,6 +243,7 @@ class LiveClasses extends Component {
   };
 
   createJitsiStream = (batches = [], duration, clientId, clientUserId) => {
+    const { userProfile } = this.props;
     const streamLink = `${Date.now()}${clientId}${clientUserId}`;
 
     const payload = {
@@ -250,14 +252,22 @@ class LiveClasses extends Component {
       client_user_id: clientUserId,
       batch_array: batches,
       client_id: clientId,
+      name: `${userProfile.firstName} ${userProfile.lastName}`,
+      contact: `${userProfile.contact}`,
     };
-
-    post(payload, '/addLiveStream')
+    // addLiveStreamLatest
+    post(payload, '/addLiveStreamLatest')
       .then((res) => {
+        console.log(res);
         const result = apiValidation(res);
         const jitsiDomain = result.server_url.split('/')[2];
 
-        this.setState({ domain: jitsiDomain, jitsiRoomName: streamLink, triggerJitsi: true });
+        this.setState({
+          domain: jitsiDomain,
+          jitsiRoomName: streamLink,
+          jitsiToken: result.user_auth ? result.jwt_token : null,
+          triggerJitsi: true,
+        });
       })
       .catch((e) => {
         console.error(e);
@@ -404,6 +414,7 @@ class LiveClasses extends Component {
       durationValue,
       zoomPasscodeModal,
       copiedToClipboard,
+      jitsiToken,
     } = this.state;
     return (
       <div css={LiveClassesStyle.liveClasses}>
@@ -417,6 +428,7 @@ class LiveClasses extends Component {
             lastName={jitsiLastName}
             roomName={jitsiRoomName}
             role={role}
+            token={jitsiToken}
           />
         )}
         <Tabs
@@ -527,51 +539,44 @@ class LiveClasses extends Component {
 
             {!triggerJitsi && role === 'teacher' && (
               <>
-                {doesLiveStreamExist &&
-                  existingStream.map((elem) => {
-                    return (
-                      <div
-                        css={LiveClassesStyle.adminCard}
-                        className='p-2 m-3'
-                        key={`elem${elem.stream_id}`}
-                      >
-                        <h6 css={LiveClassesStyle.adminHeading} className='mb-0'>
-                          Ongoing Live Stream
-                        </h6>
-                        <p css={LiveClassesStyle.adminCardTime} className='mb-0'>
-                          {format(fromUnixTime(elem.created_at), 'HH:mm MMM dd, yyyy')}
-                        </p>
+                {doesLiveStreamExist && (
+                  <div css={LiveClassesStyle.adminCard} className='p-2 m-3'>
+                    <h6 css={LiveClassesStyle.adminHeading} className='mb-0'>
+                      Ongoing Live Stream
+                    </h6>
+                    <p css={LiveClassesStyle.adminCardTime} className='mb-0'>
+                      {format(fromUnixTime(existingStream.created_at), 'HH:mm MMM dd, yyyy')}
+                    </p>
 
-                        <p css={LiveClassesStyle.adminDuration}>
-                          Duration:{' '}
-                          <span css={LiveClassesStyle.adminDurationSpan}>
-                            {`${Math.floor(elem.duration / 3600000)} hr ${Math.floor(
-                              (elem.duration % 3600) / 60,
-                            )} min `}
-                          </span>
-                        </p>
+                    <p css={LiveClassesStyle.adminDuration}>
+                      Duration:{' '}
+                      <span css={LiveClassesStyle.adminDurationSpan}>
+                        {`${Math.floor(existingStream.duration / 3600000)} hr ${Math.floor(
+                          (existingStream.duration % 3600) / 60,
+                        )} min `}
+                      </span>
+                    </p>
 
-                        <p css={LiveClassesStyle.adminBatches}>
-                          Streaming In :{' '}
-                          <Readmore maxcharactercount={100} batchesArray={elem.batch_array} />
-                        </p>
-                        <Row className='justify-content-center mb-2 mb-lg-4'>
-                          <Col xs={9} className='text-center'>
-                            <Button
-                              variant='customPrimary'
-                              size='sm'
-                              onClick={() => this.rejoinLiveStream(elem)}
-                            >
-                              Rejoin
-                            </Button>
-                          </Col>
-                          <Col>
-                            <DeleteIcon onClick={() => this.deleteLiveStream(elem)} />
-                          </Col>
-                        </Row>
-                      </div>
-                    );
-                  })}
+                    <p css={LiveClassesStyle.adminBatches}>
+                      Streaming In :{' '}
+                      <Readmore maxcharactercount={100} batchesArray={existingStream.batch_array} />
+                    </p>
+                    <Row className='justify-content-center mb-2 mb-lg-4'>
+                      <Col xs={9} className='text-center'>
+                        <Button
+                          variant='customPrimary'
+                          size='sm'
+                          onClick={() => this.rejoinLiveStream(existingStream)}
+                        >
+                          Rejoin
+                        </Button>
+                      </Col>
+                      <Col>
+                        <DeleteIcon onClick={() => this.deleteLiveStream(existingStream)} />
+                      </Col>
+                    </Row>
+                  </div>
+                )}
 
                 {!doesLiveStreamExist && (
                   <>

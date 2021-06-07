@@ -13,12 +13,11 @@ import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.
 import { getCourseId } from '../../redux/reducers/course.reducer';
 import { get, post } from '../../Utilities/Remote';
 import { apiValidation } from '../../Utilities';
-import { PageHeader } from '../Common';
+import { Readmore, PageHeader } from '../Common';
 import placeholder from '../../assets/images/ycIcon.png';
 import { courseActions } from '../../redux/actions/course.action';
 import './Courses.scss';
 import '../Profile/Profile.scss';
-import Readmore from '../Common/Readmore';
 
 const TeacherCourses = (props) => {
   const {
@@ -117,8 +116,6 @@ const TeacherCourses = (props) => {
   const goToDashboard = () => {
     history.push('/');
   };
-  const newarray = courses.map((course) => course.current_batch).map((e) => e.batch_name);
-  console.log(newarray, 'newarray');
 
   return (
     <>
@@ -172,7 +169,10 @@ const TeacherCourses = (props) => {
                       >
                         To:{' '}
                         {course.current_batch.length > 0 && (
-                          <Readmore maxcharactercount={100} batchesArray={newarray} />
+                          <Readmore
+                            maxcharactercount={100}
+                            batchesArray={course.current_batch.map((e) => e.batch_name)}
+                          />
                         )}
                       </p>
                       <div
@@ -238,18 +238,12 @@ const TeacherCourses = (props) => {
                         }}
                       >
                         To:{' '}
-                        {course.current_batch.map((e, i) => {
-                          return (
-                            <>
-                              <span key={e.batch_id}>{e.batch_name}</span>
-                              {i !== course.current_batch.length - 1 ? (
-                                <span>,</span>
-                              ) : (
-                                <span> </span>
-                              )}
-                            </>
-                          );
-                        })}
+                        {course.current_batch.length > 0 && (
+                          <Readmore
+                            maxcharactercount={100}
+                            batchesArray={course.current_batch.map((e) => e.batch_name)}
+                          />
+                        )}
                       </p>
                     </Row>
                   </Col>

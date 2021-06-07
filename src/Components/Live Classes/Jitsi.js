@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const Jitsi = (props) => {
   const jitsiContainerId = 'jitsi-container-id';
 
-  const { domain, jitsiDisplayHide, firstName, lastName, roomName, role } = props;
+  const { domain, jitsiDisplayHide, firstName, lastName, roomName, role, token } = props;
   const [jitsi, setJitsi] = useState({});
 
   const toolBarOptions = [
@@ -87,6 +87,7 @@ const Jitsi = (props) => {
 
     const teacherOptions = {
       roomName,
+      jwt: token,
       parentNode: document.getElementById(jitsiContainerId),
       interfaceConfigOverwrite: {
         TOOLBAR_BUTTONS: toolBarOptions,
@@ -136,9 +137,11 @@ Jitsi.propTypes = {
   lastName: PropTypes.string,
   roomName: PropTypes.string.isRequired,
   role: PropTypes.string.isRequired,
+  token: PropTypes.string,
 };
 
 Jitsi.defaultProps = {
   firstName: '',
   lastName: '',
+  token: null,
 };

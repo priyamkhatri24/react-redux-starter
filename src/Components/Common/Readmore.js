@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 
-function Readmore({ maxcharactercount, batchesArray }) {
-  const text = batchesArray.reduce((acc, curr) => `${acc}  ${curr} ,`, '');
+export const Readmore = ({ maxcharactercount, batchesArray }) => {
+  const text = batchesArray.reduce((acc, curr) => `${acc}  ${curr} ,`, '').slice(0, -1);
   const [isHidden, setIsHidden] = useState(true);
   const resultText = isHidden ? text.slice(0, maxcharactercount) : text;
   const buttonStyle = {
@@ -12,26 +12,28 @@ function Readmore({ maxcharactercount, batchesArray }) {
     paddingLeft: '0px',
     fontSize: '12px',
     display: 'inline-block',
+    marginLeft: '5px',
   };
-  const toggleview = () => {
+  const toggleview = (e) => {
+    e.stopPropagation();
     setIsHidden(!isHidden);
   };
 
   return (
-    <p>
+    <>
       {text.length > 100 ? (
-        <p>
-          {`${resultText}. . .`}
-          <Button onClick={toggleview} variant='boldText' style={buttonStyle}>
+        <span style={{ wordWrap: 'break-word' }}>
+          {`${resultText} ${isHidden ? '. . .' : ' '} `}
+          <Button onClick={(e) => toggleview(e)} variant='boldText' style={buttonStyle}>
             {isHidden ? 'Read more' : 'Read less'}
           </Button>
-        </p>
+        </span>
       ) : (
-        <p>{resultText}</p>
+        <span>{resultText}</span>
       )}
-    </p>
+    </>
   );
-}
+};
 
 export default Readmore;
 
