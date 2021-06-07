@@ -13,6 +13,7 @@ const EditProfileHOC = (props) => {
   const [formDataArray, setFormDataArray] = useState([]);
 
   useEffect(() => {
+    console.log(history.location.state.user);
     let teacherArray = [];
     const dataArray = [
       { label: 'First Name', value: user.first_name, type: 'input', name: 'first_name' },
