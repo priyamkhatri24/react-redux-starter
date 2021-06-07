@@ -128,6 +128,32 @@ const QuestionList = (props) => {
   };
 
   const selectAll = (value) => {
+    let ques = [];
+    ques = questions.map((question) => {
+      return question.question_id;
+    });
+    const payload = {
+      language_type: 'english',
+      client_id: clientId,
+      questions_array: JSON.stringify(ques),
+      is_draft: isDraft,
+      chapter_array: JSON.stringify(currentChapterArray),
+      teacher_id: clientUserId,
+      class_subject: JSON.stringify(currentSubjectArray),
+    };
+
+    post(payload, '/addTestFromHomeworkCreator').then((res) => {
+      if (res.success) {
+        setTestIdToStore(res.testId);
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops',
+          text: 'Question could not be added',
+        });
+      }
+    });
+
     setSelectAllQuestions(value);
     if (value) {
       setSelectedQuestionArrayToStore(questions);
