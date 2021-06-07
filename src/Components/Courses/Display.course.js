@@ -9,7 +9,8 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import AddIcon from '@material-ui/icons/Add';
 import { courseActions } from '../../redux/actions/course.action';
-import { uploadImage, verifyIsFile, verifyIsImage, verifyIsVideo } from '../../Utilities';
+import { verifyIsFile, verifyIsImage, verifyIsVideo } from '../../Utilities';
+import { uploadingImage } from '../../Utilities/customUpload';
 import YCIcon from '../../assets/images/ycIcon.png';
 import { loadingActions } from '../../redux/actions/loading.action';
 
@@ -20,8 +21,7 @@ const Display = (props) => {
     courseDesc,
     updateDisplayDetails,
     courseDisplayImage,
-    setLoadingPendingToStore,
-    setLoadingSuccessToStore,
+    courseDisplayVideo,
   } = props;
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -41,7 +41,11 @@ const Display = (props) => {
       setImageTitle(courseDisplayImage);
       courseImage.current = courseDisplayImage;
     }
-  }, [courseDisplayImage]);
+
+    if (courseDisplayVideo) {
+      courseVideo.current = courseDisplayVideo;
+    }
+  }, [courseDisplayImage, courseDisplayVideo]);
 
   const getImageInput = (e, type) => {
     const reader = new FileReader();
@@ -70,13 +74,13 @@ const Display = (props) => {
     }
     if (file && isFileAllowed) {
       reader.readAsDataURL(e.target.files[0]);
-      setLoadingPendingToStore();
+      // setLoadingPendingToStore();
 
-      uploadImage(file).then((res) => {
+      uploadingImage(file).then((res) => {
         type === 'image'
           ? (courseImage.current = res.filename)
           : (courseVideo.current = res.filename);
-        setLoadingSuccessToStore();
+        //  setLoadingSuccessToStore();
       });
       if (type === 'image') {
         reader.onloadend = function getImage() {
@@ -307,12 +311,11 @@ Display.propTypes = {
   courseDesc: PropTypes.string,
   updateDisplayDetails: PropTypes.func.isRequired,
   courseDisplayImage: PropTypes.string,
-
-  setLoadingPendingToStore: PropTypes.func.isRequired,
-  setLoadingSuccessToStore: PropTypes.func.isRequired,
+  courseDisplayVideo: PropTypes.string,
 };
 
 Display.defaultProps = {
   courseDesc: '',
   courseDisplayImage: '',
+  courseDisplayVideo: '',
 };
