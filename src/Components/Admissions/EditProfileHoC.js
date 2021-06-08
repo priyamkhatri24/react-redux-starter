@@ -60,8 +60,8 @@ const EditProfileHOC = (props) => {
     }
 
     setFormDataArray(user.role_id !== '1' ? teacherArray : dataArray);
-    console.log(formDataArray, 'formdata');
-  }, [user]);
+    // console.log(formDataArray, 'formdata');
+  }, [history, user]);
 
   const getFormData = (values, image) => {
     console.log(values);

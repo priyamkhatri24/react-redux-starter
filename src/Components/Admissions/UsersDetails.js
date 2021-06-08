@@ -145,11 +145,11 @@ const UserDetails = (props) => {
                 className='Courses__edit text-center py-1'
                 onClick={() =>
                   history.push({ pathname: '/admissions/editprofile', state: { user } })
-                }
+                } //eslint-disable-line
                 role='button'
                 onKeyDown={() =>
                   history.push({ pathname: '/admissions/editprofile', state: { user } })
-                }
+                } //eslint-disable-line
                 tabIndex='-1'
               >
                 <CreateIcon />
