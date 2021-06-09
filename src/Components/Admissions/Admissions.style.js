@@ -173,6 +173,12 @@ const AdmissionStyle = {
   adminCard: css`
     border: 1px solid ${colors.disabledGrey};
     border-radius: 5px;
+    width: 75%;
+    margin: auto;
+
+    @media (max-width: 768px) {
+      width: 90%;
+    }
   `,
 
   UserCards: css`

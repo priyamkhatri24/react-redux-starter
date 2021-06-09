@@ -8,6 +8,11 @@
     text-overflow: ellipsis;
     overflow: hidden;
     font-family: $medium;
+    padding-bottom: 5px;
+
+    @include media-breakpoint-up(md){
+      font-size: $spacer * 0.85;
+    }
   }
 
   &__name {
@@ -16,5 +21,19 @@
     line-height: 13px;
     color: rgba(22, 22, 22, 1);
     text-transform: capitalize;
+
+    @include media-breakpoint-up(md){
+      font-size: $spacer * 0.75;
+    }
+  }
+
+}
+
+.Display .btn-courseBlueOnWhite {
+  width: 75%;
+}
+@media (max-width:768px){
+  .Display .btn-courseBlueOnWhite {
+    width: 90%;
   }
 }
