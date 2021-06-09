@@ -142,6 +142,9 @@ const SignUp = (props) => {
             user_id: userId,
             profile_image: profileImage,
             username: userName,
+            birthday,
+            address,
+            gender,
           },
         } = result;
         console.log(result, userName, result.user);
@@ -157,57 +160,13 @@ const SignUp = (props) => {
         props.setTokenToStore(token);
         props.setClientIdToStore(clientID);
         props.setUserNameToStore(userName);
+        props.setBirthdayToStore(birthday);
+        props.setAddressToStore(address);
+        props.setGenderToStore(gender);
         push({ pathname: '/' });
         setFirstTimeLoginToStore(true);
       })
       .catch((err) => console.log(err));
-    // if (userStatus === 'active') {
-
-    // } else if (userStatus === 'pending') {
-    //   console.log('brooo');
-    //   console.log(loginParams);
-    //   const payload = {
-    //     user_name: loginParams.user_name,
-    //     password: newPassword,
-    //     user_id: loginParams.user_id,
-    //   };
-
-    //   post(payload, '/signupAfterOtpForWeb').then((res) => {
-    //     const result = apiValidation(res);
-
-    //     if (result.status === 'signup successful') {
-    //       const {
-    //         token,
-    //         user: {
-    //           client_user_id: clientUserId,
-    //           client_client_id: clientID,
-    //           contact: userContact,
-    //           first_name: firstName,
-    //           role_array: roleArray,
-    //           last_name: lastName,
-    //           user_user_id: userUserId,
-    //           user_id: userId,
-    //           profile_image: profileImage,
-    //           username: userName,
-    //         },
-    //       } = result;
-
-    //       props.setCLientUserIdToStore(clientUserId);
-    //       props.setUserIdToStore(userId);
-    //       props.setUserUserIdToStore(userUserId);
-    //       props.setRoleArrayToStore(roleArray);
-    //       props.setFirstNameToStore(firstName);
-    //       props.setLastNameToStore(lastName);
-    //       props.setProfileImageToStore(profileImage);
-    //       props.setContactToStore(userContact);
-    //       props.setTokenToStore(token);
-    //       props.setClientIdToStore(clientID);
-    //       props.setUserNameToStore(userName);
-    //       props.history.push({ pathname: '/' });
-    //       setFirstTimeLoginToStore(true);
-    //     }
-    //   });
-    // }
   };
 
   const createPassword = () => {
@@ -298,6 +257,15 @@ const mapDispatchToProps = (dispatch) => {
     setFirstTimeLoginToStore: (payload) => {
       dispatch(firstTimeLoginActions.setFirstTimeLoginToStore(payload));
     },
+    setBirthdayToStore: (payload) => {
+      dispatch(userProfileActions.setBirthdayToStore(payload));
+    },
+    setGenderToStore: (payload) => {
+      dispatch(userProfileActions.setGenderToStore(payload));
+    },
+    setAddressToStore: (payload) => {
+      dispatch(userProfileActions.setAddressToStore(payload));
+    },
   };
 };
 
@@ -333,6 +301,9 @@ SignUp.propTypes = {
   setClientIdToStore: PropTypes.func.isRequired,
   setUserNameToStore: PropTypes.func.isRequired,
   setFirstTimeLoginToStore: PropTypes.func.isRequired,
+  setBirthdayToStore: PropTypes.func.isRequired,
+  setAddressToStore: PropTypes.func.isRequired,
+  setGenderToStore: PropTypes.func.isRequired,
 };
 
 SignUp.defaultProps = {

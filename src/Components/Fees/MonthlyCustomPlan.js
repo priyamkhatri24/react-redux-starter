@@ -242,7 +242,7 @@ const MonthlyCustomPlan = (props) => {
           <span
             onClick={() => planDeleted()}
             onKeyDown={() => planDeleted()}
-            role='button '
+            role='button'
             tabIndex='-1'
           >
             <DeleteIcon /> <span className='my-auto'>Delete</span>

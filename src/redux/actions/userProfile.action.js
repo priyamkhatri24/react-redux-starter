@@ -36,6 +36,18 @@ function setCountryCodeToStore(payload) {
   return { type: userProfileConstants.COUNTRYCODE, payload };
 }
 
+function setBirthdayToStore(payload) {
+  return { type: userProfileConstants.BIRTHDAY, payload };
+}
+
+function setAddressToStore(payload) {
+  return { type: userProfileConstants.ADDRESS, payload };
+}
+
+function setGenderToStore(payload) {
+  return { type: userProfileConstants.GENDER, payload };
+}
+
 // action to logout user by making userProfile as null
 
 function clearUserProfile() {
@@ -52,4 +64,7 @@ export const userProfileActions = {
   setUserNameToStore,
   setEmailToStore,
   setCountryCodeToStore,
+  setAddressToStore,
+  setBirthdayToStore,
+  setGenderToStore,
 };

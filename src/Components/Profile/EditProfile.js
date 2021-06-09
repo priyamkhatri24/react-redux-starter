@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import parse from 'date-fns/parse';
+import fromUnixTime from 'date-fns/fromUnixTime';
+import format from 'date-fns/format';
 import userAvatar from '../../assets/images/user.svg';
 import { BackButton, DynamicForm } from '../Common';
 import { post, uploadImage } from '../../Utilities';
@@ -33,30 +35,49 @@ const EditProfile = (props) => {
     setLastNameToStore,
     setProfileImageToStore,
     setEmailToStore,
+    setBirthdayToStore,
+    setGenderToStore,
+    setAddressToStore,
   } = props;
   const profileImage = useRef('');
   const [image, setImage] = useState(userAvatar);
   const [dataArray, setDataArray] = useState([
-    { label: 'First Name', value: '', type: 'input', name: 'first_name' },
-    { label: 'Last Name', value: '', type: 'input', name: 'last_name' },
+    { label: 'First Name', value: user.firstName, type: 'input', name: 'first_name' },
+    { label: 'Last Name', value: user.lastName, type: 'input', name: 'last_name' },
     {
       label: 'Gender',
-      value: 'Gender',
+      value: user.gender,
       type: 'select',
       name: 'gender',
       data: ['Male', 'Female'],
     },
-    { label: 'Email address', value: '', type: 'input', name: 'email' },
-    { label: 'Residential Address', value: '', type: 'input', name: 'address' },
-    { label: 'Date of Birth', value: '', type: 'input', name: 'birthday' },
+    { label: 'Email address', value: user.email, type: 'input', name: 'email' },
+    { label: 'Residential Address', value: user.address, type: 'input', name: 'address' },
+    {
+      label: 'Date of Birth',
+      value: format(user.birthday ? fromUnixTime(user.birthday) : new Date(), 'yyyy-MM-dd'),
+      type: 'date',
+      name: 'birthday',
+    },
   ]);
 
   useEffect(() => {
-    console.log(data);
-    if (fromAdmissions) setDataArray(data);
+    console.log(data, 'data');
+    if (fromAdmissions) {
+      setDataArray(data);
+      setImage(profileImagePath === '' ? userAvatar : profileImagePath);
+    } else {
+      setImage(
+        profileImagePath !== ''
+          ? profileImagePath
+          : user.profileImage
+          ? user.profileImage
+          : userAvatar,
+      );
+    }
     console.log(fromAdmissions);
-    setImage(profileImagePath === '' ? userAvatar : profileImagePath);
-  }, [fromAdmissions, data, profileImagePath]);
+    //  setImage(profileImagePath === '' ? userAvatar : profileImagePath);
+  }, [fromAdmissions, data, profileImagePath, user]);
 
   const getImageInput = (e) => {
     const reader = new FileReader();
@@ -87,10 +108,10 @@ const EditProfile = (props) => {
         address: values.address,
         gender: values.gender,
         user_id: userId,
-        parent_name: values.parent_name === 'undefined' ? '' : values.parent_name,
-        parent_contact: values.parent_contact === 'undefined' ? '' : values.parent_contact,
+        parent_name: values.parent_name === undefined ? '' : values.parent_name,
+        parent_contact: values.parent_contact === undefined ? '' : values.parent_contact,
         parent_id: userUserId,
-        birthday: parse(values.birthday, 'yyyy-MM-dd', new Date()).getTime(),
+        birthday: parse(values.birthday, 'yyyy-MM-dd', new Date()).getTime() / 1000,
         profile_image: profileImage.current,
       };
 
@@ -113,6 +134,9 @@ const EditProfile = (props) => {
               setLastNameToStore(values.last_name);
               setProfileImageToStore(profileImage.current);
               setEmailToStore(values.email);
+              setAddressToStore(values.address);
+              setBirthdayToStore(parse(values.birthday, 'yyyy-MM-dd', new Date()).getTime() / 1000);
+              setGenderToStore(values.gender);
             }
           });
         }
@@ -138,7 +162,7 @@ const EditProfile = (props) => {
         </label>
       </div>
 
-      <DynamicForm fields={fromAdmissions ? data : dataArray} getData={getFormData} />
+      <DynamicForm fields={dataArray} getData={getFormData} />
     </div>
   );
 };
@@ -156,6 +180,15 @@ const mapDispatchToProps = (dispatch) => ({
   setLastNameToStore: (payload) => dispatch(userProfileActions.setLastNameToStore(payload)),
   setEmailToStore: (payload) => dispatch(userProfileActions.setEmailToStore(payload)),
   setProfileImageToStore: (payload) => dispatch(userProfileActions.setProfileImageToStore(payload)),
+  setBirthdayToStore: (payload) => {
+    dispatch(userProfileActions.setBirthdayToStore(payload));
+  },
+  setGenderToStore: (payload) => {
+    dispatch(userProfileActions.setGenderToStore(payload));
+  },
+  setAddressToStore: (payload) => {
+    dispatch(userProfileActions.setAddressToStore(payload));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);
@@ -175,6 +208,9 @@ EditProfile.propTypes = {
   setLastNameToStore: PropTypes.func.isRequired,
   setEmailToStore: PropTypes.func.isRequired,
   setProfileImageToStore: PropTypes.func.isRequired,
+  setBirthdayToStore: PropTypes.func.isRequired,
+  setAddressToStore: PropTypes.func.isRequired,
+  setGenderToStore: PropTypes.func.isRequired,
 };
 
 EditProfile.defaultProps = {

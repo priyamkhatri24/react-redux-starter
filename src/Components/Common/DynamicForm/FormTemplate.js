@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Formik, Field, ErrorMessage } from 'formik';
 import Button from 'react-bootstrap/Button';
@@ -31,8 +31,8 @@ const CustomInput = ({ value, onClick }) => (
 
 const FormTemplate = (props) => {
   const { fields, validation, getData } = props;
-
-  const isRequired = (message) => (value) => (value ? undefined : message);
+  const [initialValues, setInitialValues] = useState({});
+  // const isRequired = (message) => (value) => (value ? undefined : message);
 
   const renderSelect = (input) => {
     return (
@@ -110,55 +110,59 @@ const FormTemplate = (props) => {
   //   );
   // };
 
-  // const renderDate = (input) => {
-  //   return (
-  //     <Fragment key={input.name}>
-  //       <div className='my-4 FormTemplate__input mx-auto'>
-  //         <Field name={input.name}>
-  //           {(property) => {
-  //             const { field } = property;
-  //             const { errors, touched } = property.form;
-  //             const hasError = errors[input.name] && touched[input.name] ? 'hasError' : '';
+  const renderDate = (input) => {
+    return (
+      <Fragment key={input.name}>
+        <div className='mb-4'>
+          <Field name={input.name}>
+            {(property) => {
+              const { field } = property;
+              const { errors, touched } = property.form;
+              const hasError = errors[input.name] && touched[input.name] ? 'hasError' : '';
 
-  //             return (
-  //               <label htmlFor={field.name} className='has-float-label my-auto'>
-  //                 <input
-  //                   className={`form-control ${hasError}`}
-  //                   {...field}
-  //                   type='date'
-  //                   placeholder={input.label}
-  //                   id={field.name}
-  //                 />
-  //                 <span>{input.label}</span>
-  //               </label>
-  //               // <div>
-  //               //   <textarea {...field} id={hasError} />
-  //               // </div>
-  //             );
-  //           }}
-  //         </Field>
-  //       </div>
-  //     </Fragment>
-  //   );
-  // };
-
-  const getInitialValues = (inputs) => {
-    // declare an empty initialValues object
-    const initialValues = {};
-    // loop loop over fields array
-    // if prop does not exit in the initialValues object,
-    // pluck off the name and value props and add it to the initialValues object;
-    inputs.forEach((field) => {
-      if (!initialValues[field.name]) {
-        initialValues[field.name] = field.value;
-      }
-    });
-
-    // return initialValues object
-    return initialValues;
+              return (
+                <label htmlFor={field.name} className='has-float-label my-auto'>
+                  <input
+                    className={`form-control ${hasError}`}
+                    {...field}
+                    type='date'
+                    placeholder={input.label}
+                    id={field.name}
+                  />
+                  <span>{input.label}</span>
+                </label>
+              );
+            }}
+          </Field>
+        </div>
+      </Fragment>
+    );
   };
 
-  const initialValues = getInitialValues(fields);
+  useEffect(() => {
+    const getInitialValues = (inputs) => {
+      // declare an empty initialValues object
+      const initialValue = {};
+      // loop loop over fields array
+      // if prop does not exit in the initialValues object,
+      // pluck off the name and value props and add it to the initialValues object;
+      inputs.forEach((field) => {
+        if (!initialValue[field.name]) {
+          initialValue[field.name] = field.value;
+        }
+      });
+
+      // return initialValues object
+      return initialValue;
+    };
+    console.log(fields, 'xyz');
+    const initValues = getInitialValues(fields);
+    setInitialValues(initValues);
+  }, [fields]);
+
+  useEffect(() => {
+    console.log(initialValues, 'init');
+  }, [initialValues]);
 
   const renderInputField = (input) => {
     return (
@@ -202,6 +206,7 @@ const FormTemplate = (props) => {
     <Formik
       validationSchema={validation}
       initialValues={initialValues}
+      enableReinitialize
       onSubmit={(values) => {
         getData(values);
       }}
@@ -216,7 +221,11 @@ const FormTemplate = (props) => {
       }) => (
         <form onSubmit={handleSubmit} className='mx-4 mb-4 '>
           {fields.map((input) => {
-            return input.type === 'select' ? renderSelect(input) : renderInputField(input);
+            return input.type === 'select'
+              ? renderSelect(input)
+              : input.type === 'date'
+              ? renderDate(input)
+              : renderInputField(input);
           })}
           {Object.keys(errors).length > 0 && (
             <small className='text-danger d-block my-3' style={{ fontFamily: 'Montserrat-Medium' }}>

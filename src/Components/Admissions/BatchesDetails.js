@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import ReactApexCharts from 'react-apexcharts';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -18,6 +19,7 @@ import { PageHeader } from '../Common';
 import userImage from '../../assets/images/user.svg';
 import UserDataCard from './UsersDataCard';
 import AdmissionStyle from './Admissions.style';
+import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 
 const BatchDetails = (props) => {
   const {
@@ -27,6 +29,8 @@ const BatchDetails = (props) => {
         state: { batch },
       },
     },
+    clientUserId,
+    clientId,
   } = props;
   const [currentBatch, setCurrentBatch] = useState({});
   const [batchName, setBatchName] = useState('');
@@ -84,6 +88,20 @@ const BatchDetails = (props) => {
     });
   };
 
+  const deleteBatch = () => {
+    const payload = {
+      batch_id: currentBatch.batch.client_batch_id,
+      client_id: clientId,
+      client_user_id: clientUserId,
+    };
+
+    post(payload, '/deleteBatch').then((res) => {
+      if (res.success) {
+        history.push('/admissions');
+      }
+    });
+  };
+
   return (
     Object.keys(currentBatch).length > 0 && (
       <div className='Profile'>
@@ -122,7 +140,7 @@ const BatchDetails = (props) => {
                 </div>
                 <div
                   className='Profile__edit text-center py-1'
-                  onClick={() => {}}
+                  onClick={() => deleteBatch()}
                   role='button'
                   onKeyDown={() => {}}
                   tabIndex='-1'
@@ -301,8 +319,15 @@ const BatchDetails = (props) => {
   );
 };
 
-export default BatchDetails;
+const mapStateToProps = (state) => ({
+  clientId: getClientId(state),
+  clientUserId: getClientUserId(state),
+});
+
+export default connect(mapStateToProps)(BatchDetails);
 
 BatchDetails.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
+  clientId: PropTypes.number.isRequired,
+  clientUserId: PropTypes.number.isRequired,
 };

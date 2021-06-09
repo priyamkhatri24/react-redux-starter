@@ -145,9 +145,11 @@ const UserDetails = (props) => {
                 className='Courses__edit text-center py-1'
                 onClick={() =>
                   history.push({ pathname: '/admissions/editprofile', state: { user } })
-                } // eslint-disable-line
+                } //eslint-disable-line
                 role='button'
-                onKeyDown={() => history.push('/admissions/editprofile')}
+                onKeyDown={() =>
+                  history.push({ pathname: '/admissions/editprofile', state: { user } })
+                } //eslint-disable-line
                 tabIndex='-1'
               >
                 <CreateIcon />
@@ -213,11 +215,11 @@ const UserDetails = (props) => {
                   <p className='LiveClasses__adminDuration '>{user.address}</p>
                 </>
               )}
-              {user.birthday && (
+              {user.birthday && user.birthday !== 'NaN' && (
                 <>
                   <h6 className='LiveClasses__adminHeading mb-0'>Date Of Birth</h6>
                   <p className='LiveClasses__adminDuration '>
-                    {format(fromUnixTime(parseInt(user.birthday / 1000, 10)), 'dd-MMM-yyyy')}
+                    {format(fromUnixTime(parseInt(user.birthday, 10)), 'dd-MMM-yyyy')}
                   </p>
                 </>
               )}
