@@ -118,6 +118,9 @@ const SignIn = (props) => {
               user_id: userId,
               profile_image: profileImage,
               username: userName,
+              birthday,
+              gender,
+              address,
             },
           } = result;
           console.log(result, userName, result.user);
@@ -133,6 +136,10 @@ const SignIn = (props) => {
           props.setTokenToStore(token);
           props.setClientIdToStore(clientID);
           props.setUserNameToStore(userName);
+          props.setBirthdayToStore(birthday);
+          props.setAddressToStore(address);
+          props.setGenderToStore(gender);
+
           push({ pathname: '/' });
           setFirstTimeLoginToStore(true);
         })
@@ -164,6 +171,9 @@ const SignIn = (props) => {
               user_id: userId,
               profile_image: profileImage,
               username: userName,
+              gender,
+              address,
+              birthday,
             },
           } = result;
 
@@ -178,6 +188,9 @@ const SignIn = (props) => {
           props.setTokenToStore(token);
           props.setClientIdToStore(clientID);
           props.setUserNameToStore(userName);
+          props.setBirthdayToStore(birthday);
+          props.setAddressToStore(address);
+          props.setGenderToStore(gender);
           props.history.push({ pathname: '/' });
           setFirstTimeLoginToStore(true);
         }
@@ -303,6 +316,16 @@ const mapDispatchToProps = (dispatch) => {
     setTokenToStore: (payload) => {
       dispatch(userProfileActions.setTokenToStore(payload));
     },
+    setBirthdayToStore: (payload) => {
+      dispatch(userProfileActions.setBirthdayToStore(payload));
+    },
+    setGenderToStore: (payload) => {
+      dispatch(userProfileActions.setGenderToStore(payload));
+    },
+    setAddressToStore: (payload) => {
+      dispatch(userProfileActions.setAddressToStore(payload));
+    },
+
     setFirstTimeLoginToStore: (payload) => {
       dispatch(firstTimeLoginActions.setFirstTimeLoginToStore(payload));
     },
@@ -339,6 +362,9 @@ SignIn.propTypes = {
   setProfileImageToStore: PropTypes.func.isRequired,
   setContactToStore: PropTypes.func.isRequired,
   setTokenToStore: PropTypes.func.isRequired,
+  setBirthdayToStore: PropTypes.func.isRequired,
+  setAddressToStore: PropTypes.func.isRequired,
+  setGenderToStore: PropTypes.func.isRequired,
   setClientIdToStore: PropTypes.func.isRequired,
   setUserNameToStore: PropTypes.func.isRequired,
   firstTimeLogin: PropTypes.bool.isRequired,

@@ -9,6 +9,9 @@ const initialState = {
   token: null,
   email: '',
   countryCode: '',
+  address: '',
+  birthday: '',
+  gender: '',
 };
 
 export function userProfile(state = initialState, action) {
@@ -41,6 +44,22 @@ export function userProfile(state = initialState, action) {
         email: action.payload,
       };
 
+    case userProfileConstants.BIRTHDAY:
+      return {
+        ...state,
+        birthday: action.payload,
+      };
+    case userProfileConstants.ADDRESS:
+      return {
+        ...state,
+        address: action.payload,
+      };
+    case userProfileConstants.GENDER:
+      return {
+        ...state,
+        gender: action.payload,
+      };
+
     case userProfileConstants.COUNTRYCODE:
       return {
         ...state,
@@ -70,6 +89,9 @@ export function userProfile(state = initialState, action) {
         token: null,
         email: '',
         countryCode: '',
+        birthday: '',
+        address: '',
+        gender: '',
       };
 
     default:

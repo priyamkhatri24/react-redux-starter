@@ -56,95 +56,85 @@ const QuestionList = (props) => {
     setSelectedQuestions(selectedQuestionArray);
   }, [selectedQuestionArray]);
 
-  const updateSelectedQuestions = (question) => {
-    const ques = [];
-    ques.push(question.question_id);
+  const removeQuestion = (question) => {
     const newSelectedQuestions = JSON.parse(JSON.stringify(selectedQuestions));
-    if (question.isSelected === true) {
-      let payload;
-      if (!isDraft) {
-        payload = {
-          language_type: 'english',
-          client_id: clientId,
-          questions_array: JSON.stringify(ques),
-          is_draft: isDraft,
-          chapter_array: JSON.stringify(currentChapterArray),
-          teacher_id: clientUserId,
-          class_subject: JSON.stringify(currentSubjectArray),
-        };
-      } else {
-        payload = {
-          chapter_array: JSON.stringify(currentChapterArray),
-          teacher_id: clientUserId,
-          test_id: testId,
-          is_draft: isDraft,
-          questions_array: JSON.stringify(ques),
-          class_subject: JSON.stringify(currentSubjectArray),
-          client_id: clientId,
-          test_name: testName,
-        };
-      }
-      console.log(payload);
-      post(payload, '/addTestFromHomeworkCreator').then((res) => {
+    console.log(question);
+    post({ question_id: question.question_id, test_id: testId }, '/deleteQuestionFromTest').then(
+      (res) => {
         if (res.success) {
-          if (!isDraft) {
-            setTestIdToStore(res.test_id);
-            setTestNameToStore(res.test_name);
-            setTestIsDraftToStore(1);
-            setHomeworkLanguageTypeToStore('english');
-          }
-          newSelectedQuestions.push(question);
-          setSelectedQuestionArrayToStore(newSelectedQuestions);
+          const removedSelectedQuestions = newSelectedQuestions.filter((e) => {
+            return e.question_id !== question.question_id;
+          });
+          setSelectedQuestionArrayToStore(removedSelectedQuestions);
         } else {
           Swal.fire({
             icon: 'error',
             title: 'Oops',
-            text: 'Question could not be added',
+            text: 'Question could not be removed',
           });
         }
-      });
-    } else {
-      post({ question_id: question.question_id, test_id: testId }, '/deleteQuestionFromTest').then(
-        (res) => {
-          if (res.success) {
-            const removedSelectedQuestions = newSelectedQuestions.filter((e) => {
-              return e.question_id !== question.question_id;
-            });
-            setSelectedQuestionArrayToStore(removedSelectedQuestions);
-          } else {
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops',
-              text: 'Question could not be removed',
-            });
-          }
-        },
-      );
-    }
+      },
+    );
   };
 
-  const goToNextSlide = () => {
-    setCurrentSlide(2);
-  };
-
-  const selectAll = (value) => {
-    let ques = [];
-    ques = questions.map((question) => {
-      return question.question_id;
+  const removeAllQuestions = () => {
+    post(
+      {
+        questions_array: JSON.stringify(selectedQuestions.map((e) => e.question_id)),
+        test_id: testId,
+      },
+      '/deleteMultipleQuestionFromTest',
+    ).then((res) => {
+      if (res.success) {
+        setSelectedQuestions([]);
+        setSelectedQuestionArrayToStore([]);
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops',
+          text: 'Question could not be removed',
+        });
+      }
     });
-    const payload = {
-      language_type: 'english',
-      client_id: clientId,
-      questions_array: JSON.stringify(ques),
-      is_draft: isDraft,
-      chapter_array: JSON.stringify(currentChapterArray),
-      teacher_id: clientUserId,
-      class_subject: JSON.stringify(currentSubjectArray),
-    };
+  };
 
+  const addQuestions = (questionArray, selectedQuestionsArray = selectedQuestions) => {
+    const newSelectedQuestions = JSON.parse(JSON.stringify(selectedQuestionsArray));
+
+    let payload;
+    if (!isDraft) {
+      payload = {
+        language_type: 'english',
+        client_id: clientId,
+        questions_array: JSON.stringify(questionArray.map((e) => e.question_id)),
+        is_draft: isDraft,
+        chapter_array: JSON.stringify(currentChapterArray),
+        teacher_id: clientUserId,
+        class_subject: JSON.stringify(currentSubjectArray),
+      };
+    } else {
+      payload = {
+        chapter_array: JSON.stringify(currentChapterArray),
+        teacher_id: clientUserId,
+        test_id: testId,
+        is_draft: isDraft,
+        questions_array: JSON.stringify(questionArray.map((e) => e.question_id)),
+        class_subject: JSON.stringify(currentSubjectArray),
+        client_id: clientId,
+        test_name: testName,
+      };
+    }
+    console.log(payload);
     post(payload, '/addTestFromHomeworkCreator').then((res) => {
       if (res.success) {
-        setTestIdToStore(res.testId);
+        if (!isDraft) {
+          setTestIdToStore(res.test_id);
+          setTestNameToStore(res.test_name);
+          setTestIsDraftToStore(1);
+          setHomeworkLanguageTypeToStore('english');
+        }
+        newSelectedQuestions.push(...questionArray);
+        setSelectedQuestionArrayToStore(newSelectedQuestions);
       } else {
         Swal.fire({
           icon: 'error',
@@ -153,10 +143,26 @@ const QuestionList = (props) => {
         });
       }
     });
+  };
 
+  const updateSelectedQuestions = (question) => {
+    const ques = [];
+    ques.push(question);
+    if (question.isSelected === true) {
+      addQuestions(ques);
+    } else removeQuestion(question);
+  };
+
+  const goToNextSlide = () => {
+    setCurrentSlide(2);
+  };
+
+  const selectAll = (value) => {
     setSelectAllQuestions(value);
     if (value) {
-      setSelectedQuestionArrayToStore(questions);
+      setSelectedQuestionArrayToStore([]);
+      setSelectedQuestions([]);
+      addQuestions(questions, []);
       const allQuestions = questions.map((e) => {
         e.isSelected = true;
         return e;
@@ -164,7 +170,7 @@ const QuestionList = (props) => {
       setQuestions(allQuestions);
       setCurrentSlide(2);
     } else {
-      setSelectedQuestionArrayToStore([]);
+      removeAllQuestions();
       const resetQuestions = questions.map((e) => {
         e.isSelected = false;
         return e;

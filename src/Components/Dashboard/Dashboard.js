@@ -275,9 +275,7 @@ const Dashboard = (props) => {
     <>
       <div className='Dashboard__headerCard pb-3 mb-4'>
         <Row className='pt-4 pr-4'>
-          <span className='ml-auto'>
-            <MoreVertIcon />
-          </span>
+          <span className='ml-auto p-3'>{/* <MoreVertIcon /> */}</span>
         </Row>
         {hasLoaded && <h3 className='Dummy__coachingName text-center'>{data.client_name}</h3>}
         {hasLoaded && (

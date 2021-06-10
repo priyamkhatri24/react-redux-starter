@@ -92,6 +92,9 @@ const ForgotPassword = (props) => {
               user_id: userId,
               profile_image: profileImage,
               username: userName,
+              birthday,
+              address,
+              gender,
             },
           } = result;
           console.log(result, userName, result.user);
@@ -107,6 +110,9 @@ const ForgotPassword = (props) => {
           props.setTokenToStore(token);
           props.setClientIdToStore(clientID);
           props.setUserNameToStore(userName);
+          props.setBirthdayToStore(birthday);
+          props.setAddressToStore(address);
+          props.setGenderToStore(gender);
           push({ pathname: '/' });
           setFirstTimeLoginToStore(true);
         })
@@ -137,6 +143,9 @@ const ForgotPassword = (props) => {
               user_id: userId,
               profile_image: profileImage,
               username: userName,
+              gender,
+              address,
+              birthday,
             },
           } = result;
 
@@ -151,6 +160,9 @@ const ForgotPassword = (props) => {
           props.setTokenToStore(token);
           props.setClientIdToStore(clientID);
           props.setUserNameToStore(userName);
+          props.setBirthdayToStore(birthday);
+          props.setAddressToStore(address);
+          props.setGenderToStore(gender);
           props.history.push({ pathname: '/' });
           setFirstTimeLoginToStore(true);
         }
@@ -252,6 +264,16 @@ const mapDispatchToProps = (dispatch) => {
     setFirstTimeLoginToStore: (payload) => {
       dispatch(firstTimeLoginActions.setFirstTimeLoginToStore(payload));
     },
+
+    setBirthdayToStore: (payload) => {
+      dispatch(userProfileActions.setBirthdayToStore(payload));
+    },
+    setGenderToStore: (payload) => {
+      dispatch(userProfileActions.setGenderToStore(payload));
+    },
+    setAddressToStore: (payload) => {
+      dispatch(userProfileActions.setAddressToStore(payload));
+    },
   };
 };
 
@@ -280,4 +302,7 @@ ForgotPassword.propTypes = {
   setClientIdToStore: PropTypes.func.isRequired,
   setUserNameToStore: PropTypes.func.isRequired,
   setFirstTimeLoginToStore: PropTypes.func.isRequired,
+  setBirthdayToStore: PropTypes.func.isRequired,
+  setAddressToStore: PropTypes.func.isRequired,
+  setGenderToStore: PropTypes.func.isRequired,
 };

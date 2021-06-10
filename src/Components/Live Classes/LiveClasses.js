@@ -124,7 +124,7 @@ class LiveClasses extends Component {
 
     get(
       { client_user_id: clientUserId, client_id: clientId },
-      '/getRecordedLiveStreamOfCoaching',
+      '/getRecordedLiveStreamOfCoaching', // latest
     ).then((res) => {
       const result = apiValidation(res);
       console.log(result);
@@ -152,6 +152,7 @@ class LiveClasses extends Component {
 
   startLiveStream = (element) => {
     const { domain, jitsiFirstName, jitsiLastName, role } = this.state;
+    const { userProfile } = this.props;
 
     if (element.stream_type === 'jitsi') {
       let strippedDomain = domain;
@@ -161,8 +162,14 @@ class LiveClasses extends Component {
         jitsiLastName: element.last_name,
         jitsiRoomName: element.stream_link,
         domain: strippedDomain,
-        triggerJitsi: true,
       });
+
+      this.openJitsiInNewWindow(
+        element.server_url,
+        element.stream_link,
+        userProfile.firstName,
+        userProfile.lastName,
+      );
     } else if (element.stream_type === 'big_blue_button') {
       rejoinBigBlueButtonStream(
         jitsiFirstName,
@@ -190,9 +197,16 @@ class LiveClasses extends Component {
       this.setState({
         jitsiRoomName: element.stream_link,
         domain: strippedDomain,
-        triggerJitsi: true,
         jitsiToken: element.moderator_password,
       });
+
+      this.openJitsiInNewWindow(
+        element.server_url,
+        element.stream_link,
+        jitsiFirstName,
+        jitsiLastName,
+        element.moderator_password,
+      );
     } else if (element.stream_type === 'big_blue_button') {
       rejoinBigBlueButtonStream(
         jitsiFirstName,
@@ -223,8 +237,9 @@ class LiveClasses extends Component {
   handleClose = () => this.setState({ showModal: false });
 
   getSelectedBatches = (payload) => {
+    console.log(payload);
     const { selectedBatches } = this.state;
-    this.setState({ selectedBatches: payload });
+
     const extraBatchesString = payload.length > 1 ? ` +${(payload.length - 2).toString()}` : '';
     if (payload.length) {
       const inputString = payload.reduce((acc, elem, index) => {
@@ -236,10 +251,25 @@ class LiveClasses extends Component {
         }
         return acc;
       }, '');
-      if (selectedBatches.length > 0)
-        this.setState({ inputValue: inputString + extraBatchesString });
-      else this.setState({ inputValue: '' });
+
+      this.setState({ selectedBatches: payload }, () => {
+        if (payload.length > 0) this.setState({ inputValue: inputString + extraBatchesString });
+        else this.setState({ inputValue: '' });
+      });
     }
+  };
+
+  openJitsiInNewWindow = (serverUrl, roomName, firstName, lastName, token = null) => {
+    let joinUrl;
+
+    if (token) {
+      joinUrl = `${serverUrl}/${roomName}?jwt=${token}`;
+    } else {
+      joinUrl = `${serverUrl}/${roomName}#userInfo.displayName="${firstName} ${lastName}"
+      &config.remoteVideoMenu.disableKick=true&config.disableDeepLinking=true&config.prejoinPageEnabled=false`;
+    }
+
+    window.open(joinUrl, '_blank');
   };
 
   createJitsiStream = (batches = [], duration, clientId, clientUserId) => {
@@ -266,8 +296,15 @@ class LiveClasses extends Component {
           domain: jitsiDomain,
           jitsiRoomName: streamLink,
           jitsiToken: result.user_auth ? result.jwt_token : null,
-          triggerJitsi: true,
         });
+
+        this.openJitsiInNewWindow(
+          result.server_url,
+          streamLink,
+          userProfile.firstName,
+          userProfile.lastName,
+          result.user_auth ? result.jwt_token : null,
+        );
       })
       .catch((e) => {
         console.error(e);
@@ -440,7 +477,7 @@ class LiveClasses extends Component {
           <Tab eventKey='Live Classes' title='Live Classes'>
             {!triggerJitsi && role === 'student' && (
               <div className='mt-4'>
-                {studentBatches.length ? (
+                {studentBatches.length > 0 ? (
                   studentBatches.map((elem) => {
                     return (
                       <Card

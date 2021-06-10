@@ -123,6 +123,11 @@ const FeePlans = (props) => {
   };
 
   const assignFeesToStudents = () => {
+    const customPlanForPost = customFeePlanArray.map((elem) => {
+      elem.due_date = (elem.date.getTime() / 1000).toFixed(0);
+      return elem;
+    });
+
     const payload = {
       client_user_id: clientUserId,
       is_replace: feePlanType === 'onetimecharge' ? replaceOptions === 'replace' : true,
@@ -143,10 +148,11 @@ const FeePlans = (props) => {
                 due_date: parseInt((monthlyFeeDate.getTime() / 1000).toFixed(0), 10),
               },
             ]
-          : customFeePlanArray,
+          : customPlanForPost,
       ),
     };
 
+    console.log(customPlanForPost);
     post(payload, '/addFeeToMultipleUsers').then((res) => {
       console.log(res);
       if (res.success) {
@@ -169,16 +175,18 @@ const FeePlans = (props) => {
     } else {
       setMonthlyOrCustom('Custom');
       console.log(elem);
-      console.log(customFeePlanArray);
+      console.log(customFeePlanArray, 'ji');
       const addToFeePlan = elem.plan_array.map((e) => {
-        e.date = fromUnixTime(parseInt(e.due_date, 10));
-        e.isRead = true;
-        e.amount = parseInt(e.amount, 10);
-        return e;
+        const obj = {};
+        obj.id = Math.floor(Math.random() * 100000).toString(16);
+        obj.isRead = true;
+        obj.date = fromUnixTime(parseInt(e.due_date, 10));
+        obj.amount = parseInt(e.amount, 10);
+        obj.due_date = parseInt(e.due_date, 10);
+        return obj;
       });
       console.log('hamara,', addToFeePlan);
       setCustomFeePlanArray(addToFeePlan);
-      //  setNoOfInstallments(elem.plan_array.length + 1); // doing this to trigger a re render. I am stupid that way.
       setNoOfInstallments(elem.plan_array.length);
     }
   };

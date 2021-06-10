@@ -59,11 +59,11 @@
     }
   }
 
-  &__cardFlex{
+  &__cardFlex {
     flex-direction: row-reverse;
     min-height: 113px;
 
-    @include media-breakpoint-up(md){
+    @include media-breakpoint-up(md) {
       flex-direction: row;
     }
   }

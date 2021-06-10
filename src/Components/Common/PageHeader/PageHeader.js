@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+// import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -65,7 +65,7 @@ export const PageHeader = (props) => {
                 {customIcon}
               </span>
             )}
-            <MoreVertIcon />
+            {/* <MoreVertIcon /> */}
           </div>
         </>
       )}

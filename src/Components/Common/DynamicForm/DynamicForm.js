@@ -1,14 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { validation } from './Validation';
 import FormTemplate from './FormTemplate';
 
 export const DynamicForm = (props) => {
   const { getData, fields } = props;
-
-  useEffect(() => {
-    console.log(getData, fields);
-  }, []);
 
   const getDynamicData = (e) => {
     getData(e);
