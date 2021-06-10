@@ -17,6 +17,7 @@ import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get } from '../../Utilities';
 import { admissionActions } from '../../redux/actions/admissions.action';
 import AdmissionStyle from './Admissions.style';
+import './Admissions.scss';
 
 const Admissions = (props) => {
   const { clientId, history, setAdmissionRoleArrayToStore } = props;
@@ -173,17 +174,17 @@ const Admissions = (props) => {
         <Row className='justify-content-center'>
           <Button
             variant='testBlueOnWhite'
-            style={{ fontSize: '1rem', width: '8.4375rem', height: '2.125rem' }}
             active={tab !== 'Batches'}
             onClick={() => changeTab('Users')}
+            css={AdmissionStyle.headerButtons}
           >
             Users
           </Button>
           <Button
             variant='testBlueOnWhite '
-            style={{ fontSize: '1rem', width: '8.4375rem', height: '2.125rem' }}
             active={tab !== 'Users'}
             onClick={() => changeTab('Batches')}
+            css={AdmissionStyle.headerButtons}
           >
             Batches
           </Button>
@@ -198,14 +199,14 @@ const Admissions = (props) => {
           removeBatchFilter={removeBatchFilter}
         />
         <div css={AdmissionStyle.overlay} style={{ marginTop: '1rem' }}>
-          <hr className='w-25' style={{ borderTop: '5px solid rgba(0, 0, 0, 0.1)' }} />
-          <Row css={AdmissionStyle.amount} className='m-4'>
+          <hr css={AdmissionStyle.horizonatalLine} />
+          <Row css={AdmissionStyle.amount}>
             <span className='mr-1'>{tab === 'Users' ? users.length : batches.length} </span> Results
             <span className='ml-auto'>
               <GetAppIcon />
             </span>
           </Row>
-          <div style={{ height: '65vh', overflow: 'scroll' }}>
+          <div css={AdmissionStyle.UserCards}>
             {tab === 'Users' ? (
               users.map((elem) => {
                 return <UserDataCard elem={elem} history={history} key={elem.user_id} />;
