@@ -20,6 +20,8 @@ import userImage from '../../assets/images/user.svg';
 import UserDataCard from './UsersDataCard';
 import AdmissionStyle from './Admissions.style';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
+import './Admissions.scss';
+import '../Dashboard/Dashboard.scss';
 
 const BatchDetails = (props) => {
   const {
@@ -107,7 +109,7 @@ const BatchDetails = (props) => {
       <div className='Profile'>
         <PageHeader title={currentBatch.batch.batch_name} />
         <div style={{ marginTop: '6rem' }}>
-          <Col className='text-center'>
+          <Col className='text-center mb-4'>
             <img
               src={currentBatch.batch.profile_image ? currentBatch.batch.profile_image : userImage}
               width='100'
@@ -126,8 +128,8 @@ const BatchDetails = (props) => {
             <Tab eventKey='Details' title='Details'>
               <div
                 css={AdmissionStyle.adminCard}
-                className='p-2 m-3'
-                style={{ position: 'relative' }}
+                className='p-2'
+                style={{ position: 'relative', marginTop: '1rem' }}
               >
                 <div
                   className='Courses__edit text-center py-1'
@@ -150,21 +152,25 @@ const BatchDetails = (props) => {
 
                 {currentBatch.batch.batch_name && (
                   <>
-                    <h6 className='LiveClasses__adminHeading mb-0'>Batch Name</h6>
-                    <p className='LiveClasses__adminDuration '>{currentBatch.batch.batch_name}</p>
+                    <h6 className='LiveClasses__adminHeading Batch__heading mb-0'>Batch Name</h6>
+                    <p className='LiveClasses__adminDuration Batch__details'>
+                      {currentBatch.batch.batch_name}
+                    </p>
                   </>
                 )}
 
                 {currentBatch.batch.class && (
                   <>
-                    <h6 className='LiveClasses__adminHeading mb-0'>Class</h6>
-                    <p className='LiveClasses__adminDuration '>{currentBatch.batch.class}</p>
+                    <h6 className='LiveClasses__adminHeading Batch__heading mb-0'>Class</h6>
+                    <p className='LiveClasses__adminDuration Batch__details '>
+                      {currentBatch.batch.class}
+                    </p>
                   </>
                 )}
                 {currentBatch.batch.subject.length > 0 && (
                   <>
-                    <h6 className='LiveClasses__adminHeading mb-0'>Subject</h6>
-                    <p className='LiveClasses__adminDuration '>
+                    <h6 className='LiveClasses__adminHeading Batch__heading mb-0'>Subject</h6>
+                    <p className='LiveClasses__adminDuration Batch__details '>
                       {currentBatch.batch.subject.map((e, i) => {
                         return (
                           <span key={e.subject_id}>
@@ -179,15 +185,17 @@ const BatchDetails = (props) => {
 
                 {currentBatch.batch.created_by && (
                   <>
-                    <h6 className='LiveClasses__adminHeading mb-0'>Created By</h6>
-                    <p className='LiveClasses__adminDuration '>{currentBatch.batch.created_by}</p>
+                    <h6 className='LiveClasses__adminHeading Batch__heading mb-0'>Created By</h6>
+                    <p className='LiveClasses__adminDuration Batch__details '>
+                      {currentBatch.batch.created_by}
+                    </p>
                   </>
                 )}
 
                 {currentBatch.batch.created_at && (
                   <>
-                    <h6 className='LiveClasses__adminHeading mb-0'>Created On</h6>
-                    <p className='LiveClasses__adminDuration '>
+                    <h6 className='LiveClasses__adminHeading Batch__heading mb-0'>Created On</h6>
+                    <p className='LiveClasses__adminDuration Batch__details '>
                       {format(
                         fromUnixTime(parseInt(currentBatch.batch.created_at, 10)),
                         'dd MMM yyyy',
@@ -198,8 +206,10 @@ const BatchDetails = (props) => {
 
                 {currentBatch.batch.session_end_date && (
                   <>
-                    <h6 className='LiveClasses__adminHeading mb-0'>Session Ends On</h6>
-                    <p className='LiveClasses__adminDuration '>
+                    <h6 className='LiveClasses__adminHeading Batch__heading mb-0'>
+                      Session Ends On
+                    </h6>
+                    <p className='LiveClasses__adminDuration Batch__details '>
                       {format(
                         fromUnixTime(parseInt(currentBatch.batch.session_end_date, 10)),
                         'dd MMM yyyy',
@@ -209,56 +219,61 @@ const BatchDetails = (props) => {
                 )}
                 {currentBatch.batch.description && (
                   <>
-                    <h6 className='LiveClasses__adminHeading mb-0'>Description</h6>
-                    <p className='LiveClasses__adminDuration '>{currentBatch.batch.description}</p>
+                    <h6 className='LiveClasses__adminHeading Batch__heading mb-0'>Description</h6>
+                    <p className='LiveClasses__adminDuration Batch__details '>
+                      {currentBatch.batch.description}
+                    </p>
                   </>
                 )}
               </div>
-              {[
-                {
-                  title: 'Student',
-                  active: currentBatch.students.active.length,
-                  pending: currentBatch.students.pending.length,
-                },
-                {
-                  title: 'Teacher',
-                  active: currentBatch.teachers.active.length,
-                  pending: currentBatch.teachers.pending.length,
-                },
-                {
-                  title: 'Admin',
-                  active: currentBatch.admins.active.length,
-                  pending: currentBatch.admins.pending.length,
-                },
-              ].map((elem) => {
-                const series = [
+              <div className='Batch__charts'>
+                {[
                   {
-                    data: [elem.active, elem.pending],
+                    title: 'Student',
+                    active: currentBatch.students.active.length,
+                    pending: currentBatch.students.pending.length,
                   },
-                ];
-                return (
-                  <Card key={elem.title} className='my-3 mx-2'>
-                    <Row className='p-2'>
-                      <Col xs={4} className='text-center p-2 my-auto'>
-                        <p
-                          className='Dashboard__attendanceSubHeading'
-                          style={{ fontFamily: 'Montserrat-SemiBold' }}
-                        >
-                          {elem.title}
-                        </p>
-                        <p className='Dashboard__admissionsBlueText my-auto'>
-                          {elem.pending + elem.active}
-                        </p>
-                      </Col>
-                      <Col xs={8}>
-                        <ReactApexCharts options={options} series={series} type='bar' />
-                      </Col>
-                    </Row>
-                  </Card>
-                );
-              })}
+                  {
+                    title: 'Teacher',
+                    active: currentBatch.teachers.active.length,
+                    pending: currentBatch.teachers.pending.length,
+                  },
+                  {
+                    title: 'Admin',
+                    active: currentBatch.admins.active.length,
+                    pending: currentBatch.admins.pending.length,
+                  },
+                ].map((elem) => {
+                  const series = [
+                    {
+                      data: [elem.active, elem.pending],
+                    },
+                  ];
+                  return (
+                    <Card key={elem.title} className='my-3 mx-2'>
+                      <Row className='p-2 react_chart'>
+                        {/* react-chart is from dashboard.scss */}
+                        <Col xs={4} className='text-center p-2 my-auto'>
+                          <p
+                            className='Dashboard__attendanceSubHeading'
+                            style={{ fontFamily: 'Montserrat-SemiBold' }}
+                          >
+                            {elem.title}
+                          </p>
+                          <p className='Dashboard__admissionsBlueText my-auto'>
+                            {elem.pending + elem.active}
+                          </p>
+                        </Col>
+                        <Col xs={8}>
+                          <ReactApexCharts options={options} series={series} type='bar' />
+                        </Col>
+                      </Row>
+                    </Card>
+                  );
+                })}
+              </div>
             </Tab>
-            <Tab eventKey='Students' title='Students'>
+            <Tab eventKey='Students' title='Students' className='Batch__students'>
               {currentBatch.students.active.map((elem) => {
                 return <UserDataCard elem={elem} history={history} />;
               })}
@@ -266,7 +281,7 @@ const BatchDetails = (props) => {
                 return <UserDataCard elem={elem} history={history} />;
               })}
             </Tab>
-            <Tab eventKey='Teachers' title='Teachers'>
+            <Tab eventKey='Teachers' title='Teachers' className='Batch__students'>
               {currentBatch.teachers.active.map((elem) => {
                 return <UserDataCard elem={elem} history={history} />;
               })}
@@ -274,7 +289,7 @@ const BatchDetails = (props) => {
                 return <UserDataCard elem={elem} history={history} />;
               })}
             </Tab>
-            <Tab eventKey='Admins' title='Admins'>
+            <Tab eventKey='Admins' title='Admins' className='Batch__students'>
               {currentBatch.admins.active.map((elem) => {
                 return <UserDataCard elem={elem} history={history} />;
               })}

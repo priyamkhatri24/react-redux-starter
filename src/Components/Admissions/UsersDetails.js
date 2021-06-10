@@ -21,8 +21,8 @@ import { getClientId, getClientUserId, getUserId } from '../../redux/reducers/cl
 import { apiValidation, get, post } from '../../Utilities';
 import userImage from '../../assets/images/user.svg';
 import { getAdmissionUserProfile } from '../../redux/reducers/admissions.reducer';
+import './Admissions.scss';
 import AdmissionStyle from './Admissions.style';
-import '../Live Classes/LiveClasses.scss';
 
 const UserDetails = (props) => {
   const { history, clientId, userId, user, clientUserId } = props;
@@ -138,8 +138,8 @@ const UserDetails = (props) => {
           <Tab eventKey='Details' title='Details'>
             <div
               css={AdmissionStyle.adminCard}
-              className='p-2 m-3'
-              style={{ position: 'relative' }}
+              className='p-2'
+              style={{ position: 'relative', marginTop: '1.5rem' }}
             >
               <div
                 className='Courses__edit text-center py-1'
@@ -165,60 +165,60 @@ const UserDetails = (props) => {
                   <DeleteIcon />
                 </div>
               )}
-              <h6 className='LiveClasses__adminHeading mb-0'>First Name</h6>
-              <p className='LiveClasses__adminDuration '>{user.first_name}</p>
+              <h6 className='Batch__heading mb-0'>First Name</h6>
+              <p className=' Batch__details '>{user.first_name}</p>
 
               {user.last_name && (
                 <>
-                  <h6 className='LiveClasses__adminHeading mb-0'>Last Name</h6>
-                  <p className='LiveClasses__adminDuration '>{user.last_name}</p>
+                  <h6 className=' Batch__heading mb-0'>Last Name</h6>
+                  <p className=' Batch__details '>{user.last_name}</p>
                 </>
               )}
 
-              <h6 className='LiveClasses__adminHeading mb-0'>Mobile Number</h6>
-              <p className='LiveClasses__adminDuration '>{user.contact}</p>
+              <h6 className=' Batch__heading mb-0'>Mobile Number</h6>
+              <p className=' Batch__details '>{user.contact}</p>
 
               {user.username && (
                 <>
-                  <h6 className='LiveClasses__adminHeading mb-0'>Username</h6>
-                  <p className='LiveClasses__adminDuration '>{user.username}</p>
+                  <h6 className=' Batch__heading mb-0'>Username</h6>
+                  <p className=' Batch__details '>{user.username}</p>
                 </>
               )}
               {user.parent_name && (
                 <>
-                  <h6 className='LiveClasses__adminHeading mb-0'>Parent&apos;s Name</h6>
-                  <p className='LiveClasses__adminDuration '>{user.parent_name}</p>
+                  <h6 className=' Batch__heading mb-0'>Parent&apos;s Name</h6>
+                  <p className=' Batch__details '>{user.parent_name}</p>
                 </>
               )}
               {user.parent_contact && (
                 <>
-                  <h6 className='LiveClasses__adminHeading mb-0'>Parent&apos;s Mobile Number</h6>
-                  <p className='LiveClasses__adminDuration '>{user.parent_contact}</p>
+                  <h6 className='Batch__heading mb-0'>Parent&apos;s Mobile Number</h6>
+                  <p className=' Batch__details '>{user.parent_contact}</p>
                 </>
               )}
               {user.gender && (
                 <>
-                  <h6 className='LiveClasses__adminHeading mb-0'>Gender</h6>
-                  <p className='LiveClasses__adminDuration '>{user.gender}</p>
+                  <h6 className='Batch__heading mb-0'>Gender</h6>
+                  <p className='Batch__details '>{user.gender}</p>
                 </>
               )}
 
               {user.email && (
                 <>
-                  <h6 className='LiveClasses__adminHeading mb-0'>Email Address</h6>
-                  <p className='LiveClasses__adminDuration '>{user.email}</p>
+                  <h6 className='Batch__heading mb-0'>Email Address</h6>
+                  <p className='Batch__details '>{user.email}</p>
                 </>
               )}
               {user.address && (
                 <>
-                  <h6 className='LiveClasses__adminHeading mb-0'>Residential Address</h6>
-                  <p className='LiveClasses__adminDuration '>{user.address}</p>
+                  <h6 className='Batch__heading mb-0'>Residential Address</h6>
+                  <p className='Batch__details '>{user.address}</p>
                 </>
               )}
               {user.birthday && user.birthday !== 'NaN' && (
                 <>
-                  <h6 className='LiveClasses__adminHeading mb-0'>Date Of Birth</h6>
-                  <p className='LiveClasses__adminDuration '>
+                  <h6 className='Batch__heading mb-0'>Date Of Birth</h6>
+                  <p className='Batch__details '>
                     {format(fromUnixTime(parseInt(user.birthday, 10)), 'dd-MMM-yyyy')}
                   </p>
                 </>
@@ -231,7 +231,7 @@ const UserDetails = (props) => {
                 Change Batch <SwapHorizIcon />
               </Button>
             </Row>
-            <Row className='justify-content-between mx-2'>
+            <Row className='justify-content-center mx-2'>
               {batches.map((elem) => {
                 return (
                   <Col

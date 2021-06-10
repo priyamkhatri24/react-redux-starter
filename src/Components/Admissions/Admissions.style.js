@@ -147,6 +147,7 @@ const AdmissionStyle = {
   box: css`
     border: 1px solid ${colors.dashboardGreyLight};
     border-radius: 5px;
+    ${'' /* max-width: 500px; */}
   `,
 
   verticalDots: css`
