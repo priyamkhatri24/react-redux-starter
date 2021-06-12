@@ -125,9 +125,9 @@ const TeacherCourses = (props) => {
           defaultActiveKey='My Courses'
           className='Profile__Tabs'
           justify
-          style={{ marginTop: '3rem' }}
+          style={{ marginTop: '4rem' }}
         >
-          <Tab eventKey='My Courses' title='My Courses'>
+          <Tab eventKey='My Courses' title='My Courses' style={{ marginTop: '2rem' }}>
             <Button
               variant='customPrimaryWithShadow'
               style={{
@@ -144,11 +144,11 @@ const TeacherCourses = (props) => {
             {courses.map((course) => {
               return (
                 <Row
-                  className='m-3 p-1'
+                  className='Courses__teacherCourse p-1'
                   key={course.course_id}
                   onClick={() => goToCreatedCourse(course.course_id)}
                 >
-                  <Col xs={4} className=''>
+                  <Col xs={4} className='Courses__iconImage'>
                     <img
                       src={course.course_display_image ? course.course_display_image : placeholder}
                       alt='course '
@@ -158,7 +158,10 @@ const TeacherCourses = (props) => {
                   <Col xs={8} className='p-0'>
                     <p className='Scrollable__courseCardHeading mx-2 mb-1'>{course.course_title}</p>
                     <Row className='mx-2'>
-                      <p className='LiveClasses__adminCardTime ' style={{ fontSize: '12px' }}>
+                      <p
+                        className='LiveClasses__adminCardTime '
+                        style={{ fontSize: '12px', marginBottom: '5px' }}
+                      >
                         Created: {format(fromUnixTime(course.created_at), 'HH:mm MMM dd, yyyy')}
                       </p>
                     </Row>
@@ -206,15 +209,15 @@ const TeacherCourses = (props) => {
               );
             })}
           </Tab>
-          <Tab eventKey='Statistics' title='Statistics'>
+          <Tab eventKey='Statistics' title='Statistics' style={{ marginTop: '2rem' }}>
             {statistics.map((course) => {
               return (
                 <Row
-                  className='m-3'
+                  className='Courses__teacherCourse'
                   key={course.course_id}
                   onClick={() => getStatisticOfCourse(course.course_id)}
                 >
-                  <Col xs={4} className=''>
+                  <Col xs={4} className='Courses__iconImage'>
                     <img
                       src={course.course_display_image ? course.course_display_image : placeholder}
                       alt='course '

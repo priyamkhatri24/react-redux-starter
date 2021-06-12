@@ -108,16 +108,18 @@ const DisplayPage = (props) => {
     <>
       <PageHeader title='Display Page' />
       <div className='Display' style={{ marginTop: '4rem' }}>
-        <Button
-          variant='courseBlueOnWhite'
-          style={{ width: '90%' }}
-          className='d-block mx-auto'
-          onClick={() => history.push('/displaypage/preview')}
-        >
-          Click here to preview display page
-        </Button>
+        <div>
+          <Button
+            variant='courseBlueOnWhite'
+            style={{ marginBottom: '1rem' }}
+            className='d-block mx-auto Display__preview'
+            onClick={() => history.push('/displaypage/preview')}
+          >
+            Click here to preview display page
+          </Button>
+        </div>
 
-        <div css={AdmissionStyle.adminCard} className='p-2 m-3' style={{ position: 'relative' }}>
+        <div css={AdmissionStyle.adminCard} className='p-2' style={{ position: 'relative' }}>
           <div
             className='Profile__edit text-center py-1'
             onClick={() => goToEditProfile()}

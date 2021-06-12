@@ -255,17 +255,16 @@ const BuyCourse = (props) => {
     <div>
       <PageHeader title='Buy Course' />
       {Object.keys(course).length > 0 && (
-        <div className='Course' style={{ marginTop: '5rem' }}>
+        <div className='Courses__buycourseContainer' style={{ marginTop: '5rem' }}>
           <Row className='mx-3'>
-            <Col xs={4} className=''>
+            <Col xs={5} sm={3} className='Courses__imageRow'>
               <img
                 src={course.course_display_image ? course.course_display_image : YCIcon}
                 alt='course'
-                className='mx-auto
-              img-fluid'
+                className='mx-auto img-fluid Courses__displayImage'
               />
             </Col>
-            <Col xs={8} className='p-0'>
+            <Col xs={7} sm={9} className='p-0'>
               <p className='Scrollable__courseCardHeading mb-0 mx-2'>{course.course_title}</p>
               <Row className='mx-2'>
                 {starArray.map((e) => {
@@ -299,7 +298,7 @@ const BuyCourse = (props) => {
               </Row>
             </Col>
           </Row>
-          <Row>
+          <Row className='Courses__buyButton'>
             <Button
               className='mt-3 mx-auto'
               variant='greenButtonLong'
@@ -308,10 +307,7 @@ const BuyCourse = (props) => {
               {course.course_type === 'free' ? 'Subscribe' : 'Buy Now'}
             </Button>
           </Row>
-          <div
-            className='mx-auto my-4'
-            style={{ height: '180px', width: '273px', borderRadius: '5px' }}
-          >
+          <div className='mx-auto my-4 Courses__videoplayer'>
             {courseVideo && <PlyrComponent source={courseVideo} options={options} />}
           </div>
           <p className='Courses__heading m-3'>What will I learn?</p>

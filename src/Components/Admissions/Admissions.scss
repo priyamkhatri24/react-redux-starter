@@ -1,8 +1,37 @@
-.PageHeader__title {
-  font-size: 1.25rem;
-}
-@media (max-width: 310px) {
-  .PageHeader__title {
-    font-size: 1rem;
+.Batch {
+  @import '../../scss/bootstrap';
+  &__charts {
+    width: 75%;
+    margin: auto;
+
+    @include media-breakpoint-down(md) {
+      width: 90%;
+    }
+  }
+
+  &__details {
+    font-size: $spacer * 1;
+
+    @include media-breakpoint-down(md) {
+      font-size: $spacer * 0.88;
+    }
+  }
+
+  &__heading {
+    font-size: $spacer * 0.825;
+    font-weight: 600;
+
+    @include media-breakpoint-down(md) {
+      font-size: $spacer * 0.625;
+    }
+  }
+
+  &__students {
+    width: 75%;
+    margin: auto;
+
+    @include media-breakpoint-down(md) {
+      width: 90%;
+    }
   }
 }

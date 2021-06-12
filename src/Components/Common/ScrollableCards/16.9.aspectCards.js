@@ -3,15 +3,34 @@ import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import AddIcon from '@material-ui/icons/Add';
 import './ScrollableCards.scss';
+import useWindowDimensions from '../../../Utilities/utilities';
 
 export const AspectCards = (props) => {
   const { data, clickCard, clickAddCard, section, noAddCard, bigAspectCard } = props;
+
+  const windowDimensions = useWindowDimensions();
+
+  const { width, height } = windowDimensions;
+
+  const isScreenBig = () => {
+    let isScreenBigger;
+    if (width > 768) {
+      isScreenBigger = true;
+    } else {
+      isScreenBigger = false;
+    }
+    return isScreenBigger;
+  };
+
+  const bigScreen = isScreenBig();
 
   return (
     <section
       className='Scrollable__card'
       style={
-        noAddCard ? { minHeight: '113px' } : { flexDirection: 'row-reverse', minHeight: '113px' }
+        noAddCard
+          ? { minHeight: '113px' }
+          : { flexDirection: bigScreen ? 'row' : 'row-reverse', minHeight: '113px' }
       }
     >
       {!noAddCard && (
