@@ -5,7 +5,6 @@ import Skeleton from 'react-loading-skeleton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import format from 'date-fns/format';
-import Swal from 'sweetalert2';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
@@ -19,6 +18,7 @@ import PhoneIcon from '@material-ui/icons/Phone';
 import LinkIcon from '@material-ui/icons/Link';
 import { connect } from 'react-redux';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
+import Toast from 'react-bootstrap/Toast';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { get, apiValidation } from '../../Utilities';
 import {
@@ -54,6 +54,7 @@ import youtube from '../../assets/images/dummyDashboard/youtube.png';
 import telegram from '../../assets/images/dummyDashboard/telegram.svg';
 import form from '../../assets/images/dummyDashboard/form.svg';
 import '../Login/DummyDashboard.scss';
+import { dashboardActions } from '../../redux/actions/dashboard.action';
 
 const DashBoardAdmissions = Loadable({
   loader: () => import('./DashBoardAdmissions'),
@@ -71,6 +72,7 @@ const Dashboard = (props) => {
     clearProfile,
     clearClientIdDetails,
     history,
+    setDashboardDataToStore,
     setTestResultArrayToStore,
     setTestStartTimeToStore,
     setTestTypeToStore,
@@ -90,6 +92,7 @@ const Dashboard = (props) => {
   const [admissions, setAdmissions] = useState({});
   const [data, setData] = useState({});
   const [hasLoaded, setHasLoaded] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const [optionsModal, setOptionsModal] = useState(false);
   const openOptionsModal = () => setOptionsModal(true);
   const closeOptionsModal = () => setOptionsModal(false);
@@ -122,6 +125,7 @@ const Dashboard = (props) => {
         setAttendance(result.attendance);
         setData(result);
         setHasLoaded(true);
+        setDashboardDataToStore(result);
       })
       .catch((err) => console.error(err));
     partsOfDay();
@@ -148,11 +152,8 @@ const Dashboard = (props) => {
         })
         .catch(console.error);
     } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops!',
-        text: `Sharing is not supported on device.`,
-      });
+      setShowToast(true);
+      navigator.clipboard.writeText(window.location.href);
     }
   };
 
@@ -948,6 +949,24 @@ const Dashboard = (props) => {
           </Row>
         </Modal.Body>
       </Modal>
+      <Toast
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '15%',
+          zIndex: '999',
+        }}
+        onClose={() => setShowToast(false)}
+        show={showToast}
+        delay={3000}
+        autohide
+      >
+        <Toast.Header>
+          <strong className='mr-auto'>Copied!</strong>
+          <small>Just Now</small>
+        </Toast.Header>
+        <Toast.Body>The link has been copied to your clipboard!</Toast.Body>
+      </Toast>
     </>
   );
 };
@@ -992,6 +1011,9 @@ const mapDispatchToProps = (dispatch) => ({
   setFolderIdArrayToStore: (payload) => {
     dispatch(studyBinActions.setFolderIDArrayToStore(payload));
   },
+  setDashboardDataToStore: (payload) => {
+    dispatch(dashboardActions.setDashboardDataToStore(payload));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
@@ -1007,6 +1029,7 @@ Dashboard.propTypes = {
   setTestIdToStore: PropTypes.func.isRequired,
   setTestTypeToStore: PropTypes.func.isRequired,
   setCourseIdToStore: PropTypes.func.isRequired,
+  setDashboardDataToStore: PropTypes.func.isRequired,
   setAdmissionRoleArrayToStore: PropTypes.func.isRequired,
   setFolderIdArrayToStore: PropTypes.func.isRequired,
   userProfile: PropTypes.shape({

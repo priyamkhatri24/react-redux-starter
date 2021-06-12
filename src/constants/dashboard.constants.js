@@ -1,0 +1,4 @@
+export const dashboardConstants = {
+  DASHBOARDDATA: 'DASHBOARD_DATA',
+  CLEARDASHBOARDDATA: 'CLEAR_DASHBOARD_DATA',
+};
