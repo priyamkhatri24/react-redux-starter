@@ -111,7 +111,7 @@ const CreateCourse = (props) => {
   };
 
   return (
-    <div>
+    <div className='Courses__createCourses'>
       {Object.keys(course).length > 0 && (
         <>
           <PageHeader title={course.course_title} customBack handleBack={handleBack} />

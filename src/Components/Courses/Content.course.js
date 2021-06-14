@@ -119,7 +119,7 @@ const Content = (props) => {
       >
         <Row className='my-auto Courses__createCourse mx-2'>
           <span className='Courses__coloredNumber mr-2'>2</span>{' '}
-          <span className='my-auto ml-3'>Create your content</span>
+          <span className='my-auto ml-1'>Create your content</span>
         </Row>
         {section.map((elem, i) => {
           return (
@@ -158,7 +158,7 @@ const Content = (props) => {
                 <>
                   {' '}
                   <Row className='mx-2 mt-4'>
-                    <label className='has-float-label my-auto'>
+                    <label className='has-float-label my-auto' style={{ width: '100%' }}>
                       <input
                         className='form-control'
                         name='Name'
@@ -188,7 +188,7 @@ const Content = (props) => {
                   )}
                 </>
               )}
-              <Row className='w-50 m-1'>
+              <Row className='w-50 m-2'>
                 <Button
                   variant='boldText'
                   className='p-0'
@@ -221,7 +221,7 @@ const Content = (props) => {
               <h6 className='LiveClasses__adminHeading mb-2 mx-2'>Add new Section </h6>
 
               <Row className='mx-2 mt-4'>
-                <label className='has-float-label my-auto'>
+                <label className='has-float-label my-auto' style={{ width: '100%' }}>
                   <input
                     className='form-control'
                     name='Name'
