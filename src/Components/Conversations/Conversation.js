@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 // import { connect } from 'react-redux';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // import PropTypes from 'prop-types';
 import { Row, Col, Button } from 'react-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
-import { get, apiValidation, uploadImage, post } from '../../Utilities';
+import { get, apiValidation, uploadFiles, post } from '../../Utilities';
 import { conversationsActions } from '../../redux/actions/conversations.action';
 import { getConversation, getSocket, getPosts } from '../../redux/reducers/conversations.reducer';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
@@ -21,26 +21,8 @@ const CONVERSATION_TYPES = {
   POST: 'discussions',
 };
 
-// const mapStateToProps = (state) => ({
-//   conversation: getConversation(state),
-//   clientUserId: getClientUserId(state),
-//   socket: getSocket(state),
-//   posts: getPosts(state),
-// });
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     setConversation: (conversation) => {
-//       dispatch(conversationsActions.setConversation(conversation));
-//     },
-//     setPosts: (posts) => {
-//       dispatch(conversationsActions.setPosts(posts));
-//     },
-//   };
-// };
-
 const Conversation = () => {
-  // const history = useHistory();
+  const history = useHistory();
 
   const dispatch = useDispatch();
 
@@ -56,12 +38,18 @@ const Conversation = () => {
   const setConversation = (data) => dispatch(conversationsActions.setConversation(data));
   const setPosts = (data) => dispatch(conversationsActions.setPosts(data));
 
+  const messagesEnd = useRef();
+
   useEffect(() => {
     fetchMessages();
-    socket.emit('join', { conversation_id: conversation.id });
+    socket.emit('join', { conversation_id: conversation.id, clientUserId });
     socket.on('conversationMessage', onReceiveMessage);
     return () => socket.emit('leave', { conversation_id: conversation.id });
   }, []);
+
+  useEffect(() => {
+    socket.on('conversationMessage', onReceiveMessage);
+  }, [conversation]);
 
   const addMessage = (message) => {
     const newConversation = { ...conversation };
@@ -155,6 +143,7 @@ const Conversation = () => {
       const messages = formatMessages(apiData, clientUserId);
       setConversation({ ...conversation, page: nextPage });
       setPosts(messages);
+      console.log(messages);
     });
   };
 
@@ -257,7 +246,7 @@ const Conversation = () => {
     newConversation.messages = newMessages;
     setConversation(newConversation);
 
-    uploadImage(file).then((res) => {
+    uploadFiles([{ file, type: 'image' }]).then((res) => {
       console.log(res.filename);
       const { filename } = res;
       socket.emit(
@@ -271,6 +260,7 @@ const Conversation = () => {
         },
         (error, data) => {
           console.log('ack', data);
+          setReply(null);
           const index = newMessages.findIndex((message) => message.id === tempId);
           console.log(index);
           if (index === -1) return;
@@ -278,6 +268,7 @@ const Conversation = () => {
           newMessages[index].isLoading = false;
           conversation.messages = newMessages;
           setConversation(conversation);
+          messagesEnd.current !== null && messagesEnd.current.scrollIntoView();
         },
       );
     });
@@ -294,21 +285,40 @@ const Conversation = () => {
         attachments_array: [],
         primary_chat_id: reply?.id,
       },
-      (data) => {
+      (error, data) => {
         console.log('ack', data);
+
+        addMessage({
+          id: data.chat_id,
+          message: {
+            type: 'text',
+            content: message,
+          },
+          userIsAuthor: true,
+          thumbnail: '',
+          timestamp: Date.now().toString(),
+          replyTo: reply,
+        });
+        setReply(null);
+
+        socket.emit(
+          'sendMessage',
+          {
+            sender_id: 1801,
+            conversation_id: conversation.id,
+            text: message,
+            type: 'message',
+            attachments_array: [],
+            primary_chat_id: reply?.id,
+          },
+          (err, ack) => {
+            console.log('aaaaaa', ack);
+          },
+        );
+
+        messagesEnd.current !== null && messagesEnd.current.scrollIntoView();
       },
     );
-
-    addMessage({
-      message: {
-        type: 'text',
-        content: message,
-      },
-      userIsAuthor: true,
-      thumbnail: '',
-      timestamp: Date.now().toString(),
-      reply,
-    });
   };
 
   const replyToMessage = (message) => {
@@ -325,6 +335,11 @@ const Conversation = () => {
     setActiveTab(tab);
   };
 
+  const showConversationDetails = () => {
+    console.log('Hello');
+    history.push('/conversation/details');
+  };
+
   return (
     <>
       <div className='fixed-top' style={{ zIndex: 2, backgroundColor: '#fff' }}>
@@ -334,18 +349,21 @@ const Conversation = () => {
           participantsCount={conversation.participantsCount}
           activeTab={activeTab}
           onTabSelected={onTabSelected}
+          onClick={showConversationDetails}
         />
       </div>
       <Row>
         {activeTab === CONVERSATION_TYPES.CHAT && (
           <Col md={12}>
             <Messages
+              ref={messagesEnd}
               list={conversation.messages}
               onReactionToMessage={(id, reacted) => reactToMessage(id, reacted)}
               onSlide={(message) => replyToMessage(message)}
               isLoading={isLoading}
               nextPage={conversation.page}
               loadMore={(page) => fetchMoreMessages(page)}
+              ref={messagesEnd}
             />
             <ConversationInput
               sendMessage={(message) => sendMessage(message)}
@@ -364,6 +382,7 @@ const Conversation = () => {
                 isLoading={isLoading}
                 nextPage={conversation.page}
                 loadMore={(page) => fetchMorePosts(page)}
+                ref={messagesEnd}
               />
               <div className='p-2 fixed-bottom' style={{ backgroundColor: '#fff' }}>
                 <Button
@@ -371,7 +390,7 @@ const Conversation = () => {
                   variant='primary'
                   block
                   className='add-post-btn'
-                  // onClick={() => history.push('/create-post')}
+                  onClick={() => history.push('/create-post')}
                 >
                   <i className='material-icons'>add</i> Add new post
                 </Button>
@@ -384,21 +403,4 @@ const Conversation = () => {
   );
 };
 
-// Conversation.propTypes = {
-//   setConversation: PropTypes.func.isRequired,
-//   setPosts: PropTypes.func.isRequired,
-//   clientUserId: PropTypes.number.isRequired,
-//   socket: PropTypes.objectOf(PropTypes.any).isRequired,
-//   conversation: PropTypes.objectOf({
-//     id: PropTypes.number.isRequired,
-//     name: PropTypes.string.isRequired,
-//     thumbnail: PropTypes.string.isRequired,
-//     participantsCount: PropTypes.number,
-//     messages: PropTypes.arrayOf(PropTypes.objectOf(Message).isRequired).isRequired,
-//     page: PropTypes.number.isRequired,
-//   }).isRequired,
-//   posts: PropTypes.arrayOf(PropTypes.objectOf(Message).isRequired).isRequired,
-// };
-
-// export default connect(mapStateToProps, mapDispatchToProps)(Conversation);
 export default Conversation;

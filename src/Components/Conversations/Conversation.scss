@@ -100,3 +100,47 @@
   border-left: 5px solid #2699fb;
   background-color: #f5f5f5;
 }
+
+.details-box {
+  .accordion > .card:not(:last-of-type) {
+    border-bottom: 1px solid #707070;
+  }
+
+  .card {
+    border: 1px solid #707070;
+    border-radius: 5px;
+
+    .material-icons {
+      color: #000000;
+    }
+
+    .card-header {
+      background-color: #fff;
+      border-bottom: none;
+      padding-left: 15px;
+      padding-right: 5px;
+    }
+
+    .card-body {
+      padding-left: 15px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+
+      .gallery {
+        display: flex;
+        overflow-x: scroll;
+
+        img {
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+}
+
+.gallery {
+  video {
+    height: 100%;
+    width: auto !important;
+  }
+}

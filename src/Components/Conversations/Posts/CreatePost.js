@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Button, Image, Spinner } from 'react-bootstrap';
+import { Form, Button, Image, Spinner, InputGroup, FormControl } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { conversationsActions } from '../../../redux/actions/conversations.action';
@@ -39,7 +39,7 @@ const CreatePost = function ({ clientUserId, conversation }) {
     setShowBottomSheet(false);
   });
 
-  const onSubmit = async (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -51,9 +51,11 @@ const CreatePost = function ({ clientUserId, conversation }) {
     formDataObj.text = form.description;
 
     if (selectedFiles.length > 0) {
-      const formatAttachments = (array) => array.map((a) => a);
+      const formatAttachments = (array) => array?.map((a) => a);
 
       uploadFiles(selectedFiles).then((resp) => {
+        console.log('response incoming');
+        console.log(resp);
         const attachments = JSON.stringify(formatAttachments(resp.attachments_array));
         formDataObj.attachments_array = attachments;
         post(formDataObj, '/createPost').then((res) => {
@@ -150,6 +152,14 @@ const CreatePost = function ({ clientUserId, conversation }) {
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
               />
               <span>Description</span>
+            </label>
+            <label className='mt-3 d-flex align-items-center justify-content-between'>
+              <span className='permission-title'>Turn off comments</span>
+              <input type='checkbox' />
+            </label>
+            <label className='mt-3 d-flex align-items-center justify-content-between'>
+              <span className='permission-title'>Turn off likes</span>
+              <input type='checkbox' />
             </label>
             <div className='mt-4'>
               <p className='mb-0'>Attachments and more</p>

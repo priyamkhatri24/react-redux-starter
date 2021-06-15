@@ -1,15 +1,19 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { createMatchSelector } from 'connected-react-router';
 import PropTypes from 'prop-types';
 import { Image, Media, Carousel } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { conversationsActions } from '../../../redux/actions/conversations.action';
-import { getConversation, getPost } from '../../../redux/reducers/conversations.reducer';
+import {
+  getConversation,
+  getPost,
+  getRepliesForComments,
+} from '../../../redux/reducers/conversations.reducer';
 import { getClientUserId } from '../../../redux/reducers/clientUserId.reducer';
 import Conversation from '../Conversation';
 import ConversationsHeader from '../ConversationsHeader';
 import Comments from './Comments';
+import { formatPost, formatReplies } from '../formatter';
 import { get, apiValidation, post as postNetworkCall } from '../../../Utilities';
 import './Post.scss';
 import '../Message/Message.scss';
@@ -19,10 +23,16 @@ const Post = function ({
   conversation,
   match,
   setPost,
-  post = { message: { content: {} }, sent_by: {}, attachments: [], reactions: [], comments: [] },
+  setReplies,
+  repliesForComments,
+  post = {
+    message: { content: {} },
+    sent_by: {},
+    attachments: [],
+    reactions: [],
+    comments: [],
+  },
 }) {
-  const commentsInputRef = useRef(null);
-
   useEffect(() => {
     fetchPost();
   }, []);
@@ -71,33 +81,97 @@ const Post = function ({
       (res) => {
         const data = apiValidation(res);
         console.log(data);
-        setPost({
-          id: data.chat_id,
-          message: {
-            type: 'post',
-            content: {
-              title: data.title,
-              desc: data.text,
-              cover: data.attachments_array.length === 0 ? '' : data.attachments_array[0].file_url,
-            },
-          },
-          comments: data.comments,
-          attachments: data.attachments_array,
-          thumbnail: data.sent_by.display_picture || 'https://i.pravatar.cc/40',
-          userIsAuthor: data.sent_by.client_user_id === clientUserId,
-          timestamp: data.sent_time,
-          username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
-          reactions: data.reactions.map((r) => ({
-            count: r.no_of_reactions,
-            id: r.reaction_id,
-            name: r.reaction_name,
-            url: r.reaction_url,
-          })),
-          userHasReacted: data.hasUserReacted,
-        });
+        setPost(formatPost(data, clientUserId));
       },
     );
   }
+
+  const findOrReplaceRepliesForComment = (commentId, data) => {
+    const repliesCopy = repliesForComments;
+    const index = repliesCopy.findIndex((repliesObj) => repliesObj.commentId === commentId);
+    console.log(index, 'index');
+    if (index < 0) {
+      repliesCopy.push(data);
+    } else {
+      repliesCopy.splice(index, 1, data);
+    }
+
+    setReplies(repliesCopy);
+  };
+
+  function fetchReplies(commentId) {
+    get(
+      null,
+      `/getRepliesOfComment?post_comments_id=${commentId}&client_user_id=${clientUserId}`,
+    ).then((res) => {
+      const data = apiValidation(res);
+      console.log(data);
+      findOrReplaceRepliesForComment(commentId, {
+        list: formatReplies(data, clientUserId),
+        commentId,
+      });
+    });
+  }
+
+  const onReaction = (reactionComment, index, type) => {
+    const { reactions } = reactionComment;
+
+    if (!reactionComment.hasUserReacted) {
+      if (reactions.length > 0) {
+        reactions[0].no_of_reactions += 1;
+      } else {
+        reactions.push({
+          no_of_reactions: 1,
+          id: 1,
+          name: 'like',
+          url: 'abc.com',
+        });
+      }
+      reactionComment.hasUserReacted = true;
+    } else {
+      reactionComment.hasUserReacted = false;
+      reactions[0].no_of_reactions -= 1;
+    }
+
+    if (type === 'comment') {
+      reactionComment.reactions = reactions;
+      const { comments } = post;
+      console.log(comments);
+      comments.splice(index, 1, reactionComment);
+      setPost(post);
+    } else {
+      const repliesIndex = repliesForComments.findIndex(
+        (repliesObj) => repliesObj.commentId === reactionComment.post_comments_post_comments_id,
+      );
+      const replies = repliesForComments[repliesIndex];
+      replies.list.splice(index, 1, reactionComment);
+      repliesForComments.splice(repliesIndex, 1, replies);
+      setReplies(repliesForComments);
+    }
+  };
+
+  const onAddReply = (data) => {
+    const repliesCopy = repliesForComments;
+    const repliesIndex = repliesCopy.findIndex(
+      (repliesObj) => repliesObj.commentId === data.post_comments_post_comments_id,
+    );
+    if (repliesIndex >= 0) {
+      const replies = repliesCopy[repliesIndex];
+      replies.list.push(data);
+    } else {
+      repliesCopy.push({ list: [data], commentId: data.post_comments_post_comments_id });
+    }
+    // const replies = repliesForComments[data.post_comments_id];
+    // if (!replies) {
+    //   repliesForComments[data.post_comments_id] = [data];
+    // } else {
+    //   replies.push(data);
+    // }
+
+    // repliesForComments[data.post_comments_id] = replies;
+
+    setReplies(repliesCopy);
+  };
 
   const FilePreview = (attachment) => {
     return (
@@ -184,6 +258,10 @@ const Post = function ({
           onCommentUpdate={(list) => a(list)}
           thumbnail={post.thumbnail}
           username={post.username}
+          onFetchReplies={fetchReplies}
+          repliesForComments={repliesForComments}
+          onReaction={onReaction}
+          onAddReply={onAddReply}
         />
       </>
     </div>
@@ -198,6 +276,7 @@ const mapStateToProps = (state) => {
     clientUserId: getClientUserId(state),
     post: getPost(state),
     match: matchSelector(state),
+    repliesForComments: getRepliesForComments(state),
   };
 };
 
@@ -206,12 +285,17 @@ const mapDispatchToProps = (dispatch) => {
     setPost: (post) => {
       dispatch(conversationsActions.setPost(post));
     },
+    setReplies: (post) => {
+      dispatch(conversationsActions.setReplies(post));
+    },
   };
 };
 
 Post.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   setPost: PropTypes.func.isRequired,
+  setReplies: PropTypes.func.isRequired,
+  repliesForComments: PropTypes.shape([]),
   post: PropTypes.objectOf({
     id: PropTypes.number.isRequired,
     username: PropTypes.string.isRequired,
@@ -236,6 +320,10 @@ Post.propTypes = {
       id: PropTypes.string.isRequired,
     }),
   }).isRequired,
+};
+
+Post.defaultProps = {
+  repliesForComments: [],
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Post);

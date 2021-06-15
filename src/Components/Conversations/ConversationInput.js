@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Webcam from 'react-webcam';
 import {
@@ -16,15 +16,23 @@ import MicRecorder from 'mic-recorder-to-mp3';
 
 const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemoveReply }) {
   const [message, setMessage] = useState('');
+  const [webcamOptions, setWebcamOptions] = useState({
+    facingMode: 'user',
+  });
+  const [intervalFunc, setIntervalFuc] = useState(null);
   const [recordingState, setRecordingState] = useState({
     isRecording: false,
     blobURL: '',
     isBlocked: false,
+    isVisible: false,
+    file: null,
   });
+  const [timeElapsed, setTimeElapsed] = useState('00:00');
   const [recorder, setRecorder] = useState(null);
   const [fileType, setFileType] = useState('');
   const fileSelector = useRef();
   const cameraSelector = useRef();
+
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -60,7 +68,14 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
         newRecorder
           .start()
           .then(() => {
-            setRecordingState({ ...recordingState, isRecording: true, isBlocked: false });
+            a();
+            b();
+            // setRecordingState({
+            //   ...recordingState,
+            //   isRecording: true,
+            //   isBlocked: false,
+            //   isVisible: true,
+            // });
           })
           .catch((e) => console.error(e));
       },
@@ -73,7 +88,8 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
     setRecorder(newRecorder);
   };
 
-  const stopRecording = () => {
+  const stopRecording = (isVisible = true) => {
+    clearInterval(intervalFunc);
     recorder
       .stop()
       .getMp3()
@@ -83,10 +99,24 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
           lastModified: Date.now(),
         });
         const blobURL = URL.createObjectURL(file);
-        setRecordingState({ ...recordingState, blobURL, isRecording: false });
-        onFileUpload(file, 'audio');
+        setRecordingState({ ...recordingState, blobURL, file, isRecording: false, isVisible });
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        setRecordingState({
+          ...recordingState,
+          blobURL: '',
+          file: null,
+          isRecording: false,
+          isVisible,
+        });
+      });
+  };
+
+  const sendRecording = () => {
+    console.log('sending');
+    console.log(recordingState.file);
+    onFileUpload(recordingState.file, 'audio');
+    setRecordingState({ ...recordingState, isVisible: false, file: null, blobURL: '' });
   };
 
   const captureImage = function () {
@@ -103,93 +133,194 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
     urltoFile(cameraSelector.current.getScreenshot());
   };
 
+  const a = () =>
+    setRecordingState({
+      ...recordingState,
+      isRecording: true,
+      isVisible: true,
+      isBlocked: false,
+    });
+
+  const b = () => {
+    const timeNow = Date.now();
+    const l = setInterval(() => {
+      console.log('interval set');
+      console.log(timeNow);
+
+      const totalSeconds = Math.round((Date.now() - timeNow) / 1000);
+      const minutes = `${Math.floor(totalSeconds / 60)}`.padStart(2, '0');
+      const seconds = `${totalSeconds % 60}`.padStart(2, '0');
+
+      setTimeElapsed(`${minutes}:${seconds}`);
+    }, 1000);
+    setIntervalFuc(l);
+  };
+
+  const cleanUpAudio = () => {
+    stopRecording(false);
+    clearInterval(intervalFunc);
+    setTimeElapsed('00:00');
+  };
+
+  const flipCamera = () => {
+    if (webcamOptions.facingMode === 'user') {
+      setWebcamOptions({ facingMode: { exact: 'environment' } });
+    } else {
+      setWebcamOptions({ facingMode: 'user' });
+    }
+  };
+
   return (
     <>
-      <Row className='fixed-bottom pb-2' style={{ backgroundColor: '#fff', zIndex: 2 }}>
-        {reply && (
-          <Col xs={12}>
-            <div className='d-flex align-items-center p-2 justify-content-between reply'>
-              <div className='container'>
-                <div>
-                  <p className='mb-0' style={{ color: '#2699fb', fontWeight: 'bold' }}>
-                    {reply.userIsAuthor ? 'You' : reply.username}
-                  </p>
-                  {reply.message.type === 'text' && <p className='mb-0'>{reply.message.content}</p>}
-                  {reply.message.type === 'image' && (
-                    <div className='d-flex justify-content-between align-items-center'>
-                      <p className='mb-0'>{reply.message.name.slice(0, 25)}...</p>
-                      <Image src={reply.message.content} height={30} />
-                      {/* <p className='mb-0'>{reply.message.content}</p> */}
-                    </div>
-                  )}
+      {!recordingState.isVisible && (
+        <Row
+          className='fixed-bottom pb-2 pt-2'
+          style={{ backgroundColor: '#fff', zIndex: 2, boxShadow: '0.5px 0.5px 10px #00000026' }}
+        >
+          {reply && (
+            <Col xs={12}>
+              <div className='d-flex align-items-center p-2 justify-content-between reply'>
+                <div className='container'>
+                  <div>
+                    <p className='mb-0' style={{ color: '#2699fb', fontWeight: 'bold' }}>
+                      {reply.userIsAuthor ? 'You' : reply.username}
+                    </p>
+                    {reply.message.type === 'text' && (
+                      <p className='mb-0'>{reply.message.content}</p>
+                    )}
+                    {reply.message.type === 'image' && (
+                      <div className='d-flex justify-content-between align-items-center'>
+                        <p className='mb-0'>{reply.message.name.slice(0, 25)}...</p>
+                        <Image src={reply.message.content} height={30} />
+                        {/* <p className='mb-0'>{reply.message.content}</p> */}
+                      </div>
+                    )}
+                  </div>
                 </div>
+                <Button variant='link' className='p-0 m-0 d-flex' onClick={() => onRemoveReply()}>
+                  <i className='material-icons'>close</i>
+                </Button>
               </div>
-              <Button variant='link' className='p-0 m-0 d-flex' onClick={() => onRemoveReply()}>
-                <i className='material-icons'>close</i>
-              </Button>
+            </Col>
+          )}
+          <Col xs={12}>
+            <div className='d-flex flex-row align-items-center justify-content-between'>
+              <div className='d-flex flex-row input-container align-items-center'>
+                <DropdownButton
+                  onSelect={(e) => openFilePicker(e)}
+                  as={ButtonGroup}
+                  key='up'
+                  id='dropdown-button-drop-up'
+                  drop='up'
+                  variant='primary'
+                  title={<i className='material-icons'>attachment</i>}
+                >
+                  <Dropdown.Item eventKey='image'>Image</Dropdown.Item>
+                  <Dropdown.Item eventKey='video'>Video</Dropdown.Item>
+                  <Dropdown.Item eventKey='doc'>Document</Dropdown.Item>
+                  <Dropdown.Item eventKey='audio'>Audio</Dropdown.Item>
+                </DropdownButton>
+                <input
+                  type='file'
+                  ref={fileSelector}
+                  style={{ display: 'none' }}
+                  onChange={(e) => onFileUpload(fileSelector.current.files[0], fileType)}
+                />
+                <FormControl
+                  placeholder='Type a message'
+                  as='input'
+                  id='chat-input'
+                  aria-label='Input field for your message'
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                />
+                <span className='upload-actions'>
+                  <i className='material-icons pr-2'>insert_emoticon</i>
+                  <Button variant='link' size='sm' className='camera-btn' onClick={handleShow}>
+                    <i className='material-icons'>photo_camera</i>
+                  </Button>
+                </span>
+              </div>
+              {!!message && (
+                <Button className='rounded-btn mr-2' onClick={() => send()}>
+                  <i className='material-icons'>send</i>
+                </Button>
+              )}
+              {!message && !recordingState.isRecording && (
+                <Button className='rounded-btn mr-2' onClick={() => startRecording()}>
+                  <i className='material-icons'>mic_none</i>
+                </Button>
+              )}
+              {/* {!message && recordingState.isRecording && (
+                <Button className='rounded-btn mr-2' onClick={() => stopRecording()}>
+                  <i className='material-icons'>close</i>
+                </Button>
+              )} */}
             </div>
           </Col>
-        )}
-        <Col xs={12}>
-          <div className='d-flex flex-row align-items-center justify-content-between'>
-            <div className='d-flex flex-row input-container align-items-center'>
-              <DropdownButton
-                onSelect={(e) => openFilePicker(e)}
-                as={ButtonGroup}
-                key='up'
-                id='dropdown-button-drop-up'
-                drop='up'
-                variant='primary'
-                title={<i className='material-icons'>attachment</i>}
+        </Row>
+      )}
+
+      {recordingState.isVisible && (
+        <div
+          className='fixed-bottom audio-input pt-3 pb-3'
+          style={{ boxShadow: '0px -4px 8px #1f00750f', background: '#fff', borderRadius: '10px' }}
+        >
+          <div className='text-center mb-3'>
+            {recordingState.isRecording ? <h3>Recording</h3> : <h3>Done</h3>}
+            <p>{timeElapsed}</p>
+          </div>
+          <div className='d-flex align-items-center justify-content-center'>
+            <Button
+              variant='link'
+              onClick={(e) => {
+                setRecordingState({
+                  ...recordingState,
+                  isVisible: false,
+                  isRecording: false,
+                  blobURL: '',
+                });
+                cleanUpAudio();
+              }}
+            >
+              <i className='material-icons' style={{ color: '#FF0000DE', fontSize: '30px' }}>
+                close
+              </i>
+            </Button>
+            {recordingState.isRecording && (
+              <Button
+                variant='link'
+                onClick={(e) => {
+                  stopRecording();
+                }}
               >
-                <Dropdown.Item eventKey='image'>Image</Dropdown.Item>
-                <Dropdown.Item eventKey='video'>Video</Dropdown.Item>
-                <Dropdown.Item eventKey='doc'>Document</Dropdown.Item>
-                <Dropdown.Item eventKey='audio'>Audio</Dropdown.Item>
-              </DropdownButton>
-              <input
-                type='file'
-                ref={fileSelector}
-                style={{ display: 'none' }}
-                onChange={(e) => onFileUpload(fileSelector.current.files[0], fileType)}
-              />
-              <FormControl
-                placeholder='Type a message'
-                as='input'
-                id='chat-input'
-                aria-label='Input field for your message'
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-              />
-              <span className='upload-actions'>
-                <i className='material-icons pr-2'>insert_emoticon</i>
-                <Button variant='link' size='sm' className='camera-btn' onClick={handleShow}>
-                  <i className='material-icons'>photo_camera</i>
+                <i className='material-icons' style={{ color: '#2699FB', fontSize: '30px' }}>
+                  stop
+                </i>
+              </Button>
+            )}
+            {!recordingState.isRecording && (
+              <>
+                <Button variant='link' onClick={(e) => startRecording()}>
+                  <i className='material-icons' style={{ color: '#2699FB', fontSize: '30px' }}>
+                    play_circle
+                  </i>
                 </Button>
-              </span>
-            </div>
-            {!!message && (
-              <Button className='rounded-btn mr-2' onClick={() => send()}>
-                <i className='material-icons'>send</i>
-              </Button>
-            )}
-            {!message && !recordingState.isRecording && (
-              <Button className='rounded-btn mr-2' onClick={() => startRecording()}>
-                <i className='material-icons'>mic_none</i>
-              </Button>
-            )}
-            {!message && recordingState.isRecording && (
-              <Button className='rounded-btn mr-2' onClick={() => stopRecording()}>
-                <i className='material-icons'>close</i>
-              </Button>
+                <Button variant='link' onClick={() => sendRecording()}>
+                  <i className='material-icons' style={{ color: '#000000', fontSize: '30px' }}>
+                    send
+                  </i>
+                </Button>
+              </>
             )}
           </div>
-        </Col>
-      </Row>
+        </div>
+      )}
 
       <Modal show={show} onHide={handleClose} centered size='xl' style={{ height: '100%' }}>
-        <Webcam ref={cameraSelector} />
+        <Webcam ref={cameraSelector} videoConstraints={webcamOptions} />
         <Button onClick={() => captureImage()}>Capture</Button>
+        <Button onClick={() => flipCamera()}>Flip</Button>
       </Modal>
     </>
   );

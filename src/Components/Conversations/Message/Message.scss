@@ -1,5 +1,43 @@
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background: #2699fb;
+  cursor: pointer;
+  margin-top: -6px;
+  // margin-left: -6px;
+}
+
+input[type='range'] {
+  -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+  width: 100%; /* Specific width is required for Firefox. */
+  background: transparent; /* Otherwise white in Chrome */
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+}
+
+input[type='range']::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 3px;
+  cursor: pointer;
+  background: #367ebd;
+  border-radius: 1.3px;
+  // border: 0.2px solid #010101;
+}
+
+input[type='range']:focus::-webkit-slider-runnable-track {
+  background: #2699fb;
+}
+
+.link-btn {
+  color: #2699fb;
+}
+
 .message {
-  transition: transform 0.8s ease;
+  transition: transform 0.8s ease-out;
 
   .message-by-author {
     background-color: #f1f9ff;
@@ -38,6 +76,8 @@
 
   .audio-message {
     max-width: 100%;
+    border-radius: 5px;
+    background-color: #f1f9ff;
   }
 
   .post-message {
@@ -175,4 +215,17 @@
     font-size: 8px;
     font-family: 'Montserrat-Regular';
   }
+}
+
+.drag-handler {
+  position: relative;
+}
+
+.dragger {
+  width: fit-content;
+  position: relative;
+}
+
+.dragger-media {
+  position: relative;
 }

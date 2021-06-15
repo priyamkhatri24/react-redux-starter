@@ -9,6 +9,7 @@ const ConversationHeader = function ({
   participantsCount = 0,
   activeTab,
   onTabSelected,
+  onClick = null,
 }) {
   const history = useHistory();
 
@@ -28,7 +29,11 @@ const ConversationHeader = function ({
                 arrow_back
               </i>
               <div className='heading pt-2 d-flex align-items-center'>
-                <Media as='div' className='p-2' onClick={() => history.push('/conversation')}>
+                <Media
+                  as='div'
+                  className='p-2'
+                  onClick={onClick ? () => onClick() : () => history.push('/conversation')}
+                >
                   <Image
                     src={thumbnail}
                     width={40}
@@ -95,10 +100,12 @@ ConversationHeader.propTypes = {
   participantsCount: PropTypes.number,
   activeTab: PropTypes.string.isRequired,
   onTabSelected: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
 };
 
 ConversationHeader.defaultProps = {
   participantsCount: 1,
+  onClick: null,
 };
 
 export default ConversationHeader;

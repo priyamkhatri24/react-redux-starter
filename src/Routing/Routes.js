@@ -281,6 +281,30 @@ const Conversation = Loadable({
   loading: Loading,
 });
 
+const ConversationDetails = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'ConversationDetails' */ '../Components/Conversations/ConversationDetails'
+    ),
+  loading: Loading,
+});
+
+const ConversationFiles = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'ConversationFiles' */ '../Components/Conversations/ConversationFiles/ConversationFiles'
+    ),
+  loading: Loading,
+});
+
+const ConversationMedia = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'ConversationMedia' */ '../Components/Conversations/ConversationMedia/ConversationMedia'
+    ),
+  loading: Loading,
+});
+
 const CreatePost = Loadable({
   loader: () =>
     import(/* webpackChunkName: 'CreatePost' */ '../Components/Conversations/Posts/CreatePost'),
@@ -352,6 +376,9 @@ export function Routes() {
 
       <AuthenticatedRoute exact path='/conversations' component={Conversations} />
       <AuthenticatedRoute exact path='/conversation' component={Conversation} />
+      <AuthenticatedRoute exact path='/conversation/details' component={ConversationDetails} />
+      <AuthenticatedRoute exact path='/conversations/:id/media' component={ConversationMedia} />
+      <AuthenticatedRoute exact path='/conversations/:id/:type' component={ConversationFiles} />
       <AuthenticatedRoute exact path='/create-post' component={CreatePost} />
       <AuthenticatedRoute exact path='/posts/:id' component={Post} />
 

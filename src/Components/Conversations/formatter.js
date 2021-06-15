@@ -12,7 +12,7 @@ export const formatMessageContent = (message) => {
     };
   }
 
-  if (message.attachments_array.length > 0) {
+  if (message.attachments_array && message.attachments_array.length > 0) {
     return {
       type: message.attachments_array[0].file_type,
       name: message.attachments_array[0].file_name,
@@ -40,8 +40,19 @@ export const formatMessages = (list, clientUserId) =>
       name: r.reaction_name,
       url: r.reaction_url,
     })),
-    comments: data.comments,
+    commentsInfo: {
+      featuredComment: data.commentsInfo ? data.commentsInfo.comment : '',
+      commentsCount: data.commentsInfo ? data.commentsInfo.count : 0,
+    },
     userHasReacted: data.hasUserReacted,
+    replyTo:
+      data.primaryChat && data.primaryChat.chat_id
+        ? {
+            id: data.primaryChat.chat_id,
+            username: `${data.primaryChat.sent_by.first_name} ${data.primaryChat.sent_by.last_name}`,
+            message: formatMessageContent(data.primaryChat),
+          }
+        : {},
   }));
 
 export const formatMessage = (data, userIsAuthor) => ({
@@ -51,13 +62,24 @@ export const formatMessage = (data, userIsAuthor) => ({
   userIsAuthor,
   timestamp: data.sent_time,
   username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
-  reactions: data.reactions.map((r) => ({
+  reactions: (data.reactions || []).map((r) => ({
     count: r.no_of_reactions,
     id: r.reaction_id,
     name: r.reaction_name,
     url: r.reaction_url,
   })),
   userHasReacted: data.hasUserReacted,
+  commentsInfo: {
+    featuredComment: data.commentsInfo ? data.commentsInfo.comment : '',
+    commentsCount: data.commentsInfo ? data.commentsInfo.count : 0,
+  },
+  replyTo: data.primaryChat
+    ? {
+        id: data.primaryChat.chat_id,
+        username: `${data.primaryChat.sent_by.first_name} ${data.primaryChat.sent_by.last_name}`,
+        message: formatMessageContent(data.primaryChat),
+      }
+    : {},
 });
 
 export const formatConversation = (responseFromServer) => {};
@@ -72,3 +94,43 @@ export const formatConversations = (list) =>
     messages: [],
     page: 1,
   }));
+
+export const formatPost = (data, clientUserId) => ({
+  id: data.chat_id,
+  message: {
+    type: 'post',
+    content: {
+      title: data.title,
+      desc: data.text,
+      cover: data.attachments_array.length === 0 ? '' : data.attachments_array[0].file_url,
+    },
+  },
+  comments: data.comments,
+  attachments: data.attachments_array,
+  thumbnail: data.sent_by.display_picture || 'https://i.pravatar.cc/40',
+  userIsAuthor: data.sent_by.client_user_id === clientUserId,
+  timestamp: data.sent_time,
+  username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
+  reactions: data.reactions.map((r) => ({
+    count: r.no_of_reactions,
+    id: r.reaction_id,
+    name: r.reaction_name,
+    url: r.reaction_url,
+  })),
+  userHasReacted: data.hasUserReacted,
+});
+
+// comment_text: "Ujjjj"
+// created_at: "1618513991"
+// hasUserReacted: false
+// no_of_replies: 0
+// post_comments_id: 50
+// post_comments_post_comments_id: 28
+// reactions: []
+// sent_by: {first_name: "Baddam Admin", last_name: "", display_picture: null, client_user_id: 1801}
+// success: 1
+
+export const formatReplies = (data) => {
+  console.log('formatting replies - ', data);
+  return data;
+};
