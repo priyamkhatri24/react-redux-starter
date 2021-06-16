@@ -195,6 +195,7 @@ const FeePlans = (props) => {
     <>
       <PageHeader title={feePlanType === 'onetimecharge' ? 'One Time Charge' : 'Fee Plans'} />
       <div
+        className='Fees__plansContainer'
         style={{
           marginTop: '4rem',
           height: '100vh',

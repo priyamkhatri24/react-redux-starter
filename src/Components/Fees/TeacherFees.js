@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import { connect } from 'react-redux';
-import { Button, Row } from 'react-bootstrap';
+import { Button, Row, Col } from 'react-bootstrap';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get } from '../../Utilities';
 import FeeCarousel from './FeeCarousel';
@@ -36,34 +36,29 @@ const TeacherFees = (props) => {
         {activeTab !== 'Batches' && (
           <>
             <FeeCarousel carouselObject={carouselDetails} />
-            <Row className=' mx-2'>
+            <Row className=' mx-2 Fees__TwobuttonsRow'>
               <Button
                 variant='courseBlueOnWhite'
-                className='p-1 mx-2 my-auto'
+                className='p-1 mx-1 my-auto Fees__twoButtons'
                 onClick={() => {
                   history.push('/fees/feeplans');
                   setFeePlanTypeToStore('onetimecharge');
                 }}
-                style={{ width: '160px' }}
               >
-                <span style={{ fontSize: '18px' }} className='my-auto'>
-                  +
-                </span>
-                <span className='my-auto ml-2'>One-time Charge</span>
+                <span className='my-auto Fees__twoButtonstext'>+</span>
+                <span className='my-auto ml-2 Fees__twoButtonstext'>One-time Charge</span>
               </Button>
-              <span className='ml-auto'>
+              <span className=''>
                 <Button
                   variant='courseBlueOnWhite'
-                  className='p-1 mx-2 my-auto'
+                  className='p-1 mx-1 my-auto Fees__twoButtons'
                   onClick={() => {
                     history.push('/fees/feeplans');
                     setFeePlanTypeToStore('feePlans');
                   }}
                 >
-                  <span style={{ fontSize: '18px' }} className='my-auto'>
-                    +
-                  </span>
-                  <span className='my-auto ml-2'>Fee Plan</span>
+                  <span className='my-auto Fees__twoButtonstext'>+</span>
+                  <span className='my-auto ml-2 Fees__twoButtonstext'>Fee Plan</span>
                 </Button>
               </span>
             </Row>

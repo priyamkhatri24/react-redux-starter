@@ -85,8 +85,8 @@
     line-height: 15px;
     font-size: $spacer * 0.75;
 
-    @include media-breakpoint-up(md){
-      font-size: $spacer * 0.875; 
+    @include media-breakpoint-up(md) {
+      font-size: $spacer * 0.875;
     }
   }
 
@@ -96,8 +96,8 @@
     line-height: 18px;
     color: $black;
 
-    @include media-breakpoint-up(md){
-      font-size: $spacer * 1; 
+    @include media-breakpoint-up(md) {
+      font-size: $spacer * 1;
     }
   }
 
@@ -205,36 +205,35 @@
     }
   }
 
-  &__createCourses{
+  &__createCourses {
     width: 75%;
     margin: auto;
 
-    @include media-breakpoint-down(sm){
+    @include media-breakpoint-down(sm) {
       width: 90%;
-
     }
   }
 
-  &__boldHeading{
-    font-size: $spacer*1;
+  &__boldHeading {
+    font-size: $spacer * 1;
 
-    @include media-breakpoint-down(sm){
-      font-size: $spacer*0.875;
+    @include media-breakpoint-down(sm) {
+      font-size: $spacer * 0.875;
     }
   }
-  &__statisticsConatiner{
+  &__statisticsConatiner {
     width: 75%;
     margin: auto;
     margin-top: 5rem;
 
-    @include media-breakpoint-down(sm){
+    @include media-breakpoint-down(sm) {
       width: 90%;
     }
   }
-  &__statisticsImg{
+  &__statisticsImg {
     text-align: center;
 
-    @include media-breakpoint-down(sm){
+    @include media-breakpoint-down(sm) {
       text-align: left;
     }
   }

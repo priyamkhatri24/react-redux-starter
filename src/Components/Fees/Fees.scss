@@ -15,7 +15,7 @@
     height: 38px;
     width: 38px;
 
-    @include media-breakpoint-up(sm){
+    @include media-breakpoint-up(sm) {
       height: 50px;
       width: 50px;
     }
@@ -25,7 +25,7 @@
     font-family: 'Montserrat-SemiBold';
     font-size: $spacer * 0.75;
 
-    @include media-breakpoint-up(sm){
+    @include media-breakpoint-up(sm) {
       font-size: $spacer * 0.875;
     }
   }
@@ -38,7 +38,7 @@
   &__avatarStatus {
     font-family: 'Montserrat-Light';
     font-size: $spacer * 0.625;
-    @include media-breakpoint-up(sm){
+    @include media-breakpoint-up(sm) {
       font-size: $spacer * 0.725;
     }
   }
@@ -49,23 +49,22 @@
     line-height: 15px;
     color: $dashboardBlack;
 
-    @include media-breakpoint-up(sm){
+    @include media-breakpoint-up(sm) {
       font-size: $spacer * 0.85;
     }
-    
   }
-  &_navStatusContainer{
+  &_navStatusContainer {
     width: 100%;
-    position:fixed;
+    position: fixed;
     z-index: 10000;
-      
-    @include media-breakpoint-up(sm){
+
+    @include media-breakpoint-up(sm) {
       width: 75%;
       margin: auto;
-      left:13%;
+      left: 13%;
     }
   }
-  
+
   &__navStatus > span {
     color: $strongRed;
   }
@@ -82,7 +81,7 @@
     box-shadow: 0px -5px 6px 0px rgba(0, 0, 0, 0.16);
     padding-bottom: $spacer * 12.5;
     margin-top: 3.5rem;
-    @include media-breakpoint-up(sm){
+    @include media-breakpoint-up(sm) {
       width: 75%;
       left: 13%;
     }
@@ -97,8 +96,8 @@
     background: rgba(26, 255, 0, 0.1);
     background: linear-gradient(90deg, rgba(26, 255, 0, 0.1) 0%, rgba(255, 255, 255, 0.1) 100%);
 
-    @include media-breakpoint-up(sm){
-      width: 50%;
+    @include media-breakpoint-up(sm) {
+      width: 45%;
     }
   }
 
@@ -216,15 +215,19 @@
     color: $feesGreen;
   }
 
-  &__orderDetailHeading{
+  &__orderDetailHeading {
     font-family: $semiBold;
-    font-size: $spacer*1;
+    font-size: $spacer * 1;
   }
 
   &__orderSummary {
     font-family: $semiBold;
     color: $dashboardGrey;
     font-size: $spacer * 0.75;
+
+    @include media-breakpoint-up(sm){
+      font-size: $spacer*0.85;
+    }
   }
 
   &__receivedAmount {
@@ -232,6 +235,10 @@
     font-size: $spacer * 0.875;
     line-height: 20px;
     color: $lightGrey;
+
+    @include media-breakpoint-up(sm){
+      font-size: $spacer*1;
+    }
   }
 
   &__studentsPay {
@@ -239,6 +246,10 @@
     font-size: $spacer * 0.625;
     line-height: 13px;
     color: $headingGrey;
+    margin-bottom: 0px;
+    @include media-breakpoint-up(sm){
+      font-size: $spacer*0.75;
+    }
   }
 
   &__datePicker > div {
@@ -249,21 +260,111 @@
     color: $lightGrey;
     font-family: $medium;
     line-height: 13px;
-    font-size: $spacer * 0.625;
+    font-size: $spacer * 0.650;
   }
-  &__PayButton{
-    @include media-breakpoint-up(sm){
+  &__PayButton {
+    @include media-breakpoint-up(sm) {
       width: 25%;
     }
   }
 
-  &__orderDetailsContainer{
+  &__orderDetailsContainer {
     width: 75%;
     margin: auto;
 
-    @include media-breakpoint-down(sm){
+    @include media-breakpoint-down(sm) {
       width: 90%;
     }
+  }
+
+  &__batchesTeacher{
+    width: 75%;
+    margin: auto;
+    margin-bottom: 0.5rem;
+
+    @include media-breakpoint-down(sm){
+      width:95%;
+    }
+  }
+
+  &__progressBar{
+    width: 75%;
+    margin: auto;
+    margin-bottom: 0.5rem;
+
+    @include media-breakpoint-down(sm){
+      width:90%;
+    }
+  }
+  &__twoButtons{
+    width: 120px;
+    @include media-breakpoint-up(sm){
+      width: 300px;;
+    }
+  }
+  &__twoButtonstext{
+    font-size: $spacer*1;
+    @include media-breakpoint-down(sm){
+      font-size: $spacer*0.625;
+    }
+  }
+  &__userDetails{
+    width: 75%;
+    margin: auto;
+    margin-top: 4rem;
+    @include media-breakpoint-down(sm){
+      width: 95%;
+    }
+  }
+  &__carouselCard{
+    width: 60%;
+    height: 170px;
+    @include media-breakpoint-down(sm){
+      width: 90%;
+      height: 140px;
+    }
+  }
+  &__carouselIcon{
+    @include media-breakpoint-up(sm){
+      width: 200px;
+    }
+  }
+  &__carouselText{
+    @include media-breakpoint-up(sm){
+      position: relative;
+      right: 11%;
+    }
+  }
+  &__TwobuttonsRow{
+    justify-content: space-evenly;
+
+    @include media-breakpoint-up(sm){
+      justify-content: space-evenly;
+
+    }
+  }
+  &__plansContainer{
+    width: 75%;
+    margin:auto;
+
+    @include media-breakpoint-down(sm){
+      width: 95%;
+    }
+  }
+  &__plansContainer::-webkit-scrollbar{
+    display: none;
+  }
+  &__datePickerCol{
+    text-align: center;
+    @include media-breakpoint-down(sm){
+      text-align: left;
+    }
+  }
+  &__planAmount{
+   left:20%;
+   @include media-breakpoint-down(sm){
+     left:0;
+   }
   }
 }
 
@@ -340,6 +441,6 @@ Changes styles for the label following the radio checkbox that has focus
 .react-datepicker-popper {
   z-index: 999;
 }
-.Fees__overlay::-webkit-scrollbar{
+.Fees__overlay::-webkit-scrollbar {
   display: none;
 }

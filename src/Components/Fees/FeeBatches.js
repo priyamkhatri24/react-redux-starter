@@ -72,7 +72,7 @@ const FeeBatches = (props) => {
   return (
     <div>
       {Object.keys(filters).length > 0 && (
-        <Card.Body className='p-0'>
+        <Card.Body className='p-0 Fees__batchesTeacher' style={{ marginTop: '0.5rem' }}>
           <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
             Class
           </small>
@@ -139,7 +139,7 @@ const FeeBatches = (props) => {
               Subject
             </small>
 
-            <Row className='mx-3'>
+            <Row className='mx-3' style={{ marginBottom: '1rem' }}>
               <section
                 css={AdmissionStyle.scrollable}
                 style={{ backgroundColor: 'rgba(255, 255, 255, 1)' }}
@@ -204,7 +204,7 @@ const FeeBatches = (props) => {
         {batches.map((elem) => {
           return (
             <Card
-              className='m-2 p-2'
+              className='p-2 Fees__batchesTeacher'
               key={elem.user_batch_id}
               style={{ borderRadius: '5px', border: '1px solid rgba(112, 112, 112, 0.1)' }}
               onClick={() =>
@@ -214,7 +214,7 @@ const FeeBatches = (props) => {
                 })
               } // eslint-disable-line
             >
-              <Row>
+              <Row style={{ marginTop: '0.5rem' }}>
                 <Col xs={4} className='Fees__receivedAmount text-center my-auto'>
                   &#8377; {elem.total_paid_amount}
                 </Col>
@@ -233,7 +233,7 @@ const FeeBatches = (props) => {
                   &#8377; {elem.total_due_amount}
                 </Col>
               </Row>
-              <Row className='mx-auto m-3 Fees__orderSummary'>{elem.batch_name}</Row>
+              <Row className='mx-auto m-2 Fees__orderSummary'>{elem.batch_name}</Row>
               <ProgressBar
                 now={
                   elem.total_students === '0'
@@ -247,7 +247,7 @@ const FeeBatches = (props) => {
                   10,
                 )}`}
                 style={{ borderRadius: '50px', height: '20px', color: 'rgba(127, 196, 253, 1)' }}
-                className='m-2'
+                className='Fees__progressBar'
               />
               <p className='Fees__studentsPay mx-auto'>
                 {`${parseInt(elem.total_due_students, 10)}/${parseInt(elem.total_students, 10)}`}{' '}

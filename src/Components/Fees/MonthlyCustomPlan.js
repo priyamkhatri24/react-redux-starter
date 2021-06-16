@@ -161,7 +161,7 @@ const MonthlyCustomPlan = (props) => {
                       : {}
                   }
                 >
-                  <Col xs={6}>
+                  <Col xs={6} className='Fees__datePickerCol'>
                     <DatePicker
                       minDate={
                         i === 0
@@ -190,7 +190,10 @@ const MonthlyCustomPlan = (props) => {
                     />
                   </Col>
                   <Col xs={6}>
-                    <label className='has-float-label mx-2 my-3'>
+                    <label
+                      className='has-float-label mx-2 my-3 Fees__planAmount'
+                      style={{ width: 'fit-content' }}
+                    >
                       <input
                         className='form-control'
                         name='Enter amount'

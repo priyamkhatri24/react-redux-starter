@@ -139,7 +139,7 @@ const StudentFee = (props) => {
             <MoreVertIcon />
           </div>
         </Row>
-        <div>
+        <div className='Fees_navStatusContainer'>
           <Row className='mx-2 px-4 Fees__navStatus'>
             Status:
             <span className='ml-1'>{fees.fee_status}</span>
@@ -167,7 +167,11 @@ const StudentFee = (props) => {
         </div>
         <footer className='Fees__footer text-center'>
           {fees.due_amount > 0 ? (
-            <Button variant='customPrimary' className='mt-4' onClick={() => recordPayment()}>
+            <Button
+              variant='customPrimary'
+              className='mt-4 Fees__PayButton'
+              onClick={() => recordPayment()}
+            >
               Record Payment
             </Button>
           ) : (
