@@ -110,7 +110,7 @@
     line-height: 15px;
     text-align: left;
 
-    @include media-breakpoint-up(sm){
+    @include media-breakpoint-up(sm) {
       font-size: $spacer * 0.85;
     }
   }
@@ -128,7 +128,7 @@
     height: $spacer !important;
     color: $dirtyYellow;
 
-    @include media-breakpoint-down(sm){
+    @include media-breakpoint-down(sm) {
       width: 15px !important;
       height: 15px !important;
     }
@@ -144,8 +144,8 @@
     font-family: $bold;
     width: 38%;
 
-    @include media-breakpoint-up(sm){
-      width: 20% ;
+    @include media-breakpoint-up(sm) {
+      width: 20%;
     }
   }
 

@@ -15,7 +15,9 @@ const AnalysisDataCard = (props) => {
     <Card className='m-2 p-1' onClick={() => buttonClick(elem)}>
       <p className='LiveClasses__adminHeading mb-0 mt-2 mx-2'>{elem.test_name}</p>
       <p className='LiveClasses__adminCardTime mb-0 mx-2' style={{ fontSize: '10px' }}>
-        Due: {format(fromUnixTime(parseInt(elem.due_date, 10)), 'dd-MMM-yyyy')}
+        Due:{' '}
+        {elem.due_date !== 'NaN' &&
+          format(fromUnixTime(parseInt(elem.due_date, 10)), 'dd-MMM-yyyy')}
       </p>
       <Row className='m-0'>
         <Col xs={3} className='text-center'>

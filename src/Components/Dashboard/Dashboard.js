@@ -55,6 +55,7 @@ import telegram from '../../assets/images/dummyDashboard/telegram.svg';
 import form from '../../assets/images/dummyDashboard/form.svg';
 import '../Login/DummyDashboard.scss';
 import { dashboardActions } from '../../redux/actions/dashboard.action';
+import { analysisActions } from '../../redux/actions/analysis.action';
 
 const DashBoardAdmissions = Loadable({
   loader: () => import('./DashBoardAdmissions'),
@@ -68,7 +69,7 @@ const Dashboard = (props) => {
     clientId,
     clientUserId,
     roleArray,
-    userProfile: { firstName, profileImage },
+    userProfile: { firstName, profileImage, lastName },
     clearProfile,
     clearClientIdDetails,
     history,
@@ -83,6 +84,7 @@ const Dashboard = (props) => {
     branding,
     comeBackFromTests,
     setFolderIdArrayToStore,
+    setAnalysisStudentObjectToStore,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
@@ -260,6 +262,18 @@ const Dashboard = (props) => {
   const goToTeacherAnalysis = () => {
     const { push } = history;
     push('/analysis/teacher');
+  };
+
+  const goToStudentAnalysis = () => {
+    get({ client_user_id: clientUserId }, '/getOverallAnalysisOfStudent').then((res) => {
+      console.log(res);
+      const result = apiValidation(res);
+      result.first_name = firstName;
+      result.last_name = lastName;
+      result.isStudent = true;
+      setAnalysisStudentObjectToStore(result);
+      history.push('/analysis/studentlist');
+    });
   };
 
   const gotToAttendance = () => {
@@ -757,16 +771,25 @@ const Dashboard = (props) => {
           <div>
             <Tests startHomework={startHomework} startLive={startLiveTest} />
           </div>
-          <div onClick={() => goToFees()} role='button' tabIndex='-1' onKeyDown={() => goToFees()}>
-            <DashboardCards
-              image={analysis}
-              heading='Fees'
-              subHeading='See fees history and amount to be paid for coming months.'
-              boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-              backGround='rgb(238,232,241)'
-              backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
-            />
-          </div>
+          <DashboardCards
+            image={analysis}
+            heading='Fees'
+            subHeading='See fees history and amount to be paid for coming months.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(238,232,241)'
+            backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
+            buttonClick={goToFees}
+          />
+
+          <DashboardCards
+            image={analysisHands}
+            heading='Analysis'
+            subHeading='See detailed reports of every student and assignments.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(235,245,246)'
+            backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
+            buttonClick={goToStudentAnalysis}
+          />
           <div
             className='Dashboard__noticeBoard mx-auto p-3'
             onClick={() => goToNoticeBoard()}
@@ -1014,6 +1037,10 @@ const mapDispatchToProps = (dispatch) => ({
   setDashboardDataToStore: (payload) => {
     dispatch(dashboardActions.setDashboardDataToStore(payload));
   },
+
+  setAnalysisStudentObjectToStore: (payload) => {
+    dispatch(analysisActions.setAnalysisStudentObjectToStore(payload));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
@@ -1031,9 +1058,11 @@ Dashboard.propTypes = {
   setCourseIdToStore: PropTypes.func.isRequired,
   setDashboardDataToStore: PropTypes.func.isRequired,
   setAdmissionRoleArrayToStore: PropTypes.func.isRequired,
+  setAnalysisStudentObjectToStore: PropTypes.func.isRequired,
   setFolderIdArrayToStore: PropTypes.func.isRequired,
   userProfile: PropTypes.shape({
     firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired,
     profileImage: PropTypes.string,
   }).isRequired,
   roleArray: PropTypes.instanceOf(Array).isRequired,

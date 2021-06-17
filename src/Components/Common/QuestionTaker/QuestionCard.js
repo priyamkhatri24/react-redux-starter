@@ -210,9 +210,11 @@ class QuestionCard extends Component {
 
   handleChecked(order) {
     const { checked } = this.state;
-    const checkedArray = [...checked];
+    const checkedArray = checked.length === 0 ? [false, false, false, false] : [...checked];
+
     checkedArray[order - 1] = !checkedArray[order - 1];
     this.setState({ checked: checkedArray });
+    console.log(checkedArray);
     console.log('CHANGE!');
   }
 
@@ -312,21 +314,25 @@ class QuestionCard extends Component {
                       {i === 0 ? 'A.' : i === 1 ? 'B.' : i === 2 ? 'C.' : 'D.'}
                     </span>
 
-                    <label
-                      htmlFor={elem.order}
+                    <div
+                      // htmlFor={`test${elem.order}`}
                       className={`QuestionTaker__customRadio p-2 w-100 ${
                         checked[elem.order - 1] ? 'QuestionTaker__focusedRadio' : 'w-75'
                       }`}
+                      onClick={() => this.handleChecked(elem.order)}
+                      onKeyDown={() => this.handleChecked(elem.order)}
+                      role='button'
+                      tabIndex='-1'
                     >
                       <div className='radioControl'>
                         <MathJax math={String.raw`${elem.option_text_array[0]}`} />
                       </div>
-                      <input
+                      {/* <input
                         onChange={() => this.handleChecked(elem.order)}
-                        id={elem.order}
+                        id={`test${elem.order}`}
                         type=''
                         checked={checked[elem.order - 1]}
-                      />
+                      /> */}
                       {elem.image && (
                         <img
                           src={elem.image}
@@ -335,7 +341,7 @@ class QuestionCard extends Component {
                           style={{ maxWidth: '90vw', maxHeight: '20vh' }}
                         />
                       )}
-                    </label>
+                    </div>
                   </div>
                 );
               })}
