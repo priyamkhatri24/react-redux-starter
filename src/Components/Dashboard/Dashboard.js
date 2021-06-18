@@ -217,7 +217,8 @@ const Dashboard = (props) => {
     const { push } = history;
     setTestResultArrayToStore(responseArray);
     setTestEndTimeToStore(endTime);
-    setTestStartTimeToStore(startTime);
+    // setTestStartTimeToStore(startTime);
+    setTestStartTimeToStore(Math.round(new Date().getTime() / 1000));
     setTestTypeToStore(testType);
     setTestIdToStore(testId);
     push('/questiontaker');
@@ -236,7 +237,7 @@ const Dashboard = (props) => {
   const goToBuyCourse = (id) => {
     const { push } = history;
 
-    push({ pathname: '/courses/buyCourse', state: { id, clientUserId } });
+    push(`/courses/buyCourse/${clientId}/${id}`);
   };
 
   const goToMyCourse = (id) => {
