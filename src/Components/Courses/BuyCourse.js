@@ -20,7 +20,7 @@ import rupee from '../../assets/images/Courses/rupee.svg';
 import { apiValidation, get, post, displayRazorpay } from '../../Utilities';
 import { PageHeader } from '../Common';
 import './Courses.scss';
-import { getClientId } from '../../redux/reducers/clientUserId.reducer';
+import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import YCIcon from '../../assets/images/ycIcon.png';
 import checkmark from '../../assets/images/order/icons8-checked.svg';
@@ -29,7 +29,9 @@ import caution from '../../assets/images/order/icons8-medium-risk-50.png';
 const BuyCourse = (props) => {
   const {
     history,
+    match,
     clientId,
+    clientUserId,
     currentbranding: {
       branding: {
         client_color: clientColor,
@@ -65,8 +67,8 @@ const BuyCourse = (props) => {
 
   useEffect(() => {
     const payload = {
-      client_user_id: history.location.state.clientUserId,
-      course_id: history.location.state.id,
+      client_id: match.params.clientId,
+      course_id: match.params.courseId,
     };
 
     get(payload, '/getCourseDetails').then((res) => {
@@ -107,13 +109,13 @@ const BuyCourse = (props) => {
         )),
       );
     });
-  }, [history.location.state.id, history.location.state.clientUserId]);
+  }, [match]);
 
   const subscribeOrBuy = () => {
     if (course.course_type === 'free') {
       const payload = {
-        client_user_id: history.location.state.clientUserId,
-        course_id: history.location.state.id,
+        client_user_id: clientUserId,
+        course_id: match.params.courseId,
       };
       post(payload, '/subscribeStudentToCourse').then((res) => {
         if (res.success === 1) {
@@ -145,15 +147,15 @@ const BuyCourse = (props) => {
     if (order.status === 'marked' || order.status === 'waived' || order.status === 'paid') {
       history.push({
         pathname: '/courses/mycourse',
-        state: { id: history.location.state.id, clientUserId: history.location.state.clientUserId },
+        state: { id: match.params.courseId, clientUserId },
       });
     }
   };
 
   const applyCoupon = () => {
     const payload = {
-      client_user_id: history.location.state.clientUserId,
-      course_id: history.location.state.id,
+      client_user_id: clientUserId,
+      course_id: match.params.courseId,
       client_id: clientId,
       coupon_code: coupon,
     };
@@ -175,8 +177,8 @@ const BuyCourse = (props) => {
 
   const payToRazorBaba = () => {
     const orderPayload = {
-      client_user_id: history.location.state.clientUserId,
-      course_id: history.location.state.id,
+      client_user_id: clientUserId,
+      course_id: match.params.courseId,
       amount: coursePrice,
       coupon_id: couponId,
     };
@@ -229,8 +231,8 @@ const BuyCourse = (props) => {
 
   const basSubscribe = () => {
     const payload = {
-      client_user_id: history.location.state.clientUserId,
-      course_id: history.location.state.id,
+      client_user_id: clientUserId,
+      course_id: match.params.courseId,
       coupon_id: couponId,
     };
     post(payload, '/subscribeStudentToCourse').then((res) => {
@@ -249,6 +251,10 @@ const BuyCourse = (props) => {
         });
       }
     });
+  };
+
+  const goToLogin = () => {
+    console.log('lols');
   };
 
   return (
@@ -302,7 +308,11 @@ const BuyCourse = (props) => {
             <Button
               className='mt-3 mx-auto'
               variant='greenButtonLong'
-              onClick={() => subscribeOrBuy()}
+              onClick={
+                JSON.parse(localStorage.getItem('state')).userProfile.token
+                  ? () => subscribeOrBuy()
+                  : () => goToLogin()
+              }
             >
               {course.course_type === 'free' ? 'Subscribe' : 'Buy Now'}
             </Button>
@@ -489,6 +499,7 @@ const BuyCourse = (props) => {
 
 const mapStateToProps = (state) => ({
   clientId: getClientId(state),
+  clientUserId: getClientUserId(state),
   currentbranding: getCurrentBranding(state),
 });
 
@@ -497,6 +508,7 @@ export default connect(mapStateToProps)(BuyCourse);
 BuyCourse.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   clientId: PropTypes.number.isRequired,
+  clientUserId: PropTypes.number.isRequired,
   currentbranding: PropTypes.shape({
     branding: PropTypes.shape({
       client_logo: PropTypes.string,
@@ -508,4 +520,5 @@ BuyCourse.propTypes = {
       client_contact: PropTypes.string,
     }),
   }).isRequired,
+  match: PropTypes.instanceOf(Object).isRequired,
 };

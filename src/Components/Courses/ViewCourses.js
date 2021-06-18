@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
-import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
+import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get } from '../../Utilities';
 import { PageHeader } from '../Common';
 import rupee from '../../assets/images/Courses/rupee.svg';
@@ -14,7 +14,7 @@ import { courseActions } from '../../redux/actions/course.action';
 import './Courses.scss';
 
 const ViewCourses = (props) => {
-  const { clientUserId, history, setCourseIdToStore } = props;
+  const { clientUserId, history, setCourseIdToStore, clientId } = props;
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const ViewCourses = (props) => {
 
   const goToBuyCourse = (id) => {
     const { push } = history;
-    push({ pathname: '/courses/buyCourse', state: { id, clientUserId } });
+    push(`/courses/buyCourse/${clientId}/${id}`);
   };
 
   const goToMyCourse = (id) => {
@@ -132,6 +132,7 @@ const ViewCourses = (props) => {
 
 const mapStateToProps = (state) => ({
   clientUserId: getClientUserId(state),
+  clientId: getClientId(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -146,6 +147,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(ViewCourses);
 
 ViewCourses.propTypes = {
   clientUserId: PropTypes.number.isRequired,
+  clientId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   setCourseIdToStore: PropTypes.func.isRequired,
 };

@@ -15,7 +15,7 @@ const Timer = (props) => {
   const { startTime, endTime, isFinished, getCurrentTimerTime } = props;
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
+  const [seconds, setSeconds] = useState(-1);
   const [value, setValue] = useState(100);
   const [duration, setDuration] = useState(0);
   const [progressbarDuration, setprogressBarDuration] = useState(0);
@@ -39,25 +39,30 @@ const Timer = (props) => {
     }
   }, [progressbarDuration, getCurrentTimerTime]);
 
-  useInterval(() => {
-    if (seconds > 0) {
-      setSeconds(seconds - 1);
-    }
-
-    if (seconds === 0) {
-      if (minutes === 0) {
-        if (hours === 0) {
-          isFinished();
-        } else {
-          setMinutes(59);
-          setHours(hours - 1);
-        }
-      } else {
-        setMinutes(minutes - 1);
-        setSeconds(59);
+  useEffect(() => {
+    const clear = setInterval(() => {
+      if (seconds > 0) {
+        setSeconds((second) => second - 1);
       }
-    }
-  }, 1000);
+
+      if (seconds === 0) {
+        if (minutes === 0) {
+          if (hours === 0) {
+            isFinished();
+            clearInterval(clear);
+          } else {
+            setMinutes(59);
+            setHours((hour) => hour - 1);
+          }
+        } else {
+          setMinutes((minute) => minute - 1);
+          setSeconds(59);
+        }
+      }
+    }, 1000);
+
+    return () => clearInterval(clear); // This is important
+  }, [hours, seconds, minutes, isFinished]);
 
   useInterval(() => {
     if (progressbarDuration === 0) return;

@@ -428,7 +428,7 @@ export function Routes() {
       <AuthenticatedRoute exact path='/homework/assign' component={HomeWorkAssigner} />
       <AuthenticatedRoute exact path='/homework/viewonly' component={HomeWorkViewOnly} />
       <AuthenticatedRoute exact path='/courses' component={ViewCourses} />
-      <AuthenticatedRoute exact path='/courses/buyCourse' component={BuyCourse} />
+      <Route exact path='/courses/buyCourse/:clientId?/:courseId?' component={BuyCourse} />
       <AuthenticatedRoute exact path='/courses/mycourse' component={Mycourse} />
       <AuthenticatedRoute exact path='/courses/teachercourse' component={TeacherCourses} />
       <AuthenticatedRoute

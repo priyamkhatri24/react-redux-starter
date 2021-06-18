@@ -34,6 +34,8 @@ const Tests = (props) => {
       );
       setLiveTests(live);
       setDemoTests(demo);
+
+      console.log(live);
     });
   }, [clientUserId]);
 
@@ -81,6 +83,7 @@ const Tests = (props) => {
 
   const isAllowed = useCallback(
     (bool, id, startTime, endTime) => {
+      console.log(bool, startTime, endTime, id, allowLiveTest);
       if (allowLiveTest.length) {
         const newCheckLiveExpiryArray = allowLiveTest.map((elem) => {
           if (elem.id === id) {
@@ -237,7 +240,7 @@ const Tests = (props) => {
 
   return (
     <div>
-      {liveTests.length > 0 && (
+      {liveTests.length > 0 && allowLiveTest.length > 0 && (
         <section className='Tests__scrollableCard'>
           {liveTests.map((elem) => {
             return (
