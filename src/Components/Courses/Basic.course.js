@@ -125,7 +125,7 @@ const Basic = (props) => {
       >
         <Row className='my-auto Courses__createCourse mx-2'>
           <span className='Courses__coloredNumber mr-2'>1</span>{' '}
-          <span className='my-auto ml-3'>Basic Information</span>
+          <span className='my-auto ml-1'>Basic Information</span>
         </Row>
         <p className='mt-2 mx-2 Courses__chotiDetail'>
           The answers you write here will help students decide if your course is the one for them.
@@ -138,7 +138,7 @@ const Basic = (props) => {
             <Row className='m-2' key={e.meriId}>
               {e.tag_name && (
                 <>
-                  <label className='has-float-label my-auto'>
+                  <label className='has-float-label my-auto' style={{ width: '100%' }}>
                     <input
                       className='form-control'
                       name='Example: Concave lens'
@@ -164,7 +164,7 @@ const Basic = (props) => {
           );
         })}
         <Row className='m-2'>
-          <label className='has-float-label my-auto'>
+          <label className='has-float-label my-auto' style={{ width: '100%' }}>
             <input
               required
               className='form-control'
@@ -198,7 +198,7 @@ const Basic = (props) => {
             <Row key={e.meriId} className='m-2'>
               {e.tag_name && (
                 <>
-                  <label className='has-float-label my-auto'>
+                  <label className='has-float-label my-auto' style={{ width: '100%' }}>
                     <input
                       className='form-control'
                       name='Example: Basic Maths'
@@ -225,7 +225,7 @@ const Basic = (props) => {
         })}
 
         <Row className='m-2'>
-          <label className='has-float-label my-auto'>
+          <label className='has-float-label my-auto' style={{ width: '100%' }}>
             <input
               className='form-control'
               name='Example: Basic Maths'

@@ -13,6 +13,10 @@ const AdmissionStyle = {
     font-family: ${fonts.regular};
     line-height: 15px;
     color: ${colors.dashboardBlack};
+    font-weight: 600;
+    @media (min-width: 768px) {
+      font-size: ${spacer * 0.85}rem;
+    }
   `,
 
   scrollable: css`
@@ -35,7 +39,7 @@ const AdmissionStyle = {
     font-family: ${fonts.regular};
     color: $white;
     background-color: var(--lighter-blue);
-    border-radius: 50px;
+    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -58,7 +62,7 @@ const AdmissionStyle = {
     align-items: center;
 
     @media (min-width: 768px) {
-      min-width: 50px;
+      min-width: 100px;
     }
   `,
 

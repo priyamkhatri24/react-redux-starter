@@ -121,7 +121,11 @@ const UserDataCard = (props) => {
           </div>
         </Col>
         {FeeUser ? (
-          <Col xs={4} className='p-0 my-auto text-center'>
+          <Col
+            xs={4}
+            className='p-0 my-auto'
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+          >
             {elem.is_fee === 'false' ? (
               <span css={AdmissionStyle.batchStudents}>No Plan</span>
             ) : elem.fee_status === 'paid' ? (

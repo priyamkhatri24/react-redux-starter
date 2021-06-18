@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import '../Login/Welcome/Welcome.scss';
+import './Fees.scss';
 
 const FeeCarousel = (props) => {
   const { carouselObject } = props;
@@ -54,14 +55,14 @@ const FeeCarousel = (props) => {
 
   return (
     <Carousel
-      autoPlay
+      autoPlay={false}
       showThumbs={false}
       showArrows={false}
       showIndicators={false}
       transitionTime={200}
       dynamicHeight={false}
       infiniteLoop
-      className='Welcome__Carousel pb-2 mb-2'
+      className='pb-2 mb-2'
     >
       {carouselDetails.length &&
         carouselDetails.map((elem) => {
@@ -69,20 +70,16 @@ const FeeCarousel = (props) => {
             <div
               key={elem.key}
               style={{
-                height: '120px',
-                width: '330px',
                 boxShadow: elem.style.boxshadow,
                 background: elem.style.backGround,
                 borderRadius: '10px',
                 display: 'flex',
               }}
-              className='mx-auto'
+              className='mx-auto Fees__carouselCard'
             >
               <span
-                className='my-auto mx-3'
+                className='my-auto mx-3 Fees__carouselIcon'
                 style={{
-                  height: '127px',
-                  width: '75px',
                   fontSize: '104px',
                   lineHeight: '127px',
                   fontFamily: 'Montserrat-Bold',
@@ -91,13 +88,14 @@ const FeeCarousel = (props) => {
               >
                 &#8377;
               </span>
-              <div className='ml-auto m-4'>
+              <div className='ml-auto m-4 Fees__carouselText'>
                 <p
                   style={{
                     fontFamily: 'Montserrat-Medium',
                     fontSize: '14px',
                     lineHeight: '10px',
                     textAlign: 'right',
+                    paddingTop: '16px',
                   }}
                 >
                   {elem.heading}

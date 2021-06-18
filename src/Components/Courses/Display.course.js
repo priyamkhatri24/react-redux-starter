@@ -119,7 +119,7 @@ const Display = (props) => {
           <span className='my-auto ml-3'>Course display page</span>
         </Row>
         <Row className='m-2 mt-3 justify-content-center'>
-          <label className='has-float-label my-auto w-100'>
+          <label className='has-float-label my-auto' style={{ width: '100%' }}>
             <input
               className='form-control'
               name='Name'
@@ -236,7 +236,7 @@ const Display = (props) => {
                   borderRadius: '5px',
                   cursor: 'pointer',
                 }}
-                className='align-items-center d-flex justify-content-center p-0 w-100'
+                className='align-items-center d-flex justify-content-center p-0'
               >
                 <span style={{ color: '#7FC4FD' }}>
                   <AddIcon style={{ fontSize: '60px' }} />
