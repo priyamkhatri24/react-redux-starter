@@ -5,7 +5,6 @@ import Skeleton from 'react-loading-skeleton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import format from 'date-fns/format';
-import Swal from 'sweetalert2';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
@@ -19,6 +18,7 @@ import PhoneIcon from '@material-ui/icons/Phone';
 import LinkIcon from '@material-ui/icons/Link';
 import { connect } from 'react-redux';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
+import Toast from 'react-bootstrap/Toast';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { get, apiValidation } from '../../Utilities';
 import {
@@ -54,6 +54,8 @@ import youtube from '../../assets/images/dummyDashboard/youtube.png';
 import telegram from '../../assets/images/dummyDashboard/telegram.svg';
 import form from '../../assets/images/dummyDashboard/form.svg';
 import '../Login/DummyDashboard.scss';
+import { dashboardActions } from '../../redux/actions/dashboard.action';
+import { analysisActions } from '../../redux/actions/analysis.action';
 
 const DashBoardAdmissions = Loadable({
   loader: () => import('./DashBoardAdmissions'),
@@ -67,10 +69,11 @@ const Dashboard = (props) => {
     clientId,
     clientUserId,
     roleArray,
-    userProfile: { firstName, profileImage },
+    userProfile: { firstName, profileImage, lastName },
     clearProfile,
     clearClientIdDetails,
     history,
+    setDashboardDataToStore,
     setTestResultArrayToStore,
     setTestStartTimeToStore,
     setTestTypeToStore,
@@ -81,6 +84,7 @@ const Dashboard = (props) => {
     branding,
     comeBackFromTests,
     setFolderIdArrayToStore,
+    setAnalysisStudentObjectToStore,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
@@ -90,6 +94,7 @@ const Dashboard = (props) => {
   const [admissions, setAdmissions] = useState({});
   const [data, setData] = useState({});
   const [hasLoaded, setHasLoaded] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const [optionsModal, setOptionsModal] = useState(false);
   const openOptionsModal = () => setOptionsModal(true);
   const closeOptionsModal = () => setOptionsModal(false);
@@ -122,6 +127,7 @@ const Dashboard = (props) => {
         setAttendance(result.attendance);
         setData(result);
         setHasLoaded(true);
+        setDashboardDataToStore(result);
       })
       .catch((err) => console.error(err));
     partsOfDay();
@@ -148,11 +154,8 @@ const Dashboard = (props) => {
         })
         .catch(console.error);
     } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops!',
-        text: `Sharing is not supported on device.`,
-      });
+      setShowToast(true);
+      navigator.clipboard.writeText(window.location.href);
     }
   };
 
@@ -259,6 +262,18 @@ const Dashboard = (props) => {
   const goToTeacherAnalysis = () => {
     const { push } = history;
     push('/analysis/teacher');
+  };
+
+  const goToStudentAnalysis = () => {
+    get({ client_user_id: clientUserId }, '/getOverallAnalysisOfStudent').then((res) => {
+      console.log(res);
+      const result = apiValidation(res);
+      result.first_name = firstName;
+      result.last_name = lastName;
+      result.isStudent = true;
+      setAnalysisStudentObjectToStore(result);
+      history.push('/analysis/studentlist');
+    });
   };
 
   const gotToAttendance = () => {
@@ -756,16 +771,25 @@ const Dashboard = (props) => {
           <div>
             <Tests startHomework={startHomework} startLive={startLiveTest} />
           </div>
-          <div onClick={() => goToFees()} role='button' tabIndex='-1' onKeyDown={() => goToFees()}>
-            <DashboardCards
-              image={analysis}
-              heading='Fees'
-              subHeading='See fees history and amount to be paid for coming months.'
-              boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-              backGround='rgb(238,232,241)'
-              backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
-            />
-          </div>
+          <DashboardCards
+            image={analysis}
+            heading='Fees'
+            subHeading='See fees history and amount to be paid for coming months.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(238,232,241)'
+            backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
+            buttonClick={goToFees}
+          />
+
+          <DashboardCards
+            image={analysisHands}
+            heading='Analysis'
+            subHeading='See detailed reports of every student and assignments.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(235,245,246)'
+            backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
+            buttonClick={goToStudentAnalysis}
+          />
           <div
             className='Dashboard__noticeBoard mx-auto p-3'
             onClick={() => goToNoticeBoard()}
@@ -948,6 +972,24 @@ const Dashboard = (props) => {
           </Row>
         </Modal.Body>
       </Modal>
+      <Toast
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '15%',
+          zIndex: '999',
+        }}
+        onClose={() => setShowToast(false)}
+        show={showToast}
+        delay={3000}
+        autohide
+      >
+        <Toast.Header>
+          <strong className='mr-auto'>Copied!</strong>
+          <small>Just Now</small>
+        </Toast.Header>
+        <Toast.Body>The link has been copied to your clipboard!</Toast.Body>
+      </Toast>
     </>
   );
 };
@@ -992,6 +1034,13 @@ const mapDispatchToProps = (dispatch) => ({
   setFolderIdArrayToStore: (payload) => {
     dispatch(studyBinActions.setFolderIDArrayToStore(payload));
   },
+  setDashboardDataToStore: (payload) => {
+    dispatch(dashboardActions.setDashboardDataToStore(payload));
+  },
+
+  setAnalysisStudentObjectToStore: (payload) => {
+    dispatch(analysisActions.setAnalysisStudentObjectToStore(payload));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
@@ -1007,10 +1056,13 @@ Dashboard.propTypes = {
   setTestIdToStore: PropTypes.func.isRequired,
   setTestTypeToStore: PropTypes.func.isRequired,
   setCourseIdToStore: PropTypes.func.isRequired,
+  setDashboardDataToStore: PropTypes.func.isRequired,
   setAdmissionRoleArrayToStore: PropTypes.func.isRequired,
+  setAnalysisStudentObjectToStore: PropTypes.func.isRequired,
   setFolderIdArrayToStore: PropTypes.func.isRequired,
   userProfile: PropTypes.shape({
     firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired,
     profileImage: PropTypes.string,
   }).isRequired,
   roleArray: PropTypes.instanceOf(Array).isRequired,

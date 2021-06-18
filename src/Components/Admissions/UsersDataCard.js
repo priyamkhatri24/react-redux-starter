@@ -86,7 +86,13 @@ const UserDataCard = (props) => {
             return (
               // eslint-disable-next-line
               <span style={{ fontSize: '8px', color: '#212121' }} className='my-auto' key={i}>
-                {e === '1' ? 'Student' : e === '2' ? 'Parent' : e === '3 ' ? 'Teacher' : 'Admin'}
+                {e.toString() === '1'
+                  ? 'Student'
+                  : e.toString() === '2'
+                  ? 'Parent'
+                  : e.toString() === '3'
+                  ? 'Teacher'
+                  : 'Admin'}
                 {i !== elem.role_id.split(',').length - 1 && ','}
               </span>
             );

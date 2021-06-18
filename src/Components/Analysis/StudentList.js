@@ -16,7 +16,7 @@ import AnalysisCalendar from './AnalysisCalendar';
 import AnalysisTestsCard from './AnalysisTestsCard';
 
 const StudentList = (props) => {
-  const { analysisStudentObject } = props;
+  const { analysisStudentObject, history } = props;
   const [studentBatches, setStudentBatches] = useState([]);
   const [currentBatch, setCurrentBatch] = useState({
     client_batch_id: 0,
@@ -38,7 +38,7 @@ const StudentList = (props) => {
     {
       id: 2,
       heading: 'Test',
-      numerator: analysisStudentObject.completed_test,
+      numerator: analysisStudentObject.completed_test || analysisStudentObject.test_done,
       denominator: analysisStudentObject.test_count,
       isPercent: false,
       isSelected: false,
@@ -46,7 +46,7 @@ const StudentList = (props) => {
     {
       id: 3,
       heading: 'Homework',
-      numerator: analysisStudentObject.completed_homework,
+      numerator: analysisStudentObject.completed_homework || analysisStudentObject.homework_done,
       denominator: analysisStudentObject.homework_count,
       isPercent: false,
       isSelected: false,
@@ -216,7 +216,7 @@ const StudentList = (props) => {
                         : { color: 'rgba(0,0,0,0.54)', fontSize: '16px' }
                     }
                   >
-                    {elem.isPercent ? (
+                    {elem.isPercent || analysisStudentObject.isStudent ? (
                       <span>{elem.numerator}%</span>
                     ) : (
                       <span>
@@ -306,6 +306,9 @@ const StudentList = (props) => {
                   date={elem.date}
                   maxMarks={elem.total_questions}
                   marksObtained={elem.correct_questions}
+                  history={history}
+                  testId={elem.test_id}
+                  clientUserId={elem.client_user_id}
                 />
               );
             })
@@ -322,6 +325,9 @@ const StudentList = (props) => {
                   date={elem.date}
                   maxMarks={elem.total_questions}
                   marksObtained={elem.correct_questions}
+                  history={history}
+                  testId={elem.test_id}
+                  clientUserId={elem.client_user_id}
                 />
               );
             })
@@ -346,4 +352,5 @@ export default connect(mapStateToProps)(StudentList);
 
 StudentList.propTypes = {
   analysisStudentObject: PropTypes.instanceOf(Object).isRequired,
+  history: PropTypes.instanceOf(Object).isRequired,
 };

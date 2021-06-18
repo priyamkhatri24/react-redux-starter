@@ -29,6 +29,7 @@ import { get, post, apiValidation } from '../../Utilities';
 import { PageHeader, BatchesSelector, Readmore } from '../Common';
 import Jitsi from './Jitsi';
 import { createBigBlueButtonStream, rejoinBigBlueButtonStream } from './bbb';
+import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
 
 class LiveClasses extends Component {
   constructor(props) {
@@ -59,6 +60,8 @@ class LiveClasses extends Component {
       durationValue: '',
       zoomPasscodeModal: false,
       copiedToClipboard: false,
+      showMeetModal: false,
+      googleMeeting: '',
     };
   }
 
@@ -152,7 +155,14 @@ class LiveClasses extends Component {
 
   startLiveStream = (element) => {
     const { domain, jitsiFirstName, jitsiLastName, role } = this.state;
-    const { userProfile } = this.props;
+    const {
+      userProfile,
+      dashboardData: {
+        alpha: { method },
+      },
+    } = this.props;
+
+    console.log(method);
 
     if (element.stream_type === 'jitsi') {
       let strippedDomain = domain;
@@ -162,14 +172,17 @@ class LiveClasses extends Component {
         jitsiLastName: element.last_name,
         jitsiRoomName: element.stream_link,
         domain: strippedDomain,
+        triggerJitsi: method === 'sdk',
       });
 
-      this.openJitsiInNewWindow(
-        element.server_url,
-        element.stream_link,
-        userProfile.firstName,
-        userProfile.lastName,
-      );
+      if (method !== 'sdk') {
+        this.openJitsiInNewWindow(
+          element.server_url,
+          element.stream_link,
+          userProfile.firstName,
+          userProfile.lastName,
+        );
+      }
     } else if (element.stream_type === 'big_blue_button') {
       rejoinBigBlueButtonStream(
         jitsiFirstName,
@@ -185,11 +198,19 @@ class LiveClasses extends Component {
         this.openZoomPasscodeModal();
       });
       //  window.open(`https://zoom.us/j/${element.meeting_id}?pwd=${element.password}`);
+    } else if (element.stream_type === 'meet') {
+      window.open(`https://meet.google.com/${element.meeting_id}`, '_blank');
     } else console.error('invalid stream type');
   };
 
   rejoinLiveStream = (element) => {
     const { domain, jitsiFirstName, jitsiLastName } = this.state;
+    const {
+      dashboardData: {
+        alpha: { method },
+      },
+    } = this.props;
+
     console.log(element);
     if (element.stream_type === 'jitsi') {
       let strippedDomain = domain;
@@ -198,15 +219,18 @@ class LiveClasses extends Component {
         jitsiRoomName: element.stream_link,
         domain: strippedDomain,
         jitsiToken: element.moderator_password,
+        triggerJitsi: method === 'sdk',
       });
 
-      this.openJitsiInNewWindow(
-        element.server_url,
-        element.stream_link,
-        jitsiFirstName,
-        jitsiLastName,
-        element.moderator_password,
-      );
+      if (method !== 'sdk') {
+        this.openJitsiInNewWindow(
+          element.server_url,
+          element.stream_link,
+          jitsiFirstName,
+          jitsiLastName,
+          element.moderator_password,
+        );
+      }
     } else if (element.stream_type === 'big_blue_button') {
       rejoinBigBlueButtonStream(
         jitsiFirstName,
@@ -217,6 +241,8 @@ class LiveClasses extends Component {
       this.setState({ doesBBBexist: true });
     } else if (element.stream_type === 'zoom') {
       window.open(`https://zoom.us/j/${element.meeting_id}?pwd=${element.password}`);
+    } else if (element.stream_type === 'meet') {
+      window.open(`https://meet.google.com/${element.meeting_id}`, '_blank');
     } else console.error('invalid stream type');
   };
 
@@ -273,9 +299,14 @@ class LiveClasses extends Component {
   };
 
   createJitsiStream = (batches = [], duration, clientId, clientUserId) => {
-    const { userProfile } = this.props;
+    const {
+      userProfile,
+      dashboardData: {
+        alpha: { method },
+      },
+    } = this.props;
     const streamLink = `${Date.now()}${clientId}${clientUserId}`;
-
+    console.log(method);
     const payload = {
       stream_link: streamLink,
       duration,
@@ -296,15 +327,18 @@ class LiveClasses extends Component {
           domain: jitsiDomain,
           jitsiRoomName: streamLink,
           jitsiToken: result.user_auth ? result.jwt_token : null,
+          triggerJitsi: method === 'sdk',
         });
 
-        this.openJitsiInNewWindow(
-          result.server_url,
-          streamLink,
-          userProfile.firstName,
-          userProfile.lastName,
-          result.user_auth ? result.jwt_token : null,
-        );
+        if (method !== 'sdk') {
+          this.openJitsiInNewWindow(
+            result.server_url,
+            streamLink,
+            userProfile.firstName,
+            userProfile.lastName,
+            result.user_auth ? result.jwt_token : null,
+          );
+        }
       })
       .catch((e) => {
         console.error(e);
@@ -361,6 +395,10 @@ class LiveClasses extends Component {
 
   openZoomModal = () => this.setState({ showZoomModal: true });
 
+  openMeetModal = () => this.setState({ showMeetModal: true });
+
+  closeMeetModal = () => this.setState({ showMeetModal: false });
+
   createZoomMeeting = () => {
     const { zoomMeeting, zoomPassCode, selectedBatches, duration } = this.state;
     const { clientUserId } = this.props;
@@ -400,6 +438,45 @@ class LiveClasses extends Component {
         });
       }
     });
+  };
+
+  createGoogleMeeting = () => {
+    const { googleMeeting, selectedBatches, duration } = this.state;
+    const { clientUserId } = this.props;
+    const batchIdArray = JSON.stringify(selectedBatches.map((elem) => elem.client_batch_id));
+
+    const durationArray = [];
+    durationArray.push(duration.hours, duration.minutes, duration.seconds);
+    console.log(durationArray);
+    const milliseconds =
+      (durationArray[0] * 3600 + durationArray[1] * 60 + durationArray[2]) * 1000;
+
+    const payload = {
+      meeting_id: googleMeeting.split('/').pop(),
+      client_user_id: clientUserId,
+      batch_array: batchIdArray,
+      duration: milliseconds,
+    };
+
+    post(payload, '/addGoogleMeeting').then((res) => {
+      if (res.success) {
+        Swal.fire({
+          title: 'Success',
+          text:
+            'Meeting Created Successfully. Students will be able to join the meeting using the code you provided.',
+          icon: 'success',
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops!',
+          test: 'Meeting Creation failed.',
+          timer: 3000,
+        });
+      }
+    });
+
+    this.closeMeetModal();
   };
 
   onDurationChange = (duration) => {
@@ -452,6 +529,8 @@ class LiveClasses extends Component {
       zoomPasscodeModal,
       copiedToClipboard,
       jitsiToken,
+      showMeetModal,
+      googleMeeting,
     } = this.state;
     return (
       <div css={LiveClassesStyle.liveClasses}>
@@ -660,6 +739,7 @@ class LiveClasses extends Component {
                           onClick={(e) => this.createStream(e.target.id)}
                           disabled={!selectedBatches.length || !duration}
                           id='alpha'
+                          style={{ fontSize: '9px' }}
                         >
                           Go Live Alpha!
                         </Button>
@@ -671,6 +751,7 @@ class LiveClasses extends Component {
                           onClick={(e) => this.createStream(e.target.id)}
                           disabled={!selectedBatches.length || !duration}
                           id='beta'
+                          style={{ fontSize: '9px' }}
                         >
                           Go Live Beta!
                         </Button>
@@ -682,14 +763,27 @@ class LiveClasses extends Component {
                           onClick={(e) => this.openZoomModal()}
                           disabled={!selectedBatches.length || !duration}
                           id='beta'
+                          style={{ fontSize: '9px' }}
                         >
                           Go Live Zoom!
+                        </Button>
+                      </Col>
+                      <Col className='text-center p-0'>
+                        <Button
+                          variant='customPrimarySmol'
+                          size='sm'
+                          onClick={(e) => this.openMeetModal()}
+                          disabled={!selectedBatches.length || !duration}
+                          id='beta'
+                          style={{ fontSize: '9px' }}
+                        >
+                          Go Live Meet!
                         </Button>
                       </Col>
                     </Row>
                   </>
                 )}
-                {adminBatches.length && (
+                {adminBatches.length > 0 && (
                   <div css={LiveClassesStyle.adminInfo}>
                     <h6 css={LiveClassesStyle.adminHeading} className='text-center my-4 my-md-5 '>
                       Institute&apos;s other Live Classes
@@ -802,6 +896,41 @@ class LiveClasses extends Component {
                     </Button>
                   </Modal.Footer>
                 </Modal>
+
+                <Modal show={showMeetModal} centered onHide={this.closeMeetModal}>
+                  <Modal.Header closeButton>
+                    <span
+                      className='Scrollable__courseCardHeading my-auto'
+                      style={{ fontSize: '14px' }}
+                    >
+                      Meeting Details
+                    </span>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <Row className='mx-2'>
+                      <label className='has-float-label my-auto w-100'>
+                        <input
+                          className='form-control'
+                          name='Meeting Link'
+                          type='text'
+                          placeholder='Meeting Link'
+                          onChange={(e) => this.setState({ googleMeeting: e.target.value })}
+                          value={googleMeeting}
+                        />
+                        <span>Meeting Link</span>
+                      </label>
+                    </Row>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant='boldTextSecondary' onClick={() => this.closeMeetModal()}>
+                      Cancel
+                    </Button>
+                    <Button variant='boldText' onClick={() => this.createGoogleMeeting()}>
+                      Submit
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+
                 <Modal show={showDurationModal} onHide={this.closeDurationModal} centered>
                   <DurationPicker
                     onChange={this.onDurationChange}
@@ -876,6 +1005,7 @@ const mapStateToProps = (state) => ({
   roleArray: getRoleArray(state),
   clientUserId: getClientUserId(state),
   userProfile: getUserProfile(state),
+  dashboardData: getCurrentDashboardData(state),
 });
 
 export default connect(mapStateToProps)(LiveClasses);
@@ -885,6 +1015,7 @@ LiveClasses.propTypes = {
   roleArray: PropTypes.instanceOf(Array).isRequired,
   clientUserId: PropTypes.number.isRequired,
   userProfile: PropTypes.instanceOf(Object).isRequired,
+  dashboardData: PropTypes.instanceOf(Object).isRequired,
 };
 
 // {elem.batch_array.map((e, i) => {

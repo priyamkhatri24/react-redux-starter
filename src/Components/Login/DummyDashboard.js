@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import Swal from 'sweetalert2';
+import Toast from 'react-bootstrap/Toast';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import format from 'date-fns/format';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -42,6 +42,7 @@ const DummyDashboard = (props) => {
 
   const [dummyData, setDummyData] = useState({});
   const [notices, setNotices] = useState([]);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     get({ client_id: clientId }, '/getRecentDataLatest').then((res) => {
@@ -66,11 +67,8 @@ const DummyDashboard = (props) => {
         })
         .catch(console.error);
     } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops!',
-        text: `Sharing is not supported on device.`,
-      });
+      setShowToast(true);
+      navigator.clipboard.writeText(window.location.href);
     }
   };
 
@@ -363,6 +361,24 @@ const DummyDashboard = (props) => {
             )}
           </Card>
         )}
+        <Toast
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '15%',
+            zIndex: '999',
+          }}
+          onClose={() => setShowToast(false)}
+          show={showToast}
+          delay={3000}
+          autohide
+        >
+          <Toast.Header>
+            <strong className='mr-auto'>Copied!</strong>
+            <small>Just Now</small>
+          </Toast.Header>
+          <Toast.Body>The link has been copied to your clipboard!</Toast.Body>
+        </Toast>
       </div>
     )
   );

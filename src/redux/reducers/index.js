@@ -15,6 +15,7 @@ import { fees } from './fees.reducer';
 import { analysis } from './analysis.reducer';
 import { attendance } from './attendance.reducer';
 import { displayPage } from './displaypage.reducer';
+import { dashboard } from './dashboard.reducer';
 
 const rootReducer = (history) =>
   combineReducers({
@@ -34,6 +35,7 @@ const rootReducer = (history) =>
     analysis,
     attendance,
     displayPage,
+    dashboard,
   });
 
 export default rootReducer;

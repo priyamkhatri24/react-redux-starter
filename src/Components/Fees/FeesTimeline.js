@@ -21,7 +21,7 @@ const FeesTimeline = (props) => {
   }, [clientId]);
 
   return (
-    <VerticalTimeline>
+    <VerticalTimeline layout='1-column'>
       {notifications.length > 0 &&
         notifications.map((elem) => {
           return (
