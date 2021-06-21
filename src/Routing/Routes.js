@@ -382,6 +382,11 @@ const DummyDashboard = Loadable({
   loading: Loading,
 });
 
+const CRM = Loadable({
+  loader: () => import(/* webpackChunkName: 'DisplayPage' */ '../Components/CRM/Crm'),
+  loading: Loading,
+});
+
 // eslint-disable-next-line
 function Loading({ error }) {
   if (error) {
@@ -455,6 +460,7 @@ export function Routes() {
       <AuthenticatedRoute exact path='/displaypage' component={DisplayPage} />
       <AuthenticatedRoute exact path='/displaypage/editprofile' component={DisplayPageEdit} />
       <AuthenticatedRoute exact path='/displaypage/preview' component={DummyDashboard} />
+      <AuthenticatedRoute exact path='/crm' component={CRM} />
 
       <Route path='/fileviewer' component={FileView} />
       <Route path='/otherfileviewer' component={TempViewFile} />

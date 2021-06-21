@@ -8,16 +8,18 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import fromUnixTime from 'date-fns/fromUnixTime';
+import Toast from 'react-bootstrap/Toast';
 import format from 'date-fns/format';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { getCourseId } from '../../redux/reducers/course.reducer';
 import { get, post } from '../../Utilities/Remote';
-import { apiValidation } from '../../Utilities';
+import { apiValidation, shareThis } from '../../Utilities';
 import { Readmore, PageHeader } from '../Common';
 import placeholder from '../../assets/images/ycIcon.png';
 import { courseActions } from '../../redux/actions/course.action';
 import './Courses.scss';
 import '../Profile/Profile.scss';
+import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
 
 const TeacherCourses = (props) => {
   const {
@@ -27,6 +29,7 @@ const TeacherCourses = (props) => {
     setCourseIdToStore,
     setCourseObjectToStore,
     setCourseCurrentSlideToStore,
+    dashboardData,
   } = props;
   const [courses, setCourses] = useState([]);
   const [statistics, setStatistics] = useState([]);
@@ -34,6 +37,7 @@ const TeacherCourses = (props) => {
   const [courseTitle, setCourseTitle] = useState('');
   const [isValid, setValid] = useState(false);
   const inputEl = useRef(null);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     get({ client_id: clientId }, '/getCoursesOfCoaching').then((res) => {
@@ -117,6 +121,15 @@ const TeacherCourses = (props) => {
     history.push('/');
   };
 
+  const shareCourse = (e, course) => {
+    e.stopPropagation();
+    // eslint-disable-next-line
+    const url = `${window.location.protocol}//${window.location.host}/courses/buyCourse/${clientId}/${course.course_id}`;
+    console.log(url);
+    const hasShared = shareThis(url, dashboardData.client_name);
+    if (hasShared === 'clipboard') setShowToast(true);
+  };
+
   return (
     <>
       <PageHeader title='Courses' handleBack={goToDashboard} customBack />
@@ -182,22 +195,33 @@ const TeacherCourses = (props) => {
                         className='ml-auto rounded Courses__slimButton'
                         style={
                           course.course_status === 'published'
-                            ? {}
+                            ? { background: 'var(--primary-blue)', color: '#fff' }
                             : course.course_status === 'incomplete'
-                            ? { background: 'rgba(255, 0, 0, 0.87)' }
-                            : { background: ' rgba(0, 0, 0, 0.54)' }
+                            ? { background: 'rgba(255, 0, 0, 0.87)', color: 'rgba(0, 0, 0, 0.87)' }
+                            : { background: ' rgba(0, 0, 0, 0.54)', color: 'rgba(0, 0, 0, 0.87)' }
                         }
+                        onClick={
+                          course.course_status === 'published'
+                            ? (evt) => shareCourse(evt, course)
+                            : () => {}
+                        }
+                        onKeyDown={
+                          course.course_status === 'published'
+                            ? (evt) => shareCourse(evt, course)
+                            : () => {}
+                        }
+                        tabIndex='-1'
+                        role='button'
                       >
                         <span
                           style={{
                             fontFamily: 'Montserrat-SemiBold',
-                            color: 'rgba(0, 0, 0, 0.87)',
                             fontSize: '10px',
                           }}
                           className='m-1 d-block text-center'
                         >
                           {course.course_status === 'published'
-                            ? ' '
+                            ? 'Share'
                             : course.course_status === 'completed'
                             ? 'Unpublished'
                             : 'Incomplete'}
@@ -281,6 +305,24 @@ const TeacherCourses = (props) => {
           </Modal.Footer>
         </Modal>
       </div>
+      <Toast
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '15%',
+          zIndex: '999',
+        }}
+        onClose={() => setShowToast(false)}
+        show={showToast}
+        delay={3000}
+        autohide
+      >
+        <Toast.Header>
+          <strong className='mr-auto'>Copied!</strong>
+          <small>Just Now</small>
+        </Toast.Header>
+        <Toast.Body>The link has been copied to your clipboard!</Toast.Body>
+      </Toast>
     </>
   );
 };
@@ -289,6 +331,7 @@ const mapStateToProps = (state) => ({
   clientId: getClientId(state),
   clientUserId: getClientUserId(state),
   courseId: getCourseId(state),
+  dashboardData: getCurrentDashboardData(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -314,17 +357,5 @@ TeacherCourses.propTypes = {
   setCourseObjectToStore: PropTypes.func.isRequired,
   clientUserId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
+  dashboardData: PropTypes.instanceOf(Object).isRequired,
 };
-
-// {course.current_batch.map((e, i) => {
-//   return (
-//     <>
-//       <span key={e.batch_id}>{e.batch_name}</span>
-//       {i !== course.current_batch.length - 1 ? (
-//         <span>, </span>
-//       ) : (
-//         <span> </span>
-//       )}
-//     </>
-//   );
-// })}

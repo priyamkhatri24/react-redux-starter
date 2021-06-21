@@ -56,6 +56,7 @@ import form from '../../assets/images/dummyDashboard/form.svg';
 import '../Login/DummyDashboard.scss';
 import { dashboardActions } from '../../redux/actions/dashboard.action';
 import { analysisActions } from '../../redux/actions/analysis.action';
+import { getCurrentRedirectPath } from '../../redux/reducers/dashboard.reducer';
 
 const DashBoardAdmissions = Loadable({
   loader: () => import('./DashBoardAdmissions'),
@@ -85,6 +86,7 @@ const Dashboard = (props) => {
     comeBackFromTests,
     setFolderIdArrayToStore,
     setAnalysisStudentObjectToStore,
+    redirectPath,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
@@ -111,6 +113,12 @@ const Dashboard = (props) => {
   useEffect(() => {
     if (comeBackFromTests) history.push('/questiontaker');
   }, [comeBackFromTests, history]);
+
+  useEffect(() => {
+    if (redirectPath) {
+      history.push(redirectPath);
+    }
+  }, [redirectPath, history]);
 
   useEffect(() => {
     const payload = {
@@ -287,6 +295,8 @@ const Dashboard = (props) => {
     push('/displaypage');
   };
 
+  const goToCRM = () => history.push('/crm');
+
   return (
     <>
       <div className='Dashboard__headerCard pb-3 mb-4'>
@@ -298,16 +308,22 @@ const Dashboard = (props) => {
           <p className='Dummy__tagline mb-4 text-center mb-5'>{data.client_tag_line}</p>
         )}
         <Row className='mx-auto px-2 mt-4'>
-          <Col xs={4} onClick={() => goToProfile()}>
+          <Col
+            xs={4}
+            sm={roleArray.includes(1) || roleArray.includes(2) ? 1 : 2}
+            onClick={() => goToProfile()}
+          >
             <img
               src={profileImage || userAvatar}
               className='Dashboard__profileImage float-right img-responsive'
               alt='profile'
             />
           </Col>
-          <Col xs={8}>
-            <h4 className='Dashboard__headingText'>{time}</h4>
-            <h4 className='Dashboard__headingText'>{firstName}</h4>
+          <Col xs={8} sm={roleArray.includes(1) || roleArray.includes(2) ? 11 : 10}>
+            <h4 className='Dashboard__headingText'>
+              {time} {firstName}
+            </h4>
+            {/* <h4 className='Dashboard__headingText'></h4> */}
           </Col>
         </Row>
 
@@ -338,6 +354,16 @@ const Dashboard = (props) => {
             buttonClick={goToLiveClasses}
           />
 
+          <DashboardCards
+            image={analysis}
+            heading='CRM'
+            subHeading='Manage All your customer Relations Management Enquiries here.'
+            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
+            backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
+            backGround='rgb(236,255,252)'
+            buttonClick={goToCRM}
+          />
+
           {roleArray.includes(4) && Object.keys(admissions).length > 0 && (
             <>
               {(
@@ -355,18 +381,24 @@ const Dashboard = (props) => {
           {roleArray.includes(4) && Object.keys(admissions).length === 0 && <Skeleton count={20} />}
 
           <div className='Dashboard__innovation pt-4 px-3 pb-3'>
-            <h4>Witness </h4>
-            <h4>
+            <h4 className='Dashboard_homeworkCreator'>Witness </h4>
+            <h4 className='Dashboard_homeworkCreator'>
               The <span>innovation</span>
             </h4>
-            <p className='mr-5'>Create tests &amp; home-works in 4 simple steps</p>
-            <Button variant='dashboardBlueOnWhite' onClick={() => goToHomeWorkCreator()}>
+            <p className='mr-5 Dashboard_homeworkCreator'>
+              Create tests &amp; home-works in 4 simple steps
+            </p>
+            <Button
+              className='Dashboard_homeworkCreator'
+              variant='dashboardBlueOnWhite'
+              onClick={() => goToHomeWorkCreator()}
+            >
               Let&apos;s go
               <span>
                 <ChevronRightIcon />
               </span>
             </Button>
-            <div className='Dashboard__assignment my-4'>
+            <div className='Dashboard__assignment my-4 Dashboard_homeworkCreator'>
               <section className='Dashboard__scrollableCard'>
                 <div>
                   <Row>
@@ -482,26 +514,29 @@ const Dashboard = (props) => {
               </p>
 
               <hr />
-
-              <p className='Dashboard__attendanceRecents ml-1'>Recent Attendance</p>
-              <Row className='mx-2'>
-                {attendance.map((elem) => {
-                  return (
-                    <div className='d-flex flex-column mx-1' key={elem.batch_id}>
-                      <img
-                        src={userAvatar}
-                        alt='batch'
-                        height='35px'
-                        width='35px'
-                        className='Dashboard__noticeImage d-block mx-auto'
-                      />
-                      <p className='Dashboard__attendanceRecents text-center mt-1'>
-                        {elem.batch_name}
-                      </p>
-                    </div>
-                  );
-                })}
-              </Row>
+              {attendance.length > 0 && (
+                <div>
+                  <p className='Dashboard__attendanceRecents ml-1'>Recent Attendance</p>
+                  <Row className='mx-2'>
+                    {attendance.map((elem) => {
+                      return (
+                        <div className='d-flex flex-column mx-1' key={elem.batch_id}>
+                          <img
+                            src={userAvatar}
+                            alt='batch'
+                            height='35px'
+                            width='35px'
+                            className='Dashboard__noticeImage d-block mx-auto'
+                          />
+                          <p className='Dashboard__attendanceRecents text-center mt-1'>
+                            {elem.batch_name}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </Row>
+                </div>
+              )}
             </div>
           </div>
 
@@ -561,9 +596,12 @@ const Dashboard = (props) => {
             ))}
           </div>
 
-          <Card className='m-2 mt-4' style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}>
+          <Card
+            className='DashboardCards mb-2 mt-4'
+            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+          >
             <Row className='mx-0 justify-content-center mt-2'>
-              <Col xs={7} className='text-left p-2'>
+              <Col xs={7} className='text-left p-3'>
                 <h6 className='Dummy__connect'>Share app with friends</h6>
                 <p className='mb-0 Dummy__joinDetails'>Enjoying the application?</p>
                 <p className='Dummy__joinSmall'>Share with your friends</p>
@@ -576,7 +614,7 @@ const Dashboard = (props) => {
                   Share
                 </Button>
               </Col>
-              <Col xs={5} className='p-2 mt-3 text-center'>
+              <Col xs={5} className='p-3 mt-3' style={{ textAlign: 'right' }}>
                 <img src={share} alt='form' className='img-fluid' />
               </Col>
             </Row>
@@ -855,29 +893,35 @@ const Dashboard = (props) => {
             buttonClick={goToStudyBin}
           />
 
-          <Card className='m-3' style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}>
+          <Card
+            className='DashboardCards'
+            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+          >
             <Row className='mx-0 justify-content-center mt-2'>
-              <Col xs={8} className='text-left p-2'>
+              <Col xs={8} className='text-left p-3'>
                 <h6 className='Dummy__joinUs'>Join us NOW!</h6>
                 <p className='mb-0 Dummy__joinDetails'>Your are not in any batch yet</p>
                 <p className='Dummy__joinSmall'>Fill admission form to join us.</p>
+                <Button
+                  variant='customPrimarySmol'
+                  className='mb-3'
+                  onClick={() => history.push('/admissionform')}
+                >
+                  Fill admission form
+                </Button>
               </Col>
-              <Col xs={4} className='p-2'>
+              <Col xs={4} className='p-3 mt-3' style={{ textAlign: 'right' }}>
                 <img src={form} alt='form' className='img-fluid' />
               </Col>
-              <Button
-                variant='customPrimarySmol'
-                className='mb-3'
-                onClick={() => history.push('/admissionform')}
-              >
-                Fill admission form
-              </Button>
             </Row>
           </Card>
 
-          <Card className='m-3 mt-4' style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}>
+          <Card
+            className='DashboardCards mt-3'
+            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+          >
             <Row className='mx-0 justify-content-center mt-2'>
-              <Col xs={7} className='text-left p-2'>
+              <Col xs={7} className='text-left p-3'>
                 <h6 className='Dummy__connect'>Share app with friends</h6>
                 <p className='mb-0 Dummy__joinDetails'>Enjoying the application?</p>
                 <p className='Dummy__joinSmall'>Share with your friends</p>
@@ -890,23 +934,26 @@ const Dashboard = (props) => {
                   Share
                 </Button>
               </Col>
-              <Col xs={5} className='p-2 mt-3 text-center'>
+              <Col xs={5} className='p-3 mt-3' style={{ textAlign: 'right' }}>
                 <img src={share} alt='form' className='img-fluid' />
               </Col>
             </Row>
           </Card>
 
           {hasLoaded && Object.keys(data.address).length > 0 && (
-            <Card className='m-3 mt-4' style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}>
+            <Card
+              className='DashboardCards mt-3 mb-2'
+              style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+            >
               <Row className='mx-3 justify-content-left mt-2'>
                 <h6 className='Dummy__joinUs'>Contact us</h6>
               </Row>
               {data.address.location && (
                 <Row className='mx-0 justify-content-center mt-2'>
-                  <Col xs={2} className='pr-0'>
+                  <Col xs={2} sm={1} className='pr-0'>
                     <LocationOnIcon />
                   </Col>
-                  <Col xs={10} className='text-left p-0 my-auto pr-4'>
+                  <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
                     <p className='mb-0 Dummy__joinDetails'>{data.address.location}</p>
                     <p className='Dummy__joinSmall'>Address</p>
                   </Col>
@@ -915,10 +962,10 @@ const Dashboard = (props) => {
 
               {data.address.client_contact && (
                 <Row className='mx-0 justify-content-center mt-2'>
-                  <Col xs={2} className='pr-0'>
+                  <Col xs={2} sm={1} className='pr-0'>
                     <PhoneIcon />
                   </Col>
-                  <Col xs={10} className='text-left p-0 my-auto pr-4'>
+                  <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
                     <p className='mb-0 Dummy__joinDetails'>{data.address.client_contact}</p>
                     <p className='Dummy__joinSmall'>Phone</p>
                   </Col>
@@ -926,10 +973,10 @@ const Dashboard = (props) => {
               )}
               {data.address.client_email && (
                 <Row className='mx-0 justify-content-center mt-2'>
-                  <Col xs={2} className='pr-0'>
+                  <Col xs={2} sm={1} className='pr-0'>
                     <AlternateEmailIcon />
                   </Col>
-                  <Col xs={10} className='text-left p-0 my-auto pr-4'>
+                  <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
                     <p className='mb-0 Dummy__joinDetails'>{data.address.client_email}</p>
                     <p className='Dummy__joinSmall'>Email</p>
                   </Col>
@@ -1002,6 +1049,7 @@ const mapStateToProps = (state) => ({
   roleArray: getRoleArray(state),
   branding: getCurrentBranding(state),
   comeBackFromTests: getComeBackFromTests(state),
+  redirectPath: getCurrentRedirectPath(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -1072,4 +1120,5 @@ Dashboard.propTypes = {
   }).isRequired,
   branding: PropTypes.instanceOf(Object).isRequired,
   comeBackFromTests: PropTypes.bool.isRequired,
+  redirectPath: PropTypes.string.isRequired,
 };

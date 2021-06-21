@@ -175,10 +175,15 @@ const Tests = (props) => {
                 get(demoTestPayload, '/getTestQuestionsForStudentWithLanguageLatest').then((r) => {
                   console.log(r, 'r');
                   const studentQuestions = apiValidation(r);
-                  startLive(
-                    studentQuestions,
+                  console.log(
                     +new Date(),
                     +new Date() + parseInt(result.duration, 10) / 1000,
+                    'wtfffff',
+                  );
+                  startLive(
+                    studentQuestions,
+                    Math.round(+new Date() / 1000),
+                    Math.round((+new Date() + parseInt(result.duration, 10)) / 1000),
                     'demotest',
                     elem.test_id,
                   );
