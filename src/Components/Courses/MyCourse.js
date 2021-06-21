@@ -9,19 +9,21 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Row from 'react-bootstrap/Row';
 import Card from 'react-bootstrap/Card';
+import Toast from 'react-bootstrap/Toast';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PlyrComponent from 'plyr-react';
 import 'plyr-react/dist/plyr.css';
 import Col from 'react-bootstrap/Col';
-import { apiValidation, get, post } from '../../Utilities';
+import { apiValidation, get, post, shareThis } from '../../Utilities';
 import { PageHeader } from '../Common/PageHeader/PageHeader';
 import { testsActions } from '../../redux/actions/tests.action';
-import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
+import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import { getCourseId } from '../../redux/reducers/course.reducer';
 import checkmark from '../../assets/images/order/icons8-checked.svg';
+import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
 
 const Mycourse = (props) => {
   const {
@@ -33,6 +35,8 @@ const Mycourse = (props) => {
     setTestEndTimeToStore,
     setTestStartTimeToStore,
     clientUserId,
+    dashboardData,
+    clientId,
     currentbranding: {
       branding: { client_logo: image },
     },
@@ -55,6 +59,7 @@ const Mycourse = (props) => {
       },
     ],
   });
+  const [showToast, setShowToast] = useState(false);
 
   const handleImageOpen = () => setShowImageModal(true);
   const handleImageClose = () => setShowImageModal(false);
@@ -322,6 +327,14 @@ const Mycourse = (props) => {
   const openAnalysisModal = () => setShowAnalysisModal(true);
   const closeAnalysisModal = () => setShowAnalysisModal(false);
 
+  const shareCourse = () => {
+    // eslint-disable-next-line
+    const url = `${window.location.protocol}//${window.location.host}/courses/buyCourse/${clientId}/${course.course_id}`;
+    console.log(url);
+    const hasShared = shareThis(url, dashboardData.client_name);
+    if (hasShared === 'clipboard') setShowToast(true);
+  };
+
   return (
     <div>
       <PageHeader transparent />
@@ -392,8 +405,32 @@ const Mycourse = (props) => {
                 className='Scrollable__viewAll justify-content-center align-items-center d-flex'
                 style={{ height: '50vh' }}
               >
-                Coming Soon
+                <Button
+                  className='mt-3 mx-auto'
+                  variant='greenButtonLong'
+                  onClick={() => shareCourse()}
+                >
+                  Share
+                </Button>
               </div>
+              <Toast
+                style={{
+                  position: 'fixed',
+                  bottom: '20px',
+                  right: '15%',
+                  zIndex: '999',
+                }}
+                onClose={() => setShowToast(false)}
+                show={showToast}
+                delay={3000}
+                autohide
+              >
+                <Toast.Header>
+                  <strong className='mr-auto'>Copied!</strong>
+                  <small>Just Now</small>
+                </Toast.Header>
+                <Toast.Body>The link has been copied to your clipboard!</Toast.Body>
+              </Toast>
             </Tab>
           </Tabs>
         </div>
@@ -463,8 +500,10 @@ const Mycourse = (props) => {
 
 const mapStateToProps = (state) => ({
   clientUserId: getClientUserId(state),
+  clientId: getClientId(state),
   currentbranding: getCurrentBranding(state),
   courseId: getCourseId(state),
+  dashboardData: getCurrentDashboardData(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -491,6 +530,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Mycourse);
 
 Mycourse.propTypes = {
   clientUserId: PropTypes.number.isRequired,
+  clientId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   setTestResultArrayToStore: PropTypes.func.isRequired,
   setTestEndTimeToStore: PropTypes.func.isRequired,
@@ -505,4 +545,5 @@ Mycourse.propTypes = {
     }),
   }).isRequired,
   courseId: PropTypes.number.isRequired,
+  dashboardData: PropTypes.instanceOf(Object).isRequired,
 };

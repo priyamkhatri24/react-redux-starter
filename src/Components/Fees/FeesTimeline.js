@@ -21,7 +21,7 @@ const FeesTimeline = (props) => {
   }, [clientId]);
 
   return (
-    <VerticalTimeline layout='1-column'>
+    <VerticalTimeline>
       {notifications.length > 0 &&
         notifications.map((elem) => {
           return (
@@ -38,6 +38,7 @@ const FeesTimeline = (props) => {
               className='Fees__timeline text-left'
               key={elem.notification_id}
               contentStyle={{ padding: 0 }}
+              contentArrowStyle={{ color: '#000', height: '50px' }}
             >
               <p
                 style={{

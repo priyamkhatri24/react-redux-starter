@@ -56,6 +56,7 @@ import form from '../../assets/images/dummyDashboard/form.svg';
 import '../Login/DummyDashboard.scss';
 import { dashboardActions } from '../../redux/actions/dashboard.action';
 import { analysisActions } from '../../redux/actions/analysis.action';
+import { getCurrentRedirectPath } from '../../redux/reducers/dashboard.reducer';
 
 const DashBoardAdmissions = Loadable({
   loader: () => import('./DashBoardAdmissions'),
@@ -85,6 +86,7 @@ const Dashboard = (props) => {
     comeBackFromTests,
     setFolderIdArrayToStore,
     setAnalysisStudentObjectToStore,
+    redirectPath,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
@@ -111,6 +113,12 @@ const Dashboard = (props) => {
   useEffect(() => {
     if (comeBackFromTests) history.push('/questiontaker');
   }, [comeBackFromTests, history]);
+
+  useEffect(() => {
+    if (redirectPath) {
+      history.push(redirectPath);
+    }
+  }, [redirectPath, history]);
 
   useEffect(() => {
     const payload = {
@@ -287,6 +295,8 @@ const Dashboard = (props) => {
     push('/displaypage');
   };
 
+  const goToCRM = () => history.push('/crm');
+
   return (
     <>
       <div className='Dashboard__headerCard pb-3 mb-4'>
@@ -336,6 +346,16 @@ const Dashboard = (props) => {
             backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
             buttonText={roleArray.includes(3) || roleArray.includes(4) ? 'Go live now' : ''}
             buttonClick={goToLiveClasses}
+          />
+
+          <DashboardCards
+            image={analysis}
+            heading='CRM'
+            subHeading='Manage All your customer Relations Management Enquiries here.'
+            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
+            backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
+            backGround='rgb(236,255,252)'
+            buttonClick={goToCRM}
           />
 
           {roleArray.includes(4) && Object.keys(admissions).length > 0 && (
@@ -1002,6 +1022,7 @@ const mapStateToProps = (state) => ({
   roleArray: getRoleArray(state),
   branding: getCurrentBranding(state),
   comeBackFromTests: getComeBackFromTests(state),
+  redirectPath: getCurrentRedirectPath(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -1072,4 +1093,5 @@ Dashboard.propTypes = {
   }).isRequired,
   branding: PropTypes.instanceOf(Object).isRequired,
   comeBackFromTests: PropTypes.bool.isRequired,
+  redirectPath: PropTypes.string.isRequired,
 };

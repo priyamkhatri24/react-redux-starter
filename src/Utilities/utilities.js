@@ -126,3 +126,22 @@ export default function useWindowDimensions() {
 
   return windowDimensions;
 }
+
+export const shareThis = (url, clientName) => {
+  if (navigator.share) {
+    navigator
+      .share({
+        title: `Come Join Us`,
+        // eslint-disable-next-line
+        text: `Hey, ${clientName} is a fast, simple and fun app that I use for learning and growing everyday`,
+        url,
+      })
+      .then(() => {
+        console.log('Thanks for sharing!');
+      })
+      .catch(console.error);
+    return 'navigator';
+  }
+  navigator.clipboard.writeText(window.location.href);
+  return 'clipboard';
+};

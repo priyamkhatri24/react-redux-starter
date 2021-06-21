@@ -6,6 +6,7 @@ import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Toast from 'react-bootstrap/Toast';
 import Card from 'react-bootstrap/Card';
 import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
@@ -17,7 +18,7 @@ import StarIcon from '@material-ui/icons/Star';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import rupee from '../../assets/images/Courses/rupee.svg';
-import { apiValidation, get, post, displayRazorpay } from '../../Utilities';
+import { apiValidation, get, post, displayRazorpay, shareThis } from '../../Utilities';
 import { PageHeader } from '../Common';
 import './Courses.scss';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
@@ -25,6 +26,7 @@ import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import YCIcon from '../../assets/images/ycIcon.png';
 import checkmark from '../../assets/images/order/icons8-checked.svg';
 import caution from '../../assets/images/order/icons8-medium-risk-50.png';
+import { dashboardActions } from '../../redux/actions/dashboard.action';
 
 const BuyCourse = (props) => {
   const {
@@ -41,6 +43,7 @@ const BuyCourse = (props) => {
         client_contact: clientContact,
       },
     },
+    setRedirectPathToStore,
   } = props;
   const [course, setCourse] = useState({});
   const [courseVideo, setCourseVideo] = useState({});
@@ -53,6 +56,7 @@ const BuyCourse = (props) => {
   const [couponId, setCouponId] = useState('');
   const [couponMessage, setCouponMessage] = useState('');
   const [order, setOrder] = useState({});
+  const [showToast, setShowToast] = useState(false);
 
   const statusClass = cx({
     Fees__orderStatus: true,
@@ -64,6 +68,10 @@ const BuyCourse = (props) => {
   const options = {
     autoplay: true,
   };
+
+  useEffect(() => {
+    setRedirectPathToStore(null);
+  });
 
   useEffect(() => {
     const payload = {
@@ -254,7 +262,17 @@ const BuyCourse = (props) => {
   };
 
   const goToLogin = () => {
-    console.log('lols');
+    console.log('lols', window.location.pathname);
+    setRedirectPathToStore(window.location.pathname);
+    history.push('/login');
+  };
+
+  const shareCourse = () => {
+    // eslint-disable-next-line
+    const url = window.location.href;
+    console.log(url);
+    const hasShared = shareThis(url, window.location.host.split('.')[0]);
+    if (hasShared === 'clipboard') setShowToast(true);
   };
 
   return (
@@ -309,12 +327,20 @@ const BuyCourse = (props) => {
               className='mt-3 mx-auto'
               variant='greenButtonLong'
               onClick={
+                localStorage.getItem('state') &&
                 JSON.parse(localStorage.getItem('state')).userProfile.token
                   ? () => subscribeOrBuy()
                   : () => goToLogin()
               }
             >
               {course.course_type === 'free' ? 'Subscribe' : 'Buy Now'}
+            </Button>
+            <Button
+              className='mt-3 mx-auto'
+              variant='greenButtonLong'
+              onClick={() => shareCourse()}
+            >
+              Share
             </Button>
           </Row>
           <div className='mx-auto my-4 Courses__videoplayer'>
@@ -375,6 +401,25 @@ const BuyCourse = (props) => {
           })}
         </div>
       )}
+
+      <Toast
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '15%',
+          zIndex: '999',
+        }}
+        onClose={() => setShowToast(false)}
+        show={showToast}
+        delay={3000}
+        autohide
+      >
+        <Toast.Header>
+          <strong className='mr-auto'>Copied!</strong>
+          <small>Just Now</small>
+        </Toast.Header>
+        <Toast.Body>The link has been copied to your clipboard!</Toast.Body>
+      </Toast>
 
       <Modal show={showCouponModal} centered onHide={closeCouponModal}>
         <Modal.Header closeButton>
@@ -503,7 +548,11 @@ const mapStateToProps = (state) => ({
   currentbranding: getCurrentBranding(state),
 });
 
-export default connect(mapStateToProps)(BuyCourse);
+const mapDispatchToProps = (dispatch) => ({
+  setRedirectPathToStore: (payload) => dispatch(dashboardActions.setRedirectPathToStore(payload)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(BuyCourse);
 
 BuyCourse.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
@@ -521,4 +570,5 @@ BuyCourse.propTypes = {
     }),
   }).isRequired,
   match: PropTypes.instanceOf(Object).isRequired,
+  setRedirectPathToStore: PropTypes.func.isRequired,
 };
