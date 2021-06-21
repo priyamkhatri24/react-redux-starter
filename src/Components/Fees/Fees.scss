@@ -225,8 +225,8 @@
     color: $dashboardGrey;
     font-size: $spacer * 0.75;
 
-    @include media-breakpoint-up(sm){
-      font-size: $spacer*0.85;
+    @include media-breakpoint-up(sm) {
+      font-size: $spacer * 0.85;
     }
   }
 
@@ -236,8 +236,8 @@
     line-height: 20px;
     color: $lightGrey;
 
-    @include media-breakpoint-up(sm){
-      font-size: $spacer*1;
+    @include media-breakpoint-up(sm) {
+      font-size: $spacer * 1;
     }
   }
 
@@ -247,8 +247,8 @@
     line-height: 13px;
     color: $headingGrey;
     margin-bottom: 0px;
-    @include media-breakpoint-up(sm){
-      font-size: $spacer*0.75;
+    @include media-breakpoint-up(sm) {
+      font-size: $spacer * 0.75;
     }
   }
 
@@ -260,7 +260,7 @@
     color: $lightGrey;
     font-family: $medium;
     line-height: 13px;
-    font-size: $spacer * 0.650;
+    font-size: $spacer * 0.65;
   }
   &__PayButton {
     @include media-breakpoint-up(sm) {
@@ -277,94 +277,93 @@
     }
   }
 
-  &__batchesTeacher{
+  &__batchesTeacher {
     width: 75%;
     margin: auto;
     margin-bottom: 0.5rem;
 
-    @include media-breakpoint-down(sm){
-      width:95%;
-    }
-  }
-
-  &__progressBar{
-    width: 75%;
-    margin: auto;
-    margin-bottom: 0.5rem;
-
-    @include media-breakpoint-down(sm){
-      width:90%;
-    }
-  }
-  &__twoButtons{
-    width: 120px;
-    @include media-breakpoint-up(sm){
-      width: 300px;;
-    }
-  }
-  &__twoButtonstext{
-    font-size: $spacer*1;
-    @include media-breakpoint-down(sm){
-      font-size: $spacer*0.625;
-    }
-  }
-  &__userDetails{
-    width: 75%;
-    margin: auto;
-    margin-top: 4rem;
-    @include media-breakpoint-down(sm){
+    @include media-breakpoint-down(sm) {
       width: 95%;
     }
   }
-  &__carouselCard{
+
+  &__progressBar {
+    width: 75%;
+    margin: auto;
+    margin-bottom: 0.5rem;
+
+    @include media-breakpoint-down(sm) {
+      width: 90%;
+    }
+  }
+  &__twoButtons {
+    width: 120px;
+    @include media-breakpoint-up(sm) {
+      width: 300px;
+    }
+  }
+  &__twoButtonstext {
+    font-size: $spacer * 1;
+    @include media-breakpoint-down(sm) {
+      font-size: $spacer * 0.625;
+    }
+  }
+  &__userDetails {
+    width: 75%;
+    margin: auto;
+    margin-top: 4rem;
+    @include media-breakpoint-down(sm) {
+      width: 95%;
+    }
+  }
+  &__carouselCard {
     width: 60%;
     height: 170px;
-    @include media-breakpoint-down(sm){
+    @include media-breakpoint-down(sm) {
       width: 90%;
       height: 140px;
     }
   }
-  &__carouselIcon{
-    @include media-breakpoint-up(sm){
+  &__carouselIcon {
+    @include media-breakpoint-up(sm) {
       width: 200px;
     }
   }
-  &__carouselText{
-    @include media-breakpoint-up(sm){
+  &__carouselText {
+    @include media-breakpoint-up(sm) {
       position: relative;
       right: 11%;
     }
   }
-  &__TwobuttonsRow{
+  &__TwobuttonsRow {
     justify-content: space-evenly;
 
-    @include media-breakpoint-up(sm){
+    @include media-breakpoint-up(sm) {
       justify-content: space-evenly;
-
     }
   }
-  &__plansContainer{
+  &__plansContainer {
     width: 75%;
-    margin:auto;
+    margin: auto;
 
-    @include media-breakpoint-down(sm){
+    @include media-breakpoint-down(sm) {
       width: 95%;
     }
   }
-  &__plansContainer::-webkit-scrollbar{
+  &__plansContainer::-webkit-scrollbar {
     display: none;
   }
-  &__datePickerCol{
+  &__datePickerCol {
     text-align: center;
-    @include media-breakpoint-down(sm){
+    @include media-breakpoint-down(sm) {
       text-align: left;
     }
   }
-  &__planAmount{
-   left:20%;
-   @include media-breakpoint-down(sm){
-     left:0;
-   }
+  &__planAmount {
+    left: 20%;
+    @include media-breakpoint-down(sm) {
+      left: 0;
+    }
   }
 }
 

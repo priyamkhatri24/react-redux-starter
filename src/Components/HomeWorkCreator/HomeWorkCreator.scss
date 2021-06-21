@@ -201,21 +201,21 @@
     letter-spacing: 0.49px;
   }
 
-  &__questionImg{
+  &__questionImg {
     max-width: 400px;
     max-height: 400px;
 
-    @include media-breakpoint-down(md){
+    @include media-breakpoint-down(md) {
       max-width: 300px;
       max-height: 300px;
     }
 
-    @include media-breakpoint-down(sm){
+    @include media-breakpoint-down(sm) {
       max-width: 280px;
       max-height: 280px;
     }
   }
-  &__questionImgContainer{
+  &__questionImgContainer {
     text-align: center;
   }
 }

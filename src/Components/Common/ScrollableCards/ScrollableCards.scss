@@ -177,7 +177,7 @@
     color: $dashboardBlack;
     font-family: $semiBold;
 
-    @include media-breakpoint-up(sm){
+    @include media-breakpoint-up(sm) {
       font-size: $spacer * 0.825;
     }
   }
