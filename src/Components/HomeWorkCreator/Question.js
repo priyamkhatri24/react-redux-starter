@@ -8,6 +8,7 @@ import Card from 'react-bootstrap/Card';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import ReportIcon from '@material-ui/icons/Report';
+import './HomeWorkCreator.scss';
 
 const Question = (props) => {
   const { question, index, update } = props;
@@ -47,11 +48,13 @@ const Question = (props) => {
           <div className='Homework__questionHeading text-left m-2'>
             <MathJax math={String.raw`${question.question_text}`} />
             {question.question_image && (
-              <img
-                src={question.question_image}
-                alt='question'
-                style={{ maxWidth: '90vw', maxHeight: '30vh' }}
-              />
+              <div className=' mt-2 Homework__questionImgContainer'>
+                <img
+                  src={question.question_image}
+                  alt='question'
+                  className='img-fluid m-2 Homework__questionImg'
+                />
+              </div>
             )}
           </div>
 
@@ -59,7 +62,7 @@ const Question = (props) => {
             <p className='Homework__options text-left m-2'>Options</p>
           )}
 
-          {question.question_type !== 'subjective' &&
+          {Object.keys(question).question_type !== 'subjective' &&
             question.option_array.map((e, i) => {
               return (
                 <>
@@ -71,8 +74,7 @@ const Question = (props) => {
                     <img
                       src={e.image}
                       alt='option'
-                      className='img-fluid m-2'
-                      style={{ maxWidth: '90vw', maxHeight: '20vh' }}
+                      className='img-fluid m-2 Homework__questionImg'
                     />
                   )}
                 </>
