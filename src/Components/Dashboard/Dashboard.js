@@ -348,7 +348,7 @@ const Dashboard = (props) => {
             buttonClick={goToLiveClasses}
           />
 
-          <DashboardCards
+          {/* <DashboardCards
             image={analysis}
             heading='CRM'
             subHeading='Manage All your customer Relations Management Enquiries here.'
@@ -356,7 +356,7 @@ const Dashboard = (props) => {
             backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
             backGround='rgb(236,255,252)'
             buttonClick={goToCRM}
-          />
+          /> */}
 
           {roleArray.includes(4) && Object.keys(admissions).length > 0 && (
             <>

@@ -27,6 +27,7 @@ import YCIcon from '../../assets/images/ycIcon.png';
 import checkmark from '../../assets/images/order/icons8-checked.svg';
 import caution from '../../assets/images/order/icons8-medium-risk-50.png';
 import { dashboardActions } from '../../redux/actions/dashboard.action';
+import { brandingActions } from '../../redux/actions/branding.action';
 
 const BuyCourse = (props) => {
   const {
@@ -44,6 +45,7 @@ const BuyCourse = (props) => {
       },
     },
     setRedirectPathToStore,
+    setCurrentComponentToStore,
   } = props;
   const [course, setCourse] = useState({});
   const [courseVideo, setCourseVideo] = useState({});
@@ -71,7 +73,8 @@ const BuyCourse = (props) => {
 
   useEffect(() => {
     setRedirectPathToStore(null);
-  });
+    setCurrentComponentToStore('Welcome');
+  }, [setCurrentComponentToStore, setRedirectPathToStore]);
 
   useEffect(() => {
     const payload = {
@@ -264,7 +267,8 @@ const BuyCourse = (props) => {
   const goToLogin = () => {
     console.log('lols', window.location.pathname);
     setRedirectPathToStore(window.location.pathname);
-    history.push('/login');
+    setCurrentComponentToStore('PhoneNo');
+    history.push('/preload');
   };
 
   const shareCourse = () => {
@@ -550,6 +554,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   setRedirectPathToStore: (payload) => dispatch(dashboardActions.setRedirectPathToStore(payload)),
+  setCurrentComponentToStore: (payload) =>
+    dispatch(brandingActions.setCurrentComponentToStore(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BuyCourse);
@@ -571,4 +577,5 @@ BuyCourse.propTypes = {
   }).isRequired,
   match: PropTypes.instanceOf(Object).isRequired,
   setRedirectPathToStore: PropTypes.func.isRequired,
+  setCurrentComponentToStore: PropTypes.func.isRequired,
 };

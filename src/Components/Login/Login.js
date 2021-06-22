@@ -17,6 +17,7 @@ import {
   getCurrentBranding,
   getBrandingError,
   getBrandingPending,
+  getCurrentComponent,
 } from '../../redux/reducers/branding.reducer';
 import { getContact } from './Login.service';
 import WelcomeCarousel from './Welcome/WelcomeCarousel';
@@ -25,14 +26,18 @@ import DummyDashboard from './DummyDashboard';
 
 class Login extends Component {
   constructor(props) {
+    const { currentComponent } = props;
     super(props);
     this.state = {
-      currentComponent: 'Welcome',
+      currentComponent,
       image: null,
     };
   }
 
   componentDidMount() {
+    const { currentComponent } = this.props;
+
+    console.log(currentComponent);
     // const domain =
     //   process.env.NODE_ENV === 'development'
     //     ? { domain_name: 'abcd.ingeniumedu.com' }
@@ -214,6 +219,7 @@ const mapStateToProps = (state) => ({
   error: getBrandingError(state),
   currentbranding: getCurrentBranding(state),
   pending: getBrandingPending(state),
+  currentComponent: getCurrentComponent(state),
 });
 
 const mapDispatchToProps = (dispatch) =>
@@ -247,4 +253,5 @@ Login.propTypes = {
   // fetchBranding: PropTypes.func.isRequired,
   // fetchColors: PropTypes.func.isRequired,
   fetchContact: PropTypes.func.isRequired,
+  currentComponent: PropTypes.string.isRequired,
 };

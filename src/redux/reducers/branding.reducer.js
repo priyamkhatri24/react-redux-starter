@@ -4,6 +4,7 @@ const initialState = {
   pending: false,
   branding: {},
   error: null,
+  currentComponent: 'Welcome',
 };
 
 export function branding(state = initialState, action) {
@@ -26,6 +27,11 @@ export function branding(state = initialState, action) {
         branding: {},
         pending: true,
       };
+    case brandingConstants.CURRENTCOMPONENT:
+      return {
+        ...state,
+        currentComponent: action.payload,
+      };
     default:
       return state;
   }
@@ -34,3 +40,4 @@ export function branding(state = initialState, action) {
 export const getCurrentBranding = (state) => state.branding;
 export const getBrandingPending = (state) => state.pending;
 export const getBrandingError = (state) => state.error;
+export const getCurrentComponent = (state) => state.branding.currentComponent;

@@ -12,6 +12,8 @@ import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
+import firebase from 'firebase/app';
+import 'firebase/messaging';
 
 clientsClaim();
 
@@ -71,3 +73,31 @@ self.addEventListener('message', (event) => {
 });
 
 // Any other custom service worker logic can go here.
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyBHw4PABmM68oVfyqTc5BCgTbvuJapIxL4',
+  authDomain: 'ingenium-backend-webportal.firebaseapp.com',
+  projectId: 'ingenium-backend-webportal',
+  storageBucket: 'ingenium-backend-webportal.appspot.com',
+  messagingSenderId: '838837260191',
+  appId: '1:838837260191:web:6c9e087ecbda21f1d5f7aa',
+  measurementId: 'G-7G56SQSZME',
+};
+
+firebase.initializeApp(firebaseConfig);
+const messaging = firebase.messaging();
+
+messaging.setBackgroundMessageHandler(function (payload) {
+  console.log('[firebase-messaging-sw.js] Received background message ', payload);
+  const notificationTitle = payload.data.title;
+  const notificationOptions = {
+    body: payload.data.body,
+    icon: '/firebase-logo.png',
+  };
+  return self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+self.addEventListener('notificationclick', (event) => {
+  console.log(event);
+  return event;
+});
