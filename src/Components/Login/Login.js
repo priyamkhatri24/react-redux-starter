@@ -5,22 +5,20 @@ import { bindActionCreators } from 'redux';
 import './Login.scss';
 import Preloader from './Preloader/Preloader';
 import footerIngenium from '../../assets/images/ingiLOGO.png';
-import PhoneNo from './PhoneNo/PhoneNo';
 import EnterPhone from './EnterPhone';
 import {
   post,
-  get,
-  apiValidation,
-  setGlobalColors,
-  changeFaviconAndDocumentTitle,
+  // get,
+  // apiValidation,
+  // setGlobalColors,
+  // changeFaviconAndDocumentTitle,
 } from '../../Utilities';
 import {
   getCurrentBranding,
   getBrandingError,
   getBrandingPending,
 } from '../../redux/reducers/branding.reducer';
-import { getBranding, getColor, getContact } from './Login.service';
-import Welcome from './Welcome/Welcome';
+import { getContact } from './Login.service';
 import WelcomeCarousel from './Welcome/WelcomeCarousel';
 import SignupForm from './SignupForm';
 import DummyDashboard from './DummyDashboard';
@@ -29,89 +27,86 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentComponent: 'Preloader',
+      currentComponent: 'Welcome',
       image: null,
-      welcomeData: null,
     };
   }
 
   componentDidMount() {
-    const domain =
-      process.env.NODE_ENV === 'development'
-        ? { domain_name: 'abcd.ingeniumedu.com' }
-        : { domain_name: window.location.hostname };
-
-    const { fetchBranding } = this.props;
-    fetchBranding(domain);
+    // const domain =
+    //   process.env.NODE_ENV === 'development'
+    //     ? { domain_name: 'abcd.ingeniumedu.com' }
+    //     : { domain_name: window.location.hostname };
+    // const { fetchBranding } = this.props;
+    // fetchBranding(domain);
   }
 
-  componentDidUpdate(prevprops) {
-    const {
-      currentbranding: {
-        pending,
-        branding: {
-          client_logo: image,
-          client_id: clientId,
-          client_color: clientColor,
-          client_icon: clientIcon,
-          client_title: clientTitle,
-        },
-      },
-    } = this.props;
+  // componentDidUpdate(prevprops) {
+  //   const {
+  //     currentbranding: {
+  //       pending,
+  //       branding: {
+  //         client_logo: image,
+  //         client_id: clientId,
+  //         client_color: clientColor,
+  //         client_icon: clientIcon,
+  //         client_title: clientTitle,
+  //       },
+  //     },
+  //   } = this.props;
 
-    if (prevprops.currentbranding.pending !== pending && pending === false) {
-      this.setState({ image });
+  //   if (prevprops.currentbranding.pending !== pending && pending === false) {
+  //     this.setState({ image });
 
-      this.setClientColors(clientColor);
+  //     this.setClientColors(clientColor);
 
-      changeFaviconAndDocumentTitle(clientIcon, clientTitle);
+  //     changeFaviconAndDocumentTitle(clientIcon, clientTitle);
 
-      const request = {
-        client_id: clientId,
-      };
+  //     const request = {
+  //       client_id: clientId,
+  //     };
 
-      setTimeout(() => {
-        get(request, '/getAdsForClient')
-          .then((res) => {
-            const result = apiValidation(res);
+  //     setTimeout(() => {
+  //       get(request, '/getAdsForClient')
+  //         .then((res) => {
+  //           const result = apiValidation(res);
 
-            if (result.is_ad === 'true') {
-              this.setState({ welcomeData: result });
-              this.handleComponent('Welcome');
-            } else {
-              this.handleComponent('Welcome');
-            }
-          })
-          .catch(() => this.handleComponent('Welcome'));
-      }, 3000);
-    }
-  }
+  //           if (result.is_ad === 'true') {
+  //             this.handleComponent('Welcome');
+  //           } else {
+  //             this.handleComponent('Welcome');
+  //           }
+  //         })
+  //         .catch(() => this.handleComponent('Welcome'));
+  //     }, 3000);
+  //   }
+  // }
 
-  setClientColors = (color = 'hsl(208, 96.4%, 56.7%)') => {
-    const { fetchColors } = this.props;
+  // setClientColors = (color = 'hsl(208, 96.4%, 56.7%)') => {
+  //   const { fetchColors } = this.props;
 
-    const init = color.indexOf('(');
-    const fin = color.indexOf(')');
-    const colorValues = color.substr(init + 1, fin - init - 1).split(',');
-    const lightSaturation = (parseFloat(colorValues[1]) * 0.6).toFixed(2);
-    const lighterSaturation = (parseFloat(colorValues[1]) * 0.3).toFixed(2);
-    const lightestSaturation = (parseFloat(colorValues[1]) * 0.08).toFixed(2);
+  //   const init = color.indexOf('(');
+  //   const fin = color.indexOf(')');
+  //   const colorValues = color.substr(init + 1, fin - init - 1).split(',');
+  //   const lightSaturation = (parseFloat(colorValues[1]) * 0.6).toFixed(2);
+  //   const lighterSaturation = (parseFloat(colorValues[1]) * 0.3).toFixed(2);
+  //   const lightestSaturation = (parseFloat(colorValues[1]) * 0.08).toFixed(2);
 
-    const lightcolorString = `hsl(${colorValues[0]},${lightSaturation}%,${colorValues[2]})`;
-    const lightercolorString = `hsl(${colorValues[0]},${lighterSaturation}%,${colorValues[2]})`;
-    const lightestcolorString = `hsl(${colorValues[0]},${lightestSaturation}%,${colorValues[2]})`;
+  //   const lightcolorString = `hsl(${colorValues[0]},${lightSaturation}%,${colorValues[2]})`;
+  //   const lightercolorString = `hsl(${colorValues[0]},${lighterSaturation}%,${colorValues[2]})`;
+  //   const lightestcolorString = `hsl(${colorValues[0]},${lightestSaturation}%,${colorValues[2]})`;
 
-    setGlobalColors(color, lightcolorString, lightercolorString, lightestcolorString);
+  //   setGlobalColors(color, lightcolorString, lightercolorString, lightestcolorString);
 
-    const colorVariables = {
-      primary: color,
-      light: lightcolorString,
-      lighter: lightercolorString,
-      superLight: lightestcolorString,
-    };
+  //   const colorVariables = {
+  //     primary: color,
+  //     light: lightcolorString,
+  //     lighter: lightercolorString,
+  //     superLight: lightestcolorString,
+  //   };
 
-    fetchColors(colorVariables);
-  };
+  //   fetchColors(colorVariables);
+  // };
 
   handleComponent = (param) => {
     this.setState({ currentComponent: param });
@@ -164,7 +159,7 @@ class Login extends Component {
   }
 
   render() {
-    const { currentComponent, image, welcomeData } = this.state;
+    const { currentComponent, image } = this.state;
     const {
       history,
       currentbranding: {
@@ -224,8 +219,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      fetchBranding: getBranding,
-      fetchColors: getColor,
+      // fetchBranding: getBranding,
+      // fetchColors: getColor,
       fetchContact: getContact,
     },
     dispatch,
@@ -249,7 +244,7 @@ Login.propTypes = {
     pending: PropTypes.bool.isRequired,
   }).isRequired,
 
-  fetchBranding: PropTypes.func.isRequired,
-  fetchColors: PropTypes.func.isRequired,
+  // fetchBranding: PropTypes.func.isRequired,
+  // fetchColors: PropTypes.func.isRequired,
   fetchContact: PropTypes.func.isRequired,
 };
