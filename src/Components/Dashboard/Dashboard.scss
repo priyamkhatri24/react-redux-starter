@@ -20,7 +20,7 @@
     line-height: 29px;
     color: $headingGrey;
 
-    @include media-breakpoint-up(sm){
+    @include media-breakpoint-up(sm) {
       font-size: 1.75rem;
       padding-top: 1.25rem;
     }
@@ -199,8 +199,8 @@
     font-size: $spacer * 1.5;
     font-family: $bold;
   }
-  &_homeworkCreator{
-    @include media-breakpoint-up(sm){
+  &_homeworkCreator {
+    @include media-breakpoint-up(sm) {
       margin-left: 6%;
     }
   }
