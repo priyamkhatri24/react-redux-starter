@@ -19,14 +19,16 @@ import { LoginDetailsSkeleton } from '../../Common';
 const SignIn = (props) => {
   const {
     location: {
-      state: { image, userInfo, contact },
+      state: { userInfo, contact },
     },
     firstTimeLogin,
     setFirstTimeLoginToStore,
     history,
   } = props;
 
-  const { currentbranding: { branding: { client_id: clientId = '' } = {} } = {} } = props;
+  const {
+    currentbranding: { branding: { client_id: clientId = '', client_logo: image } = {} } = {},
+  } = props;
   const [password, setPassword] = useState('');
   const [verify, setVerify] = useState(false);
   const [currentComponent, setComponent] = useState('username');

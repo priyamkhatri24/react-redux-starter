@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Container from 'react-bootstrap/Container';
 import { ConnectedRouter } from 'connected-react-router';
@@ -11,9 +11,13 @@ import './App.scss';
 import { history, Routes } from '../Routing';
 import { getCurrentLoadingStatus } from '../redux/reducers/loading.reducer';
 import withClearCache from './BustCache';
+import { getToken } from '../Utilities/firebase';
 
 function MainApp(props) {
   const { color, currentbranding, isLoading } = props;
+  const [isTokenFound, setTokenFound] = useState(false);
+
+  // getToken(setTokenFound);
 
   useEffect(() => {
     if (Object.keys(color.color) !== 0) {

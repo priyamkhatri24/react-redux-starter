@@ -23,6 +23,7 @@
     "classnames": "^2.2.6",
     "connected-react-router": "^6.8.0",
     "date-fns": "^2.16.1",
+    "firebase": "^8.6.8",
     "formik": "^2.1.5",
     "glob": "^7.1.6",
     "history": "4.10.1",
@@ -133,5 +134,5 @@
       "git push sid-origin auto"
     ]
   },
-  "buildDate": 1624113841744
+  "buildDate": 1624363860385
 }

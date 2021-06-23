@@ -46,7 +46,7 @@ const Profile = (props) => {
           clearProfile();
           clearClientIdDetails();
           setFirstTimeLoginToStore(false);
-          history.push({ pathname: '/login' });
+          history.push({ pathname: '/preload' });
         }
       })
       .catch(() => {

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Swal from 'sweetalert2';
 import ReactApexCharts from 'react-apexcharts';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -96,10 +97,20 @@ const BatchDetails = (props) => {
       client_id: clientId,
       client_user_id: clientUserId,
     };
-
-    post(payload, '/deleteBatch').then((res) => {
-      if (res.success) {
-        history.push('/admissions');
+    Swal.fire({
+      title: 'Delete Batch',
+      text: 'Do you wish to delete the Batch?',
+      icon: 'question',
+      confirmButtonText: `Yes`,
+      showDenyButton: true,
+      customClass: 'Assignments__SweetAlert',
+    }).then((resp) => {
+      if (resp.isConfirmed) {
+        post(payload, '/deleteBatch').then((res) => {
+          if (res.success) {
+            history.push('/admissions');
+          }
+        });
       }
     });
   };

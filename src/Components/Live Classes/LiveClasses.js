@@ -168,8 +168,8 @@ class LiveClasses extends Component {
       let strippedDomain = domain;
       if (element.server_url) strippedDomain = element.server_url.split('/')[2]; // eslint-disable-line
       this.setState({
-        jitsiFirstName: element.first_name,
-        jitsiLastName: element.last_name,
+        jitsiFirstName: userProfile.firstName,
+        jitsiLastName: userProfile.lastName,
         jitsiRoomName: element.stream_link,
         domain: strippedDomain,
         triggerJitsi: method === 'sdk',

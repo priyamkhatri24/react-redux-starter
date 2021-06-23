@@ -41,6 +41,11 @@ const Login = Loadable({
 });
 // import Login from '../Components/Login/Login';
 
+const Preloader = Loadable({
+  loader: () => import(/* webpackChunkName: 'Login' */ '../Components/Login/Preloader/Preloader'),
+  loading: Loading,
+});
+
 const SignupForm = Loadable({
   loader: () => import(/* webpackChunkName: 'SignUpForm' */ '../Components/Login/SignupForm'),
   loading: Loading,
@@ -373,17 +378,18 @@ const DisplayPage = Loadable({
 
 const DisplayPageEdit = Loadable({
   loader: () =>
-    import(/* webpackChunkName: 'DisplayPage' */ '../Components/DisplayPage/DisplayPageEdit'),
+    import(/* webpackChunkName: 'DisplayPageEdit' */ '../Components/DisplayPage/DisplayPageEdit'),
   loading: Loading,
 });
 
 const DummyDashboard = Loadable({
-  loader: () => import(/* webpackChunkName: 'DisplayPage' */ '../Components/Login/DummyDashboard'),
+  loader: () =>
+    import(/* webpackChunkName: 'DummyDashPage' */ '../Components/Login/DummyDashboard'),
   loading: Loading,
 });
 
 const CRM = Loadable({
-  loader: () => import(/* webpackChunkName: 'DisplayPage' */ '../Components/CRM/Crm'),
+  loader: () => import(/* webpackChunkName: 'CRMPage' */ '../Components/CRM/Crm'),
   loading: Loading,
 });
 
@@ -400,9 +406,11 @@ export function Routes() {
   return (
     <Switch>
       <AuthenticatedRoute exact path='/' component={Dashboard} />
+
       <Route path='/signin' component={SignIn} />
       <Route path='/signup' component={SignUp} />
       <Route exact path='/login' component={Login} />
+      <Route exact path='/preload' component={Preloader} />
       <Route exact path='/login/signup' component={SignupForm} />
       <Route path='/admission' component={AdmissionChat} />
       <Route path='/admissionform' component={AdmissionForm} />
