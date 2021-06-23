@@ -137,6 +137,7 @@ class QuestionTaker extends Component {
 
   timerHasFinished = () => {
     const { result, testId } = this.state;
+    console.log('wtf');
     const {
       clientUserId,
       testType,

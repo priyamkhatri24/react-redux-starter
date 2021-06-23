@@ -14,6 +14,7 @@ const FinalQuestionCard = (props) => {
     sectionName,
     isViewOnly,
     isAnalysis,
+    questionType,
   } = props;
 
   return (
@@ -147,6 +148,7 @@ FinalQuestionCard.propTypes = {
   sectionName: PropTypes.string,
   isViewOnly: PropTypes.bool,
   isAnalysis: PropTypes.bool,
+  questionType: PropTypes.string,
 };
 
 FinalQuestionCard.defaultProps = {
@@ -154,4 +156,5 @@ FinalQuestionCard.defaultProps = {
   updateQuestionMarks: () => {},
   isViewOnly: false,
   isAnalysis: false,
+  questionType: 'english',
 };
