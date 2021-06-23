@@ -29,7 +29,7 @@ class Login extends Component {
     const { currentComponent } = props;
     super(props);
     this.state = {
-      currentComponent,
+      currentComponent: currentComponent || 'Welcome',
       image: null,
     };
   }

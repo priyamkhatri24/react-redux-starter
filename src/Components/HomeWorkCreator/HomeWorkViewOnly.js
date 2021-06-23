@@ -5,6 +5,7 @@ import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import {
+  getHomeworkLanguageType,
   getHomeworkQuestionArray,
   getTestIsDraft,
   getTestName,
@@ -22,6 +23,7 @@ const HomeWorkViewOnly = (props) => {
     history,
     setCurrentSlide,
     setSelectedQuestionArrayToStore,
+    homeworkLanguageType,
   } = props;
 
   const modifyQuestions = () => {
@@ -39,7 +41,16 @@ const HomeWorkViewOnly = (props) => {
       <PageHeader title={testName} />
       <Card style={{ marginTop: '4rem' }} className='Homework__selectCard mb-3 mx-2'>
         {questionArray.map((question, index) => {
-          return <FinalQuestionCard question={question} index={index} key={index} isViewOnly />; //eslint-disable-line
+          return (
+            <FinalQuestionCard
+              question={question}
+              index={index}
+              // eslint-disable-next-line
+              key={index}
+              isViewOnly
+              language={homeworkLanguageType}
+            />
+          );
         })}
       </Card>
       <Row
@@ -62,6 +73,7 @@ const mapStateToProps = (state) => ({
   testName: getTestName(state),
   testIsDraft: getTestIsDraft(state),
   questionArray: getHomeworkQuestionArray(state),
+  homeworkLanguageType: getHomeworkLanguageType(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -80,6 +92,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(HomeWorkViewOnly);
 HomeWorkViewOnly.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   testName: PropTypes.string.isRequired,
+  homeworkLanguageType: PropTypes.string.isRequired,
   testIsDraft: PropTypes.number.isRequired,
   questionArray: PropTypes.instanceOf(Array).isRequired,
   setCurrentSlide: PropTypes.func.isRequired,

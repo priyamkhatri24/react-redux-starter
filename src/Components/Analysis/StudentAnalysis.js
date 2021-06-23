@@ -189,6 +189,7 @@ const StudentAnalysis = (props) => {
                       key={index}
                       isViewOnly
                       isAnalysis
+                      language={analysisAssignmentObject.language_type}
                     />
                   );
                 })}
