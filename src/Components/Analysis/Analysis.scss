@@ -7,6 +7,15 @@
     font-size: $spacer * 1.5;
   }
 
+  &__card{
+    width: 75%;
+    margin:auto;
+    margin-top: 1rem;
+    @include media-breakpoint-down(sm){
+      width: 90%;
+    }
+  }
+
   &__cardLabel {
     font-family: $medium;
     color: $lightGrey;
@@ -83,5 +92,18 @@
     font-family: $medium;
     color: $dashboardBlack;
     font-size: $spacer * 0.875;
+  }
+
+  &__Buttons{
+    width: 240px;
+    height: 60px;
+
+    @include media-breakpoint-down(md){
+      width: 150px;
+    }
+ 
+     @include media-breakpoint-down(sm){
+       width: 70px;
+     }
   }
 }

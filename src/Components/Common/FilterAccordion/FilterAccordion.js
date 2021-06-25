@@ -29,8 +29,8 @@ const FilterAccordion = (props) => {
     addBatchFilter,
     removeBatchFilter,
   } = props;
-  const [currentClass, setCurrentClass] = useState({});
-  const [currentSubject, setCurrentSubject] = useState({});
+  // const [currentClass, setCurrentClass] = useState({});
+  // const [currentSubject, setCurrentSubject] = useState({});
   const [currentBatch, setCurrentBatch] = useState({});
   const [currentType, setCurrentType] = useState({});
   const [currentStatus, setCurrentStatus] = useState({});
@@ -44,16 +44,6 @@ const FilterAccordion = (props) => {
 
   const select = (type, e) => {
     switch (type) {
-      case 'class':
-        setCurrentClass(e);
-        currentTab === 'Users' ||
-        currentTab === 'savedtests' ||
-        currentTab === 'senttests' ||
-        currentTab === 'Assignments' ||
-        currentTab === 'Students'
-          ? addFilter(type, e.class_id)
-          : addBatchFilter(type, e.class_id);
-        break;
       case 'batch':
         setCurrentBatch(e);
         addFilter(type, e.client_batch_id);
@@ -66,12 +56,6 @@ const FilterAccordion = (props) => {
         setCurrentStatus(e);
         addFilter(type, e.value);
         break;
-      case 'subject':
-        setCurrentSubject(e);
-        (currentTab !== 'savedtests' || currentTab !== 'senttests') &&
-          addBatchFilter(type, e.subject_id);
-        break;
-
       case 'assignment':
         setCurrentAssignment(e);
         addFilter(type, e);
@@ -84,9 +68,6 @@ const FilterAccordion = (props) => {
 
   const remove = (type) => {
     switch (type) {
-      case 'class':
-        setCurrentClass({});
-        break;
       case 'batch':
         setCurrentBatch({});
         break;
@@ -95,9 +76,6 @@ const FilterAccordion = (props) => {
         break;
       case 'status':
         setCurrentStatus({});
-        break;
-      case 'subject':
-        setCurrentSubject({});
         break;
       case 'assignment':
         setCurrentAssignment({});
@@ -124,7 +102,7 @@ const FilterAccordion = (props) => {
           <>
             {Object.keys(filters).length > 0 && (
               <Card.Body className='p-0'>
-                <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
+                {/* <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
                   Class
                 </small>
                 <Row className='mx-3'>
@@ -179,7 +157,7 @@ const FilterAccordion = (props) => {
                     )}
                   </section>
                 </Row>
-                <hr />
+                <hr /> */}
                 {currentTab === 'Users' ? (
                   <>
                     <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
@@ -455,7 +433,8 @@ const FilterAccordion = (props) => {
                   </>
                 ) : (
                   <>
-                    <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
+                    {/* Subject filter removed */}
+                    {/* <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
                       Subject
                     </small>
 
@@ -512,7 +491,7 @@ const FilterAccordion = (props) => {
                         )}
                       </section>
                     </Row>
-                    <hr />
+                    <hr /> */}
                   </>
                 )}
 

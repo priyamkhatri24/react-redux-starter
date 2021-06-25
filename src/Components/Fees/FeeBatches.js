@@ -17,13 +17,13 @@ const FeeBatches = (props) => {
   const { clientId, clientUserId, history } = props;
 
   const [filters, setFilters] = useState([]);
-  const [currentClass, setCurrentClass] = useState({});
-  const [currentSubject, setCurrentSubject] = useState({});
+  // const [currentClass, setCurrentClass] = useState({});
+  // const [currentSubject, setCurrentSubject] = useState({});
   const [batches, setBatches] = useState([]);
 
   useEffect(() => {
     get({ client_id: clientId }, '/getFilters').then((res) => {
-      console.log(res);
+      console.log(res, 'filters array');
       const result = apiValidation(res);
       setFilters(result);
     });
@@ -31,8 +31,8 @@ const FeeBatches = (props) => {
 
   useEffect(() => {
     const payload = {
-      class_id: Object.keys(currentClass).length === 0 ? null : currentClass.class_id,
-      subject_id: Object.keys(currentSubject).length === 0 ? null : currentSubject.subject_id,
+      // class_id: Object.keys(currentClass).length === 0 ? null : currentClass.class_id,
+      // subject_id: Object.keys(currentSubject).length === 0 ? null : currentSubject.subject_id,
       client_user_id: clientUserId,
     };
 
@@ -41,37 +41,37 @@ const FeeBatches = (props) => {
       const result = apiValidation(res);
       setBatches(result);
     });
-  }, [clientUserId, currentSubject, currentClass]);
+  }, [clientUserId]);
 
-  const select = (type, e) => {
-    switch (type) {
-      case 'class':
-        setCurrentClass(e);
-        break;
-      case 'subject':
-        setCurrentSubject(e);
-        break;
-      default:
-        console.log('hello');
-    }
-  };
+  // const select = (type, e) => {
+  //   switch (type) {
+  //     case 'class':
+  //       setCurrentClass(e);
+  //       break;
+  //     case 'subject':
+  //       setCurrentSubject(e);
+  //       break;
+  //     default:
+  //       console.log('hello');
+  //   }
+  // };
 
-  const remove = (type) => {
-    switch (type) {
-      case 'class':
-        setCurrentClass({});
-        break;
-      case 'subject':
-        setCurrentSubject({});
-        break;
-      default:
-        console.log('hello');
-    }
-  };
+  // const remove = (type) => {
+  //   switch (type) {
+  //     case 'class':
+  //       setCurrentClass({});
+  //       break;
+  //     case 'subject':
+  //       setCurrentSubject({});
+  //       break;
+  //     default:
+  //       console.log('hello');
+  //   }
+  // };
 
   return (
     <div>
-      {Object.keys(filters).length > 0 && (
+      {/* {Object.keys(filters).length > 0 && (
         <Card.Body className='p-0 Fees__batchesTeacher' style={{ marginTop: '0.5rem' }}>
           <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
             Class
@@ -198,9 +198,9 @@ const FeeBatches = (props) => {
             </Row>
           </>
         </Card.Body>
-      )}
+      )} */}
 
-      <div>
+      <div className='mt-4'>
         {batches.map((elem) => {
           return (
             <Card

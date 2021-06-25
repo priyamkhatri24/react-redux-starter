@@ -99,12 +99,21 @@ const StudentAnalysis = (props) => {
             Students Appeared
           </Col>
           <Col xs={3} className='text-center my-auto Analysis__noOfStudents'>
-            {analysisAssignmentObject.total_submission}
+            {analysisTestObject.analysis.total_submission}
           </Col>
         </Row>
         <AnalysisCards data={scrollableData} />
 
         <table className='table'>
+          <thead>
+            <tr>
+              <th scope='col'>Subject Analysis</th>
+              <th scope='col'>
+                {analysisTestObject.analysis.total_marks} /{' '}
+                {analysisTestObject.analysis.maximum_marks}
+              </th>
+            </tr>
+          </thead>
           <thead>
             <tr>
               <th scope='col' className='Analysis__tableHeading'>
