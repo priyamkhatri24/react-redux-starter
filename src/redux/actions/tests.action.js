@@ -20,6 +20,10 @@ function setTestResultArrayToStore(payload) {
   return { type: testConstants.RESULTARRAY, payload };
 }
 
+function setTestLanguageToStore(payload) {
+  return { type: testConstants.TESTLANGUAGE, payload };
+}
+
 function clearTests() {
   return { type: testConstants.CLEARTESTS };
 }
@@ -31,4 +35,5 @@ export const testsActions = {
   setTestEndTimeToStore,
   setTestResultArrayToStore,
   clearTests,
+  setTestLanguageToStore,
 };

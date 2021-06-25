@@ -10,7 +10,7 @@
   &__jumbo {
     width: 50%;
     background: transparent;
-    max-width: 300px;
+    max-width: 200px;
     max-height: 25vh;
     width: auto;
     // @include media-breakpoint-down(md) {
@@ -27,10 +27,6 @@
 
     @include media-breakpoint-down(md) {
       height: 40px;
-    }
-
-    @include media-breakpoint-up(md) {
-      height: 80px;
     }
     text-align: center;
   }

@@ -6,12 +6,21 @@
     line-height: 29px;
     font-family: $extraBold;
     color: $white;
+
+    @include media-breakpoint-up(sm) {
+      font-size: $spacer * 2.25;
+      margin-bottom: 0.875rem;
+    }
   }
 
   &__tagline {
     color: $white;
     font-family: $regular;
     line-height: 19px;
+
+    @include media-breakpoint-up(sm) {
+      font-size: $spacer * 1.25;
+    }
   }
 
   &__aboutus {

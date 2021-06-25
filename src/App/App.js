@@ -17,7 +17,7 @@ function MainApp(props) {
   const { color, currentbranding, isLoading } = props;
   const [isTokenFound, setTokenFound] = useState(false);
 
-  getToken(setTokenFound);
+  // getToken(setTokenFound);
 
   useEffect(() => {
     if (Object.keys(color.color) !== 0) {

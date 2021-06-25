@@ -86,11 +86,13 @@ const Dashboard = (props) => {
     comeBackFromTests,
     setFolderIdArrayToStore,
     setAnalysisStudentObjectToStore,
+    setTestLanguageToStore,
     redirectPath,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
   const [attendance, setAttendance] = useState([]);
+  const [role, setRole] = useState(1);
   const [allCourses, setAllCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
   const [admissions, setAdmissions] = useState({});
@@ -100,6 +102,7 @@ const Dashboard = (props) => {
   const [optionsModal, setOptionsModal] = useState(false);
   const openOptionsModal = () => setOptionsModal(true);
   const closeOptionsModal = () => setOptionsModal(false);
+  const [features, setFeatures] = useState([]);
 
   const partsOfDay = () => {
     const hours = new Date().getHours();
@@ -119,6 +122,18 @@ const Dashboard = (props) => {
       history.push(redirectPath);
     }
   }, [redirectPath, history]);
+
+  useEffect(() => {
+    const roleId = roleArray.includes(4)
+      ? 4
+      : roleArray.includes(3)
+      ? 3
+      : roleArray.includes(2)
+      ? 2
+      : 1;
+
+    setRole(roleId);
+  }, [roleArray]);
 
   useEffect(() => {
     const payload = {
@@ -146,7 +161,35 @@ const Dashboard = (props) => {
       setMyCourses(result.subscribed_courses);
       console.log(result);
     });
-  }, [clientId, clientUserId]);
+  }, [clientId, clientUserId, setDashboardDataToStore]);
+
+  useEffect(() => {
+    const roleId = roleArray.includes(4)
+      ? 4
+      : roleArray.includes(3)
+      ? 3
+      : roleArray.includes(2)
+      ? 2
+      : 1;
+    get({ client_id: clientId, role_id: roleId }, '/getLoginPageInformation').then((res) => {
+      console.log(res);
+      const result = apiValidation(res);
+      const sorterArr = [];
+
+      for (const prop in result.feature) {
+        if (Object.prototype.hasOwnProperty.call(result.feature, prop))
+          sorterArr.push([result.feature[prop], result.feature[prop].order]);
+      }
+      const finalArr = sorterArr
+        .sort((a, b) => a[1] - b[1])
+        .reduce((acc, curr) => {
+          acc.push(curr[0]);
+          return acc;
+        }, []);
+      console.log(finalArr, 'hello');
+      setFeatures(finalArr);
+    });
+  }, [clientId, roleArray]);
 
   const shareThis = () => {
     if (navigator.share) {
@@ -213,15 +256,23 @@ const Dashboard = (props) => {
     push({ pathname: '/homework/savedsent', state: { testsType: type } });
   };
 
-  const startHomework = (responseArray, testId) => {
+  const startHomework = (responseArray, testId, languageType = 'english') => {
     const { push } = history;
     setTestResultArrayToStore(responseArray);
     setTestIdToStore(testId);
+    setTestLanguageToStore(languageType);
     setTestTypeToStore('homework');
     push('/questiontaker');
   };
 
-  const startLiveTest = (responseArray, startTime = 0, endTime = 0, testType, testId) => {
+  const startLiveTest = (
+    responseArray,
+    startTime = 0,
+    endTime = 0,
+    testType,
+    testId,
+    languageType = 'english',
+  ) => {
     const { push } = history;
     setTestResultArrayToStore(responseArray);
     setTestEndTimeToStore(endTime);
@@ -229,6 +280,7 @@ const Dashboard = (props) => {
     setTestStartTimeToStore(Math.round(new Date().getTime() / 1000));
     setTestTypeToStore(testType);
     setTestIdToStore(testId);
+    setTestLanguageToStore(languageType);
     push('/questiontaker');
   };
 
@@ -297,6 +349,516 @@ const Dashboard = (props) => {
 
   const goToCRM = () => history.push('/crm');
 
+  const renderComponents = (param) => {
+    switch (param) {
+      case 'Attendance':
+        return (
+          <div
+            className='Dashboard__attendance p-4'
+            onClick={() => gotToAttendance()}
+            onKeyDown={() => gotToAttendance()}
+            tabIndex='-1'
+            role='button'
+          >
+            <div className='Dashboard__attendanceCard mx-auto pt-4'>
+              <img src={hands} alt='hands' className='mx-auto d-block' />
+              <Row className='m-3'>
+                <span className='Dashboard__todaysHitsText my-auto'>Attendance</span>
+                <span className='ml-auto'>
+                  <ChevronRightIcon />
+                </span>
+              </Row>
+
+              <p className='Dashboard__attendanceSubHeading mx-3'>
+                Record attendance of the students and notify parents via SMS daily.
+              </p>
+
+              <hr />
+              {attendance.length > 0 && (
+                <div>
+                  <p className='Dashboard__attendanceRecents ml-1'>Recent Attendance</p>
+                  <Row className='mx-2'>
+                    {attendance.map((elem) => {
+                      return (
+                        <div className='d-flex flex-column mx-1' key={elem.batch_id}>
+                          <img
+                            src={userAvatar}
+                            alt='batch'
+                            height='35px'
+                            width='35px'
+                            className='Dashboard__noticeImage d-block mx-auto'
+                          />
+                          <p className='Dashboard__attendanceRecents text-center mt-1'>
+                            {elem.batch_name}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </Row>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      case 'Notice Board':
+        return (
+          <div
+            className='Dashboard__noticeBoard mx-auto p-lg-3 p-2 mb-3'
+            onClick={() => goToNoticeBoard()}
+            role='button'
+            tabIndex='-1'
+            onKeyDown={() => goToNoticeBoard()}
+          >
+            <span className='Dashboard__verticalDots'>
+              <MoreVertIcon />
+            </span>
+            <Row className='mt-2'>
+              <Col xs={8} className='pl-4'>
+                <p className='Dashboard__todaysHitsText'>Notice Board</p>
+                {(roleArray.includes(3) || roleArray.includes(4)) && (
+                  <Button variant='noticeBoardPost'>
+                    <BorderColorIcon />
+                    <span className='m-2'>Write a post</span>
+                  </Button>
+                )}
+              </Col>
+              <Col xs={4} className='noticeboard_img'>
+                <img src={dashboardAssignmentImage} alt='notice' height='80' width='80' />
+              </Col>
+            </Row>
+
+            <Row className='mt-5 mx-2 mb-3'>
+              <span className='Dashboard__noticeBoardText my-auto'>Latest Notices</span>
+              <span className='ml-auto' style={{ color: 'rgba(117, 117, 117, 1)' }}>
+                <ChevronRightIcon />
+              </span>
+            </Row>
+
+            {notices.map((elem) => (
+              <div key={`elem${elem.notice_id}`} className='Dashboard__notice'>
+                <Row>
+                  <Col xs={3} className='p-lg-4 py-3 text-center pr-0'>
+                    <img
+                      src={elem.profile_image ? elem.profile_image : userAvatar}
+                      alt='profile'
+                      className='Dashboard__noticeImage d-block mx-auto'
+                    />
+                  </Col>
+                  <Col xs={9} className='pt-lg-4 py-3 pl-0 my-auto'>
+                    <p className='Dashboard__scrollableCardHeading m-0'>
+                      {`${elem.first_name} ${elem.last_name}`}
+                    </p>
+                    <p className='Dashboard__noticeSubHeading mb-0'>
+                      {format(fromUnixTime(elem.time_of_notice), 'hh:m bbbb, do MMM yyy')}
+                    </p>
+                  </Col>
+                </Row>
+                <p className='p-2 Dashboard__noticeText'>{elem.notice_text}</p>
+              </div>
+            ))}
+          </div>
+        );
+      case 'Homework creator':
+        return (
+          <div className='Dashboard__innovation pt-4 px-3 pb-3'>
+            <h4 className='Dashboard_homeworkCreator'>Witness </h4>
+            <h4 className='Dashboard_homeworkCreator'>
+              The <span>innovation</span>
+            </h4>
+            <p className='mr-5 Dashboard_homeworkCreator'>
+              Create tests &amp; home-works in 4 simple steps
+            </p>
+            <Button
+              className='Dashboard_homeworkCreator'
+              variant='dashboardBlueOnWhite'
+              onClick={() => goToHomeWorkCreator()}
+            >
+              Let&apos;s go
+              <span>
+                <ChevronRightIcon />
+              </span>
+            </Button>
+            <div className='Dashboard__assignment my-4 Dashboard_homeworkCreator'>
+              <section className='Dashboard__scrollableCard'>
+                <div>
+                  <Row>
+                    <Col xs={8} className='pr-0' onClick={() => goToSentTests('sent')}>
+                      <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
+                        Sent assignments
+                      </p>
+                      <p className='Dashboard__scrollableCardText pl-3 mt-1'>
+                        All the tests &amp; homeworks sent to students are here...
+                      </p>
+                    </Col>
+                    <Col xs={4} className='pt-3'>
+                      <img
+                        src={dashboardAssignmentImage}
+                        alt='assignment'
+                        height='40px'
+                        width='40px'
+                      />
+                    </Col>
+                  </Row>
+                </div>
+                <div>
+                  <Row>
+                    <Col xs={8} className='pr-0' onClick={() => goToSentTests('saved')}>
+                      <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
+                        Saved assignments
+                      </p>
+                      <p className='Dashboard__scrollableCardText pl-3 mt-1'>
+                        See all your saved tests &amp; homeworks here...
+                      </p>
+                    </Col>
+                    <Col xs={4} className='pt-3'>
+                      <img
+                        src={dashboardAssignmentImage}
+                        alt='assignment'
+                        height='40px'
+                        width='40px'
+                      />
+                    </Col>
+                  </Row>
+                </div>
+              </section>
+            </div>
+          </div>
+        );
+      case 'Analysis':
+        return (
+          <DashboardCards
+            image={analysisHands}
+            heading='Analysis'
+            subHeading='See detailed reports of every student and assignments.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(235,245,246)'
+            backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
+            buttonClick={role === 1 || role === 2 ? goToStudentAnalysis : goToTeacherAnalysis}
+          />
+        );
+      case 'Fees':
+        return (
+          <DashboardCards
+            image={analysis}
+            heading='Fees'
+            subHeading='See fees history and amount to be paid for coming months.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(238,232,241)'
+            backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
+            buttonClick={role === 1 || role === 2 ? goToFees : goToTeacherFees}
+          />
+        );
+      case 'Posters':
+        return (
+          <div className='m-2 mt-4'>
+            <AspectCards
+              data={data.posters}
+              clickCard={() => {}}
+              clickAddCard={() => {}}
+              section='notice'
+              noAddCard
+              bigAspectCard
+            />
+          </div>
+        );
+      case 'Star Performers':
+        return (
+          <>
+            <h6
+              style={{
+                fontFamily: 'Montserrat-Medium',
+                lineHeight: '20px',
+                textAlign: 'left',
+                fontSize: '14px',
+              }}
+              className='mx-3 mt-4 mb-0'
+            >
+              Our Star Performers
+            </h6>
+            <AspectCards
+              data={data.star_performers}
+              clickCard={() => {}}
+              clickAddCard={() => {}}
+              section='notice'
+              noAddCard
+            />
+          </>
+        );
+      case 'Testimonials':
+        return (
+          <>
+            <h6
+              style={{
+                fontFamily: 'Montserrat-Medium',
+                lineHeight: '20px',
+                textAlign: 'left',
+                fontSize: '14px',
+              }}
+              className='mx-3 mt-4 mb-0'
+            >
+              Testimonials
+            </h6>
+            <AspectCards
+              data={data.testimonials}
+              clickCard={() => {}}
+              clickAddCard={() => {}}
+              section='notice'
+              noAddCard
+            />
+          </>
+        );
+      case 'About us':
+        return (
+          <div className='text-left m-3 mt-5'>
+            <h5 className='Dummy__aboutus'>About us</h5>
+            <p className='Dummy__aboutData'>{data.about_us}</p>
+
+            <h6 className='Dummy__connect'>Connect with us</h6>
+
+            <section className='Scrollable__card ' style={{ minHeight: '40px' }}>
+              {[
+                {
+                  key: 1,
+                  name: 'insta',
+                  link: data.instagram_link,
+                  image: insta,
+                },
+
+                { key: 2, name: 'fb', link: data.facebook_link, image: fb },
+                {
+                  key: 3,
+                  name: 'watsapp',
+                  link: data.whatsapp_link,
+                  image: whatsapp,
+                },
+                {
+                  key: 4,
+                  name: 'you',
+                  link: data.youtube_link,
+                  image: youtube,
+                },
+                {
+                  key: 5,
+                  name: 'tele',
+                  link: data.telegram_link,
+                  image: telegram,
+                },
+                {
+                  key: 6,
+                  name: 'linked',
+                  link: data.linkedin_link,
+                  image: linkedin,
+                },
+              ]
+                .filter((e) => e.link)
+                .map((elem) => {
+                  return (
+                    <a href={elem.link} className='text-center m-3' key={elem.key}>
+                      <img src={elem.image} alt={elem.link} className='Dummy__socialLinks' />
+                    </a>
+                  );
+                })}
+              <a
+                href={data.other_link}
+                className='text-center m-3'
+                style={{
+                  backgroundColor: 'rgba(112, 112, 112, 1)',
+                  color: '#fff',
+                  height: '36px',
+                  width: '36px',
+                  borderRadius: '36px',
+                  padding: '4px',
+                }}
+                key={7}
+              >
+                <LinkIcon />
+              </a>
+            </section>
+          </div>
+        );
+      case 'Courses':
+        return role === 1 || role === 2 ? (
+          <CoursesCards
+            allCourses={allCourses}
+            myCourses={myCourses}
+            goToCourse={goToCourses}
+            buyCourseId={goToBuyCourse}
+            myCourseId={goToMyCourse}
+          />
+        ) : (
+          <DashboardCards
+            image={analysis}
+            heading='Courses'
+            subHeading='Increase your profit by building and selling your courses here.'
+            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
+            backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
+            backGround='rgb(236,255,252)'
+            buttonClick={goToCoursesForTeacher}
+          />
+        );
+      case 'Live Classes':
+        return (
+          <DashboardCards
+            image={camera}
+            heading='Live Classes'
+            subHeading={
+              roleArray.includes(3) || roleArray.includes(4)
+                ? 'Conduct all your live classes here effectively'
+                : 'Attend all your live classes from here.'
+            }
+            boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
+            backGround='rgb(247,236,255)'
+            backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
+            buttonText={roleArray.includes(3) || roleArray.includes(4) ? 'Go live now' : ''}
+            buttonClick={goToLiveClasses}
+          />
+        );
+      case 'Offline assignment':
+        return (
+          <div>
+            <Tests startHomework={startHomework} startLive={startLiveTest} />
+          </div>
+        );
+      case 'Study bin':
+        return (
+          <DashboardCards
+            image={student}
+            coloredHeading='Study Bin'
+            color='rgba(0, 102, 255, 0.87)'
+            subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            buttonClick={goToStudyBin}
+          />
+        );
+      case 'Admission  form':
+        return (
+          <Card
+            className='DashboardCards'
+            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+          >
+            <Row className='mx-0 justify-content-center mt-2'>
+              <Col xs={8} className='text-left p-3'>
+                <h6 className='Dummy__joinUs'>Join us NOW!</h6>
+                <p className='mb-0 Dummy__joinDetails'>Your are not in any batch yet</p>
+                <p className='Dummy__joinSmall'>Fill admission form to join us.</p>
+                <Button
+                  variant='customPrimarySmol'
+                  className='mb-3'
+                  onClick={() => history.push('/admissionform')}
+                >
+                  Fill admission form
+                </Button>
+              </Col>
+              <Col xs={4} className='p-3 mt-3' style={{ textAlign: 'right' }}>
+                <img src={form} alt='form' className='img-fluid' />
+              </Col>
+            </Row>
+          </Card>
+        );
+      case 'Share':
+        return (
+          <Card
+            className='DashboardCards mb-2 mt-4'
+            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+          >
+            <Row className='mx-0 justify-content-center mt-2'>
+              <Col xs={7} className='text-left p-3'>
+                <h6 className='Dummy__connect'>Share app with friends</h6>
+                <p className='mb-0 Dummy__joinDetails'>Enjoying the application?</p>
+                <p className='Dummy__joinSmall'>Share with your friends</p>
+                <Button
+                  variant='customPrimarySmol'
+                  className='mb-3'
+                  style={{ padding: '10px 20px' }}
+                  onClick={() => shareThis()}
+                >
+                  Share
+                </Button>
+              </Col>
+              <Col xs={5} className='p-3 mt-3' style={{ textAlign: 'right' }}>
+                <img src={share} alt='form' className='img-fluid' />
+              </Col>
+            </Row>
+          </Card>
+        );
+      case 'Contact us':
+        return (
+          <Card
+            className='DashboardCards mt-3 mb-2'
+            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+          >
+            <Row className='mx-3 justify-content-left mt-2'>
+              <h6 className='Dummy__joinUs'>Contact us</h6>
+            </Row>
+            {data.address.location && (
+              <Row className='mx-0 justify-content-center mt-2'>
+                <Col xs={2} sm={1} className='pr-0'>
+                  <LocationOnIcon />
+                </Col>
+                <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
+                  <p className='mb-0 Dummy__joinDetails'>{data.address.location}</p>
+                  <p className='Dummy__joinSmall'>Address</p>
+                </Col>
+              </Row>
+            )}
+
+            {data.address.client_contact && (
+              <Row className='mx-0 justify-content-center mt-2'>
+                <Col xs={2} sm={1} className='pr-0'>
+                  <PhoneIcon />
+                </Col>
+                <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
+                  <p className='mb-0 Dummy__joinDetails'>{data.address.client_contact}</p>
+                  <p className='Dummy__joinSmall'>Phone</p>
+                </Col>
+              </Row>
+            )}
+            {data.address.client_email && (
+              <Row className='mx-0 justify-content-center mt-2'>
+                <Col xs={2} sm={1} className='pr-0'>
+                  <AlternateEmailIcon />
+                </Col>
+                <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
+                  <p className='mb-0 Dummy__joinDetails'>{data.address.client_email}</p>
+                  <p className='Dummy__joinSmall'>Email</p>
+                </Col>
+              </Row>
+            )}
+          </Card>
+        );
+      case 'CRM':
+        return (
+          <DashboardCards
+            image={analysis}
+            heading='CRM'
+            subHeading='Manage All your customer Relations Management Enquiries here.'
+            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
+            backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
+            backGround='rgb(236,255,252)'
+            buttonClick={goToCRM}
+          />
+        );
+      case 'Admission':
+        return (
+          Object.keys(admissions).length > 0 && (
+            <>
+              {(
+                <DashBoardAdmissions
+                  admissions={admissions}
+                  goToAddBatch={goToAddBatch}
+                  goToAdmissions={goToAdmissions}
+                  openOptionsModal={openOptionsModal}
+                  heroImage={branding.branding.client_logo}
+                />
+              ) || <Skeleton count={20} />}
+            </>
+          )
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <>
       <div className='Dashboard__headerCard pb-3 mb-4'>
@@ -308,16 +870,22 @@ const Dashboard = (props) => {
           <p className='Dummy__tagline mb-4 text-center mb-5'>{data.client_tag_line}</p>
         )}
         <Row className='mx-auto px-2 mt-4'>
-          <Col xs={4} onClick={() => goToProfile()}>
+          <Col
+            xs={4}
+            sm={roleArray.includes(1) || roleArray.includes(2) ? 1 : 2}
+            onClick={() => goToProfile()}
+          >
             <img
               src={profileImage || userAvatar}
               className='Dashboard__profileImage float-right img-responsive'
               alt='profile'
             />
           </Col>
-          <Col xs={8}>
-            <h4 className='Dashboard__headingText'>{time}</h4>
-            <h4 className='Dashboard__headingText'>{firstName}</h4>
+          <Col xs={8} sm={roleArray.includes(1) || roleArray.includes(2) ? 11 : 10}>
+            <h4 className='Dashboard__headingText'>
+              {time} {firstName}
+            </h4>
+            {/* <h4 className='Dashboard__headingText'></h4> */}
           </Col>
         </Row>
 
@@ -330,6 +898,7 @@ const Dashboard = (props) => {
           </Row>
         </div> */}
       </div>
+
       {/* *****************************Teacher View ********************************* */}
       {(roleArray.includes(3) || roleArray.includes(4)) && (
         <>
@@ -348,7 +917,7 @@ const Dashboard = (props) => {
             buttonClick={goToLiveClasses}
           />
 
-          {/* <DashboardCards
+          <DashboardCards
             image={analysis}
             heading='CRM'
             subHeading='Manage All your customer Relations Management Enquiries here.'
@@ -356,7 +925,7 @@ const Dashboard = (props) => {
             backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
             backGround='rgb(236,255,252)'
             buttonClick={goToCRM}
-          /> */}
+          />
 
           {roleArray.includes(4) && Object.keys(admissions).length > 0 && (
             <>
@@ -375,18 +944,24 @@ const Dashboard = (props) => {
           {roleArray.includes(4) && Object.keys(admissions).length === 0 && <Skeleton count={20} />}
 
           <div className='Dashboard__innovation pt-4 px-3 pb-3'>
-            <h4>Witness </h4>
-            <h4>
+            <h4 className='Dashboard_homeworkCreator'>Witness </h4>
+            <h4 className='Dashboard_homeworkCreator'>
               The <span>innovation</span>
             </h4>
-            <p className='mr-5'>Create tests &amp; home-works in 4 simple steps</p>
-            <Button variant='dashboardBlueOnWhite' onClick={() => goToHomeWorkCreator()}>
+            <p className='mr-5 Dashboard_homeworkCreator'>
+              Create tests &amp; home-works in 4 simple steps
+            </p>
+            <Button
+              className='Dashboard_homeworkCreator'
+              variant='dashboardBlueOnWhite'
+              onClick={() => goToHomeWorkCreator()}
+            >
               Let&apos;s go
               <span>
                 <ChevronRightIcon />
               </span>
             </Button>
-            <div className='Dashboard__assignment my-4'>
+            <div className='Dashboard__assignment my-4 Dashboard_homeworkCreator'>
               <section className='Dashboard__scrollableCard'>
                 <div>
                   <Row>
@@ -502,26 +1077,29 @@ const Dashboard = (props) => {
               </p>
 
               <hr />
-
-              <p className='Dashboard__attendanceRecents ml-1'>Recent Attendance</p>
-              <Row className='mx-2'>
-                {attendance.map((elem) => {
-                  return (
-                    <div className='d-flex flex-column mx-1' key={elem.batch_id}>
-                      <img
-                        src={userAvatar}
-                        alt='batch'
-                        height='35px'
-                        width='35px'
-                        className='Dashboard__noticeImage d-block mx-auto'
-                      />
-                      <p className='Dashboard__attendanceRecents text-center mt-1'>
-                        {elem.batch_name}
-                      </p>
-                    </div>
-                  );
-                })}
-              </Row>
+              {attendance.length > 0 && (
+                <div>
+                  <p className='Dashboard__attendanceRecents ml-1'>Recent Attendance</p>
+                  <Row className='mx-2'>
+                    {attendance.map((elem) => {
+                      return (
+                        <div className='d-flex flex-column mx-1' key={elem.batch_id}>
+                          <img
+                            src={userAvatar}
+                            alt='batch'
+                            height='35px'
+                            width='35px'
+                            className='Dashboard__noticeImage d-block mx-auto'
+                          />
+                          <p className='Dashboard__attendanceRecents text-center mt-1'>
+                            {elem.batch_name}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </Row>
+                </div>
+              )}
             </div>
           </div>
 
@@ -581,9 +1159,12 @@ const Dashboard = (props) => {
             ))}
           </div>
 
-          <Card className='m-2 mt-4' style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}>
+          <Card
+            className='DashboardCards mb-2 mt-4'
+            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+          >
             <Row className='mx-0 justify-content-center mt-2'>
-              <Col xs={7} className='text-left p-2'>
+              <Col xs={7} className='text-left p-3'>
                 <h6 className='Dummy__connect'>Share app with friends</h6>
                 <p className='mb-0 Dummy__joinDetails'>Enjoying the application?</p>
                 <p className='Dummy__joinSmall'>Share with your friends</p>
@@ -596,7 +1177,7 @@ const Dashboard = (props) => {
                   Share
                 </Button>
               </Col>
-              <Col xs={5} className='p-2 mt-3 text-center'>
+              <Col xs={5} className='p-3 mt-3' style={{ textAlign: 'right' }}>
                 <img src={share} alt='form' className='img-fluid' />
               </Col>
             </Row>
@@ -644,15 +1225,17 @@ const Dashboard = (props) => {
       {(roleArray.includes(1) || roleArray.includes(2)) && (
         <>
           {hasLoaded && (
-            <div className='m-2 mt-4'>
-              <AspectCards
-                data={data.posters}
-                clickCard={() => {}}
-                clickAddCard={() => {}}
-                section='notice'
-                noAddCard
-                bigAspectCard
-              />
+            <>
+              <div className='m-2 mt-4'>
+                <AspectCards
+                  data={data.posters}
+                  clickCard={() => {}}
+                  clickAddCard={() => {}}
+                  section='notice'
+                  noAddCard
+                  bigAspectCard
+                />
+              </div>
 
               <>
                 <h6
@@ -695,7 +1278,7 @@ const Dashboard = (props) => {
                   noAddCard
                 />
               </>
-            </div>
+            </>
           )}
           {hasLoaded && (
             <div className='text-left m-3 mt-5'>
@@ -875,29 +1458,35 @@ const Dashboard = (props) => {
             buttonClick={goToStudyBin}
           />
 
-          <Card className='m-3' style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}>
+          <Card
+            className='DashboardCards'
+            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+          >
             <Row className='mx-0 justify-content-center mt-2'>
-              <Col xs={8} className='text-left p-2'>
+              <Col xs={8} className='text-left p-3'>
                 <h6 className='Dummy__joinUs'>Join us NOW!</h6>
                 <p className='mb-0 Dummy__joinDetails'>Your are not in any batch yet</p>
                 <p className='Dummy__joinSmall'>Fill admission form to join us.</p>
+                <Button
+                  variant='customPrimarySmol'
+                  className='mb-3'
+                  onClick={() => history.push('/admissionform')}
+                >
+                  Fill admission form
+                </Button>
               </Col>
-              <Col xs={4} className='p-2'>
+              <Col xs={4} className='p-3 mt-3' style={{ textAlign: 'right' }}>
                 <img src={form} alt='form' className='img-fluid' />
               </Col>
-              <Button
-                variant='customPrimarySmol'
-                className='mb-3'
-                onClick={() => history.push('/admissionform')}
-              >
-                Fill admission form
-              </Button>
             </Row>
           </Card>
 
-          <Card className='m-3 mt-4' style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}>
+          <Card
+            className='DashboardCards mt-3'
+            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+          >
             <Row className='mx-0 justify-content-center mt-2'>
-              <Col xs={7} className='text-left p-2'>
+              <Col xs={7} className='text-left p-3'>
                 <h6 className='Dummy__connect'>Share app with friends</h6>
                 <p className='mb-0 Dummy__joinDetails'>Enjoying the application?</p>
                 <p className='Dummy__joinSmall'>Share with your friends</p>
@@ -910,23 +1499,26 @@ const Dashboard = (props) => {
                   Share
                 </Button>
               </Col>
-              <Col xs={5} className='p-2 mt-3 text-center'>
+              <Col xs={5} className='p-3 mt-3' style={{ textAlign: 'right' }}>
                 <img src={share} alt='form' className='img-fluid' />
               </Col>
             </Row>
           </Card>
 
           {hasLoaded && Object.keys(data.address).length > 0 && (
-            <Card className='m-3 mt-4' style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}>
+            <Card
+              className='DashboardCards mt-3 mb-2'
+              style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+            >
               <Row className='mx-3 justify-content-left mt-2'>
                 <h6 className='Dummy__joinUs'>Contact us</h6>
               </Row>
               {data.address.location && (
                 <Row className='mx-0 justify-content-center mt-2'>
-                  <Col xs={2} className='pr-0'>
+                  <Col xs={2} sm={1} className='pr-0'>
                     <LocationOnIcon />
                   </Col>
-                  <Col xs={10} className='text-left p-0 my-auto pr-4'>
+                  <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
                     <p className='mb-0 Dummy__joinDetails'>{data.address.location}</p>
                     <p className='Dummy__joinSmall'>Address</p>
                   </Col>
@@ -935,10 +1527,10 @@ const Dashboard = (props) => {
 
               {data.address.client_contact && (
                 <Row className='mx-0 justify-content-center mt-2'>
-                  <Col xs={2} className='pr-0'>
+                  <Col xs={2} sm={1} className='pr-0'>
                     <PhoneIcon />
                   </Col>
-                  <Col xs={10} className='text-left p-0 my-auto pr-4'>
+                  <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
                     <p className='mb-0 Dummy__joinDetails'>{data.address.client_contact}</p>
                     <p className='Dummy__joinSmall'>Phone</p>
                   </Col>
@@ -946,10 +1538,10 @@ const Dashboard = (props) => {
               )}
               {data.address.client_email && (
                 <Row className='mx-0 justify-content-center mt-2'>
-                  <Col xs={2} className='pr-0'>
+                  <Col xs={2} sm={1} className='pr-0'>
                     <AlternateEmailIcon />
                   </Col>
-                  <Col xs={10} className='text-left p-0 my-auto pr-4'>
+                  <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
                     <p className='mb-0 Dummy__joinDetails'>{data.address.client_email}</p>
                     <p className='Dummy__joinSmall'>Email</p>
                   </Col>
@@ -1047,6 +1639,9 @@ const mapDispatchToProps = (dispatch) => ({
   setTestResultArrayToStore: (payload) => {
     dispatch(testsActions.setTestResultArrayToStore(payload));
   },
+  setTestLanguageToStore: (payload) => {
+    dispatch(testsActions.setTestLanguageToStore(payload));
+  },
   setCourseIdToStore: (payload) => {
     dispatch(courseActions.setCourseIdToStore(payload));
   },
@@ -1077,6 +1672,7 @@ Dashboard.propTypes = {
   setTestStartTimeToStore: PropTypes.func.isRequired,
   setTestIdToStore: PropTypes.func.isRequired,
   setTestTypeToStore: PropTypes.func.isRequired,
+  setTestLanguageToStore: PropTypes.func.isRequired,
   setCourseIdToStore: PropTypes.func.isRequired,
   setDashboardDataToStore: PropTypes.func.isRequired,
   setAdmissionRoleArrayToStore: PropTypes.func.isRequired,

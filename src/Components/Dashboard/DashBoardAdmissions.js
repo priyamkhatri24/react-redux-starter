@@ -57,7 +57,12 @@ const DashBoardAdmissions = (props) => {
           onKeyDown={() => goToAdmissions()}
           className='admission_heroImage'
         >
-          <img src={heroImage} className='img-fluid' alt='yourcoaching' />
+          <img
+            src={heroImage}
+            className='img-fluid'
+            style={{ maxWidth: '200px' }}
+            alt='yourcoaching'
+          />
         </div>
         <Row className='justify-content-center m-2 mb-4 p-2'>
           <Col className='text-center mt-3 p-0'>
