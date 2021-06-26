@@ -248,7 +248,7 @@ const StudentList = (props) => {
             );
           })}
         </Row>
-        <Row className='mx-3 mt-3'>
+        <Row className='Analysis__filterRow '>
           <section css={AdmissionStyle.scrollable}>
             {studentBatches.map((e) => {
               return (
@@ -273,6 +273,7 @@ const StudentList = (props) => {
                           textOverflow: 'ellipsis',
                           textAlign: 'center',
                           lineHeight: '28px',
+                          minWidth: '120px',
                         }
                       : {
                           backgroundColor: '#fff',
@@ -286,6 +287,7 @@ const StudentList = (props) => {
                           textOverflow: 'ellipsis',
                           textAlign: 'center',
                           lineHeight: '28px',
+                          minWidth: '120px',
                         }
                   }
                 >
@@ -297,15 +299,20 @@ const StudentList = (props) => {
         </Row>
 
         {topButtons[0].isSelected &&
-          chapters.length &&
-          chapters.map((elem) => {
-            return (
-              <Card key={elem.chapter_id} className='m-2'>
-                <p className='Analysis__studentSubHeading m-1'>{elem.chapter_name}</p>
-                <ProgressBar now={elem.chapter_performance} className='m-2' />
-              </Card>
-            );
-          })}
+          (chapters.length > 0 ? (
+            chapters.map((elem) => {
+              return (
+                <Card key={elem.chapter_id} className='Analysis__card'>
+                  <p className='Analysis__studentSubHeading m-1'>{elem.chapter_name}</p>
+                  <ProgressBar now={elem.chapter_performance} className='m-2' />
+                </Card>
+              );
+            })
+          ) : (
+            <div className='Analysis__PlaceholderText'>
+              <span>No performance yet</span>
+            </div>
+          ))}
 
         {topButtons[1].isSelected &&
           (tests.length > 0 ? (
@@ -324,7 +331,9 @@ const StudentList = (props) => {
               );
             })
           ) : (
-            <span>No tests to show</span>
+            <div className='Analysis__PlaceholderText'>
+              <span>No tests to show</span>
+            </div>
           ))}
         {topButtons[2].isSelected &&
           (homework.length > 0 ? (
@@ -343,7 +352,9 @@ const StudentList = (props) => {
               );
             })
           ) : (
-            <span>No Homework to show</span>
+            <div className='Analysis__PlaceholderText'>
+              <span>No Homework to show</span>
+            </div>
           ))}
         {topButtons[3].isSelected && (
           <div className='d-flex justify-content-center mt-3'>

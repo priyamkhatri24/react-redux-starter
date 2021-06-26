@@ -310,7 +310,7 @@ const Dashboard = (props) => {
         <Row className='mx-auto px-2 mt-4'>
           <Col
             xs={4}
-            sm={roleArray.includes(1) || roleArray.includes(2) ? 1 : 2}
+            md={roleArray.includes(1) || roleArray.includes(2) ? 1 : 2}
             onClick={() => goToProfile()}
           >
             <img
@@ -319,7 +319,7 @@ const Dashboard = (props) => {
               alt='profile'
             />
           </Col>
-          <Col xs={8} sm={roleArray.includes(1) || roleArray.includes(2) ? 11 : 10}>
+          <Col xs={8} md={roleArray.includes(1) || roleArray.includes(2) ? 11 : 10}>
             <h4 className='Dashboard__headingText'>
               {time} {firstName}
             </h4>

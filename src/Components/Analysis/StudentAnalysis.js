@@ -67,9 +67,9 @@ const StudentAnalysis = (props) => {
         >
           {analysisTestObject.analysis.test_type}
         </h6>
-        <div className='m-5' style={{ position: 'relative' }}>
-          <img src={ingeniumLogoRound} alt='ingeniumLogoRound' className='img-fluid' />
-          <div style={{ position: 'absolute', top: '15%', right: '35%' }}>
+        <div className='Analysis__card' style={{ position: 'relative' }}>
+          <img src={ingeniumLogoRound} alt='ingeniumLogoRound' className='Analysis__Logo' />
+          <div className='Analysis__Marks'>
             <p
               className='Analysis__studentMarks mb-0'
               style={{ borderBottom: '3px solid rgba(38, 153, 251, 1)' }}
@@ -81,7 +81,7 @@ const StudentAnalysis = (props) => {
         </div>
 
         <Row
-          className='mx-4 p-2 mb-2'
+          className=' p-2 Analysis__card'
           style={{
             boxShadow: ' 0px 1px 3px 0px rgba(0, 0, 0, 0.38)',
             border: '1px solid rgba(0, 0, 0, 0.38)',
@@ -104,11 +104,11 @@ const StudentAnalysis = (props) => {
         </Row>
         <AnalysisCards data={scrollableData} />
 
-        <table className='table'>
+        <table className='table Analysis__card'>
           <thead>
             <tr>
               <th scope='col'>Subject Analysis</th>
-              <th scope='col'>
+              <th scope='col' style={{ textAlign: 'center' }}>
                 {analysisTestObject.analysis.total_marks} /{' '}
                 {analysisTestObject.analysis.maximum_marks}
               </th>
@@ -187,7 +187,7 @@ const StudentAnalysis = (props) => {
         {questions.length &&
           questions.map((elem) => {
             return (
-              <div key={elem.key}>
+              <div key={elem.key} className='Analysis__card'>
                 <h3 className='m-3 Analysis__studentHeading'>{elem.name} Section</h3>
                 {elem.value.map((question, index) => {
                   return (
