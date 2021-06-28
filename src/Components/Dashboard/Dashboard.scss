@@ -13,12 +13,17 @@
     height: $spacer * 5;
     width: $spacer * 5;
     border-radius: 10px;
+
+    @include media-breakpoint-up(sm){
+      padding-left: 20px;
+    }
   }
 
   &__headingText {
     font-family: 'Montserrat-Regular';
     line-height: 29px;
     color: $headingGrey;
+    padding-top: 0.875rem;
 
     @include media-breakpoint-up(sm) {
       font-size: 1.75rem;

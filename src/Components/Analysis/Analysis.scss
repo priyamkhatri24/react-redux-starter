@@ -7,6 +7,33 @@
     font-size: $spacer * 1.5;
   }
 
+  &__card {
+    width: 75%;
+    margin: auto;
+    margin-top: 1rem;
+    @include media-breakpoint-down(sm) {
+      width: 90%;
+    }
+  }
+  &__filterRow{
+    width: 75%;
+    margin: auto;
+    margin-top: 1rem;
+    @include media-breakpoint-down(sm) {
+      width: 100%;
+    }
+
+  }
+  &__testCard{
+    width: 75%;
+    margin: auto;
+    margin-top: 1rem;
+    @include media-breakpoint-down(sm) {
+      width: 95%;
+    }
+
+  }
+
   &__cardLabel {
     font-family: $medium;
     color: $lightGrey;
@@ -77,11 +104,86 @@
     font-family: $semiBold;
     color: $lightGrey;
     font-size: $spacer * 0.625;
+    padding-left: 7px;
+
+    @include media-breakpoint-up(sm){
+      font-size: $spacer * 0.750;
+    }
   }
 
   &__testCardDetails {
     font-family: $medium;
     color: $dashboardBlack;
     font-size: $spacer * 0.875;
+    padding-left: 0px;
+    
+    @include media-breakpoint-up(sm){
+      font-size: $spacer * 1;
+    }
+
   }
+
+  &__Buttons {
+    width: 240px;
+    height: 60px;
+
+    @include media-breakpoint-down(md) {
+      width: 150px;
+    }
+
+    @include media-breakpoint-down(sm) {
+      width: 70px;
+    }
+  }
+
+  &__AssignmentButtons {
+    width: 300px;
+    height: 60px;
+
+    @include media-breakpoint-down(md) {
+      width: 230px;
+    }
+
+    @include media-breakpoint-down(sm) {
+      width: 70px;
+    }
+  }
+
+  &__AssignementCard{
+    width: 75%;
+    margin: auto;
+
+    @include media-breakpoint-down(sm){
+      width: 100%;
+    }
+  }
+  &__Logo{
+    width: 264px;
+    margin-left: 33%;
+    @include media-breakpoint-down(md){
+      margin-left: 25%;
+      
+     }
+    @include media-breakpoint-down(sm){
+     margin-left: 0;
+     
+    }
+  }
+  &__Marks{
+    position: absolute;
+    top:15%;
+    right: 45%;
+
+    @include media-breakpoint-up(sm){
+      right: 50%;
+    }
+  }
+
+  &__PlaceholderText{
+    font-size: $spacer*1.25;
+    color: $lightGrey;
+    text-align: center;
+    margin-top: 200px;
+  }
+
 }

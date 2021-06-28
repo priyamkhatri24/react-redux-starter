@@ -46,7 +46,14 @@ const AnalysisCalendar = (props) => {
     }
   };
 
-  return <Calendar onChange={onChange} value={value} tileClassName={tileClassName} />;
+  return (
+    <Calendar
+      style={{ fontFamily: 'Montserrat-Regular' }}
+      onChange={onChange}
+      value={value}
+      tileClassName={tileClassName}
+    />
+  );
 };
 
 export default AnalysisCalendar;

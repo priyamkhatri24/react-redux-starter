@@ -28,7 +28,7 @@ const TeacherAnalysis = (props) => {
   const [isToggle, setToggle] = useState(0);
   const [tab, setTab] = useState('Assignments');
   const [filterPayload, setFilterPayload] = useState({
-    class_id: null,
+    // class_id: null,
     client_id: clientId,
     status: null,
     client_batch_id: null,
@@ -138,17 +138,19 @@ const TeacherAnalysis = (props) => {
         <Row className='justify-content-center'>
           <Button
             variant='testBlueOnWhite'
-            style={{ fontSize: '1rem', width: '8.4375rem', height: '2.125rem' }}
+            // style={{ fontSize: '1rem', width: '8.4375rem', height: '2.125rem' }}
             active={tab !== 'Students'}
             onClick={() => changeTab('Assignments')}
+            css={AdmissionStyle.headerButtons}
           >
             Assignments
           </Button>
           <Button
             variant='testBlueOnWhite '
-            style={{ fontSize: '1rem', width: '8.4375rem', height: '2.125rem' }}
+            // style={{ fontSize: '1rem', width: '8.4375rem', height: '2.125rem' }}
             active={tab !== 'Assignments'}
             onClick={() => changeTab('Students')}
+            css={AdmissionStyle.headerButtons}
           >
             Students
           </Button>
@@ -162,7 +164,7 @@ const TeacherAnalysis = (props) => {
         />
         <div css={AdmissionStyle.overlay} style={{ marginTop: '1rem' }}>
           <hr className='w-25' style={{ borderTop: '5px solid rgba(0, 0, 0, 0.1)' }} />
-          <Row css={AdmissionStyle.amount} className='m-4'>
+          <Row css={AdmissionStyle.amount}>
             <span className='mr-1'>
               {tab === 'Assignments' ? assignments.length : students.length}{' '}
             </span>{' '}

@@ -139,7 +139,7 @@ const AdmissionStyle = {
     color: ${colors.black};
     font-family: ${fonts.regular};
     margin: 1.5rem;
-    width: 100%;
+    width: 90%;
     padding-bottom: 10px;
 
     @media (min-width: 768px) {

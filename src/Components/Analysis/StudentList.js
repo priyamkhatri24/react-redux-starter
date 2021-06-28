@@ -9,6 +9,7 @@ import Card from 'react-bootstrap/Card';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import './Analysis.scss';
 import { getAnalysisStudentObject } from '../../redux/reducers/analysis.reducer';
+import { getRoleArray } from '../../redux/reducers/clientUserId.reducer';
 import { PageHeader } from '../Common';
 import { apiValidation, get } from '../../Utilities';
 import AdmissionStyle from '../Admissions/Admissions.style';
@@ -16,7 +17,7 @@ import AnalysisCalendar from './AnalysisCalendar';
 import AnalysisTestsCard from './AnalysisTestsCard';
 
 const StudentList = (props) => {
-  const { analysisStudentObject, history } = props;
+  const { analysisStudentObject, history, roleArray } = props;
   const [studentBatches, setStudentBatches] = useState([]);
   const [currentBatch, setCurrentBatch] = useState({
     client_batch_id: 0,
@@ -38,7 +39,10 @@ const StudentList = (props) => {
     {
       id: 2,
       heading: 'Test',
-      numerator: analysisStudentObject.completed_test || analysisStudentObject.test_done,
+      numerator:
+        roleArray.includes(1) || roleArray.includes(2)
+          ? analysisStudentObject.test_done
+          : analysisStudentObject.completed_test,
       denominator: analysisStudentObject.test_count,
       isPercent: false,
       isSelected: false,
@@ -46,7 +50,10 @@ const StudentList = (props) => {
     {
       id: 3,
       heading: 'Homework',
-      numerator: analysisStudentObject.completed_homework || analysisStudentObject.homework_done,
+      numerator:
+        roleArray.includes(1) || roleArray.includes(2)
+          ? analysisStudentObject.homework_done
+          : analysisStudentObject.completed_homework,
       denominator: analysisStudentObject.homework_count,
       isPercent: false,
       isSelected: false,
@@ -82,6 +89,7 @@ const StudentList = (props) => {
       const result = apiValidation(res);
       setChapters(result);
     });
+    console.log(analysisStudentObject);
   }, [analysisStudentObject]);
 
   useEffect(() => {
@@ -190,19 +198,15 @@ const StudentList = (props) => {
                           backgroundColor: '#7FC4FD',
                           border: '1px solid #7FC4FD',
                           color: '#fff',
-                          width: '70px',
-                          height: '60px',
                           borderRadius: '10px',
                         }
                       : {
                           border: '1px solid rgba(0,0,0,0.54)',
                           color: 'rgba(0,0,0,0.54)',
-                          width: '70px',
-                          height: '60px',
                           borderRadius: '10px',
                         }
                   }
-                  className='mx-auto'
+                  className='mx-auto Analysis__Buttons'
                   onClick={() => selectThisButton(elem.id)}
                   onKeyDown={() => selectThisButton(elem.id)}
                   role='button'
@@ -217,10 +221,17 @@ const StudentList = (props) => {
                     }
                   >
                     {elem.isPercent || analysisStudentObject.isStudent ? (
-                      <span>{elem.numerator}%</span>
+                      <span>
+                        {elem.numerator === 'Student has not attempted any questions yet' ||
+                        elem.numerator === 'Student has not completed any homework yet' ||
+                        elem.numerator === 'Student has not completed any test yet' ||
+                        elem.numerator === 'There are no attendance records yet'
+                          ? '0 %'
+                          : elem.numerator}
+                      </span>
                     ) : (
                       <span>
-                        {elem.numerator}/{elem.denominator}
+                        {elem.numerator} / {elem.denominator}
                       </span>
                     )}
                   </p>
@@ -237,7 +248,7 @@ const StudentList = (props) => {
             );
           })}
         </Row>
-        <Row className='mx-3 mt-3'>
+        <Row className='Analysis__filterRow '>
           <section css={AdmissionStyle.scrollable}>
             {studentBatches.map((e) => {
               return (
@@ -262,6 +273,7 @@ const StudentList = (props) => {
                           textOverflow: 'ellipsis',
                           textAlign: 'center',
                           lineHeight: '28px',
+                          minWidth: '120px',
                         }
                       : {
                           backgroundColor: '#fff',
@@ -275,6 +287,7 @@ const StudentList = (props) => {
                           textOverflow: 'ellipsis',
                           textAlign: 'center',
                           lineHeight: '28px',
+                          minWidth: '120px',
                         }
                   }
                 >
@@ -286,15 +299,20 @@ const StudentList = (props) => {
         </Row>
 
         {topButtons[0].isSelected &&
-          chapters.length &&
-          chapters.map((elem) => {
-            return (
-              <Card key={elem.chapter_id} className='m-2'>
-                <p className='Analysis__studentSubHeading m-1'>{elem.chapter_name}</p>
-                <ProgressBar now={elem.chapter_performance} className='m-2' />
-              </Card>
-            );
-          })}
+          (chapters.length > 0 ? (
+            chapters.map((elem) => {
+              return (
+                <Card key={elem.chapter_id} className='Analysis__card'>
+                  <p className='Analysis__studentSubHeading m-1'>{elem.chapter_name}</p>
+                  <ProgressBar now={elem.chapter_performance} className='m-2' />
+                </Card>
+              );
+            })
+          ) : (
+            <div className='Analysis__PlaceholderText'>
+              <span>No performance yet</span>
+            </div>
+          ))}
 
         {topButtons[1].isSelected &&
           (tests.length > 0 ? (
@@ -313,7 +331,9 @@ const StudentList = (props) => {
               );
             })
           ) : (
-            <span>No tests to show</span>
+            <div className='Analysis__PlaceholderText'>
+              <span>No tests to show</span>
+            </div>
           ))}
         {topButtons[2].isSelected &&
           (homework.length > 0 ? (
@@ -332,7 +352,9 @@ const StudentList = (props) => {
               );
             })
           ) : (
-            <span>No Homework to show</span>
+            <div className='Analysis__PlaceholderText'>
+              <span>No Homework to show</span>
+            </div>
           ))}
         {topButtons[3].isSelected && (
           <div className='d-flex justify-content-center mt-3'>
@@ -346,6 +368,7 @@ const StudentList = (props) => {
 
 const mapStateToProps = (state) => ({
   analysisStudentObject: getAnalysisStudentObject(state),
+  roleArray: getRoleArray(state),
 });
 
 export default connect(mapStateToProps)(StudentList);
@@ -353,4 +376,5 @@ export default connect(mapStateToProps)(StudentList);
 StudentList.propTypes = {
   analysisStudentObject: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
+  roleArray: PropTypes.instanceOf(Array).isRequired,
 };

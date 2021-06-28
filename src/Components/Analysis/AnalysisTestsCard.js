@@ -41,9 +41,9 @@ const AnalysisTestCard = (props) => {
   };
 
   return (
-    <Card className='m-2 pt-2' style={{ borderRadius: '10px' }}>
-      <p className='Analysis__testCardBigHeading'>{name}</p>
-      <Row className='p-2'>
+    <Card className='pt-2 Analysis__testCard' style={{ borderRadius: '10px' }}>
+      <p className='Analysis__testCardBigHeading m-2'>{name}</p>
+      <Row className='pt-2 mx-1'>
         <Col xs={4} className='Analysis__testCardHeading'>
           Date
         </Col>
@@ -54,7 +54,7 @@ const AnalysisTestCard = (props) => {
           Marks Obtained
         </Col>
       </Row>
-      <Row className='p-2'>
+      <Row className='p-2 mx-1'>
         <Col xs={4} className='Analysis__testCardDetails'>
           {date}
         </Col>

@@ -191,16 +191,17 @@ const AddDetails = (props) => {
 
   const goToNextStage = () => {
     addRef.current.click();
-    if (admissionRoleArray[0] === '1') {
-      if (detailArray.length > 0 && detailArray.length <= 20) {
-        setAdmissionUserArrayToStore(detailArray);
-        history.push('/admissions/add/class');
-      } else {
-        console.log('not 0 or more than 20');
-      }
-    } else {
-      handleOpen();
-    }
+    // if (admissionRoleArray[0] === '1') {
+    //   if (detailArray.length > 0 && detailArray.length <= 20) {
+    //     setAdmissionUserArrayToStore(detailArray);
+    //     history.push('/admissions/add/class');
+    //   } else {
+    //     console.log('not 0 or more than 20');
+    //   }
+    // } else {
+    //   handleOpen();
+    // }
+    handleOpen();
   };
 
   return (
