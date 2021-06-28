@@ -131,7 +131,7 @@ export const shareThis = (url, clientName) => {
   if (navigator.share) {
     navigator
       .share({
-        title: `Come Join Us`,
+        title: `Look at this awesome course!`,
         // eslint-disable-next-line
         text: `Hey, ${clientName} is a fast, simple and fun app that I use for learning and growing everyday`,
         url,
@@ -142,6 +142,6 @@ export const shareThis = (url, clientName) => {
       .catch(console.error);
     return 'navigator';
   }
-  navigator.clipboard.writeText(window.location.href);
+  navigator.clipboard.writeText(url);
   return 'clipboard';
 };

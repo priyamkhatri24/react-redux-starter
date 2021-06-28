@@ -68,3 +68,19 @@ export const downloadFile = (url) => {
     });
   });
 };
+
+export const uploadMultipleImages = async (fileArray) => {
+  console.log(fileArray);
+  const arr = [];
+  for (let i = 0; i < fileArray.length; i++) {
+    arr.push(uploadingImage(fileArray[i]));
+  }
+
+  const result = await Promise.all(arr);
+  return result.map((e, i) => {
+    const obj = {};
+    obj.name = fileArray[i].name;
+    obj.filename = e.filename;
+    return obj;
+  });
+};

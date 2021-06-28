@@ -83,7 +83,7 @@ AspectCards.propTypes = {
   data: PropTypes.instanceOf(Array).isRequired,
   clickCard: PropTypes.func.isRequired,
   clickAddCard: PropTypes.func.isRequired,
-  section: PropTypes.instanceOf(Object).isRequired,
+  section: PropTypes.string.isRequired,
   noAddCard: PropTypes.bool,
   bigAspectCard: PropTypes.bool,
 };

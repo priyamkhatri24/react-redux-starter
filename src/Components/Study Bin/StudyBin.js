@@ -123,17 +123,59 @@ const StudyBin = (props) => {
       .catch((err) => console.log(err));
   };
 
-  const addNewFile = (name, link) => {
-    console.log('file clicked', name);
-    // https://stackoverflow.com/questions/190852/how-can-i-get-file-extensions-with-javascript - visioN
-    const extension = name.slice(((name.lastIndexOf('.') - 1) >>> 0) + 2); // eslint-disable-line
-    console.log(extension);
-    const payload = {
-      client_user_id: clientUserId,
-      folder_id: folderIdStack[folderIdStack.length - 1],
-      file_name: name,
-      file_link: link,
-      file_type:
+  // const addNewFile = (name, link) => {
+
+  //   console.log('file clicked', name);
+  //   // https://stackoverflow.com/questions/190852/how-can-i-get-file-extensions-with-javascript - visioN
+  //   const extension = name.slice(((name.lastIndexOf('.') - 1) >>> 0) + 2); // eslint-disable-line
+  //   console.log(extension);
+  //   const payload = {
+  //     client_user_id: clientUserId,
+  //     folder_id: folderIdStack[folderIdStack.length - 1],
+  //     file_name: name,
+  //     file_link: link,
+  //     file_type:
+  //       extension === 'doc'
+  //         ? '.doc'
+  //         : extension === 'docx'
+  //         ? '.docx'
+  //         : extension === 'pdf'
+  //         ? '.pdf'
+  //         : extension === 'xls'
+  //         ? '.xls'
+  //         : extension === 'xslx'
+  //         ? '.xslx'
+  //         : extension === 'csv'
+  //         ? '.csv'
+  //         : extension === 'ppt'
+  //         ? '.ppt'
+  //         : extension === 'pptx'
+  //         ? '.pptx'
+  //         : extension === 'mp4'
+  //         ? '.mp4'
+  //         : extension === 'jpg'
+  //         ? '.jpg'
+  //         : extension === 'png'
+  //         ? '.png'
+  //         : extension === 'jpeg'
+  //         ? '.jpeg'
+  //         : 'file',
+  //   };
+  //   post(payload, '/addFile')
+  //     .then((res) => {
+  //       console.log(res);
+  //       rerenderFilesAndFolders();
+  //     })
+  //     .catch((e) => console.log(e));
+  // };
+
+  const addNewFile = (files) => {
+    const filesArray = files.map((elem) => {
+      const obj = {};
+      obj.file_link = elem.filename;
+      obj.file_name = elem.name;
+      const extension = elem.name.slice(((elem.name.lastIndexOf('.') - 1) >>> 0) + 2); // eslint-disable-line
+      obj.file_type =
         extension === 'doc'
           ? '.doc'
           : extension === 'docx'
@@ -158,9 +200,16 @@ const StudyBin = (props) => {
           ? '.png'
           : extension === 'jpeg'
           ? '.jpeg'
-          : 'file',
+          : 'file';
+      return obj;
+    });
+
+    const payload = {
+      client_user_id: clientUserId,
+      folder_id: folderIdStack[folderIdStack.length - 1],
+      file_array: JSON.stringify(filesArray),
     };
-    post(payload, '/addFile')
+    post(payload, '/addMultipleFile')
       .then((res) => {
         console.log(res);
         rerenderFilesAndFolders();

@@ -74,7 +74,7 @@ const Tests = (props) => {
       }).then((result) => {
         if (result.isConfirmed) {
           const response = apiValidation(res);
-          startHomework(response, elem.test_id);
+          startHomework(response, elem.test_id, elem.language_type);
         }
       });
       console.log(res);
@@ -130,6 +130,7 @@ const Tests = (props) => {
               liveCheck[0].endTime,
               'livetest',
               elem.test_id,
+              elem.language_type,
             );
             console.log(response);
           }
@@ -144,7 +145,7 @@ const Tests = (props) => {
       test_id: elem.test_id,
       client_user_id: clientUserId,
     };
-
+    console.log(elem);
     get(demoPayload, '/getDemoTestEndTime').then((res) => {
       const result = apiValidation(res);
       console.log(result, 'endTime');
@@ -215,6 +216,7 @@ const Tests = (props) => {
               result.test_end_time,
               'demotest',
               elem.test_id,
+              elem.language_type,
             );
           });
         } else if (dateResult > 0) {
