@@ -136,23 +136,23 @@ const Dashboard = (props) => {
   }, [roleArray]);
 
   useEffect(() => {
-    const payload = {
-      client_id: clientId,
-      client_user_id: clientUserId,
-    };
+    // const payload = {
+    //   client_id: clientId,
+    //   client_user_id: clientUserId,
+    // };
 
-    get(payload, '/getRecentDataLatest')
-      .then((res) => {
-        const result = apiValidation(res);
-        console.log(result);
-        setNotices(result.notice);
-        setAdmissions(result.admission);
-        setAttendance(result.attendance);
-        setData(result);
-        setHasLoaded(true);
-        setDashboardDataToStore(result);
-      })
-      .catch((err) => console.error(err));
+    // get(payload, '/getRecentDataLatest')
+    //   .then((res) => {
+    //     const result = apiValidation(res);
+    //     console.log(result);
+    //     setNotices(result.notice);
+    //     setAdmissions(result.admission);
+    //     setAttendance(result.attendance);
+    //     setData(result);
+    //     setHasLoaded(true);
+    //     setDashboardDataToStore(result);
+    //   })
+    //   .catch((err) => console.error(err));
     partsOfDay();
 
     get({ client_user_id: clientUserId }, '/getRecentCourses').then((res) => {
@@ -174,6 +174,12 @@ const Dashboard = (props) => {
     get({ client_id: clientId, role_id: roleId }, '/getLoginPageInformation').then((res) => {
       console.log(res);
       const result = apiValidation(res);
+      setNotices(result.notice);
+      setAdmissions(result.admission || {});
+      setAttendance(result.attendance);
+      setData(result);
+      setHasLoaded(true);
+      setDashboardDataToStore(result);
       const sorterArr = [];
 
       for (const prop in result.feature) {
@@ -189,7 +195,7 @@ const Dashboard = (props) => {
       console.log(finalArr, 'hello');
       setFeatures(finalArr);
     });
-  }, [clientId, roleArray]);
+  }, [clientId, roleArray, setDashboardDataToStore]);
 
   const shareThis = () => {
     if (navigator.share) {
@@ -351,7 +357,7 @@ const Dashboard = (props) => {
 
   const renderComponents = (param) => {
     switch (param) {
-      case 'Attendance':
+      case 'attendance':
         return (
           <div
             className='Dashboard__attendance p-4'
@@ -400,7 +406,7 @@ const Dashboard = (props) => {
             </div>
           </div>
         );
-      case 'Notice Board':
+      case 'noticeBoard':
         return (
           <div
             className='Dashboard__noticeBoard mx-auto p-lg-3 p-2 mb-3'
@@ -458,7 +464,7 @@ const Dashboard = (props) => {
             ))}
           </div>
         );
-      case 'Homework creator':
+      case 'homeworkCreator':
         return (
           <div className='Dashboard__innovation pt-4 px-3 pb-3'>
             <h4 className='Dashboard_homeworkCreator'>Witness </h4>
@@ -524,7 +530,7 @@ const Dashboard = (props) => {
             </div>
           </div>
         );
-      case 'Analysis':
+      case 'analysis':
         return (
           <DashboardCards
             image={analysisHands}
@@ -536,7 +542,7 @@ const Dashboard = (props) => {
             buttonClick={role === 1 || role === 2 ? goToStudentAnalysis : goToTeacherAnalysis}
           />
         );
-      case 'Fees':
+      case 'fees':
         return (
           <DashboardCards
             image={analysis}
@@ -548,7 +554,7 @@ const Dashboard = (props) => {
             buttonClick={role === 1 || role === 2 ? goToFees : goToTeacherFees}
           />
         );
-      case 'Posters':
+      case 'posters':
         return (
           <div className='m-2 mt-4'>
             <AspectCards
@@ -561,7 +567,7 @@ const Dashboard = (props) => {
             />
           </div>
         );
-      case 'Star Performers':
+      case 'starPerformers':
         return (
           <>
             <h6
@@ -584,7 +590,7 @@ const Dashboard = (props) => {
             />
           </>
         );
-      case 'Testimonials':
+      case 'testimonials':
         return (
           <>
             <h6
@@ -607,7 +613,7 @@ const Dashboard = (props) => {
             />
           </>
         );
-      case 'About us':
+      case 'aboutUs':
         return (
           <div className='text-left m-3 mt-5'>
             <h5 className='Dummy__aboutus'>About us</h5>
@@ -676,7 +682,7 @@ const Dashboard = (props) => {
             </section>
           </div>
         );
-      case 'Courses':
+      case 'courses':
         return role === 1 || role === 2 ? (
           <CoursesCards
             allCourses={allCourses}
@@ -696,7 +702,7 @@ const Dashboard = (props) => {
             buttonClick={goToCoursesForTeacher}
           />
         );
-      case 'Live Classes':
+      case 'liveClasses':
         return (
           <DashboardCards
             image={camera}
@@ -713,13 +719,13 @@ const Dashboard = (props) => {
             buttonClick={goToLiveClasses}
           />
         );
-      case 'Offline assignment':
+      case 'offlineAssignment':
         return (
           <div>
             <Tests startHomework={startHomework} startLive={startLiveTest} />
           </div>
         );
-      case 'Study bin':
+      case 'studyBin':
         return (
           <DashboardCards
             image={student}
@@ -730,7 +736,7 @@ const Dashboard = (props) => {
             buttonClick={goToStudyBin}
           />
         );
-      case 'Admission  form':
+      case 'admissionForm':
         return (
           <Card
             className='DashboardCards'
@@ -755,7 +761,7 @@ const Dashboard = (props) => {
             </Row>
           </Card>
         );
-      case 'Share':
+      case 'share':
         return (
           <Card
             className='DashboardCards mb-2 mt-4'
@@ -781,7 +787,7 @@ const Dashboard = (props) => {
             </Row>
           </Card>
         );
-      case 'Contact us':
+      case 'contactUs':
         return (
           <Card
             className='DashboardCards mt-3 mb-2'
@@ -826,7 +832,7 @@ const Dashboard = (props) => {
             )}
           </Card>
         );
-      case 'CRM':
+      case 'crm':
         return (
           <DashboardCards
             image={analysis}
@@ -838,7 +844,7 @@ const Dashboard = (props) => {
             buttonClick={goToCRM}
           />
         );
-      case 'Admission':
+      case 'admission':
         return (
           Object.keys(admissions).length > 0 && (
             <>
@@ -860,7 +866,7 @@ const Dashboard = (props) => {
   };
 
   return (
-    <>
+    <div className='mb-4'>
       <div className='Dashboard__headerCard pb-3 mb-4'>
         <Row className='pt-4 pr-4'>
           <span className='ml-auto p-3'>{/* <MoreVertIcon /> */}</span>
@@ -899,8 +905,14 @@ const Dashboard = (props) => {
         </div> */}
       </div>
 
+      {hasLoaded &&
+        features.length > 0 &&
+        features
+          .filter((elem) => elem.status === 'active')
+          .map((elem) => renderComponents(elem.client_feature_name))}
+
       {/* *****************************Teacher View ********************************* */}
-      {(roleArray.includes(3) || roleArray.includes(4)) && (
+      {/* {(roleArray.includes(3) || roleArray.includes(4)) && (
         <>
           <DashboardCards
             image={camera}
@@ -1182,47 +1194,11 @@ const Dashboard = (props) => {
               </Col>
             </Row>
           </Card>
-
-          {/* <CoursesCards
-            allCourses={allCourses}
-            myCourses={myCourses}
-            goToCourse={goToCourses}
-            buyCourseId={goToBuyCourse}
-            myCourseId={goToMyCourse}
-          /> */}
-          {/* <DashboardCards
-            image={offlineAssignment}
-            heading='Offline assignment'
-            subHeading='Record marks of all the pen-paper tests and send
-         the marks to parents in simple way.'
-            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
-            backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
-            backGround='rgb(236,255,252)'
-          />
-
-          <DashboardCards
-            image={camera}
-            heading='Send photos &amp; files'
-            subHeading='Send question papers, notes and books as
-        photos or files such as .pdf, .doc, .txt, etc..'
-            boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
-            backGround='rgb(247,236,255)'
-            backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
-          />
-
-          <DashboardCards
-            image={student}
-            heading='Student corner'
-            subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
-            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-            backGround='rgb(248,252,255)'
-            backgroundImg='linear-gradient(90deg, rgba(248,252,255,1) 0%, rgba(188,224,253,1) 100%)'
-          /> */}
         </>
-      )}
+      )} */}
 
       {/* *****************************Student View ********************************* */}
-      {(roleArray.includes(1) || roleArray.includes(2)) && (
+      {/* {(roleArray.includes(1) || roleArray.includes(2)) && (
         <>
           {hasLoaded && (
             <>
@@ -1550,7 +1526,7 @@ const Dashboard = (props) => {
             </Card>
           )}
         </>
-      )}
+      )} */}
       <Modal show={optionsModal} onHide={closeOptionsModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>Select Type</Modal.Title>
@@ -1603,7 +1579,7 @@ const Dashboard = (props) => {
         </Toast.Header>
         <Toast.Body>The link has been copied to your clipboard!</Toast.Body>
       </Toast>
-    </>
+    </div>
   );
 };
 

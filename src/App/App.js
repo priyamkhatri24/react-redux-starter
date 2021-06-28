@@ -17,7 +17,10 @@ function MainApp(props) {
   const { color, currentbranding, isLoading } = props;
   const [isTokenFound, setTokenFound] = useState(false);
 
-  // getToken(setTokenFound);
+  useEffect(() => {
+    const nibs = getToken(setTokenFound);
+    console.log(nibs);
+  }, []);
 
   useEffect(() => {
     if (Object.keys(color.color) !== 0) {

@@ -94,7 +94,8 @@ class QuestionTaker extends Component {
           newObj.uuid = index + 1;
           newObj.question_status = 'Not viewed'; // 'Not Viewed' 'Attempted' 'Viewed' Review Answered And Reveiwed
           newObj.option_array.map((res) => (res.isFocus = false));
-          newObj.hindi_option_array.map((res) => (res.isFocus = false));
+          if (newObj.hindi_option_array !== undefined)
+            newObj.hindi_option_array.map((res) => (res.isFocus = false));
           newObj.isCorrect = false;
           newObj.timer = 0;
           newObj.noOfTimesVisited = 0;
