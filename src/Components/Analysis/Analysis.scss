@@ -5,6 +5,9 @@
     font-family: $semiBold;
     color: $lightGrey;
     font-size: $spacer * 1.5;
+    @include media-breakpoint-down(sm) {
+      font-size: $spacer*1;
+    }
   }
 
   &__card {
@@ -36,6 +39,9 @@
     font-family: $medium;
     color: $lightGrey;
     font-size: $spacer * 0.625;
+    @include media-breakpoint-down(xs) {
+      font-size: $spacer * 0.5;
+    }
   }
 
   &__studentHeading {
