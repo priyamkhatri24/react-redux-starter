@@ -20,6 +20,7 @@ export const StudentSelector = (props) => {
       getSelectedBatches={getSelectedStudents}
       title='Students'
       isStudentFee
+      sendBoth
     />
   );
 };

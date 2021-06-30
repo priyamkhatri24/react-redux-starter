@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 import './BatchesSelector.scss';
 
 export const BatchesSelector = (props) => {
   const { batches, getSelectedBatches, title, selectBatches, sendBoth, isStudentFee } = props;
   const [selectedBatches, setSelectedBatches] = useState([...selectBatches]);
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     if (sendBoth) getSelectedBatches(batches, selectedBatches);
@@ -28,6 +30,15 @@ export const BatchesSelector = (props) => {
       ...prevstate.slice(index + 1),
     ]);
   };
+
+  // const SelectAllStudents = (value)=>{
+  //   setSelectAll(value);
+  //   if (value) {
+  //     setSelectedBatches(batches);
+  //   } else {
+  //    setSelectedBatches([]);
+  //   }
+  // }
 
   return (
     <Row className='Batches py-3'>
@@ -50,6 +61,16 @@ export const BatchesSelector = (props) => {
       </Col>
       <Col xs={6} className='text-center'>
         <h6 className='mb-4'>{selectedBatches.length} Selected</h6>
+        {/* {isStudentFee && (
+        <Form.Check
+          type='checkbox'
+          checked={selectAll}
+          onChange={(e) => SelectAllStudents(!selectAll)}
+          className='my-auto ml-1'
+          label='Select All'
+          name='selectAll'
+        />
+        )} */}
         {selectedBatches.map((elem) => {
           return (
             <Row

@@ -908,7 +908,7 @@ const Dashboard = (props) => {
       {hasLoaded &&
         features.length > 0 &&
         features
-          .filter((elem) => elem.status === 'active')
+          // .filter((elem) => elem.status === 'active')
           .map((elem) => renderComponents(elem.client_feature_name))}
 
       {/* *****************************Teacher View ********************************* */}

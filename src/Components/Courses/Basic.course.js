@@ -66,8 +66,9 @@ const Basic = (props) => {
   };
 
   const add = (type) => {
-    if (type === 'learning' && !currentLearning) setIsLearningValid(true);
-    else if (type === 'prerequisite' && !currentPrerequisite) setIsPrequisiteValid(true);
+    if (type === 'learning' && currentLearning.trim().length === 0) setIsLearningValid(true);
+    else if (type === 'prerequisite' && currentPrerequisite.trim().length === 0)
+      setIsPrequisiteValid(true);
     else {
       type === 'learning' ? setIsLearningValid(false) : setIsPrequisiteValid(false);
       const newObject = {
@@ -84,12 +85,19 @@ const Basic = (props) => {
   };
 
   const instantAdd = (type) => {
-    if (type === 'learning' && !currentLearning && learningtags.length === 0) {
+    if (type === 'learning' && currentLearning.trim().length === 0 && learningtags.length === 0) {
       setIsLearningValid(true);
+      console.log(currentLearning, isLearningValid, 'asdadasd');
       return [...learningtags];
     }
-    if (type === 'prerequisite' && !currentPrerequisite && prerequisiteTags.length === 0) {
+
+    if (
+      type === 'prerequisite' &&
+      currentPrerequisite.trim().length === 0 &&
+      prerequisiteTags.length === 0
+    ) {
       setIsPrequisiteValid(true);
+      console.log(currentPrerequisite);
       return [...prerequisiteTags];
     }
     type === 'learning' ? setIsLearningValid(false) : setIsPrequisiteValid(false);
@@ -133,38 +141,42 @@ const Basic = (props) => {
         <p className='mt-2 mx-2 Courses__motiDetail'>
           What will the students learn from your course?
         </p>
-        {learningtags.map((e) => {
-          return (
-            <Row className='m-2' key={e.meriId}>
-              {e.tag_name && (
-                <>
-                  <label className='has-float-label my-auto' style={{ width: '100%' }}>
-                    <input
-                      className='form-control'
-                      name='Example: Concave lens'
-                      type='text'
-                      value={e.tag_name}
-                      placeholder='Example: Concave lens'
-                      onChange={(elem) => modify(elem.target.value, e.meriId, 'learning')}
-                    />
-                    <span>Example: Concave lens</span>
-                  </label>
-                  <span
-                    className='ml-auto'
-                    onClick={() => deleteObject(e.meriId, 'learning')}
-                    onKeyDown={() => deleteObject(e.meriId, 'learning')}
-                    role='button'
-                    tabIndex='-1'
-                  >
-                    <CloseIcon />
-                  </span>
-                </>
-              )}
-            </Row>
-          );
-        })}
+        {learningtags.length > 0 &&
+          learningtags.map((e) => {
+            return (
+              <Row className='m-2' key={e.meriId}>
+                {e.tag_name && (
+                  <>
+                    <label className='has-float-label my-auto' style={{ width: '100%' }}>
+                      <input
+                        className='form-control'
+                        name='Example: Concave lens'
+                        type='text'
+                        value={e.tag_name}
+                        placeholder='Example: Concave lens'
+                        onChange={(elem) => modify(elem.target.value, e.meriId, 'learning')}
+                      />
+                      <span>Example: Concave lens</span>
+                    </label>
+                    <span
+                      className='ml-auto'
+                      onClick={() => deleteObject(e.meriId, 'learning')}
+                      onKeyDown={() => deleteObject(e.meriId, 'learning')}
+                      role='button'
+                      tabIndex='-1'
+                    >
+                      <CloseIcon />
+                    </span>
+                  </>
+                )}
+              </Row>
+            );
+          })}
         <Row className='m-2'>
-          <label className='has-float-label my-auto' style={{ width: '100%' }}>
+          <label
+            className='has-float-label my-auto'
+            style={isLearningValid ? { width: '100%', border: 'red' } : { width: '100%' }}
+          >
             <input
               required
               className='form-control'
@@ -237,7 +249,9 @@ const Basic = (props) => {
             <span>Example: Basic Maths</span>
           </label>
         </Row>
-        {isPrequisiteValid && <small className='text-danger d-block'>This field is required</small>}
+        {isPrequisiteValid && (
+          <small className='text-danger d-block m-2'>This field is required</small>
+        )}
 
         <Row className='w-50 m-2'>
           <Button variant='courseBlueOnWhite' onClick={() => add('prerequisite')}>

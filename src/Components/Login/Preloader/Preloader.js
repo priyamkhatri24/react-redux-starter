@@ -80,7 +80,12 @@ const Preloader = (props) => {
 
   return (
     <div className='text-center Login'>
-      <img src={image} alt='coachingLogo' className='Login__jumbo' />
+      <img
+        src={image}
+        alt='coachingLogo'
+        style={{ background: 'transparent' }}
+        className='Login__jumbo'
+      />
 
       <div className='Preloader mx-auto '>
         <h5 className='Preloader__hello m-lg-3 m-5 p-lg-5'>HELLO!</h5>

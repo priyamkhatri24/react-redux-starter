@@ -103,6 +103,19 @@ const FinalQuestionCard = (props) => {
             </>
           )}
 
+          {question.question_solution_image && (
+            <>
+              <p className='Homework__options text-left m-2'>Solution:</p>
+              <div className='d-flex mx-3 mb-2 Homework__multipleOptions soultionImage text-left'>
+                <img
+                  src={question.question_solution_image}
+                  className='img-fluid m-2 w-75 mx-auto'
+                  alt='question'
+                />
+              </div>
+            </>
+          )}
+
           {isAnalysis && (
             <>
               <p className='Homework__options text-left m-2'>

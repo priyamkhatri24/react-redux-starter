@@ -133,14 +133,14 @@ const TeacherCourses = (props) => {
   return (
     <>
       <PageHeader title='Courses' handleBack={goToDashboard} customBack />
-      <div style={{ marginTop: '4rem' }}>
+      <div style={{}}>
         <Tabs
           defaultActiveKey='My Courses'
-          className='Profile__Tabs'
+          className='Courses__Profile__Tabs'
           justify
-          style={{ marginTop: '4rem' }}
+          style={{ marginTop: '3.5rem' }}
         >
-          <Tab eventKey='My Courses' title='My Courses' style={{ marginTop: '2rem' }}>
+          <Tab eventKey='My Courses' title='My Courses' style={{ marginTop: '7rem' }}>
             <Button
               variant='customPrimaryWithShadow'
               style={{
@@ -233,7 +233,7 @@ const TeacherCourses = (props) => {
               );
             })}
           </Tab>
-          <Tab eventKey='Statistics' title='Statistics' style={{ marginTop: '2rem' }}>
+          <Tab eventKey='Statistics' title='Statistics' style={{ marginTop: '7rem' }}>
             {statistics.map((course) => {
               return (
                 <Row
