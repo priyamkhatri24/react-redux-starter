@@ -34,16 +34,16 @@
           link = document.createElement('link');
           link.rel = 'manifest';
           link.id = 'dynamic-manifest';
-          // document.getElementsByTagName('head')[0].appendChild(link);
-          //  const currentManifest = document.querySelector('#default-manifest');
-          //  currentManifest.parentNode.removeChild(currentManifest);
-          // const manifestData = JSON.stringify(resp.result);
-          // const blob = new Blob([manifestData], { type: 'application/json' });
-          // const manifestURL = URL.createObjectURL(blob);
-          // document.querySelector('#dynamic-manifest').setAttribute('href', manifestURL);
-          // console.log(resp.result.icons[1].src);
-          // const appleLink = document.getElementById('apple-icon');
-          // appleLink.href = resp.result.icons[1].src;
+         document.getElementsByTagName('head')[0].appendChild(link);
+         const currentManifest = document.querySelector('#default-manifest');
+         currentManifest.parentNode.removeChild(currentManifest);
+         const manifestData = JSON.stringify(resp.result);
+         const blob = new Blob([manifestData], { type: 'application/json' });
+         const manifestURL = URL.createObjectURL(blob);
+          document.querySelector('#dynamic-manifest').setAttribute('href', manifestURL);
+          console.log(resp.result.icons[1].src);
+          const appleLink = document.getElementById('apple-icon');
+          appleLink.href = resp.result.icons[1].src;
         });
     </script>
 
