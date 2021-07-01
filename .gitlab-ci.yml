@@ -47,3 +47,4 @@ deploy:
     - aws deploy push --application-name ingeniumwebportal --s3-location $AWS_S3_LOCATION --no-ignore-hidden-files --source build
   only:
     - master
+    - development
