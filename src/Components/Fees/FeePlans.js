@@ -104,7 +104,6 @@ const FeePlans = (props) => {
   const handleStudentsOpen = () => setShowStudentsModal(true);
 
   const getSelectedStudents = (allstudents, selectStudents) => {
-    // setStudents(allstudents);
     setSelectedStudents(selectStudents);
     console.log(selectStudents);
   };
@@ -269,7 +268,6 @@ const FeePlans = (props) => {
               </p>
             </Modal.Title>
           </Modal.Header>
-          {selectedStudents.length} {students.length}
           <StudentSelector
             students={students}
             selectedStudents={selectedStudents}
