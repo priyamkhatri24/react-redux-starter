@@ -9,7 +9,7 @@ build:
   script:
     - apt update
     - apt-get install -y nodejs
-    - npm install -y npm@6.11.0
+    - npm install -y npm@6.13.4
     - nodejs -v
     - npm -v
     - yarn -v
