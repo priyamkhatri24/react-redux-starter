@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import Loadable from 'react-loadable';
 import Skeleton from 'react-loading-skeleton';
@@ -20,7 +20,7 @@ import { connect } from 'react-redux';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import Toast from 'react-bootstrap/Toast';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
-import { get, apiValidation } from '../../Utilities';
+import { get, apiValidation, prodOrDev, post } from '../../Utilities';
 import {
   getClientId,
   getClientUserId,
@@ -43,7 +43,10 @@ import Tests from '../Tests/Tests';
 import './Dashboard.scss';
 import { admissionActions } from '../../redux/actions/admissions.action';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
-import { getComeBackFromTests } from '../../redux/reducers/firstTimeLogin.reducer';
+import {
+  getComeBackFromTests,
+  getFirstTimeLoginState,
+} from '../../redux/reducers/firstTimeLogin.reducer';
 import { studyBinActions } from '../../redux/actions/studybin.actions';
 import fb from '../../assets/images/dummyDashboard/fb.png';
 import linkedin from '../../assets/images/dummyDashboard/linkedin.svg';
@@ -57,6 +60,7 @@ import '../Login/DummyDashboard.scss';
 import { dashboardActions } from '../../redux/actions/dashboard.action';
 import { analysisActions } from '../../redux/actions/analysis.action';
 import { getCurrentRedirectPath } from '../../redux/reducers/dashboard.reducer';
+import { getToken, onMessageListener } from '../../Utilities/firebase';
 
 const DashBoardAdmissions = Loadable({
   loader: () => import('./DashBoardAdmissions'),
@@ -88,6 +92,7 @@ const Dashboard = (props) => {
     setAnalysisStudentObjectToStore,
     setTestLanguageToStore,
     redirectPath,
+    firstTimeLogin,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
@@ -103,6 +108,61 @@ const Dashboard = (props) => {
   const openOptionsModal = () => setOptionsModal(true);
   const closeOptionsModal = () => setOptionsModal(false);
   const [features, setFeatures] = useState([]);
+  const [isToken, setIsToken] = useState(true);
+
+  const getTopicArray = useCallback(() => {
+    return new Promise((resolve, reject) => {
+      const roleId = roleArray.includes(4)
+        ? 4
+        : roleArray.includes(3)
+        ? 3
+        : roleArray.includes(2)
+        ? 2
+        : 1;
+      const currEnv = prodOrDev();
+      const topicArray = [];
+      topicArray.push(`${currEnv}institute${clientId}`);
+      topicArray.push(`${currEnv}user${clientUserId}`);
+      let result;
+      if (roleId === 2 || roleId === 1) {
+        get({ client_user_id: clientUserId }, '/getBatchesOfStudent').then((resp) => {
+          result = apiValidation(resp);
+          const topicArr = result.map((e) => `${currEnv}batch${e.client_batch_id}`);
+          resolve([...topicArray, ...topicArr]);
+        });
+      } else if (roleId === 3) {
+        get({ client_user_id: clientUserId }, '/getBatchesOfTeacher').then((resp) => {
+          result = apiValidation(resp);
+          const topicArr = result.map((e) => `${currEnv}batch${e.client_batch_id}`);
+          resolve([...topicArray, ...topicArr]);
+        });
+      } else {
+        get({ client_id: clientId }, '/getAllBatchesOfCoaching').then((res) => {
+          console.log(res);
+          result = apiValidation(res);
+          const topicArr = result.map((e) => `${currEnv}batch${e.client_batch_id}`);
+          resolve([...topicArray, ...topicArr]);
+        });
+      }
+    });
+  }, [roleArray, clientUserId, clientId]);
+
+  useEffect(() => {
+    console.log(firstTimeLogin);
+    const topicArr = getTopicArray();
+    const getTok = getToken(setIsToken);
+
+    Promise.all([topicArr, getTok]).then((res) => {
+      console.log(res);
+      const token = res[1];
+      const topicArray = res[0];
+      post({ topic_array: JSON.stringify(topicArray), token }, '/subscribeTokenToTopic').then(
+        (resp) => {
+          onMessageListener();
+        },
+      );
+    });
+  }, [getTopicArray, firstTimeLogin]);
 
   const partsOfDay = () => {
     const hours = new Date().getHours();
@@ -136,23 +196,6 @@ const Dashboard = (props) => {
   }, [roleArray]);
 
   useEffect(() => {
-    // const payload = {
-    //   client_id: clientId,
-    //   client_user_id: clientUserId,
-    // };
-
-    // get(payload, '/getRecentDataLatest')
-    //   .then((res) => {
-    //     const result = apiValidation(res);
-    //     console.log(result);
-    //     setNotices(result.notice);
-    //     setAdmissions(result.admission);
-    //     setAttendance(result.attendance);
-    //     setData(result);
-    //     setHasLoaded(true);
-    //     setDashboardDataToStore(result);
-    //   })
-    //   .catch((err) => console.error(err));
     partsOfDay();
 
     get({ client_user_id: clientUserId }, '/getRecentCourses').then((res) => {
@@ -356,7 +399,7 @@ const Dashboard = (props) => {
   const goToCRM = () => history.push('/crm');
 
   const renderComponents = (param) => {
-    switch (param) {
+    switch (param.client_feature_name) {
       case 'attendance':
         return (
           <div
@@ -533,7 +576,7 @@ const Dashboard = (props) => {
       case 'analysis':
         return (
           <DashboardCards
-            image={analysisHands}
+            image={param.feature_icon} // analysisHands
             heading='Analysis'
             subHeading='See detailed reports of every student and assignments.'
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
@@ -719,7 +762,7 @@ const Dashboard = (props) => {
             buttonClick={goToLiveClasses}
           />
         );
-      case 'offlineAssignment':
+      case 'onlineAssignment':
         return (
           <div>
             <Tests startHomework={startHomework} startLive={startLiveTest} />
@@ -728,7 +771,7 @@ const Dashboard = (props) => {
       case 'studyBin':
         return (
           <DashboardCards
-            image={student}
+            image={param.feature_icon} // student
             coloredHeading='Study Bin'
             color='rgba(0, 102, 255, 0.87)'
             subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
@@ -756,7 +799,8 @@ const Dashboard = (props) => {
                 </Button>
               </Col>
               <Col xs={4} className='p-3 mt-3' style={{ textAlign: 'right' }}>
-                <img src={form} alt='form' className='img-fluid' />
+                {/* form */}
+                <img src={param.feature_icon} alt='form' className='img-fluid' />
               </Col>
             </Row>
           </Card>
@@ -782,7 +826,8 @@ const Dashboard = (props) => {
                 </Button>
               </Col>
               <Col xs={5} className='p-3 mt-3' style={{ textAlign: 'right' }}>
-                <img src={share} alt='form' className='img-fluid' />
+                {/* share */}
+                <img src={param.feature_icon} alt='form' className='img-fluid' />
               </Col>
             </Row>
           </Card>
@@ -835,7 +880,7 @@ const Dashboard = (props) => {
       case 'crm':
         return (
           <DashboardCards
-            image={analysis}
+            image={param.feature_icon} // analysis
             heading='CRM'
             subHeading='Manage All your customer Relations Management Enquiries here.'
             boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
@@ -860,6 +905,19 @@ const Dashboard = (props) => {
             </>
           )
         );
+      case 'displayPage':
+        return (
+          <DashboardCards
+            image={param.feature_icon} // student
+            heading='My display page'
+            color='rgba(255, 236, 222, 1)'
+            subHeading='This is like your website. Choose what want to show your guests.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backgroundImg='linear-gradient(90deg, rgba(255, 236, 222, 1) 0%, rgba(255, 145, 61, 1)'
+            buttonClick={goToDisplayPage}
+          />
+        );
+
       default:
         return null;
     }
@@ -908,8 +966,8 @@ const Dashboard = (props) => {
       {hasLoaded &&
         features.length > 0 &&
         features
-          // .filter((elem) => elem.status === 'active')
-          .map((elem) => renderComponents(elem.client_feature_name))}
+          .filter((elem) => process.env.NODE_ENV === 'development' || elem.status === 'active')
+          .map((elem) => renderComponents(elem))}
 
       {/* *****************************Teacher View ********************************* */}
       {/* {(roleArray.includes(3) || roleArray.includes(4)) && (
@@ -1579,6 +1637,26 @@ const Dashboard = (props) => {
         </Toast.Header>
         <Toast.Body>The link has been copied to your clipboard!</Toast.Body>
       </Toast>
+      <Toast
+        style={{
+          position: 'fixed',
+          top: '20px',
+          right: '15%',
+          zIndex: '999',
+        }}
+        onClose={() => setIsToken(true)}
+        show={!isToken}
+        delay={5000}
+        autohide
+      >
+        <Toast.Header>
+          <strong className='mr-auto'>Notifications</strong>
+          <small>Just Now</small>
+        </Toast.Header>
+        <Toast.Body>
+          Please allow notifications to receive prompt updates and important notifications
+        </Toast.Body>
+      </Toast>
     </div>
   );
 };
@@ -1591,6 +1669,7 @@ const mapStateToProps = (state) => ({
   branding: getCurrentBranding(state),
   comeBackFromTests: getComeBackFromTests(state),
   redirectPath: getCurrentRedirectPath(state),
+  firstTimeLogin: getFirstTimeLoginState(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -1666,4 +1745,5 @@ Dashboard.propTypes = {
   branding: PropTypes.instanceOf(Object).isRequired,
   comeBackFromTests: PropTypes.bool.isRequired,
   redirectPath: PropTypes.string.isRequired,
+  firstTimeLogin: PropTypes.bool.isRequired,
 };
