@@ -26,6 +26,7 @@ build:
       - build/
   only:
     - master
+    - development
 
 deploy:
   stage: 'deploy'
