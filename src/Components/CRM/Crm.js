@@ -139,16 +139,24 @@ const CRM = (props) => {
                         {e.question_array.map((elem) => {
                           return (
                             <div style={{ marginLeft: '7%' }}>
-                              <p
-                                style={{ fontSize: '12px', marginBottom: '6px', fontWeight: '600' }}
-                              >
-                                {' '}
-                                {elem.question}{' '}
-                              </p>
-                              <p style={{ fontSize: '14px', marginBottom: '6px' }}>
-                                {' '}
-                                {elem.response}{' '}
-                              </p>
+                              {elem.response.length > 0 && (
+                                <>
+                                  <p
+                                    style={{
+                                      fontSize: '12px',
+                                      marginBottom: '6px',
+                                      fontWeight: '600',
+                                    }}
+                                  >
+                                    {' '}
+                                    {elem.question}{' '}
+                                  </p>
+                                  <p style={{ fontSize: '14px', marginBottom: '6px' }}>
+                                    {' '}
+                                    {elem.response}{' '}
+                                  </p>
+                                </>
+                              )}
                             </div>
                           );
                         })}

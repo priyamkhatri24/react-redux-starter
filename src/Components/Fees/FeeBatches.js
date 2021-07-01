@@ -14,7 +14,7 @@ import './Fees.scss';
 import { apiValidation, get } from '../../Utilities';
 
 const FeeBatches = (props) => {
-  const { clientId, clientUserId, history } = props;
+  const { clientId, clientUserId, history, searchString } = props;
 
   const [filters, setFilters] = useState([]);
   // const [currentClass, setCurrentClass] = useState({});
@@ -37,11 +37,14 @@ const FeeBatches = (props) => {
     };
 
     get(payload, '/getFeeDataForBatchesUsingFilter').then((res) => {
-      console.log(res);
       const result = apiValidation(res);
-      setBatches(result);
+      console.log(result);
+      const searchedArray = result.filter(
+        (e) => e.batch_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+      );
+      setBatches(searchedArray);
     });
-  }, [clientUserId]);
+  }, [clientUserId, searchString]);
 
   // const select = (type, e) => {
   //   switch (type) {
@@ -267,4 +270,9 @@ FeeBatches.propTypes = {
   clientId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
+  searchString: PropTypes.string,
+};
+
+FeeBatches.defaultProps = {
+  searchString: '',
 };
