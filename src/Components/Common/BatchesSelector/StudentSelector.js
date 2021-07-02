@@ -13,6 +13,7 @@ export const StudentSelector = (props) => {
     });
     setModStudents(modifiedStudents);
   }, [students]);
+
   return (
     <BatchesSelector
       batches={modStudents}
