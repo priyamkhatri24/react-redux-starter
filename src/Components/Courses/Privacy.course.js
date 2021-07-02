@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
@@ -11,7 +11,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { courseActions } from '../../redux/actions/course.action';
 import { BatchesSelector } from '../Common';
-import { apiValidation, get, post } from '../../Utilities';
+import { apiValidation, get, post, useDidMountEffect } from '../../Utilities';
 import { getCourseObject } from '../../redux/reducers/course.reducer';
 
 const Privacy = (props) => {
@@ -28,22 +28,28 @@ const Privacy = (props) => {
   const [showModal, setShowModal] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const [courseStatus, setCourseStatus] = useState(courseObject.course_status);
+  const isbatchChanged = useRef({ length: courseObject.current_batch.length, change: false });
 
   const handleClose = () => setShowModal(false);
 
-  const getSelectedBatches = (selectBatches) => {
+  const getSelectedBatches = (allbatches, selectBatches) => {
     setSelectedBatches(selectBatches);
+    setBatches(allbatches);
   };
 
   useEffect(() => {
-    get({ client_id: clientId }, '/getAllBatchesOfCoaching').then((res) => {
-      console.log(res);
-      const result = apiValidation(res);
-      setBatches(result);
-    });
-  }, [clientId]);
+    const finalBatch = courseObject.final_batch;
+    const selectedBatchesPrev = courseObject.current_batch;
+    setBatches(finalBatch);
+    setSelectedBatches(selectedBatchesPrev);
+  }, [clientId, courseObject.final_batch, courseObject.current_batch]);
 
-  // getcourseDetails
+  useEffect(() => {
+    if (selectedBatches.length > 0 && isbatchChanged.current.length !== selectedBatches.length) {
+      isbatchChanged.current.change = true;
+    }
+    console.log(isbatchChanged.current, selectedBatches.length, 'ksbajhsd');
+  }, [selectedBatches]);
 
   const deleteTheDamnCourse = () => {
     Swal.fire({
@@ -79,39 +85,75 @@ const Privacy = (props) => {
   };
 
   const completeCourse = () => {
-    post({ course_id: courseId }, '/completeCourse')
-      .then((res) => {
-        if (res.success) {
-          push('/courses/teachercourse');
-        } else {
+    if (courseObject.current_batch.length > 0 && isbatchChanged.current.change) {
+      Swal.fire({
+        icon: 'info',
+        title: 'Batches changed',
+        // eslint-disable-next-line max-len
+        text: `if you have changed the batches and wish to apply your changes please go back and republish this course`,
+        confirmButtonText: `Continue`,
+        confirmButtonColor: 'red',
+        showDenyButton: true,
+        denyButtonText: `Go Back`,
+        denyButtonColor: 'green',
+      }).then((resp) => {
+        if (resp.isConfirmed) {
+          post({ course_id: courseId }, '/completeCourse')
+            .then((res) => {
+              if (res.success) {
+                push('/courses/teachercourse');
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops!',
+                  text: `Unable to finish. There seems to be a problem in our servers`,
+                });
+              }
+            })
+            .catch((e) => {
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: `Unable to finish. Please check your internet connection`,
+              });
+            });
+        }
+      });
+    } else {
+      post({ course_id: courseId }, '/completeCourse')
+        .then((res) => {
+          if (res.success) {
+            push('/courses/teachercourse');
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops!',
+              text: `Unable to finish. There seems to be a problem in our servers`,
+            });
+          }
+        })
+        .catch((e) => {
           Swal.fire({
             icon: 'error',
             title: 'Oops!',
-            text: `Unable to finish. There seems to be a problem in our servers`,
+            text: `Unable to finish. Please check your internet connection`,
           });
-        }
-      })
-      .catch((e) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops!',
-          text: `Unable to finish. Please check your internet connection`,
         });
-      });
+    }
   };
 
   const publishCourse = () => {
-    const idBatches = selectedBatches.map((e) => e.client_batch_id);
     const payload = {
       course_id: courseId,
-      batch_array: JSON.stringify(idBatches),
+      batch_add: JSON.stringify(selectedBatches),
+      batch_remove: JSON.stringify(batches),
       client_user_id: clientUserId,
       is_public: showWelcome,
     };
 
     console.log(payload);
 
-    post(payload, '/assignCourse').then((res) => {
+    post(payload, '/assignCourseLatest').then((res) => {
       if (res.success) {
         setCourseStatus('published');
         Swal.fire({
@@ -127,6 +169,8 @@ const Privacy = (props) => {
         });
       }
     });
+
+    isbatchChanged.current.change = false;
   };
 
   const unPublishCourse = () => {
@@ -201,7 +245,9 @@ const Privacy = (props) => {
               name='Select Batch'
               type='text'
               placeholder='Select Batch'
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                setShowModal(true);
+              }}
               readOnly
               id='noBackGroundColor'
             />
@@ -292,6 +338,7 @@ const Privacy = (props) => {
           selectBatches={selectedBatches}
           getSelectedBatches={getSelectedBatches}
           title='Batches'
+          sendBoth
         />
         <Modal.Footer>
           <Button variant='dashboardBlueOnWhite' onClick={handleClose}>

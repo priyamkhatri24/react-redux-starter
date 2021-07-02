@@ -40,10 +40,19 @@ const DashBoardAdmissions = (props) => {
       categories: ['Active', 'Inactive'],
     },
   };
+  const handleClick = () => {
+    goToAdmissions();
+  };
 
   return (
     <div className='mx-auto d-flex justify-content-center'>
-      <div className='Dashboard__noticeBoard admission_cards m-3 p-3 mt-3'>
+      <div
+        className='Dashboard__noticeBoard admission_cards m-3 p-3 mt-3'
+        onKeyDown={() => handleClick()}
+        onClick={() => handleClick()}
+        role='button'
+        tabIndex={0}
+      >
         <span className='Dashboard__verticalDots'>
           <MoreVertIcon />
         </span>

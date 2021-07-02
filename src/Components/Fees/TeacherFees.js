@@ -17,6 +17,7 @@ const TeacherFees = (props) => {
   const { clientId, clientUserId, history, setFeePlanTypeToStore } = props;
   const [carouselDetails, setCarouselDetails] = useState({});
   const [activeTab, setActiveTab] = useState('Notifications');
+  const [searchString, setSearchString] = useState('');
 
   useEffect(() => {
     get({ client_id: clientId }, '/getAnnualFeeDetailsForCoaching').then((res) => {
@@ -29,9 +30,18 @@ const TeacherFees = (props) => {
     setActiveTab(tab);
   };
 
+  const searchBatches = (search) => {
+    setSearchString(search);
+  };
+
   return (
     <>
-      <PageHeader title='Fees' />
+      {activeTab === 'Batches' ? (
+        <PageHeader title='Fees' search searchFilter={searchBatches} />
+      ) : (
+        <PageHeader title='Fees' />
+      )}
+
       <div style={{ marginTop: '4rem' }}>
         {activeTab !== 'Batches' && (
           <>
@@ -80,7 +90,12 @@ const TeacherFees = (props) => {
             <FeesTimeline clientId={clientId} />
           </Tab>
           <Tab eventKey='Batches' title='Batches' onClick={() => handleSelect('Batches')}>
-            <FeeBatches clientId={clientId} clientUserId={clientUserId} history={history} />
+            <FeeBatches
+              clientId={clientId}
+              clientUserId={clientUserId}
+              history={history}
+              searchString={searchString}
+            />
           </Tab>
           <Tab eventKey='Summary' title='Summary' onClick={() => handleSelect('Summary')}>
             <div

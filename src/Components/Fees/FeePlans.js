@@ -53,29 +53,25 @@ const FeePlans = (props) => {
       const result = apiValidation(res);
       setRecentPlans(result);
     });
-
+    get({ client_id: clientId }, '/getAllBatchesOfCoaching').then((res) => {
+      console.log(res);
+      const result = apiValidation(res);
+      setBatches(result);
+    });
     get(null, '/getFeeTags').then((res) => {
       console.log(res);
       const result = apiValidation(res);
       setFeeTags(result);
     });
-  }, [clientUserId, feePlanType]);
+  }, [clientUserId, feePlanType, clientId]);
 
   const getPlanValue = (name, amount) => {
     setTagName(name);
     setTagAmount(amount);
   };
 
-  const getBatchesOfCoaching = () => {
-    get({ client_id: clientId }, '/getAllBatchesOfCoaching').then((res) => {
-      console.log(res);
-      const result = apiValidation(res);
-      setBatches(result);
-      handleBatchesOpen();
-    });
-  };
-
-  const getSelectedBatches = (selectBatches) => {
+  const getSelectedBatches = (allbatches, selectBatches) => {
+    setBatches(allbatches);
     setSelectedBatches(selectBatches);
   };
 
@@ -107,7 +103,7 @@ const FeePlans = (props) => {
   const handleStudentsClose = () => setShowStudentsModal(false);
   const handleStudentsOpen = () => setShowStudentsModal(true);
 
-  const getSelectedStudents = (selectStudents) => {
+  const getSelectedStudents = (allstudents, selectStudents) => {
     setSelectedStudents(selectStudents);
     console.log(selectStudents);
   };
@@ -234,7 +230,7 @@ const FeePlans = (props) => {
           />
         )}
         <Row className='justify-content-center my-3'>
-          <Button variant='customPrimary' onClick={() => getBatchesOfCoaching()}>
+          <Button variant='customPrimary' onClick={() => handleBatchesOpen()}>
             Next
           </Button>
         </Row>
@@ -247,6 +243,7 @@ const FeePlans = (props) => {
             selectBatches={selectedBatches}
             getSelectedBatches={getSelectedBatches}
             title='Batches'
+            sendBoth
           />
           <Modal.Footer>
             <Button variant='customPrimary' onClick={() => getStudentsOfBatches()}>

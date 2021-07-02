@@ -38,22 +38,29 @@ const TeacherCourses = (props) => {
   const [isValid, setValid] = useState(false);
   const inputEl = useRef(null);
   const [showToast, setShowToast] = useState(false);
+  const [searchString, setSearchString] = useState('');
 
   useEffect(() => {
     get({ client_id: clientId }, '/getCoursesOfCoaching').then((res) => {
       const result = apiValidation(res);
-      setCourses(result);
+      const searchedArray = result.filter(
+        (e) => e.course_title.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+      );
+      setCourses(searchedArray);
       console.log(result);
     });
     get({ client_id: clientId }, '/getPublishedCoursesOfCoaching').then((res) => {
       const result = apiValidation(res);
-      setStatistics(result);
+      const searchedArray = result.filter(
+        (e) => e.course_title.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+      );
+      setStatistics(searchedArray);
     });
 
     get({ client_id: clientId, course_id: 9 }, '/getCourseDetails').then((res) => {
       console.log(res, 'jaishritest');
     });
-  }, [clientId]);
+  }, [clientId, searchString]);
 
   const getStatisticOfCourse = (id) => {
     history.push({ pathname: '/courses/teachercourse/statistics', state: { id } });
@@ -130,17 +137,27 @@ const TeacherCourses = (props) => {
     if (hasShared === 'clipboard') setShowToast(true);
   };
 
+  const searchCourses = (search) => {
+    setSearchString(search);
+  };
+
   return (
     <>
-      <PageHeader title='Courses' handleBack={goToDashboard} customBack />
-      <div style={{ marginTop: '4rem' }}>
+      <PageHeader
+        title='Courses'
+        handleBack={goToDashboard}
+        customBack
+        search
+        searchFilter={searchCourses}
+      />
+      <div style={{}}>
         <Tabs
           defaultActiveKey='My Courses'
-          className='Profile__Tabs'
+          className='Courses__Profile__Tabs'
           justify
-          style={{ marginTop: '4rem' }}
+          style={{ marginTop: '3.5rem' }}
         >
-          <Tab eventKey='My Courses' title='My Courses' style={{ marginTop: '2rem' }}>
+          <Tab eventKey='My Courses' title='My Courses' style={{ marginTop: '7rem' }}>
             <Button
               variant='customPrimaryWithShadow'
               style={{
@@ -233,7 +250,7 @@ const TeacherCourses = (props) => {
               );
             })}
           </Tab>
-          <Tab eventKey='Statistics' title='Statistics' style={{ marginTop: '2rem' }}>
+          <Tab eventKey='Statistics' title='Statistics' style={{ marginTop: '7rem' }}>
             {statistics.map((course) => {
               return (
                 <Row

@@ -85,7 +85,7 @@ const EditProfile = (props) => {
     if (file) {
       reader.readAsDataURL(e.target.files[0]);
       uploadImage(file).then((res) => {
-        console.log('fileu;lod ', res);
+        console.log('fileupload ', res);
         profileImage.current = res.filename;
       });
 

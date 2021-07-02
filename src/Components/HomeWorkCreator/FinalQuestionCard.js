@@ -87,16 +87,46 @@ const FinalQuestionCard = (props) => {
               );
             })}
 
-          {question.question_answer && <p className='Homework__options text-left m-2'>Solution:</p>}
+          {question.question_answer && (
+            <p className='Homework__options text-left m-2'>Correct answer:</p>
+          )}
           <div className='d-flex mx-3 mb-2 Homework__multipleOptions text-left'>
             <MathJax math={String.raw`${question.question_answer}`} />
           </div>
 
+          {question.question_solution_text && (
+            <>
+              <p className='Homework__options text-left m-2'>Solution:</p>
+              <div className='d-flex mx-3 mb-2 Homework__multipleOptions soultion text-left'>
+                <MathJax math={String.raw`${question.question_solution_text}`} />
+              </div>
+            </>
+          )}
+
+          {question.question_solution_image && (
+            <>
+              <p className='Homework__options text-left m-2'>Solution:</p>
+              <div className='d-flex mx-3 mb-2 Homework__multipleOptions soultionImage text-left'>
+                <img
+                  src={question.question_solution_image}
+                  className='img-fluid m-2 w-75 mx-auto'
+                  alt='question'
+                />
+              </div>
+            </>
+          )}
+
           {isAnalysis && (
             <>
-              <p className='Homework__options text-left m-2'>Option Marked:</p>
+              <p className='Homework__options text-left m-2'>
+                {question.question_type !== 'subjective' ? 'Option Marked:' : 'Answer'}
+              </p>
               <div className='d-flex mx-3 mb-2 Homework__multipleOptions text-left'>
-                <MathJax math={String.raw`${question.student_answer}`} />
+                {question.student_answer === 'E' ? (
+                  'Unanswered'
+                ) : (
+                  <MathJax math={String.raw`${question.student_answer}`} />
+                )}
               </div>
               <p className='Homework__options text-left m-2'>
                 Time Taken: {Math.floor(question.time_taken / 60000)} minutes{' '}

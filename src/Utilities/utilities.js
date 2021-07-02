@@ -145,3 +145,12 @@ export const shareThis = (url, clientName) => {
   navigator.clipboard.writeText(url);
   return 'clipboard';
 };
+
+export const useDidMountEffect = (func, deps) => {
+  const didMount = useRef(false);
+
+  useEffect(() => {
+    if (didMount.current) func();
+    else didMount.current = true;
+  }, deps);
+};
