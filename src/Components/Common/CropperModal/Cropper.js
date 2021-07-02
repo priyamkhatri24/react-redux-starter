@@ -6,7 +6,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import 'react-image-crop/dist/ReactCrop.css';
-import { uploadImage } from '../../../Utilities';
+// import { uploadImage} from '../../../Utilities';
+import { uploadingImage } from '../../../Utilities/customUpload';
 
 const generateImageURL = (canvas, crop) => {
   if (!crop || !canvas) {
@@ -17,8 +18,8 @@ const generateImageURL = (canvas, crop) => {
     canvas.toBlob((blob) => {
       const newFileName = `${Math.random().toString(16).slice(2)}.png`;
       const finalFile = new File([blob], newFileName);
-
-      uploadImage(finalFile).then((res) => {
+      console.log(finalFile, uploadingImage);
+      uploadingImage(finalFile).then((res) => {
         console.log('fileu;lod ', res);
         resolve(res.filename);
       });
@@ -26,7 +27,7 @@ const generateImageURL = (canvas, crop) => {
   });
 };
 
-export const Cropper = (props) => {
+const Cropper = (props) => {
   const { imageModal, handleClose, setProfileImage, sourceImage, aspectTop, aspectBottom } = props;
 
   const imgRef = useRef(null);
@@ -98,7 +99,7 @@ export const Cropper = (props) => {
               onComplete={(c) => setCompletedCrop(c)}
             />
           </Col>
-          <Col xs={12}>
+          <Col xs={12} style={{ display: 'none' }}>
             <h3>Preview</h3>
             <div>
               <canvas
@@ -133,3 +134,5 @@ Cropper.propTypes = {
   aspectTop: PropTypes.number.isRequired,
   aspectBottom: PropTypes.number.isRequired,
 };
+
+export default Cropper;
