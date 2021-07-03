@@ -40,7 +40,7 @@
           const manifestData = JSON.stringify(resp.result);
           const blob = new Blob([manifestData], { type: 'application/json' });
           const manifestURL = URL.createObjectURL(blob);
-          document.querySelector('#dynamic-manifest').setAttribute('href', manifestURL);
+          document.querySelector('#dynamic-manifest').setAttribute('href', manifestURL); // manifestURL
           console.log(resp.result.icons[1].src);
           const appleLink = document.getElementById('apple-icon');
           appleLink.href = resp.result.icons[1].src;
