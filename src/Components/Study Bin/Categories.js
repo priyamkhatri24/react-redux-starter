@@ -219,15 +219,17 @@ const Categories = (props) => {
                             return (
                               <Row className='m-3' key={e} onClick={() => goToRecording(e)}>
                                 {i + 1}. Recording {1 + i}{' '}
-                                <span
-                                  className='ml-auto'
-                                  onClick={(event) => downloadRecording(event, e)}
-                                  onKeyDown={(event) => downloadRecording(event, e)}
-                                  tabIndex='-1'
-                                  role='button'
-                                >
-                                  <GetAppIcon />
-                                </span>
+                                {!roleArray.includes(1) && (
+                                  <span
+                                    className='ml-auto'
+                                    onClick={(event) => downloadRecording(event, e)}
+                                    onKeyDown={(event) => downloadRecording(event, e)}
+                                    tabIndex='-1'
+                                    role='button'
+                                  >
+                                    <GetAppIcon />
+                                  </span>
+                                )}
                               </Row>
                             );
                           })}
