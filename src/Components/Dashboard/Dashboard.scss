@@ -13,10 +13,6 @@
     height: $spacer * 5;
     width: $spacer * 5;
     border-radius: 10px;
-
-    @include media-breakpoint-up(sm) {
-      padding-left: 20px;
-    }
   }
 
   &__headingText {

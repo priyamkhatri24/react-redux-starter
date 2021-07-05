@@ -13,7 +13,7 @@ import { post } from '../../Utilities';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
-import { Cropper } from '../Common';
+import Cropper from '../Common/CropperModal/Cropper';
 
 const SignupForm = (props) => {
   const {

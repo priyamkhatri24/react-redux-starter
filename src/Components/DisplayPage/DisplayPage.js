@@ -8,7 +8,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import Modal from 'react-bootstrap/Modal';
 import Swal from 'sweetalert2';
 import './DisplayPage.scss';
-import { PageHeader, AspectCards, Cropper } from '../Common';
+import { PageHeader, AspectCards } from '../Common';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get, post, propComparator, verifyIsImage } from '../../Utilities';
 import { displayActions } from '../../redux/actions/displaypage.action';
@@ -16,6 +16,7 @@ import AdmissionStyle from '../Admissions/Admissions.style';
 import '../Live Classes/LiveClasses.scss';
 import '../Courses/Courses.scss';
 import '../Profile/Profile.scss';
+import Cropper from '../Common/CropperModal/Cropper';
 
 const DisplayPage = (props) => {
   const { clientId, history, setDisplayDataToStore, clientUserId } = props;
