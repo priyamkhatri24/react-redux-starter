@@ -5,6 +5,7 @@ const initialState = {
   isLoadingError: false,
   totalLoaded: 100,
   amountLoaded: 0,
+  isSpinner: false,
 };
 
 export function loading(state = initialState, action) {
@@ -40,6 +41,12 @@ export function loading(state = initialState, action) {
         totalLoaded: action.payload,
       };
 
+    case loadingConstants.ISSPINNER:
+      return {
+        ...state,
+        isSpinner: action.payload,
+      };
+
     default:
       return state;
   }
@@ -49,3 +56,4 @@ export const getCurrentLoadingStatus = (state) => state.loading.isLoading;
 export const getCurrentErrorStatus = (state) => state.loading.isLoadingError;
 export const getAmountLoaded = (state) => state.loading.amountLoaded;
 export const getTotalLoaded = (state) => state.loading.totalLoaded;
+export const getStatusOfSpinner = (state) => state.loading.isSpinner;
