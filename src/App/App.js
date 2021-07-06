@@ -9,13 +9,14 @@ import { setGlobalColors, changeFaviconAndDocumentTitle } from '../Utilities';
 import { Loader } from '../Components/Common/Loader/Loading';
 import './App.scss';
 import { history, Routes } from '../Routing';
-import { getCurrentLoadingStatus } from '../redux/reducers/loading.reducer';
+import { getCurrentLoadingStatus, getStatusOfSpinner } from '../redux/reducers/loading.reducer';
 import withClearCache from './BustCache';
 
 function MainApp(props) {
-  const { color, currentbranding, isLoading } = props;
+  const { color, currentbranding, isLoading, isSpinner } = props;
 
   useEffect(() => {
+    console.log(isSpinner);
     if (Object.keys(color.color) !== 0) {
       const { primary, light, lighter, superLight } = color.color;
       setGlobalColors(primary, light, lighter, superLight);
@@ -25,11 +26,11 @@ function MainApp(props) {
       const { client_icon: clientIcon, client_title: clientTitle } = currentbranding.branding;
       changeFaviconAndDocumentTitle(clientIcon, clientTitle);
     }
-  }, [color, currentbranding]);
+  }, [color, currentbranding, isSpinner]);
 
   return (
     <Container fluid className='p-0 m-0 overflow-hidden rootContainer mx-auto'>
-      {isLoading && <Loader />}
+      {isLoading && <Loader isSpinner={isSpinner} />}
       <ConnectedRouter history={history}>
         <Routes />
       </ConnectedRouter>
@@ -41,6 +42,7 @@ const mapStateToProps = (state) => ({
   color: getCurrentcolor(state),
   currentbranding: getCurrentBranding(state),
   isLoading: getCurrentLoadingStatus(state),
+  isSpinner: getStatusOfSpinner(state),
 });
 
 const BustCache = withClearCache(connect(mapStateToProps)(MainApp));
@@ -64,4 +66,5 @@ MainApp.propTypes = {
   currentbranding: PropTypes.shape({
     branding: PropTypes.instanceOf(Object).isRequired,
   }).isRequired,
+  isSpinner: PropTypes.bool.isRequired,
 };

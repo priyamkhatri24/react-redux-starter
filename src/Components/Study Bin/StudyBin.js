@@ -29,6 +29,7 @@ import './StudyBin.scss';
 import { studyBinActions } from '../../redux/actions/studybin.actions';
 import { getStudyBinFolderIDArray } from '../../redux/reducers/studybin.reducer';
 import StudyBinMenu from './StudyBinMenu';
+import { loadingActions } from '../../redux/actions/loading.action';
 
 const StudyBin = (props) => {
   const {
@@ -39,6 +40,9 @@ const StudyBin = (props) => {
     studyBinFolderIdArray,
     pushFolderIDToFolderIDArrayInStore,
     popFolderIDFromFolderIDArrayInStore,
+    setSpinnerStatusToStore,
+    setLoadingSuccessToStore,
+    setLoadingPendingToStore,
   } = props;
 
   const [fileArray, setFileArray] = useState([]);
@@ -239,6 +243,8 @@ const StudyBin = (props) => {
       client_user_id: clientUserId,
       clientId,
     };
+    setSpinnerStatusToStore(true);
+    setLoadingPendingToStore();
 
     if (folderIdStack.length < 1) {
       if (roleArray.includes(3) || roleArray.includes(4)) {
@@ -248,20 +254,32 @@ const StudyBin = (props) => {
         };
         get(temp, '/getPrimaryFoldersAndFiles') // instead of temp should be [payload]
           .then((res) => {
+            setSpinnerStatusToStore(false);
+            setLoadingSuccessToStore();
             const result = apiValidation(res);
             setFileArray(result.files);
             setFolderArray(result.folders);
             pushFolderIDToFolderIDArrayInStore(result.client_folder_id);
           })
-          .catch((err) => console.log(err));
+          .catch((err) => {
+            console.log(err);
+            setSpinnerStatusToStore(false);
+            setLoadingSuccessToStore();
+          });
       } else {
         get(payload, '/getFoldersAndFilesForStudent')
           .then((res) => {
+            setSpinnerStatusToStore(false);
+            setLoadingSuccessToStore();
             const result = apiValidation(res);
             setFileArray(result.files);
             setFolderArray(result.folders);
           })
-          .catch((err) => console.log(err));
+          .catch((err) => {
+            console.log(err);
+            setSpinnerStatusToStore(false);
+            setLoadingSuccessToStore();
+          });
       }
     } else if (folderIdStack.length >= 1) {
       const currentFolderId = folderIdStack[folderIdStack.length - 1];
@@ -271,13 +289,28 @@ const StudyBin = (props) => {
       };
       get(newPayload, '/getFoldersAndFilesOfFolder')
         .then((res) => {
+          setSpinnerStatusToStore(false);
+          setLoadingSuccessToStore();
           const result = apiValidation(res);
           setFileArray(result.files);
           setFolderArray(result.folders);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          setSpinnerStatusToStore(false);
+          setLoadingSuccessToStore();
+        });
     }
-  }, [clientId, clientUserId, folderIdStack, roleArray, pushFolderIDToFolderIDArrayInStore]);
+  }, [
+    clientId,
+    clientUserId,
+    folderIdStack,
+    roleArray,
+    pushFolderIDToFolderIDArrayInStore,
+    setSpinnerStatusToStore,
+    setLoadingSuccessToStore,
+    setLoadingPendingToStore,
+  ]);
 
   useEffect(() => {
     get({ client_user_id: clientUserId }, '/getFileCategoriesForStudent').then((res) => {
@@ -678,6 +711,15 @@ const mapDispatchToProps = (dispatch) => {
     pushFolderIDToFolderIDArrayInStore: (payload) => {
       dispatch(studyBinActions.pushFolderIDToFolderIDArrayInStore(payload));
     },
+    setLoadingPendingToStore: (payload) => {
+      dispatch(loadingActions.pending());
+    },
+    setLoadingSuccessToStore: (payload) => {
+      dispatch(loadingActions.success());
+    },
+    setSpinnerStatusToStore: (payload) => {
+      dispatch(loadingActions.spinner(payload));
+    },
   };
 };
 
@@ -693,4 +735,7 @@ StudyBin.propTypes = {
   studyBinFolderIdArray: PropTypes.instanceOf(Array).isRequired,
   pushFolderIDToFolderIDArrayInStore: PropTypes.func.isRequired,
   popFolderIDFromFolderIDArrayInStore: PropTypes.func.isRequired,
+  setSpinnerStatusToStore: PropTypes.func.isRequired,
+  setLoadingPendingToStore: PropTypes.func.isRequired,
+  setLoadingSuccessToStore: PropTypes.func.isRequired,
 };
