@@ -281,6 +281,14 @@ const Conversation = Loadable({
   loading: Loading,
 });
 
+const ImageEditor = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'ImageEditor' */ '../Components/Conversations/ImageEditor/ImageEditor'
+    ),
+  loading: Loading,
+});
+
 const ConversationDetails = Loadable({
   loader: () =>
     import(
@@ -376,6 +384,7 @@ export function Routes() {
 
       <AuthenticatedRoute exact path='/conversations' component={Conversations} />
       <AuthenticatedRoute exact path='/conversation' component={Conversation} />
+      <AuthenticatedRoute exact path='/image-editor' component={ImageEditor} />
       <AuthenticatedRoute exact path='/conversation/details' component={ConversationDetails} />
       <AuthenticatedRoute exact path='/conversations/:id/media' component={ConversationMedia} />
       <AuthenticatedRoute exact path='/conversations/:id/:type' component={ConversationFiles} />

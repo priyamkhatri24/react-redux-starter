@@ -51,27 +51,28 @@ input[type='range']:focus::-webkit-slider-runnable-track {
 
   .image-by-author {
     @extend .message-by-author;
-    height: 180px;
-    width: auto;
+    // height: 300px;
+    // width: auto;
+    // width: 90%;
 
     .image-message {
-      height: 150px;
+      // height: 280px;
+      width: 100%;
     }
   }
 
   .video-by-author {
     @extend .message-by-author;
-    height: 180px;
+    height: 300px;
     width: auto;
 
     .video-message {
-      height: 150px;
+      height: 280px !important;
     }
   }
 
   .doc-by-author {
     @extend .message-by-author;
-    max-width: 80%;
   }
 
   .audio-message {
@@ -81,8 +82,11 @@ input[type='range']:focus::-webkit-slider-runnable-track {
   }
 
   .post-message {
-    background-color: #f1f9ff;
-    box-shadow: 0.5px 0.5px 1px 0px #00000026;
+    // background-color: #f1f9ff;
+    background-color: #fcfcfc;
+    width: 100% !important;
+    // box-shadow: 0.5px 0.5px 1px 0px #00000026;
+    box-shadow: 0px 0px 0px 1px #00000026 !important;
     border-radius: 5px;
     font-size: 14px;
     font-family: 'Montserrat-Regular';
@@ -146,6 +150,10 @@ input[type='range']:focus::-webkit-slider-runnable-track {
         }
       }
     }
+
+    .post-comments {
+      background-color: #eeeeee;
+    }
   }
 
   .timestamp {
@@ -159,7 +167,7 @@ input[type='range']:focus::-webkit-slider-runnable-track {
     box-shadow: 0.5px 0.5px 1px 0px #00000026;
     border-radius: 5px;
     display: inline-block;
-    max-width: 80%;
+    // max-width: 80%;
     min-width: 40%;
 
     .username {
@@ -177,21 +185,23 @@ input[type='range']:focus::-webkit-slider-runnable-track {
 
     .image-by-user {
       @extend .message-by-user;
-      height: 180px;
-      width: auto;
+      // height: 300px;
+      // width: auto;
+      // width: 80%;
 
       .image-message {
-        height: 150px;
+        // height: 280px;
+        width: 100%;
       }
     }
 
     .video-by-user {
       @extend .message-by-user;
-      height: 180px;
+      height: 300px;
       width: auto;
 
       .video-message {
-        height: 150px;
+        height: 280px !important;
       }
     }
 
@@ -226,6 +236,15 @@ input[type='range']:focus::-webkit-slider-runnable-track {
   position: relative;
 }
 
+.dragger-fullwidth {
+  width: 100%;
+  position: relative;
+}
+
 .dragger-media {
   position: relative;
+}
+
+.reply {
+  width: 100%;
 }

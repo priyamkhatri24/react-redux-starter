@@ -177,6 +177,58 @@ const Conversation = () => {
     }
   };
 
+  const reactToPost = (messageId, userHasReacted) => {
+    post(
+      {
+        reaction_id: 1,
+        client_user_id: clientUserId,
+        chat_id: messageId,
+        conversation_id: conversation.id,
+      },
+      '/addReactionToChat',
+    )
+      .then((res) => {
+        const newPosts = [...posts];
+        const index = newPosts.findIndex((message) => message.id === messageId);
+        const newPost = newPosts[index];
+        console.log(newPost);
+        const { reactions } = newPost;
+
+        console.log('index', index);
+        if (!userHasReacted && reactions.length > 0) {
+          const reaction = reactions.pop();
+          reaction.count += 1;
+          newPost.userHasReacted = true;
+          newPost.reactions = [reaction];
+        } else if (!userHasReacted && reactions.length === 0) {
+          reactions.push({
+            count: 1,
+            id: 1,
+            name: 'like',
+            url: 'abc.com',
+          });
+          newPost.userHasReacted = true;
+        }
+
+        if (userHasReacted) {
+          const reaction = reactions.pop();
+          reaction.count -= 1;
+          newPost.reactions = [reaction];
+          newPost.userHasReacted = false;
+        }
+
+        newPost.reactions = reactions;
+        newPosts[index] = newPost;
+        console.log(newPost);
+        setPosts(newPosts);
+      })
+      .catch((e) => {
+        console.log('erroring out');
+        console.log(e);
+        console.error(e);
+      });
+  };
+
   const reactToMessage = (messageId, userHasReacted) => {
     post(
       {
@@ -192,30 +244,62 @@ const Conversation = () => {
         const { messages } = newConversation;
         const index = messages.findIndex((message) => message.id === messageId);
         const message = messages[index];
+        console.log(message);
         const { reactions } = message;
 
-        if (!userHasReacted) {
-          if (reactions.length > 0) {
-            reactions[0].count += 1;
-          } else {
-            reactions.push({
-              count: 1,
-              id: 1,
-              name: 'like',
-              url: 'abc.com',
-            });
-          }
+        console.log('index', index);
+        if (!userHasReacted && reactions.length > 0) {
+          const reaction = reactions.pop();
+          reaction.count += 1;
           message.userHasReacted = true;
-        } else {
-          message.userHasReacted = false;
-          reactions[0].count -= 1;
+          message.reactions = [reaction];
+        } else if (!userHasReacted && reactions.length === 0) {
+          reactions.push({
+            count: 1,
+            id: 1,
+            name: 'like',
+            url: 'abc.com',
+          });
+          message.userHasReacted = true;
         }
+
+        if (userHasReacted) {
+          const reaction = reactions.pop();
+          reaction.count -= 1;
+          message.reactions = [reaction];
+          message.userHasReacted = false;
+        }
+
+        // if (!userHasReacted) {
+        //   if (reactions.length > 0) {
+        //     reactions[0].count += 1;
+        //   } else {
+        //     reactions.push({
+        //       count: 1,
+        //       id: 1,
+        //       name: 'like',
+        //       url: 'abc.com',
+        //     });
+        //   }
+        //   message.userHasReacted = true;
+        // } else {
+        //   message.userHasReacted = false;
+        //   if (reactions[0].count - 1 > 0) {
+        //     reactions[0].count -= 1;
+        //   } else {
+        //     reactions = [];
+        //   }
+        // }
 
         message.reactions = reactions;
         messages[index] = message;
+        newConversation.messages = messages;
+        console.log(message);
         setConversation(newConversation);
       })
       .catch((e) => {
+        console.log('erroring out');
+        console.log(e);
         console.error(e);
       });
   };
@@ -237,6 +321,11 @@ const Conversation = () => {
       isLoading: true,
     };
 
+    if (fileType === 'image') {
+      history.push({ pathname: '/image-editor', state: { ...newMessage, file } });
+      return;
+    }
+
     const newConversation = { ...conversation };
     const { messages } = newConversation;
     console.log(messages);
@@ -246,9 +335,10 @@ const Conversation = () => {
     newConversation.messages = newMessages;
     setConversation(newConversation);
 
-    uploadFiles([{ file, type: 'image' }]).then((res) => {
-      console.log(res.filename);
-      const { filename } = res;
+    uploadFiles([{ file, type: fileType }]).then((res) => {
+      console.log('res', res);
+      const { attachments_array: arr } = res;
+      const { url: filename } = arr[0];
       socket.emit(
         'sendMessage',
         {
@@ -300,22 +390,6 @@ const Conversation = () => {
           replyTo: reply,
         });
         setReply(null);
-
-        socket.emit(
-          'sendMessage',
-          {
-            sender_id: 1801,
-            conversation_id: conversation.id,
-            text: message,
-            type: 'message',
-            attachments_array: [],
-            primary_chat_id: reply?.id,
-          },
-          (err, ack) => {
-            console.log('aaaaaa', ack);
-          },
-        );
-
         messagesEnd.current !== null && messagesEnd.current.scrollIntoView();
       },
     );
@@ -323,7 +397,9 @@ const Conversation = () => {
 
   const replyToMessage = (message) => {
     console.log(message);
-    setReply(message);
+    if (message.message.type !== 'post') {
+      setReply(message);
+    }
   };
 
   const onTabSelected = (tab) => {
@@ -377,7 +453,7 @@ const Conversation = () => {
           <Col md={12}>
             <div className='p-2 discussions-container'>
               <Messages
-                onReactionToMessage={(id, reacted) => {}}
+                onReactionToMessage={(id, reacted) => reactToPost(id, reacted)}
                 list={posts || []}
                 isLoading={isLoading}
                 nextPage={conversation.page}

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { Row, Col, Media, Image, Spinner, Button, Form } from 'react-bootstrap';
 import ReactPlayer from 'react-player';
+import FileIcon from '../../../assets/images/file.svg';
 import './Message.scss';
 
 const SLIDE_WIDTH = 50;
@@ -23,10 +24,12 @@ class Message extends React.Component {
 
     this.TYPE_COMPONENT_MAPPING = {
       image: () => this.ImageMessage(),
+      gallery: () => this.ImageMessage(),
       text: () => this.TextMessage(),
       video: () => this.VideoMessage(),
       audio: () => this.AudioMessage(),
       doc: () => this.DocumentMessage(),
+      file: () => this.DocumentMessage(),
       post: () => this.PostMessage(),
     };
 
@@ -213,8 +216,8 @@ class Message extends React.Component {
           className='video-message'
           controls
           url={[{ src: message.content, type: 'video/mp4' }]}
-          width='auto'
-          height='150px'
+          width='100%'
+          height='280px'
         />
         <div className='mt-1'>{this.MessageFooter()}</div>
       </div>
@@ -323,7 +326,8 @@ class Message extends React.Component {
     return (
       <div className={`drag-handler ${userIsAuthor ? 'doc-by-author' : 'doc-by-user'}`}>
         <div className='p-2 d-flex flex-row align-items-center'>
-          <i className='material-icons'>insert_drive_file</i>
+          {/* <i className='material-icons'>insert_drive_file</i> */}
+          <Image src={FileIcon} height='24px' />
           <p className='ml-2' style={{ marginBottom: '0px' }}>
             {message.name}
           </p>
@@ -370,14 +374,14 @@ class Message extends React.Component {
             </div>
           </div>
           <div className='post-footer d-flex flex-row align-items-center justify-content-between mt-1'>
-            <span className='p-1'>
-              <i
-                className={`material-icons ${userHasReacted ? 'red' : 'grey'}`}
-                role='button'
-                tabIndex={0}
-                onKeyPress={(e) => e.key === 13 && onReactionToMessage(id, userHasReacted)}
-                onClick={() => onReactionToMessage(id, userHasReacted)}
-              >
+            <span
+              className='p-1'
+              role='button'
+              tabIndex={0}
+              onKeyPress={(e) => e.key === 13 && onReactionToMessage(id, userHasReacted)}
+              onClick={() => onReactionToMessage(id, userHasReacted)}
+            >
+              <i className={`material-icons ${userHasReacted ? 'red' : 'grey'}`}>
                 {userHasReacted ? 'favorite' : 'favorite_border'}
               </i>{' '}
               {userHasReacted && reactions[0].count}
@@ -390,6 +394,33 @@ class Message extends React.Component {
             <span className='p-1'>
               <i className='material-icons share'>share</i>
             </span>
+          </div>
+          <div className='post-comments pt-3 pb-3 pl-2 pr-2 mt-3'>
+            <Media as='div' style={{ width: '100%' }}>
+              <Image
+                src='https://i.pravatar.cc/40'
+                width={30}
+                className='align-self-start mr-3'
+                roundedCircle
+              />
+              <Media.Body>
+                <Row>
+                  <Col>
+                    <div
+                      className='message-content pt-1 pb-1 pl-2 pr-2'
+                      style={{
+                        width: '100%',
+                        backgroundColor: 'transparent',
+                        boxShadow: 'none',
+                      }}
+                    >
+                      <p className='username'>ABC</p>
+                      {commentsInfo.featuredComment}
+                    </div>
+                  </Col>
+                </Row>
+              </Media.Body>
+            </Media>
           </div>
           <div className='mt-3'>{this.MessageFooter()}</div>
         </div>
@@ -407,9 +438,22 @@ class Message extends React.Component {
         <div className='message handle' key={id} ref={this.container}>
           {userIsAuthor && (
             <div className='d-flex flex-column align-items-end'>
-              <div className='dragger' ref={this.slider} onTouchStart={this.startDrag}>
+              <div
+                className={message.type === 'post' ? 'dragger-fullwidth' : 'dragger'}
+                ref={this.slider}
+                onTouchStart={this.startDrag}
+              >
                 {replyTo && replyTo.id && (
-                  <div className='reply pl-2 pr-2 pt-1 pb-1'>{replyTo.message.content}</div>
+                  <>
+                    {replyTo.message.type === 'post' && (
+                      <div className='reply pl-2 pr-2 pt-1 pb-1'>
+                        {replyTo.message.content.title}
+                      </div>
+                    )}
+                    {replyTo.message.type !== 'post' && (
+                      <div className='reply pl-2 pr-2 pt-1 pb-1'>{replyTo.message.content}</div>
+                    )}
+                  </>
                 )}
                 {messageComponent}
               </div>
@@ -431,16 +475,16 @@ class Message extends React.Component {
               <Media.Body>
                 <Row>
                   <Col>
-                    {replyTo.id && (
-                      <a href={`/conversation#${replyTo.id}`}>
-                        <div className='reply pl-2 pr-2 pt-1 pb-1'>{replyTo.message.content}</div>
-                      </a>
-                    )}
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
                     <div className='message-content pt-1 pb-1 pl-2 pr-2'>
+                      {replyTo.id && (
+                        <div className='pt-1 pb-1'>
+                          <a href={`/conversation#${replyTo.id}`}>
+                            <div className='reply pl-2 pr-2 pt-1 pb-1'>
+                              {replyTo.message.content}
+                            </div>
+                          </a>
+                        </div>
+                      )}
                       <p className='username'>{username}</p>
                       {messageComponent}
                     </div>

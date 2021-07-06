@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FormControl, Button, Media, Image } from 'react-bootstrap';
+import { FormControl, Button, Media, Image, Col } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { post } from '../../../Utilities';
 import './Comments.scss';
@@ -44,17 +44,25 @@ const Comments = function ({
   };
 
   const addComment = () => {
+    // post_comments_post_comments_id - comment_id
+    // post_comments_id - id
+
     const data = {
       chat_id: postId,
       comment_text: comment,
       client_user_id: clientUserId,
+      parent_comment_id: null,
     };
 
-    if (replyingTo && replyingTo.post_comments_post_comments_id) {
-      data.parent_comment_id = replyingTo.post_comments_post_comments_id;
-    } else if (replyingTo && replyingTo.post_comments_id) {
+    if (replyingTo && replyingTo.post_comments_id) {
       data.parent_comment_id = replyingTo.post_comments_id;
     }
+
+    // if (replyingTo && replyingTo.post_comments_post_comments_id) {
+    //   data.parent_comment_id = replyingTo.post_comments_post_comments_id;
+    // } else if (replyingTo && replyingTo.post_comments_id) {
+    //   data.parent_comment_id = replyingTo.post_comments_id;
+    // }
 
     if (replyingTo) {
       setShowReplies({
@@ -68,19 +76,19 @@ const Comments = function ({
     }
 
     if (replyingTo && !showReplies[replyingTo.post_comments_id]) {
-      onFetchReplies(replyingTo.post_comments_id);
+      onFetchReplies(data.parent_comment_id);
     }
 
     post(data, '/addCommentToPost').then((res) => {
       setComment('');
       console.log('replyingTo', replyingTo);
-      if (replyingTo && replyingTo.post_comments_id) {
+      if (replyingTo && data.parent_comment_id) {
         onAddReply({
           comment_text: comment,
           hasUserReacted: false,
           client_user_id: clientUserId,
           post_comments_id: res.post_comments_id,
-          post_comments_post_comments_id: replyingTo.post_comments_id,
+          post_comments_post_comments_id: data.parent_comment_id,
           reactions: [],
           sent_by: {
             first_name: 'Baddam Admin',
@@ -116,6 +124,7 @@ const Comments = function ({
       {list.map((c, index) => (
         <Media as='div' className='mb-2 comment'>
           <Image src={thumbnail} width={30} className='align-self-start mr-1 mt-2' roundedCircle />
+
           <Media.Body>
             <div className='pt-1 pb-1 pl-2 pr-2' style={{ maxWidth: '90%' }}>
               <p className='author-username'>{username}</p>
@@ -155,56 +164,63 @@ const Comments = function ({
                 {getRepliesForComment(c.post_comments_id) &&
                   getRepliesForComment(c.post_comments_id).list.map((reply, replyIndex) => (
                     <Media as='div' className='mb-2'>
-                      <Image
-                        src={thumbnail}
-                        width={30}
-                        className='align-self-start mr-1 mt-2'
-                        roundedCircle
-                      />
-                      <Media.Body>
-                        <div className='pt-1 pb-1 pl-2 pr-2' style={{ maxWidth: '90%' }}>
-                          <p className='author-username'>{username}</p>
-                          <div
-                            style={{
-                              fontSize: '12px',
-                              marginBottom: '0px',
-                              whiteSpace: 'break-spaces',
-                              fontFamily: 'Montserrat-Regular',
-                            }}
-                          >
-                            {reply.comment_text}
-                          </div>
-                        </div>
-                        <div className='justify-content-end d-flex'>
-                          <span className='p-1 mr-3'>
-                            <i
-                              className={`material-icons ${reply.hasUserReacted ? 'red' : 'grey'}`}
-                              role='button'
-                              tabIndex={0}
-                              onKeyPress={(e) =>
-                                e.key === 13 && reactToComment(reply, replyIndex, 'reply')
-                              }
-                              onClick={() => reactToComment(reply, replyIndex, 'reply')}
+                      <Col xs={1}>
+                        <Image
+                          src={thumbnail}
+                          width={30}
+                          className='align-self-start mr-1 mt-2'
+                          roundedCircle
+                        />
+                      </Col>
+                      <Col xs={11}>
+                        <Media.Body>
+                          <div className='pt-1 pb-1 pl-2 pr-2' style={{ maxWidth: '90%' }}>
+                            <p className='author-username'>{username}</p>
+                            <div
+                              style={{
+                                fontSize: '12px',
+                                marginBottom: '0px',
+                                whiteSpace: 'break-spaces',
+                                fontFamily: 'Montserrat-Regular',
+                              }}
                             >
-                              {reply.hasUserReacted ? 'favorite' : 'favorite_border'}
-                            </i>
-                            {reply.reactions.length > 0 && reply.reactions[0].no_of_reactions}
-                            {reply.reactions.length === 0 && 0}
-                          </span>
+                              {reply.comment_text}
+                            </div>
+                          </div>
+                          <div className='justify-content-end d-flex'>
+                            <span className='p-1 mr-3'>
+                              <i
+                                className={`material-icons ${
+                                  reply.hasUserReacted ? 'red' : 'grey'
+                                }`}
+                                role='button'
+                                tabIndex={0}
+                                onKeyPress={(e) =>
+                                  e.key === 13 && reactToComment(reply, replyIndex, 'reply')
+                                }
+                                onClick={() => reactToComment(reply, replyIndex, 'reply')}
+                              >
+                                {reply.hasUserReacted ? 'favorite' : 'favorite_border'}
+                              </i>
+                              {reply.reactions.length > 0 && reply.reactions[0].no_of_reactions}
+                              {reply.reactions.length === 0 && 0}
+                            </span>
 
-                          {/* <Button
+                            {/* <Button
                             variant='link p-0 m-0'
                             className='like-btn'
                             onClick={() => setReplyingTo(reply)}
                           >
                             Reply
                           </Button> */}
-                        </div>
-                      </Media.Body>
+                          </div>
+                        </Media.Body>
+                      </Col>
                     </Media>
                   ))}
               </div>
             )}
+
             {c.no_of_replies > 0 && (
               <div className='text-center'>
                 <Button
@@ -258,7 +274,7 @@ const Comments = function ({
           value={comment}
           onChange={(e) => setComment(e.target.value)}
         />
-        <Button className='rounded-btn ml-2' onClick={() => addComment()}>
+        <Button disabled={!comment} className='rounded-btn ml-2' onClick={() => addComment()}>
           <i className='material-icons'>send</i>
         </Button>
       </div>

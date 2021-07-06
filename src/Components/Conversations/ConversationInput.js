@@ -60,6 +60,7 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
   };
 
   const startRecording = function () {
+    setTimeElapsed('00:00');
     const newRecorder = new MicRecorder({ bitRate: 128 });
     navigator.getUserMedia(
       { audio: true },
@@ -117,6 +118,7 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
     console.log(recordingState.file);
     onFileUpload(recordingState.file, 'audio');
     setRecordingState({ ...recordingState, isVisible: false, file: null, blobURL: '' });
+    setTimeElapsed('00:00');
   };
 
   const captureImage = function () {
@@ -303,7 +305,7 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
               <>
                 <Button variant='link' onClick={(e) => startRecording()}>
                   <i className='material-icons' style={{ color: '#2699FB', fontSize: '30px' }}>
-                    play_circle
+                    refresh
                   </i>
                 </Button>
                 <Button variant='link' onClick={() => sendRecording()}>

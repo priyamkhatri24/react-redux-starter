@@ -50,3 +50,16 @@ span {
     margin-right: 5px;
   }
 }
+
+.replies {
+  margin-left: -15px !important;
+
+  .media {
+    border-left: '1px solid #000';
+    z-index: 4;
+  }
+
+  div {
+    padding-left: 10px;
+  }
+}

@@ -7,7 +7,10 @@ export const formatMessageContent = (message) => {
       content: {
         title: message.title,
         desc: message.text,
-        cover: message.attachments_array.length === 0 ? '' : message.attachments_array[0].file_url,
+        cover:
+          message.attachments_array && message.attachments_array.length > 0
+            ? message.attachments_array[0].file_url
+            : '',
       },
     };
   }
