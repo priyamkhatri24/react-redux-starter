@@ -6,6 +6,7 @@ import { get, apiValidation } from '../../Utilities';
 import { PageHeader } from '../Common';
 import placeholder from '../../assets/images/ycIcon.png';
 import './Courses.scss';
+import { history } from '../../Routing/History';
 
 const CourseStatistics = (props) => {
   const {
@@ -15,9 +16,7 @@ const CourseStatistics = (props) => {
       },
     },
   } = props;
-
   const [stats, setStats] = useState([]);
-
   useEffect(() => {
     get({ course_id: id }, '/getStatisticsOfCourse').then((res) => {
       console.log(res);
@@ -26,9 +25,13 @@ const CourseStatistics = (props) => {
     });
   }, [id]);
 
+  const goToCourseStatistics = () => {
+    history.push({ pathname: '/courses/teachercourse' });
+  };
+
   return (
     <>
-      <PageHeader title='Details' />
+      <PageHeader title='Details' handleBack={goToCourseStatistics} />
       <div className='Courses__statisticsConatiner'>
         {stats.map((course) => {
           return (

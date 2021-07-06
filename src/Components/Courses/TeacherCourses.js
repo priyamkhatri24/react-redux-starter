@@ -10,7 +10,11 @@ import Modal from 'react-bootstrap/Modal';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import Toast from 'react-bootstrap/Toast';
 import format from 'date-fns/format';
-import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
+import {
+  getClientId,
+  getClientUserId,
+  getRoleArray,
+} from '../../redux/reducers/clientUserId.reducer';
 import { getCourseId } from '../../redux/reducers/course.reducer';
 import { get, post } from '../../Utilities/Remote';
 import { apiValidation, shareThis } from '../../Utilities';
@@ -30,6 +34,7 @@ const TeacherCourses = (props) => {
     setCourseObjectToStore,
     setCourseCurrentSlideToStore,
     dashboardData,
+    roleArray,
   } = props;
   const [courses, setCourses] = useState([]);
   const [statistics, setStatistics] = useState([]);
@@ -39,9 +44,15 @@ const TeacherCourses = (props) => {
   const inputEl = useRef(null);
   const [showToast, setShowToast] = useState(false);
   const [searchString, setSearchString] = useState('');
+  const [activeTab, setActiveTab] = useState('My Courses');
 
   useEffect(() => {
-    get({ client_id: clientId }, '/getCoursesOfCoaching').then((res) => {
+    const payload = {
+      client_id: clientId,
+      client_user_id: clientUserId,
+      is_admin: roleArray.includes(4),
+    };
+    get(payload, '/getCoursesOfCoachingLatest').then((res) => {
       const result = apiValidation(res);
       const searchedArray = result.filter(
         (e) => e.course_title.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
@@ -49,6 +60,7 @@ const TeacherCourses = (props) => {
       setCourses(searchedArray);
       console.log(result);
     });
+    console.log(history);
     get({ client_id: clientId }, '/getPublishedCoursesOfCoaching').then((res) => {
       const result = apiValidation(res);
       const searchedArray = result.filter(
@@ -62,6 +74,10 @@ const TeacherCourses = (props) => {
     });
   }, [clientId, searchString]);
 
+  // useEffect(()=>{
+  //   setActiveTab(history)
+  // },[])
+  console.log(history.top, 'ZZZZ');
   const getStatisticOfCourse = (id) => {
     history.push({ pathname: '/courses/teachercourse/statistics', state: { id } });
   };
@@ -141,6 +157,10 @@ const TeacherCourses = (props) => {
     setSearchString(search);
   };
 
+  const handleSelect = (tab) => {
+    setActiveTab(tab);
+  };
+
   return (
     <>
       <PageHeader
@@ -152,12 +172,18 @@ const TeacherCourses = (props) => {
       />
       <div style={{}}>
         <Tabs
-          defaultActiveKey='My Courses'
+          defaultActiveKey={activeTab}
           className='Courses__Profile__Tabs'
           justify
           style={{ marginTop: '3.5rem' }}
+          onSelect={handleSelect}
         >
-          <Tab eventKey='My Courses' title='My Courses' style={{ marginTop: '7rem' }}>
+          <Tab
+            eventKey='My Courses'
+            title='My Courses'
+            style={{ marginTop: '7rem' }}
+            onclick={() => handleSelect('My Courses')}
+          >
             <Button
               variant='customPrimaryWithShadow'
               style={{
@@ -250,7 +276,12 @@ const TeacherCourses = (props) => {
               );
             })}
           </Tab>
-          <Tab eventKey='Statistics' title='Statistics' style={{ marginTop: '7rem' }}>
+          <Tab
+            eventKey='Statistics'
+            title='Statistics'
+            style={{ marginTop: '7rem' }}
+            onclick={() => handleSelect('Statistics')}
+          >
             {statistics.map((course) => {
               return (
                 <Row
@@ -349,6 +380,7 @@ const mapStateToProps = (state) => ({
   clientUserId: getClientUserId(state),
   courseId: getCourseId(state),
   dashboardData: getCurrentDashboardData(state),
+  roleArray: getRoleArray(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -375,4 +407,5 @@ TeacherCourses.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   dashboardData: PropTypes.instanceOf(Object).isRequired,
+  roleArray: PropTypes.instanceOf(Array).isRequired,
 };

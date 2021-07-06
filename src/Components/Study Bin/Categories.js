@@ -133,11 +133,8 @@ const Categories = (props) => {
   };
 
   const goToRecording = (link) => {
-    console.log(link);
-    const recordingLink = document.createElement('a');
-    recordingLink.href = link;
-    recordingLink.download = link;
-    recordingLink.click();
+    console.log(link, 'lodu');
+    history.push({ pathname: `/videoplayer`, state: { videoLink: link } });
   };
 
   return (

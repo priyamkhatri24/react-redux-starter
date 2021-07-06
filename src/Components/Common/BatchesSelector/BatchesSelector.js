@@ -64,6 +64,7 @@ export const BatchesSelector = (props) => {
         className='my-auto ml-1'
         label='Select All'
         name='selectAll'
+        style={{ textAlign: 'center' }}
       />
       <Row className='Batches py-3'>
         <Col xs={6} className='text-center'>

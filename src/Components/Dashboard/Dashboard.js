@@ -774,7 +774,7 @@ const Dashboard = (props) => {
             image={param.feature_icon} // student
             coloredHeading='Study Bin'
             color='rgba(0, 102, 255, 0.87)'
-            subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
+            subHeading='Access content uploaded by institute here.'
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             buttonClick={goToStudyBin}
           />

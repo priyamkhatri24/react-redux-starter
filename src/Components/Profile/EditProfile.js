@@ -8,6 +8,7 @@ import format from 'date-fns/format';
 import userAvatar from '../../assets/images/user.svg';
 import { BackButton, DynamicForm } from '../Common';
 import { post, uploadImage } from '../../Utilities';
+import Cropper from '../Common/CropperModal/Cropper';
 
 import '../Login/AdmissionChat/AdmissionForm/AdmissionForm.scss';
 import {
@@ -60,6 +61,11 @@ const EditProfile = (props) => {
       name: 'birthday',
     },
   ]);
+  const [imageModal, setImageModal] = useState(false);
+  const [upImg, setUpImg] = useState();
+
+  const handleClose = () => setImageModal(false);
+  const handleOpen = () => setImageModal(true);
 
   useEffect(() => {
     console.log(data, 'data');
@@ -82,18 +88,32 @@ const EditProfile = (props) => {
   const getImageInput = (e) => {
     const reader = new FileReader();
     const file = e.target.files[0];
+    handleOpen();
     if (file) {
+      reader.addEventListener('load', () => setUpImg(reader.result));
       reader.readAsDataURL(e.target.files[0]);
-      uploadImage(file).then((res) => {
-        console.log('fileupload ', res);
-        profileImage.current = res.filename;
-      });
-
+      // reader.readAsDataURL(e.target.files[0]);
+      // uploadImage(file).then((res) => {
+      //   console.log('fileupload ', res);
+      //   profileImage.current = res.filename;
+      // });
       reader.onloadend = function getImage() {
         const base64data = reader.result;
         setImage(base64data);
       };
     }
+  };
+
+  const addProfileImage = (file) => {
+    profileImage.current = file;
+    console.log(file);
+    const payload = {
+      profile_image: file,
+      user_id: userId,
+    };
+    post(payload, '/editProfilePicture').then((res) => {
+      console.log(res);
+    });
   };
 
   const getFormData = (values) => {
@@ -112,7 +132,7 @@ const EditProfile = (props) => {
         parent_contact: values.parent_contact === undefined ? '' : values.parent_contact,
         parent_id: userUserId,
         birthday: parse(values.birthday, 'yyyy-MM-dd', new Date()).getTime() / 1000,
-        profile_image: profileImage.current,
+        // profile_image: profileImage.current,
       };
 
       const payloadWhiteList = {
@@ -160,6 +180,14 @@ const EditProfile = (props) => {
           />
           <input id='file-input' type='file' onChange={(e) => getImageInput(e)} accept='image/*' />
         </label>
+        <Cropper
+          sourceImage={upImg}
+          imageModal={imageModal}
+          handleClose={handleClose}
+          setProfileImage={addProfileImage}
+          aspectTop={1}
+          aspectBottom={1}
+        />
       </div>
 
       <DynamicForm fields={dataArray} getData={getFormData} />
