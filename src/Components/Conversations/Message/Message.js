@@ -55,6 +55,8 @@ class Message extends React.Component {
   componentWillUnmount() {
     this.audio.removeEventListener('loadedmetadata', this.audioMetadatalistener);
     this.audio.addEventListener('onended', this.onAudioEnd);
+    document.removeEventListener('touchmove', this.onDrag);
+    document.removeEventListener('touchend', this.stopDrag);
     this.unmounted = true;
   }
 
