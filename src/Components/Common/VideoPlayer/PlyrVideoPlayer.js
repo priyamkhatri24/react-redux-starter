@@ -8,6 +8,7 @@ const PlyrVideoPlayer = (props) => {
   const { match, history } = props;
   const options = {
     autoplay: true,
+    youtube: { noCookie: false, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
   };
   const [source, setSource] = useState({
     type: 'video',

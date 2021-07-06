@@ -10,15 +10,25 @@
   }
 
   &__profileImage {
-    height: $spacer * 3.75;
-    width: $spacer * 3.75;
+    height: $spacer * 5;
+    width: $spacer * 5;
     border-radius: 10px;
+
+    @include media-breakpoint-up(sm) {
+      padding-left: 20px;
+    }
   }
 
   &__headingText {
     font-family: 'Montserrat-Regular';
     line-height: 29px;
     color: $headingGrey;
+    padding-top: 0.875rem;
+
+    @include media-breakpoint-up(sm) {
+      font-size: 1.75rem;
+      padding-top: 1.25rem;
+    }
   }
 
   &__todaysHits {
@@ -30,10 +40,14 @@
   }
 
   &__todaysHitsText {
-    font-size: $spacer * 0.875;
     font-family: 'Montserrat-SemiBold';
     color: $headingGrey;
     line-height: $spacer * 1.25;
+    font-size: x-large;
+
+    @include media-breakpoint-down(md) {
+      font-size: $spacer * 0.875;
+    }
   }
 
   &__innovation {
@@ -86,10 +100,16 @@
   }
 
   &__scrollableCardHeading {
-    font-size: $spacer * 0.75;
+    font-size: $spacer * 1;
     color: $headingGrey;
     line-height: $spacer * 1.25;
     font-family: 'Montserrat-SemiBold';
+    padding-bottom: 7px;
+
+    @include media-breakpoint-down(md) {
+      font-size: $spacer * 0.75;
+      padding-bottom: 5px;
+    }
   }
 
   &__scrollableCardText {
@@ -102,20 +122,31 @@
     border-radius: 10px;
     border-left: 30px solid var(--lighter-blue);
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
+    width: 87%;
   }
 
   &__attendanceSubHeading {
-    font-size: $spacer * 0.75;
     font-family: 'Montserrat-Regular';
     line-height: 15px;
     color: $dashboardBlack;
   }
 
+  &__attendanceRecents {
+    font-size: $spacer * 0.625;
+    font-family: $semiBold;
+    color: $dashboardBlack;
+    line-height: 13px;
+  }
+
   &__noticeBoard {
     position: relative;
-    width: 95%;
+    width: 85%;
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
     border-radius: 10px;
+
+    @include media-breakpoint-down(sm) {
+      width: 95%;
+    }
   }
 
   &__verticalDots {
@@ -125,27 +156,38 @@
   }
 
   &__noticeBoardText {
-    font-size: $spacer * 0.75;
+    font-size: large;
     color: $dashboardBlack;
     font-family: 'Montserrat-Medium';
+
+    @include media-breakpoint-down(md) {
+      font-size: $spacer * 0.75;
+      line-height: 15px;
+    }
   }
 
   &__notice {
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
     border-radius: 5px;
+    // width: 100%;
+    margin-bottom: 10px;
   }
 
   &__noticeImage {
-    height: 38px;
-    width: 38px;
-    border-radius: 25px;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
   }
 
   &__noticeSubHeading {
-    font-size: $spacer * 0.625;
+    font-size: $spacer * 0.825;
     font-family: 'Montserrat-Light';
     color: $headingGrey;
     line-height: 13px;
+
+    @include media-breakpoint-down(sm) {
+      font-size: $spacer * 0.625;
+    }
   }
 
   &__noticeText {
@@ -153,6 +195,7 @@
     font-family: 'Montserrat-Medium';
     font-size: $spacer * 0.75;
     color: $headingGrey;
+    line-height: 15px;
     border-radius: 0 0 5px 5px;
   }
 
@@ -160,5 +203,77 @@
     color: var(--primary-blue);
     font-size: $spacer * 1.5;
     font-family: $bold;
+  }
+  &_homeworkCreator {
+    @include media-breakpoint-up(sm) {
+      margin-left: 6%;
+    }
+  }
+}
+.react_chart {
+  width: 50%;
+  margin: auto;
+}
+.noticeboard_img {
+  text-align: right;
+  padding-right: 30px;
+  padding-left: 0px;
+  width: 70%;
+}
+.noticeboard_heading {
+  padding-top: 30px;
+}
+.admission_heroImage {
+  width: 50%;
+  margin: auto;
+  text-align: center;
+}
+.DashboardCard_Image {
+  padding-left: 0px;
+}
+.admission_cards {
+  width: 85%;
+}
+
+.admission_button {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.Dashboard__attendanceSubHeading {
+  font-size: 15px;
+}
+
+@media screen and (max-width: 700px) {
+  .noticeboard_img {
+    width: 100%;
+  }
+  .react_chart {
+    width: 100%;
+    margin: auto;
+  }
+  .admission_cards {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .react_chart {
+    width: 100%;
+    margin: auto;
+  }
+  .admission_cards {
+    width: 100%;
+  }
+
+  .admission_button {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .Dashboard__attendanceSubHeading {
+    font-size: 12px;
   }
 }

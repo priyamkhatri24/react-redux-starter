@@ -34,6 +34,8 @@ const Tests = (props) => {
       );
       setLiveTests(live);
       setDemoTests(demo);
+
+      console.log(live);
     });
   }, [clientUserId]);
 
@@ -59,7 +61,7 @@ const Tests = (props) => {
       language_type: elem.language_type,
     };
 
-    get(payload, '/getTestQuestionsForStudentWithLanguage').then((res) => {
+    get(payload, '/getTestQuestionsForStudentWithLanguageLatest').then((res) => {
       Swal.fire({
         title: 'Your Homework is Loaded',
         text: 'hello',
@@ -72,7 +74,7 @@ const Tests = (props) => {
       }).then((result) => {
         if (result.isConfirmed) {
           const response = apiValidation(res);
-          startHomework(response, elem.test_id);
+          startHomework(response, elem.test_id, elem.language_type);
         }
       });
       console.log(res);
@@ -81,6 +83,7 @@ const Tests = (props) => {
 
   const isAllowed = useCallback(
     (bool, id, startTime, endTime) => {
+      console.log(bool, startTime, endTime, id, allowLiveTest);
       if (allowLiveTest.length) {
         const newCheckLiveExpiryArray = allowLiveTest.map((elem) => {
           if (elem.id === id) {
@@ -97,6 +100,7 @@ const Tests = (props) => {
   );
 
   const startLiveTest = (elem) => {
+    console.log(elem, allowLiveTest);
     const liveCheck = allowLiveTest.filter((e) => {
       return e.id === elem.test_id;
     });
@@ -107,7 +111,7 @@ const Tests = (props) => {
         language_type: elem.language_type,
       };
 
-      get(payload, '/getTestQuestionsForStudentWithLanguage').then((res) => {
+      get(payload, '/getTestQuestionsForStudentWithLanguageLatest').then((res) => {
         Swal.fire({
           title: 'Your Live Test is Loaded',
           text: 'hello',
@@ -126,6 +130,7 @@ const Tests = (props) => {
               liveCheck[0].endTime,
               'livetest',
               elem.test_id,
+              elem.language_type,
             );
             console.log(response);
           }
@@ -140,7 +145,7 @@ const Tests = (props) => {
       test_id: elem.test_id,
       client_user_id: clientUserId,
     };
-
+    console.log(elem);
     get(demoPayload, '/getDemoTestEndTime').then((res) => {
       const result = apiValidation(res);
       console.log(result, 'endTime');
@@ -168,13 +173,18 @@ const Tests = (props) => {
                   test_id: elem.test_id,
                   language_type: elem.language_type,
                 };
-                get(demoTestPayload, '/getTestQuestionsForStudentWithLanguage').then((r) => {
+                get(demoTestPayload, '/getTestQuestionsForStudentWithLanguageLatest').then((r) => {
                   console.log(r, 'r');
                   const studentQuestions = apiValidation(r);
-                  startLive(
-                    studentQuestions,
+                  console.log(
                     +new Date(),
                     +new Date() + parseInt(result.duration, 10) / 1000,
+                    'wtfffff',
+                  );
+                  startLive(
+                    studentQuestions,
+                    Math.round(+new Date() / 1000),
+                    Math.round((+new Date() + parseInt(result.duration, 10)) / 1000),
                     'demotest',
                     elem.test_id,
                   );
@@ -197,7 +207,7 @@ const Tests = (props) => {
             test_id: elem.test_id,
             language_type: elem.language_type,
           };
-          get(demoTestPayload, '/getTestQuestionsForStudentWithLanguage').then((response) => {
+          get(demoTestPayload, '/getTestQuestionsForStudentWithLanguageLatest').then((response) => {
             console.log(response);
             const studentQuestions = apiValidation(response);
             startLive(
@@ -206,6 +216,7 @@ const Tests = (props) => {
               result.test_end_time,
               'demotest',
               elem.test_id,
+              elem.language_type,
             );
           });
         } else if (dateResult > 0) {
@@ -236,7 +247,7 @@ const Tests = (props) => {
 
   return (
     <div>
-      {liveTests.length > 0 && (
+      {liveTests.length > 0 && allowLiveTest.length > 0 && (
         <section className='Tests__scrollableCard'>
           {liveTests.map((elem) => {
             return (

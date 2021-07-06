@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Row from 'react-bootstrap/Row';
@@ -21,6 +21,7 @@ import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import userImage from '../../assets/images/user.svg';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import './NoticeBoard.scss';
+import '../Dashboard/Dashboard.scss';
 
 const NoticeBoard = (props) => {
   const { clientUserId, clientId, roleArray, currentbranding, userProfile } = props;
@@ -73,6 +74,25 @@ const NoticeBoard = (props) => {
     return null;
   };
 
+  const getNotices = useCallback(() => {
+    let isAdmin = false;
+    if (roleArray.includes(4)) isAdmin = true;
+
+    const payload = {
+      client_user_id: clientUserId,
+      client_id: clientId,
+      is_admin: isAdmin,
+    };
+
+    get(payload, '/getAllNoticesOfUser')
+      .then((res) => {
+        const result = apiValidation(res);
+        setNotices(result);
+        setFilteredNotices(result);
+      })
+      .catch((err) => console.error(err));
+  }, [clientId, clientUserId, roleArray]);
+
   const handleClose = (option) => {
     if (option === 'everyone') {
       setNoticeType('everyone');
@@ -110,7 +130,10 @@ const NoticeBoard = (props) => {
               console.log(noticeMessagePayload, newPayload);
 
               Promise.all([notificationPromise, SMSPromise])
-                .then((response) => console.log(response))
+                .then((response) => {
+                  console.log(response);
+                  getNotices();
+                })
                 .catch((err) => console.log('Promise.all ka err', err));
             }
           })
@@ -185,7 +208,11 @@ const NoticeBoard = (props) => {
             if (sendSMS) SMSPromise = post(noticeMessagePayload, '/sendNoticeMessageToStudents');
 
             Promise.all([notificationPromise, SMSPromise])
-              .then((resp) => console.log(resp))
+              .then((resp) => {
+                console.log(resp);
+                getNotices();
+                closeBatchModal();
+              })
               .catch((err) => console.log('Promise.all ka err', err));
           }
         })
@@ -249,7 +276,7 @@ const NoticeBoard = (props) => {
 
           const SMSPayload = {
             message: newNotice,
-            user_array: UserUserIdArray,
+            user_array: JSON.stringify(UserUserIdArray),
             coaching_name: currentbranding.branding.client_name,
           };
 
@@ -260,7 +287,11 @@ const NoticeBoard = (props) => {
           console.log(SMSPayload, newPayload);
 
           Promise.all([notificationPromise, SMSPromise])
-            .then((response) => console.log(response))
+            .then((response) => {
+              console.log(response);
+              getNotices();
+              closeStudentModal();
+            })
             .catch((err) => console.log('Promise.all ka err', err));
         }
       })
@@ -282,23 +313,7 @@ const NoticeBoard = (props) => {
   };
 
   useEffect(() => {
-    let isAdmin = false;
-    if (roleArray.includes(4)) isAdmin = true;
-
-    const payload = {
-      client_user_id: clientUserId,
-      client_id: clientId,
-      is_admin: isAdmin,
-    };
-
-    get(payload, '/getAllNoticesOfUser')
-      .then((res) => {
-        const result = apiValidation(res);
-        setNotices(result);
-        setFilteredNotices(result);
-      })
-      .catch((err) => console.error(err));
-
+    getNotices();
     const coachingPayload = { client_id: clientId };
 
     get(coachingPayload, '/getAllBatchesOfCoaching')
@@ -307,7 +322,7 @@ const NoticeBoard = (props) => {
         setBatches(result);
       })
       .catch((e) => console.log(e));
-  }, [clientId, clientUserId, roleArray]);
+  }, [clientId, clientUserId, roleArray, getNotices]);
 
   return (
     <div>
@@ -319,9 +334,12 @@ const NoticeBoard = (props) => {
       />
 
       {(roleArray.includes(3) || roleArray.includes(4)) && (
-        <Card style={{ marginTop: '6rem' }} className='LiveClasses__Card mx-auto p-3'>
+        <Card
+          style={{ marginTop: '6rem' }}
+          className='LiveClasses__Card NoticeBoard__inputCard mx-auto p-3'
+        >
           <Row>
-            <Col xs={2}>
+            <Col xs={2} style={{ textAlign: 'center' }}>
               <img
                 src={userProfile.profileImage ? userProfile.profileImage : userImage}
                 width='40'
@@ -369,24 +387,28 @@ const NoticeBoard = (props) => {
           )}
         </Card>
       )}
+      {roleArray.includes(3) || roleArray.includes(4) ? null : <div className='pt-4' />}
       <Row className='mt-5 ml-3 mb-3'>
-        <span className='Dashboard__noticeBoardText my-auto'>Latest Notices</span>
-        <span className='ml-auto' style={{ color: 'rgba(117, 117, 117, 1)' }}>
+        <span className='Dashboard__noticeBoardText NoticeBoard__HeadingText'>Latest Notices</span>
+        {/* <span className='ml-auto' style={{ color: 'rgba(117, 117, 117, 1)' }}>
           <ChevronRightIcon />
-        </span>
+        </span> */}
       </Row>
 
       {filteredNotices.map((elem) => (
-        <div key={`elem${elem.notice_id}`} className='Dashboard__notice mx-2'>
-          <Row>
-            <Col xs={2} className='p-4'>
+        <div
+          key={`elem${elem.notice_id}`}
+          className='Dashboard__notice NoticeBoard__notice mx-auto'
+        >
+          <Row className='NoticeBoard__NoticeHead'>
+            <Col xs={3} className='p-4'>
               <img
                 src={elem.profile_image ? elem.profile_image : userImage}
                 alt='profile'
                 className='Dashboard__noticeImage d-block mx-auto'
               />
             </Col>
-            <Col xs={10} className='pt-4'>
+            <Col xs={9} className='pt-4'>
               <p className='Dashboard__scrollableCardHeading m-0'>
                 {`${elem.first_name} ${elem.last_name}`}
               </p>
@@ -395,7 +417,7 @@ const NoticeBoard = (props) => {
               </p>
             </Col>
           </Row>
-          <p className='p-2 Dashboard__noticeText'>{elem.notice_text}</p>
+          <p className='p-2 Dashboard__noticeText notice-text'>{elem.notice_text}</p>
         </div>
       ))}
 

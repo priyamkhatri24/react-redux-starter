@@ -8,15 +8,18 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import fromUnixTime from 'date-fns/fromUnixTime';
+import Toast from 'react-bootstrap/Toast';
 import format from 'date-fns/format';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { getCourseId } from '../../redux/reducers/course.reducer';
-import { apiValidation, get, post } from '../../Utilities';
-import { PageHeader } from '../Common';
+import { get, post } from '../../Utilities/Remote';
+import { apiValidation, shareThis } from '../../Utilities';
+import { Readmore, PageHeader } from '../Common';
 import placeholder from '../../assets/images/ycIcon.png';
 import { courseActions } from '../../redux/actions/course.action';
 import './Courses.scss';
 import '../Profile/Profile.scss';
+import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
 
 const TeacherCourses = (props) => {
   const {
@@ -26,6 +29,7 @@ const TeacherCourses = (props) => {
     setCourseIdToStore,
     setCourseObjectToStore,
     setCourseCurrentSlideToStore,
+    dashboardData,
   } = props;
   const [courses, setCourses] = useState([]);
   const [statistics, setStatistics] = useState([]);
@@ -33,21 +37,30 @@ const TeacherCourses = (props) => {
   const [courseTitle, setCourseTitle] = useState('');
   const [isValid, setValid] = useState(false);
   const inputEl = useRef(null);
+  const [showToast, setShowToast] = useState(false);
+  const [searchString, setSearchString] = useState('');
 
   useEffect(() => {
     get({ client_id: clientId }, '/getCoursesOfCoaching').then((res) => {
       const result = apiValidation(res);
-      setCourses(result);
+      const searchedArray = result.filter(
+        (e) => e.course_title.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+      );
+      setCourses(searchedArray);
+      console.log(result);
     });
     get({ client_id: clientId }, '/getPublishedCoursesOfCoaching').then((res) => {
       const result = apiValidation(res);
-      setStatistics(result);
+      const searchedArray = result.filter(
+        (e) => e.course_title.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+      );
+      setStatistics(searchedArray);
     });
 
     get({ client_id: clientId, course_id: 9 }, '/getCourseDetails').then((res) => {
       console.log(res, 'jaishritest');
     });
-  }, [clientId]);
+  }, [clientId, searchString]);
 
   const getStatisticOfCourse = (id) => {
     history.push({ pathname: '/courses/teachercourse/statistics', state: { id } });
@@ -115,17 +128,36 @@ const TeacherCourses = (props) => {
     history.push('/');
   };
 
+  const shareCourse = (e, course) => {
+    e.stopPropagation();
+    // eslint-disable-next-line
+    const url = `${window.location.protocol}//${window.location.host}/courses/buyCourse/${clientId}/${course.course_id}`;
+    console.log(url);
+    const hasShared = shareThis(url, dashboardData.client_name);
+    if (hasShared === 'clipboard') setShowToast(true);
+  };
+
+  const searchCourses = (search) => {
+    setSearchString(search);
+  };
+
   return (
     <>
-      <PageHeader title='Courses' handleBack={goToDashboard} customBack />
-      <div style={{ marginTop: '4rem' }}>
+      <PageHeader
+        title='Courses'
+        handleBack={goToDashboard}
+        customBack
+        search
+        searchFilter={searchCourses}
+      />
+      <div style={{}}>
         <Tabs
           defaultActiveKey='My Courses'
-          className='Profile__Tabs'
+          className='Courses__Profile__Tabs'
           justify
-          style={{ marginTop: '3rem' }}
+          style={{ marginTop: '3.5rem' }}
         >
-          <Tab eventKey='My Courses' title='My Courses'>
+          <Tab eventKey='My Courses' title='My Courses' style={{ marginTop: '7rem' }}>
             <Button
               variant='customPrimaryWithShadow'
               style={{
@@ -142,11 +174,11 @@ const TeacherCourses = (props) => {
             {courses.map((course) => {
               return (
                 <Row
-                  className='m-3 p-1'
+                  className='Courses__teacherCourse p-1'
                   key={course.course_id}
                   onClick={() => goToCreatedCourse(course.course_id)}
                 >
-                  <Col xs={4} className=''>
+                  <Col xs={4} className='Courses__iconImage'>
                     <img
                       src={course.course_display_image ? course.course_display_image : placeholder}
                       alt='course '
@@ -156,7 +188,10 @@ const TeacherCourses = (props) => {
                   <Col xs={8} className='p-0'>
                     <p className='Scrollable__courseCardHeading mx-2 mb-1'>{course.course_title}</p>
                     <Row className='mx-2'>
-                      <p className='LiveClasses__adminCardTime ' style={{ fontSize: '12px' }}>
+                      <p
+                        className='LiveClasses__adminCardTime '
+                        style={{ fontSize: '12px', marginBottom: '5px' }}
+                      >
                         Created: {format(fromUnixTime(course.created_at), 'HH:mm MMM dd, yyyy')}
                       </p>
                     </Row>
@@ -166,39 +201,44 @@ const TeacherCourses = (props) => {
                         style={{ fontSize: '12px', color: 'rgba(22, 22, 22, 1)' }}
                       >
                         To:{' '}
-                        {course.current_batch.map((e, i) => {
-                          return (
-                            <>
-                              <span key={e.batch_id}>{e.batch_name}</span>
-                              {i !== course.current_batch.length - 1 ? (
-                                <span>, </span>
-                              ) : (
-                                <span> </span>
-                              )}
-                            </>
-                          );
-                        })}
+                        {course.current_batch.length > 0 && (
+                          <Readmore
+                            maxcharactercount={100}
+                            batchesArray={course.current_batch.map((e) => e.batch_name)}
+                          />
+                        )}
                       </p>
                       <div
                         className='ml-auto rounded Courses__slimButton'
                         style={
                           course.course_status === 'published'
-                            ? {}
+                            ? { background: 'var(--primary-blue)', color: '#fff' }
                             : course.course_status === 'incomplete'
-                            ? { background: 'rgba(255, 0, 0, 0.87)' }
-                            : { background: ' rgba(0, 0, 0, 0.54)' }
+                            ? { background: 'rgba(255, 0, 0, 0.87)', color: 'rgba(0, 0, 0, 0.87)' }
+                            : { background: ' rgba(0, 0, 0, 0.54)', color: 'rgba(0, 0, 0, 0.87)' }
                         }
+                        onClick={
+                          course.course_status === 'published'
+                            ? (evt) => shareCourse(evt, course)
+                            : () => {}
+                        }
+                        onKeyDown={
+                          course.course_status === 'published'
+                            ? (evt) => shareCourse(evt, course)
+                            : () => {}
+                        }
+                        tabIndex='-1'
+                        role='button'
                       >
                         <span
                           style={{
                             fontFamily: 'Montserrat-SemiBold',
-                            color: 'rgba(0, 0, 0, 0.87)',
                             fontSize: '10px',
                           }}
                           className='m-1 d-block text-center'
                         >
                           {course.course_status === 'published'
-                            ? ' '
+                            ? 'Share'
                             : course.course_status === 'completed'
                             ? 'Unpublished'
                             : 'Incomplete'}
@@ -210,15 +250,15 @@ const TeacherCourses = (props) => {
               );
             })}
           </Tab>
-          <Tab eventKey='Statistics' title='Statistics'>
+          <Tab eventKey='Statistics' title='Statistics' style={{ marginTop: '7rem' }}>
             {statistics.map((course) => {
               return (
                 <Row
-                  className='m-3'
+                  className='Courses__teacherCourse'
                   key={course.course_id}
                   onClick={() => getStatisticOfCourse(course.course_id)}
                 >
-                  <Col xs={4} className=''>
+                  <Col xs={4} className='Courses__iconImage'>
                     <img
                       src={course.course_display_image ? course.course_display_image : placeholder}
                       alt='course '
@@ -242,18 +282,12 @@ const TeacherCourses = (props) => {
                         }}
                       >
                         To:{' '}
-                        {course.current_batch.map((e, i) => {
-                          return (
-                            <>
-                              <span key={e.batch_id}>{e.batch_name}</span>
-                              {i !== course.current_batch.length - 1 ? (
-                                <span>,</span>
-                              ) : (
-                                <span> </span>
-                              )}
-                            </>
-                          );
-                        })}
+                        {course.current_batch.length > 0 && (
+                          <Readmore
+                            maxcharactercount={100}
+                            batchesArray={course.current_batch.map((e) => e.batch_name)}
+                          />
+                        )}
                       </p>
                     </Row>
                   </Col>
@@ -288,6 +322,24 @@ const TeacherCourses = (props) => {
           </Modal.Footer>
         </Modal>
       </div>
+      <Toast
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '15%',
+          zIndex: '999',
+        }}
+        onClose={() => setShowToast(false)}
+        show={showToast}
+        delay={3000}
+        autohide
+      >
+        <Toast.Header>
+          <strong className='mr-auto'>Copied!</strong>
+          <small>Just Now</small>
+        </Toast.Header>
+        <Toast.Body>The link has been copied to your clipboard!</Toast.Body>
+      </Toast>
     </>
   );
 };
@@ -296,6 +348,7 @@ const mapStateToProps = (state) => ({
   clientId: getClientId(state),
   clientUserId: getClientUserId(state),
   courseId: getCourseId(state),
+  dashboardData: getCurrentDashboardData(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -321,4 +374,5 @@ TeacherCourses.propTypes = {
   setCourseObjectToStore: PropTypes.func.isRequired,
   clientUserId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
+  dashboardData: PropTypes.instanceOf(Object).isRequired,
 };

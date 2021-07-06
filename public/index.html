@@ -12,7 +12,7 @@
       name="description"
       content="Web Portal - Ingenium Technologies - Empowering Coaching Institutes - Digital Transformation -  Sidhant Dhar"
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" id="apple-icon" />
     <!--
       <link rel="preload" as="font" href="%PUBLIC_URL%/media/logo192.png">
       <link rel="preload" as="font" href="%PUBLIC_URL%/media/192.png" crossorigin="anonymous"> -->
@@ -41,6 +41,9 @@
           const blob = new Blob([manifestData], { type: 'application/json' });
           const manifestURL = URL.createObjectURL(blob);
           document.querySelector('#dynamic-manifest').setAttribute('href', manifestURL);
+          console.log(resp.result.icons[1].src);
+          const appleLink = document.getElementById('apple-icon');
+          appleLink.href = resp.result.icons[1].src;
         });
     </script>
 
@@ -54,7 +57,6 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <title>Ingenium Education</title>
   </head>
   <body>
@@ -70,9 +72,13 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-    <!-- External Script for jitsi meet   -->
-    <!-- <script src="https://meet.jit.si/external_api.js"></script>
- -->
-    <!-- <script src="https://tcalive.ingeniumedu.com/external_api.js"></script> -->
+
+    <input type="hidden" value="%NODE_ENV%" id="node_env_mode" />
+    <script>
+      var mode = document.querySelector('#node_env_mode').value;
+      if (mode === 'production' && typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === 'object') {
+        window.__REACT_DEVTOOLS_GLOBAL_HOOK__.inject = function () {};
+      }
+    </script>
   </body>
 </html>

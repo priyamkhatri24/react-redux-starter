@@ -20,13 +20,16 @@ const FeesCard = (props) => {
     },
     clientId,
     goToOrderDetails,
+    studentFeeCard,
   } = props;
   const feesClass = cx({
     Fees__feeCard: true,
     'm-3': true,
     Fees__cardGreen: status === 'marked' || status === 'waived' || status === 'paid',
     Fees__cardRed: status === 'pending' || status === 'due',
-    'ml-auto': status === 'paid',
+    'ml-auto': studentFeeCard
+      ? status === 'due' || status === 'pending' || status === 'waived' || status === 'marked'
+      : status === 'paid',
     'pt-3': true,
     'text-right': status === 'paid',
   });
@@ -63,7 +66,9 @@ const FeesCard = (props) => {
           ? 'Pending'
           : 'Due'}
       </h1>
-      {status === 'waived' && <h6 className='Fees__teacher px-3'>(by - {TeacherName})</h6>}
+      {(status === 'waived' || status === 'marked') && (
+        <h6 className='Fees__teacher px-3'>(by - {TeacherName})</h6>
+      )}
       <p className='Fees__amount px-3'> &#x20B9; {amount}</p>
       <p className='Fees__paidAt px-3'>
         {paidAt !== null &&
@@ -85,4 +90,9 @@ FeesCard.propTypes = {
   data: PropTypes.instanceOf(Object).isRequired,
   clientId: PropTypes.number.isRequired,
   goToOrderDetails: PropTypes.func.isRequired,
+  studentFeeCard: PropTypes.bool,
+};
+
+FeesCard.defaultProps = {
+  studentFeeCard: false,
 };

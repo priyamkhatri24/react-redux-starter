@@ -29,11 +29,12 @@ const FilterAccordion = (props) => {
     addBatchFilter,
     removeBatchFilter,
   } = props;
-  const [currentClass, setCurrentClass] = useState({});
-  const [currentSubject, setCurrentSubject] = useState({});
+  // const [currentClass, setCurrentClass] = useState({});
+  // const [currentSubject, setCurrentSubject] = useState({});
   const [currentBatch, setCurrentBatch] = useState({});
   const [currentType, setCurrentType] = useState({});
   const [currentStatus, setCurrentStatus] = useState({});
+  const [currentAssignment, setCurrentAssignment] = useState({});
 
   useEffect(() => {
     if (isToggle) {
@@ -43,14 +44,9 @@ const FilterAccordion = (props) => {
 
   const select = (type, e) => {
     switch (type) {
-      case 'class':
-        setCurrentClass(e);
-        currentTab === 'Users' ? addFilter(type, e.class_id) : addBatchFilter(type, e.class_id);
-        break;
       case 'batch':
         setCurrentBatch(e);
         addFilter(type, e.client_batch_id);
-
         break;
       case 'role':
         setCurrentType(e);
@@ -60,10 +56,11 @@ const FilterAccordion = (props) => {
         setCurrentStatus(e);
         addFilter(type, e.value);
         break;
-      case 'subject':
-        setCurrentSubject(e);
-        addBatchFilter(type, e.subject_id);
+      case 'assignment':
+        setCurrentAssignment(e);
+        addFilter(type, e);
         break;
+
       default:
         console.log('hello');
     }
@@ -71,9 +68,6 @@ const FilterAccordion = (props) => {
 
   const remove = (type) => {
     switch (type) {
-      case 'class':
-        setCurrentClass({});
-        break;
       case 'batch':
         setCurrentBatch({});
         break;
@@ -83,13 +77,19 @@ const FilterAccordion = (props) => {
       case 'status':
         setCurrentStatus({});
         break;
-      case 'subject':
-        setCurrentSubject({});
+      case 'assignment':
+        setCurrentAssignment({});
         break;
       default:
         console.log('hello');
     }
-    currentTab === 'Users' ? removeFilter(type) : removeBatchFilter(type);
+    currentTab === 'Users' ||
+    currentTab === 'senttests' ||
+    currentTab === 'savedtests' ||
+    currentTab === 'Assignments' ||
+    currentTab === 'Students'
+      ? removeFilter(type)
+      : removeBatchFilter(type);
   };
 
   return (
@@ -102,7 +102,7 @@ const FilterAccordion = (props) => {
           <>
             {Object.keys(filters).length > 0 && (
               <Card.Body className='p-0'>
-                <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
+                {/* <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
                   Class
                 </small>
                 <Row className='mx-3'>
@@ -157,7 +157,7 @@ const FilterAccordion = (props) => {
                     )}
                   </section>
                 </Row>
-                <hr />
+                <hr /> */}
                 {currentTab === 'Users' ? (
                   <>
                     <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
@@ -351,9 +351,90 @@ const FilterAccordion = (props) => {
                       </section>
                     </Row>
                   </>
-                ) : (
+                ) : currentTab === 'savedtests' ? (
+                  <></>
+                ) : currentTab === 'Assignments' || currentTab === 'Students' ? (
                   <>
                     <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
+                      Batch
+                    </small>
+                    <Row className='mx-3'>
+                      <section
+                        css={AdmissionStyle.scrollable}
+                        style={{ backgroundColor: 'rgba(241, 249, 255, 1)' }}
+                      >
+                        {Object.keys(currentBatch).length === 0 &&
+                          filters.batch.map((e) => {
+                            return (
+                              <div
+                                key={e.client_batch_id}
+                                css={[AdmissionStyle.subjectBubble, AdmissionStyle.selected]}
+                                onClick={() => select('batch', e)}
+                                onKeyDown={() => select('batch', e)}
+                                role='button'
+                                tabIndex='-1'
+                                style={{
+                                  backgroundColor: 'rgba(241, 249, 255, 1)',
+                                  color: 'rgba(112, 112, 112, 1)',
+                                  border: '1px solid rgba(112, 112, 112, 1)',
+                                  height: '30px',
+                                  display: 'inline-block',
+                                  maxWidth: '90%',
+                                  whiteSpace: 'no-wrap',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  textAlign: 'center',
+                                  lineHeight: '28px',
+                                }}
+                              >
+                                {/* <span
+                                  style={{
+                                    display: 'inline-block',
+                                    maxWidth: '90%',
+                                    whiteSpace: 'no-wrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                  }}
+                                >
+                                  {e.batch_name}
+                                </span> */}
+                                {e.batch_name}
+                              </div>
+                            );
+                          })}
+
+                        {Object.keys(currentBatch).length > 0 && (
+                          <>
+                            <div
+                              css={[AdmissionStyle.subjectBubble, AdmissionStyle.selected]}
+                              style={{ backgroundColor: '#fff', color: '#000' }}
+                            >
+                              {currentBatch.batch_name}
+                            </div>
+                            <div
+                              css={AdmissionStyle.questionBubble}
+                              onClick={() => remove('batch')}
+                              onKeyDown={() => remove('batch')}
+                              role='button'
+                              tabIndex='-1'
+                              style={{
+                                backgroundColor: 'rgba(241, 249, 255, 1)',
+                                color: '#000',
+                                border: '1px solid rgba(112, 112, 112, 1)',
+                              }}
+                            >
+                              <CloseIcon />
+                            </div>
+                          </>
+                        )}
+                      </section>
+                    </Row>
+                    <hr />
+                  </>
+                ) : (
+                  <>
+                    {/* Subject filter removed */}
+                    {/* <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
                       Subject
                     </small>
 
@@ -410,9 +491,72 @@ const FilterAccordion = (props) => {
                         )}
                       </section>
                     </Row>
+                    <hr /> */}
                   </>
                 )}
-                <hr />
+
+                {currentTab === 'senttests' && (
+                  <>
+                    <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
+                      Assigment Type
+                    </small>
+
+                    <Row className='mx-3'>
+                      <section
+                        css={AdmissionStyle.scrollable}
+                        style={{ backgroundColor: 'rgba(241, 249, 255, 1)' }}
+                      >
+                        {Object.keys(currentAssignment).length === 0 &&
+                          filters.assignment.map((e, i) => {
+                            return (
+                              <div
+                                key={i} //eslint-disable-line
+                                css={[AdmissionStyle.subjectBubble, AdmissionStyle.selected]}
+                                onClick={() => select('assignment', e)}
+                                onKeyDown={() => select('assignment', e)}
+                                role='button'
+                                tabIndex='-1'
+                                style={{
+                                  backgroundColor: 'rgba(241, 249, 255, 1)',
+                                  color: 'rgba(112, 112, 112, 1)',
+                                  border: '1px solid rgba(112, 112, 112, 1)',
+                                  height: '30px',
+                                }}
+                              >
+                                {e.name}
+                              </div>
+                            );
+                          })}
+
+                        {Object.keys(currentAssignment).length > 0 && (
+                          <>
+                            <div
+                              css={[AdmissionStyle.subjectBubble, AdmissionStyle.selected]}
+                              style={{ backgroundColor: '#fff', color: '#000' }}
+                            >
+                              {currentAssignment.name}
+                            </div>
+                            <div
+                              css={AdmissionStyle.questionBubble}
+                              onClick={() => remove('assignment')}
+                              onKeyDown={() => remove('assignment')}
+                              role='button'
+                              tabIndex='-1'
+                              style={{
+                                backgroundColor: 'rgba(241, 249, 255, 1)',
+                                color: '#000',
+                                border: '1px solid rgba(112, 112, 112, 1)',
+                              }}
+                            >
+                              <CloseIcon />
+                            </div>
+                          </>
+                        )}
+                      </section>
+                    </Row>
+                    <hr />
+                  </>
+                )}
               </Card.Body>
             )}
           </>

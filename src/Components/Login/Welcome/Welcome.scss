@@ -159,8 +159,63 @@
   &__signInButton {
     background-color: var(--superlight-blue);
   }
+
+  /*************New Carousel Styles****************/
+
+  &__carouselSubHeading {
+    font-family: $medium;
+    line-height: 24px;
+    color: var(--primary-blue);
+    margin-top: $spacer * 4;
+  }
+
+  &__carouselHeading {
+    font-family: $extraBold;
+    line-height: 29px;
+    color: var(--primary-blue);
+  }
+
+  &__carouselText {
+    font-size: $spacer * 1.25;
+    line-height: 24px;
+    font-family: $medium;
+    color: $black;
+  }
 }
 
 .carousel .slide {
-  background-color: transparent;
+  background: transparent !important;
+  padding-bottom: 10px;
+}
+
+.swiper-container {
+  padding-bottom: 2rem !important;
+}
+
+.swiper-pagination-bullet {
+  color: #787878 !important;
+  background-color: #787878 !important;
+  margin-left: 25px !important;
+  margin-right: 25px !important;
+}
+
+.mySwiper > .swiper-pagination > .swiper-pagination-bullet-active {
+  width: 40px;
+  background-color: #000 !important;
+  border-radius: 50px;
+  animation-duration: 0.5s;
+  animation-name: slidein;
+}
+
+.mySwiper {
+  margin-top: 2rem;
+}
+
+@keyframes slidein {
+  0% {
+    width: 8px;
+  }
+  100% {
+    width: 40px;
+  }
 }

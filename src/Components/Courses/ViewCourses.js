@@ -5,15 +5,16 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
-import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
+import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get } from '../../Utilities';
 import { PageHeader } from '../Common';
 import rupee from '../../assets/images/Courses/rupee.svg';
 import placeholder from '../../assets/images/ycIcon.png';
 import { courseActions } from '../../redux/actions/course.action';
+import './Courses.scss';
 
 const ViewCourses = (props) => {
-  const { clientUserId, history, setCourseIdToStore } = props;
+  const { clientUserId, history, setCourseIdToStore, clientId } = props;
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
@@ -38,7 +39,7 @@ const ViewCourses = (props) => {
 
   const goToBuyCourse = (id) => {
     const { push } = history;
-    push({ pathname: '/courses/buyCourse', state: { id, clientUserId } });
+    push(`/courses/buyCourse/${clientId}/${id}`);
   };
 
   const goToMyCourse = (id) => {
@@ -51,7 +52,7 @@ const ViewCourses = (props) => {
       <PageHeader
         title={history.location.state.type === 'allCourses' ? ' All Courses' : 'My Courses'}
       />
-      <div style={{ marginTop: '5rem' }}>
+      <div className='Courses__container'>
         {courses.map((course) => {
           const numberOfStars = Math.round(parseInt(course.course_rating, 10));
           const starArray = [...Array(numberOfStars)].map((e, i) => (
@@ -71,7 +72,7 @@ const ViewCourses = (props) => {
           ));
           return (
             <Row
-              className='m-3'
+              className='m-3 py-1'
               key={course.course_id}
               onClick={
                 history.location.state.type === 'allCourses'
@@ -79,14 +80,14 @@ const ViewCourses = (props) => {
                   : () => goToMyCourse(course.course_id)
               }
             >
-              <Col xs={4} className=''>
+              <Col xs={4} sm={2} className='Courses__image'>
                 <img
                   src={course.course_display_image ? course.course_display_image : placeholder}
                   alt='course '
                   className='mx-auto Courses__viewCourseImage'
                 />
               </Col>
-              <Col xs={8} className='p-0'>
+              <Col xs={8} sm={8} className='p-0'>
                 <p className='Scrollable__courseCardHeading mb-0 mx-2'>{course.course_title}</p>
                 <Row className='mx-2'>
                   {starArray.map((e) => {
@@ -97,7 +98,7 @@ const ViewCourses = (props) => {
                   })}
                   <span
                     className='Scrollable__smallText my-auto'
-                    style={{ color: 'rgba(0, 0, 0, 0.87)' }}
+                    style={{ color: 'rgba(0, 0, 0, 0.87)', paddingLeft: '10px' }}
                   >
                     {course.course_rating}
                   </span>
@@ -131,6 +132,7 @@ const ViewCourses = (props) => {
 
 const mapStateToProps = (state) => ({
   clientUserId: getClientUserId(state),
+  clientId: getClientId(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -145,6 +147,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(ViewCourses);
 
 ViewCourses.propTypes = {
   clientUserId: PropTypes.number.isRequired,
+  clientId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   setCourseIdToStore: PropTypes.func.isRequired,
 };

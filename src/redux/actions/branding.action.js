@@ -12,8 +12,13 @@ function clear() {
   return { type: brandingConstants.CLEAR };
 }
 
+function setCurrentComponentToStore(payload) {
+  return { type: brandingConstants.CURRENTCOMPONENT, payload };
+}
+
 export const brandingActions = {
   success,
   error,
   clear,
+  setCurrentComponentToStore,
 };

@@ -8,12 +8,13 @@ import { getCurrentcolor } from '../redux/reducers/color.reducer';
 import { getCurrentBranding } from '../redux/reducers/branding.reducer';
 import { conversationsActions } from '../redux/actions/conversations.action';
 import { setGlobalColors, changeFaviconAndDocumentTitle } from '../Utilities';
-import { Loader } from '../Components/Common';
+import { Loader } from '../Components/Common/Loader/Loading';
 import './App.scss';
 import { history, Routes } from '../Routing';
 import { getCurrentLoadingStatus } from '../redux/reducers/loading.reducer';
+import withClearCache from './BustCache';
 
-function App(props) {
+function MainApp(props) {
   const { color, currentbranding, isLoading, setSocket } = props;
 
   useEffect(() => {
@@ -45,7 +46,7 @@ function App(props) {
   }, [color, currentbranding]);
 
   return (
-    <Container fluid className='p-0 m-0 overflow-hidden'>
+    <Container fluid className='p-0 m-0 overflow-hidden rootContainer mx-auto'>
       {isLoading && <Loader />}
       <ConnectedRouter history={history}>
         <Routes />
@@ -68,10 +69,15 @@ const mapStateToProps = (state) => ({
   isLoading: getCurrentLoadingStatus(state),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+const BustCache = withClearCache(connect(mapStateToProps, mapDispatchToProps)(MainApp));
 
-App.propTypes = {
-  setSocket: PropTypes.func.isRequired,
+function App() {
+  return <BustCache />;
+}
+
+export default App;
+
+MainApp.propTypes = {
   color: PropTypes.shape({
     color: PropTypes.shape({
       primary: PropTypes.string,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
@@ -6,22 +6,25 @@ import Col from 'react-bootstrap/Col';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import ReactIntlTelInput from 'react-intl-tel-input-v2';
 import { phoneRegExp } from '../../../Utilities';
 import './PhoneNo.scss';
+import 'intl-tel-input/build/css/intlTelInput.css';
 
 const PhoneNo = (props) => {
   const [title, setTitle] = useState('');
+  const [mobileNo, setMobileNo] = useState({ iso2: 'in', dialCode: '91', phone: '' });
   const [spinner, setSpinner] = useState(true);
   const [isValid, setValid] = useState(false);
   const [isFocused, setFocus] = useState(false);
   const [showPassword, setPasswordShown] = useState(true);
-
   const { placeholder, status, password, getData, forgotPlaceholder } = props;
 
   const setClick = () => {
     if (placeholder === 'Mobile number') {
-      if (title.match(phoneRegExp)) {
-        getData(title);
+      if (mobileNo.dialCode !== '91' || mobileNo.phone.match(phoneRegExp)) {
+        getData(mobileNo.phone, mobileNo.dialCode);
+        // getData(title);
         setSpinner(false);
         setValid(false);
         setTitle('');
@@ -38,6 +41,19 @@ const PhoneNo = (props) => {
     setPasswordShown((prevState) => !prevState);
   };
 
+  /** ************************************* */
+  const inputProps = {
+    placeholder: 'Mobile Number',
+  };
+
+  const intlTelOpts = {
+    preferredCountries: ['in'],
+  };
+
+  const onChange = (values) => setMobileNo(values);
+  //  const onReady = (instance, IntlTelInput) => console.log(instance, IntlTelInput);
+
+  /** **************************************** */
   return (
     <div className='text-center PhoneNo mt-5'>
       {placeholder === 'Mobile number' && (
@@ -72,53 +88,65 @@ const PhoneNo = (props) => {
       )}
 
       <Row className='mx-auto PhoneNo__input mt-5'>
-        <Col md={10} xs={10} className='p-0 my-auto'>
-          {/* disabing eslint since adding htmlFor results in the input not applying the span */}
-          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-          <label className='has-float-label my-auto'>
-            <input
-              className='form-control'
-              name='Mobile Number'
-              type={
-                password
-                  ? showPassword
-                    ? 'password'
-                    : 'text'
-                  : placeholder === 'Mobile number'
-                  ? 'number'
-                  : 'text'
-              }
-              placeholder={placeholder}
-              onChange={(event) => setTitle(event.target.value)}
-              onFocus={() => setFocus(true)}
-              onBlur={() => setFocus(false)}
-              value={title}
+        {placeholder === 'Mobile number' ? (
+          <Col md={10} xs={10} className='p-1 my-auto'>
+            <ReactIntlTelInput
+              inputProps={inputProps}
+              intlTelOpts={intlTelOpts}
+              value={mobileNo}
+              onChange={onChange}
             />
-            <span>{placeholder}</span>
-            {password &&
-              (showPassword ? (
-                <i
-                  className='PhoneNo__show'
-                  onClick={togglePasswordVisibility}
-                  onKeyDown={togglePasswordVisibility}
-                  role='button'
-                  tabIndex={0}
-                >
-                  <VisibilityOffIcon />
-                </i>
-              ) : (
-                <i
-                  className='PhoneNo__show'
-                  onClick={togglePasswordVisibility}
-                  onKeyDown={togglePasswordVisibility}
-                  role='button'
-                  tabIndex={0}
-                >
-                  <VisibilityIcon />
-                </i>
-              ))}
-          </label>
-        </Col>
+          </Col>
+        ) : (
+          <Col md={10} xs={10} className='p-0 my-auto'>
+            {/* disabing eslint since adding htmlFor results in the input not applying the span */}
+            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+            <label className='has-float-label my-auto'>
+              <input
+                className='form-control'
+                name='Mobile Number'
+                type={
+                  password
+                    ? showPassword
+                      ? 'password'
+                      : 'text'
+                    : placeholder === 'Mobile number'
+                    ? 'number'
+                    : 'text'
+                }
+                placeholder={placeholder}
+                onChange={(event) => setTitle(event.target.value)}
+                onFocus={() => setFocus(true)}
+                onBlur={() => setFocus(false)}
+                value={title}
+              />
+              <span>{placeholder}</span>
+              {password &&
+                (showPassword ? (
+                  <i
+                    className='PhoneNo__show'
+                    onClick={togglePasswordVisibility}
+                    onKeyDown={togglePasswordVisibility}
+                    role='button'
+                    tabIndex={0}
+                  >
+                    <VisibilityOffIcon />
+                  </i>
+                ) : (
+                  <i
+                    className='PhoneNo__show'
+                    onClick={togglePasswordVisibility}
+                    onKeyDown={togglePasswordVisibility}
+                    role='button'
+                    tabIndex={0}
+                  >
+                    <VisibilityIcon />
+                  </i>
+                ))}
+            </label>
+          </Col>
+        )}
+
         <Col md={2} xs={2} className='p-0 my-auto'>
           {spinner ? (
             isFocused ? (

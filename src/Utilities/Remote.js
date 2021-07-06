@@ -1,4 +1,9 @@
 import axios from 'axios';
+import { history } from '../Routing/History';
+import { apiValidation } from './utilities';
+import { loadingActions } from '../redux/actions/loading.action';
+
+const AWS = require('aws-sdk');
 
 function authHeaderPost() {
   // return authorization header with jwt token
@@ -25,11 +30,11 @@ function authHeaderGet() {
   return {};
 }
 
-// const testUrl =
-//   process.env.NODE_ENV === 'development'
-//     ? 'https://portal.tca.ingeniumedu.com'
-//     : 'https://class.ingeniumedu.com';
-const testUrl = 'https://portal.tca.ingeniumedu.com';
+const testUrl =
+  process.env.NODE_ENV === 'development'
+    ? 'https://portal.tca.ingeniumedu.com'
+    : 'https://class.ingeniumedu.com';
+// const testUrl = 'https://portal.tca.ingeniumedu.com';
 
 const transformRequest = (jsonData = {}) =>
   Object.entries(jsonData)
@@ -41,6 +46,7 @@ export const post = (requestBody, endpoint) => {
     .post(testUrl + endpoint, transformRequest(requestBody), authHeaderPost())
     .then((result) => result.data)
     .catch((err) => {
+      history.push('/error');
       console.error(`The error is ${err}`);
     });
 };
@@ -51,20 +57,58 @@ export const get = (requestBody = null, endpoint) => {
     .get(testUrl + endpoint, { params: requestBody, headers: authHeaderGet() })
     .then((result) => result.data)
     .catch((err) => {
+      history.push('/error');
       console.error(`The error is ${err}`);
     });
 };
 
+// export const uploadImage = (file) => {
+//   const fd = new FormData();
+//   fd.append('upl', file);
+//   console.log(file);
+//   return axios
+//     .post(`${testUrl}/upload`, fd, authHeaderPost())
+//     .then((result) => result.data)
+//     .catch((err) => {
+//       history.push('/error');
+//       console.error(`The error is ${err}`);
+//     });
+// };
+
 export const uploadImage = (file) => {
-  const fd = new FormData();
-  fd.append('upl', file);
   console.log(file);
-  return axios
-    .post(`${testUrl}/upload`, fd, authHeaderPost())
-    .then((result) => result.data)
-    .catch((err) => {
-      console.error(`The error is ${err}`);
+
+  return new Promise((resolve, rej) => {
+    get(null, '/getAwsCredentialsWithBucketConfiguration').then((res) => {
+      const result = apiValidation(res);
+      AWS.config.update({
+        accessKeyId: result.key,
+        secretAccessKey: result.secret,
+        region: result.region,
+      }); // for simplicity. In prod, use loadConfigFromFile, or env variables
+
+      const bucket = new AWS.S3({
+        params: {
+          Bucket: result.bucket_name,
+        },
+      });
+      const params = { Key: file.name, ContentType: file.type, Body: file };
+
+      bucket
+        .upload(params)
+        .on('httpUploadProgress', (evt) => {
+          console.log('Progress:', evt.loaded, '/', evt.total);
+          // StateManager.dispatch(loadingActions.setAmountLoadedToStore(evt.loaded));
+          // StateManager.dispatch(loadingActions.setTotalLoadedToStore(evt.total));
+        })
+        .send((err, data) => {
+          console.log(err, data);
+          const obj = {};
+          obj.filename = data.Location;
+          resolve(obj);
+        });
     });
+  });
 };
 
 export const uploadFiles = (files) => {

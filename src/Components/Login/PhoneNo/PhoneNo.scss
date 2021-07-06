@@ -51,3 +51,20 @@
     }
   }
 }
+
+.iti > input::placeholder {
+  font-family: 'Montserrat-SemiBold';
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 14px;
+  line-height: 24px;
+}
+
+.iti > input {
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.54);
+  color: rgba(0, 0, 0, 0.87);
+  font-family: 'Montserrat-SemiBold';
+  font-size: 14px;
+  height: 32px;
+  line-height: 24px;
+}

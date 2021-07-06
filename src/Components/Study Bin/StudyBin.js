@@ -78,7 +78,7 @@ const StudyBin = (props) => {
 
   const rerenderFilesAndFolders = () => {
     const temp = {
-      client_user_id: 1605,
+      client_user_id: clientUserId,
       client_id: clientId,
     };
     if (folderIdStack.length < 1) {
@@ -123,19 +123,62 @@ const StudyBin = (props) => {
       .catch((err) => console.log(err));
   };
 
-  const addNewFile = (name, link) => {
-    console.log('file clicked', name);
-    // https://stackoverflow.com/questions/190852/how-can-i-get-file-extensions-with-javascript - visioN
-    const extension = name.slice(((name.lastIndexOf('.') - 1) >>> 0) + 2); // eslint-disable-line
-    const payload = {
-      client_user_id: clientUserId,
-      folder_id: folderIdStack[folderIdStack.length - 1],
-      file_name: name,
-      file_link: link,
-      file_type:
+  // const addNewFile = (name, link) => {
+
+  //   console.log('file clicked', name);
+  //   // https://stackoverflow.com/questions/190852/how-can-i-get-file-extensions-with-javascript - visioN
+  //   const extension = name.slice(((name.lastIndexOf('.') - 1) >>> 0) + 2); // eslint-disable-line
+  //   console.log(extension);
+  //   const payload = {
+  //     client_user_id: clientUserId,
+  //     folder_id: folderIdStack[folderIdStack.length - 1],
+  //     file_name: name,
+  //     file_link: link,
+  //     file_type:
+  //       extension === 'doc'
+  //         ? '.doc'
+  //         : extension === 'docx'
+  //         ? '.docx'
+  //         : extension === 'pdf'
+  //         ? '.pdf'
+  //         : extension === 'xls'
+  //         ? '.xls'
+  //         : extension === 'xslx'
+  //         ? '.xslx'
+  //         : extension === 'csv'
+  //         ? '.csv'
+  //         : extension === 'ppt'
+  //         ? '.ppt'
+  //         : extension === 'pptx'
+  //         ? '.pptx'
+  //         : extension === 'mp4'
+  //         ? '.mp4'
+  //         : extension === 'jpg'
+  //         ? '.jpg'
+  //         : extension === 'png'
+  //         ? '.png'
+  //         : extension === 'jpeg'
+  //         ? '.jpeg'
+  //         : 'file',
+  //   };
+  //   post(payload, '/addFile')
+  //     .then((res) => {
+  //       console.log(res);
+  //       rerenderFilesAndFolders();
+  //     })
+  //     .catch((e) => console.log(e));
+  // };
+
+  const addNewFile = (files) => {
+    const filesArray = files.map((elem) => {
+      const obj = {};
+      obj.file_link = elem.filename;
+      obj.file_name = elem.name;
+      const extension = elem.name.slice(((elem.name.lastIndexOf('.') - 1) >>> 0) + 2); // eslint-disable-line
+      obj.file_type =
         extension === 'doc'
           ? '.doc'
-          : extension === '.docx'
+          : extension === 'docx'
           ? '.docx'
           : extension === 'pdf'
           ? '.pdf'
@@ -157,9 +200,16 @@ const StudyBin = (props) => {
           ? '.png'
           : extension === 'jpeg'
           ? '.jpeg'
-          : 'file',
+          : 'file';
+      return obj;
+    });
+
+    const payload = {
+      client_user_id: clientUserId,
+      folder_id: folderIdStack[folderIdStack.length - 1],
+      file_array: JSON.stringify(filesArray),
     };
-    post(payload, '/addFile')
+    post(payload, '/addMultipleFile')
       .then((res) => {
         console.log(res);
         rerenderFilesAndFolders();
@@ -193,7 +243,7 @@ const StudyBin = (props) => {
     if (folderIdStack.length < 1) {
       if (roleArray.includes(3) || roleArray.includes(4)) {
         const temp = {
-          client_user_id: 1605,
+          client_user_id: clientUserId,
           client_id: clientId,
         };
         get(temp, '/getPrimaryFoldersAndFiles') // instead of temp should be [payload]
@@ -312,7 +362,7 @@ const StudyBin = (props) => {
           handleBack={handleBack}
         />
         <div style={{ marginTop: '6rem' }} className='mx-4 mx-md-5'>
-          {folderIdStack.length === 1 && (
+          {(folderIdStack.length === 1 || roleArray.includes(1)) && (
             <div className='mb-3'>
               <h6 className='StudyBin__heading'>
                 Categories <span>({categoryArray.length})</span>
@@ -324,7 +374,7 @@ const StudyBin = (props) => {
                     onClick={() => enterCategory(elem.category_id)}
                     key={elem.category_id}
                   >
-                    <Col xs={2} className='my-auto'>
+                    <Col xs={2} className='my-auto' style={{ textAlign: 'center' }}>
                       <img
                         src={elem.category_icon}
                         alt='category icon'
@@ -364,7 +414,7 @@ const StudyBin = (props) => {
               <h6 className='StudyBin__heading'>
                 Folders <span>({folderArray.length})</span>
               </h6>
-              <Row className='justify-content-between'>
+              <Row className='container_studybin'>
                 {folderArray
                   .filter((elem) => {
                     return elem.folder_name.includes(searchString);
@@ -395,8 +445,11 @@ const StudyBin = (props) => {
                           role='button'
                           tabIndex='-1'
                         >
-                          <img src={folder} alt='folder' height='67' width='86' />
-                          <h6 className='text-center mt-3 StudyBin__folderName'>
+                          <img src={folder} alt='folder' className='folder_icon' />
+                          <h6
+                            className='text-center mt-3 StudyBin__folderName'
+                            style={{ lineHeight: '1' }}
+                          >
                             {elem.folder_name}
                           </h6>
                         </div>
@@ -411,7 +464,7 @@ const StudyBin = (props) => {
               <h6 className='StudyBin__heading mt-4'>
                 Files <span>({fileArray.length})</span>
               </h6>
-              <Row className='justify-content-between'>
+              <Row className='container_studybin'>
                 {fileArray
                   .filter((elem) => {
                     return elem.file_name.includes(searchString);
@@ -423,7 +476,7 @@ const StudyBin = (props) => {
                         md={4}
                         lg={3}
                         key={elem.file_id}
-                        className='p-2 StudyBin__box my-2 mx-2'
+                        className='p-2 StudyBin__box my-2 mx-1'
                         style={elem.status === 'active' ? {} : { opacity: '0.4' }}
                       >
                         {elem.file_type === 'youtube' ? (
@@ -445,7 +498,10 @@ const StudyBin = (props) => {
                               tabIndex='-1'
                             >
                               <img src={youtube} alt='youtube' height='67' width='67' />
-                              <h6 className='text-center mt-3 StudyBin__folderName'>
+                              <h6
+                                className='text-center mt-3 StudyBin__folderName'
+                                style={{ lineHeight: '1' }}
+                              >
                                 {elem.file_name}
                               </h6>
                             </div>
@@ -468,10 +524,10 @@ const StudyBin = (props) => {
                               role='button'
                               tabIndex='-1'
                             >
-                              <img src={videocam} alt='video' height='60' width='60' />
+                              <img src={videocam} alt='video' height='67' width='67' />
                               <h6
                                 className='text-center mt-3 StudyBin__folderName'
-                                style={{ wordBreak: 'break-all' }}
+                                style={{ wordBreak: 'break-all', lineHeight: '1' }}
                               >
                                 {elem.file_name}
                               </h6>
@@ -498,10 +554,10 @@ const StudyBin = (props) => {
                               role='button'
                               tabIndex='-1'
                             >
-                              <img src={images} alt='video' height='60' width='60' />
+                              <img src={images} alt='video' height='67' width='67' />
                               <h6
                                 className='text-center mt-3 StudyBin__folderName'
-                                style={{ wordBreak: 'break-all' }}
+                                style={{ wordBreak: 'break-all', lineHeight: '1' }}
                               >
                                 {elem.file_name}
                               </h6>

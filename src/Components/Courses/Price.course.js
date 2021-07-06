@@ -167,7 +167,8 @@ const Price = (props) => {
   };
 
   const addCourseFee = () => {
-    if (!isFree && discountCoursePrice > currentCoursePrice) {
+    console.log(discountCoursePrice, currentCoursePrice);
+    if (!isFree && Number(discountCoursePrice) > Number(currentCoursePrice)) {
       Swal.fire({
         icon: 'error',
         title: 'Oops!',
@@ -257,7 +258,7 @@ const Price = (props) => {
         <Row className='my-3 Courses__createCourse mx-2'>
           <span className='my-auto ml-2'>Coupons</span>
         </Row>
-        <Row className='justify-content-center'>
+        <Row className='justify-content-center mx-2'>
           {coupon.length > 0 &&
             coupon.map((elem) => {
               return (

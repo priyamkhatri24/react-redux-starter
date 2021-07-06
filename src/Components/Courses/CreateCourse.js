@@ -111,7 +111,7 @@ const CreateCourse = (props) => {
   };
 
   return (
-    <div>
+    <div className='Courses__createCourses'>
       {Object.keys(course).length > 0 && (
         <>
           <PageHeader title={course.course_title} customBack handleBack={handleBack} />
@@ -133,6 +133,7 @@ const CreateCourse = (props) => {
                 courseDesc={course.course_description}
                 updateDisplayDetails={updateDisplayDetails}
                 courseDisplayImage={course.course_display_image}
+                courseDisplayVideo={course.course_preview_video}
               />
             )}
             {currentSlide === 4 && (

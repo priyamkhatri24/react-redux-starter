@@ -23,6 +23,8 @@
 
   &__adminHeading {
     font-family: 'Montserrat-SemiBold';
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   &__adminCard {
@@ -41,6 +43,8 @@
     font-family: 'Montserrat-Regular';
     color: $dashboardGrey;
     font-weight: 700;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   &__adminDuration > span {
@@ -57,5 +61,10 @@
   &__adminBatches > span {
     font-size: $spacer * 0.875;
     color: $headingGrey;
+  }
+
+  &__passcode {
+    font-family: $bold;
+    font-size: 1.5rem;
   }
 }

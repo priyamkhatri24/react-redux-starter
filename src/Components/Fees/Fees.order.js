@@ -6,6 +6,7 @@ import cx from 'classnames';
 import { PageHeader } from '../Common';
 import checkmark from '../../assets/images/order/icons8-checked.svg';
 import caution from '../../assets/images/order/icons8-medium-risk-50.png';
+import './Fees.scss';
 
 const FeesOrder = (props) => {
   const {
@@ -56,14 +57,16 @@ const FeesOrder = (props) => {
             : 'Congrats. The payment of fees was successfully processed. Happy learning!'}
         </p>
       </div>
-      <p className='Fees__orderDetailHeading mb-0 ml-3 mt-4'>DUE DATE</p>
-      <p className='Fees_orderDetails ml-3'>
-        {order.due_date
-          ? format(fromUnixTime(parseInt(order.due_date, 10)), 'dd-MMM-yyyy')
-          : 'Immediately'}
-      </p>
-      <p className='Fees__orderDetailHeading mb-0'>TO: {order.coaching_name}</p>
-      <p className='Fees_orderDetails'>{order.coaching_email}</p>
+      <div className='Fees__orderDetailsContainer'>
+        <p className='Fees__orderDetailHeading mb-0 ml-3 mt-4'>DUE DATE</p>
+        <p className='Fees_orderDetails ml-3'>
+          {order.due_date
+            ? format(fromUnixTime(parseInt(order.due_date, 10)), 'dd-MMM-yyyy')
+            : 'Immediately'}
+        </p>
+        <p className='Fees__orderDetailHeading mb-0 ml-3'>TO: {order.coaching_name}</p>
+        <p className='Fees_orderDetails'>{order.coaching_email}</p>
+      </div>
     </>
   );
 };

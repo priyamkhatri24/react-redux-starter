@@ -6,6 +6,7 @@ const initialState = {
   testStartTime: 0,
   testEndTime: 0,
   testresultArray: [],
+  testLanguage: 'english',
 };
 
 export function testsUpdate(state = initialState, action) {
@@ -37,6 +38,11 @@ export function testsUpdate(state = initialState, action) {
         ...state,
         testresultArray: action.payload,
       };
+    case testConstants.TESTLANGUAGE:
+      return {
+        ...state,
+        testLanguage: action.payload,
+      };
     case testConstants.CLEARTESTS:
       return {
         ...state,
@@ -45,6 +51,7 @@ export function testsUpdate(state = initialState, action) {
         testStartTime: 0,
         testEndTime: 0,
         testresultArray: [],
+        testLanguage: 'english',
       };
     default:
       return state;
@@ -56,3 +63,4 @@ export const gettestType = (state) => state.testsUpdate.testType;
 export const getTestStartTime = (state) => state.testsUpdate.testStartTime;
 export const getTestResultArray = (state) => state.testsUpdate.testresultArray;
 export const getTestEndTime = (state) => state.testsUpdate.testEndTime;
+export const getTestLanguage = (state) => state.testsUpdate.testLanguage;

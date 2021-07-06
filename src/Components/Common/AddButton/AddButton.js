@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import PersonAddRoundedIcon from '@material-ui/icons/PersonAddRounded';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { uploadImage } from '../../../Utilities';
+import { uploadingImage, uploadMultipleImages } from '../../../Utilities/customUpload';
 import { loadingActions } from '../../../redux/actions/loading.action';
 
 const AddButton = (props) => {
@@ -32,15 +32,19 @@ const AddButton = (props) => {
   // };
 
   const upload = (elem, e) => {
-    setLoadingPendingToStore();
     const reader = new FileReader();
+    console.log(e.target.files);
     const file = e.target.files[0];
     if (file) {
       reader.readAsDataURL(e.target.files[0]);
-      uploadImage(file).then((res) => {
-        console.log('fileu;lod ', res);
-        elem.func(file.name, res.filename);
-        setLoadingSuccessToStore();
+
+      // uploadingImage(file).then((res) => {
+      //   console.log('fileu;lod ', res);
+      //   elem.func(file.name, res.filename);
+      // });
+
+      uploadMultipleImages(e.target.files).then((res) => {
+        elem.func(res);
       });
     }
   };
@@ -75,6 +79,7 @@ const AddButton = (props) => {
                       type='file'
                       name='upload-photo'
                       id='upload-photo'
+                      multiple
                       onChange={(e) => upload(addButtonArray[0], e)}
                       style={{ display: 'none' }}
                       ref={courseFileRef}

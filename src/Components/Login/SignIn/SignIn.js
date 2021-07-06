@@ -6,23 +6,31 @@ import PhoneNo from '../PhoneNo/PhoneNo';
 import footerIngenium from '../../../assets/images/ingiLOGO.png';
 import './SignIn.scss';
 import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
-import { get, post, apiValidation } from '../../../Utilities';
+import { get, post } from '../../../Utilities/Remote';
+import { apiValidation } from '../../../Utilities';
 import { clientUserIdActions } from '../../../redux/actions/clientUserId.action';
 import { userProfileActions } from '../../../redux/actions/userProfile.action';
 import { firstTimeLoginActions } from '../../../redux/actions/firsttimeLogin.action';
 import { getFirstTimeLoginState } from '../../../redux/reducers/firstTimeLogin.reducer';
+import SelectUser from './SelectUser';
+import passwordImage from '../../../assets/images/Login/password.svg';
+import { LoginDetailsSkeleton } from '../../Common';
 
 const SignIn = (props) => {
   const {
     location: {
-      state: { image, userInfo, contact },
+      state: { userInfo, contact },
     },
     firstTimeLogin,
     setFirstTimeLoginToStore,
     history,
   } = props;
 
-  const { currentbranding: { branding: { client_id: clientId = '' } = {} } = {} } = props;
+  const {
+    currentbranding: { branding: { client_id: clientId = '', client_logo: image } = {} } = {},
+  } = props;
+  const [password, setPassword] = useState('');
+  const [verify, setVerify] = useState(false);
   const [currentComponent, setComponent] = useState('username');
   const [validUser, checkValidUser] = useState(false);
   const [loginParams, setLoginParams] = useState({
@@ -53,42 +61,42 @@ const SignIn = (props) => {
     }
   };
 
-  const forgotUsername = () => {
-    const { push } = props.history;
-    const requestBody = {
-      contact,
-      client_id: loginParams.clientId,
-    };
+  // const forgotUsername = () => {
+  //   const { push } = props.history;
+  //   const requestBody = {
+  //     contact,
+  //     client_id: loginParams.clientId,
+  //   };
 
-    post(requestBody, '/forgotUsername')
-      .then((res) => {
-        const result = apiValidation(res);
-        if (result.status === 'Wrong username') {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops!',
-            text: `Please check your internet connection.`,
-          });
-          push({ pathname: '/login' });
-        } else if (result === 'success') {
-          Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: `The Username Has been sent to your registered mobile number`,
-          });
-        }
-      })
-      .catch((e) => console.error(e));
-  };
+  //   post(requestBody, '/forgotUsername')
+  //     .then((res) => {
+  //       const result = apiValidation(res);
+  //       if (result.status === 'Wrong username') {
+  //         Swal.fire({
+  //           icon: 'error',
+  //           title: 'Oops!',
+  //           text: `Please check your internet connection.`,
+  //         });
+  //         push({ pathname: '/login' });
+  //       } else if (result === 'success') {
+  //         Swal.fire({
+  //           icon: 'success',
+  //           title: 'Success!',
+  //           text: `The Username Has been sent to your registered mobile number`,
+  //         });
+  //       }
+  //     })
+  //     .catch((e) => console.error(e));
+  // };
 
-  const getPassword = (param) => {
+  const getPassword = (pass = null) => {
     if (userStatus === 'active') {
       const reqBody = {
         user_name: loginParams.user_name,
-        password: param,
+        password,
         client_id: loginParams.clientId,
       };
-
+      setVerify(true);
       get(reqBody, '/loginUser')
         .then((res) => {
           const { push } = props.history;
@@ -96,6 +104,7 @@ const SignIn = (props) => {
 
           if (result.status === 'Wrong password. Login failed') {
             checkValidUser(true);
+            setVerify(false);
           }
 
           const {
@@ -111,6 +120,9 @@ const SignIn = (props) => {
               user_id: userId,
               profile_image: profileImage,
               username: userName,
+              birthday,
+              gender,
+              address,
             },
           } = result;
           console.log(result, userName, result.user);
@@ -126,6 +138,10 @@ const SignIn = (props) => {
           props.setTokenToStore(token);
           props.setClientIdToStore(clientID);
           props.setUserNameToStore(userName);
+          props.setBirthdayToStore(birthday);
+          props.setAddressToStore(address);
+          props.setGenderToStore(gender);
+
           push({ pathname: '/' });
           setFirstTimeLoginToStore(true);
         })
@@ -133,10 +149,10 @@ const SignIn = (props) => {
     } else if (userStatus === 'pending') {
       console.log('brooo');
       console.log(loginParams);
-      console.log(param);
+      console.log(password);
       const payload = {
         user_name: loginParams.user_name,
-        password: param,
+        password,
         user_id: loginParams.user_id,
       };
 
@@ -157,6 +173,9 @@ const SignIn = (props) => {
               user_id: userId,
               profile_image: profileImage,
               username: userName,
+              gender,
+              address,
+              birthday,
             },
           } = result;
 
@@ -171,6 +190,9 @@ const SignIn = (props) => {
           props.setTokenToStore(token);
           props.setClientIdToStore(clientID);
           props.setUserNameToStore(userName);
+          props.setBirthdayToStore(birthday);
+          props.setAddressToStore(address);
+          props.setGenderToStore(gender);
           props.history.push({ pathname: '/' });
           setFirstTimeLoginToStore(true);
         }
@@ -186,58 +208,73 @@ const SignIn = (props) => {
       contact,
     };
 
-    post(requestBody, '/resendOTP')
-      .then((res) => {
-        const result = apiValidation(res);
-        if (result.status === 'sending successful') {
-          push({
-            pathname: '/forgotpassword',
-            state: { image, contact, userId: loginParams.user_id },
-          });
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops!',
-            text: `Please check your internet connection.`,
-          });
-        }
-      })
-      .catch((e) => console.err(e));
+    post(requestBody, '/resendOTP').then((res) => {
+      const result = apiValidation(res);
+      if (result.status === 'sending successful') {
+        push({
+          pathname: '/forgotpassword',
+          state: { image, contact, userId: loginParams.user_id, loginParams, userStatus },
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops!',
+          text: `Please check your internet connection.`,
+        });
+      }
+    });
+    // .catch((e) => console.err(e));
   };
 
   return (
-    <div className='Signin text-center'>
-      <img
-        src={image}
-        alt='coachingLogo'
-        className='Signin__jumbo img-fluid rounded mx-auto d-block'
-      />
-
+    <>
       {currentComponent === 'username' && (
-        <PhoneNo placeholder='username' getData={getUserName} forgotPlaceholder={forgotUsername} />
+        <>
+          <img
+            src={image}
+            alt='coachingLogo'
+            className='Signin__jumbo img-fluid rounded mx-auto d-block'
+            style={{ marginTop: '125px' }}
+          />
+
+          <SelectUser userInfo={userInfo} getUserName={getUserName} />
+        </>
       )}
 
-      {currentComponent === 'password' && (
-        <PhoneNo
+      {currentComponent === 'password' && userStatus === 'active' && (
+        <LoginDetailsSkeleton
           placeholder='Password'
-          getData={getPassword}
+          image={passwordImage}
+          heading='Enter Password'
+          setClick={getPassword}
           password
-          status={userStatus}
           forgotPlaceholder={forgotPassword}
+          value={password}
+          setValue={setPassword}
+          isVerify={verify}
         />
       )}
-      {validUser && (
-        <small className='text-danger d-block'>
-          Please enter a valid
-          {currentComponent}
-        </small>
+
+      {currentComponent === 'password' && userStatus === 'pending' && (
+        <LoginDetailsSkeleton
+          placeholder='Password'
+          image={passwordImage}
+          heading='Create Password'
+          setClick={getPassword}
+          password
+          status='pending'
+          value={password}
+          setValue={setPassword}
+          isVerify={verify}
+        />
       )}
 
-      <footer className='py-4 Login__footer'>
-        <h6 className='Login__footerText'>Powered By</h6>
-        <img src={footerIngenium} alt='footerLogo' className='w-25' />
-      </footer>
-    </div>
+      {validUser && (
+        <small className='text-danger d-block text-center mx-auto'>
+          Please enter a valid {currentComponent}
+        </small>
+      )}
+    </>
   );
 };
 
@@ -281,6 +318,16 @@ const mapDispatchToProps = (dispatch) => {
     setTokenToStore: (payload) => {
       dispatch(userProfileActions.setTokenToStore(payload));
     },
+    setBirthdayToStore: (payload) => {
+      dispatch(userProfileActions.setBirthdayToStore(payload));
+    },
+    setGenderToStore: (payload) => {
+      dispatch(userProfileActions.setGenderToStore(payload));
+    },
+    setAddressToStore: (payload) => {
+      dispatch(userProfileActions.setAddressToStore(payload));
+    },
+
     setFirstTimeLoginToStore: (payload) => {
       dispatch(firstTimeLoginActions.setFirstTimeLoginToStore(payload));
     },
@@ -317,6 +364,9 @@ SignIn.propTypes = {
   setProfileImageToStore: PropTypes.func.isRequired,
   setContactToStore: PropTypes.func.isRequired,
   setTokenToStore: PropTypes.func.isRequired,
+  setBirthdayToStore: PropTypes.func.isRequired,
+  setAddressToStore: PropTypes.func.isRequired,
+  setGenderToStore: PropTypes.func.isRequired,
   setClientIdToStore: PropTypes.func.isRequired,
   setUserNameToStore: PropTypes.func.isRequired,
   firstTimeLogin: PropTypes.bool.isRequired,

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const Jitsi = (props) => {
   const jitsiContainerId = 'jitsi-container-id';
 
-  const { domain, jitsiDisplayHide, firstName, lastName, roomName, role } = props;
+  const { domain, jitsiDisplayHide, firstName, lastName, roomName, role, token } = props;
   const [jitsi, setJitsi] = useState({});
 
   const toolBarOptions = [
@@ -39,7 +39,7 @@ const Jitsi = (props) => {
     });
 
     const script = document.createElement('script');
-    script.src = 'https://tcalive.ingeniumedu.com/external_api.js';
+    script.src = 'https://tcaliveaws.ingeniumedu.com/external_api.js';
     script.async = true;
     script.onload = resolveLoadJitsiScriptPromise;
     document.body.appendChild(script);
@@ -75,7 +75,11 @@ const Jitsi = (props) => {
         SHOW_JITSI_WATERMARK: false,
         JITSI_WATERMARK_LINK: '',
       },
-      configOverwrite: { startWithAudioMuted: true, startWithVideoMuted: true },
+      configOverwrite: {
+        startWithAudioMuted: true,
+        startWithVideoMuted: true,
+        disableDeepLinking: true,
+      },
       userInfo: {
         displayName: `${firstName} ${lastName}`,
       },
@@ -83,11 +87,15 @@ const Jitsi = (props) => {
 
     const teacherOptions = {
       roomName,
+      jwt: token,
       parentNode: document.getElementById(jitsiContainerId),
       interfaceConfigOverwrite: {
         TOOLBAR_BUTTONS: toolBarOptions,
         SHOW_JITSI_WATERMARK: false,
         JITSI_WATERMARK_LINK: '',
+      },
+      configOverwrite: {
+        disableDeepLinking: true,
       },
       userInfo: {
         displayName: `${firstName} ${lastName}`,
@@ -117,7 +125,7 @@ const Jitsi = (props) => {
     return () => jitsi?.dispose?.();
   }, []);
 
-  return <div id={jitsiContainerId} style={{ height: '90%', width: '100%' }} />;
+  return <div id={jitsiContainerId} style={{ height: '90%', width: '100%', marginTop: '4rem' }} />;
 };
 
 export default Jitsi;
@@ -129,9 +137,11 @@ Jitsi.propTypes = {
   lastName: PropTypes.string,
   roomName: PropTypes.string.isRequired,
   role: PropTypes.string.isRequired,
+  token: PropTypes.string,
 };
 
 Jitsi.defaultProps = {
   firstName: '',
   lastName: '',
+  token: null,
 };

@@ -387,7 +387,7 @@
 //                 <td>
 //                   <input
 //                     id='controls'
-//                     type='checkbox'
+//                     type=''
 //                     checked={controls}
 //                     onChange={this.handleToggleControls}
 //                   />
@@ -401,7 +401,7 @@
 //                 <td>
 //                   <input
 //                     id='muted'
-//                     type='checkbox'
+//                     type=''
 //                     checked={muted}
 //                     onChange={this.handleToggleMuted}
 //                   />

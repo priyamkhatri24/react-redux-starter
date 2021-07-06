@@ -32,10 +32,10 @@ const HomeWorkCreator = (props) => {
   }, [currentSlide, questionArray]);
 
   useEffect(() => {
-    if (history.location.state.letsGo) {
+    if (history.location.state && history.location.state.letsGo) {
       clearTests();
     }
-  }, [history.location.state.letsGo, clearTests]);
+  }, [history, clearTests]);
 
   const fetchQuestions = (result) => {
     setQuestionArray(result);
@@ -43,18 +43,41 @@ const HomeWorkCreator = (props) => {
     setCurrentSlide(1);
   };
 
+  const handleBack = () => {
+    if (currentSlide === 0) {
+      history.push('/');
+    } else if (currentSlide === 1) {
+      setCurrentSlide(0);
+    } else if (currentSlide === 2) {
+      setCurrentSlide(1);
+    }
+  };
+
+  const selectedIndicatorStyles = {
+    display: 'inline-block',
+    margin: '0 8px',
+    fontFamily: 'Montserrat-Bold',
+    fontSize: '16px',
+    lineHeight: '19px',
+    color: 'var(--primary-blue)',
+    borderBottom: '5px solid var(--primary-blue)',
+    marginTop: '1rem',
+  };
+
   const indicatorStyles = {
-    background: 'rgba(0, 0, 0, 0.11)',
-    width: '3rem',
-    height: '0.5rem',
+    fontSize: '14px',
+    lineHeight: '20px',
+    color: 'rgba(0, 0, 0, 0.54)',
     display: 'inline-block',
     margin: '0 8px',
     borderRadius: '5px',
+    fontFamily: 'Montserrat-Medium',
+    marginTop: '1rem',
   };
 
   return (
     <div className='Homework'>
-      <PageHeader title='Homework Creator' />
+      <PageHeader title='Homework Creator' handleBack={handleBack} customBack />
       <div style={{ marginTop: '7rem' }} className='Homework__carousel'>
         <Carousel
           style={{ backgroundColor: 'red' }}
@@ -68,10 +91,12 @@ const HomeWorkCreator = (props) => {
             if (isSelected) {
               return (
                 <li
-                  style={{ ...indicatorStyles, background: 'var(--primary-blue)' }}
+                  style={selectedIndicatorStyles}
                   aria-label={`Selected: ${label} ${index + 1}`}
                   title={`Selected: ${label} ${index + 1}`}
-                />
+                >
+                  {index === 0 ? 'Filters' : index === 1 ? 'Questions' : 'Selected'}
+                </li>
               );
             }
             return (
@@ -85,7 +110,9 @@ const HomeWorkCreator = (props) => {
                 tabIndex={0}
                 title={`${label} ${index + 1}`}
                 aria-label={`${label} ${index + 1}`}
-              />
+              >
+                {index === 0 ? 'Filters' : index === 1 ? 'Questions' : 'Selected'}
+              </li>
             );
           }}
         >
@@ -129,6 +156,7 @@ HomeWorkCreator.propTypes = {
         letsGo: PropTypes.bool,
       }),
     }),
+    push: PropTypes.func.isRequired,
   }),
   setQuestionArrayToStore: PropTypes.func.isRequired,
   questionArray: PropTypes.instanceOf(Array).isRequired,

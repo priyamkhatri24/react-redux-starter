@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+// import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -20,6 +20,8 @@ export const PageHeader = (props) => {
     transparent,
     filter,
     triggerFilters,
+    customIcon,
+    handleCustomIcon,
   } = props;
 
   const [searchBar, triggerSearchBar] = useState(false);
@@ -29,14 +31,14 @@ export const PageHeader = (props) => {
   };
   return (
     <div
-      className='PageHeader p-3 d-flex'
+      className='PageHeader p-3 d-flex align-items-center'
       style={transparent ? { backgroundColor: 'transparent' } : {}}
     >
       {!searchBar && (
         <>
           {customBack ? <ArrowBackIcon onClick={() => handleBack()} /> : <BackButton />}
           <span className='ml-3 PageHeader__title'>{title}</span>
-          <div className='ml-auto'>
+          <div className='ml-auto '>
             {search && (
               <span
                 role='button'
@@ -52,7 +54,18 @@ export const PageHeader = (props) => {
                 <FilterListIcon className='mr-3' />
               </span>
             )}
-            <MoreVertIcon />
+            {customIcon && (
+              <span
+                className='mr-3'
+                onClick={() => handleCustomIcon()}
+                onKeyDown={() => handleCustomIcon()}
+                tabIndex='-1'
+                role='button'
+              >
+                {customIcon}
+              </span>
+            )}
+            {/* <MoreVertIcon /> */}
           </div>
         </>
       )}
@@ -91,6 +104,8 @@ PageHeader.propTypes = {
   handleBack: PropTypes.func,
   transparent: PropTypes.bool,
   filter: PropTypes.bool,
+  customIcon: PropTypes.element,
+  handleCustomIcon: PropTypes.func,
 };
 
 PageHeader.defaultProps = {
@@ -103,4 +118,6 @@ PageHeader.defaultProps = {
   triggerFilters: () => {},
   transparent: false,
   filter: false,
+  customIcon: null,
+  handleCustomIcon: () => {},
 };

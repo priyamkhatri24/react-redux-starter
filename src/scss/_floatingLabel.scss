@@ -26,12 +26,18 @@
 .has-float-label > input[type='password']:focus + span,
 .has-float-label > input[type='number']:focus + span,
 .has-float-label > input[type='date']:focus + span,
-.has-float-label > input[type='time']:focus + span {
+.has-float-label > input[type='time']:focus + span,
+.has-float-label > textarea:focus + span {
   color: var(--primary-blue);
 }
 
+.has-float-label > textarea + span {
+  color: rgba(0, 0, 0, 0.87);
+}
+
 .has-float-label label::after,
-.has-float-label > span::after {
+.has-float-label > span::after,
+.has-float-label > textarea::after {
   content: ' ';
   display: block;
   position: absolute;
@@ -41,6 +47,7 @@
   left: -0.2em;
   right: -0.2em;
   z-index: -1;
+  color: var(--primary-blue);
 }
 .has-float-label .form-control::-webkit-input-placeholder {
   opacity: 1;
@@ -123,7 +130,8 @@ input[readonly].form-control {
 .has-float-label > input[type='date']:focus,
 .has-float-label > input[type='password']:focus,
 .has-float-label > input[type='number']:focus,
-.has-float-label > input[type='time']:focus {
+.has-float-label > input[type='time']:focus,
+.has-float-label > textarea:focus {
   border-color: var(--primary-blue);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(255, 255, 255, 0.6);
   outline: 0 none;
@@ -133,10 +141,18 @@ input[readonly].form-control {
 .has-float-label > input[type='password'],
 .has-float-label > input[type='date'],
 .has-float-label > input[type='number'],
-.has-float-label > input[type='text'] {
+.has-float-label > input[type='text'],
+.has-float-label > input[type='time'] {
   border-color: rgba(0, 0, 0, 0.54);
   border-radius: 5px;
   color: rgba(0, 0, 0, 0.87);
   font-family: 'Montserrat-SemiBold';
   height: 32px;
+}
+
+.has-float-label > textarea {
+  border-color: rgba(0, 0, 0, 0.54);
+  border-radius: 5px;
+  color: rgba(0, 0, 0, 0.87);
+  font-family: 'Montserrat-SemiBold';
 }

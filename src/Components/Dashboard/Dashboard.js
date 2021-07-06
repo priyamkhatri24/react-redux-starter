@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import Loadable from 'react-loadable';
 import Skeleton from 'react-loading-skeleton';
@@ -8,13 +8,19 @@ import format from 'date-fns/format';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
+import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
+import PhoneIcon from '@material-ui/icons/Phone';
+import LinkIcon from '@material-ui/icons/Link';
 import { connect } from 'react-redux';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
+import Toast from 'react-bootstrap/Toast';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
-import { get, apiValidation } from '../../Utilities';
+import { get, apiValidation, prodOrDev, post } from '../../Utilities';
 import {
   getClientId,
   getClientUserId,
@@ -26,17 +32,35 @@ import { userProfileActions } from '../../redux/actions/userProfile.action';
 import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { testsActions } from '../../redux/actions/tests.action';
 import { courseActions } from '../../redux/actions/course.action';
-// import hands from '../../assets/images/Dashboard/hands.svg';
-import { CoursesCards, DashboardCards } from '../Common';
+import hands from '../../assets/images/Dashboard/hands.svg';
+import { AspectCards, CoursesCards, DashboardCards } from '../Common';
 // import offlineAssignment from '../../assets/images/Dashboard/offline.svg';
 import camera from '../../assets/images/Dashboard/camera.svg';
 import analysis from '../../assets/images/Dashboard/analysis.svg';
+import analysisHands from '../../assets/images/Dashboard/analysishands.svg';
 import student from '../../assets/images/Dashboard/student.svg';
 import Tests from '../Tests/Tests';
 import './Dashboard.scss';
 import { admissionActions } from '../../redux/actions/admissions.action';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
-import { getComeBackFromTests } from '../../redux/reducers/firstTimeLogin.reducer';
+import {
+  getComeBackFromTests,
+  getFirstTimeLoginState,
+} from '../../redux/reducers/firstTimeLogin.reducer';
+import { studyBinActions } from '../../redux/actions/studybin.actions';
+import fb from '../../assets/images/dummyDashboard/fb.png';
+import linkedin from '../../assets/images/dummyDashboard/linkedin.svg';
+import insta from '../../assets/images/dummyDashboard/instagram.svg';
+import share from '../../assets/images/dummyDashboard/share.svg';
+import whatsapp from '../../assets/images/dummyDashboard/whatsapp.svg';
+import youtube from '../../assets/images/dummyDashboard/youtube.png';
+import telegram from '../../assets/images/dummyDashboard/telegram.svg';
+import form from '../../assets/images/dummyDashboard/form.svg';
+import '../Login/DummyDashboard.scss';
+import { dashboardActions } from '../../redux/actions/dashboard.action';
+import { analysisActions } from '../../redux/actions/analysis.action';
+import { getCurrentRedirectPath } from '../../redux/reducers/dashboard.reducer';
+import { getToken, onMessageListener } from '../../Utilities/firebase';
 
 const DashBoardAdmissions = Loadable({
   loader: () => import('./DashBoardAdmissions'),
@@ -50,10 +74,11 @@ const Dashboard = (props) => {
     clientId,
     clientUserId,
     roleArray,
-    userProfile: { firstName, profileImage },
+    userProfile: { firstName, profileImage, lastName },
     clearProfile,
     clearClientIdDetails,
     history,
+    setDashboardDataToStore,
     setTestResultArrayToStore,
     setTestStartTimeToStore,
     setTestTypeToStore,
@@ -63,15 +88,81 @@ const Dashboard = (props) => {
     setAdmissionRoleArrayToStore,
     branding,
     comeBackFromTests,
+    setFolderIdArrayToStore,
+    setAnalysisStudentObjectToStore,
+    setTestLanguageToStore,
+    redirectPath,
+    firstTimeLogin,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
+  const [attendance, setAttendance] = useState([]);
+  const [role, setRole] = useState(1);
   const [allCourses, setAllCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
   const [admissions, setAdmissions] = useState({});
+  const [data, setData] = useState({});
+  const [hasLoaded, setHasLoaded] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const [optionsModal, setOptionsModal] = useState(false);
   const openOptionsModal = () => setOptionsModal(true);
   const closeOptionsModal = () => setOptionsModal(false);
+  const [features, setFeatures] = useState([]);
+  const [isToken, setIsToken] = useState(true);
+
+  const getTopicArray = useCallback(() => {
+    return new Promise((resolve, reject) => {
+      const roleId = roleArray.includes(4)
+        ? 4
+        : roleArray.includes(3)
+        ? 3
+        : roleArray.includes(2)
+        ? 2
+        : 1;
+      const currEnv = prodOrDev();
+      const topicArray = [];
+      topicArray.push(`${currEnv}institute${clientId}`);
+      topicArray.push(`${currEnv}user${clientUserId}`);
+      let result;
+      if (roleId === 2 || roleId === 1) {
+        get({ client_user_id: clientUserId }, '/getBatchesOfStudent').then((resp) => {
+          result = apiValidation(resp);
+          const topicArr = result.map((e) => `${currEnv}batch${e.client_batch_id}`);
+          resolve([...topicArray, ...topicArr]);
+        });
+      } else if (roleId === 3) {
+        get({ client_user_id: clientUserId }, '/getBatchesOfTeacher').then((resp) => {
+          result = apiValidation(resp);
+          const topicArr = result.map((e) => `${currEnv}batch${e.client_batch_id}`);
+          resolve([...topicArray, ...topicArr]);
+        });
+      } else {
+        get({ client_id: clientId }, '/getAllBatchesOfCoaching').then((res) => {
+          console.log(res);
+          result = apiValidation(res);
+          const topicArr = result.map((e) => `${currEnv}batch${e.client_batch_id}`);
+          resolve([...topicArray, ...topicArr]);
+        });
+      }
+    });
+  }, [roleArray, clientUserId, clientId]);
+
+  useEffect(() => {
+    console.log(firstTimeLogin);
+    const topicArr = getTopicArray();
+    const getTok = getToken(setIsToken);
+
+    Promise.all([topicArr, getTok]).then((res) => {
+      console.log(res);
+      const token = res[1];
+      const topicArray = res[0];
+      post({ topic_array: JSON.stringify(topicArray), token }, '/subscribeTokenToTopic').then(
+        (resp) => {
+          onMessageListener();
+        },
+      );
+    });
+  }, [getTopicArray, firstTimeLogin]);
 
   const partsOfDay = () => {
     const hours = new Date().getHours();
@@ -87,18 +178,24 @@ const Dashboard = (props) => {
   }, [comeBackFromTests, history]);
 
   useEffect(() => {
-    const payload = {
-      client_id: clientId,
-      client_user_id: clientUserId,
-    };
+    if (redirectPath) {
+      history.push(redirectPath);
+    }
+  }, [redirectPath, history]);
 
-    get(payload, '/getRecentData')
-      .then((res) => {
-        const result = apiValidation(res);
-        setNotices(result.notice);
-        setAdmissions(result.admission);
-      })
-      .catch((err) => console.error(err));
+  useEffect(() => {
+    const roleId = roleArray.includes(4)
+      ? 4
+      : roleArray.includes(3)
+      ? 3
+      : roleArray.includes(2)
+      ? 2
+      : 1;
+
+    setRole(roleId);
+  }, [roleArray]);
+
+  useEffect(() => {
     partsOfDay();
 
     get({ client_user_id: clientUserId }, '/getRecentCourses').then((res) => {
@@ -107,14 +204,60 @@ const Dashboard = (props) => {
       setMyCourses(result.subscribed_courses);
       console.log(result);
     });
-  }, [clientId, clientUserId]);
+  }, [clientId, clientUserId, setDashboardDataToStore]);
 
-  // const logout = () => {
-  //   const { push } = history;
-  //   clearProfile();
-  //   clearClientIdDetails();
-  //   push({ pathname: '/login' });
-  // };
+  useEffect(() => {
+    const roleId = roleArray.includes(4)
+      ? 4
+      : roleArray.includes(3)
+      ? 3
+      : roleArray.includes(2)
+      ? 2
+      : 1;
+    get({ client_id: clientId, role_id: roleId }, '/getLoginPageInformation').then((res) => {
+      console.log(res);
+      const result = apiValidation(res);
+      setNotices(result.notice);
+      setAdmissions(result.admission || {});
+      setAttendance(result.attendance);
+      setData(result);
+      setHasLoaded(true);
+      setDashboardDataToStore(result);
+      const sorterArr = [];
+
+      for (const prop in result.feature) {
+        if (Object.prototype.hasOwnProperty.call(result.feature, prop))
+          sorterArr.push([result.feature[prop], result.feature[prop].order]);
+      }
+      const finalArr = sorterArr
+        .sort((a, b) => a[1] - b[1])
+        .reduce((acc, curr) => {
+          acc.push(curr[0]);
+          return acc;
+        }, []);
+      console.log(finalArr, 'hello');
+      setFeatures(finalArr);
+    });
+  }, [clientId, roleArray, setDashboardDataToStore]);
+
+  const shareThis = () => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: `Come Join Us`,
+          // eslint-disable-next-line
+          text: `Hey, ${data.client_name} is a fast, simple and fun app that I use for learning and growing everyday`,
+          url: window.location.href,
+        })
+        .then(() => {
+          console.log('Thanks for sharing!');
+        })
+        .catch(console.error);
+    } else {
+      setShowToast(true);
+      navigator.clipboard.writeText(window.location.href);
+    }
+  };
 
   const goToLiveClasses = () => {
     const { push } = history;
@@ -133,6 +276,7 @@ const Dashboard = (props) => {
 
   const goToStudyBin = () => {
     const { push } = history;
+    setFolderIdArrayToStore([]);
     push({ pathname: '/studybin' });
   };
 
@@ -156,21 +300,36 @@ const Dashboard = (props) => {
     push({ pathname: '/homework', state: { letsGo: true } });
   };
 
-  const startHomework = (responseArray, testId) => {
+  const goToSentTests = (type) => {
+    const { push } = history;
+    push({ pathname: '/homework/savedsent', state: { testsType: type } });
+  };
+
+  const startHomework = (responseArray, testId, languageType = 'english') => {
     const { push } = history;
     setTestResultArrayToStore(responseArray);
     setTestIdToStore(testId);
+    setTestLanguageToStore(languageType);
     setTestTypeToStore('homework');
     push('/questiontaker');
   };
 
-  const startLiveTest = (responseArray, startTime = 0, endTime = 0, testType, testId) => {
+  const startLiveTest = (
+    responseArray,
+    startTime = 0,
+    endTime = 0,
+    testType,
+    testId,
+    languageType = 'english',
+  ) => {
     const { push } = history;
     setTestResultArrayToStore(responseArray);
     setTestEndTimeToStore(endTime);
-    setTestStartTimeToStore(startTime);
+    // setTestStartTimeToStore(startTime);
+    setTestStartTimeToStore(Math.round(new Date().getTime() / 1000));
     setTestTypeToStore(testType);
     setTestIdToStore(testId);
+    setTestLanguageToStore(languageType);
     push('/questiontaker');
   };
 
@@ -187,7 +346,7 @@ const Dashboard = (props) => {
   const goToBuyCourse = (id) => {
     const { push } = history;
 
-    push({ pathname: '/courses/buyCourse', state: { id, clientUserId } });
+    push(`/courses/buyCourse/${clientId}/${id}`);
   };
 
   const goToMyCourse = (id) => {
@@ -210,88 +369,169 @@ const Dashboard = (props) => {
     history.push({ pathname: '/admissions/add/details' });
   };
 
-  return (
-    <>
-      <div className='Dashboard__headerCard'>
-        <Row className='pt-4 pr-4'>
-          <span className='ml-auto'>
-            <MoreVertIcon />
-          </span>
-        </Row>
-        <Row className='mx-auto px-2 mt-4'>
-          <Col xs={4} onClick={() => goToProfile()}>
-            <img
-              src={profileImage || userAvatar}
-              className='Dashboard__profileImage float-right img-responsive'
-              alt='profile'
-            />
-          </Col>
-          <Col xs={8}>
-            <h4 className='Dashboard__headingText'>{time}</h4>
-            <h4 className='Dashboard__headingText'>{firstName}</h4>
-          </Col>
-        </Row>
+  const goToTeacherAnalysis = () => {
+    const { push } = history;
+    push('/analysis/teacher');
+  };
 
-        {/* <div className='Dashboard__todaysHits mx-auto my-4'>
-          <Row className='mx-3 pt-2'>
-            <span className='Dashboard__todaysHitsText'>Today&apos;s hit for you</span>
-            <span className='ml-auto'>
+  const goToStudentAnalysis = () => {
+    get({ client_user_id: clientUserId }, '/getOverallAnalysisOfStudent').then((res) => {
+      console.log(res);
+      const result = apiValidation(res);
+      result.first_name = firstName;
+      result.last_name = lastName;
+      result.isStudent = true;
+      setAnalysisStudentObjectToStore(result);
+      history.push('/analysis/studentlist');
+    });
+  };
+
+  const gotToAttendance = () => {
+    const { push } = history;
+    push('/attendance');
+  };
+
+  const goToDisplayPage = () => {
+    const { push } = history;
+    push('/displaypage');
+  };
+
+  const goToCRM = () => history.push('/crm');
+
+  const renderComponents = (param) => {
+    switch (param.client_feature_name) {
+      case 'attendance':
+        return (
+          <div
+            className='Dashboard__attendance p-4'
+            onClick={() => gotToAttendance()}
+            onKeyDown={() => gotToAttendance()}
+            tabIndex='-1'
+            role='button'
+          >
+            <div className='Dashboard__attendanceCard mx-auto pt-4'>
+              <img src={hands} alt='hands' className='mx-auto d-block' />
+              <Row className='m-3'>
+                <span className='Dashboard__todaysHitsText my-auto'>Attendance</span>
+                <span className='ml-auto'>
+                  <ChevronRightIcon />
+                </span>
+              </Row>
+
+              <p className='Dashboard__attendanceSubHeading mx-3'>
+                Record attendance of the students and notify parents via SMS daily.
+              </p>
+
+              <hr />
+              {attendance.length > 0 && (
+                <div>
+                  <p className='Dashboard__attendanceRecents ml-1'>Recent Attendance</p>
+                  <Row className='mx-2'>
+                    {attendance.map((elem) => {
+                      return (
+                        <div className='d-flex flex-column mx-1' key={elem.batch_id}>
+                          <img
+                            src={userAvatar}
+                            alt='batch'
+                            height='35px'
+                            width='35px'
+                            className='Dashboard__noticeImage d-block mx-auto'
+                          />
+                          <p className='Dashboard__attendanceRecents text-center mt-1'>
+                            {elem.batch_name}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </Row>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      case 'noticeBoard':
+        return (
+          <div
+            className='Dashboard__noticeBoard mx-auto p-lg-3 p-2 mb-3'
+            onClick={() => goToNoticeBoard()}
+            role='button'
+            tabIndex='-1'
+            onKeyDown={() => goToNoticeBoard()}
+          >
+            <span className='Dashboard__verticalDots'>
               <MoreVertIcon />
             </span>
-          </Row>
-        </div> */}
-      </div>
-      {/* *****************************Teacher View ********************************* */}
-      {(roleArray.includes(3) || roleArray.includes(4)) && (
-        <>
-          <DashboardCards
-            image={camera}
-            heading='Live Classes'
-            subHeading={
-              roleArray.includes(3) || roleArray.includes(4)
-                ? 'Conduct all your live classes here effectively'
-                : 'Attend all your live classes from here.'
-            }
-            boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
-            backGround='rgb(247,236,255)'
-            backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
-            buttonText={roleArray.includes(3) || roleArray.includes(4) ? 'Go live now' : ''}
-            buttonClick={goToLiveClasses}
-          />
+            <Row className='mt-2'>
+              <Col xs={8} className='pl-4'>
+                <p className='Dashboard__todaysHitsText'>Notice Board</p>
+                {(roleArray.includes(3) || roleArray.includes(4)) && (
+                  <Button variant='noticeBoardPost'>
+                    <BorderColorIcon />
+                    <span className='m-2'>Write a post</span>
+                  </Button>
+                )}
+              </Col>
+              <Col xs={4} className='noticeboard_img'>
+                <img src={dashboardAssignmentImage} alt='notice' height='80' width='80' />
+              </Col>
+            </Row>
 
-          {roleArray.includes(4) && Object.keys(admissions).length > 0 && (
-            <>
-              {(
-                <DashBoardAdmissions
-                  admissions={admissions}
-                  goToAddBatch={goToAddBatch}
-                  goToAdmissions={goToAdmissions}
-                  openOptionsModal={openOptionsModal}
-                  heroImage={branding.branding.client_logo}
-                />
-              ) || <Skeleton count={20} />}
-            </>
-          )}
+            <Row className='mt-5 mx-2 mb-3'>
+              <span className='Dashboard__noticeBoardText my-auto'>Latest Notices</span>
+              <span className='ml-auto' style={{ color: 'rgba(117, 117, 117, 1)' }}>
+                <ChevronRightIcon />
+              </span>
+            </Row>
 
-          {roleArray.includes(4) && Object.keys(admissions).length === 0 && <Skeleton count={20} />}
-
+            {notices.map((elem) => (
+              <div key={`elem${elem.notice_id}`} className='Dashboard__notice'>
+                <Row>
+                  <Col xs={3} className='p-lg-4 py-3 text-center pr-0'>
+                    <img
+                      src={elem.profile_image ? elem.profile_image : userAvatar}
+                      alt='profile'
+                      className='Dashboard__noticeImage d-block mx-auto'
+                    />
+                  </Col>
+                  <Col xs={9} className='pt-lg-4 py-3 pl-0 my-auto'>
+                    <p className='Dashboard__scrollableCardHeading m-0'>
+                      {`${elem.first_name} ${elem.last_name}`}
+                    </p>
+                    <p className='Dashboard__noticeSubHeading mb-0'>
+                      {format(fromUnixTime(elem.time_of_notice), 'hh:m bbbb, do MMM yyy')}
+                    </p>
+                  </Col>
+                </Row>
+                <p className='p-2 Dashboard__noticeText'>{elem.notice_text}</p>
+              </div>
+            ))}
+          </div>
+        );
+      case 'homeworkCreator':
+        return (
           <div className='Dashboard__innovation pt-4 px-3 pb-3'>
-            <h4>Witness </h4>
-            <h4>
+            <h4 className='Dashboard_homeworkCreator'>Witness </h4>
+            <h4 className='Dashboard_homeworkCreator'>
               The <span>innovation</span>
             </h4>
-            <p className='mr-5'>Create tests &amp; home-works in 4 simple steps</p>
-            <Button variant='dashboardBlueOnWhite' onClick={() => goToHomeWorkCreator()}>
+            <p className='mr-5 Dashboard_homeworkCreator'>
+              Create tests &amp; home-works in 4 simple steps
+            </p>
+            <Button
+              className='Dashboard_homeworkCreator'
+              variant='dashboardBlueOnWhite'
+              onClick={() => goToHomeWorkCreator()}
+            >
               Let&apos;s go
               <span>
                 <ChevronRightIcon />
               </span>
             </Button>
-            <div className='Dashboard__assignment my-4'>
+            <div className='Dashboard__assignment my-4 Dashboard_homeworkCreator'>
               <section className='Dashboard__scrollableCard'>
                 <div>
                   <Row>
-                    <Col xs={8} className='pr-0'>
+                    <Col xs={8} className='pr-0' onClick={() => goToSentTests('sent')}>
                       <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
                         Sent assignments
                       </p>
@@ -311,7 +551,511 @@ const Dashboard = (props) => {
                 </div>
                 <div>
                   <Row>
-                    <Col xs={8} className='pr-0'>
+                    <Col xs={8} className='pr-0' onClick={() => goToSentTests('saved')}>
+                      <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
+                        Saved assignments
+                      </p>
+                      <p className='Dashboard__scrollableCardText pl-3 mt-1'>
+                        See all your saved tests &amp; homeworks here...
+                      </p>
+                    </Col>
+                    <Col xs={4} className='pt-3'>
+                      <img
+                        src={dashboardAssignmentImage}
+                        alt='assignment'
+                        height='40px'
+                        width='40px'
+                      />
+                    </Col>
+                  </Row>
+                </div>
+              </section>
+            </div>
+          </div>
+        );
+      case 'analysis':
+        return (
+          <DashboardCards
+            image={param.feature_icon} // analysisHands
+            heading='Analysis'
+            subHeading='See detailed reports of every student and assignments.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(235,245,246)'
+            backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
+            buttonClick={role === 1 || role === 2 ? goToStudentAnalysis : goToTeacherAnalysis}
+          />
+        );
+      case 'fees':
+        return (
+          <DashboardCards
+            image={analysis}
+            heading='Fees'
+            subHeading='See fees history and amount to be paid for coming months.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(238,232,241)'
+            backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
+            buttonClick={role === 1 || role === 2 ? goToFees : goToTeacherFees}
+          />
+        );
+      case 'posters':
+        return (
+          <div className='m-2 mt-4'>
+            <AspectCards
+              data={data.posters}
+              clickCard={() => {}}
+              clickAddCard={() => {}}
+              section='notice'
+              noAddCard
+              bigAspectCard
+            />
+          </div>
+        );
+      case 'starPerformers':
+        return (
+          <>
+            <h6
+              style={{
+                fontFamily: 'Montserrat-Medium',
+                lineHeight: '20px',
+                textAlign: 'left',
+                fontSize: '14px',
+              }}
+              className='mx-3 mt-4 mb-0'
+            >
+              Our Star Performers
+            </h6>
+            <AspectCards
+              data={data.star_performers}
+              clickCard={() => {}}
+              clickAddCard={() => {}}
+              section='notice'
+              noAddCard
+            />
+          </>
+        );
+      case 'testimonials':
+        return (
+          <>
+            <h6
+              style={{
+                fontFamily: 'Montserrat-Medium',
+                lineHeight: '20px',
+                textAlign: 'left',
+                fontSize: '14px',
+              }}
+              className='mx-3 mt-4 mb-0'
+            >
+              Testimonials
+            </h6>
+            <AspectCards
+              data={data.testimonials}
+              clickCard={() => {}}
+              clickAddCard={() => {}}
+              section='notice'
+              noAddCard
+            />
+          </>
+        );
+      case 'aboutUs':
+        return (
+          <div className='text-left m-3 mt-5'>
+            <h5 className='Dummy__aboutus'>About us</h5>
+            <p className='Dummy__aboutData'>{data.about_us}</p>
+
+            <h6 className='Dummy__connect'>Connect with us</h6>
+
+            <section className='Scrollable__card ' style={{ minHeight: '40px' }}>
+              {[
+                {
+                  key: 1,
+                  name: 'insta',
+                  link: data.instagram_link,
+                  image: insta,
+                },
+
+                { key: 2, name: 'fb', link: data.facebook_link, image: fb },
+                {
+                  key: 3,
+                  name: 'watsapp',
+                  link: data.whatsapp_link,
+                  image: whatsapp,
+                },
+                {
+                  key: 4,
+                  name: 'you',
+                  link: data.youtube_link,
+                  image: youtube,
+                },
+                {
+                  key: 5,
+                  name: 'tele',
+                  link: data.telegram_link,
+                  image: telegram,
+                },
+                {
+                  key: 6,
+                  name: 'linked',
+                  link: data.linkedin_link,
+                  image: linkedin,
+                },
+              ]
+                .filter((e) => e.link)
+                .map((elem) => {
+                  return (
+                    <a href={elem.link} className='text-center m-3' key={elem.key}>
+                      <img src={elem.image} alt={elem.link} className='Dummy__socialLinks' />
+                    </a>
+                  );
+                })}
+              <a
+                href={data.other_link}
+                className='text-center m-3'
+                style={{
+                  backgroundColor: 'rgba(112, 112, 112, 1)',
+                  color: '#fff',
+                  height: '36px',
+                  width: '36px',
+                  borderRadius: '36px',
+                  padding: '4px',
+                }}
+                key={7}
+              >
+                <LinkIcon />
+              </a>
+            </section>
+          </div>
+        );
+      case 'courses':
+        return role === 1 || role === 2 ? (
+          <CoursesCards
+            allCourses={allCourses}
+            myCourses={myCourses}
+            goToCourse={goToCourses}
+            buyCourseId={goToBuyCourse}
+            myCourseId={goToMyCourse}
+          />
+        ) : (
+          <DashboardCards
+            image={analysis}
+            heading='Courses'
+            subHeading='Increase your profit by building and selling your courses here.'
+            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
+            backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
+            backGround='rgb(236,255,252)'
+            buttonClick={goToCoursesForTeacher}
+          />
+        );
+      case 'liveClasses':
+        return (
+          <DashboardCards
+            image={camera}
+            heading='Live Classes'
+            subHeading={
+              roleArray.includes(3) || roleArray.includes(4)
+                ? 'Conduct all your live classes here effectively'
+                : 'Attend all your live classes from here.'
+            }
+            boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
+            backGround='rgb(247,236,255)'
+            backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
+            buttonText={roleArray.includes(3) || roleArray.includes(4) ? 'Go live now' : ''}
+            buttonClick={goToLiveClasses}
+          />
+        );
+      case 'onlineAssignment':
+        return (
+          <div>
+            <Tests startHomework={startHomework} startLive={startLiveTest} />
+          </div>
+        );
+      case 'studyBin':
+        return (
+          <DashboardCards
+            image={param.feature_icon} // student
+            coloredHeading='Study Bin'
+            color='rgba(0, 102, 255, 0.87)'
+            subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            buttonClick={goToStudyBin}
+          />
+        );
+      case 'admissionForm':
+        return (
+          <Card
+            className='DashboardCards'
+            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+          >
+            <Row className='mx-0 justify-content-center mt-2'>
+              <Col xs={8} className='text-left p-3'>
+                <h6 className='Dummy__joinUs'>Join us NOW!</h6>
+                <p className='mb-0 Dummy__joinDetails'>Your are not in any batch yet</p>
+                <p className='Dummy__joinSmall'>Fill admission form to join us.</p>
+                <Button
+                  variant='customPrimarySmol'
+                  className='mb-3'
+                  onClick={() => history.push('/admissionform')}
+                >
+                  Fill admission form
+                </Button>
+              </Col>
+              <Col xs={4} className='p-3 mt-3' style={{ textAlign: 'right' }}>
+                {/* form */}
+                <img src={param.feature_icon} alt='form' className='img-fluid' />
+              </Col>
+            </Row>
+          </Card>
+        );
+      case 'share':
+        return (
+          <Card
+            className='DashboardCards mb-2 mt-4'
+            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+          >
+            <Row className='mx-0 justify-content-center mt-2'>
+              <Col xs={7} className='text-left p-3'>
+                <h6 className='Dummy__connect'>Share app with friends</h6>
+                <p className='mb-0 Dummy__joinDetails'>Enjoying the application?</p>
+                <p className='Dummy__joinSmall'>Share with your friends</p>
+                <Button
+                  variant='customPrimarySmol'
+                  className='mb-3'
+                  style={{ padding: '10px 20px' }}
+                  onClick={() => shareThis()}
+                >
+                  Share
+                </Button>
+              </Col>
+              <Col xs={5} className='p-3 mt-3' style={{ textAlign: 'right' }}>
+                {/* share */}
+                <img src={param.feature_icon} alt='form' className='img-fluid' />
+              </Col>
+            </Row>
+          </Card>
+        );
+      case 'contactUs':
+        return (
+          <Card
+            className='DashboardCards mt-3 mb-2'
+            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+          >
+            <Row className='mx-3 justify-content-left mt-2'>
+              <h6 className='Dummy__joinUs'>Contact us</h6>
+            </Row>
+            {data.address.location && (
+              <Row className='mx-0 justify-content-center mt-2'>
+                <Col xs={2} sm={1} className='pr-0'>
+                  <LocationOnIcon />
+                </Col>
+                <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
+                  <p className='mb-0 Dummy__joinDetails'>{data.address.location}</p>
+                  <p className='Dummy__joinSmall'>Address</p>
+                </Col>
+              </Row>
+            )}
+
+            {data.address.client_contact && (
+              <Row className='mx-0 justify-content-center mt-2'>
+                <Col xs={2} sm={1} className='pr-0'>
+                  <PhoneIcon />
+                </Col>
+                <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
+                  <p className='mb-0 Dummy__joinDetails'>{data.address.client_contact}</p>
+                  <p className='Dummy__joinSmall'>Phone</p>
+                </Col>
+              </Row>
+            )}
+            {data.address.client_email && (
+              <Row className='mx-0 justify-content-center mt-2'>
+                <Col xs={2} sm={1} className='pr-0'>
+                  <AlternateEmailIcon />
+                </Col>
+                <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
+                  <p className='mb-0 Dummy__joinDetails'>{data.address.client_email}</p>
+                  <p className='Dummy__joinSmall'>Email</p>
+                </Col>
+              </Row>
+            )}
+          </Card>
+        );
+      case 'crm':
+        return (
+          <DashboardCards
+            image={param.feature_icon} // analysis
+            heading='CRM'
+            subHeading='Manage All your customer Relations Management Enquiries here.'
+            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
+            backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
+            backGround='rgb(236,255,252)'
+            buttonClick={goToCRM}
+          />
+        );
+      case 'admission':
+        return (
+          Object.keys(admissions).length > 0 && (
+            <>
+              {(
+                <DashBoardAdmissions
+                  admissions={admissions}
+                  goToAddBatch={goToAddBatch}
+                  goToAdmissions={goToAdmissions}
+                  openOptionsModal={openOptionsModal}
+                  heroImage={branding.branding.client_logo}
+                />
+              ) || <Skeleton count={20} />}
+            </>
+          )
+        );
+      case 'displayPage':
+        return (
+          <DashboardCards
+            image={param.feature_icon} // student
+            heading='My display page'
+            color='rgba(255, 236, 222, 1)'
+            subHeading='This is like your website. Choose what want to show your guests.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backgroundImg='linear-gradient(90deg, rgba(255, 236, 222, 1) 0%, rgba(255, 145, 61, 1)'
+            buttonClick={goToDisplayPage}
+          />
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className='mb-4'>
+      <div className='Dashboard__headerCard pb-3 mb-4'>
+        <Row className='pt-4 pr-4'>
+          <span className='ml-auto p-3'>{/* <MoreVertIcon /> */}</span>
+        </Row>
+        {hasLoaded && <h3 className='Dummy__coachingName text-center'>{data.client_name}</h3>}
+        {hasLoaded && (
+          <p className='Dummy__tagline mb-4 text-center mb-5'>{data.client_tag_line}</p>
+        )}
+        <Row className='mx-auto px-2 mt-4'>
+          <Col
+            xs={4}
+            md={roleArray.includes(1) || roleArray.includes(2) ? 1 : 2}
+            onClick={() => goToProfile()}
+          >
+            <img
+              src={profileImage || userAvatar}
+              className='Dashboard__profileImage float-right img-responsive'
+              alt='profile'
+            />
+          </Col>
+          <Col xs={8} md={roleArray.includes(1) || roleArray.includes(2) ? 11 : 10}>
+            <h4 className='Dashboard__headingText'>
+              {time} {firstName}
+            </h4>
+            {/* <h4 className='Dashboard__headingText'></h4> */}
+          </Col>
+        </Row>
+
+        {/* <div className='Dashboard__todaysHits mx-auto my-4'>
+          <Row className='mx-3 pt-2'>
+            <span className='Dashboard__todaysHitsText'>Today&apos;s hit for you</span>
+            <span className='ml-auto'>
+              <MoreVertIcon />
+            </span>
+          </Row>
+        </div> */}
+      </div>
+
+      {hasLoaded &&
+        features.length > 0 &&
+        features
+          .filter((elem) => process.env.NODE_ENV === 'development' || elem.status === 'active')
+          .map((elem) => renderComponents(elem))}
+
+      {/* *****************************Teacher View ********************************* */}
+      {/* {(roleArray.includes(3) || roleArray.includes(4)) && (
+        <>
+          <DashboardCards
+            image={camera}
+            heading='Live Classes'
+            subHeading={
+              roleArray.includes(3) || roleArray.includes(4)
+                ? 'Conduct all your live classes here effectively'
+                : 'Attend all your live classes from here.'
+            }
+            boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
+            backGround='rgb(247,236,255)'
+            backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
+            buttonText={roleArray.includes(3) || roleArray.includes(4) ? 'Go live now' : ''}
+            buttonClick={goToLiveClasses}
+          />
+
+          <DashboardCards
+            image={analysis}
+            heading='CRM'
+            subHeading='Manage All your customer Relations Management Enquiries here.'
+            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
+            backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
+            backGround='rgb(236,255,252)'
+            buttonClick={goToCRM}
+          />
+
+          {roleArray.includes(4) && Object.keys(admissions).length > 0 && (
+            <>
+              {(
+                <DashBoardAdmissions
+                  admissions={admissions}
+                  goToAddBatch={goToAddBatch}
+                  goToAdmissions={goToAdmissions}
+                  openOptionsModal={openOptionsModal}
+                  heroImage={branding.branding.client_logo}
+                />
+              ) || <Skeleton count={20} />}
+            </>
+          )}
+
+          {roleArray.includes(4) && Object.keys(admissions).length === 0 && <Skeleton count={20} />}
+
+          <div className='Dashboard__innovation pt-4 px-3 pb-3'>
+            <h4 className='Dashboard_homeworkCreator'>Witness </h4>
+            <h4 className='Dashboard_homeworkCreator'>
+              The <span>innovation</span>
+            </h4>
+            <p className='mr-5 Dashboard_homeworkCreator'>
+              Create tests &amp; home-works in 4 simple steps
+            </p>
+            <Button
+              className='Dashboard_homeworkCreator'
+              variant='dashboardBlueOnWhite'
+              onClick={() => goToHomeWorkCreator()}
+            >
+              Let&apos;s go
+              <span>
+                <ChevronRightIcon />
+              </span>
+            </Button>
+            <div className='Dashboard__assignment my-4 Dashboard_homeworkCreator'>
+              <section className='Dashboard__scrollableCard'>
+                <div>
+                  <Row>
+                    <Col xs={8} className='pr-0' onClick={() => goToSentTests('sent')}>
+                      <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
+                        Sent assignments
+                      </p>
+                      <p className='Dashboard__scrollableCardText pl-3 mt-1'>
+                        All the tests &amp; homeworks sent to students are here...
+                      </p>
+                    </Col>
+                    <Col xs={4} className='pt-3'>
+                      <img
+                        src={dashboardAssignmentImage}
+                        alt='assignment'
+                        height='40px'
+                        width='40px'
+                      />
+                    </Col>
+                  </Row>
+                </div>
+                <div>
+                  <Row>
+                    <Col xs={8} className='pr-0' onClick={() => goToSentTests('saved')}>
                       <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
                         Saved assignments
                       </p>
@@ -343,21 +1087,25 @@ const Dashboard = (props) => {
             buttonClick={goToCoursesForTeacher}
           />
 
-          <div
-            onClick={() => goToTeacherFees()}
-            role='button'
-            tabIndex='-1'
-            onKeyDown={() => goToFees()}
-          >
-            <DashboardCards
-              image={analysis}
-              heading='Fees'
-              subHeading='See fees history and amount to be paid for coming months.'
-              boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-              backGround='rgb(238,232,241)'
-              backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
-            />
-          </div>
+          <DashboardCards
+            image={analysis}
+            heading='Fees'
+            subHeading='See fees history and amount to be paid for coming months.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(238,232,241)'
+            backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
+            buttonClick={goToTeacherFees}
+          />
+
+          <DashboardCards
+            image={analysisHands}
+            heading='Analysis'
+            subHeading='See detailed reports of every student and assignments.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(235,245,246)'
+            backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
+            buttonClick={goToTeacherAnalysis}
+          />
 
           <DashboardCards
             image={student}
@@ -368,8 +1116,24 @@ const Dashboard = (props) => {
             buttonClick={goToStudyBin}
           />
 
-          {/* <div className='Dashboard__attendance p-4'>
-            <div className='w-75 Dashboard__attendanceCard mx-auto pt-4'>
+          <DashboardCards
+            image={student}
+            heading='My display page'
+            color='rgba(255, 236, 222, 1)'
+            subHeading='This is like your website. Choose what want to show your guests.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backgroundImg='linear-gradient(90deg, rgba(255, 236, 222, 1) 0%, rgba(255, 145, 61, 1)'
+            buttonClick={goToDisplayPage}
+          />
+
+          <div
+            className='Dashboard__attendance p-4'
+            onClick={() => gotToAttendance()}
+            onKeyDown={() => gotToAttendance()}
+            tabIndex='-1'
+            role='button'
+          >
+            <div className='Dashboard__attendanceCard mx-auto pt-4'>
               <img src={hands} alt='hands' className='mx-auto d-block' />
               <Row className='m-3'>
                 <span className='Dashboard__todaysHitsText my-auto'>Attendance</span>
@@ -383,13 +1147,34 @@ const Dashboard = (props) => {
               </p>
 
               <hr />
-
-              <p>Recent Attendance</p>
+              {attendance.length > 0 && (
+                <div>
+                  <p className='Dashboard__attendanceRecents ml-1'>Recent Attendance</p>
+                  <Row className='mx-2'>
+                    {attendance.map((elem) => {
+                      return (
+                        <div className='d-flex flex-column mx-1' key={elem.batch_id}>
+                          <img
+                            src={userAvatar}
+                            alt='batch'
+                            height='35px'
+                            width='35px'
+                            className='Dashboard__noticeImage d-block mx-auto'
+                          />
+                          <p className='Dashboard__attendanceRecents text-center mt-1'>
+                            {elem.batch_name}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </Row>
+                </div>
+              )}
             </div>
-          </div> */}
+          </div>
 
           <div
-            className='Dashboard__noticeBoard mx-auto p-3'
+            className='Dashboard__noticeBoard mx-auto p-lg-3 p-2 mb-3'
             onClick={() => goToNoticeBoard()}
             role='button'
             tabIndex='-1'
@@ -399,7 +1184,7 @@ const Dashboard = (props) => {
               <MoreVertIcon />
             </span>
             <Row className='mt-2'>
-              <Col xs={8}>
+              <Col xs={8} className='pl-4'>
                 <p className='Dashboard__todaysHitsText'>Notice Board</p>
                 {(roleArray.includes(3) || roleArray.includes(4)) && (
                   <Button variant='noticeBoardPost'>
@@ -408,12 +1193,12 @@ const Dashboard = (props) => {
                   </Button>
                 )}
               </Col>
-              <Col xs={4}>
+              <Col xs={4} className='noticeboard_img'>
                 <img src={dashboardAssignmentImage} alt='notice' height='80' width='80' />
               </Col>
             </Row>
 
-            <Row className='mt-5 ml-1 mb-3'>
+            <Row className='mt-5 mx-2 mb-3'>
               <span className='Dashboard__noticeBoardText my-auto'>Latest Notices</span>
               <span className='ml-auto' style={{ color: 'rgba(117, 117, 117, 1)' }}>
                 <ChevronRightIcon />
@@ -423,18 +1208,18 @@ const Dashboard = (props) => {
             {notices.map((elem) => (
               <div key={`elem${elem.notice_id}`} className='Dashboard__notice'>
                 <Row>
-                  <Col xs={2} className='p-4'>
+                  <Col xs={3} className='p-lg-4 py-3 text-center pr-0'>
                     <img
                       src={elem.profile_image ? elem.profile_image : userAvatar}
                       alt='profile'
                       className='Dashboard__noticeImage d-block mx-auto'
                     />
                   </Col>
-                  <Col xs={10} className='pt-4'>
+                  <Col xs={9} className='pt-lg-4 py-3 pl-0 my-auto'>
                     <p className='Dashboard__scrollableCardHeading m-0'>
                       {`${elem.first_name} ${elem.last_name}`}
                     </p>
-                    <p className='Dashboard__noticeSubHeading'>
+                    <p className='Dashboard__noticeSubHeading mb-0'>
                       {format(fromUnixTime(elem.time_of_notice), 'hh:m bbbb, do MMM yyy')}
                     </p>
                   </Col>
@@ -444,66 +1229,160 @@ const Dashboard = (props) => {
             ))}
           </div>
 
-          {/* <CoursesCards
-            allCourses={allCourses}
-            myCourses={myCourses}
-            goToCourse={goToCourses}
-            buyCourseId={goToBuyCourse}
-            myCourseId={goToMyCourse}
-          /> */}
-          {/* <DashboardCards
-            image={offlineAssignment}
-            heading='Offline assignment'
-            subHeading='Record marks of all the pen-paper tests and send
-         the marks to parents in simple way.'
-            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
-            backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
-            backGround='rgb(236,255,252)'
-          />
-
-          <DashboardCards
-            image={camera}
-            heading='Send photos &amp; files'
-            subHeading='Send question papers, notes and books as
-        photos or files such as .pdf, .doc, .txt, etc..'
-            boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
-            backGround='rgb(247,236,255)'
-            backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
-          />
-
-          <DashboardCards
-            image={analysis}
-            heading='Admissions'
-            subHeading='Manage students, teachers and batches from a single place.'
-            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-            backGround='rgb(235,245,246)'
-            backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
-          />
-
-
-          <DashboardCards
-            image={analysis}
-            heading='Analysis'
-            subHeading='See detailed reports of every student and assignments.'
-            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-            backGround='rgb(248,252,255)'
-            backgroundImg='linear-gradient(90deg, rgba(248,252,255,1) 0%, rgba(188,224,253,1) 100%)'
-          />
-
-          <DashboardCards
-            image={student}
-            heading='Student corner'
-            subHeading='Here you can find all the stuffs pre-loaded for you from Ingenium.'
-            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-            backGround='rgb(248,252,255)'
-            backgroundImg='linear-gradient(90deg, rgba(248,252,255,1) 0%, rgba(188,224,253,1) 100%)'
-          /> */}
+          <Card
+            className='DashboardCards mb-2 mt-4'
+            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+          >
+            <Row className='mx-0 justify-content-center mt-2'>
+              <Col xs={7} className='text-left p-3'>
+                <h6 className='Dummy__connect'>Share app with friends</h6>
+                <p className='mb-0 Dummy__joinDetails'>Enjoying the application?</p>
+                <p className='Dummy__joinSmall'>Share with your friends</p>
+                <Button
+                  variant='customPrimarySmol'
+                  className='mb-3'
+                  style={{ padding: '10px 20px' }}
+                  onClick={() => shareThis()}
+                >
+                  Share
+                </Button>
+              </Col>
+              <Col xs={5} className='p-3 mt-3' style={{ textAlign: 'right' }}>
+                <img src={share} alt='form' className='img-fluid' />
+              </Col>
+            </Row>
+          </Card>
         </>
-      )}
+      )} */}
 
       {/* *****************************Student View ********************************* */}
-      {(roleArray.includes(1) || roleArray.includes(2)) && (
+      {/* {(roleArray.includes(1) || roleArray.includes(2)) && (
         <>
+          {hasLoaded && (
+            <>
+              <div className='m-2 mt-4'>
+                <AspectCards
+                  data={data.posters}
+                  clickCard={() => {}}
+                  clickAddCard={() => {}}
+                  section='notice'
+                  noAddCard
+                  bigAspectCard
+                />
+              </div>
+
+              <>
+                <h6
+                  style={{
+                    fontFamily: 'Montserrat-Medium',
+                    lineHeight: '20px',
+                    textAlign: 'left',
+                    fontSize: '14px',
+                  }}
+                  className='mx-3 mt-4 mb-0'
+                >
+                  Our Star Performers
+                </h6>
+                <AspectCards
+                  data={data.star_performers}
+                  clickCard={() => {}}
+                  clickAddCard={() => {}}
+                  section='notice'
+                  noAddCard
+                />
+              </>
+
+              <>
+                <h6
+                  style={{
+                    fontFamily: 'Montserrat-Medium',
+                    lineHeight: '20px',
+                    textAlign: 'left',
+                    fontSize: '14px',
+                  }}
+                  className='mx-3 mt-4 mb-0'
+                >
+                  Testimonials
+                </h6>
+                <AspectCards
+                  data={data.testimonials}
+                  clickCard={() => {}}
+                  clickAddCard={() => {}}
+                  section='notice'
+                  noAddCard
+                />
+              </>
+            </>
+          )}
+          {hasLoaded && (
+            <div className='text-left m-3 mt-5'>
+              <h5 className='Dummy__aboutus'>About us</h5>
+              <p className='Dummy__aboutData'>{data.about_us}</p>
+
+              <h6 className='Dummy__connect'>Connect with us</h6>
+
+              <section className='Scrollable__card ' style={{ minHeight: '40px' }}>
+                {[
+                  {
+                    key: 1,
+                    name: 'insta',
+                    link: data.instagram_link,
+                    image: insta,
+                  },
+
+                  { key: 2, name: 'fb', link: data.facebook_link, image: fb },
+                  {
+                    key: 3,
+                    name: 'watsapp',
+                    link: data.whatsapp_link,
+                    image: whatsapp,
+                  },
+                  {
+                    key: 4,
+                    name: 'you',
+                    link: data.youtube_link,
+                    image: youtube,
+                  },
+                  {
+                    key: 5,
+                    name: 'tele',
+                    link: data.telegram_link,
+                    image: telegram,
+                  },
+                  {
+                    key: 6,
+                    name: 'linked',
+                    link: data.linkedin_link,
+                    image: linkedin,
+                  },
+                ]
+                  .filter((e) => e.link)
+                  .map((elem) => {
+                    return (
+                      <a href={elem.link} className='text-center m-3' key={elem.key}>
+                        <img src={elem.image} alt={elem.link} className='Dummy__socialLinks' />
+                      </a>
+                    );
+                  })}
+                <a
+                  href={data.other_link}
+                  className='text-center m-3'
+                  style={{
+                    backgroundColor: 'rgba(112, 112, 112, 1)',
+                    color: '#fff',
+                    height: '36px',
+                    width: '36px',
+                    borderRadius: '36px',
+                    padding: '4px',
+                  }}
+                  key={7}
+                >
+                  <LinkIcon />
+                </a>
+              </section>
+            </div>
+          )}
+
           <CoursesCards
             allCourses={allCourses}
             myCourses={myCourses}
@@ -511,6 +1390,7 @@ const Dashboard = (props) => {
             buyCourseId={goToBuyCourse}
             myCourseId={goToMyCourse}
           />
+
           <DashboardCards
             image={camera}
             heading='Live Classes'
@@ -529,16 +1409,25 @@ const Dashboard = (props) => {
           <div>
             <Tests startHomework={startHomework} startLive={startLiveTest} />
           </div>
-          <div onClick={() => goToFees()} role='button' tabIndex='-1' onKeyDown={() => goToFees()}>
-            <DashboardCards
-              image={analysis}
-              heading='Fees'
-              subHeading='See fees history and amount to be paid for coming months.'
-              boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-              backGround='rgb(238,232,241)'
-              backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
-            />
-          </div>
+          <DashboardCards
+            image={analysis}
+            heading='Fees'
+            subHeading='See fees history and amount to be paid for coming months.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(238,232,241)'
+            backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
+            buttonClick={goToFees}
+          />
+
+          <DashboardCards
+            image={analysisHands}
+            heading='Analysis'
+            subHeading='See detailed reports of every student and assignments.'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround='rgb(235,245,246)'
+            backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
+            buttonClick={goToStudentAnalysis}
+          />
           <div
             className='Dashboard__noticeBoard mx-auto p-3'
             onClick={() => goToNoticeBoard()}
@@ -551,7 +1440,7 @@ const Dashboard = (props) => {
             </span>
             <Row className='mt-2'>
               <Col xs={8}>
-                <p className='Dashboard__todaysHitsText'>Notice Board</p>
+                <p className='Dashboard__todaysHitsText noticeboard_heading'>Notice Board</p>
                 {(roleArray.includes(3) || roleArray.includes(4)) && (
                   <Button variant='noticeBoardPost'>
                     <BorderColorIcon />
@@ -559,12 +1448,12 @@ const Dashboard = (props) => {
                   </Button>
                 )}
               </Col>
-              <Col xs={4}>
+              <Col className='noticeboard_img' xs={4}>
                 <img src={dashboardAssignmentImage} alt='notice' height='80' width='80' />
               </Col>
             </Row>
 
-            <Row className='mt-5 ml-1 mb-3'>
+            <Row className='mt-5 mx-2 mb-3'>
               <span className='Dashboard__noticeBoardText my-auto'>Latest Notices</span>
               <span className='ml-auto' style={{ color: 'rgba(117, 117, 117, 1)' }}>
                 <ChevronRightIcon />
@@ -574,18 +1463,18 @@ const Dashboard = (props) => {
             {notices.map((elem) => (
               <div key={`elem${elem.notice_id}`} className='Dashboard__notice'>
                 <Row>
-                  <Col xs={2} className='p-4'>
+                  <Col xs={3} className='p-lg-4 py-3 text-center pr-0'>
                     <img
-                      src={elem.profile_image || userAvatar}
+                      src={elem.profile_image ? elem.profile_image : userAvatar}
                       alt='profile'
                       className='Dashboard__noticeImage d-block mx-auto'
                     />
                   </Col>
-                  <Col xs={10} className='pt-4'>
+                  <Col xs={9} className='pt-lg-4 py-3 pl-0 my-auto'>
                     <p className='Dashboard__scrollableCardHeading m-0'>
                       {`${elem.first_name} ${elem.last_name}`}
                     </p>
-                    <p className='Dashboard__noticeSubHeading'>
+                    <p className='Dashboard__noticeSubHeading mb-0'>
                       {format(fromUnixTime(elem.time_of_notice), 'hh:m bbbb, do MMM yyy')}
                     </p>
                   </Col>
@@ -602,8 +1491,100 @@ const Dashboard = (props) => {
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             buttonClick={goToStudyBin}
           />
+
+          <Card
+            className='DashboardCards'
+            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+          >
+            <Row className='mx-0 justify-content-center mt-2'>
+              <Col xs={8} className='text-left p-3'>
+                <h6 className='Dummy__joinUs'>Join us NOW!</h6>
+                <p className='mb-0 Dummy__joinDetails'>Your are not in any batch yet</p>
+                <p className='Dummy__joinSmall'>Fill admission form to join us.</p>
+                <Button
+                  variant='customPrimarySmol'
+                  className='mb-3'
+                  onClick={() => history.push('/admissionform')}
+                >
+                  Fill admission form
+                </Button>
+              </Col>
+              <Col xs={4} className='p-3 mt-3' style={{ textAlign: 'right' }}>
+                <img src={form} alt='form' className='img-fluid' />
+              </Col>
+            </Row>
+          </Card>
+
+          <Card
+            className='DashboardCards mt-3'
+            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+          >
+            <Row className='mx-0 justify-content-center mt-2'>
+              <Col xs={7} className='text-left p-3'>
+                <h6 className='Dummy__connect'>Share app with friends</h6>
+                <p className='mb-0 Dummy__joinDetails'>Enjoying the application?</p>
+                <p className='Dummy__joinSmall'>Share with your friends</p>
+                <Button
+                  variant='customPrimarySmol'
+                  className='mb-3'
+                  style={{ padding: '10px 20px' }}
+                  onClick={() => shareThis()}
+                >
+                  Share
+                </Button>
+              </Col>
+              <Col xs={5} className='p-3 mt-3' style={{ textAlign: 'right' }}>
+                <img src={share} alt='form' className='img-fluid' />
+              </Col>
+            </Row>
+          </Card>
+
+          {hasLoaded && Object.keys(data.address).length > 0 && (
+            <Card
+              className='DashboardCards mt-3 mb-2'
+              style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+            >
+              <Row className='mx-3 justify-content-left mt-2'>
+                <h6 className='Dummy__joinUs'>Contact us</h6>
+              </Row>
+              {data.address.location && (
+                <Row className='mx-0 justify-content-center mt-2'>
+                  <Col xs={2} sm={1} className='pr-0'>
+                    <LocationOnIcon />
+                  </Col>
+                  <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
+                    <p className='mb-0 Dummy__joinDetails'>{data.address.location}</p>
+                    <p className='Dummy__joinSmall'>Address</p>
+                  </Col>
+                </Row>
+              )}
+
+              {data.address.client_contact && (
+                <Row className='mx-0 justify-content-center mt-2'>
+                  <Col xs={2} sm={1} className='pr-0'>
+                    <PhoneIcon />
+                  </Col>
+                  <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
+                    <p className='mb-0 Dummy__joinDetails'>{data.address.client_contact}</p>
+                    <p className='Dummy__joinSmall'>Phone</p>
+                  </Col>
+                </Row>
+              )}
+              {data.address.client_email && (
+                <Row className='mx-0 justify-content-center mt-2'>
+                  <Col xs={2} sm={1} className='pr-0'>
+                    <AlternateEmailIcon />
+                  </Col>
+                  <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
+                    <p className='mb-0 Dummy__joinDetails'>{data.address.client_email}</p>
+                    <p className='Dummy__joinSmall'>Email</p>
+                  </Col>
+                </Row>
+              )}
+            </Card>
+          )}
         </>
-      )}
+      )} */}
       <Modal show={optionsModal} onHide={closeOptionsModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>Select Type</Modal.Title>
@@ -638,7 +1619,45 @@ const Dashboard = (props) => {
           </Row>
         </Modal.Body>
       </Modal>
-    </>
+      <Toast
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '15%',
+          zIndex: '999',
+        }}
+        onClose={() => setShowToast(false)}
+        show={showToast}
+        delay={3000}
+        autohide
+      >
+        <Toast.Header>
+          <strong className='mr-auto'>Copied!</strong>
+          <small>Just Now</small>
+        </Toast.Header>
+        <Toast.Body>The link has been copied to your clipboard!</Toast.Body>
+      </Toast>
+      <Toast
+        style={{
+          position: 'fixed',
+          top: '20px',
+          right: '15%',
+          zIndex: '999',
+        }}
+        onClose={() => setIsToken(true)}
+        show={!isToken}
+        delay={5000}
+        autohide
+      >
+        <Toast.Header>
+          <strong className='mr-auto'>Notifications</strong>
+          <small>Just Now</small>
+        </Toast.Header>
+        <Toast.Body>
+          Please allow notifications to receive prompt updates and important notifications
+        </Toast.Body>
+      </Toast>
+    </div>
   );
 };
 
@@ -649,39 +1668,52 @@ const mapStateToProps = (state) => ({
   roleArray: getRoleArray(state),
   branding: getCurrentBranding(state),
   comeBackFromTests: getComeBackFromTests(state),
+  redirectPath: getCurrentRedirectPath(state),
+  firstTimeLogin: getFirstTimeLoginState(state),
 });
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    clearClientIdDetails: () => {
-      dispatch(clientUserIdActions.clearClientIdDetails());
-    },
-    clearProfile: () => {
-      dispatch(userProfileActions.clearUserProfile());
-    },
-    setTestIdToStore: (payload) => {
-      dispatch(testsActions.setTestIdToStore(payload));
-    },
-    setTestTypeToStore: (payload) => {
-      dispatch(testsActions.setTestTypeToStore(payload));
-    },
-    setTestStartTimeToStore: (payload) => {
-      dispatch(testsActions.setTestStartTimeToStore(payload));
-    },
-    setTestEndTimeToStore: (payload) => {
-      dispatch(testsActions.setTestEndTimeToStore(payload));
-    },
-    setTestResultArrayToStore: (payload) => {
-      dispatch(testsActions.setTestResultArrayToStore(payload));
-    },
-    setCourseIdToStore: (payload) => {
-      dispatch(courseActions.setCourseIdToStore(payload));
-    },
-    setAdmissionRoleArrayToStore: (payload) => {
-      dispatch(admissionActions.setAdmissionRoleArrayToStore(payload));
-    },
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  clearClientIdDetails: () => {
+    dispatch(clientUserIdActions.clearClientIdDetails());
+  },
+  clearProfile: () => {
+    dispatch(userProfileActions.clearUserProfile());
+  },
+  setTestIdToStore: (payload) => {
+    dispatch(testsActions.setTestIdToStore(payload));
+  },
+  setTestTypeToStore: (payload) => {
+    dispatch(testsActions.setTestTypeToStore(payload));
+  },
+  setTestStartTimeToStore: (payload) => {
+    dispatch(testsActions.setTestStartTimeToStore(payload));
+  },
+  setTestEndTimeToStore: (payload) => {
+    dispatch(testsActions.setTestEndTimeToStore(payload));
+  },
+  setTestResultArrayToStore: (payload) => {
+    dispatch(testsActions.setTestResultArrayToStore(payload));
+  },
+  setTestLanguageToStore: (payload) => {
+    dispatch(testsActions.setTestLanguageToStore(payload));
+  },
+  setCourseIdToStore: (payload) => {
+    dispatch(courseActions.setCourseIdToStore(payload));
+  },
+  setAdmissionRoleArrayToStore: (payload) => {
+    dispatch(admissionActions.setAdmissionRoleArrayToStore(payload));
+  },
+  setFolderIdArrayToStore: (payload) => {
+    dispatch(studyBinActions.setFolderIDArrayToStore(payload));
+  },
+  setDashboardDataToStore: (payload) => {
+    dispatch(dashboardActions.setDashboardDataToStore(payload));
+  },
+
+  setAnalysisStudentObjectToStore: (payload) => {
+    dispatch(analysisActions.setAnalysisStudentObjectToStore(payload));
+  },
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
 
@@ -695,10 +1727,15 @@ Dashboard.propTypes = {
   setTestStartTimeToStore: PropTypes.func.isRequired,
   setTestIdToStore: PropTypes.func.isRequired,
   setTestTypeToStore: PropTypes.func.isRequired,
+  setTestLanguageToStore: PropTypes.func.isRequired,
   setCourseIdToStore: PropTypes.func.isRequired,
+  setDashboardDataToStore: PropTypes.func.isRequired,
   setAdmissionRoleArrayToStore: PropTypes.func.isRequired,
+  setAnalysisStudentObjectToStore: PropTypes.func.isRequired,
+  setFolderIdArrayToStore: PropTypes.func.isRequired,
   userProfile: PropTypes.shape({
     firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired,
     profileImage: PropTypes.string,
   }).isRequired,
   roleArray: PropTypes.instanceOf(Array).isRequired,
@@ -707,4 +1744,6 @@ Dashboard.propTypes = {
   }).isRequired,
   branding: PropTypes.instanceOf(Object).isRequired,
   comeBackFromTests: PropTypes.bool.isRequired,
+  redirectPath: PropTypes.string.isRequired,
+  firstTimeLogin: PropTypes.bool.isRequired,
 };

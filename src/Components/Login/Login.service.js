@@ -24,8 +24,9 @@ export function getColor(param) {
   };
 }
 
-export function getContact(param) {
+export function getContact(param, countryCode) {
   return (dispatch) => {
     dispatch(userProfileActions.setContactToStore(param));
+    dispatch(userProfileActions.setCountryCodeToStore(countryCode));
   };
 }

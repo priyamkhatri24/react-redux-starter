@@ -170,11 +170,7 @@ const StudyBinMenu = (props) => {
                     )}
                   </span>
                 </Col>
-                <Col
-                  xs={8}
-                  className='p-0 StudyBin__categoryText my-auto'
-                  style={{ fontSize: '14px', lineHeight: '20px' }}
-                >
+                <Col xs={8} className='p-0 StudyBin__categoryText my-auto'>
                   {elem.text}
                 </Col>
               </Row>

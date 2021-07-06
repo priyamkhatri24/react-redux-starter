@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
@@ -20,6 +20,8 @@ import { apiValidation, get, post } from '../../Utilities';
 
 const AddDetails = (props) => {
   const { history, admissionRoleArray, setAdmissionUserArrayToStore, clientId } = props;
+
+  const addRef = useRef(null);
 
   const [details, setDetails] = useState(
     admissionRoleArray[0] === '1'
@@ -188,16 +190,18 @@ const AddDetails = (props) => {
   };
 
   const goToNextStage = () => {
-    if (admissionRoleArray[0] === '1') {
-      if (detailArray.length > 0 && detailArray.length <= 20) {
-        setAdmissionUserArrayToStore(detailArray);
-        history.push('/admissions/add/class');
-      } else {
-        console.log('not 0 or more than 20');
-      }
-    } else {
-      handleOpen();
-    }
+    addRef.current.click();
+    // if (admissionRoleArray[0] === '1') {
+    //   if (detailArray.length > 0 && detailArray.length <= 20) {
+    //     setAdmissionUserArrayToStore(detailArray);
+    //     history.push('/admissions/add/class');
+    //   } else {
+    //     console.log('not 0 or more than 20');
+    //   }
+    // } else {
+    //   handleOpen();
+    // }
+    handleOpen();
   };
 
   return (
@@ -449,7 +453,12 @@ const AddDetails = (props) => {
               )}
             </Col>
           </Row>
-          <Button variant='boldText' className='ml-auto mt-3' onClick={() => addToDetailArray()}>
+          <Button
+            variant='boldText'
+            className='ml-auto mt-3'
+            onClick={() => addToDetailArray()}
+            ref={addRef}
+          >
             Add
           </Button>
           {isValid && (

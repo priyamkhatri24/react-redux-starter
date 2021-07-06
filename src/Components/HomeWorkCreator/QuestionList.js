@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 import { connect } from 'react-redux';
 import Question from './Question';
 import { homeworkActions } from '../../redux/actions/homework.action';
@@ -30,10 +31,13 @@ const QuestionList = (props) => {
     currentSubjectArray,
     setTestIdToStore,
     setTestNameToStore,
+    setTestIsDraftToStore,
+    setHomeworkLanguageTypeToStore,
   } = props;
   const [questions, setQuestions] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [isDraft, setDraft] = useState(0);
+  const [selectAllQuestions, setSelectAllQuestions] = useState(false);
 
   useEffect(() => {
     const draft = testId === null ? 0 : 1;
@@ -52,82 +56,127 @@ const QuestionList = (props) => {
     setSelectedQuestions(selectedQuestionArray);
   }, [selectedQuestionArray]);
 
-  const updateSelectedQuestions = (question) => {
-    const ques = [];
-    ques.push(question.question_id);
+  const removeQuestion = (question) => {
     const newSelectedQuestions = JSON.parse(JSON.stringify(selectedQuestions));
-    if (question.isSelected === true) {
-      let payload;
-      if (!isDraft) {
-        payload = {
-          language_type: 'english',
-          client_id: clientId,
-          questions_array: JSON.stringify(ques),
-          is_draft: isDraft,
-          chapter_array: JSON.stringify(currentChapterArray),
-          teacher_id: clientUserId,
-          class_subject: JSON.stringify(currentSubjectArray),
-        };
-      } else {
-        payload = {
-          chapter_array: JSON.stringify(currentChapterArray),
-          teacher_id: clientUserId,
-          test_id: testId,
-          is_draft: isDraft,
-          questions_array: JSON.stringify(ques),
-          class_subject: JSON.stringify(currentSubjectArray),
-          client_id: clientId,
-          test_name: testName,
-        };
-      }
-      console.log(payload);
-      post(payload, '/addTestFromHomeworkCreator').then((res) => {
+    console.log(question);
+    post({ question_id: question.question_id, test_id: testId }, '/deleteQuestionFromTest').then(
+      (res) => {
         if (res.success) {
-          if (!isDraft) {
-            setTestIdToStore(res.test_id);
-            setTestNameToStore(res.test_name);
-          }
-          newSelectedQuestions.push(question);
-          setSelectedQuestionArrayToStore(newSelectedQuestions);
+          const removedSelectedQuestions = newSelectedQuestions.filter((e) => {
+            return e.question_id !== question.question_id;
+          });
+          setSelectedQuestionArrayToStore(removedSelectedQuestions);
         } else {
           Swal.fire({
             icon: 'error',
             title: 'Oops',
-            text: 'Question could not be added',
+            text: 'Question could not be removed',
           });
         }
-      });
-    } else {
-      post({ question_id: question.question_id, test_id: testId }, '/deleteQuestionFromTest').then(
-        (res) => {
-          if (res.success) {
-            const removedSelectedQuestions = newSelectedQuestions.filter((e) => {
-              return e.question_id !== question.question_id;
-            });
-            setSelectedQuestionArrayToStore(removedSelectedQuestions);
-          } else {
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops',
-              text: 'Question could not be removed',
-            });
-          }
-        },
-      );
-    }
+      },
+    );
   };
 
-  const clearSelectedQuestions = () => {
-    setSelectedQuestionArrayToStore([]);
-    const resetQuestions = questions.map((e) => {
-      e.isSelected = false;
-      return e;
+  const removeAllQuestions = () => {
+    post(
+      {
+        questions_array: JSON.stringify(selectedQuestions.map((e) => e.question_id)),
+        test_id: testId,
+      },
+      '/deleteMultipleQuestionFromTest',
+    ).then((res) => {
+      if (res.success) {
+        setSelectedQuestions([]);
+        setSelectedQuestionArrayToStore([]);
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops',
+          text: 'Question could not be removed',
+        });
+      }
     });
-    setQuestions(resetQuestions);
+  };
+
+  const addQuestions = (questionArray, selectedQuestionsArray = selectedQuestions) => {
+    const newSelectedQuestions = JSON.parse(JSON.stringify(selectedQuestionsArray));
+
+    let payload;
+    if (!isDraft) {
+      payload = {
+        language_type: 'english',
+        client_id: clientId,
+        questions_array: JSON.stringify(questionArray.map((e) => e.question_id)),
+        is_draft: isDraft,
+        chapter_array: JSON.stringify(currentChapterArray),
+        teacher_id: clientUserId,
+        class_subject: JSON.stringify(currentSubjectArray),
+      };
+    } else {
+      payload = {
+        chapter_array: JSON.stringify(currentChapterArray),
+        teacher_id: clientUserId,
+        test_id: testId,
+        is_draft: isDraft,
+        questions_array: JSON.stringify(questionArray.map((e) => e.question_id)),
+        class_subject: JSON.stringify(currentSubjectArray),
+        client_id: clientId,
+        test_name: testName,
+      };
+    }
+    console.log(payload);
+    post(payload, '/addTestFromHomeworkCreator').then((res) => {
+      if (res.success) {
+        if (!isDraft) {
+          setTestIdToStore(res.test_id);
+          setTestNameToStore(res.test_name);
+          setTestIsDraftToStore(1);
+          setHomeworkLanguageTypeToStore('english');
+        }
+        newSelectedQuestions.push(...questionArray);
+        setSelectedQuestionArrayToStore(newSelectedQuestions);
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops',
+          text: 'Question could not be added',
+        });
+      }
+    });
+  };
+
+  const updateSelectedQuestions = (question) => {
+    const ques = [];
+    ques.push(question);
+    if (question.isSelected === true) {
+      addQuestions(ques);
+    } else removeQuestion(question);
   };
 
   const goToNextSlide = () => {
     setCurrentSlide(2);
+  };
+
+  const selectAll = (value) => {
+    setSelectAllQuestions(value);
+    if (value) {
+      setSelectedQuestionArrayToStore([]);
+      setSelectedQuestions([]);
+      addQuestions(questions, []);
+      const allQuestions = questions.map((e) => {
+        e.isSelected = true;
+        return e;
+      });
+      setQuestions(allQuestions);
+      setCurrentSlide(2);
+    } else {
+      removeAllQuestions();
+      const resetQuestions = questions.map((e) => {
+        e.isSelected = false;
+        return e;
+      });
+      setQuestions(resetQuestions);
+    }
   };
 
   return (
@@ -136,18 +185,19 @@ const QuestionList = (props) => {
         <span className='text-left Homework__questionIndex my-auto'>
           {selectedQuestions.length} selected of {questions.length}
         </span>
-        <div className='ml-auto my-auto'>
+        <div className='ml-auto my-auto d-flex'>
           <Button variant='customPrimarySmol' onClick={() => goToNextSlide()}>
             Next
           </Button>
 
-          <Button
-            variant='customPrimarySmol'
-            className='ml-2'
-            onClick={() => clearSelectedQuestions()}
-          >
-            Clear
-          </Button>
+          <Form.Check
+            type='checkbox'
+            checked={selectAllQuestions}
+            onChange={(e) => selectAll(!selectAllQuestions)}
+            className='my-auto ml-1'
+            label='Select All'
+            name='selectAll'
+          />
         </div>
       </div>
       <hr />
@@ -189,6 +239,12 @@ const mapDispatchToProps = (dispatch) => {
     setTestNameToStore: (payload) => {
       dispatch(homeworkActions.setTestNameToStore(payload));
     },
+    setTestIsDraftToStore: (payload) => {
+      dispatch(homeworkActions.setTestIsDraftToStore(payload));
+    },
+    setHomeworkLanguageTypeToStore: (payload) => {
+      dispatch(homeworkActions.setHomeworkLanguageTypeToStore(payload));
+    },
   };
 };
 
@@ -207,6 +263,8 @@ QuestionList.propTypes = {
   selectedQuestionArray: PropTypes.instanceOf(Array),
   testId: PropTypes.number,
   testName: PropTypes.string.isRequired,
+  setTestIsDraftToStore: PropTypes.func.isRequired,
+  setHomeworkLanguageTypeToStore: PropTypes.func.isRequired,
 };
 
 QuestionList.defaultProps = {
