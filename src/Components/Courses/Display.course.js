@@ -8,6 +8,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import AddIcon from '@material-ui/icons/Add';
+import VideoThumbnail from 'react-video-thumbnail';
 import { courseActions } from '../../redux/actions/course.action';
 import { verifyIsFile, verifyIsImage, verifyIsVideo } from '../../Utilities';
 import { uploadingImage } from '../../Utilities/customUpload';
@@ -34,6 +35,9 @@ const Display = (props) => {
   const courseVideo = useRef('');
   const courseVideoRef = useRef(null);
   const courseImageRef = useRef(null);
+  const [videoName, setVideoName] = useState('');
+  const [videoURL, setVideoURL] = useState('');
+  const [thumbnailImg, setThumbnail] = useState('');
 
   const handleClose = () => setImageModal(false);
   const handleOpen = () => setImageModal(true);
@@ -51,6 +55,11 @@ const Display = (props) => {
 
     if (courseDisplayVideo) {
       courseVideo.current = courseDisplayVideo;
+      setVideoName(
+        courseVideo.current.substr(courseVideo.current.lastIndexOf('/') + 1),
+        courseVideo.current.length,
+      );
+      setVideoURL(courseVideo.current);
     }
   }, [courseDisplayImage, courseDisplayVideo]);
 
@@ -88,7 +97,9 @@ const Display = (props) => {
       if (type !== 'image') {
         uploadingImage(file).then((res) => {
           courseVideo.current = res.filename;
-          //  setLoadingSuccessToStore();
+          const startVideo = courseVideo.current.lastIndexOf('/') + 1;
+          setVideoName(courseVideo.current.substr(startVideo, courseVideo.current.length));
+          setVideoURL(courseVideo.current);
         });
       }
 
@@ -241,12 +252,27 @@ const Display = (props) => {
               ref={courseVideoRef}
             />
             {courseVideo.current && (
-              <img
-                src={YCIcon}
-                alt='upload your profile pic'
-                className='img-fluid'
-                style={{ height: '60px', width: '95px' }}
-              />
+              <div style={{ flexDirection: 'row' }}>
+                <Row className='justify-content-center'>
+                  <img
+                    src={thumbnailImg || YCIcon}
+                    alt='upload your profile pic'
+                    className='img-fluid'
+                    style={{ height: '60px', width: '95px', borderRadius: '5px' }}
+                  />
+                  <div style={{ display: 'none' }}>
+                    <VideoThumbnail
+                      videoUrl={videoURL}
+                      thumbnailHandler={(thumbnail) => setThumbnail(thumbnail)}
+                    />
+                  </div>
+                </Row>
+                <Row>
+                  <div>
+                    <small className='Courses__tinySubHeading'>{videoName}</small>
+                  </div>
+                </Row>
+              </div>
             )}
             {!courseVideo.current && (
               <div

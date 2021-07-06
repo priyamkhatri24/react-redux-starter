@@ -274,3 +274,10 @@
   color: var(--primary-blue);
   line-height: 18px;
 }
+
+.react-thumbnail-generator > img {
+  width: 95px;
+  height: 60px;
+  border-radius: 5px;
+  display: none;
+}
