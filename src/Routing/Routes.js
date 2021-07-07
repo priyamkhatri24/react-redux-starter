@@ -393,6 +393,61 @@ const CRM = Loadable({
   loading: Loading,
 });
 
+const Conversations = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'Conversations' */ '../Components/Conversations/Conversations'),
+  loading: Loading,
+});
+
+const Conversation = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'Conversation' */ '../Components/Conversations/Conversation'),
+  loading: Loading,
+});
+
+const ImageEditor = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'ImageEditor' */ '../Components/Conversations/ImageEditor/ImageEditor'
+    ),
+  loading: Loading,
+});
+
+const ConversationDetails = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'ConversationDetails' */ '../Components/Conversations/ConversationDetails'
+    ),
+  loading: Loading,
+});
+
+const ConversationFiles = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'ConversationFiles' */ '../Components/Conversations/ConversationFiles/ConversationFiles'
+    ),
+  loading: Loading,
+});
+
+const ConversationMedia = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'ConversationMedia' */ '../Components/Conversations/ConversationMedia/ConversationMedia'
+    ),
+  loading: Loading,
+});
+
+const CreatePost = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'CreatePost' */ '../Components/Conversations/Posts/CreatePost'),
+  loading: Loading,
+});
+
+const Post = Loadable({
+  loader: () => import(/* webpackChunkName: 'Post' */ '../Components/Conversations/Posts/Post'),
+  loading: Loading,
+});
+
 // eslint-disable-next-line
 function Loading({ error }) {
   if (error) {
@@ -469,6 +524,7 @@ export function Routes() {
       <AuthenticatedRoute exact path='/conversations/:id/:type' component={ConversationFiles} />
       <AuthenticatedRoute exact path='/create-post' component={CreatePost} />
       <AuthenticatedRoute exact path='/posts/:id' component={Post} />
+
       <AuthenticatedRoute exact path='/analysis/teacher' component={TeacherAnalysis} />
       <AuthenticatedRoute exact path='/analysis/assignment' component={AssignmentList} />
       <AuthenticatedRoute exact path='/analysis/studentanalysis' component={StudentAnalysis} />

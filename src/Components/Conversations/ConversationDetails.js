@@ -3,6 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Media, Image, Accordion, Card, Button, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import ReactPlayer from 'react-player';
+import ArrowBack from '@material-ui/icons/ArrowBack';
+import MoreVert from '@material-ui/icons/MoreVert';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 import { get, apiValidation } from '../../Utilities';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { getConversation, getSocket, getPosts } from '../../redux/reducers/conversations.reducer';
@@ -43,18 +47,16 @@ const ConversationDetails = () => {
           <Col xs={12}>
             <div className='p-2 d-flex align-items-center justify-content-between'>
               <div className='d-flex align-items-center'>
-                <i
-                  className='material-icons mr-3'
+                <ArrowBack
+                  className='mr-3'
                   role='button'
                   tabIndex={0}
                   onClick={() => history.push('/conversations')}
                   onKeyDown={() => history.push('/conversations')}
-                >
-                  arrow_back
-                </i>
+                />
               </div>
               <div className='d-flex justify-self-end align-items-center'>
-                <i className='material-icons ml-1'>more_vert</i>
+                <MoreVert className='ml-1' />
               </div>
             </div>
           </Col>
@@ -106,7 +108,7 @@ const ConversationDetails = () => {
                 <div className='d-flex justify-content-between align-items-center'>
                   <p className='details-heading mb-0'>Settings</p>
                   <Button variant='link' className='p-0 m-0'>
-                    <i className='material-icons'>chevron_right</i>
+                    <ChevronRight />
                   </Button>
                 </div>
               </Card.Header>
@@ -123,7 +125,7 @@ const ConversationDetails = () => {
                   <div className='d-flex justify-content-between align-items-center'>
                     <p className='details-heading mb-0'>Members</p>
                     <Button variant='link' className='p-0 m-0'>
-                      <i className='material-icons'>expand_more</i>
+                      <ExpandMore />
                     </Button>
                   </div>
                 </Accordion.Toggle>
@@ -167,7 +169,7 @@ const ConversationDetails = () => {
                 <div className='d-flex justify-content-between align-items-center'>
                   <p className='details-heading mb-0'>Media</p>
                   <Button variant='link' className='p-0 m-0'>
-                    <i className='material-icons'>chevron_right</i>
+                    <ChevronRight />
                   </Button>
                 </div>
               </Card.Header>
@@ -199,7 +201,7 @@ const ConversationDetails = () => {
                 <div className='d-flex justify-content-between align-items-center'>
                   <p className='details-heading mb-0'>Files</p>
                   <Button variant='link' className='p-0 m-0'>
-                    <i className='material-icons'>chevron_right</i>
+                    <ChevronRight />
                   </Button>
                 </div>
               </Card.Header>
@@ -226,7 +228,7 @@ const ConversationDetails = () => {
                 <div className='d-flex justify-content-between align-items-center'>
                   <p className='details-heading mb-0'>Audio</p>
                   <Button variant='link' className='p-0 m-0'>
-                    <i className='material-icons'>chevron_right</i>
+                    <ChevronRight />
                   </Button>
                 </div>
               </Card.Header>

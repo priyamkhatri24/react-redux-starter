@@ -76,22 +76,15 @@ class QuestionCard extends Component {
   }
 
   /** ********Timer logic***** */
+  handleChecked(order) {
+    const { checked } = this.state;
+    const checkedArray = checked.length === 0 ? [false, false, false, false] : [...checked];
 
-  restartSectionTimer = () => {
-    if (this.sectionTimeIntervalId !== 0) {
-      clearInterval(this.sectionTimeIntervalId);
-    }
-    this.sectionTimeIntervalId = setInterval(this.sectionTimerHandler, 1000);
-    this.setState({ timer: 0 });
-  };
-
-  sectionTimerHandler = () => {
-    this.setState((prevState) => {
-      return {
-        timer: prevState.timer + 1,
-      };
-    });
-  };
+    checkedArray[order - 1] = !checkedArray[order - 1];
+    this.setState({ checked: checkedArray });
+    console.log(checkedArray);
+    console.log('CHANGE!');
+  }
 
   /** *********** */
 
@@ -325,15 +318,21 @@ class QuestionCard extends Component {
     );
   };
 
-  handleChecked(order) {
-    const { checked } = this.state;
-    const checkedArray = checked.length === 0 ? [false, false, false, false] : [...checked];
+  sectionTimerHandler = () => {
+    this.setState((prevState) => {
+      return {
+        timer: prevState.timer + 1,
+      };
+    });
+  };
 
-    checkedArray[order - 1] = !checkedArray[order - 1];
-    this.setState({ checked: checkedArray });
-    console.log(checkedArray);
-    console.log('CHANGE!');
-  }
+  restartSectionTimer = () => {
+    if (this.sectionTimeIntervalId !== 0) {
+      clearInterval(this.sectionTimeIntervalId);
+    }
+    this.sectionTimeIntervalId = setInterval(this.sectionTimerHandler, 1000);
+    this.setState({ timer: 0 });
+  };
 
   render() {
     const { question, answer, checked, timer, currentLanguage } = this.state;

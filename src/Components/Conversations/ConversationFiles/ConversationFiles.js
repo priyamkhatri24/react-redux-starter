@@ -4,6 +4,8 @@ import { createMatchSelector } from 'connected-react-router';
 import { Row, Col, Media, Image, Accordion, Card, Button, Form, Spinner } from 'react-bootstrap';
 import { useParams, useHistory } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroller';
+import ArrowBack from '@material-ui/icons/ArrowBack';
+import MoreVert from '@material-ui/icons/MoreVert';
 import {
   getConversation,
   getSocket,
@@ -49,19 +51,17 @@ const ConversationFiles = ({}) => {
           <Col xs={12}>
             <div className='p-2 d-flex align-items-center justify-content-between'>
               <div className='d-flex align-items-center'>
-                <i
-                  className='material-icons mr-3'
+                <ArrowBack
+                  className='mr-3'
                   role='button'
                   tabIndex={0}
                   onKeyDown={() => {}}
                   onClick={() => history.push('/conversation/details')}
-                >
-                  arrow_back
-                </i>
+                />
                 <h5 className='pb-0 mb-0'>{type === 'files' ? `Files` : `Audio Files`}</h5>
               </div>
               <div className='d-flex justify-self-end align-items-center'>
-                <i className='material-icons ml-1'>more_vert</i>
+                <MoreVert className=' ml-1' />
               </div>
             </div>
           </Col>

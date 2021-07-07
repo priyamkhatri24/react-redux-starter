@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // import PropTypes from 'prop-types';
 import { Row, Col, Button } from 'react-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
+import Add from '@material-ui/icons/Add';
 import { get, apiValidation, uploadFiles, post } from '../../Utilities';
 import { conversationsActions } from '../../redux/actions/conversations.action';
 import { getConversation, getSocket, getPosts } from '../../redux/reducers/conversations.reducer';
@@ -468,7 +469,7 @@ const Conversation = () => {
                   className='add-post-btn'
                   onClick={() => history.push('/create-post')}
                 >
-                  <i className='material-icons'>add</i> Add new post
+                  <Add /> Add new post
                 </Button>
               </div>
             </div>

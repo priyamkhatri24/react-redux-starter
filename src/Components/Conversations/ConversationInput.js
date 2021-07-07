@@ -13,6 +13,14 @@ import {
   Image,
 } from 'react-bootstrap';
 import MicRecorder from 'mic-recorder-to-mp3';
+import Close from '@material-ui/icons/Close';
+import Attachment from '@material-ui/icons/Attachment';
+import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import Send from '@material-ui/icons/Send';
+import MicNone from '@material-ui/icons/MicNone';
+import Refresh from '@material-ui/icons/Refresh';
+import Stop from '@material-ui/icons/Stop';
 
 const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemoveReply }) {
   const [message, setMessage] = useState('');
@@ -200,7 +208,7 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
                   </div>
                 </div>
                 <Button variant='link' className='p-0 m-0 d-flex' onClick={() => onRemoveReply()}>
-                  <i className='material-icons'>close</i>
+                  <Close />
                 </Button>
               </div>
             </Col>
@@ -215,7 +223,7 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
                   id='dropdown-button-drop-up'
                   drop='up'
                   variant='primary'
-                  title={<i className='material-icons'>attachment</i>}
+                  title={<Attachment />}
                 >
                   <Dropdown.Item eventKey='image'>Image</Dropdown.Item>
                   <Dropdown.Item eventKey='video'>Video</Dropdown.Item>
@@ -237,20 +245,20 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
                   onChange={(e) => setMessage(e.target.value)}
                 />
                 <span className='upload-actions'>
-                  <i className='material-icons pr-2'>insert_emoticon</i>
+                  <InsertEmoticon className='pr-2' />
                   <Button variant='link' size='sm' className='camera-btn' onClick={handleShow}>
-                    <i className='material-icons'>photo_camera</i>
+                    <PhotoCamera />
                   </Button>
                 </span>
               </div>
               {!!message && (
                 <Button className='rounded-btn mr-2' onClick={() => send()}>
-                  <i className='material-icons'>send</i>
+                  <Send />
                 </Button>
               )}
               {!message && !recordingState.isRecording && (
                 <Button className='rounded-btn mr-2' onClick={() => startRecording()}>
-                  <i className='material-icons'>mic_none</i>
+                  <MicNone />
                 </Button>
               )}
               {/* {!message && recordingState.isRecording && (
@@ -285,9 +293,7 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
                 cleanUpAudio();
               }}
             >
-              <i className='material-icons' style={{ color: '#FF0000DE', fontSize: '30px' }}>
-                close
-              </i>
+              <Close style={{ color: '#FF0000DE', fontSize: '30px' }} />
             </Button>
             {recordingState.isRecording && (
               <Button
@@ -296,22 +302,16 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
                   stopRecording();
                 }}
               >
-                <i className='material-icons' style={{ color: '#2699FB', fontSize: '30px' }}>
-                  stop
-                </i>
+                <Stop style={{ color: '#2699FB', fontSize: '30px' }} />
               </Button>
             )}
             {!recordingState.isRecording && (
               <>
                 <Button variant='link' onClick={(e) => startRecording()}>
-                  <i className='material-icons' style={{ color: '#2699FB', fontSize: '30px' }}>
-                    refresh
-                  </i>
+                  <Refresh style={{ color: '#2699FB', fontSize: '30px' }} />
                 </Button>
                 <Button variant='link' onClick={() => sendRecording()}>
-                  <i className='material-icons' style={{ color: '#000000', fontSize: '30px' }}>
-                    send
-                  </i>
+                  <Send style={{ color: '#000000', fontSize: '30px' }} />
                 </Button>
               </>
             )}

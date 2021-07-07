@@ -93,4 +93,5 @@ MainApp.propTypes = {
     branding: PropTypes.instanceOf(Object).isRequired,
   }).isRequired,
   isSpinner: PropTypes.bool.isRequired,
+  setSocket: PropTypes.func.isRequired,
 };

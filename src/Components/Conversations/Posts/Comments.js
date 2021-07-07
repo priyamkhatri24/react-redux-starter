@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { FormControl, Button, Media, Image, Col } from 'react-bootstrap';
 import PropTypes from 'prop-types';
+import Send from '@material-ui/icons/Send';
+import Close from '@material-ui/icons/Close';
+import Favorite from '@material-ui/icons/Favorite';
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import { post } from '../../../Utilities';
 import './Comments.scss';
 
@@ -140,16 +144,18 @@ const Comments = function ({
               </div>
             </div>
             <div className='justify-content-end d-flex mb-2'>
-              <span className='p-1 mr-3'>
-                <i
-                  className={`material-icons ${c.hasUserReacted ? 'red' : 'grey'}`}
-                  role='button'
-                  tabIndex={0}
-                  onKeyPress={(e) => e.key === 13 && reactToComment(c, index, 'comment')}
-                  onClick={() => reactToComment(c, index, 'comment')}
-                >
-                  {c.hasUserReacted ? 'favorite' : 'favorite_border'}
-                </i>
+              <span
+                className='p-1 mr-3'
+                role='button'
+                tabIndex={0}
+                onKeyPress={(e) => e.key === 13 && reactToComment(c, index, 'comment')}
+                onClick={() => reactToComment(c, index, 'comment')}
+              >
+                {c.hasUserReacted ? (
+                  <Favorite className='material-icons red' />
+                ) : (
+                  <FavoriteBorder className='material-icons grey' />
+                )}
                 {c.reactions.length > 0 && c.reactions[0].no_of_reactions}
                 {c.reactions.length === 0 && 0}
               </span>
@@ -188,20 +194,20 @@ const Comments = function ({
                             </div>
                           </div>
                           <div className='justify-content-end d-flex'>
-                            <span className='p-1 mr-3'>
-                              <i
-                                className={`material-icons ${
-                                  reply.hasUserReacted ? 'red' : 'grey'
-                                }`}
-                                role='button'
-                                tabIndex={0}
-                                onKeyPress={(e) =>
-                                  e.key === 13 && reactToComment(reply, replyIndex, 'reply')
-                                }
-                                onClick={() => reactToComment(reply, replyIndex, 'reply')}
-                              >
-                                {reply.hasUserReacted ? 'favorite' : 'favorite_border'}
-                              </i>
+                            <span
+                              className='p-1 mr-3'
+                              role='button'
+                              tabIndex={0}
+                              onKeyPress={(e) =>
+                                e.key === 13 && reactToComment(reply, replyIndex, 'reply')
+                              }
+                              onClick={() => reactToComment(reply, replyIndex, 'reply')}
+                            >
+                              {reply.hasUserReacted ? (
+                                <Favorite className='material-icons red' />
+                              ) : (
+                                <FavoriteBorder className='material-icons grey' />
+                              )}
                               {reply.reactions.length > 0 && reply.reactions[0].no_of_reactions}
                               {reply.reactions.length === 0 && 0}
                             </span>
@@ -260,7 +266,7 @@ const Comments = function ({
             className='p-0 m-0 d-flex align-items-center'
             onClick={(e) => setReplyingTo(null)}
           >
-            <i className='material-icons'>close</i>
+            <Close className='material-icons' />
           </Button>
         </div>
       )}
@@ -275,7 +281,7 @@ const Comments = function ({
           onChange={(e) => setComment(e.target.value)}
         />
         <Button disabled={!comment} className='rounded-btn ml-2' onClick={() => addComment()}>
-          <i className='material-icons'>send</i>
+          <Send className='material-icons' />
         </Button>
       </div>
     </div>

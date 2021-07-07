@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import { Form, Button, Image, Spinner, InputGroup, FormControl } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import HighlightOff from '@material-ui/icons/HighlightOff';
+import Collections from '@material-ui/icons/Collections';
+import AttachFile from '@material-ui/icons/AttachFile';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import { conversationsActions } from '../../../redux/actions/conversations.action';
 import { getConversation } from '../../../redux/reducers/conversations.reducer';
 import { getClientUserId } from '../../../redux/reducers/clientUserId.reducer';
@@ -109,7 +113,7 @@ const CreatePost = function ({ clientUserId, conversation }) {
   const ImageFile = (url, index) => (
     <div className='image-preview mt-2 mb-2'>
       <Button size='sm' variant='link' onClick={(e) => removeFile(index)} className='remove-btn'>
-        <span className='material-icons'>highlight_off</span>
+        <HighlightOff className='material-icons' />
       </Button>
       <Image src={url} width='100%' rounded />
     </div>
@@ -119,7 +123,7 @@ const CreatePost = function ({ clientUserId, conversation }) {
     <div className='doc-preview mt-2 mb-2'>
       <span className='doc-name p-3'>{name}</span>
       <Button size='sm' variant='link' onClick={(e) => removeFile(index)} className='remove-btn'>
-        <span className='material-icons'>highlight_off</span>
+        <HighlightOff className='material-icons' />
       </Button>
     </div>
   );
@@ -213,7 +217,7 @@ const CreatePost = function ({ clientUserId, conversation }) {
                   className='p-0 action-btn'
                   onClick={() => openFilePicker('image')}
                 >
-                  <i className='material-icons'>collections</i>
+                  <Collections className='material-icons' />
                   <p className='icon-action'>From Gallery</p>
                 </Button>
               </div>
@@ -223,7 +227,7 @@ const CreatePost = function ({ clientUserId, conversation }) {
                   className='p-0 action-btn'
                   onClick={() => openFilePicker('file')}
                 >
-                  <i className='material-icons'>attach_file</i>
+                  <AttachFile className='material-icons' />
                   <p className='icon-action'>From Files</p>
                 </Button>
               </div>
@@ -233,7 +237,7 @@ const CreatePost = function ({ clientUserId, conversation }) {
                   className='p-0 action-btn'
                   onClick={() => openFilePicker('camera')}
                 >
-                  <i className='material-icons'>photo_camera</i>
+                  <PhotoCamera className='material-icons' />
                   <p className='icon-action'>Camera</p>
                 </Button>
               </div>

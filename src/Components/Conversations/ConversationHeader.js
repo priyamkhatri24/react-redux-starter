@@ -2,6 +2,9 @@ import React from 'react';
 import { Row, Col, Image, Media, Tabs, Tab } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
+import ArrowBack from '@material-ui/icons/ArrowBack';
+import Search from '@material-ui/icons/Search';
+import MoreVert from '@material-ui/icons/MoreVert';
 
 const ConversationHeader = function ({
   thumbnail,
@@ -19,15 +22,13 @@ const ConversationHeader = function ({
         <Col xs={12}>
           <div className='p-2 d-flex align-items-center justify-content-between'>
             <div className='d-flex align-items-center'>
-              <i
-                className='material-icons mr-3'
+              <ArrowBack
+                className='mr-3'
                 role='button'
                 tabIndex={0}
                 onClick={() => history.push('/conversations')}
                 onKeyDown={() => history.push('/conversations')}
-              >
-                arrow_back
-              </i>
+              />
               <div className='heading pt-2 d-flex align-items-center'>
                 <Media
                   as='div'
@@ -72,8 +73,8 @@ const ConversationHeader = function ({
               </div>
             </div>
             <div className='d-flex justify-self-end align-items-center'>
-              <i className='material-icons mr-1'>search</i>
-              <i className='material-icons ml-1'>more_vert</i>
+              <Search className='mr-1' />
+              <MoreVert className=' ml-1' />
             </div>
           </div>
         </Col>

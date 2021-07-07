@@ -3,6 +3,17 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { Row, Col, Media, Image, Spinner, Button, Form } from 'react-bootstrap';
 import ReactPlayer from 'react-player';
+// stop
+// play_arrow
+// downlaod
+// chat_bubble_outline
+import Stop from '@material-ui/icons/Stop';
+import Share from '@material-ui/icons/Share';
+import PlayArrow from '@material-ui/icons/PlayArrow';
+// import { FontDownloadOutlined as Download } from '@material-ui/icons/FontDownloadOutlined';
+import ChatBubbleOutline from '@material-ui/icons/ChatBubbleOutline';
+import Favorite from '@material-ui/icons/Favorite';
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import FileIcon from '../../../assets/images/file.svg';
 import './Message.scss';
 
@@ -253,9 +264,7 @@ class Message extends React.Component {
               this.audio.currentTime = 0;
             }}
           >
-            <i className='material-icons' style={{ fontSize: '30px' }}>
-              stop
-            </i>
+            <Stop style={{ fontSize: '30px' }} />
           </Button>
         )}
 
@@ -278,9 +287,7 @@ class Message extends React.Component {
               });
             }}
           >
-            <i className='material-icons' style={{ fontSize: '30px' }}>
-              play_arrow
-            </i>
+            <PlayArrow style={{ fontSize: '30px' }} />
           </Button>
         )}
         <div className='d-flex flex-column align-items-start justify-content-center mt-3'>
@@ -338,7 +345,7 @@ class Message extends React.Component {
             style={{ color: '#000' }}
             className='ml-3 d-flex align-items-center'
           >
-            <i className='material-icons'>download</i>
+            {/* <Download /> */}
           </a>
         </div>
         <div className='pt-2 pr-2 pb-2'>{this.MessageFooter()}</div>
@@ -383,18 +390,19 @@ class Message extends React.Component {
               onKeyPress={(e) => e.key === 13 && onReactionToMessage(id, userHasReacted)}
               onClick={() => onReactionToMessage(id, userHasReacted)}
             >
-              <i className={`material-icons ${userHasReacted ? 'red' : 'grey'}`}>
+              {userHasReacted ? <Favorite className='red' /> : <FavoriteBorder className='grey' />}
+              {/* <i className={`material-icons ${userHasReacted ? 'red' : 'grey'}`}>
                 {userHasReacted ? 'favorite' : 'favorite_border'}
-              </i>{' '}
+              </i>{' '} */}
               {userHasReacted && reactions[0].count}
               {!userHasReacted && 0}
             </span>
             <span className='p-1'>
-              <i className='material-icons chat-bubble'>chat_bubble_outline</i>{' '}
+              <ChatBubbleOutline className='chat-bubble' />
               {commentsInfo.commentsCount}
             </span>
             <span className='p-1'>
-              <i className='material-icons share'>share</i>
+              <Share className='share' />
             </span>
           </div>
           <div className='post-comments pt-3 pb-3 pl-2 pr-2 mt-3'>

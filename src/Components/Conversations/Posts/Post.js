@@ -3,6 +3,10 @@ import { createMatchSelector } from 'connected-react-router';
 import PropTypes from 'prop-types';
 import { Image, Media, Carousel } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import ChatBubbleOutline from '@material-ui/icons/ChatBubbleOutline';
+import Favorite from '@material-ui/icons/Favorite';
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+import Share from '@material-ui/icons/Share';
 import { conversationsActions } from '../../../redux/actions/conversations.action';
 import {
   getConversation,
@@ -210,22 +214,25 @@ const Post = function ({
         <div className='post-footer d-flex flex-row align-items-center justify-content-between mt-1 pl-3 pr-3'>
           <span className='p-1'>
             <i
-              className={`material-icons ${post.userHasReacted ? 'red' : 'grey'}`}
               role='button'
               tabIndex={0}
               onKeyPress={(e) => e.key === 13 && reactToMessage(post.id, post.userHasReacted)}
               onClick={() => reactToMessage(post.id, post.userHasReacted)}
             >
-              {post.userHasReacted ? 'favorite' : 'favorite_border'}
+              {post.userHasReacted ? (
+                <Favorite className='material-icons red' />
+              ) : (
+                <FavoriteBorder className='material-icons grey' />
+              )}
             </i>
             {post.reactions.length > 0 && post.reactions[0].count}
             {post.reactions.length === 0 && 0}
           </span>
           <span className='p-1'>
-            <i className='material-icons chat-bubble'>chat_bubble_outline</i> {post.comments.length}
+            <ChatBubbleOutline className='material-icons chat-bubble' /> {post.comments.length}
           </span>
           <span className='p-1'>
-            <i className='material-icons share'>share</i>
+            <Share className='material-icons share' />
           </span>
         </div>
       </div>

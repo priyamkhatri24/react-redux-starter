@@ -1,6 +1,8 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
+import ArrowBack from '@material-ui/icons/ArrowBack';
+import MoreVert from '@material-ui/icons/MoreVert';
 import PropTypes from 'prop-types';
 
 const ConversationsHeader = function ({ title }) {
@@ -14,18 +16,16 @@ const ConversationsHeader = function ({ title }) {
           style={{ boxShadow: '0px 2px 2px 0px #00000029' }}
         >
           <div className='d-flex align-items-center'>
-            <i
-              className='material-icons mr-3'
+            <ArrowBack
+              className='mr-3'
               role='button'
               tabIndex={0}
               onClick={() => history.goBack()}
               onKeyDown={() => history.goBack()}
-            >
-              arrow_back
-            </i>
+            />
             <h5 className='heading pt-2'>{title}</h5>
           </div>
-          <i className='material-icons justify-self-end'>more_vert</i>
+          <MoreVert className='justify-self-end' />
         </div>
       </Col>
     </Row>
