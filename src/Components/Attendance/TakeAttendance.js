@@ -26,7 +26,7 @@ const TakeAttendance = (props) => {
         boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)',
         borderRadius: '10px',
       }}
-      className='mx-2'
+      className='Attendance__Card'
     >
       <Row className='justify-content-end align-items-center mx-2 my-2'>
         {[
@@ -86,9 +86,9 @@ const TakeAttendance = (props) => {
                   {elem.first_name} {elem.last_name}
                 </p>
               </Col>
-              <Col xs={5} className='text-center'>
+              <Col xs={5} className='text-right'>
                 <p className='m-0 Attendance__batchCount'>{elem.count}</p>
-                <p className='m-0 Attendance__batchStudents'>
+                <p className='m-0 Attendance__batchStudents Attendance__3buttons'>
                   {[
                     { key: 1, value: 'P', color: 'rgba(38, 153, 251, 1)' },
                     { key: 2, value: 'A', color: 'rgba(255, 0, 0, 0.87)' },

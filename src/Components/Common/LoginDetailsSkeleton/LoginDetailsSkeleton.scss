@@ -20,9 +20,18 @@
 
   &__phoneNoInput {
     @include media-breakpoint-up(md) {
-      width: 75%;
+      width: 40%;
       margin-left: auto;
       margin-right: auto;
+    }
+  }
+  &__img {
+    width: 120px;
+    height: 125px;
+
+    @include media-breakpoint-up(sm) {
+      width: 150px;
+      height: auto;
     }
   }
 }

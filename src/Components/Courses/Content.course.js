@@ -24,6 +24,7 @@ const Content = (props) => {
   const [isSectionUpdateValid, setIsSectionUpdateValid] = useState(false);
   const [createNewSection, setCreateNewSection] = useState(false);
   const [nayaSection, setNayaSection] = useState('');
+  const [isSectionArrayvalid, setIsSectionArrayValid] = useState(false);
 
   useEffect(() => {
     const newSectionArray = sectionArray.map((e) => {
@@ -31,6 +32,9 @@ const Content = (props) => {
     });
     console.log(newSectionArray);
     setSectionArray(newSectionArray);
+    if (sectionArray.length > 0) {
+      setIsSectionArrayValid(true);
+    }
   }, [sectionArray]);
 
   const updateSection = (i) => {
@@ -92,7 +96,7 @@ const Content = (props) => {
     setCourseCurrentSectionNameToStore(name);
     history.push('/courses/createcourse/addcontent');
   };
-
+  console.log(section, 'sasad');
   return (
     <div>
       {['Basic Information'].map((e, i) => {
@@ -252,10 +256,18 @@ const Content = (props) => {
         )}
 
         <Row className='w-25 justify-content-end ml-auto m-2'>
-          <Button variant='customPrimarySmol' onClick={() => setCourseCurrentSlideToStore(3)}>
+          <Button
+            variant='customPrimarySmol'
+            onClick={() => {
+              isSectionArrayvalid && setCourseCurrentSlideToStore(3);
+            }}
+          >
             Continue
           </Button>
         </Row>
+        {!isSectionArrayvalid && (
+          <small className='text-danger m-2 d-block'>At least one section is required</small>
+        )}
       </Card>
       {['Course display page', 'Pricing and promotion', 'Privacy and publish'].map((e, i) => {
         return (

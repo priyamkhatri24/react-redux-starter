@@ -45,7 +45,7 @@ const Attendance = (props) => {
           batches.map((elem) => {
             return (
               <Card
-                className='m-2'
+                className='Attendance__Card mb-2'
                 style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)', borderRadius: '10px' }}
                 key={elem.client_batch_id}
                 onClick={() => goToBatch(elem)}
