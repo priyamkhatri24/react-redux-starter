@@ -44,7 +44,8 @@ export const uploadingImage = (file) => {
 };
 
 export const downloadFile = (url) => {
-  get(null, '/getAwsCredentialsWithBucketConfiguration').then((res) => {
+  console.log(url);
+  get({ url }, '/getBucketAndPath').then((res) => {
     const result = apiValidation(res);
     AWS.config.update({
       accessKeyId: result.key,
@@ -55,8 +56,8 @@ export const downloadFile = (url) => {
     const urlArray = url.split('/');
     const key = urlArray.slice(3).join('/');
     console.log(key);
-    const s3 = new AWS.S3({ params: { Bucket: result.bucket_name } });
-    const params = { Bucket: result.bucket_name, Key: key };
+    const s3 = new AWS.S3({ params: { Bucket: result.bucket } });
+    const params = { Bucket: result.bucket, Key: key };
     s3.getObject(params, (err, data) => {
       console.log(err);
       console.log(data);
