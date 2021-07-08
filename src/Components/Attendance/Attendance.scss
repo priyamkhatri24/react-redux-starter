@@ -8,7 +8,7 @@
     line-height: $spacer * 1.25;
     text-transform: capitalize;
 
-    @include media-breakpoint-up(sm){
+    @include media-breakpoint-up(sm) {
       font-size: $spacer * 0.975;
     }
   }
@@ -25,10 +25,9 @@
     line-height: 15px;
     font-size: $spacer * 0.75;
     color: $dashboardBlack;
-    @include media-breakpoint-up(sm){
+    @include media-breakpoint-up(sm) {
       font-size: $spacer * 0.875;
     }
-
   }
 
   &__dot {
@@ -56,20 +55,20 @@
     color: var(--primary-blue);
     line-height: 15px;
   }
-  &__Card{
+  &__Card {
     width: 75%;
     margin: auto;
-    @include media-breakpoint-down(sm){
+    @include media-breakpoint-down(sm) {
       width: 95%;
     }
   }
-  &__3buttons{
-    @include media-breakpoint-up(sm){
+  &__3buttons {
+    @include media-breakpoint-up(sm) {
       padding-right: 3rem;
     }
   }
-  &__PrevNames{
-    @include media-breakpoint-up(sm){
+  &__PrevNames {
+    @include media-breakpoint-up(sm) {
       padding-left: 3rem;
     }
   }

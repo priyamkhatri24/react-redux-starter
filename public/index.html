@@ -23,28 +23,28 @@
     -->
     <!-----------------------------SCRIPT TO LOAD DYNAMIC MANIFEST------------------------------------------------------->
     <script async>
-      const full = window.location.host; // subdomain.domain.com
-      const testDomain = 'ingenium.surge.sh';
-      const serverURL = 'https://class.ingeniumedu.com';
-      const fullURL = `${serverURL}/getManifestDataOfClient?domain_name=${full}`;
-      console.log(fullURL);
-      fetch(fullURL)
-        .then((res) => res.json())
-        .then((resp) => {
-          link = document.createElement('link');
-          link.rel = 'manifest';
-          link.id = 'dynamic-manifest';
-          document.getElementsByTagName('head')[0].appendChild(link);
-          const currentManifest = document.querySelector('#default-manifest');
-          currentManifest.parentNode.removeChild(currentManifest);
-          const manifestData = JSON.stringify(resp.result);
-          const blob = new Blob([manifestData], { type: 'application/json' });
-          const manifestURL = URL.createObjectURL(blob);
-          document.querySelector('#dynamic-manifest').setAttribute('href', manifestURL);
-          console.log(resp.result.icons[1].src);
-          const appleLink = document.getElementById('apple-icon');
-          appleLink.href = resp.result.icons[1].src;
-        });
+      // const full = window.location.host; // subdomain.domain.com
+      // const testDomain = 'ingenium.surge.sh';
+      // const serverURL = 'https://class.ingeniumedu.com';
+      // const fullURL = `${serverURL}/getManifestDataOfClient?domain_name=${full}`;
+      // console.log(fullURL);
+      // fetch(fullURL)
+      //   .then((res) => res.json())
+      //   .then((resp) => {
+      //     link = document.createElement('link');
+      //     link.rel = 'manifest';
+      //     link.id = 'dynamic-manifest';
+      //     document.getElementsByTagName('head')[0].appendChild(link);
+      //     const currentManifest = document.querySelector('#default-manifest');
+      //     currentManifest.parentNode.removeChild(currentManifest);
+      //     const manifestData = JSON.stringify(resp.result);
+      //     const blob = new Blob([manifestData], { type: 'application/json' });
+      //     const manifestURL = URL.createObjectURL(blob);
+      //     document.querySelector('#dynamic-manifest').setAttribute('href', manifestURL); // manifestURL
+      //     console.log(resp.result.icons[1].src);
+      //     const appleLink = document.getElementById('apple-icon');
+      //     appleLink.href = resp.result.icons[1].src;
+      //   });
     </script>
 
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" id="default-manifest" />
@@ -58,6 +58,14 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Ingenium Education</title>
+    <meta property="og:title" content="__TITLE__">
+    <meta property="og:description" content="__DESCRIPTION__">
+    <meta property="og:image" content="__IMAGE__">
+    <meta property="og:url" content="__START_URL__">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <meta property="og:site_name" content="Ingenium Education">
+    <meta name="twitter:image:alt" content="Sidhant Dhar">
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
