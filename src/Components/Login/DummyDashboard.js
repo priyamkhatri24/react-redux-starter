@@ -87,7 +87,6 @@ const DummyDashboard = (props) => {
             alt='profile'
             width='100px'
             height='100px'
-            style={{ borderRadius: '100px' }}
           />
         </div>
         <Button

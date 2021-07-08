@@ -9,7 +9,7 @@
 
   &__jumbo {
     width: 50%;
-    max-width: 300px;
+    max-width: 200px;
     @include media-breakpoint-down(md) {
       width: 75%;
     }
@@ -44,5 +44,12 @@
     font-family: $spacer * 1.25;
     line-height: $spacer * 1.5;
     letter-spacing: 0.26px;
+  }
+
+  &__UserCard {
+    width: 50%;
+    @include media-breakpoint-down(xs) {
+      width: 80%;
+    }
   }
 }

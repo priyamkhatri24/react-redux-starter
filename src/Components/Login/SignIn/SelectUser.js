@@ -26,7 +26,7 @@ const SelectUser = (props) => {
           return (
             <Card
               key={elem.user_id}
-              className='w-75 mx-auto m-1'
+              className='Signin__UserCard mx-auto m-1'
               onClick={() => getUserName(elem.username)}
             >
               <Row className='ml-auto mx-2 pt-1' style={{ marginBottom: '-10px' }}>
