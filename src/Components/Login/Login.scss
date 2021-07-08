@@ -47,7 +47,8 @@
     color: $headingGrey;
     padding-left: 8px;
     @include media-breakpoint-up(md) {
-      padding-left: 12%;
+      padding-left: 15%;
+      text-align: center;
     }
   }
 

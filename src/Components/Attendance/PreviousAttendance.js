@@ -58,7 +58,7 @@ const PreviousAttendance = (props) => {
         boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)',
         borderRadius: '10px',
       }}
-      className='mx-2'
+      className='Attendance__Card'
     >
       <Row className='justify-content-end align-items-center mx-2 my-2'>
         {[
@@ -108,7 +108,7 @@ const PreviousAttendance = (props) => {
                 style={{ borderBottom: '1px solid rgba(112, 112, 112, 0.1)' }}
                 key={elem.attendance_id}
               >
-                <Col xs={5} className='d-flex align-items-center ml-2 '>
+                <Col xs={5} className='d-flex align-items-center ml-2'>
                   <img
                     src={elem.profile_image ? elem.profile_image : userAvatar}
                     alt='profile'
@@ -117,7 +117,7 @@ const PreviousAttendance = (props) => {
                     style={{ borderRadius: '50%' }}
                   />
                   <span
-                    className='ml-1'
+                    className='ml-1 Attendance__batchName Attendance__PrevNames'
                     style={{
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',

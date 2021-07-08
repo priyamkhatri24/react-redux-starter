@@ -78,7 +78,10 @@ const DashBoardAdmissions = (props) => {
             <Button
               variant='noticeBoardPost'
               className='admission_button'
-              onClick={() => openOptionsModal()}
+              onClick={(e) => {
+                e.stopPropagation();
+                openOptionsModal();
+              }}
             >
               <PersonAddIcon />
               <span>Add User</span>
@@ -88,7 +91,10 @@ const DashBoardAdmissions = (props) => {
             <Button
               variant='noticeBoardPost'
               className='admission_button'
-              onClick={() => goToAddBatch()}
+              onClick={(e) => {
+                e.stopPropagation();
+                goToAddBatch();
+              }}
             >
               <PersonAddIcon />
               <span>Add Batch</span>

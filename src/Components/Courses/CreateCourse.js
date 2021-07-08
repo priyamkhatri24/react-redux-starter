@@ -88,7 +88,7 @@ const CreateCourse = (props) => {
       course_name: courseName,
       course_description: courseDesc,
       image_url: previewImage,
-      preview_vedio_url: previewVideo,
+      preview_video_url: previewVideo,
     };
 
     post(payload, '/changeCourseDisplayPicture').then((res) => {
