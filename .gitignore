@@ -27,4 +27,4 @@ yarn-error.log*
 .netlify
 netlify.toml
 .VSCodeCounter
-.vscode
+# .vscode
