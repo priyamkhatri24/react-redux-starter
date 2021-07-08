@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -30,9 +30,6 @@ export const LoginDetailsSkeleton = (props) => {
   // const [mobileNo, setMobileNo] = useState({ iso2: 'in', dialCode: '91', phone: '' });
   //  const [isValid, setValid] = useState(false);
   const [showPassword, setPasswordShown] = useState(true);
-  const inputProps = {
-    placeholder: 'Mobile Number',
-  };
 
   const intlTelOpts = {
     preferredCountries: ['in'],
@@ -42,6 +39,26 @@ export const LoginDetailsSkeleton = (props) => {
     setPasswordShown((prevState) => !prevState);
   };
 
+  useEffect(() => {
+    if (placeholder === 'Mobile number') {
+      document.getElementById('phoneNumber').focus();
+      console.log(document.getElementById('phoneNumber').autofocus);
+    }
+  });
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      setClick();
+    }
+  };
+  const focusOnInput = (input) => input && input.focus();
+
+  const inputProps = {
+    placeholder: 'Mobile Number',
+    onKeyPress: handleKeyPress,
+    id: 'phoneNumber',
+  };
+
   return (
     <>
       <Row className='mx-2 mt-4'>
@@ -49,7 +66,7 @@ export const LoginDetailsSkeleton = (props) => {
           {heading}
         </Col>
         <Col xs={5}>
-          <img src={image} alt='phone' width='120px' height='125px' />
+          <img src={image} alt='phone' className='LoginDetailsSkeleton__img' />
         </Col>
       </Row>
       <div className='LoginDetailsSkeleton mx-2 mt-5'>
@@ -85,7 +102,8 @@ export const LoginDetailsSkeleton = (props) => {
                 placeholder={placeholder}
                 onChange={(event) => setValue(event.target.value)}
                 value={value}
-                ref={(input) => input && input.focus()}
+                ref={focusOnInput}
+                onKeyPress={handleKeyPress}
               />
               <span>{placeholder}</span>
               {password &&
