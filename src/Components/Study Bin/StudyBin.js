@@ -375,7 +375,7 @@ const StudyBin = (props) => {
   return (
     <>
       <StudyBinMenu
-        kholdo={openMenu}
+        kholdo={!roleArray.includes(1) && openMenu}
         handleClose={handleMenuClose}
         rerenderFilesAndFolders={rerenderFilesAndFolders}
         id={menuOptions.id}
@@ -387,7 +387,7 @@ const StudyBin = (props) => {
       />
       <div className='StudyBin'>
         <PageHeader
-          title='Study Bin'
+          title='Library'
           search
           placeholder='Search for file or folder'
           searchFilter={searchFolder}

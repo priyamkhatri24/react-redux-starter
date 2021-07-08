@@ -116,15 +116,18 @@ const Categories = (props) => {
   };
 
   const openContextMenu = (elem, type) => {
-    setMenuOptions({
-      ...menuOptions,
-      type,
-      status: elem.status,
-      id: type === 'folder' ? elem.folder_id : elem.file_id,
-      finalBatches: elem.final_batch,
-      currentBatches: elem.current_batch,
-    });
-    handleMenuShow();
+    console.log(elem);
+    if (match.params.id === '4') {
+      setMenuOptions({
+        ...menuOptions,
+        type,
+        status: elem.status,
+        id: elem.stream_name,
+        finalBatches: elem.final_batch,
+        currentBatches: elem.current_batch,
+      });
+      handleMenuShow();
+    }
   };
 
   const downloadRecording = (event, link) => {
@@ -158,12 +161,13 @@ const Categories = (props) => {
       <StudyBinMenu
         kholdo={openMenu}
         handleClose={handleMenuClose}
-        rerenderFilesAndFolders={rerenderCategories}
+        rerenderFilesAndFolders={getLiveRecordings}
         id={menuOptions.id}
         type={menuOptions.type}
         currentStatus={menuOptions.status}
         finalBatches={menuOptions.finalBatches}
         currentBatches={menuOptions.currentBatches}
+        fromRecording
       />
       <div style={{ marginTop: '5rem' }} className='mx-4 mx-md-5'>
         <Row className='container_studybin'>

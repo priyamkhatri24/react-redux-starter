@@ -22,6 +22,7 @@ const StudyBinMenu = (props) => {
     currentBatches,
     finalBatches,
     currentFolderName,
+    fromRecording,
   } = props;
   const [showRenameModal, setShowRenameModal] = useState(false);
   const handleRenameClose = () => setShowRenameModal(false);
@@ -110,6 +111,22 @@ const StudyBinMenu = (props) => {
     }
   };
 
+  const changeRecordingStatus = (elem) => {
+    const payload = {
+      stream_name: id,
+      status: `${
+        elem === 'Delete' ? 'deleted' : currentStatus === 'active' ? 'inactive' : 'active'
+      }`,
+    };
+
+    post(payload, '/changeLiveRecordingFileStatus').then((res) => {
+      if (res.success) {
+        rerenderFilesAndFolders();
+        handleClose();
+      }
+    });
+  };
+
   const renameElement = () => {
     console.log(newName);
     let payload;
@@ -145,6 +162,24 @@ const StudyBinMenu = (props) => {
     setAllBatches(allbatches);
   };
 
+  const shareRecordingWithBatch = () => {
+    const payload = {
+      stream_name: id,
+      batch_add: JSON.stringify(batches),
+      batch_remove: JSON.stringify(allBatches.filter((e) => e.user_id !== null)),
+    };
+
+    console.log(payload);
+
+    post(payload, '/shareRecordedStream').then((res) => {
+      if (res.success) {
+        rerenderFilesAndFolders();
+        closeBatchModal();
+        handleClose();
+      }
+    });
+  };
+
   return (
     <>
       <Modal show={kholdo} onHide={handleClose} centered>
@@ -152,30 +187,32 @@ const StudyBinMenu = (props) => {
           {[
             { text: 'Share', func: openBatchModal },
             { text: 'Make Inactive', func: changeStatus },
-            { text: 'Delete', func: changeStatus },
+            { text: 'Delete', func: fromRecording ? changeRecordingStatus : changeStatus },
             { text: 'Rename', func: handleRenameOpen },
-          ].map((elem, i) => {
-            return (
-              <Row key={elem.text} onClick={() => elem.func(elem.text)} className='m-2'>
-                <Col xs={2}>
-                  <span style={{ height: '24px', width: '24px' }}>
-                    {i === 0 ? (
-                      <PersonAddIcon />
-                    ) : i === 1 ? (
-                      <CachedIcon />
-                    ) : i === 2 ? (
-                      <DeleteIcon />
-                    ) : (
-                      <CreateIcon />
-                    )}
-                  </span>
-                </Col>
-                <Col xs={8} className='p-0 StudyBin__categoryText my-auto'>
-                  {elem.text}
-                </Col>
-              </Row>
-            );
-          })}
+          ]
+            .filter((e) => !fromRecording || e.text !== 'Rename')
+            .map((elem, i) => {
+              return (
+                <Row key={elem.text} onClick={() => elem.func(elem.text)} className='m-2'>
+                  <Col xs={2}>
+                    <span style={{ height: '24px', width: '24px' }}>
+                      {i === 0 ? (
+                        <PersonAddIcon />
+                      ) : i === 1 ? (
+                        <CachedIcon />
+                      ) : i === 2 ? (
+                        <DeleteIcon />
+                      ) : (
+                        <CreateIcon />
+                      )}
+                    </span>
+                  </Col>
+                  <Col xs={8} className='p-0 StudyBin__categoryText my-auto'>
+                    {elem.text}
+                  </Col>
+                </Row>
+              );
+            })}
         </Modal.Body>
       </Modal>
 
@@ -203,7 +240,7 @@ const StudyBinMenu = (props) => {
         </Modal.Footer>
       </Modal>
 
-      <Modal show={showBatchModal} onHide={shareWithBatch} centered>
+      <Modal show={showBatchModal} onHide={closeBatchModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>Select Batches</Modal.Title>
         </Modal.Header>
@@ -215,7 +252,10 @@ const StudyBinMenu = (props) => {
           sendBoth
         />
         <Modal.Footer>
-          <Button variant='boldText' onClick={() => shareWithBatch()}>
+          <Button
+            variant='boldText'
+            onClick={fromRecording ? () => shareRecordingWithBatch() : () => shareWithBatch()}
+          >
             Done
           </Button>
         </Modal.Footer>
@@ -236,4 +276,9 @@ StudyBinMenu.propTypes = {
   currentBatches: PropTypes.instanceOf(Array).isRequired,
   finalBatches: PropTypes.instanceOf(Array).isRequired,
   currentFolderName: PropTypes.string.isRequired,
+  fromRecording: PropTypes.bool,
+};
+
+StudyBinMenu.defaultProps = {
+  fromRecording: false,
 };

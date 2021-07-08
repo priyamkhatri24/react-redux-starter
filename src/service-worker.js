@@ -30,7 +30,6 @@ const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$');
 registerRoute(
   // Return false to exempt requests from being fulfilled by index.html.
   ({ request, url }) => {
-    console.error(url, url.pathname);
     // If this isn't a navigation, skip.
     if (request.mode !== 'navigate') {
       return false;
@@ -43,10 +42,6 @@ registerRoute(
     if (url.pathname.match(fileExtensionRegexp)) {
       return false;
     } // Return true to signal that we want to use the handler.
-
-    if (url.pathname.match('/index.html/')) {
-      return false;
-    }
 
     return true;
   },

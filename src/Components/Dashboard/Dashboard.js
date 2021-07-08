@@ -772,7 +772,7 @@ const Dashboard = (props) => {
         return (
           <DashboardCards
             image={param.feature_icon} // student
-            coloredHeading='Study Bin'
+            coloredHeading='Library'
             color='rgba(0, 102, 255, 0.87)'
             subHeading='Access content uploaded by institute here.'
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
