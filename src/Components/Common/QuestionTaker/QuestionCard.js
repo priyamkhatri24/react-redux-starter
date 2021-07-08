@@ -75,26 +75,6 @@ class QuestionCard extends Component {
     // remove the focused if not save and next done
   }
 
-  /** ********Timer logic***** */
-
-  restartSectionTimer = () => {
-    if (this.sectionTimeIntervalId !== 0) {
-      clearInterval(this.sectionTimeIntervalId);
-    }
-    this.sectionTimeIntervalId = setInterval(this.sectionTimerHandler, 1000);
-    this.setState({ timer: 0 });
-  };
-
-  sectionTimerHandler = () => {
-    this.setState((prevState) => {
-      return {
-        timer: prevState.timer + 1,
-      };
-    });
-  };
-
-  /** *********** */
-
   selectedAnswer = (e) => {
     // option arrays must be the same always
     const { question, currentLanguage } = this.state;
@@ -325,6 +305,23 @@ class QuestionCard extends Component {
     );
   };
 
+  sectionTimerHandler = () => {
+    this.setState((prevState) => {
+      return {
+        timer: prevState.timer + 1,
+      };
+    });
+  };
+
+  restartSectionTimer = () => {
+    if (this.sectionTimeIntervalId !== 0) {
+      clearInterval(this.sectionTimeIntervalId);
+    }
+    this.sectionTimeIntervalId = setInterval(this.sectionTimerHandler, 1000);
+    this.setState({ timer: 0 });
+  };
+
+  /** ********Timer logic***** */
   handleChecked(order) {
     const { checked } = this.state;
     const checkedArray = checked.length === 0 ? [false, false, false, false] : [...checked];
@@ -334,6 +331,8 @@ class QuestionCard extends Component {
     console.log(checkedArray);
     console.log('CHANGE!');
   }
+
+  /** *********** */
 
   render() {
     const { question, answer, checked, timer, currentLanguage } = this.state;

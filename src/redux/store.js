@@ -26,6 +26,10 @@ store.subscribe(() => {
     homework: store.getState().homework,
     course: store.getState().course,
     studyBin: store.getState().studyBin,
+    conversations: {
+      conversations: store.getState().conversations.conversations,
+      conversation: store.getState().conversations.conversation,
+    },
     fees: store.getState().fees,
     analysis: store.getState().analysis,
     attendance: store.getState().attendance,

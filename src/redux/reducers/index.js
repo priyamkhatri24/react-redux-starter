@@ -16,6 +16,7 @@ import { analysis } from './analysis.reducer';
 import { attendance } from './attendance.reducer';
 import { displayPage } from './displaypage.reducer';
 import { dashboard } from './dashboard.reducer';
+import { conversations } from './conversations.reducer';
 
 const rootReducer = (history) =>
   combineReducers({
@@ -36,6 +37,7 @@ const rootReducer = (history) =>
     attendance,
     displayPage,
     dashboard,
+    conversations,
   });
 
 export default rootReducer;

@@ -110,3 +110,17 @@ export const uploadImage = (file) => {
     });
   });
 };
+
+export const uploadFiles = (files) => {
+  const fd = new FormData();
+  files.forEach(({ file, type }) => {
+    fd.append('upl', file, `${file.name}|${type}`);
+  });
+  console.log(files);
+  return axios
+    .post(`${testUrl}/multipleUpload`, fd, authHeaderPost())
+    .then((result) => result.data)
+    .catch((err) => {
+      console.error(`The error is ${err}`);
+    });
+};

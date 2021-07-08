@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import Container from 'react-bootstrap/Container';
 import { ConnectedRouter } from 'connected-react-router';
 import { connect } from 'react-redux';
+import io from 'socket.io-client';
 import { getCurrentcolor } from '../redux/reducers/color.reducer';
 import { getCurrentBranding } from '../redux/reducers/branding.reducer';
+import { conversationsActions } from '../redux/actions/conversations.action';
 import { setGlobalColors, changeFaviconAndDocumentTitle } from '../Utilities';
 import { Loader } from '../Components/Common/Loader/Loading';
 import './App.scss';
@@ -13,7 +15,23 @@ import { getCurrentLoadingStatus, getStatusOfSpinner } from '../redux/reducers/l
 import withClearCache from './BustCache';
 
 function MainApp(props) {
-  const { color, currentbranding, isLoading, isSpinner } = props;
+  const { color, currentbranding, isLoading, setSocket, isSpinner } = props;
+
+  useEffect(() => {
+    // const SERVER = 'https://13.126.247.152:3000';
+    const SERVER = 'https://portal.tca.ingeniumedu.com';
+    const socket = io(SERVER, { transports: ['websocket', 'polling'] });
+    socket.on('connect', () => {
+      console.log(socket.id, 'connect');
+    });
+
+    socket.on('disconnect', () => {
+      console.log(socket.id, 'disconnected');
+    });
+
+    setSocket({ socket });
+    // return () => socket.emit('disconnect');
+  }, []);
 
   useEffect(() => {
     console.log(isSpinner);
@@ -38,6 +56,14 @@ function MainApp(props) {
   );
 }
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setSocket: (socket) => {
+      dispatch(conversationsActions.setSocket(socket));
+    },
+  };
+};
+
 const mapStateToProps = (state) => ({
   color: getCurrentcolor(state),
   currentbranding: getCurrentBranding(state),
@@ -45,7 +71,7 @@ const mapStateToProps = (state) => ({
   isSpinner: getStatusOfSpinner(state),
 });
 
-const BustCache = withClearCache(connect(mapStateToProps)(MainApp));
+const BustCache = withClearCache(connect(mapStateToProps, mapDispatchToProps)(MainApp));
 
 function App() {
   return <BustCache />;
@@ -67,4 +93,5 @@ MainApp.propTypes = {
     branding: PropTypes.instanceOf(Object).isRequired,
   }).isRequired,
   isSpinner: PropTypes.bool.isRequired,
+  setSocket: PropTypes.func.isRequired,
 };

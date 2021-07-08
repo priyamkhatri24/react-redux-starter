@@ -1,0 +1,66 @@
+.username {
+  font-size: 12px;
+  font-family: 'Montserrat-Bold';
+  margin-bottom: 6px;
+  color: #8226fb;
+}
+
+.author-username {
+  @extend .username;
+  color: #fba626;
+}
+
+.post-message {
+  .post-title {
+    font-size: 16px;
+    font-family: 'Montserrat-bold';
+    color: #000;
+    line-height: 19px;
+    margin-bottom: 6px;
+  }
+  .post-desc {
+    font-size: 12px;
+    font-family: 'Montserrat-Regular';
+    color: #000;
+    line-height: 15px;
+    margin-bottom: 10px;
+  }
+
+  .post-footer {
+    span {
+      display: flex;
+      align-items: center;
+      color: #0000008a;
+      font-size: 12px;
+      font-family: 'Montserrat-Medium';
+
+      .material-icons {
+        font-size: 16px;
+        margin-right: 5px;
+      }
+
+      // .favorite {
+      //   color: #ff0000de;
+      // }
+
+      .red {
+        color: #ff0000de;
+      }
+
+      .grey {
+        color: #0000008a;
+      }
+
+      .chat-bubble,
+      .share {
+        color: #0000008a;
+      }
+    }
+  }
+}
+
+.image-message {
+  height: 200px;
+  width: auto;
+  margin: auto;
+}
