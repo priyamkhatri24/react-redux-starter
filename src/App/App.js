@@ -15,12 +15,12 @@ import { getCurrentLoadingStatus, getStatusOfSpinner } from '../redux/reducers/l
 import withClearCache from './BustCache';
 
 function MainApp(props) {
-  const { color, currentbranding, isLoading, setSocket } = props;
+  const { color, currentbranding, isLoading, setSocket, isSpinner } = props;
 
   useEffect(() => {
-    // const SERVER = 'https://13.126.247.152:3000';
     const SERVER = 'https://portal.tca.ingeniumedu.com';
     const socket = io(SERVER, { transports: ['websocket', 'polling'] });
+
     socket.on('connect', () => {
       console.log(socket.id, 'connect');
     });
