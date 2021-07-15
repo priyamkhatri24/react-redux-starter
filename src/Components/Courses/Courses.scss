@@ -245,6 +245,10 @@
     background-color: white;
     z-index: 10000;
   }
+  &__twoButtons {
+    position: absolute;
+    right: -35px;
+  }
 }
 
 #limited + label {

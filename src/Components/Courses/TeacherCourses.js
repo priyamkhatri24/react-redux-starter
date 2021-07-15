@@ -46,6 +46,9 @@ const TeacherCourses = (props) => {
   const [searchString, setSearchString] = useState('');
   const [activeTab, setActiveTab] = useState('My Courses');
 
+  const NoPreview =
+    'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1625835287424.jpg';
+
   useEffect(() => {
     const payload = {
       client_id: clientId,
@@ -206,7 +209,7 @@ const TeacherCourses = (props) => {
                 >
                   <Col xs={4} className='Courses__iconImage'>
                     <img
-                      src={course.course_display_image ? course.course_display_image : placeholder}
+                      src={course.course_display_image ? course.course_display_image : NoPreview}
                       alt='course '
                       className='mx-auto Courses__viewCourseImage'
                     />
@@ -291,7 +294,7 @@ const TeacherCourses = (props) => {
                 >
                   <Col xs={4} className='Courses__iconImage'>
                     <img
-                      src={course.course_display_image ? course.course_display_image : placeholder}
+                      src={course.course_display_image ? course.course_display_image : NoPreview}
                       alt='course '
                       className='mx-auto Courses__viewCourseImage'
                     />

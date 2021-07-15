@@ -128,32 +128,34 @@ const Content = (props) => {
         {section.map((elem, i) => {
           return (
             <div className='LiveClasses__adminCard p-2 m-3' style={{ position: 'relative' }}>
-              <div
-                className={
-                  section.length > 1
-                    ? 'Courses__edit text-center py-1'
-                    : 'Profile__edit text-center py-1'
-                }
-                onClick={() => updateSection(elem.section_id)}
-                role='button'
-                onKeyDown={() => {
-                  updateSection(elem.section_id);
-                }}
-                tabIndex='-1'
-              >
-                <CreateIcon />
-              </div>
-              {section.length > 1 && (
+              <div className='Courses__twoButtons'>
                 <div
-                  className='Profile__edit text-center py-1'
-                  onClick={() => deleteSection(elem.section_id)}
+                  className={
+                    section.length > 1
+                      ? 'Courses__edit text-center py-1'
+                      : 'Profile__edit text-center py-1'
+                  }
+                  onClick={() => updateSection(elem.section_id)}
                   role='button'
-                  onKeyDown={() => deleteSection(elem.section_id)}
+                  onKeyDown={() => {
+                    updateSection(elem.section_id);
+                  }}
                   tabIndex='-1'
                 >
-                  <DeleteIcon />
+                  <CreateIcon />
                 </div>
-              )}
+                {section.length > 1 && (
+                  <div
+                    className='Profile__edit text-center py-1'
+                    onClick={() => deleteSection(elem.section_id)}
+                    role='button'
+                    onKeyDown={() => deleteSection(elem.section_id)}
+                    tabIndex='-1'
+                  >
+                    <DeleteIcon />
+                  </div>
+                )}
+              </div>
               <h6 className='LiveClasses__adminHeading mb-2 mx-2'>Section {i + 1}</h6>
               {!elem.isUpdate && (
                 <p className='mt-2 mx-2 Courses__motiDetail'>{elem.section_name}</p>
