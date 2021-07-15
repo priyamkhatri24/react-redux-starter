@@ -63,7 +63,7 @@ const Preloader = (props) => {
       setImage(branding.client_logo);
       if (branding.client_color) setClientColors(branding.client_color);
       else setClientColors();
-      changeFaviconAndDocumentTitle(branding.client_icon, branding.client_title);
+      changeFaviconAndDocumentTitle(branding.client_icon, branding.client_name);
     }
   }, [currentBranding, setClientColors]);
 

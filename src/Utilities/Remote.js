@@ -1,9 +1,8 @@
 import axios from 'axios';
+import S3 from 'aws-sdk/clients/s3';
 import { history } from '../Routing/History';
 import { apiValidation } from './utilities';
 import { loadingActions } from '../redux/actions/loading.action';
-
-const AWS = require('aws-sdk');
 
 function authHeaderPost() {
   // return authorization header with jwt token
@@ -30,11 +29,11 @@ function authHeaderGet() {
   return {};
 }
 
-const testUrl =
-  process.env.NODE_ENV === 'development'
-    ? 'https://portal.tca.ingeniumedu.com'
-    : 'https://class.ingeniumedu.com';
-// const testUrl = 'https://portal.tca.ingeniumedu.com';
+// const testUrl =
+//   process.env.NODE_ENV === 'development'
+//     ? 'https://portal.tca.ingeniumedu.com'
+//     : 'https://class.ingeniumedu.com';
+const testUrl = 'https://portal.tca.ingeniumedu.com';
 
 const transformRequest = (jsonData = {}) =>
   Object.entries(jsonData)
@@ -81,16 +80,19 @@ export const uploadImage = (file) => {
   return new Promise((resolve, rej) => {
     get(null, '/getAwsCredentialsWithBucketConfiguration').then((res) => {
       const result = apiValidation(res);
-      AWS.config.update({
-        accessKeyId: result.key,
-        secretAccessKey: result.secret,
-        region: result.region,
-      }); // for simplicity. In prod, use loadConfigFromFile, or env variables
+      // AWS.config.update({
+      //   accessKeyId: result.key,
+      //   secretAccessKey: result.secret,
+      //   region: result.region,
+      // }); // for simplicity. In prod, use loadConfigFromFile, or env variables
 
-      const bucket = new AWS.S3({
+      const bucket = new S3({
         params: {
           Bucket: result.bucket_name,
         },
+        accessKeyId: result.key,
+        secretAccessKey: result.secret,
+        region: result.region,
       });
       const params = { Key: file.name, ContentType: file.type, Body: file };
 

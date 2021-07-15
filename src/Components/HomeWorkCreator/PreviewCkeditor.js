@@ -24,13 +24,15 @@ const PreviewCkeditor = (props) => {
             <Col xs={1}>
               <p>{e.value}.</p>
             </Col>
-            <Col xs={7}>
+            <Col xs={6}>
               <div>
                 <MathJax math={String.raw`${e.text}`} />
               </div>
             </Col>
-            <Col xs={3}>
-              {e.image && <img src={e.image} alt='option' className='img-fluid m-1' />}
+            <Col xs={4}>
+              {e.image && (
+                <img src={e.image} alt='option' className='img-fluid m-1' width='70' height='70' />
+              )}
             </Col>
           </Row>
         );

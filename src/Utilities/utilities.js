@@ -63,17 +63,34 @@ export const setGlobalColors = (primary, light, lighter, superlight) => {
 
 // function to dynamically change document title
 
-export function changeFaviconAndDocumentTitle(favicon, documentTitle = 'Ingenium Education') {
-  const link = document.createElement('link');
-  const oldLink = document.getElementById('dynamic-favicon');
-  link.id = 'dynamic-favicon';
-  link.rel = 'shortcut icon';
-  link.href = favicon;
-  document.title = documentTitle;
-  if (oldLink) {
-    document.head.removeChild(oldLink);
-  }
-  document.head.appendChild(link);
+export function changeFaviconAndDocumentTitle(favicon, documentTitle) {
+  [
+    { id: 'dynamic-favicon', rel: 'shortcut icon' },
+    { id: 'apple-icon', rel: 'apple-touch-icon' },
+  ].forEach((elem) => {
+    const link = document.createElement('link');
+    const oldLink = document.getElementById(elem.id);
+    link.id = elem.id;
+    link.rel = elem.rel;
+    link.href = favicon;
+
+    if (oldLink) {
+      document.head.removeChild(oldLink);
+    }
+    document.head.appendChild(link);
+  });
+  if (documentTitle) document.title = documentTitle;
+  // const link = document.createElement('link');
+  // const oldLink = document.getElementById('dynamic-favicon');
+  // link.id = 'dynamic-favicon';
+  // link.rel = 'shortcut icon';
+  // link.href = favicon;
+  // document.title = documentTitle;
+
+  // if (oldLink) {
+  //   document.head.removeChild(oldLink);
+  // }
+  // document.head.appendChild(link);
 }
 
 // function to check whether development or environment

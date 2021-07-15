@@ -96,6 +96,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "bundleCheck": "node webpackAnalyze.js",
     "start-sw": "yarn build && serve -s build"
   },
   "eslintConfig": {
@@ -125,7 +126,8 @@
     "mini-css-extract-plugin": "^1.6.0",
     "prettier": "^2.0.5",
     "pretty-quick": "^2.0.1",
-    "source-map-explorer": "^2.5.2"
+    "source-map-explorer": "^2.5.2",
+    "webpack-bundle-analyzer": "^4.4.2"
   },
   "husky": {
     "hooks": {
@@ -145,5 +147,5 @@
       "git push sid-origin auto"
     ]
   },
-  "buildDate": 1625746030424
+  "buildDate": 1626348457666
 }

@@ -227,12 +227,13 @@ const Dashboard = (props) => {
 
       for (const prop in result.feature) {
         if (Object.prototype.hasOwnProperty.call(result.feature, prop))
-          sorterArr.push([result.feature[prop], result.feature[prop].order]);
+          sorterArr.push([result.feature[prop], result.feature[prop].order, prop]);
       }
+
       const finalArr = sorterArr
         .sort((a, b) => a[1] - b[1])
         .reduce((acc, curr) => {
-          acc.push(curr[0]);
+          acc.push({ ...curr[0], switcher: curr[2] });
           return acc;
         }, []);
       console.log(finalArr, 'hello');
@@ -399,7 +400,7 @@ const Dashboard = (props) => {
   const goToCRM = () => history.push('/crm');
 
   const renderComponents = (param) => {
-    switch (param.client_feature_name) {
+    switch (param.switcher) {
       case 'attendance':
         return (
           <div

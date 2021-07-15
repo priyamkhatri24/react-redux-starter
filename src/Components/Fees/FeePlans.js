@@ -20,6 +20,9 @@ import OneTimeCharge from './OneTimeCharge';
 const FeePlans = (props) => {
   const { history, clientId, clientUserId, feePlanType } = props;
   const [recentPlans, setRecentPlans] = useState([]);
+  const [batchSearchString, setBatchSearchString] = useState('');
+  const [studentSearchString, setStudentSearchString] = useState('');
+
   const [feeTags, setFeeTags] = useState([]);
   const [tagName, setTagName] = useState('');
   const [tagAmount, setTagAmount] = useState('');
@@ -187,6 +190,31 @@ const FeePlans = (props) => {
     }
   };
 
+  const searchBatches = (search) => {
+    setBatchSearchString(search);
+  };
+
+  const filterBatches = (e) => {
+    if (e.batch_name.toLowerCase().indexOf(batchSearchString.toLowerCase()) > -1) {
+      e.dontShow = false;
+    } else e.dontShow = true;
+    return e;
+  };
+
+  const searchStudents = (search) => {
+    setStudentSearchString(search);
+  };
+
+  const filterStudents = (e) => {
+    if (
+      e.first_name.toLowerCase().indexOf(studentSearchString.toLowerCase()) > -1 ||
+      e.last_name.toLowerCase().indexOf(studentSearchString.toLowerCase()) > -1
+    ) {
+      e.dontShow = false;
+    } else e.dontShow = true;
+    return e;
+  };
+
   return (
     <>
       <PageHeader title={feePlanType === 'onetimecharge' ? 'One Time Charge' : 'Fee Plans'} />
@@ -236,10 +264,17 @@ const FeePlans = (props) => {
         </Row>
         <Modal show={showBatchesModal} onHide={handleBatchesClose} centered>
           <Modal.Header closeButton>
-            <Modal.Title>Select Batches</Modal.Title>
+            <PageHeader
+              notFixed
+              noBack
+              search
+              searchFilter={searchBatches}
+              title='Select Batches'
+            />
           </Modal.Header>
           <BatchesSelector
-            batches={batches}
+            search
+            batches={batches.map(filterBatches)}
             selectBatches={selectedBatches}
             getSelectedBatches={getSelectedBatches}
             title='Batches'
@@ -255,7 +290,13 @@ const FeePlans = (props) => {
         <Modal show={showStudentsModal} onHide={handleStudentsClose} centered>
           <Modal.Header closeButton>
             <Modal.Title>
-              Select Students{' '}
+              <PageHeader
+                notFixed
+                noBack
+                search
+                searchFilter={searchStudents}
+                title='Select Students'
+              />
               <p
                 style={{
                   fontSize: '10px',
@@ -269,7 +310,7 @@ const FeePlans = (props) => {
             </Modal.Title>
           </Modal.Header>
           <StudentSelector
-            students={students}
+            students={students.map(filterStudents)}
             selectedStudents={selectedStudents}
             getSelectedStudents={getSelectedStudents}
             title='Students'
