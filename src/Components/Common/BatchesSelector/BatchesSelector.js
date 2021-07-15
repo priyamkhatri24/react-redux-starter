@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
@@ -7,10 +7,28 @@ import Button from 'react-bootstrap/Button';
 import './BatchesSelector.scss';
 
 export const BatchesSelector = (props) => {
-  const { batches, getSelectedBatches, title, selectBatches, sendBoth, isStudentFee } = props;
+  const {
+    batches,
+    getSelectedBatches,
+    title,
+    selectBatches,
+    sendBoth,
+    isStudentFee,
+    search,
+  } = props;
   const [selectedBatches, setSelectedBatches] = useState([...selectBatches]);
   const [selectAllStudents, setSelectAllStudents] = useState(false);
   const [allBatches, setAllBatches] = useState([...batches]);
+
+  const batchesLength = useRef(0);
+
+  useEffect(() => {
+    console.log(batches);
+    if (batchesLength.current !== batches.length) {
+      setAllBatches(batches);
+      batchesLength.current = batches.length;
+    }
+  }, [batches]);
 
   useEffect(() => {
     if (isStudentFee) {
@@ -70,18 +88,24 @@ export const BatchesSelector = (props) => {
         <Col xs={6} className='text-center'>
           <h6 className='mb-4'>{title}</h6>
           <div className='Batches__totalBatches'>
-            {allBatches.map((elem) => {
-              return (
-                <Row
-                  className='justify-content-start mb-1 mx-3'
-                  key={`elem${elem.client_batch_id}${elem.batch_name}`}
-                >
-                  <Button variant='batchCustomNotSelected' onClick={() => selectBatch(elem)}>
-                    {elem.batch_name}
-                  </Button>
-                </Row>
-              );
-            })}
+            {allBatches.length > 0 &&
+              allBatches.map((elem) => {
+                return (
+                  <Row
+                    className='justify-content-start mb-1 mx-3'
+                    key={`elem${elem.client_batch_id}${elem.batch_name}`}
+                    style={
+                      Object.prototype.hasOwnProperty.call(elem, 'dontShow') && elem.dontShow
+                        ? { display: 'none' }
+                        : {}
+                    }
+                  >
+                    <Button variant='batchCustomNotSelected' onClick={() => selectBatch(elem)}>
+                      {elem.batch_name}
+                    </Button>
+                  </Row>
+                );
+              })}
           </div>
         </Col>
         <Col xs={6} className='text-center'>
@@ -115,9 +139,11 @@ BatchesSelector.propTypes = {
   title: PropTypes.string.isRequired,
   sendBoth: PropTypes.bool,
   isStudentFee: PropTypes.bool,
+  search: PropTypes.bool,
 };
 
 BatchesSelector.defaultProps = {
   sendBoth: false,
   isStudentFee: false,
+  search: false,
 };

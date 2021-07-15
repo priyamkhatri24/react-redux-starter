@@ -22,6 +22,8 @@ export const PageHeader = (props) => {
     triggerFilters,
     customIcon,
     handleCustomIcon,
+    notFixed,
+    noBack,
   } = props;
 
   const [searchBar, triggerSearchBar] = useState(false);
@@ -31,12 +33,15 @@ export const PageHeader = (props) => {
   };
   return (
     <div
-      className='PageHeader p-3 d-flex align-items-center'
+      className={
+        notFixed ? 'p-3 d-flex align-items-center' : 'PageHeader p-3 d-flex align-items-center'
+      }
       style={transparent ? { backgroundColor: 'transparent' } : {}}
     >
       {!searchBar && (
         <>
-          {customBack ? <ArrowBackIcon onClick={() => handleBack()} /> : <BackButton />}
+          {!noBack &&
+            (customBack ? <ArrowBackIcon onClick={() => handleBack()} /> : <BackButton />)}
           <span className='ml-3 PageHeader__title'>{title}</span>
           <div className='ml-auto '>
             {search && (
@@ -104,6 +109,8 @@ PageHeader.propTypes = {
   handleBack: PropTypes.func,
   transparent: PropTypes.bool,
   filter: PropTypes.bool,
+  notFixed: PropTypes.bool,
+  noBack: PropTypes.bool,
   customIcon: PropTypes.element,
   handleCustomIcon: PropTypes.func,
 };
@@ -111,6 +118,8 @@ PageHeader.propTypes = {
 PageHeader.defaultProps = {
   title: '',
   search: false,
+  notFixed: false,
+  noBack: false,
   placeholder: '',
   searchFilter: () => {},
   customBack: false,
