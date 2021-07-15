@@ -215,7 +215,7 @@ const Dashboard = (props) => {
       ? 2
       : 1;
     get({ client_id: clientId, role_id: roleId }, '/getLoginPageInformation').then((res) => {
-      console.log(res);
+      console.log(res, 'sadad');
       const result = apiValidation(res);
       setNotices(result.notice);
       setAdmissions(result.admission || {});
@@ -411,7 +411,7 @@ const Dashboard = (props) => {
             role='button'
           >
             <div className='Dashboard__attendanceCard mx-auto pt-4'>
-              <img src={hands} alt='hands' className='mx-auto d-block' />
+              <img src={param.feature_icon} alt='hands' className='mx-auto d-block' />
               <Row className='m-3'>
                 <span className='Dashboard__todaysHitsText my-auto'>Attendance</span>
                 <span className='ml-auto'>
@@ -473,7 +473,7 @@ const Dashboard = (props) => {
                 )}
               </Col>
               <Col xs={4} className='noticeboard_img'>
-                <img src={dashboardAssignmentImage} alt='notice' height='80' width='80' />
+                <img src={param.feature_icon} alt='notice' height='80' width='80' />
               </Col>
             </Row>
 
@@ -541,12 +541,7 @@ const Dashboard = (props) => {
                       </p>
                     </Col>
                     <Col xs={4} className='pt-3'>
-                      <img
-                        src={dashboardAssignmentImage}
-                        alt='assignment'
-                        height='40px'
-                        width='40px'
-                      />
+                      <img src={param.feature_icon} alt='assignment' height='40px' width='40px' />
                     </Col>
                   </Row>
                 </div>
@@ -561,12 +556,7 @@ const Dashboard = (props) => {
                       </p>
                     </Col>
                     <Col xs={4} className='pt-3'>
-                      <img
-                        src={dashboardAssignmentImage}
-                        alt='assignment'
-                        height='40px'
-                        width='40px'
-                      />
+                      <img src={param.feature_icon} alt='assignment' height='40px' width='40px' />
                     </Col>
                   </Row>
                 </div>
@@ -581,20 +571,20 @@ const Dashboard = (props) => {
             heading='Analysis'
             subHeading='See detailed reports of every student and assignments.'
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-            backGround='rgb(235,245,246)'
-            backgroundImg='linear-gradient(90deg, rgba(235,245,246,1) 0%, rgba(142,230,38,1) 100%)'
+            backGround={param.start_colour}
+            backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             buttonClick={role === 1 || role === 2 ? goToStudentAnalysis : goToTeacherAnalysis}
           />
         );
       case 'fees':
         return (
           <DashboardCards
-            image={analysis}
+            image={param.feature_icon}
             heading='Fees'
             subHeading='See fees history and amount to be paid for coming months.'
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-            backGround='rgb(238,232,241)'
-            backgroundImg='linear-gradient(90deg, rgba(238,232,241,1) 0%, rgba(220,16,16,1) 100%)'
+            backGround={param.start_colour}
+            backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             buttonClick={role === 1 || role === 2 ? goToFees : goToTeacherFees}
           />
         );
@@ -737,19 +727,19 @@ const Dashboard = (props) => {
           />
         ) : (
           <DashboardCards
-            image={analysis}
+            image={param.feature_icon}
             heading='Courses'
             subHeading='Increase your profit by building and selling your courses here.'
             boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
-            backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
-            backGround='rgb(236,255,252)'
+            backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
+            backGround={param.start_colour}
             buttonClick={goToCoursesForTeacher}
           />
         );
       case 'liveClasses':
         return (
           <DashboardCards
-            image={camera}
+            image={param.feature_icon}
             heading='Live Classes'
             subHeading={
               roleArray.includes(3) || roleArray.includes(4)
@@ -757,8 +747,8 @@ const Dashboard = (props) => {
                 : 'Attend all your live classes from here.'
             }
             boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
-            backGround='rgb(247,236,255)'
-            backgroundImg='linear-gradient(90deg, rgba(247,236,255,1) 0%, rgba(154,129,171,1) 100%)'
+            backGround={param.start_colour}
+            backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             buttonText={roleArray.includes(3) || roleArray.includes(4) ? 'Go live now' : ''}
             buttonClick={goToLiveClasses}
           />
@@ -885,8 +875,8 @@ const Dashboard = (props) => {
             heading='CRM'
             subHeading='Manage All your customer Relations Management Enquiries here.'
             boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
-            backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
-            backGround='rgb(236,255,252)'
+            backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
+            backGround={param.start_colour}
             buttonClick={goToCRM}
           />
         );
@@ -914,7 +904,7 @@ const Dashboard = (props) => {
             color='rgba(255, 236, 222, 1)'
             subHeading='This is like your website. Choose what want to show your guests.'
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-            backgroundImg='linear-gradient(90deg, rgba(255, 236, 222, 1) 0%, rgba(255, 145, 61, 1)'
+            backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             buttonClick={goToDisplayPage}
           />
         );

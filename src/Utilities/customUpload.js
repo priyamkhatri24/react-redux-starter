@@ -1,4 +1,5 @@
-import AWS from 'aws-sdk';
+import S3 from 'aws-sdk/clients/s3';
+
 import { loadingActions } from '../redux/actions/loading.action';
 import store from '../redux/store';
 import { get } from './Remote';
@@ -10,16 +11,19 @@ export const uploadingImage = (file) => {
   return new Promise((resolve, rej) => {
     get(null, '/getAwsCredentialsWithBucketConfiguration').then((res) => {
       const result = apiValidation(res);
-      AWS.config.update({
-        accessKeyId: result.key,
-        secretAccessKey: result.secret,
-        region: result.region,
-      });
+      // S3.config.update({
+      //   accessKeyId: result.key,
+      //   secretAccessKey: result.secret,
+      //   region: result.region,
+      // });
 
-      const bucket = new AWS.S3({
+      const bucket = new S3({
         params: {
           Bucket: result.bucket_name,
         },
+        accessKeyId: result.key,
+        secretAccessKey: result.secret,
+        region: result.region,
       });
       const params = { Key: file.name, ContentType: file.type, Body: file };
       store.dispatch(loadingActions.pending());
@@ -47,16 +51,21 @@ export const downloadFile = (url) => {
   console.log(url);
   get({ url }, '/getBucketAndPath').then((res) => {
     const result = apiValidation(res);
-    AWS.config.update({
-      accessKeyId: result.key,
-      secretAccessKey: result.secret,
-      region: result.region,
-    });
+    // AWS.config.update({
+    //   accessKeyId: result.key,
+    //   secretAccessKey: result.secret,
+    //   region: result.region,
+    // });
 
     const urlArray = url.split('/');
     const key = urlArray.slice(3).join('/');
     console.log(key);
-    const s3 = new AWS.S3({ params: { Bucket: result.bucket } });
+    const s3 = new S3({
+      params: { Bucket: result.bucket },
+      accessKeyId: result.key,
+      secretAccessKey: result.secret,
+      region: result.region,
+    });
     const params = { Bucket: result.bucket, Key: key };
     s3.getObject(params, (err, data) => {
       console.log(err);

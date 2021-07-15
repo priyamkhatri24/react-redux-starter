@@ -6,7 +6,7 @@ import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import Button from 'react-bootstrap/Button';
 import { getParams } from '../../../Utilities';
 import { PageHeader } from '../PageHeader/PageHeader';
-import { Row } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const FileView = (props) => {

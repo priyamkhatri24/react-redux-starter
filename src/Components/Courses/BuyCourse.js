@@ -21,7 +21,11 @@ import rupee from '../../assets/images/Courses/rupee.svg';
 import { apiValidation, get, post, displayRazorpay, shareThis } from '../../Utilities';
 import { PageHeader } from '../Common';
 import './Courses.scss';
-import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
+import {
+  getClientId,
+  getClientUserId,
+  getRoleArray,
+} from '../../redux/reducers/clientUserId.reducer';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import YCIcon from '../../assets/images/ycIcon.png';
 import checkmark from '../../assets/images/order/icons8-checked.svg';
@@ -46,6 +50,7 @@ const BuyCourse = (props) => {
     },
     setRedirectPathToStore,
     setCurrentComponentToStore,
+    roleArray,
   } = props;
   const [course, setCourse] = useState({});
   const [courseVideo, setCourseVideo] = useState({});
@@ -123,6 +128,9 @@ const BuyCourse = (props) => {
   }, [match]);
 
   const subscribeOrBuy = () => {
+    if (roleArray.includes(3) || roleArray.includes(4)) {
+      history.push('/');
+    }
     if (course.course_type === 'free') {
       const payload = {
         client_user_id: clientUserId,
@@ -550,6 +558,7 @@ const mapStateToProps = (state) => ({
   clientId: getClientId(state),
   clientUserId: getClientUserId(state),
   currentbranding: getCurrentBranding(state),
+  roleArray: getRoleArray(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -578,4 +587,5 @@ BuyCourse.propTypes = {
   match: PropTypes.instanceOf(Object).isRequired,
   setRedirectPathToStore: PropTypes.func.isRequired,
   setCurrentComponentToStore: PropTypes.func.isRequired,
+  roleArray: PropTypes.instanceOf(Array).isRequired,
 };
