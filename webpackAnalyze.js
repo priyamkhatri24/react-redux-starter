@@ -17,5 +17,3 @@ webpack(webpackConfigProd, (err, stats) => {
     console.log(err);
   }
 });
-
-require('ingenium-react-scripts/scripts/build');

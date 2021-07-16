@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import Loadable from 'react-loadable';
 import Skeleton from 'react-loading-skeleton';
 import { AuthenticatedRoute } from './AuthenticatedRoute';
-import TeacherCourses from '../Components/Courses/TeacherCourses';
+// import TeacherCourses from '../Components/Courses/TeacherCourses';
 
 // import EditProfileHOC from '../Components/Admissions/EditProfileHoC';
 
@@ -42,7 +42,8 @@ const Login = Loadable({
 // import Login from '../Components/Login/Login';
 
 const Preloader = Loadable({
-  loader: () => import(/* webpackChunkName: 'Login' */ '../Components/Login/Preloader/Preloader'),
+  loader: () =>
+    import(/* webpackChunkName: 'Preloader' */ '../Components/Login/Preloader/Preloader'),
   loading: Loading,
 });
 
@@ -193,6 +194,14 @@ const ViewCourses = Loadable({
   loading: Loading,
 });
 // import ViewCourses from '../Components/Courses/ViewCourses';
+
+const TeacherCourses = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'TeacherCourses' */ '../Components/Courses/TeacherCourses'),
+  loading: Loading,
+});
+
+// import TeacherCourses from '../Components/Courses/TeacherCourses';
 
 const BuyCourse = Loadable({
   loader: () => import(/* webpackChunkName: 'BuyCourse' */ '../Components/Courses/BuyCourse'),
