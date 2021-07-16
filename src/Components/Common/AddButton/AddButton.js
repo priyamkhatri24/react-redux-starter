@@ -8,17 +8,11 @@ import classNames from 'classnames';
 import PersonAddRoundedIcon from '@material-ui/icons/PersonAddRounded';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { uploadingImage, uploadMultipleImages } from '../../../Utilities/customUpload';
+import { uploadMultipleImages } from '../../../Utilities/customUpload';
 import { loadingActions } from '../../../redux/actions/loading.action';
 
 const AddButton = (props) => {
-  const {
-    addButtonArray,
-    onlyUseButton,
-    triggerButton,
-    setLoadingPendingToStore,
-    setLoadingSuccessToStore,
-  } = props;
+  const { addButtonArray, onlyUseButton, triggerButton } = props;
   const courseFileRef = useRef(null);
 
   const [openMenu, setOpenMenu] = useState(false);
@@ -173,8 +167,6 @@ AddButton.propTypes = {
   addButtonArray: PropTypes.instanceOf(Array),
   onlyUseButton: PropTypes.bool,
   triggerButton: PropTypes.func,
-  setLoadingPendingToStore: PropTypes.func.isRequired,
-  setLoadingSuccessToStore: PropTypes.func.isRequired,
 };
 
 AddButton.defaultProps = {

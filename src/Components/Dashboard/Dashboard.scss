@@ -225,9 +225,7 @@
   margin: auto;
   text-align: center;
 }
-.DashboardCard_Image {
-  padding-left: 0px;
-}
+
 .admission_cards {
   width: 85%;
 }
@@ -239,6 +237,12 @@
 
 .Dashboard__attendanceSubHeading {
   font-size: 15px;
+}
+
+@media screen and (min-width: 768px) {
+  .DashboardCard_Image {
+    padding-left: 0px;
+  }
 }
 
 @media screen and (max-width: 700px) {

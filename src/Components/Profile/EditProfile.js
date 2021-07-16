@@ -11,12 +11,7 @@ import { post } from '../../Utilities';
 import Cropper from '../Common/CropperModal/Cropper';
 
 import '../Login/AdmissionChat/AdmissionForm/AdmissionForm.scss';
-import {
-  getClientId,
-  getClientUserId,
-  getUserId,
-  getUserUserId,
-} from '../../redux/reducers/clientUserId.reducer';
+import { getClientId, getUserId, getUserUserId } from '../../redux/reducers/clientUserId.reducer';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
 

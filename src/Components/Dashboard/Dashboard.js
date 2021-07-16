@@ -26,19 +26,13 @@ import {
   getClientUserId,
   getRoleArray,
 } from '../../redux/reducers/clientUserId.reducer';
-import dashboardAssignmentImage from '../../assets/images/Dashboard/dashboardAssignment.svg';
 import userAvatar from '../../assets/images/user.svg';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
 import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { testsActions } from '../../redux/actions/tests.action';
 import { courseActions } from '../../redux/actions/course.action';
-import hands from '../../assets/images/Dashboard/hands.svg';
 import { AspectCards, CoursesCards, DashboardCards } from '../Common';
 // import offlineAssignment from '../../assets/images/Dashboard/offline.svg';
-import camera from '../../assets/images/Dashboard/camera.svg';
-import analysis from '../../assets/images/Dashboard/analysis.svg';
-import analysisHands from '../../assets/images/Dashboard/analysishands.svg';
-import student from '../../assets/images/Dashboard/student.svg';
 import Tests from '../Tests/Tests';
 import './Dashboard.scss';
 import { admissionActions } from '../../redux/actions/admissions.action';
@@ -51,11 +45,9 @@ import { studyBinActions } from '../../redux/actions/studybin.actions';
 import fb from '../../assets/images/dummyDashboard/fb.png';
 import linkedin from '../../assets/images/dummyDashboard/linkedin.svg';
 import insta from '../../assets/images/dummyDashboard/instagram.svg';
-import share from '../../assets/images/dummyDashboard/share.svg';
 import whatsapp from '../../assets/images/dummyDashboard/whatsapp.svg';
 import youtube from '../../assets/images/dummyDashboard/youtube.png';
 import telegram from '../../assets/images/dummyDashboard/telegram.svg';
-import form from '../../assets/images/dummyDashboard/form.svg';
 import '../Login/DummyDashboard.scss';
 import { dashboardActions } from '../../redux/actions/dashboard.action';
 import { analysisActions } from '../../redux/actions/analysis.action';
@@ -411,7 +403,12 @@ const Dashboard = (props) => {
             role='button'
           >
             <div className='Dashboard__attendanceCard mx-auto pt-4'>
-              <img src={param.feature_icon} alt='hands' className='mx-auto d-block' />
+              <img
+                src={param.feature_icon}
+                alt='hands'
+                style={{ width: '90px' }}
+                className='mx-auto d-block'
+              />
               <Row className='m-3'>
                 <span className='Dashboard__todaysHitsText my-auto'>Attendance</span>
                 <span className='ml-auto'>
@@ -419,32 +416,34 @@ const Dashboard = (props) => {
                 </span>
               </Row>
 
-              <p className='Dashboard__attendanceSubHeading mx-3'>
+              <p className='Dashboard__attendanceSubHeading mx-3 pb-2'>
                 Record attendance of the students and notify parents via SMS daily.
               </p>
 
-              <hr />
               {attendance.length > 0 && (
                 <div>
-                  <p className='Dashboard__attendanceRecents ml-1'>Recent Attendance</p>
-                  <Row className='mx-2'>
-                    {attendance.map((elem) => {
-                      return (
-                        <div className='d-flex flex-column mx-1' key={elem.batch_id}>
-                          <img
-                            src={userAvatar}
-                            alt='batch'
-                            height='35px'
-                            width='35px'
-                            className='Dashboard__noticeImage d-block mx-auto'
-                          />
-                          <p className='Dashboard__attendanceRecents text-center mt-1'>
-                            {elem.batch_name}
-                          </p>
-                        </div>
-                      );
-                    })}
-                  </Row>
+                  <hr />
+                  <div>
+                    <p className='Dashboard__attendanceRecents ml-1'>Recent Attendance</p>
+                    <Row className='mx-2'>
+                      {attendance.map((elem) => {
+                        return (
+                          <div className='d-flex flex-column mx-1' key={elem.batch_id}>
+                            <img
+                              src={userAvatar}
+                              alt='batch'
+                              height='35px'
+                              width='35px'
+                              className='Dashboard__noticeImage d-block mx-auto'
+                            />
+                            <p className='Dashboard__attendanceRecents text-center mt-1'>
+                              {elem.batch_name}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </Row>
+                  </div>
                 </div>
               )}
             </div>
@@ -791,7 +790,12 @@ const Dashboard = (props) => {
               </Col>
               <Col xs={4} className='p-3 mt-3' style={{ textAlign: 'right' }}>
                 {/* form */}
-                <img src={param.feature_icon} alt='form' className='img-fluid' />
+                <img
+                  src={param.feature_icon}
+                  alt='form'
+                  style={{ width: '100px' }}
+                  className='DashboardCard_Image'
+                />
               </Col>
             </Row>
           </Card>
@@ -818,7 +822,12 @@ const Dashboard = (props) => {
               </Col>
               <Col xs={5} className='p-3 mt-3' style={{ textAlign: 'right' }}>
                 {/* share */}
-                <img src={param.feature_icon} alt='form' className='img-fluid' />
+                <img
+                  src={param.feature_icon}
+                  alt='form'
+                  style={{ width: '100px' }}
+                  className='DashboardCard_Image'
+                />
               </Col>
             </Row>
           </Card>
