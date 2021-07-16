@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import './Login.scss';
+import loadable from '@loadable/component';
 import Preloader from './Preloader/Preloader';
 import footerIngenium from '../../assets/images/ingiLOGO.png';
-import EnterPhone from './EnterPhone';
 import {
   post,
   // get,
@@ -21,8 +21,14 @@ import {
 } from '../../redux/reducers/branding.reducer';
 import { getContact } from './Login.service';
 import WelcomeCarousel from './Welcome/WelcomeCarousel';
-import SignupForm from './SignupForm';
-import DummyDashboard from './DummyDashboard';
+// import SignupForm from './SignupForm';
+// import DummyDashboard from './DummyDashboard';
+// import EnterPhone from './EnterPhone';
+
+// const WelcomeCarousel = loadable(() => import('./Welcome/WelcomeCarousel'));
+const SignupForm = loadable(() => import('./SignupForm'));
+const DummyDashboard = loadable(() => import('./DummyDashboard'));
+const EnterPhone = loadable(() => import('./EnterPhone'));
 
 class Login extends Component {
   constructor(props) {

@@ -3,17 +3,19 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Swal from 'sweetalert2';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import Button from 'react-bootstrap/Button';
-import 'react-image-crop/dist/ReactCrop.css';
+// import 'react-image-crop/dist/ReactCrop.css';
+import loadable from '@loadable/component';
 import Signup from '../../assets/images/Login/ProfilePic.svg';
 import './Login.scss';
 import { post } from '../../Utilities';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
-import Cropper from '../Common/CropperModal/Cropper';
+// import Cropper from '../Common/CropperModal/Cropper';
+
+const Cropper = loadable(() => import('../Common/CropperModal/Cropper'));
 
 const SignupForm = (props) => {
   const {
