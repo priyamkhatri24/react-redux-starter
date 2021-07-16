@@ -31,7 +31,7 @@ function MainApp(props) {
 
     setSocket({ socket });
     // return () => socket.emit('disconnect');
-  }, []);
+  }, [setSocket]);
 
   useEffect(() => {
     console.log(isSpinner);

@@ -2,7 +2,7 @@ import axios from 'axios';
 import S3 from 'aws-sdk/clients/s3';
 import { history } from '../Routing/History';
 import { apiValidation } from './utilities';
-import { loadingActions } from '../redux/actions/loading.action';
+// import { loadingActions } from '../redux/actions/loading.action';
 
 function authHeaderPost() {
   // return authorization header with jwt token

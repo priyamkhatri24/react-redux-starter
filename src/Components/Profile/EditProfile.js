@@ -7,7 +7,7 @@ import fromUnixTime from 'date-fns/fromUnixTime';
 import format from 'date-fns/format';
 import userAvatar from '../../assets/images/user.svg';
 import { BackButton, DynamicForm } from '../Common';
-import { post, uploadImage } from '../../Utilities';
+import { post } from '../../Utilities';
 import Cropper from '../Common/CropperModal/Cropper';
 
 import '../Login/AdmissionChat/AdmissionForm/AdmissionForm.scss';
@@ -28,7 +28,6 @@ const EditProfile = (props) => {
     profileImagePath,
     history,
     clientId,
-    clientUserId,
     userUserId,
     userId,
     user,
@@ -112,7 +111,7 @@ const EditProfile = (props) => {
       user_id: userId,
     };
     post(payload, '/editProfilePicture').then((res) => {
-      console.log(res);
+      console.log(res, 'profilepic edit');
     });
   };
 
@@ -197,7 +196,6 @@ const EditProfile = (props) => {
 
 const mapStateToProps = (state) => ({
   clientId: getClientId(state),
-  clientUserId: getClientUserId(state),
   userId: getUserId(state),
   userUserId: getUserUserId(state),
   user: getUserProfile(state),
@@ -228,7 +226,6 @@ EditProfile.propTypes = {
   profileImagePath: PropTypes.string,
   history: PropTypes.instanceOf(Object).isRequired,
   clientId: PropTypes.number.isRequired,
-  clientUserId: PropTypes.number.isRequired,
   userId: PropTypes.number.isRequired,
   userUserId: PropTypes.number.isRequired,
   user: PropTypes.instanceOf(Object).isRequired,

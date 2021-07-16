@@ -19,7 +19,7 @@ import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get, post } from '../../Utilities';
 
 const AddDetails = (props) => {
-  const { history, admissionRoleArray, setAdmissionUserArrayToStore, clientId } = props;
+  const { history, admissionRoleArray, clientId } = props;
 
   const addRef = useRef(null);
 
@@ -509,6 +509,5 @@ export default connect(mapStateToProps, mapDispatchToProps)(AddDetails);
 AddDetails.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   admissionRoleArray: PropTypes.instanceOf(Array).isRequired,
-  setAdmissionUserArrayToStore: PropTypes.func.isRequired,
   clientId: PropTypes.number.isRequired,
 };

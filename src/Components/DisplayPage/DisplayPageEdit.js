@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Formik } from 'formik';
 import { PageHeader } from '../Common';
 import FormTemplate from '../Common/DynamicForm/FormTemplate';
 import { validation } from './Validation';

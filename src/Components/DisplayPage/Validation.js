@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-const alpha = /^[a-zA-Z_]+( [a-zA-Z_]+)*$/;
+// const alpha = /^[a-zA-Z_]+( [a-zA-Z_]+)*$/;
 
 export const validation = Yup.object().shape({
   Tagline: Yup.string().max(36, 'Cannot exceed 36 characters'),

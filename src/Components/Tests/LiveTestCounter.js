@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import compareAsc from 'date-fns/compareAsc';
 import differenceInSeconds from 'date-fns/differenceInSeconds';
-import { get, apiValidation, useInterval } from '../../Utilities';
+import { get, apiValidation } from '../../Utilities';
 
 const LiveTestCounter = (props) => {
   const [hours, setHours] = useState(60);
@@ -36,7 +36,7 @@ const LiveTestCounter = (props) => {
         );
       }
     });
-  }, [id]);
+  }, [id, isAllowed]);
 
   useEffect(() => {
     const clear = setInterval(() => {

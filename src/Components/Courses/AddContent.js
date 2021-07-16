@@ -57,8 +57,8 @@ const AddContent = (props) => {
   const handleOpen = () => setShowModal(true);
   const handleImageOpen = () => setShowImageModal(true);
   const handleImageClose = () => setShowImageModal(false);
-  const courseImage = useRef('');
-  const courseVideo = useRef('');
+  // const courseImage = useRef('');
+  // const courseVideo = useRef('');
   const courseVideoRef = useRef(null);
   const courseImageRef = useRef(null);
   const courseFileRef = useRef(null);

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Button, Image, Spinner, InputGroup, FormControl } from 'react-bootstrap';
+import { Form, Button, Image, Spinner } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import HighlightOff from '@material-ui/icons/HighlightOff';
