@@ -104,9 +104,15 @@ const Mycourse = (props) => {
           state: { filePath: elem.file_link },
         });
       } else if (elem.file_type === 'youtube') {
-        history.push({ pathname: `/videoplayer/${elem.file_link}` });
+        history.push({
+          pathname: `/videoplayer/${elem.file_link}`,
+          state: { videoId: elem.file_id },
+        });
       } else if (elem.file_type === 'video') {
-        history.push({ pathname: `/videoplayer`, state: { videoLink: elem.file_link } });
+        history.push({
+          pathname: `/videoplayer`,
+          state: { videoLink: elem.file_link, videoId: elem.file_id },
+        });
       } else {
         history.push({
           pathname: '/otherfileviewer',

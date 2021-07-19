@@ -321,9 +321,16 @@ const StudyBin = (props) => {
   }, [clientUserId]);
 
   const goToVideoPlayer = (elem, type) => {
-    if (type === 'youtube') history.push({ pathname: `/videoplayer/${elem.file_link}` });
+    if (type === 'youtube')
+      history.push({
+        pathname: `/videoplayer/${elem.file_link}`,
+        state: { videoId: elem.file_id },
+      });
     else if (type === 'video')
-      history.push({ pathname: `/videoplayer`, state: { videoLink: elem.file_link } });
+      history.push({
+        pathname: `/videoplayer`,
+        state: { videoLink: elem.file_link, videoId: elem.file_id },
+      });
   };
 
   const openFileView = (elem) => {
