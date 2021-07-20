@@ -47,8 +47,6 @@ const Pallette = (props) => {
     setCurrentQuestionId(id);
     changeQuestion(subject, id);
     console.log(currentQuestion, currentQuestionId);
-
-    console.log(totalQuestions, 'bhosda');
   };
 
   return (

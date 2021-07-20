@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
 
 import React, { Component } from 'react';
+import ReactPlayer from 'react-player';
 import PropTypes from 'prop-types';
+import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import { connect } from 'react-redux';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -30,6 +32,7 @@ import { PageHeader, BatchesSelector, Readmore } from '../Common';
 import Jitsi from './Jitsi';
 import { createBigBlueButtonStream, rejoinBigBlueButtonStream } from './bbb';
 import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
+import { history } from '../../Routing';
 
 class LiveClasses extends Component {
   constructor(props) {
@@ -75,6 +78,7 @@ class LiveClasses extends Component {
       };
       get(payload, '/getLiveStreamsForStudent').then((res) => {
         const result = apiValidation(res);
+        console.log(result, 'getLiveStreamsForStudent');
         this.setState({ studentBatches: result });
       });
     }
@@ -127,10 +131,10 @@ class LiveClasses extends Component {
 
     get(
       { client_user_id: clientUserId, client_id: clientId },
-      '/getRecordedLiveStreamOfCoaching', // latest
+      '/getRecordedLiveStreamOfCoachingLatest', // latest
     ).then((res) => {
       const result = apiValidation(res);
-      console.log(result);
+      console.log(result, 'live');
       this.setState({ recordings: result });
       const { recordings } = this.state;
       console.log(recordings);
@@ -153,6 +157,10 @@ class LiveClasses extends Component {
     }
   }
 
+  playRecording = (e) => {
+    history.push({ pathname: `/videoplayer`, state: { videoLink: e } });
+  };
+
   startLiveStream = (element) => {
     const { domain, jitsiFirstName, jitsiLastName, role } = this.state;
     const {
@@ -162,7 +170,7 @@ class LiveClasses extends Component {
       },
     } = this.props;
 
-    console.log(method);
+    console.log(method, 'method');
 
     if (element.stream_type === 'jitsi') {
       let strippedDomain = domain;
@@ -950,43 +958,66 @@ class LiveClasses extends Component {
               <div>
                 {recordings.map((elem) => {
                   return (
-                    <Card
-                      key={elem.stream_name}
-                      css={LiveClassesStyle.card}
-                      className='mx-auto p-2 mb-3 mb-lg-5'
-                    >
-                      <div css={LiveClassesStyle.adminCard} className='p-2'>
-                        <h6 css={LiveClassesStyle.adminHeading} className='mb-0'>
-                          {elem.first_name} {elem.last_name} is streaming Live
-                        </h6>
-                        <p css={LiveClassesStyle.adminCardTime} className='mb-0'>
-                          {format(fromUnixTime(elem.created_at), 'HH:mm MMM dd, yyyy')}
-                        </p>
+                    <Accordion>
+                      <Card
+                        key={elem.stream_name}
+                        css={LiveClassesStyle.card}
+                        className='mx-auto p-2 mb-3 mb-lg-5'
+                      >
+                        <div css={LiveClassesStyle.adminCard} className='p-2'>
+                          <h6 css={LiveClassesStyle.adminHeading} className='mb-0'>
+                            {elem.first_name} {elem.last_name} is streaming Live
+                          </h6>
+                          <p css={LiveClassesStyle.adminCardTime} className='mb-0'>
+                            {format(fromUnixTime(elem.created_at), 'HH:mm MMM dd, yyyy')}
+                          </p>
 
-                        <p css={LiveClassesStyle.adminDuration}>
-                          Duration:{' '}
-                          <span css={LiveClassesStyle.adminDurationSpan}>
-                            {`${Math.floor(elem.duration / 3600000)} hr ${Math.floor(
-                              (elem.duration % 3600) / 60,
-                            )} min `}
-                          </span>
-                        </p>
+                          {/* <p css={LiveClassesStyle.adminDuration}>
+                            Duration:{' '}
+                            <span css={LiveClassesStyle.adminDurationSpan}>
+                              {`${Math.floor(elem.duration / 3600000)} hr ${Math.floor(
+                                (elem.duration % 3600) / 60,
+                              )} min `}
+                            </span>
+                          </p> */}
 
-                        <p css={LiveClassesStyle.adminBatches}>
-                          Streaming In :{' '}
-                          <Readmore maxcharactercount={100} batchesArray={elem.batch_array} />
-                        </p>
-                        <Row className='justify-content-center mb-2 mb-lg-4'>
-                          <Button
-                            variant='customPrimary'
-                            size='sm'
-                            onClick={() => this.startLiveStream(elem)}
-                          >
-                            Watch Recording
-                          </Button>
-                        </Row>
-                      </div>
-                    </Card>
+                          <p css={LiveClassesStyle.adminBatches}>
+                            Streaming In :{' '}
+                            <Readmore maxcharactercount={100} batchesArray={elem.batch_array} />
+                          </p>
+                          <Accordion.Toggle as='div' eventKey='0'>
+                            <Row className='m-2'>
+                              <span>{elem.recording_link_array.length} Recordings Available</span>
+                              <span className='ml-auto'>
+                                <ExpandMoreIcon />
+                              </span>
+                            </Row>
+                          </Accordion.Toggle>
+                          <Accordion.Collapse eventKey='0'>
+                            <div>
+                              {elem.recording_link_array.map((e, i) => {
+                                return (
+                                  <Row
+                                    className='m-3'
+                                    style={{ justifyContent: 'space-between' }}
+                                    key={e}
+                                  >
+                                    {i + 1}. Recording {1 + i}{' '}
+                                    <Button
+                                      variant='customPrimary'
+                                      size='sm'
+                                      onClick={() => this.playRecording(e)}
+                                    >
+                                      Watch Recording
+                                    </Button>
+                                  </Row>
+                                );
+                              })}
+                            </div>
+                          </Accordion.Collapse>
+                        </div>
+                      </Card>
+                    </Accordion>
                   );
                 })}
               </div>

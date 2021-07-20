@@ -244,6 +244,7 @@ const CkeditorQuestion = (props) => {
           onReady={(editor) => {
             // You can store the "editor" and use when it is needed.
             console.log('Editor is ready to use!', editor);
+            console.log(document.getElementsByClassName('ck-balloon-panel').style);
           }}
           onChange={(event, editor) => {
             const data = editor.getData();

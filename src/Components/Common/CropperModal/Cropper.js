@@ -6,8 +6,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import 'react-image-crop/dist/ReactCrop.css';
-// import { uploadImage} from '../../../Utilities';
-import { uploadingImage } from '../../../Utilities/customUpload';
+import { uploadImage } from '../../../Utilities';
+// import { uploadingImage } from '../../../Utilities/customUpload';
 
 const generateImageURL = (canvas, crop) => {
   if (!crop || !canvas) {
@@ -18,8 +18,8 @@ const generateImageURL = (canvas, crop) => {
     canvas.toBlob((blob) => {
       const newFileName = `${Math.random().toString(16).slice(2)}.png`;
       const finalFile = new File([blob], newFileName);
-      console.log(finalFile, uploadingImage);
-      uploadingImage(finalFile).then((res) => {
+      console.log(finalFile, uploadImage);
+      uploadImage(finalFile).then((res) => {
         console.log('fileu;lod ', res);
         resolve(res.filename);
       });

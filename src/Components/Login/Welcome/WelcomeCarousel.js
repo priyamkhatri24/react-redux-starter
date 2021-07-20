@@ -4,9 +4,7 @@ import { connect } from 'react-redux';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import Button from 'react-bootstrap/Button';
 import SwiperCore, { Autoplay, Pagination, Navigation } from 'swiper/core';
-import carouselFirst from '../../../assets/images/Login/carousel1.svg';
-import carouselSecond from '../../../assets/images/Login/carousel2.svg';
-import carouselThird from '../../../assets/images/Login/carousel3.svg';
+import loadable from '@loadable/component';
 
 import './Welcome.scss';
 
@@ -17,6 +15,9 @@ import 'swiper/components/navigation/navigation.min.css';
 
 // import Swiper core and required modules
 import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
+import carouselFirst from '../../../assets/images/Login/carousel1.svg';
+import carouselSecond from '../../../assets/images/Login/carousel2.svg';
+import carouselThird from '../../../assets/images/Login/carousel3.svg';
 
 // install Swiper modules
 SwiperCore.use([Autoplay, Pagination, Navigation]);
