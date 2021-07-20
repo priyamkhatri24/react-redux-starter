@@ -982,7 +982,7 @@ class LiveClasses extends Component {
                           </p> */}
 
                           <p css={LiveClassesStyle.adminBatches}>
-                            Streaming In :{' '}
+                            Streamed In :{' '}
                             <Readmore maxcharactercount={100} batchesArray={elem.batch_array} />
                           </p>
                           <Accordion.Toggle as='div' eventKey='0'>
