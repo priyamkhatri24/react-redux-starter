@@ -19,6 +19,8 @@ export const DashboardCards = (props) => {
     color,
     buttonText,
     buttonClick,
+    height,
+    width,
   } = props;
 
   const style = {
@@ -57,7 +59,7 @@ export const DashboardCards = (props) => {
           )}
         </Col>
         <Col xs={4} className='DashboardCard_Image'>
-          <img src={image} alt='notebook' height='80' width='80' />
+          <img src={image} alt='notebook' height={`${height}`} width={`${width}`} />
         </Col>
       </Row>
     </div>
@@ -75,6 +77,8 @@ DashboardCards.propTypes = {
   color: PropTypes.string,
   buttonText: PropTypes.string,
   buttonClick: PropTypes.func,
+  height: PropTypes.number,
+  width: PropTypes.number,
 };
 
 DashboardCards.defaultProps = {
@@ -87,4 +91,6 @@ DashboardCards.defaultProps = {
   color: '',
   buttonText: null,
   buttonClick: () => {},
+  height: 76,
+  width: 78,
 };

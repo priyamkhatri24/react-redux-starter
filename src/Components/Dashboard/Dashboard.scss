@@ -206,6 +206,18 @@
       margin-left: 6%;
     }
   }
+
+  &__attendanceLogo {
+    width: 54px;
+    @include media-breakpoint-up(sm) {
+      width: 80px;
+    }
+  }
+
+  &__NoticeIcon {
+    width: 82px;
+    height: 76px;
+  }
 }
 .react_chart {
   width: 50%;
@@ -213,9 +225,8 @@
 }
 .noticeboard_img {
   text-align: right;
-  padding-right: 30px;
+  padding-right: 40px;
   padding-left: 0px;
-  width: 70%;
 }
 .noticeboard_heading {
   padding-top: 30px;
@@ -239,11 +250,11 @@
   font-size: 15px;
 }
 
-@media screen and (min-width: 768px) {
-  .DashboardCard_Image {
-    padding-left: 0px;
-  }
-}
+// @media screen and (min-width: 768px) {
+//   .DashboardCard_Image {
+//     padding-left: 0px;
+//   }
+// }
 
 @media screen and (max-width: 700px) {
   .noticeboard_img {

@@ -962,7 +962,7 @@ class LiveClasses extends Component {
                       <Card
                         key={elem.stream_name}
                         css={LiveClassesStyle.card}
-                        className='mx-auto p-2 mb-3 mb-lg-5'
+                        className='mx-auto p-2 mt-3'
                       >
                         <div css={LiveClassesStyle.adminCard} className='p-2'>
                           <h6 css={LiveClassesStyle.adminHeading} className='mb-0'>
@@ -997,11 +997,7 @@ class LiveClasses extends Component {
                             <div>
                               {elem.recording_link_array.map((e, i) => {
                                 return (
-                                  <Row
-                                    className='m-3'
-                                    style={{ justifyContent: 'space-between' }}
-                                    key={e}
-                                  >
+                                  <Row className='m-3' css={LiveClassesStyle.watch} key={e}>
                                     {i + 1}. Recording {1 + i}{' '}
                                     <Button
                                       variant='customPrimary'
