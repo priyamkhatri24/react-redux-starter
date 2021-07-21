@@ -61,9 +61,6 @@ const PhoneNo = (props) => {
           <p className='mx-lg-5 mx-3 mt-3 mt-lg-5 PhoneNo__text PhoneNo__engText'>
             Please enter your mobile number to continue
           </p>
-          <p className='mx-lg-5 mx-3 PhoneNo__text PhoneNo__hinText'>
-            जारी रखने के लिए कृपया अपना मोबाइल नंबर दर्ज करें
-          </p>
         </div>
       )}
 
@@ -71,9 +68,6 @@ const PhoneNo = (props) => {
         <div>
           <p className='mx-lg-5 mx-3 mt-3 mt-lg-5 PhoneNo__text PhoneNo__engText'>
             Enter username sent on your mobile number
-          </p>
-          <p className='mx-lg-5 mx-3 PhoneNo__text PhoneNo__hinText'>
-            अपने मोबाइल नंबर पर भेजा गया username दर्ज करें
           </p>
         </div>
       )}

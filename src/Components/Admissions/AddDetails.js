@@ -12,6 +12,7 @@ import Button from 'react-bootstrap/Button';
 import Accordion from 'react-bootstrap/Accordion';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import ReactIntlTelInput from 'react-intl-tel-input-v2';
 import { PageHeader, BatchesSelector } from '../Common';
 import { getAdmissionRoleArray } from '../../redux/reducers/admissions.reducer';
 import { admissionActions } from '../../redux/actions/admissions.action';
@@ -204,6 +205,15 @@ const AddDetails = (props) => {
     handleOpen();
   };
 
+  // const inputProps = {
+  //   placeholder: 'Mobile Number',
+  //   id: 'phoneNumber',
+  // };
+
+  // const intlTelOpts = {
+  //   preferredCountries: ['in'],
+  // };
+
   return (
     <>
       <PageHeader title='Add Details' />
@@ -249,6 +259,18 @@ const AddDetails = (props) => {
                           setArrayEdit(newObject);
                         }}
                       />
+                      {/* <ReactIntlTelInput
+                        inputProps={inputProps}
+                        intlTelOpts={intlTelOpts}
+                        value={arrayEdit.contact}
+                        onChange={(elem) => {
+                          const newObject = {
+                            ...arrayEdit,
+                            contact: elem.target.value,
+                          };
+                          setArrayEdit(newObject);
+                        }}
+                      /> */}
                       <span>Mobile Number</span>
                     </label>
                     {admissionRoleArray[0] === '1' && (
@@ -409,6 +431,19 @@ const AddDetails = (props) => {
                     setDetails(newObject);
                   }}
                 />
+                {/* <ReactIntlTelInput
+                  inputProps={inputProps}
+                  intlTelOpts={intlTelOpts}
+                  value={details.contact}
+                  onChange={(e) => {
+                    console.log(e,"asdasd")
+                    const newObject = {
+                      ...details,
+                      contact: e.phone,
+                    };
+                    setDetails(newObject);
+                  }}
+                /> */}
                 <span>Mobile Number</span>
               </label>
               {admissionRoleArray[0] === '1' && (
