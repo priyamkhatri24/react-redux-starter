@@ -161,6 +161,23 @@ class LiveClasses extends Component {
     history.push({ pathname: `/videoplayer`, state: { videoLink: e } });
   };
 
+  handleDelete = (e) => {
+    const payload = {
+      stream_name: e.stream_name,
+      status: 'deleted',
+      created_at: e.created_at,
+      client_user_id: e.client_user_id,
+    };
+    console.log(payload, 'payload');
+    console.log(e);
+    post(payload, '/changeLiveRecordingFileStatus').then((res) => {
+      console.log(res);
+      if (res.success) {
+        history.push('/liveclasses');
+      }
+    });
+  };
+
   startLiveStream = (element) => {
     const { domain, jitsiFirstName, jitsiLastName, role } = this.state;
     const {
@@ -1006,6 +1023,15 @@ class LiveClasses extends Component {
                                     >
                                       Watch Recording
                                     </Button>
+                                    {role === 'teacher' && (
+                                      <Button
+                                        variant='customPrimary'
+                                        size='sm'
+                                        onClick={() => this.handleDelete(elem)}
+                                      >
+                                        Delete Recording
+                                      </Button>
+                                    )}
                                   </Row>
                                 );
                               })}
