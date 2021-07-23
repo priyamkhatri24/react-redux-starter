@@ -86,7 +86,6 @@ const EditFeePlan = (props) => {
       });
 
       setCustomFeePlanArray(modCustomPlan);
-      console.log(modCustomPlan, 'abababa');
     } else {
       setMonthlyFeeAmount(feeMonthlyPlanArray[0].amount);
       setMonthlyFeeDate(fromUnixTime(parseInt(feeMonthlyPlanArray[0].due_date, 10)));
