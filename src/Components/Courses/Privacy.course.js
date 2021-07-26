@@ -11,7 +11,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { courseActions } from '../../redux/actions/course.action';
 import { BatchesSelector } from '../Common';
-import { apiValidation, get, post, useDidMountEffect } from '../../Utilities';
+import { post } from '../../Utilities';
 import { getCourseObject } from '../../redux/reducers/course.reducer';
 
 const Privacy = (props) => {

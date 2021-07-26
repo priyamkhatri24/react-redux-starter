@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 // import RangeSlider from 'react-bootstrap-range-slider';
 import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 // import Row from 'react-bootstrap/Row';
 // import Button from 'react-bootstrap/Button';
 // import Modal from 'react-bootstrap/Modal';
-import { BatchesSelector, PageHeader } from '../Common';
+import { PageHeader } from '../Common';
 // import class123 from '../../assets/images/admissions/class123.svg';
 // import class45 from '../../assets/images/admissions/class45.svg';
 // import class67 from '../../assets/images/admissions/class67.svg';
@@ -15,13 +15,12 @@ import { BatchesSelector, PageHeader } from '../Common';
 // import class11th from '../../assets/images/admissions/class11th.svg';
 // import class12th from '../../assets/images/admissions/class12th.svg';
 import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
-import { apiValidation, get, post } from '../../Utilities';
+import { post } from '../../Utilities';
 // import { admissionActions } from '../../redux/actions/admissions.action';
 import {
   getAdmissionBatchDate,
   getAdmissionBatchDescription,
   getAdmissionBatchName,
-  getAdmissionUserArray,
 } from '../../redux/reducers/admissions.reducer';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 

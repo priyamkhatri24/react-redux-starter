@@ -5,7 +5,6 @@ import Tab from 'react-bootstrap/Tab';
 import { connect } from 'react-redux';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get } from '../../Utilities';
 import FeeCarousel from './FeeCarousel';

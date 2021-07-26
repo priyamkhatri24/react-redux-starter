@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
-import fromUnixTime from 'date-fns/fromUnixTime';
-import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 import { connect } from 'react-redux';
 import Card from 'react-bootstrap/Card';

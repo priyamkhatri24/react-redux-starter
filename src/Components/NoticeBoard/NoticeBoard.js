@@ -9,7 +9,6 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import format from 'date-fns/format';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { PageHeader, BatchesSelector } from '../Common';
 import { get, apiValidation, post, prodOrDev } from '../../Utilities';
 import {

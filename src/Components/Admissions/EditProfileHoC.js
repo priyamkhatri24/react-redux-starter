@@ -13,10 +13,10 @@ import {
 } from '../../redux/reducers/clientUserId.reducer';
 import EditProfile from '../Profile/EditProfile';
 import { post } from '../../Utilities';
-import { userProfileActions } from '../../redux/actions/userProfile.action';
+// import { userProfileActions } from '../../redux/actions/userProfile.action';
 
 const EditProfileHOC = (props) => {
-  const { history, user, clientId, clientUserId, userId, roleArray } = props;
+  const { history, user, clientId } = props;
   const [formDataArray, setFormDataArray] = useState([]);
 
   useEffect(() => {
@@ -152,7 +152,7 @@ EditProfileHOC.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   user: PropTypes.instanceOf(Object).isRequired,
   clientId: PropTypes.number.isRequired,
-  clientUserId: PropTypes.number.isRequired,
-  userId: PropTypes.number.isRequired,
-  roleArray: PropTypes.instanceOf(Array).isRequired,
+  // clientUserId: PropTypes.number.isRequired,
+  // userId: PropTypes.number.isRequired,
+  // roleArray: PropTypes.instanceOf(Array).isRequired,
 };

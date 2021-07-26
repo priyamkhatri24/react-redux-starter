@@ -19,7 +19,6 @@ import { getCourseId } from '../../redux/reducers/course.reducer';
 import { get, post } from '../../Utilities/Remote';
 import { apiValidation, shareThis } from '../../Utilities';
 import { Readmore, PageHeader } from '../Common';
-import placeholder from '../../assets/images/ycIcon.png';
 import { courseActions } from '../../redux/actions/course.action';
 import './Courses.scss';
 import '../Profile/Profile.scss';
@@ -75,7 +74,7 @@ const TeacherCourses = (props) => {
     get({ client_id: clientId, course_id: 9 }, '/getCourseDetails').then((res) => {
       console.log(res, 'jaishritest');
     });
-  }, [clientId, searchString]);
+  }, [clientId, clientUserId, history, roleArray, searchString]);
 
   // useEffect(()=>{
   //   setActiveTab(history)

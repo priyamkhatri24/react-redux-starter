@@ -80,7 +80,7 @@ const Mycourse = (props) => {
         setSource((s) => (s.sources = [{ src: result.course_preview_video }]));
       });
     }
-  }, [courseId, clientUserId]);
+  }, [courseId, clientUserId, history]);
 
   const openImage = (elem) => {
     setImgLink(elem.file_link);

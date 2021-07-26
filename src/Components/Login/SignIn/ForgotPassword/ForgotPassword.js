@@ -38,6 +38,7 @@ const ForgotPassword = (props) => {
         const result = apiValidation(res, 'msg');
         console.log(result);
         if (result.verification_status === 'wrong otp entered') {
+          // eslint-disable-next-line no-alert
           alert('Invalid OTP!');
         } else if (result.verification_status === 'otp verified') {
           setComponent('createPassword');

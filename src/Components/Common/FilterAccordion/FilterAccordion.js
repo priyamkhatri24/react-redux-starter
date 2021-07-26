@@ -20,15 +20,7 @@ const CustomFilter = React.forwardRef(({ children, eventKey }, ref) => {
 
 const FilterAccordion = (props) => {
   const trigger = useRef(null);
-  const {
-    filters,
-    isToggle,
-    addFilter,
-    removeFilter,
-    currentTab,
-    addBatchFilter,
-    removeBatchFilter,
-  } = props;
+  const { filters, isToggle, addFilter, removeFilter, currentTab, removeBatchFilter } = props;
   // const [currentClass, setCurrentClass] = useState({});
   // const [currentSubject, setCurrentSubject] = useState({});
   const [currentBatch, setCurrentBatch] = useState({});
@@ -574,7 +566,6 @@ FilterAccordion.propTypes = {
   addFilter: PropTypes.func.isRequired,
   removeFilter: PropTypes.func.isRequired,
   currentTab: PropTypes.string.isRequired,
-  addBatchFilter: PropTypes.func.isRequired,
   removeBatchFilter: PropTypes.func.isRequired,
 };
 

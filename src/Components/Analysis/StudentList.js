@@ -177,9 +177,9 @@ const StudentList = (props) => {
     setStudentBatches(newBatches);
   };
 
-  const removeBatch = () => {
-    setCurrentBatch({});
-  };
+  // const removeBatch = () => {
+  //   setCurrentBatch({});
+  // };
 
   return (
     <>

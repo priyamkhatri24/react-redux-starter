@@ -1,14 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import ReactCrop from 'react-image-crop';
-import { get, apiValidation, uploadFiles, post } from '../../../Utilities';
-import {
-  getConversation,
-  getSocket,
-  getPosts,
-} from '../../../redux/reducers/conversations.reducer';
+import { uploadFiles } from '../../../Utilities';
+import { getConversation, getSocket } from '../../../redux/reducers/conversations.reducer';
 import { getClientUserId } from '../../../redux/reducers/clientUserId.reducer';
 
 import 'react-image-crop/dist/ReactCrop.css';

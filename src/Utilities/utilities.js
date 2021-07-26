@@ -163,11 +163,11 @@ export const shareThis = (url, clientName) => {
   return 'clipboard';
 };
 
-export const useDidMountEffect = (func, deps) => {
-  const didMount = useRef(false);
+// export const useDidMountEffect = (func, deps) => {
+//   const didMount = useRef(false);
 
-  useEffect(() => {
-    if (didMount.current) func();
-    else didMount.current = true;
-  }, deps);
-};
+//   useEffect(() => {
+//     if (didMount.current) func();
+//     else didMount.current = true;
+//   }, deps);
+// };

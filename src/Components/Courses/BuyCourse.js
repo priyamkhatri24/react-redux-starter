@@ -88,7 +88,7 @@ const BuyCourse = (props) => {
     };
 
     get(payload, '/getCourseDetails').then((res) => {
-      console.log(res);
+      console.log(res, 'course details');
       const result = apiValidation(res);
       setCourse(result);
       if (result.course_preview_vedio) {

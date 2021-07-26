@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
-import PhoneNo from '../PhoneNo/PhoneNo';
-import footerIngenium from '../../../assets/images/ingiLOGO.png';
 import './SignIn.scss';
 import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
 import { get, post } from '../../../Utilities/Remote';
