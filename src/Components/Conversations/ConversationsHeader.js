@@ -1,5 +1,6 @@
 import React from 'react';
-import { Row, Col } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import { useHistory } from 'react-router-dom';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import MoreVert from '@material-ui/icons/MoreVert';

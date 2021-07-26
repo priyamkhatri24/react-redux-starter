@@ -1,14 +1,12 @@
 import React from 'react';
-import {
-  Container,
-  Row,
-  Col,
-  FormControl,
-  Button,
-  DropdownButton,
-  Dropdown,
-  ButtonGroup,
-} from 'react-bootstrap';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import FormControl from 'react-bootstrap/FormControl';
+import Button from 'react-bootstrap/Button';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Attachment from '@material-ui/icons/Attachment';
 import Send from '@material-ui/icons/Send';
 

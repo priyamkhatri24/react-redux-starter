@@ -1,31 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { createMatchSelector } from 'connected-react-router';
-import {
-  Row,
-  Col,
-  Media,
-  Image,
-  Accordion,
-  Card,
-  Button,
-  Form,
-  Spinner,
-  ListGroup,
-} from 'react-bootstrap';
+import { useSelector } from 'react-redux';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Image from 'react-bootstrap/Image';
+import Spinner from 'react-bootstrap/Spinner';
+
 import { useParams, useHistory } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroller';
 import ReactPlayer from 'react-player';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import MoreVert from '@material-ui/icons/MoreVert';
-import {
-  getConversation,
-  getSocket,
-  getPosts,
-} from '../../../redux/reducers/conversations.reducer';
+import { getConversation } from '../../../redux/reducers/conversations.reducer';
 import { get, apiValidation } from '../../../Utilities';
-import FileIcon from '../../../assets/images/file.svg';
-import AudioIcon from '../../../assets/images/audiotrack.svg';
 import './ConversationMedia.scss';
 import '../Conversation.scss';
 
