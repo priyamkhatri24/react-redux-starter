@@ -1,7 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import { Row, Col, Media, Image, Spinner, Button, Form } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Media from 'react-bootstrap/Media';
+import Image from 'react-bootstrap/Image';
+import Spinner from 'react-bootstrap/Spinner';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 import ReactPlayer from 'react-player';
 // stop
 // play_arrow

@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, Image, Media, Container } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Image from 'react-bootstrap/Image';
+import Media from 'react-bootstrap/Media';
+import Container from 'react-bootstrap/Container';
 import Message from '../Message/Message';
 
 const MobileConversationCard = function ({ name, subTitle, thumbnail, unreadCount, onClick }) {

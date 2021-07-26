@@ -1,17 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Webcam from 'react-webcam';
-import {
-  Row,
-  Col,
-  FormControl,
-  Button,
-  DropdownButton,
-  Dropdown,
-  ButtonGroup,
-  Modal,
-  Image,
-} from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import FormControl from 'react-bootstrap/FormControl';
+import Button from 'react-bootstrap/Button';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Modal from 'react-bootstrap/Modal';
+import Image from 'react-bootstrap/Image';
 import MicRecorder from 'mic-recorder-to-mp3';
 import Close from '@material-ui/icons/Close';
 import Attachment from '@material-ui/icons/Attachment';

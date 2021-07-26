@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
 import { createMatchSelector } from 'connected-react-router';
 import PropTypes from 'prop-types';
-import { Image, Media, Carousel } from 'react-bootstrap';
+import Image from 'react-bootstrap/Image';
+import Media from 'react-bootstrap/Media';
+import Carousel from 'react-bootstrap/Carousel';
 import { connect } from 'react-redux';
 import ChatBubbleOutline from '@material-ui/icons/ChatBubbleOutline';
 import Favorite from '@material-ui/icons/Favorite';

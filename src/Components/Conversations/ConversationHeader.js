@@ -1,5 +1,10 @@
 import React from 'react';
-import { Row, Col, Image, Media, Tabs, Tab } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Image from 'react-bootstrap/Image';
+import Media from 'react-bootstrap/Media';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import ArrowBack from '@material-ui/icons/ArrowBack';
