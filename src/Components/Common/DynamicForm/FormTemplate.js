@@ -1,9 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
-
+// TO Do: CreatableSelect instead of Select. Fix styling, do the same for state (change in test array should do it) too.
+// To Do: Also test error message. Maybe only required is required. Check yup for that(DisplayPage -> validation.js)
 import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Formik, Field, ErrorMessage } from 'formik';
 import Select from 'react-select';
+import CreatableSelect from 'react-select/creatable';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -87,11 +89,30 @@ const FormTemplate = (props) => {
     );
   };
 
+  function SelectField(FieldProps) {
+    return (
+      <Select
+        options={FieldProps.options}
+        {...FieldProps.field}
+        onChange={(option) => FieldProps.form.setFieldValue(FieldProps.field.name, option)}
+
+        // do onInputChange for CreatableSelect
+      />
+    );
+  }
+
   const renderReactSelect = (input) => {
+    const options = input.data.map((i) => {
+      return {
+        label: i,
+        value: i,
+      };
+    });
     return (
       <Fragment key={input.name}>
-        <Field name={input.name}>
-          {/* validate={isRequired('This field is required')} */}
+        <Field name={input.name} options={options} component={SelectField} />
+
+        {/* <Field name={input.name}>
           {(property) => {
             const { field } = property;
 
@@ -104,8 +125,10 @@ const FormTemplate = (props) => {
             console.log(field, '////////');
 
             return (
-              <Select
+              <CreatableSelect
                 // {...field}
+                onChange={field.onChange}
+                onInputChange={field.onChange}
                 className={`${input.name} react_select_class`}
                 placeholder={input.name}
                 isSearchable
@@ -115,7 +138,7 @@ const FormTemplate = (props) => {
               />
             );
           }}
-        </Field>
+        </Field> */}
         {input.message && (
           <span
             style={{
