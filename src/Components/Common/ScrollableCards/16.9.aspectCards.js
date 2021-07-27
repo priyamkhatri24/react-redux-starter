@@ -10,7 +10,7 @@ export const AspectCards = (props) => {
 
   const windowDimensions = useWindowDimensions();
 
-  const { width, height } = windowDimensions;
+  const { width } = windowDimensions;
 
   const isScreenBig = () => {
     let isScreenBigger;

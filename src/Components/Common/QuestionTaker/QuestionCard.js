@@ -35,7 +35,6 @@ class QuestionCard extends Component {
 
   componentDidUpdate(prevProps) {
     const { currentQuestion, onUnmount, language } = this.props;
-    const { answer } = this.state;
     const { timer, question, review, currentLanguage } = this.state;
 
     if (prevProps.currentQuestion !== currentQuestion) {
@@ -335,7 +334,7 @@ class QuestionCard extends Component {
   /** *********** */
 
   render() {
-    const { question, answer, checked, timer, currentLanguage } = this.state;
+    const { question, checked, currentLanguage } = this.state;
     return (
       <>
         <Card

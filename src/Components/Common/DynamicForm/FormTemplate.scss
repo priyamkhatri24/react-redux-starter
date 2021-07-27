@@ -29,3 +29,18 @@
     box-shadow: 0px 0px 10px 5px rgba(220, 53, 69, 1);
   }
 }
+.react_select_class {
+  @import '../../../scss/bootstrap';
+
+  margin: 24px 0px;
+  position: 'fixed';
+  font-family: 'Montserrat-Regular';
+  color: $headingGrey;
+}
+
+.City {
+  z-index: 5;
+}
+.State {
+  z-index: 6;
+}

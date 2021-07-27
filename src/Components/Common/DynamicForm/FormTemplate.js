@@ -3,6 +3,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Formik, Field, ErrorMessage } from 'formik';
+import Select from 'react-select';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -41,12 +42,12 @@ const FormTemplate = (props) => {
           {/* validate={isRequired('This field is required')} */}
           {(property) => {
             const { field } = property;
-
             const options = input.data.map((i) => (
               <option key={i} value={i}>
                 {i}
               </option>
             ));
+            console.log(field, '!!!!!!!!');
             const selectOptions = [<option value=''>{input.label}</option>, ...options];
             return (
               <select
@@ -56,6 +57,62 @@ const FormTemplate = (props) => {
               >
                 {selectOptions}
               </select>
+            );
+          }}
+        </Field>
+        {input.message && (
+          <span
+            style={{
+              fontSize: '14px',
+              color: 'rgba(0, 0, 0, 0.54)',
+              lineHeight: '18px',
+              fontFamily: 'Montserrat-Medium',
+              textAlign: 'left',
+            }}
+          >
+            {input.message}
+          </span>
+        )}
+        <ErrorMessage name={input.name}>
+          {(msg) => (
+            <small
+              className='text-danger d-block mt-3'
+              style={{ fontFamily: 'Montserrat-Medium', textTransform: 'capitalize' }}
+            >
+              {msg}
+            </small>
+          )}
+        </ErrorMessage>
+      </Fragment>
+    );
+  };
+
+  const renderReactSelect = (input) => {
+    return (
+      <Fragment key={input.name}>
+        <Field name={input.name}>
+          {/* validate={isRequired('This field is required')} */}
+          {(property) => {
+            const { field } = property;
+
+            const options = input.data.map((i) => {
+              return {
+                label: i,
+                value: i,
+              };
+            });
+            console.log(field, '////////');
+
+            return (
+              <Select
+                // {...field}
+                className={`${input.name} react_select_class`}
+                placeholder={input.name}
+                isSearchable
+                isClearable
+                name={input.name}
+                options={options}
+              />
             );
           }}
         </Field>
@@ -223,6 +280,8 @@ const FormTemplate = (props) => {
           {fields.map((input) => {
             return input.type === 'select'
               ? renderSelect(input)
+              : input.type === 'reactSelect'
+              ? renderReactSelect(input)
               : input.type === 'date'
               ? renderDate(input)
               : renderInputField(input);

@@ -8,6 +8,7 @@ import { dataArray } from './DisplayData';
 import { getCurrentDisplayData } from '../../redux/reducers/displaypage.reducer';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import { post } from '../../Utilities';
+import tempData from './temp_data';
 
 const DisplayPageEdit = (props) => {
   const { displayData, clientId, history } = props;
@@ -55,7 +56,7 @@ const DisplayPageEdit = (props) => {
 
     // valueData.push({AboutUs : })
 
-    setInputData(valueData);
+    setInputData(tempData);
   }, [displayData]);
 
   return (
