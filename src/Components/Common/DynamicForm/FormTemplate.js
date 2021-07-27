@@ -1,6 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
 // TO Do: CreatableSelect instead of Select. Fix styling, do the same for state (change in test array should do it) too.
-// To Do: Also test error message. Maybe only required is required. Check yup for that(DisplayPage -> validation.js)
+// To Do: Also test error message. Maybe only required is required to be validted.
+// Check yup for that(DisplayPage -> validation.js)
+
 import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Formik, Field, ErrorMessage } from 'formik';
