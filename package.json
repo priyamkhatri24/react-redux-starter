@@ -100,7 +100,6 @@
     "bundleCheck": "node webpackAnalyze.js",
     "start-sw": "yarn build && serve -s build",
     "lint": "eslint ."
-
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -150,5 +149,5 @@
       "git push sid-origin auto"
     ]
   },
-  "buildDate": 1625567847580
+  "buildDate": 1627298627037
 }
