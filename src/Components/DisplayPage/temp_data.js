@@ -78,7 +78,7 @@ export default [
   {
     label: 'City',
     value: '',
-    type: 'select',
+    type: 'reactSelect',
     name: 'City',
     data: [
       'Kolhapur',

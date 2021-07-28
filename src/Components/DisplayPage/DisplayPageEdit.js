@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { PageHeader } from '../Common';
+import { PageHeader, DynamicForm } from '../Common';
 import FormTemplate from '../Common/DynamicForm/FormTemplate';
 import { validation } from './Validation';
 import { dataArray } from './DisplayData';
@@ -64,7 +64,7 @@ const DisplayPageEdit = (props) => {
       <PageHeader title='Edit Info' />
       <div style={{ marginTop: '5rem' }}>
         {inputData.length > 0 && (
-          <FormTemplate fields={inputData} validation={validation} getData={getDynamicData} />
+          <DynamicForm fields={inputData} validation={validation} getData={getDynamicData} />
         )}
         {/* <Formik
           initialValues={{ Tagline: 'jared' }}
