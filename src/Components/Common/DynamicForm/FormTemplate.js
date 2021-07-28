@@ -105,7 +105,6 @@ const FormTemplate = (props) => {
 
             return (
               <Select
-                // {...field}
                 className={`${input.name} react_select_class`}
                 placeholder={input.name}
                 isSearchable
