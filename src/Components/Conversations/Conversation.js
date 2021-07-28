@@ -4,7 +4,9 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 // import PropTypes from 'prop-types';
-import { Row, Col, Button } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
 import { v4 as uuidv4 } from 'uuid';
 import Add from '@material-ui/icons/Add';
 import { get, apiValidation, uploadFiles, post } from '../../Utilities';

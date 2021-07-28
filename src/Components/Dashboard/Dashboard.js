@@ -298,6 +298,11 @@ const Dashboard = (props) => {
     push({ pathname: '/homework/savedsent', state: { testsType: type } });
   };
 
+  const goToChats = () => {
+    const { push } = history;
+    push({ pathname: '/conversations' });
+  };
+
   const startHomework = (responseArray, testId, languageType = 'english') => {
     const { push } = history;
     setTestResultArrayToStore(responseArray);
@@ -930,7 +935,18 @@ const Dashboard = (props) => {
             buttonClick={goToDisplayPage}
           />
         );
-
+      case 'chats':
+        return (
+          <DashboardCards
+            image={param.feature_icon}
+            heading='Chats'
+            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
+            subHeading='Chat with your peers or teachers.'
+            backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
+            backGround={param.start_colour}
+            buttonClick={goToChats}
+          />
+        );
       default:
         return null;
     }
