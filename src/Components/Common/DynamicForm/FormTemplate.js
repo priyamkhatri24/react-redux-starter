@@ -1,12 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
-// TO Do: CreatableSelect instead of Select. Fix styling, do the same for state (change in test array should do it) too.
-// To Do: Also test error message. Maybe only required is required to be validted.
-// Check yup for that(DisplayPage -> validation.js)
 
 import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Formik, Field, ErrorMessage } from 'formik';
-import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
@@ -96,12 +92,12 @@ const FormTemplate = (props) => {
       <CreatableSelect
         options={FieldProps.options}
         {...FieldProps.field}
+        isClearable
+        isSearchable
         placeholder={FieldProps.field.name}
         className={`${FieldProps.field.name} reactSelectClass`}
         onChange={(option) => FieldProps.form.setFieldValue(FieldProps.field.name, option)}
         onInputChange={(value, action) => {}}
-
-        // do onInputChange for CreatableSelect
       />
     );
   }
@@ -116,34 +112,6 @@ const FormTemplate = (props) => {
     return (
       <Fragment key={input.name}>
         <Field name={input.name} options={options} component={SelectField} />
-
-        {/* <Field name={input.name}>
-          {(property) => {
-            const { field } = property;
-
-            // const options = input.data.map((i) => {
-            //   return {
-            //     label: i,
-            //     value: i,
-            //   };
-            // });
-            console.log(field, '////////');
-
-            return (
-              <CreatableSelect
-                {...field}
-                onChange={field.onChange}
-                onInputChange={field.onChange}
-                className={`${input.name} reactSelectClass`}
-                placeholder={input.name}
-                isSearchable
-                isClearable
-                name={input.name}
-                options={options}
-              />
-            );
-          }}
-        </Field> */}
         {input.message && (
           <span
             style={{

@@ -2,13 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { PageHeader, DynamicForm } from '../Common';
-import FormTemplate from '../Common/DynamicForm/FormTemplate';
 import { validation } from './Validation';
 import { dataArray } from './DisplayData';
 import { getCurrentDisplayData } from '../../redux/reducers/displaypage.reducer';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import { post } from '../../Utilities';
-import tempData from './temp_data';
 
 const DisplayPageEdit = (props) => {
   const { displayData, clientId, history } = props;
@@ -47,16 +45,21 @@ const DisplayPageEdit = (props) => {
       {},
     );
 
-    console.log(moddedData);
-
     const valueData = dataArray.map((elem) => {
-      elem.value = moddedData[elem.name];
+      console.log(elem, 'values');
+      if (elem.name === 'State' || elem.name === 'City') {
+        elem.value.value = moddedData[elem.name];
+        elem.value.label = moddedData[elem.name];
+      } else {
+        elem.value = moddedData[elem.name];
+      }
+
       return elem;
     });
 
     // valueData.push({AboutUs : })
 
-    setInputData(tempData);
+    setInputData(valueData);
   }, [displayData]);
 
   return (
