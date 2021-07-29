@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import differenceInHours from 'date-fns/differenceInHours';
 import differenceInSeconds from 'date-fns/differenceInSeconds';
 import differenceInMinutes from 'date-fns/differenceInMinutes';
-import Button from 'react-bootstrap/Button';
-import parseISO from 'date-fns/parseISO';
+
 import fromUnixTime from 'date-fns/fromUnixTime';
 
 import PropTypes from 'prop-types';
@@ -22,7 +21,6 @@ const Timer = (props) => {
   const [progressbarDuration, setprogressBarDuration] = useState(0);
 
   useEffect(() => {
-    const durationTime = endTime - startTime;
     const endDate = fromUnixTime(endTime);
     const startDate = fromUnixTime(startTime);
     console.log(endDate, startDate);

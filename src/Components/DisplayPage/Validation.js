@@ -8,6 +8,6 @@ export const validation = Yup.object().shape({
   // email: Yup.string().email().required(),
   // Phone: Yup.number().typeError('Must be a Number').required(),
   // Address: Yup.string().required(),
-  // State: Yup.string().required(),
-  // City: Yup.string().required(),
+  State: Yup.string().required(),
+  City: Yup.string().required(),
 });

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { PageHeader } from '../Common';
-import FormTemplate from '../Common/DynamicForm/FormTemplate';
+import { PageHeader, DynamicForm } from '../Common';
 import { validation } from './Validation';
 import { dataArray } from './DisplayData';
 import { getCurrentDisplayData } from '../../redux/reducers/displaypage.reducer';
@@ -46,10 +45,15 @@ const DisplayPageEdit = (props) => {
       {},
     );
 
-    console.log(moddedData);
-
     const valueData = dataArray.map((elem) => {
-      elem.value = moddedData[elem.name];
+      console.log(elem, 'values');
+      if (elem.name === 'State' || elem.name === 'City') {
+        elem.value.value = moddedData[elem.name];
+        elem.value.label = moddedData[elem.name];
+      } else {
+        elem.value = moddedData[elem.name];
+      }
+
       return elem;
     });
 
@@ -63,7 +67,7 @@ const DisplayPageEdit = (props) => {
       <PageHeader title='Edit Info' />
       <div style={{ marginTop: '5rem' }}>
         {inputData.length > 0 && (
-          <FormTemplate fields={inputData} validation={validation} getData={getDynamicData} />
+          <DynamicForm fields={inputData} validation={validation} getData={getDynamicData} />
         )}
         {/* <Formik
           initialValues={{ Tagline: 'jared' }}
