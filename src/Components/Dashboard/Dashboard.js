@@ -32,7 +32,7 @@ import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { testsActions } from '../../redux/actions/tests.action';
 import { courseActions } from '../../redux/actions/course.action';
 import { AspectCards, CoursesCards, DashboardCards } from '../Common';
-// import offlineAssignment from '../../assets/images/Dashboard/offline.svg';
+import offlineAssignment from '../../assets/images/Dashboard/offline.svg';
 import Tests from '../Tests/Tests';
 import './Dashboard.scss';
 import { admissionActions } from '../../redux/actions/admissions.action';
@@ -390,6 +390,8 @@ const Dashboard = (props) => {
   };
 
   const goToCRM = () => history.push('/crm');
+
+  const goToConversations = () => history.push('/conversations');
 
   const renderComponents = (param) => {
     switch (param.switcher) {
@@ -968,6 +970,17 @@ const Dashboard = (props) => {
         features
           .filter((elem) => process.env.NODE_ENV === 'development' || elem.status === 'active')
           .map((elem) => renderComponents(elem))}
+
+      <DashboardCards
+        image={offlineAssignment} // student
+        heading='Chats'
+        color='rgba(255, 236, 222, 1)'
+        subHeading='Talk to other people here.'
+        boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+        backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
+        backGround='rgb(236,255,252)'
+        buttonClick={goToConversations}
+      />
 
       {/* *****************************Teacher View ********************************* */}
       {/* {(roleArray.includes(3) || roleArray.includes(4)) && (

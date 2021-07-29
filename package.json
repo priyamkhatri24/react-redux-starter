@@ -72,7 +72,7 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "screenfull": "^5.0.2",
-    "socket.io-client": "^4.1.2",
+    "socket.io-client": "2.2.0",
     "sweetalert2": "^10.9.0",
     "swiper": "^6.6.1",
     "uuid": "^8.3.2",
@@ -98,7 +98,8 @@
     "eject": "react-scripts eject",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "bundleCheck": "node webpackAnalyze.js",
-    "start-sw": "yarn build && serve -s build"
+    "start-sw": "yarn build && serve -s build",
+    "lint": "eslint ."
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -148,5 +149,5 @@
       "git push sid-origin auto"
     ]
   },
-  "buildDate": 1626444560761
+  "buildDate": 1627298627037
 }

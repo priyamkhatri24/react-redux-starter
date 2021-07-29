@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Button } from 'react-bootstrap';
+import React, { useState, useRef } from 'react';
+import Button from 'react-bootstrap/Button';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ReactCrop from 'react-image-crop';

@@ -12,11 +12,13 @@ import Button from 'react-bootstrap/Button';
 import Accordion from 'react-bootstrap/Accordion';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import ReactIntlTelInput from 'react-intl-tel-input-v2';
 import { PageHeader, BatchesSelector } from '../Common';
 import { getAdmissionRoleArray } from '../../redux/reducers/admissions.reducer';
 import { admissionActions } from '../../redux/actions/admissions.action';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get, post } from '../../Utilities';
+import 'intl-tel-input/build/css/intlTelInput.css';
 
 const AddDetails = (props) => {
   const { history, admissionRoleArray, clientId } = props;

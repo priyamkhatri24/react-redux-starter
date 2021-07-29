@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Media, Image, Accordion, Card, Button, Form } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Media from 'react-bootstrap/Media';
+import Image from 'react-bootstrap/Image';
+import Accordion from 'react-bootstrap/Accordion';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 import { useHistory } from 'react-router-dom';
 import ReactPlayer from 'react-player';
 import ArrowBack from '@material-ui/icons/ArrowBack';

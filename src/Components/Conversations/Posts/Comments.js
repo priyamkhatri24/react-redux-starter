@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { FormControl, Button, Media, Image, Col } from 'react-bootstrap';
+import FormControl from 'react-bootstrap/FormControl';
+import Button from 'react-bootstrap/Button';
+import Media from 'react-bootstrap/Media';
+import Image from 'react-bootstrap/Image';
+import Col from 'react-bootstrap/Col';
 import PropTypes from 'prop-types';
 import Send from '@material-ui/icons/Send';
 import Close from '@material-ui/icons/Close';

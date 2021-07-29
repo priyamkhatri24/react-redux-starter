@@ -273,7 +273,6 @@ const BuyCourse = (props) => {
   };
 
   const goToLogin = () => {
-    console.log('lols', window.location.pathname);
     setRedirectPathToStore(window.location.pathname);
     setCurrentComponentToStore('PhoneNo');
     history.push('/preload');

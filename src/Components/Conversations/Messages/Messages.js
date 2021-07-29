@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import PropTypes from 'prop-types';
-import { Spinner } from 'react-bootstrap';
+import Spinner from 'react-bootstrap/Spinner';
 import InfiniteScroll from 'react-infinite-scroller';
 import Message from '../Message/Message';
 import './Messages.scss';
