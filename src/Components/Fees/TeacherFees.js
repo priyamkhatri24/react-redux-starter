@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import { connect } from 'react-redux';
-import { Button, Row } from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get } from '../../Utilities';
 import FeeCarousel from './FeeCarousel';
@@ -17,6 +18,7 @@ const TeacherFees = (props) => {
   const { clientId, clientUserId, history, setFeePlanTypeToStore } = props;
   const [carouselDetails, setCarouselDetails] = useState({});
   const [activeTab, setActiveTab] = useState('Notifications');
+  const [searchString, setSearchString] = useState('');
 
   useEffect(() => {
     get({ client_id: clientId }, '/getAnnualFeeDetailsForCoaching').then((res) => {
@@ -29,41 +31,45 @@ const TeacherFees = (props) => {
     setActiveTab(tab);
   };
 
+  const searchBatches = (search) => {
+    setSearchString(search);
+  };
+
   return (
     <>
-      <PageHeader title='Fees' />
+      {activeTab === 'Batches' ? (
+        <PageHeader title='Fees' search searchFilter={searchBatches} />
+      ) : (
+        <PageHeader title='Fees' />
+      )}
+
       <div style={{ marginTop: '4rem' }}>
         {activeTab !== 'Batches' && (
           <>
             <FeeCarousel carouselObject={carouselDetails} />
-            <Row className=' mx-2'>
+            <Row className=' mx-2 Fees__TwobuttonsRow'>
               <Button
                 variant='courseBlueOnWhite'
-                className='p-1 mx-2 my-auto'
+                className='p-1 mx-1 my-auto Fees__twoButtons'
                 onClick={() => {
                   history.push('/fees/feeplans');
                   setFeePlanTypeToStore('onetimecharge');
                 }}
-                style={{ width: '160px' }}
               >
-                <span style={{ fontSize: '18px' }} className='my-auto'>
-                  +
-                </span>
-                <span className='my-auto ml-2'>One-time Charge</span>
+                <span className='my-auto Fees__twoButtonstext'>+</span>
+                <span className='my-auto ml-2 Fees__twoButtonstext'>One-time Charge</span>
               </Button>
-              <span className='ml-auto'>
+              <span className=''>
                 <Button
                   variant='courseBlueOnWhite'
-                  className='p-1 mx-2 my-auto'
+                  className='p-1 mx-1 my-auto Fees__twoButtons'
                   onClick={() => {
                     history.push('/fees/feeplans');
                     setFeePlanTypeToStore('feePlans');
                   }}
                 >
-                  <span style={{ fontSize: '18px' }} className='my-auto'>
-                    +
-                  </span>
-                  <span className='my-auto ml-2'>Fee Plan</span>
+                  <span className='my-auto Fees__twoButtonstext'>+</span>
+                  <span className='my-auto ml-2 Fees__twoButtonstext'>Fee Plan</span>
                 </Button>
               </span>
             </Row>
@@ -85,7 +91,12 @@ const TeacherFees = (props) => {
             <FeesTimeline clientId={clientId} />
           </Tab>
           <Tab eventKey='Batches' title='Batches' onClick={() => handleSelect('Batches')}>
-            <FeeBatches clientId={clientId} clientUserId={clientUserId} history={history} />
+            <FeeBatches
+              clientId={clientId}
+              clientUserId={clientUserId}
+              history={history}
+              searchString={searchString}
+            />
           </Tab>
           <Tab eventKey='Summary' title='Summary' onClick={() => handleSelect('Summary')}>
             <div

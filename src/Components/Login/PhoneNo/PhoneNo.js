@@ -18,7 +18,6 @@ const PhoneNo = (props) => {
   const [isValid, setValid] = useState(false);
   const [isFocused, setFocus] = useState(false);
   const [showPassword, setPasswordShown] = useState(true);
-
   const { placeholder, status, password, getData, forgotPlaceholder } = props;
 
   const setClick = () => {

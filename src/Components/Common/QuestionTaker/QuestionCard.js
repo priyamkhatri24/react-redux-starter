@@ -15,22 +15,28 @@ class QuestionCard extends Component {
       answer: '',
       checked: [],
       review: false,
+      currentLanguage: 'english',
     };
   }
 
   componentDidMount() {
-    const { currentQuestion } = this.props;
+    const { currentQuestion, language } = this.props;
+    console.log(currentQuestion);
     if (Object.keys(currentQuestion).length > 0) {
       currentQuestion.option_array.sort(propComparator('order'));
 
-      this.setState({ question: currentQuestion, timer: currentQuestion.timer });
+      this.setState({
+        question: currentQuestion,
+        timer: currentQuestion.timer,
+        currentLanguage: language,
+      });
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { currentQuestion, onUnmount } = this.props;
+    const { currentQuestion, onUnmount, language } = this.props;
     const { answer } = this.state;
-    const { timer, question, review } = this.state;
+    const { timer, question, review, currentLanguage } = this.state;
 
     if (prevProps.currentQuestion !== currentQuestion) {
       const falseChecked = currentQuestion.option_array.map((elem) => {
@@ -46,6 +52,10 @@ class QuestionCard extends Component {
       });
       this.restartSectionTimer();
       this.setState({ answer: '' });
+    }
+
+    if (prevProps.language !== currentLanguage) {
+      this.setState({ currentLanguage: language });
     }
   }
 
@@ -65,39 +75,50 @@ class QuestionCard extends Component {
     // remove the focused if not save and next done
   }
 
-  /** ********Timer logic***** */
-
-  restartSectionTimer = () => {
-    if (this.sectionTimeIntervalId !== 0) {
-      clearInterval(this.sectionTimeIntervalId);
-    }
-    this.sectionTimeIntervalId = setInterval(this.sectionTimerHandler, 1000);
-    this.setState({ timer: 0 });
-  };
-
-  sectionTimerHandler = () => {
-    this.setState((prevState) => {
-      return {
-        timer: prevState.timer + 1,
-      };
-    });
-  };
-
-  /** *********** */
-
   selectedAnswer = (e) => {
-    const { question } = this.state;
+    // option arrays must be the same always
+    const { question, currentLanguage } = this.state;
     console.log(question);
     this.setState({ answer: e });
     const focusedQuestions = question;
-    focusedQuestions.option_array = question.option_array.map((elem) => {
-      if (elem.order === Number(e)) {
-        elem.isFocus = true;
-        return elem;
-      }
-      elem.isFocus = false;
-      return elem;
-    });
+    focusedQuestions.option_array =
+      currentLanguage === 'english'
+        ? question.option_array.map((elem) => {
+            if (elem.order === Number(e)) {
+              elem.isFocus = true;
+              return elem;
+            }
+            elem.isFocus = false;
+            return elem;
+          })
+        : question.hindi_option_array.map((elem) => {
+            if (elem.order === Number(e)) {
+              elem.isFocus = true;
+              return elem;
+            }
+            elem.isFocus = false;
+            return elem;
+          });
+
+    focusedQuestions.hindi_option_array =
+      currentLanguage === 'english'
+        ? question.option_array.map((elem) => {
+            if (elem.order === Number(e)) {
+              elem.isFocus = true;
+              return elem;
+            }
+            elem.isFocus = false;
+            return elem;
+          })
+        : question.hindi_option_array.map((elem) => {
+            if (elem.order === Number(e)) {
+              elem.isFocus = true;
+              return elem;
+            }
+            elem.isFocus = false;
+            return elem;
+          });
+
     this.setState({ question: focusedQuestions });
   };
 
@@ -208,16 +229,113 @@ class QuestionCard extends Component {
     return null;
   };
 
+  singleQuestionRender = (elem, i) => {
+    return (
+      <div key={elem.order} className='QuestionTaker__questionOptions m-2 d-flex'>
+        <span className='my-auto mr-1'>
+          {i === 0 ? 'A.' : i === 1 ? 'B.' : i === 2 ? 'C.' : 'D.'}
+        </span>
+        <label
+          className={`QuestionTaker__customRadio p-2 w-100 ${
+            elem.isFocus ? 'QuestionTaker__focusedRadio' : 'w-75'
+          }`}
+          htmlFor={`testRadio${elem.order}`}
+        >
+          <input
+            type='radio'
+            name='testRadio'
+            value={elem.order}
+            onChange={(e) => this.selectedAnswer(e.target.value)}
+            onClick={(e) => this.selectedAnswer(e.target.value)}
+            id={`testRadio${elem.order}`}
+          />
+          <div className='radioControl'>
+            <MathJax math={String.raw`${elem.option_text_array[0]}`} />
+          </div>
+        </label>
+        {elem.image && (
+          <img
+            src={elem.image}
+            alt='option'
+            className='img-fluid m-2'
+            style={{ maxWidth: '90vw', maxHeight: '20vh' }}
+          />
+        )}
+      </div>
+    );
+  };
+
+  multipleQuestionRender = (elem, i) => {
+    const { checked } = this.state;
+    return (
+      <div key={elem.order} className='QuestionTaker__questionOptions d-flex m-2'>
+        <span className='my-auto mr-1'>
+          {i === 0 ? 'A.' : i === 1 ? 'B.' : i === 2 ? 'C.' : 'D.'}
+        </span>
+
+        <div
+          // htmlFor={`test${elem.order}`}
+          className={`QuestionTaker__customRadio p-2 w-100 ${
+            checked[elem.order - 1] ? 'QuestionTaker__focusedRadio' : 'w-75'
+          }`}
+          onClick={() => this.handleChecked(elem.order)}
+          onKeyDown={() => this.handleChecked(elem.order)}
+          role='button'
+          tabIndex='-1'
+        >
+          <div className='radioControl'>
+            <MathJax math={String.raw`${elem.option_text_array[0]}`} />
+          </div>
+          {/* <input
+                        onChange={() => this.handleChecked(elem.order)}
+                        id={`test${elem.order}`}
+                        type=''
+                        checked={checked[elem.order - 1]}
+                      /> */}
+          {elem.image && (
+            <img
+              src={elem.image}
+              alt='option'
+              className='img-fluid'
+              style={{ maxWidth: '90vw', maxHeight: '20vh' }}
+            />
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  sectionTimerHandler = () => {
+    this.setState((prevState) => {
+      return {
+        timer: prevState.timer + 1,
+      };
+    });
+  };
+
+  restartSectionTimer = () => {
+    if (this.sectionTimeIntervalId !== 0) {
+      clearInterval(this.sectionTimeIntervalId);
+    }
+    this.sectionTimeIntervalId = setInterval(this.sectionTimerHandler, 1000);
+    this.setState({ timer: 0 });
+  };
+
+  /** ********Timer logic***** */
   handleChecked(order) {
     const { checked } = this.state;
-    const checkedArray = [...checked];
+    const checkedArray = checked.length === 0 ? [false, false, false, false] : [...checked];
+
     checkedArray[order - 1] = !checkedArray[order - 1];
     this.setState({ checked: checkedArray });
+    console.log(checkedArray);
     console.log('CHANGE!');
   }
 
+  /** *********** */
+
   render() {
-    const { question, answer, checked, timer } = this.state;
+    const { question, answer, checked, timer, currentLanguage } = this.state;
     return (
       <>
         <Card
@@ -231,45 +349,31 @@ class QuestionCard extends Component {
               ? 'Multiple Choice'
               : 'Subjective'}
           </span>
-          <div className='QuestionTaker__questionHeading'>
-            <MathJax math={String.raw`${question.question_text}`} />
-          </div>
+          {currentLanguage === 'english' && (
+            <div className='QuestionTaker__questionHeading'>
+              <MathJax math={String.raw`${question.question_text}`} />
+            </div>
+          )}
+          {currentLanguage === 'hindi' && (
+            <div className='QuestionTaker__questionHeading'>
+              <MathJax math={String.raw`${question.hindi_text}`} />
+            </div>
+          )}
           {question.question_image && (
-            <img src={question.question_image} alt='question' className='img-fluid m-2' />
+            <img
+              src={question.question_image}
+              alt='question'
+              className='m-2'
+              style={{ maxWidth: '90vw', maxHeight: '30vh' }}
+            />
           )}
           <div className='mt-4'>
             {Object.keys(question).length > 0 &&
               question.option_array.length > 0 &&
               question.question_type === 'single' &&
-              question.option_array.map((elem, i) => {
-                return (
-                  <div key={elem.order} className='QuestionTaker__questionOptions m-2 d-flex'>
-                    <span className='my-auto mr-1'>
-                      {i === 0 ? 'A.' : i === 1 ? 'B.' : i === 2 ? 'C.' : 'D.'}
-                    </span>
-                    <label
-                      className={`QuestionTaker__customRadio p-2 w-100 ${
-                        elem.isFocus ? 'QuestionTaker__focusedRadio' : 'w-75'
-                      }`}
-                      htmlFor={`testRadio${elem.order}`}
-                    >
-                      <input
-                        type='radio'
-                        name='testRadio'
-                        value={elem.order}
-                        onChange={(e) => this.selectedAnswer(e.target.value)}
-                        onClick={(e) => this.selectedAnswer(e.target.value)}
-                        id={`testRadio${elem.order}`}
-                      />
-                      <div className='radioControl'>
-                        <MathJax math={String.raw`${elem.option_text_array[0]}`} />
-                      </div>
-                    </label>
-                    {elem.image && <img src={elem.image} alt='option' className='img-fluid m-2' />}
-                  </div>
-                );
-              })}
-
+              (currentLanguage === 'english'
+                ? question.option_array.map(this.singleQuestionRender)
+                : question.hindi_option_array.map(this.singleQuestionRender))}
             {Object.keys(question).length > 0 && question.question_type === 'subjective' && (
               <div className='m-3'>
                 <label className='has-float-label my-auto'>
@@ -300,23 +404,34 @@ class QuestionCard extends Component {
                       {i === 0 ? 'A.' : i === 1 ? 'B.' : i === 2 ? 'C.' : 'D.'}
                     </span>
 
-                    <label
-                      htmlFor={elem.order}
+                    <div
+                      // htmlFor={`test${elem.order}`}
                       className={`QuestionTaker__customRadio p-2 w-100 ${
                         checked[elem.order - 1] ? 'QuestionTaker__focusedRadio' : 'w-75'
                       }`}
+                      onClick={() => this.handleChecked(elem.order)}
+                      onKeyDown={() => this.handleChecked(elem.order)}
+                      role='button'
+                      tabIndex='-1'
                     >
                       <div className='radioControl'>
                         <MathJax math={String.raw`${elem.option_text_array[0]}`} />
                       </div>
-                      <input
+                      {/* <input
                         onChange={() => this.handleChecked(elem.order)}
-                        id={elem.order}
+                        id={`test${elem.order}`}
                         type=''
                         checked={checked[elem.order - 1]}
-                      />
-                      {elem.image && <img src={elem.image} alt='option' className='img-fluid' />}
-                    </label>
+                      /> */}
+                      {elem.image && (
+                        <img
+                          src={elem.image}
+                          alt='option'
+                          className='img-fluid'
+                          style={{ maxWidth: '90vw', maxHeight: '20vh' }}
+                        />
+                      )}
+                    </div>
                   </div>
                 );
               })}
@@ -343,4 +458,5 @@ QuestionCard.propTypes = {
   currentQuestion: PropTypes.instanceOf(Object).isRequired,
   onUnmount: PropTypes.func.isRequired,
   onSaveAndNext: PropTypes.func.isRequired,
+  language: PropTypes.string.isRequired,
 };

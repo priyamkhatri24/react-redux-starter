@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
@@ -12,14 +12,18 @@ import Button from 'react-bootstrap/Button';
 import Accordion from 'react-bootstrap/Accordion';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import ReactIntlTelInput from 'react-intl-tel-input-v2';
 import { PageHeader, BatchesSelector } from '../Common';
 import { getAdmissionRoleArray } from '../../redux/reducers/admissions.reducer';
 import { admissionActions } from '../../redux/actions/admissions.action';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get, post } from '../../Utilities';
+import 'intl-tel-input/build/css/intlTelInput.css';
 
 const AddDetails = (props) => {
-  const { history, admissionRoleArray, setAdmissionUserArrayToStore, clientId } = props;
+  const { history, admissionRoleArray, clientId } = props;
+
+  const addRef = useRef(null);
 
   const [details, setDetails] = useState(
     admissionRoleArray[0] === '1'
@@ -188,16 +192,18 @@ const AddDetails = (props) => {
   };
 
   const goToNextStage = () => {
-    if (admissionRoleArray[0] === '1') {
-      if (detailArray.length > 0 && detailArray.length <= 20) {
-        setAdmissionUserArrayToStore(detailArray);
-        history.push('/admissions/add/class');
-      } else {
-        console.log('not 0 or more than 20');
-      }
-    } else {
-      handleOpen();
-    }
+    addRef.current.click();
+    // if (admissionRoleArray[0] === '1') {
+    //   if (detailArray.length > 0 && detailArray.length <= 20) {
+    //     setAdmissionUserArrayToStore(detailArray);
+    //     history.push('/admissions/add/class');
+    //   } else {
+    //     console.log('not 0 or more than 20');
+    //   }
+    // } else {
+    //   handleOpen();
+    // }
+    handleOpen();
   };
 
   return (
@@ -449,7 +455,12 @@ const AddDetails = (props) => {
               )}
             </Col>
           </Row>
-          <Button variant='boldText' className='ml-auto mt-3' onClick={() => addToDetailArray()}>
+          <Button
+            variant='boldText'
+            className='ml-auto mt-3'
+            onClick={() => addToDetailArray()}
+            ref={addRef}
+          >
             Add
           </Button>
           {isValid && (
@@ -500,6 +511,5 @@ export default connect(mapStateToProps, mapDispatchToProps)(AddDetails);
 AddDetails.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   admissionRoleArray: PropTypes.instanceOf(Array).isRequired,
-  setAdmissionUserArrayToStore: PropTypes.func.isRequired,
   clientId: PropTypes.number.isRequired,
 };

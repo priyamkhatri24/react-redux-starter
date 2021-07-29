@@ -20,43 +20,44 @@ const SelectUser = (props) => {
 
   return (
     <>
-      <h4 className='Signin__selectUserHeading my-4'>Select User</h4>
-      {userInfo.map((elem) => {
-        return (
-          <Card
-            key={elem.user_id}
-            className='w-75 mx-auto m-1'
-            onClick={() => getUserName(elem.username)}
-          >
-            <Row className='ml-auto mx-2 pt-1' style={{ marginBottom: '-10px' }}>
-              <FaceIcon css={AdmissionStyle.onlineIcon} />
-              <span style={{ fontSize: '8px', fontFamily: 'Montserrat-Light', marginTop: '5px' }}>
-                {elem.role}
-              </span>
-            </Row>
+      <h4 className='Signin__selectUserHeading my-4 text-center'>Select User</h4>
+      {userInfo.length > 0 &&
+        userInfo.map((elem) => {
+          return (
+            <Card
+              key={elem.user_id}
+              className='Signin__UserCard mx-auto m-1'
+              onClick={() => getUserName(elem.username)}
+            >
+              <Row className='ml-auto mx-2 pt-1' style={{ marginBottom: '-10px' }}>
+                <FaceIcon css={AdmissionStyle.onlineIcon} />
+                <span style={{ fontSize: '8px', fontFamily: 'Montserrat-Light', marginTop: '5px' }}>
+                  {elem.role}
+                </span>
+              </Row>
 
-            <Row className=' m-0 px-2 my-auto'>
-              <Col xs={8} className='p-0 d-flex mb-3'>
-                <div className='m-1 '>
-                  <img
-                    src={elem.profile_image ? elem.profile_image : avatarImage}
-                    alt='avatar'
-                    height='38'
-                    width='38'
-                    css={AdmissionStyle.avatar}
-                    className='my-auto'
-                  />
-                </div>
-                <div className='p-0 d-flex align-items-center'>
-                  <p css={AdmissionStyle.avatarHeading} className='mb-0 mt-2 ml-2'>
-                    {`${elem.first_name} ${elem.last_name}`}
-                  </p>
-                </div>
-              </Col>
-            </Row>
-          </Card>
-        );
-      })}
+              <Row className=' m-0 px-2 my-auto'>
+                <Col xs={8} className='p-0 d-flex mb-3'>
+                  <div className='m-1 '>
+                    <img
+                      src={elem.profile_image ? elem.profile_image : avatarImage}
+                      alt='avatar'
+                      height='38'
+                      width='38'
+                      css={AdmissionStyle.avatar}
+                      className='my-auto'
+                    />
+                  </div>
+                  <div className='p-0 d-flex align-items-center'>
+                    <p css={AdmissionStyle.avatarHeading} className='mb-0 mt-2 ml-2'>
+                      {`${elem.first_name} ${elem.last_name}`}
+                    </p>
+                  </div>
+                </Col>
+              </Row>
+            </Card>
+          );
+        })}
     </>
   );
 };

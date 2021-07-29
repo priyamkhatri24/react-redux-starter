@@ -4,6 +4,9 @@
   --lightest-blue: rgba(188, 224, 253, 1);
   --superlight-blue: rgba(241, 249, 255, 1);
 }
+:focus {
+  outline: 0 !important;
+}
 
 // .rootContainer {
 //   @import '../scss/bootstrap';

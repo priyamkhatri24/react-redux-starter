@@ -17,6 +17,7 @@ import {
   getTestResultArray,
   getTestStartTime,
   getTestEndTime,
+  getTestLanguage,
 } from '../../../redux/reducers/tests.reducer';
 import './QuestionTaker.scss';
 import { firstTimeLoginActions } from '../../../redux/actions/firsttimeLogin.action';
@@ -41,6 +42,7 @@ class QuestionTaker extends Component {
       modalOpen: false,
       startingResult: false,
       userWantsToLeave: false,
+      currentLanguage: props.testLanguage === 'hindi' ? 'hindi' : 'english',
     };
   }
 
@@ -92,6 +94,8 @@ class QuestionTaker extends Component {
           newObj.uuid = index + 1;
           newObj.question_status = 'Not viewed'; // 'Not Viewed' 'Attempted' 'Viewed' Review Answered And Reveiwed
           newObj.option_array.map((res) => (res.isFocus = false));
+          if (newObj.hindi_option_array !== undefined)
+            newObj.hindi_option_array.map((res) => (res.isFocus = false));
           newObj.isCorrect = false;
           newObj.timer = 0;
           newObj.noOfTimesVisited = 0;
@@ -170,15 +174,11 @@ class QuestionTaker extends Component {
 
     const finalObject = Object.assign({}, ...finalArray);
 
-    console.log(finalObject, 'aja beti');
-
     const finalPayload = {
       client_user_id: clientUserId,
       test_id: testId,
       questions_array: JSON.stringify(finalObject),
     };
-
-    console.log('key ho rha h');
 
     post(finalPayload, '/studentTestActivityLatest').then((res) => {
       if (res.success) {
@@ -187,7 +187,6 @@ class QuestionTaker extends Component {
           test_id: testID,
           test_status: 'submitted',
         };
-        console.log('key ho rha h');
         if (testType === 'demotest') {
           post(updationPayload, '/updateTestStatus').then((response) => {
             if (response.success) {
@@ -330,6 +329,10 @@ class QuestionTaker extends Component {
 
   handleFinishClose = () => this.setState({ modalOpen: false });
 
+  changeLanguage = (language) => {
+    this.setState({ currentLanguage: language });
+  };
+
   render() {
     const {
       currentTime,
@@ -339,7 +342,11 @@ class QuestionTaker extends Component {
       startingResult,
       modalOpen,
       timerCurrentTime,
+      currentLanguage,
     } = this.state;
+
+    const { testLanguage } = this.props;
+
     return (
       <div className='QuestionTaker'>
         <div className='mx-2 mt-3 d-flex'>
@@ -350,6 +357,17 @@ class QuestionTaker extends Component {
               isFinished={this.timerHasFinished}
               getCurrentTimerTime={this.getCurrentTimerTime}
             />
+          )}
+          {testLanguage === 'both' && (
+            <Button
+              variant='boldText'
+              className='ml-3'
+              onClick={() =>
+                this.changeLanguage(currentLanguage === 'english' ? 'hindi' : 'english')
+              } //eslint-disable-line
+            >
+              Change: <span style={{ textTransform: 'capitalize' }}>{currentLanguage}</span>
+            </Button>
           )}
           <div className='ml-auto'>
             <Button variant='finishTest' onClick={() => this.triggerFinish()}>
@@ -369,6 +387,7 @@ class QuestionTaker extends Component {
           currentQuestion={currentQuestion}
           onUnmount={this.questionCardUnmount}
           onSaveAndNext={this.onSaveAndNext}
+          language={currentLanguage}
         />
 
         <Modal show={modalOpen} centered onHide={this.handleFinishClose}>
@@ -408,6 +427,7 @@ const mapStateToProps = (state) => ({
   testStartTime: getTestStartTime(state),
   testEndTime: getTestEndTime(state),
   comeBackFromTests: getComeBackFromTests(state),
+  testLanguage: getTestLanguage(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -442,6 +462,7 @@ QuestionTaker.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   testId: PropTypes.number.isRequired,
   testType: PropTypes.string.isRequired,
+  testLanguage: PropTypes.string.isRequired,
   testResultArray: PropTypes.instanceOf(Array).isRequired,
   testStartTime: PropTypes.number.isRequired,
   testEndTime: PropTypes.number.isRequired,

@@ -43,7 +43,7 @@ export const DashboardCards = (props) => {
         <Col xs={8}>
           <p className='Dashboard__todaysHitsText'>
             {coloredHeading && <span style={{ color }}>{coloredHeading}</span>}{' '}
-            <span>{heading}</span>
+            <span className='DashboardCards__heading'>{heading}</span>
           </p>
           <p className='Dashboard__attendanceSubHeading'>{subHeading}</p>
 
@@ -56,7 +56,7 @@ export const DashboardCards = (props) => {
             </Button>
           )}
         </Col>
-        <Col xs={4}>
+        <Col xs={4} className='DashboardCard_Image'>
           <img src={image} alt='notebook' height='80' width='80' />
         </Col>
       </Row>

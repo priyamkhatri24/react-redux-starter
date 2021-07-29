@@ -112,8 +112,6 @@ const Fees = (props) => {
             <img
               src={userProfile.profileImage ? userProfile.profileImage : avatarImage}
               alt='avatar'
-              height='38'
-              width='38'
               className='Fees__avatar'
             />
           </div>
@@ -128,7 +126,7 @@ const Fees = (props) => {
             <MoreVertIcon />
           </div>
         </Row>
-        <div>
+        <div className='Fees_navStatusContainer'>
           <Row className='mx-2 px-4 Fees__navStatus'>
             Status:
             <span className='ml-1'>{fees.fee_status}</span>
@@ -136,7 +134,7 @@ const Fees = (props) => {
               Plan Info
             </Button>
           </Row>
-          <p className='Fees__navStatus mx-2 px-4'>
+          <p className='Fees__navStatus mx-2 px-4' style={{ marginBottom: '0' }}>
             <span>Due Amount: {fees.due_amount}</span>
           </p>
         </div>
@@ -155,7 +153,11 @@ const Fees = (props) => {
         </div>
         <footer className='Fees__footer text-center'>
           {fees.due_amount > 0 ? (
-            <Button variant='customPrimary' className='mt-4' onClick={() => startPayment()}>
+            <Button
+              variant='customPrimary'
+              className='mt-4 Fees__PayButton'
+              onClick={() => startPayment()}
+            >
               Pay
             </Button>
           ) : (

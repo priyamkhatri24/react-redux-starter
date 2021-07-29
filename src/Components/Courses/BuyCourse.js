@@ -6,6 +6,7 @@ import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Toast from 'react-bootstrap/Toast';
 import Card from 'react-bootstrap/Card';
 import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
@@ -17,19 +18,27 @@ import StarIcon from '@material-ui/icons/Star';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import rupee from '../../assets/images/Courses/rupee.svg';
-import { apiValidation, get, post, displayRazorpay } from '../../Utilities';
+import { apiValidation, get, post, displayRazorpay, shareThis } from '../../Utilities';
 import { PageHeader } from '../Common';
 import './Courses.scss';
-import { getClientId } from '../../redux/reducers/clientUserId.reducer';
+import {
+  getClientId,
+  getClientUserId,
+  getRoleArray,
+} from '../../redux/reducers/clientUserId.reducer';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import YCIcon from '../../assets/images/ycIcon.png';
 import checkmark from '../../assets/images/order/icons8-checked.svg';
 import caution from '../../assets/images/order/icons8-medium-risk-50.png';
+import { dashboardActions } from '../../redux/actions/dashboard.action';
+import { brandingActions } from '../../redux/actions/branding.action';
 
 const BuyCourse = (props) => {
   const {
     history,
+    match,
     clientId,
+    clientUserId,
     currentbranding: {
       branding: {
         client_color: clientColor,
@@ -39,6 +48,9 @@ const BuyCourse = (props) => {
         client_contact: clientContact,
       },
     },
+    setRedirectPathToStore,
+    setCurrentComponentToStore,
+    roleArray,
   } = props;
   const [course, setCourse] = useState({});
   const [courseVideo, setCourseVideo] = useState({});
@@ -51,6 +63,7 @@ const BuyCourse = (props) => {
   const [couponId, setCouponId] = useState('');
   const [couponMessage, setCouponMessage] = useState('');
   const [order, setOrder] = useState({});
+  const [showToast, setShowToast] = useState(false);
 
   const statusClass = cx({
     Fees__orderStatus: true,
@@ -64,13 +77,18 @@ const BuyCourse = (props) => {
   };
 
   useEffect(() => {
+    setRedirectPathToStore(null);
+    setCurrentComponentToStore('Welcome');
+  }, [setCurrentComponentToStore, setRedirectPathToStore]);
+
+  useEffect(() => {
     const payload = {
-      client_user_id: history.location.state.clientUserId,
-      course_id: history.location.state.id,
+      client_id: match.params.clientId,
+      course_id: match.params.courseId,
     };
 
     get(payload, '/getCourseDetails').then((res) => {
-      console.log(res);
+      console.log(res, 'course details');
       const result = apiValidation(res);
       setCourse(result);
       if (result.course_preview_vedio) {
@@ -107,13 +125,16 @@ const BuyCourse = (props) => {
         )),
       );
     });
-  }, [history.location.state.id, history.location.state.clientUserId]);
+  }, [match]);
 
   const subscribeOrBuy = () => {
+    if (roleArray.includes(3) || roleArray.includes(4)) {
+      history.push('/');
+    }
     if (course.course_type === 'free') {
       const payload = {
-        client_user_id: history.location.state.clientUserId,
-        course_id: history.location.state.id,
+        client_user_id: clientUserId,
+        course_id: match.params.courseId,
       };
       post(payload, '/subscribeStudentToCourse').then((res) => {
         if (res.success === 1) {
@@ -145,15 +166,15 @@ const BuyCourse = (props) => {
     if (order.status === 'marked' || order.status === 'waived' || order.status === 'paid') {
       history.push({
         pathname: '/courses/mycourse',
-        state: { id: history.location.state.id, clientUserId: history.location.state.clientUserId },
+        state: { id: match.params.courseId, clientUserId },
       });
     }
   };
 
   const applyCoupon = () => {
     const payload = {
-      client_user_id: history.location.state.clientUserId,
-      course_id: history.location.state.id,
+      client_user_id: clientUserId,
+      course_id: match.params.courseId,
       client_id: clientId,
       coupon_code: coupon,
     };
@@ -162,7 +183,7 @@ const BuyCourse = (props) => {
       const result = apiValidation(res);
       if (result.coupon_status === 'true') {
         let newPrice = coursePrice - result.price;
-        if (newPrice <= 0) newPrice = 1;
+        if (newPrice <= 0) newPrice = 0;
         setCoursePrice(newPrice);
         setCouponId(result.coupon_id);
         setCouponMessage(result.message);
@@ -175,8 +196,8 @@ const BuyCourse = (props) => {
 
   const payToRazorBaba = () => {
     const orderPayload = {
-      client_user_id: history.location.state.clientUserId,
-      course_id: history.location.state.id,
+      client_user_id: clientUserId,
+      course_id: match.params.courseId,
       amount: coursePrice,
       coupon_id: couponId,
     };
@@ -227,21 +248,58 @@ const BuyCourse = (props) => {
     });
   };
 
+  const basSubscribe = () => {
+    const payload = {
+      client_user_id: clientUserId,
+      course_id: match.params.courseId,
+      coupon_id: couponId,
+    };
+    post(payload, '/subscribeStudentToCourse').then((res) => {
+      if (res.success === 1) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Subscribed!',
+          text: `You have successfully subscribed to ${course.course_title}.`,
+        });
+        history.push('/');
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops!',
+          text: `Unable to subscribe to this course`,
+        });
+      }
+    });
+  };
+
+  const goToLogin = () => {
+    setRedirectPathToStore(window.location.pathname);
+    setCurrentComponentToStore('PhoneNo');
+    history.push('/preload');
+  };
+
+  const shareCourse = () => {
+    // eslint-disable-next-line
+    const url = window.location.href;
+    console.log(url);
+    const hasShared = shareThis(url, window.location.host.split('.')[0]);
+    if (hasShared === 'clipboard') setShowToast(true);
+  };
+
   return (
     <div>
       <PageHeader title='Buy Course' />
       {Object.keys(course).length > 0 && (
-        <div className='Course' style={{ marginTop: '5rem' }}>
+        <div className='Courses__buycourseContainer' style={{ marginTop: '5rem' }}>
           <Row className='mx-3'>
-            <Col xs={4} className=''>
+            <Col xs={5} sm={3} className='Courses__imageRow'>
               <img
                 src={course.course_display_image ? course.course_display_image : YCIcon}
                 alt='course'
-                className='mx-auto
-              img-fluid'
+                className='mx-auto img-fluid Courses__displayImage'
               />
             </Col>
-            <Col xs={8} className='p-0'>
+            <Col xs={7} sm={9} className='p-0'>
               <p className='Scrollable__courseCardHeading mb-0 mx-2'>{course.course_title}</p>
               <Row className='mx-2'>
                 {starArray.map((e) => {
@@ -275,19 +333,28 @@ const BuyCourse = (props) => {
               </Row>
             </Col>
           </Row>
-          <Row>
+          <Row className='Courses__buyButton'>
             <Button
               className='mt-3 mx-auto'
               variant='greenButtonLong'
-              onClick={() => subscribeOrBuy()}
+              onClick={
+                localStorage.getItem('state') &&
+                JSON.parse(localStorage.getItem('state')).userProfile.token
+                  ? () => subscribeOrBuy()
+                  : () => goToLogin()
+              }
             >
               {course.course_type === 'free' ? 'Subscribe' : 'Buy Now'}
             </Button>
+            <Button
+              className='mt-3 mx-auto'
+              variant='greenButtonLong'
+              onClick={() => shareCourse()}
+            >
+              Share
+            </Button>
           </Row>
-          <div
-            className='mx-auto my-4'
-            style={{ height: '180px', width: '273px', borderRadius: '5px' }}
-          >
+          <div className='mx-auto my-4 Courses__videoplayer'>
             {courseVideo && <PlyrComponent source={courseVideo} options={options} />}
           </div>
           <p className='Courses__heading m-3'>What will I learn?</p>
@@ -346,6 +413,25 @@ const BuyCourse = (props) => {
         </div>
       )}
 
+      <Toast
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '15%',
+          zIndex: '999',
+        }}
+        onClose={() => setShowToast(false)}
+        show={showToast}
+        delay={3000}
+        autohide
+      >
+        <Toast.Header>
+          <strong className='mr-auto'>Copied!</strong>
+          <small>Just Now</small>
+        </Toast.Header>
+        <Toast.Body>The link has been copied to your clipboard!</Toast.Body>
+      </Toast>
+
       <Modal show={showCouponModal} centered onHide={closeCouponModal}>
         <Modal.Header closeButton>
           <span className='Scrollable__courseCardHeading my-auto' style={{ fontSize: '14px' }}>
@@ -398,7 +484,10 @@ const BuyCourse = (props) => {
           <Button variant='boldTextSecondary' onClick={() => closeCouponModal()}>
             Cancel
           </Button>
-          <Button variant='boldText' onClick={() => payToRazorBaba()}>
+          <Button
+            variant='boldText'
+            onClick={coursePrice ? () => payToRazorBaba() : () => basSubscribe()}
+          >
             Pay
           </Button>
         </Modal.Footer>
@@ -466,14 +555,23 @@ const BuyCourse = (props) => {
 
 const mapStateToProps = (state) => ({
   clientId: getClientId(state),
+  clientUserId: getClientUserId(state),
   currentbranding: getCurrentBranding(state),
+  roleArray: getRoleArray(state),
 });
 
-export default connect(mapStateToProps)(BuyCourse);
+const mapDispatchToProps = (dispatch) => ({
+  setRedirectPathToStore: (payload) => dispatch(dashboardActions.setRedirectPathToStore(payload)),
+  setCurrentComponentToStore: (payload) =>
+    dispatch(brandingActions.setCurrentComponentToStore(payload)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(BuyCourse);
 
 BuyCourse.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   clientId: PropTypes.number.isRequired,
+  clientUserId: PropTypes.number.isRequired,
   currentbranding: PropTypes.shape({
     branding: PropTypes.shape({
       client_logo: PropTypes.string,
@@ -485,4 +583,8 @@ BuyCourse.propTypes = {
       client_contact: PropTypes.string,
     }),
   }).isRequired,
+  match: PropTypes.instanceOf(Object).isRequired,
+  setRedirectPathToStore: PropTypes.func.isRequired,
+  setCurrentComponentToStore: PropTypes.func.isRequired,
+  roleArray: PropTypes.instanceOf(Array).isRequired,
 };

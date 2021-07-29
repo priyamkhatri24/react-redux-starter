@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 function loadScript(src) {
   return new Promise((resolve) => {
     const script = document.createElement('script');

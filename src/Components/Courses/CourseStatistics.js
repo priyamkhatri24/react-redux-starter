@@ -5,6 +5,8 @@ import Col from 'react-bootstrap/Col';
 import { get, apiValidation } from '../../Utilities';
 import { PageHeader } from '../Common';
 import placeholder from '../../assets/images/ycIcon.png';
+import './Courses.scss';
+import { history } from '../../Routing/History';
 
 const CourseStatistics = (props) => {
   const {
@@ -14,9 +16,7 @@ const CourseStatistics = (props) => {
       },
     },
   } = props;
-
   const [stats, setStats] = useState([]);
-
   useEffect(() => {
     get({ course_id: id }, '/getStatisticsOfCourse').then((res) => {
       console.log(res);
@@ -25,14 +25,18 @@ const CourseStatistics = (props) => {
     });
   }, [id]);
 
+  const goToCourseStatistics = () => {
+    history.push({ pathname: '/courses/teachercourse' });
+  };
+
   return (
     <>
-      <PageHeader title='Details' />
-      <div style={{ marginTop: '5rem' }}>
+      <PageHeader title='Details' handleBack={goToCourseStatistics} />
+      <div className='Courses__statisticsConatiner'>
         {stats.map((course) => {
           return (
-            <Row className='m-3' key={course.course_id}>
-              <Col xs={4} className=''>
+            <Row key={course.course_id} style={{ marginBottom: '2rem' }}>
+              <Col xs={4} className='Courses__statisticsImg'>
                 <img
                   src={course.profile_image ? course.profile_image : placeholder}
                   alt='course '

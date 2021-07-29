@@ -12,7 +12,7 @@ export const AuthenticatedRoute = ({ component: Component, ...rest }) => (
       JSON.parse(localStorage.getItem('state')).userProfile.token ? (
         <Component {...props} />
       ) : (
-        <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
+        <Redirect to={{ pathname: '/preload', state: { from: props.location } }} />
       )
     }
   />

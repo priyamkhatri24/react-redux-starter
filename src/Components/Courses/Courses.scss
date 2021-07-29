@@ -35,6 +35,11 @@
     height: 61px;
     object-fit: cover;
     border-radius: 5px;
+
+    @include media-breakpoint-up(md) {
+      width: 150px;
+      height: 80px;
+    }
   }
 
   // &__playerWrapper {
@@ -79,6 +84,10 @@
     color: $lightGrey;
     line-height: 15px;
     font-size: $spacer * 0.75;
+
+    @include media-breakpoint-up(md) {
+      font-size: $spacer * 0.875;
+    }
   }
 
   &__motiDetail {
@@ -86,6 +95,10 @@
     font-size: $spacer * 0.875;
     line-height: 18px;
     color: $black;
+
+    @include media-breakpoint-up(md) {
+      font-size: $spacer * 1;
+    }
   }
 
   &__edit {
@@ -120,6 +133,122 @@
     height: 20px;
     width: 74px;
   }
+
+  &__container {
+    width: 80%;
+    margin: auto;
+    margin-top: 5rem;
+    padding-left: 10%;
+    @include media-breakpoint-down(sm) {
+      width: 90%;
+    }
+    @include media-breakpoint-down(md) {
+      padding-left: 0;
+    }
+  }
+
+  &__image {
+    @include media-breakpoint-down(sm) {
+      padding-left: 0;
+    }
+  }
+
+  &__displayImage {
+    width: 95px;
+    height: 61px;
+
+    @include media-breakpoint-up(sm) {
+      width: 150px;
+      height: 93px;
+    }
+  }
+
+  &__buycourseContainer {
+    width: 80%;
+    margin: auto;
+
+    @include media-breakpoint-down(md) {
+      width: 90%;
+    }
+  }
+
+  &__videoplayer {
+    height: 180px;
+    width: 273px;
+
+    @include media-breakpoint-up(sm) {
+      width: 93%;
+      height: 350px;
+    }
+  }
+  &__imageRow {
+    @include media-breakpoint-down(md) {
+      padding: 0;
+    }
+  }
+
+  &__teacherCourse {
+    width: 75%;
+    margin: auto;
+    margin-top: 1rem;
+
+    @include media-breakpoint-down(sm) {
+      width: 95%;
+    }
+  }
+
+  &__iconImage {
+    text-align: center;
+
+    @include media-breakpoint-down(sm) {
+      text-align: left;
+    }
+  }
+
+  &__createCourses {
+    width: 75%;
+    margin: auto;
+
+    @include media-breakpoint-down(sm) {
+      width: 90%;
+    }
+  }
+
+  &__boldHeading {
+    font-size: $spacer * 1;
+
+    @include media-breakpoint-down(sm) {
+      font-size: $spacer * 0.875;
+    }
+  }
+  &__statisticsConatiner {
+    width: 75%;
+    margin: auto;
+    margin-top: 5rem;
+
+    @include media-breakpoint-down(sm) {
+      width: 90%;
+    }
+  }
+  &__statisticsImg {
+    text-align: center;
+
+    @include media-breakpoint-down(sm) {
+      text-align: left;
+    }
+  }
+  &__Profile__Tabs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    z-index: 100;
+  }
+  &__twoButtons {
+    position: absolute;
+    right: -35px;
+  }
 }
 
 #limited + label {
@@ -148,4 +277,11 @@
   font-size: 14px;
   color: var(--primary-blue);
   line-height: 18px;
+}
+
+.react-thumbnail-generator > img {
+  width: 95px;
+  height: 60px;
+  border-radius: 5px;
+  display: none;
 }

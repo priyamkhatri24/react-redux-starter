@@ -8,12 +8,7 @@ import { homeworkActions } from '../../redux/actions/homework.action';
 import { getSelectedQuestionArray } from '../../redux/reducers/homeworkCreator.reducer';
 
 const PreviewQuestions = (props) => {
-  const {
-    selectedQuestionArray,
-    setCurrentSlide,
-    setSelectedQuestionArrayToStore,
-    history,
-  } = props;
+  const { selectedQuestionArray, setSelectedQuestionArrayToStore, history } = props;
   const [selectedQuestions, setSelectedQuestions] = useState([]);
 
   useEffect(() => {
@@ -78,7 +73,6 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(mapStateToProps, mapDispatchToProps)(PreviewQuestions);
 
 PreviewQuestions.propTypes = {
-  setCurrentSlide: PropTypes.func.isRequired,
   setSelectedQuestionArrayToStore: PropTypes.func.isRequired,
   selectedQuestionArray: PropTypes.instanceOf(Array).isRequired,
   history: PropTypes.shape({

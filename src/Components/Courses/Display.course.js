@@ -8,10 +8,13 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import AddIcon from '@material-ui/icons/Add';
+import VideoThumbnail from 'react-video-thumbnail';
 import { courseActions } from '../../redux/actions/course.action';
-import { uploadImage, verifyIsFile, verifyIsImage, verifyIsVideo } from '../../Utilities';
+import { verifyIsFile, verifyIsImage, verifyIsVideo } from '../../Utilities';
+import { uploadingImage } from '../../Utilities/customUpload';
 import YCIcon from '../../assets/images/ycIcon.png';
 import { loadingActions } from '../../redux/actions/loading.action';
+import Cropper from '../Common/CropperModal/Cropper';
 
 const Display = (props) => {
   const {
@@ -20,16 +23,24 @@ const Display = (props) => {
     courseDesc,
     updateDisplayDetails,
     courseDisplayImage,
-    setLoadingPendingToStore,
-    setLoadingSuccessToStore,
+    courseDisplayVideo,
   } = props;
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [imageTitle, setImageTitle] = useState('');
+  const [imageModal, setImageModal] = useState(false);
+  const [upImg, setUpImg] = useState();
+  const [profileImage, setProfileImage] = useState('');
   const courseImage = useRef('');
   const courseVideo = useRef('');
   const courseVideoRef = useRef(null);
   const courseImageRef = useRef(null);
+  const [videoName, setVideoName] = useState('');
+  const [videoURL, setVideoURL] = useState('');
+  const [thumbnailImg, setThumbnail] = useState('');
+
+  const handleClose = () => setImageModal(false);
+  const handleOpen = () => setImageModal(true);
 
   useEffect(() => {
     setTitle(courseTitle);
@@ -41,11 +52,21 @@ const Display = (props) => {
       setImageTitle(courseDisplayImage);
       courseImage.current = courseDisplayImage;
     }
-  }, [courseDisplayImage]);
+
+    if (courseDisplayVideo) {
+      courseVideo.current = courseDisplayVideo;
+      setVideoName(
+        courseVideo.current.substr(courseVideo.current.lastIndexOf('/') + 1),
+        courseVideo.current.length,
+      );
+      setVideoURL(courseVideo.current);
+    }
+  }, [courseDisplayImage, courseDisplayVideo]);
 
   const getImageInput = (e, type) => {
     const reader = new FileReader();
     const file = e.target.files[0];
+    if (type === 'image') handleOpen();
 
     let isFileAllowed = false;
     console.log(file);
@@ -69,15 +90,19 @@ const Display = (props) => {
       });
     }
     if (file && isFileAllowed) {
+      // setLoadingPendingToStore();
+      reader.addEventListener('load', () => setUpImg(reader.result));
       reader.readAsDataURL(e.target.files[0]);
-      setLoadingPendingToStore();
 
-      uploadImage(file).then((res) => {
-        type === 'image'
-          ? (courseImage.current = res.filename)
-          : (courseVideo.current = res.filename);
-        setLoadingSuccessToStore();
-      });
+      if (type !== 'image') {
+        uploadingImage(file).then((res) => {
+          courseVideo.current = res.filename;
+          const startVideo = courseVideo.current.lastIndexOf('/') + 1;
+          setVideoName(courseVideo.current.substr(startVideo, courseVideo.current.length));
+          setVideoURL(courseVideo.current);
+        });
+      }
+
       if (type === 'image') {
         reader.onloadend = function getImage() {
           const base64data = reader.result;
@@ -86,6 +111,9 @@ const Display = (props) => {
       }
     }
   };
+  console.log(profileImage);
+  courseImage.current = profileImage;
+
   return (
     <div>
       {['Basic Information', 'Create your content'].map((e, i) => {
@@ -115,7 +143,7 @@ const Display = (props) => {
           <span className='my-auto ml-3'>Course display page</span>
         </Row>
         <Row className='m-2 mt-3 justify-content-center'>
-          <label className='has-float-label my-auto w-100'>
+          <label className='has-float-label my-auto' style={{ width: '100%' }}>
             <input
               className='form-control'
               name='Name'
@@ -184,6 +212,14 @@ const Display = (props) => {
               </div>
             )}
           </Col>
+          <Cropper
+            sourceImage={upImg}
+            imageModal={imageModal}
+            handleClose={handleClose}
+            setProfileImage={setProfileImage}
+            aspectTop={3}
+            aspectBottom={2}
+          />
           <Col xs={8} className='p-0'>
             <Row className='my-auto Courses__createCourse mx-2'>
               <span className='my-auto ml-3' style={{ fontFamily: 'Montserrat-Regular' }}>
@@ -216,12 +252,27 @@ const Display = (props) => {
               ref={courseVideoRef}
             />
             {courseVideo.current && (
-              <img
-                src={YCIcon}
-                alt='upload your profile pic'
-                className='img-fluid'
-                style={{ height: '60px', width: '95px' }}
-              />
+              <div style={{ flexDirection: 'row' }}>
+                <Row className='justify-content-center'>
+                  <img
+                    src={thumbnailImg || YCIcon}
+                    alt='upload your profile pic'
+                    className='img-fluid'
+                    style={{ height: '60px', width: '95px', borderRadius: '5px' }}
+                  />
+                  <div style={{ display: 'none' }}>
+                    <VideoThumbnail
+                      videoUrl={videoURL}
+                      thumbnailHandler={(thumbnail) => setThumbnail(thumbnail)}
+                    />
+                  </div>
+                </Row>
+                <Row>
+                  <div>
+                    <small className='Courses__tinySubHeading'>{videoName}</small>
+                  </div>
+                </Row>
+              </div>
             )}
             {!courseVideo.current && (
               <div
@@ -232,7 +283,7 @@ const Display = (props) => {
                   borderRadius: '5px',
                   cursor: 'pointer',
                 }}
-                className='align-items-center d-flex justify-content-center p-0 w-100'
+                className='align-items-center d-flex justify-content-center p-0'
               >
                 <span style={{ color: '#7FC4FD' }}>
                   <AddIcon style={{ fontSize: '60px' }} />
@@ -307,12 +358,11 @@ Display.propTypes = {
   courseDesc: PropTypes.string,
   updateDisplayDetails: PropTypes.func.isRequired,
   courseDisplayImage: PropTypes.string,
-
-  setLoadingPendingToStore: PropTypes.func.isRequired,
-  setLoadingSuccessToStore: PropTypes.func.isRequired,
+  courseDisplayVideo: PropTypes.string,
 };
 
 Display.defaultProps = {
   courseDesc: '',
   courseDisplayImage: '',
+  courseDisplayVideo: '',
 };

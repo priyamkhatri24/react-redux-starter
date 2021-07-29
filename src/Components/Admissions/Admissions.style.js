@@ -13,6 +13,10 @@ const AdmissionStyle = {
     font-family: ${fonts.regular};
     line-height: 15px;
     color: ${colors.dashboardBlack};
+    font-weight: 600;
+    @media (min-width: 768px) {
+      font-size: ${spacer * 0.85}rem;
+    }
   `,
 
   scrollable: css`
@@ -35,7 +39,7 @@ const AdmissionStyle = {
     font-family: ${fonts.regular};
     color: $white;
     background-color: var(--lighter-blue);
-    border-radius: 50px;
+    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -58,7 +62,7 @@ const AdmissionStyle = {
     align-items: center;
 
     @media (min-width: 768px) {
-      min-width: 50px;
+      min-width: 100px;
     }
   `,
 
@@ -81,11 +85,20 @@ const AdmissionStyle = {
   avatarHeading: css`
     font-family: 'Montserrat-SemiBold';
     font-size: ${spacer * 0.75}rem;
+    padding-bottom: 3px;
+
+    @media (min-width: 768px) {
+      font-size: ${spacer * 0.8}rem;
+    }
   `,
 
   avatarStatus: css`
     font-family: 'Montserrat-Light';
     font-size: ${spacer * 0.625}rem;
+
+    @media (min-width: 768px) {
+      font-size: ${spacer * 0.7}rem;
+    }
   `,
 
   avatar: css`
@@ -125,11 +138,20 @@ const AdmissionStyle = {
     line-height: 19px;
     color: ${colors.black};
     font-family: ${fonts.regular};
+    margin: 1.5rem;
+    width: 90%;
+    padding-bottom: 10px;
+
+    @media (min-width: 768px) {
+      width: 75%;
+      margin: auto;
+    }
   `,
 
   box: css`
     border: 1px solid ${colors.dashboardGreyLight};
     border-radius: 5px;
+    ${'' /* max-width: 500px; */}
   `,
 
   verticalDots: css`
@@ -138,10 +160,14 @@ const AdmissionStyle = {
     right: 5px;
   `,
 
-  batchname: css`
-    font-size: ${spacer * 0.75}rem;
+  batchName: css`
+    font-size: ${spacer * 1}rem;
     font-family: ${fonts.semiBold};
     color: ${colors.black};
+
+    @media (max-width: 768px) {
+      font-size: ${spacer * 0.75}rem;
+    }
   `,
 
   students: css`
@@ -152,6 +178,53 @@ const AdmissionStyle = {
   adminCard: css`
     border: 1px solid ${colors.disabledGrey};
     border-radius: 5px;
+    width: 75%;
+    margin: auto;
+
+    @media (max-width: 768px) {
+      width: 90%;
+    }
+  `,
+
+  UserCards: css`
+    height: '65vh';
+    overflow: 'scroll';
+    width: 100%;
+
+    @media (min-width: 768px) {
+      width: 80%;
+      margin: auto;
+    }
+  `,
+  headerButtons: css`
+    font-size: 1rem;
+    width: 16rem;
+    height: 2.125rem;
+    @media (max-width: 768px) {
+      width: 8.4375rem;
+      height: 2.125rem;
+    }
+    @media (max-width: 300px) {
+      font-size: 0.75rem;
+    }
+  `,
+  horizonatalLine: css`
+    border-top: 6px solid rgba(0, 0, 0, 0.1);
+    width: 30%;
+
+    @media (max-width: 768px) {
+      border-top: 5px solid rgba(0, 0, 0, 0.1);
+      width: 25%;
+    }
+  `,
+  batchImg: css`
+    height: 70px;
+    width: 70px;
+
+    @media (max-width: 768px) {
+      height: 50px;
+      width: 50px;
+    }
   `,
 };
 

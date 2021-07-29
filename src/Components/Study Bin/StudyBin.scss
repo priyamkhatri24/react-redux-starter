@@ -29,14 +29,36 @@
 
   &__verticalDots {
     position: absolute;
-    top: 15px;
+    top: 10px;
     right: 5px;
+
+    @include media-breakpoint-down(sm) {
+      top: 5px;
+      right: 1px;
+    }
   }
 
   &__categoryText {
-    font-size: $spacer * 0.75;
-    line-height: 15px;
+    font-size: $spacer * 0.875;
+    line-height: 20px;
     font-family: $semiBold;
     color: $headingGrey;
+
+    @include media-breakpoint-down(md) {
+      font-size: 12px;
+      line-height: 15px;
+    }
   }
+}
+
+.folder_icon {
+  height: 67px;
+  width: 67px;
+}
+.container_studybin {
+  justify-content: space-evenly;
+}
+.container_studybin::after {
+  content: '';
+  flex: 0 0 26%;
 }

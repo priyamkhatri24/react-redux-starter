@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { jsx } from '@emotion/react';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Col from 'react-bootstrap/Col';
@@ -23,8 +22,8 @@ const BatchesDataCard = (props) => {
         <span css={AdmissionStyle.verticalDots}>
           <MoreVertIcon />
         </span>
-        <div className='m-2 text-center'>
-          <img src={avatarImage} alt='batchpic' height='40' width='40' />
+        <div className='m-2 text-center' style={{ paddingTop: '10px' }}>
+          <img src={avatarImage} alt='batchpic' css={AdmissionStyle.batchImg} />
           <h6 css={AdmissionStyle.batchName} className='text-center mt-3 '>
             {elem.batch_name}
           </h6>

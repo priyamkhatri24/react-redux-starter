@@ -21,6 +21,7 @@ import { getClientId, getClientUserId, getUserId } from '../../redux/reducers/cl
 import { apiValidation, get, post } from '../../Utilities';
 import userImage from '../../assets/images/user.svg';
 import { getAdmissionUserProfile } from '../../redux/reducers/admissions.reducer';
+import './Admissions.scss';
 import AdmissionStyle from './Admissions.style';
 
 const UserDetails = (props) => {
@@ -30,14 +31,16 @@ const UserDetails = (props) => {
   const [showBatchModal, setShowBatchModal] = useState(false);
 
   const openBatchModal = () => setShowBatchModal(true);
-  const closeBatchModal = () => {
+  const closeBatchModal = () => setShowBatchModal(false);
+
+  const submitBatchModal = () => {
     const batchPayload = {
       client_id: clientId,
-      client_user_id: clientUserId,
+      client_user_id: user.client_user_id,
     };
 
     const payload = {
-      client_user_id: clientUserId,
+      client_user_id: user.client_user_id,
       batch_add: JSON.stringify(batches),
       batch_remove: JSON.stringify(
         allBatches.filter((e) => Object.prototype.hasOwnProperty.call(e, 'user_batch_id')),
@@ -82,7 +85,7 @@ const UserDetails = (props) => {
   useEffect(() => {
     const batchPayload = {
       client_id: clientId,
-      client_user_id: clientUserId,
+      client_user_id: user.client_user_id,
     };
 
     get(batchPayload, '/getBatchInformationOfUser').then((res) => {
@@ -91,7 +94,7 @@ const UserDetails = (props) => {
       setBatches(result.current_batch);
       setAllBatches(result.final_batch);
     });
-  }, [clientId, clientUserId]);
+  }, [clientId, clientUserId, user]);
 
   const getSelectedBatches = (allbatches, selectedBatches) => {
     setBatches(selectedBatches);
@@ -135,14 +138,18 @@ const UserDetails = (props) => {
           <Tab eventKey='Details' title='Details'>
             <div
               css={AdmissionStyle.adminCard}
-              className='p-2 m-3'
-              style={{ position: 'relative' }}
+              className='p-2'
+              style={{ position: 'relative', marginTop: '1.5rem' }}
             >
               <div
                 className='Courses__edit text-center py-1'
-                onClick={() => history.push('/admissions/editprofile')}
+                onClick={() =>
+                  history.push({ pathname: '/admissions/editprofile', state: { user } })
+                } //eslint-disable-line
                 role='button'
-                onKeyDown={() => history.push('/admissions/editprofile')}
+                onKeyDown={() =>
+                  history.push({ pathname: '/admissions/editprofile', state: { user } })
+                } //eslint-disable-line
                 tabIndex='-1'
               >
                 <CreateIcon />
@@ -158,61 +165,61 @@ const UserDetails = (props) => {
                   <DeleteIcon />
                 </div>
               )}
-              <h6 className='LiveClasses__adminHeading mb-0'>First Name</h6>
-              <p className='LiveClasses__adminDuration '>{user.first_name}</p>
+              <h6 className='Batch__heading mb-0'>First Name</h6>
+              <p className=' Batch__details '>{user.first_name}</p>
 
               {user.last_name && (
                 <>
-                  <h6 className='LiveClasses__adminHeading mb-0'>Last Name</h6>
-                  <p className='LiveClasses__adminDuration '>{user.last_name}</p>
+                  <h6 className=' Batch__heading mb-0'>Last Name</h6>
+                  <p className=' Batch__details '>{user.last_name}</p>
                 </>
               )}
 
-              <h6 className='LiveClasses__adminHeading mb-0'>Mobile Number</h6>
-              <p className='LiveClasses__adminDuration '>{user.contact}</p>
+              <h6 className=' Batch__heading mb-0'>Mobile Number</h6>
+              <p className=' Batch__details '>{user.contact}</p>
 
               {user.username && (
                 <>
-                  <h6 className='LiveClasses__adminHeading mb-0'>Username</h6>
-                  <p className='LiveClasses__adminDuration '>{user.username}</p>
+                  <h6 className=' Batch__heading mb-0'>Username</h6>
+                  <p className=' Batch__details '>{user.username}</p>
                 </>
               )}
               {user.parent_name && (
                 <>
-                  <h6 className='LiveClasses__adminHeading mb-0'>Parent&apos;s Name</h6>
-                  <p className='LiveClasses__adminDuration '>{user.parent_name}</p>
+                  <h6 className=' Batch__heading mb-0'>Parent&apos;s Name</h6>
+                  <p className=' Batch__details '>{user.parent_name}</p>
                 </>
               )}
               {user.parent_contact && (
                 <>
-                  <h6 className='LiveClasses__adminHeading mb-0'>Parent&apos;s Mobile Number</h6>
-                  <p className='LiveClasses__adminDuration '>{user.parent_contact}</p>
+                  <h6 className='Batch__heading mb-0'>Parent&apos;s Mobile Number</h6>
+                  <p className=' Batch__details '>{user.parent_contact}</p>
                 </>
               )}
               {user.gender && (
                 <>
-                  <h6 className='LiveClasses__adminHeading mb-0'>Gender</h6>
-                  <p className='LiveClasses__adminDuration '>{user.gender}</p>
+                  <h6 className='Batch__heading mb-0'>Gender</h6>
+                  <p className='Batch__details '>{user.gender}</p>
                 </>
               )}
 
               {user.email && (
                 <>
-                  <h6 className='LiveClasses__adminHeading mb-0'>Email Address</h6>
-                  <p className='LiveClasses__adminDuration '>{user.email}</p>
+                  <h6 className='Batch__heading mb-0'>Email Address</h6>
+                  <p className='Batch__details '>{user.email}</p>
                 </>
               )}
               {user.address && (
                 <>
-                  <h6 className='LiveClasses__adminHeading mb-0'>Residential Address</h6>
-                  <p className='LiveClasses__adminDuration '>{user.address}</p>
+                  <h6 className='Batch__heading mb-0'>Residential Address</h6>
+                  <p className='Batch__details '>{user.address}</p>
                 </>
               )}
-              {user.birthday && (
+              {user.birthday && user.birthday !== 'NaN' && (
                 <>
-                  <h6 className='LiveClasses__adminHeading mb-0'>Date Of Birth</h6>
-                  <p className='LiveClasses__adminDuration '>
-                    {format(fromUnixTime(parseInt(user.birthday / 1000, 10)), 'dd-MMM-yyyy')}
+                  <h6 className='Batch__heading mb-0'>Date Of Birth</h6>
+                  <p className='Batch__details '>
+                    {format(fromUnixTime(parseInt(user.birthday, 10)), 'dd-MMM-yyyy')}
                   </p>
                 </>
               )}
@@ -224,7 +231,7 @@ const UserDetails = (props) => {
                 Change Batch <SwapHorizIcon />
               </Button>
             </Row>
-            <Row className='justify-content-between mx-2'>
+            <Row className='justify-content-center mx-2'>
               {batches.map((elem) => {
                 return (
                   <Col
@@ -255,12 +262,12 @@ const UserDetails = (props) => {
               <BatchesSelector
                 batches={allBatches}
                 getSelectedBatches={getSelectedBatches}
-                title='Courses'
+                title='Batches'
                 selectBatches={batches}
                 sendBoth
               />
               <Modal.Footer>
-                <Button variant='boldText' onClick={() => closeBatchModal()}>
+                <Button variant='boldText' onClick={() => submitBatchModal()}>
                   Done
                 </Button>
               </Modal.Footer>

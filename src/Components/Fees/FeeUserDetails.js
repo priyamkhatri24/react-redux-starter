@@ -5,6 +5,7 @@ import { apiValidation, get, post } from '../../Utilities';
 import UserDataCard from '../Admissions/UsersDataCard';
 import { PageHeader } from '../Common';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
+import './Fees.scss';
 
 const FeeUserDetails = (props) => {
   const { history, clientId, clientUserId } = props;
@@ -56,7 +57,7 @@ const FeeUserDetails = (props) => {
   return (
     <>
       <PageHeader title={title} />
-      <div style={{ marginTop: '4rem' }}>
+      <div className='Fees__userDetails'>
         {users.length > 0 &&
           users.map((elem) => {
             return (

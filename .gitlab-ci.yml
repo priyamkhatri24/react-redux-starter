@@ -9,13 +9,13 @@ build:
   script:
     - apt update
     - apt-get install -y nodejs
-    - npm install -y npm@6.11.0
+    - npm install -y npm@6.13.4
     - nodejs -v
     - npm -v
     - yarn -v
     - ls -la -F
     - yarn
-    - yarn build --prod
+    - CI=false yarn build --prod
   cache:
     paths:
       - node_modules/
@@ -26,6 +26,7 @@ build:
       - build/
   only:
     - master
+    - development
 
 deploy:
   stage: 'deploy'
@@ -47,3 +48,4 @@ deploy:
     - aws deploy push --application-name ingeniumwebportal --s3-location $AWS_S3_LOCATION --no-ignore-hidden-files --source build
   only:
     - master
+    - development

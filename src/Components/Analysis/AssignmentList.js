@@ -118,19 +118,15 @@ const AssignmentList = (props) => {
                           backgroundColor: '#7FC4FD',
                           border: '1px solid #7FC4FD',
                           color: '#fff',
-                          width: '70px',
-                          height: '60px',
                           borderRadius: '10px',
                         }
                       : {
                           border: '1px solid rgba(0,0,0,0.54)',
                           color: 'rgba(0,0,0,0.54)',
-                          width: '70px',
-                          height: '60px',
                           borderRadius: '10px',
                         }
                   }
-                  className='mx-auto'
+                  className='mx-auto Analysis__AssignmentButtons'
                   onClick={() => selectThisButton(elem.id)}
                   onKeyDown={() => selectThisButton(elem.id)}
                   role='button'
@@ -158,14 +154,14 @@ const AssignmentList = (props) => {
             );
           })}
         </Row>
-        <Row className='justify-content-between mx-2 my-4'>
+        <Row className='justify-content-around mx-2 my-5'>
           <Button variant='customPrimarySmol'>SMS results to parents</Button>
           <Button variant='customPrimarySmol'>Download report</Button>
         </Row>
         {students.map((elem) => {
           return (
             <Row
-              className='m-0 p-2'
+              className='p-2 Analysis__AssignementCard'
               key={elem.client_user_id}
               style={{
                 borderBottom: '1px solid rgba(0, 0, 0, 0.54)',
@@ -173,13 +169,13 @@ const AssignmentList = (props) => {
               }}
               onClick={() => goToStudentAnalysis(elem)}
             >
-              <Col xs={2}>
+              <Col xs={2} className='p-0'>
                 <img src={userAvatar} alt='profile' className='Dashboard__noticeImage d-block' />
               </Col>
-              <Col xs={5} className='my-auto'>
+              <Col xs={5} className='my-auto text-center'>
                 {elem.first_name} {elem.last_name}
               </Col>
-              <Col xs={5} className='my-auto text-center'>
+              <Col xs={5} className='my-auto text-right'>
                 {elem.status === 'not attempted' ? 'Not attempted' : elem.score}
               </Col>
             </Row>

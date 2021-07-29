@@ -10,6 +10,8 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Button from 'react-bootstrap/Button';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import CreateIcon from '@material-ui/icons/Create';
+import fromUnixTime from 'date-fns/fromUnixTime';
+import format from 'date-fns/format';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
 import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { firstTimeLoginActions } from '../../redux/actions/firsttimeLogin.action';
@@ -19,6 +21,7 @@ import { PageHeader } from '../Common';
 import { get, post, apiValidation } from '../../Utilities';
 import userImage from '../../assets/images/user.svg';
 import './Profile.scss';
+import '../Live Classes/LiveClasses.scss';
 
 const Profile = (props) => {
   const {
@@ -43,7 +46,7 @@ const Profile = (props) => {
           clearProfile();
           clearClientIdDetails();
           setFirstTimeLoginToStore(false);
-          history.push({ pathname: '/login' });
+          history.push({ pathname: '/preload' });
         }
       })
       .catch(() => {
@@ -102,11 +105,42 @@ const Profile = (props) => {
               <h6 className='LiveClasses__adminHeading mb-0'>First Name</h6>
               <p className='LiveClasses__adminDuration '>{userProfile.firstName}</p>
 
+              <h6 className='LiveClasses__adminHeading mb-0'>Last Name</h6>
+              <p className='LiveClasses__adminDuration '>{userProfile.lastName}</p>
+
               <h6 className='LiveClasses__adminHeading mb-0'>Mobile Number</h6>
               <p className='LiveClasses__adminDuration '>{userProfile.contact}</p>
 
               <h6 className='LiveClasses__adminHeading mb-0'>Username</h6>
               <p className='LiveClasses__adminDuration '>{userProfile.userName}</p>
+
+              {userProfile.gender && (
+                <>
+                  <h6 className='LiveClasses__adminHeading mb-0'>Gender</h6>
+                  <p className='LiveClasses__adminDuration '>{userProfile.gender}</p>
+                </>
+              )}
+
+              {userProfile.email && (
+                <>
+                  <h6 className='LiveClasses__adminHeading mb-0'>Email Address</h6>
+                  <p className='LiveClasses__adminDuration '>{userProfile.email}</p>
+                </>
+              )}
+              {userProfile.address && (
+                <>
+                  <h6 className='LiveClasses__adminHeading mb-0'>Residential Address</h6>
+                  <p className='LiveClasses__adminDuration '>{userProfile.address}</p>
+                </>
+              )}
+              {userProfile.birthday && (
+                <>
+                  <h6 className='LiveClasses__adminHeading mb-0'>Date Of Birth</h6>
+                  <p className='LiveClasses__adminDuration '>
+                    {format(fromUnixTime(parseInt(userProfile.birthday, 10)), 'dd-MMM-yyyy')}
+                  </p>
+                </>
+              )}
 
               <Row className='justify-content-end mb-2 mb-lg-4 mr-2'>
                 <Button variant='customPrimary' size='sm' onClick={() => logout()}>
@@ -176,6 +210,10 @@ Profile.propTypes = {
     userName: PropTypes.string.isRequired,
     contact: PropTypes.string.isRequired,
     profileImage: PropTypes.string,
+    gender: PropTypes.string,
+    address: PropTypes.string,
+    birthday: PropTypes.string,
+    email: PropTypes.string,
   }),
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,

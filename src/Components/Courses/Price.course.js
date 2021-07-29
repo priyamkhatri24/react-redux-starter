@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
-import fromUnixTime from 'date-fns/fromUnixTime';
-import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 import { connect } from 'react-redux';
 import Card from 'react-bootstrap/Card';
@@ -167,7 +165,8 @@ const Price = (props) => {
   };
 
   const addCourseFee = () => {
-    if (!isFree && discountCoursePrice > currentCoursePrice) {
+    console.log(discountCoursePrice, currentCoursePrice);
+    if (!isFree && Number(discountCoursePrice) > Number(currentCoursePrice)) {
       Swal.fire({
         icon: 'error',
         title: 'Oops!',
@@ -257,7 +256,7 @@ const Price = (props) => {
         <Row className='my-3 Courses__createCourse mx-2'>
           <span className='my-auto ml-2'>Coupons</span>
         </Row>
-        <Row className='justify-content-between mx-2'>
+        <Row className='justify-content-center mx-2'>
           {coupon.length > 0 &&
             coupon.map((elem) => {
               return (

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Tabs from 'react-bootstrap/Tabs';
-import Tab from 'react-bootstrap/Tab';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -47,7 +45,7 @@ const Attendance = (props) => {
           batches.map((elem) => {
             return (
               <Card
-                className='m-2'
+                className='Attendance__Card mb-2'
                 style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)', borderRadius: '10px' }}
                 key={elem.client_batch_id}
                 onClick={() => goToBatch(elem)}

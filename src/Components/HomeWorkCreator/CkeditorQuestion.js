@@ -125,20 +125,22 @@ const CkeditorQuestion = (props) => {
     const file = e.target.files[0];
     uploadImage(file).then((res) => {
       console.log('fileu;lod ', res);
-
-      types === 'question' ? updateQuestionImages(res.filename) : updateSolutionImage(res.filename);
+      console.log(types);
+      if (types === 'question') {
+        updateQuestionImages(res.filename);
+      } else updateSolutionImage(res.filename);
     });
   };
 
   const getImageAttachment = (e, value) => {
-    const newAnswerArray = JSON.parse(JSON.stringify(answerArray));
+    const newAnswerArray = [...answerArray];
     console.log(newAnswerArray[value - 1]);
     const file = e.target.files[0];
     uploadImage(file).then((res) => {
+      console.log(res, 'wtf');
       newAnswerArray[value - 1].image = res.filename; // this currently works because value is index+1.
+      updateOptionArray(newAnswerArray);
     }); // if made dynamic shall not work
-    updateOptionArray(newAnswerArray);
-    console.log(newAnswerArray);
   };
 
   const selectDefaultOption = (value) => {
@@ -188,13 +190,16 @@ const CkeditorQuestion = (props) => {
           <Select
             options={classes}
             placeholder='Course'
-            onChange={(opt) => setCurrentSubjects(opt)}
+            onChange={(opt) => {
+              setCurrentSubjects(opt);
+            }}
           />
         </Col>
         <Col xs={5} className='my-3 mx-auto p-0'>
           <Select
             options={subjects}
             placeholder='Subject'
+            isDisabled={!currentClassId}
             onChange={(opt) => setCurrentChapters(opt)}
           />
         </Col>
@@ -202,6 +207,7 @@ const CkeditorQuestion = (props) => {
           <Select
             options={chapters}
             placeholder='Chapter'
+            isDisabled={!currentSubject}
             onChange={(opt) => setSelectedChapter(opt.value)}
           />
         </Col>
@@ -238,6 +244,7 @@ const CkeditorQuestion = (props) => {
           onReady={(editor) => {
             // You can store the "editor" and use when it is needed.
             console.log('Editor is ready to use!', editor);
+            console.log(document.getElementsByClassName('ck-balloon-panel').style);
           }}
           onChange={(event, editor) => {
             const data = editor.getData();
@@ -323,10 +330,10 @@ const CkeditorQuestion = (props) => {
           <span className='ml-auto'>
             {solutionImage && <span className='Homework__ckQuestion mr-2'>Atachment Selected</span>}
             <span className='Homework__ckAttach'>
-              <label htmlFor='file-input'>
+              <label htmlFor='file-inputer'>
                 <AttachFileIcon />
                 <input
-                  id='file-input'
+                  id='file-inputer'
                   type='file'
                   style={{ display: 'none' }}
                   onChange={(e) => getAttachment(e, 'solution')}

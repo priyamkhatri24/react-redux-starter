@@ -61,6 +61,7 @@ const HomeWorkCreator = (props) => {
     lineHeight: '19px',
     color: 'var(--primary-blue)',
     borderBottom: '5px solid var(--primary-blue)',
+    marginTop: '1rem',
   };
 
   const indicatorStyles = {
@@ -71,6 +72,7 @@ const HomeWorkCreator = (props) => {
     margin: '0 8px',
     borderRadius: '5px',
     fontFamily: 'Montserrat-Medium',
+    marginTop: '1rem',
   };
 
   return (

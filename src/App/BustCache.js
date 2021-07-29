@@ -26,7 +26,6 @@ function withClearCache(Component) {
           const shouldForceRefresh = latestVersionDate > currentVersionDate;
           console.log(shouldForceRefresh);
           if (shouldForceRefresh) {
-            alert('alert hoga');
             setIsLatestBuildDate(false);
             refreshCacheAndReload();
           } else {

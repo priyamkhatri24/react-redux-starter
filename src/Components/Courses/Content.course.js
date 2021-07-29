@@ -24,6 +24,7 @@ const Content = (props) => {
   const [isSectionUpdateValid, setIsSectionUpdateValid] = useState(false);
   const [createNewSection, setCreateNewSection] = useState(false);
   const [nayaSection, setNayaSection] = useState('');
+  const [isSectionArrayvalid, setIsSectionArrayValid] = useState(false);
 
   useEffect(() => {
     const newSectionArray = sectionArray.map((e) => {
@@ -31,6 +32,9 @@ const Content = (props) => {
     });
     console.log(newSectionArray);
     setSectionArray(newSectionArray);
+    if (sectionArray.length > 0) {
+      setIsSectionArrayValid(true);
+    }
   }, [sectionArray]);
 
   const updateSection = (i) => {
@@ -92,7 +96,7 @@ const Content = (props) => {
     setCourseCurrentSectionNameToStore(name);
     history.push('/courses/createcourse/addcontent');
   };
-
+  console.log(section, 'sasad');
   return (
     <div>
       {['Basic Information'].map((e, i) => {
@@ -119,37 +123,39 @@ const Content = (props) => {
       >
         <Row className='my-auto Courses__createCourse mx-2'>
           <span className='Courses__coloredNumber mr-2'>2</span>{' '}
-          <span className='my-auto ml-3'>Create your content</span>
+          <span className='my-auto ml-1'>Create your content</span>
         </Row>
         {section.map((elem, i) => {
           return (
             <div className='LiveClasses__adminCard p-2 m-3' style={{ position: 'relative' }}>
-              <div
-                className={
-                  section.length > 1
-                    ? 'Courses__edit text-center py-1'
-                    : 'Profile__edit text-center py-1'
-                }
-                onClick={() => updateSection(elem.section_id)}
-                role='button'
-                onKeyDown={() => {
-                  updateSection(elem.section_id);
-                }}
-                tabIndex='-1'
-              >
-                <CreateIcon />
-              </div>
-              {section.length > 1 && (
+              <div className='Courses__twoButtons'>
                 <div
-                  className='Profile__edit text-center py-1'
-                  onClick={() => deleteSection(elem.section_id)}
+                  className={
+                    section.length > 1
+                      ? 'Courses__edit text-center py-1'
+                      : 'Profile__edit text-center py-1'
+                  }
+                  onClick={() => updateSection(elem.section_id)}
                   role='button'
-                  onKeyDown={() => deleteSection(elem.section_id)}
+                  onKeyDown={() => {
+                    updateSection(elem.section_id);
+                  }}
                   tabIndex='-1'
                 >
-                  <DeleteIcon />
+                  <CreateIcon />
                 </div>
-              )}
+                {section.length > 1 && (
+                  <div
+                    className='Profile__edit text-center py-1'
+                    onClick={() => deleteSection(elem.section_id)}
+                    role='button'
+                    onKeyDown={() => deleteSection(elem.section_id)}
+                    tabIndex='-1'
+                  >
+                    <DeleteIcon />
+                  </div>
+                )}
+              </div>
               <h6 className='LiveClasses__adminHeading mb-2 mx-2'>Section {i + 1}</h6>
               {!elem.isUpdate && (
                 <p className='mt-2 mx-2 Courses__motiDetail'>{elem.section_name}</p>
@@ -158,7 +164,7 @@ const Content = (props) => {
                 <>
                   {' '}
                   <Row className='mx-2 mt-4'>
-                    <label className='has-float-label my-auto'>
+                    <label className='has-float-label my-auto' style={{ width: '100%' }}>
                       <input
                         className='form-control'
                         name='Name'
@@ -188,7 +194,7 @@ const Content = (props) => {
                   )}
                 </>
               )}
-              <Row className='w-50 m-1'>
+              <Row className='w-50 m-2'>
                 <Button
                   variant='boldText'
                   className='p-0'
@@ -221,7 +227,7 @@ const Content = (props) => {
               <h6 className='LiveClasses__adminHeading mb-2 mx-2'>Add new Section </h6>
 
               <Row className='mx-2 mt-4'>
-                <label className='has-float-label my-auto'>
+                <label className='has-float-label my-auto' style={{ width: '100%' }}>
                   <input
                     className='form-control'
                     name='Name'
@@ -252,10 +258,18 @@ const Content = (props) => {
         )}
 
         <Row className='w-25 justify-content-end ml-auto m-2'>
-          <Button variant='customPrimarySmol' onClick={() => setCourseCurrentSlideToStore(3)}>
+          <Button
+            variant='customPrimarySmol'
+            onClick={() => {
+              isSectionArrayvalid && setCourseCurrentSlideToStore(3);
+            }}
+          >
             Continue
           </Button>
         </Row>
+        {!isSectionArrayvalid && (
+          <small className='text-danger m-2 d-block'>At least one section is required</small>
+        )}
       </Card>
       {['Course display page', 'Pricing and promotion', 'Privacy and publish'].map((e, i) => {
         return (

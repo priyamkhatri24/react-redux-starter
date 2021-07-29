@@ -14,6 +14,7 @@ const FinalQuestionCard = (props) => {
     sectionName,
     isViewOnly,
     isAnalysis,
+    language,
   } = props;
 
   return (
@@ -37,7 +38,16 @@ const FinalQuestionCard = (props) => {
           </Row>
 
           <div className='Homework__questionHeading text-left m-2'>
-            <MathJax math={String.raw`${question.question_text}`} />
+            <span>
+              {(language === 'english' || language === 'both') && (
+                <MathJax math={String.raw`${question.question_text}`} />
+              )}
+            </span>
+            <span className='mt-1'>
+              {(language === 'hindi' || language === 'both') && (
+                <MathJax math={String.raw`${question.hindi_text}`} />
+              )}
+            </span>
           </div>
           {question.question_image && (
             <div className='text-center'>
@@ -54,6 +64,7 @@ const FinalQuestionCard = (props) => {
           )}
 
           {question.question_type !== 'subjective' &&
+            (language === 'english' || language === 'both') &&
             question.option_array.map((e, i) => {
               return (
                 <Row className='d-flex mx-3 mb-2 Homework__multipleOptions' key={e.order}>
@@ -63,16 +74,59 @@ const FinalQuestionCard = (props) => {
                 </Row>
               );
             })}
-          {question.question_answer && <p className='Homework__options text-left m-2'>Solution:</p>}
+
+          {question.question_type !== 'subjective' &&
+            (language === 'hindi' || language === 'both') &&
+            question.hindi_option_array.map((e, i) => {
+              return (
+                <Row className='d-flex mx-3 mb-2 Homework__multipleOptions' key={e.order}>
+                  <span className='mr-2 my-auto'>{i + 1}.</span>{' '}
+                  <MathJax math={String.raw`${e.text}`} />
+                  {e.image && <img src={e.image} className='img-fluid w-75' alt='option' />}
+                </Row>
+              );
+            })}
+
+          {question.question_answer && (
+            <p className='Homework__options text-left m-2'>Correct answer:</p>
+          )}
           <div className='d-flex mx-3 mb-2 Homework__multipleOptions text-left'>
             <MathJax math={String.raw`${question.question_answer}`} />
           </div>
 
+          {question.question_solution_text && (
+            <>
+              <p className='Homework__options text-left m-2'>Solution:</p>
+              <div className='d-flex mx-3 mb-2 Homework__multipleOptions soultion text-left'>
+                <MathJax math={String.raw`${question.question_solution_text}`} />
+              </div>
+            </>
+          )}
+
+          {question.question_solution_image && (
+            <>
+              <p className='Homework__options text-left m-2'>Solution:</p>
+              <div className='d-flex mx-3 mb-2 Homework__multipleOptions soultionImage text-left'>
+                <img
+                  src={question.question_solution_image}
+                  className='img-fluid m-2 w-75 mx-auto'
+                  alt='question'
+                />
+              </div>
+            </>
+          )}
+
           {isAnalysis && (
             <>
-              <p className='Homework__options text-left m-2'>Option Marked:</p>
+              <p className='Homework__options text-left m-2'>
+                {question.question_type !== 'subjective' ? 'Option Marked:' : 'Answer'}
+              </p>
               <div className='d-flex mx-3 mb-2 Homework__multipleOptions text-left'>
-                <MathJax math={String.raw`${question.student_answer}`} />
+                {question.student_answer === 'E' ? (
+                  'Unanswered'
+                ) : (
+                  <MathJax math={String.raw`${question.student_answer}`} />
+                )}
               </div>
               <p className='Homework__options text-left m-2'>
                 Time Taken: {Math.floor(question.time_taken / 60000)} minutes{' '}
@@ -147,6 +201,7 @@ FinalQuestionCard.propTypes = {
   sectionName: PropTypes.string,
   isViewOnly: PropTypes.bool,
   isAnalysis: PropTypes.bool,
+  language: PropTypes.string,
 };
 
 FinalQuestionCard.defaultProps = {
@@ -154,4 +209,5 @@ FinalQuestionCard.defaultProps = {
   updateQuestionMarks: () => {},
   isViewOnly: false,
   isAnalysis: false,
+  language: 'english',
 };

@@ -12,10 +12,12 @@ import '../Live Classes/LiveClasses.scss';
 const AnalysisDataCard = (props) => {
   const { elem, IsStudent, buttonClick } = props;
   return !IsStudent ? (
-    <Card className='m-2 p-1' onClick={() => buttonClick(elem)}>
+    <Card className='p-1 Analysis__card' onClick={() => buttonClick(elem)}>
       <p className='LiveClasses__adminHeading mb-0 mt-2 mx-2'>{elem.test_name}</p>
       <p className='LiveClasses__adminCardTime mb-0 mx-2' style={{ fontSize: '10px' }}>
-        Due: {format(fromUnixTime(parseInt(elem.due_date, 10)), 'dd-MMM-yyyy')}
+        Due:{' '}
+        {elem.due_date !== 'NaN' &&
+          format(fromUnixTime(parseInt(elem.due_date, 10)), 'dd-MMM-yyyy')}
       </p>
       <Row className='m-0'>
         <Col xs={3} className='text-center'>
@@ -45,8 +47,8 @@ const AnalysisDataCard = (props) => {
       </Row>
     </Card>
   ) : (
-    <Card className='m-2 p-1' onClick={() => buttonClick(elem)}>
-      <p className='LiveClasses__adminHeading mb-0 mt-2 mx-2'>
+    <Card className='p-1 Analysis__card' onClick={() => buttonClick(elem)}>
+      <p className='LiveClasses__adminHeading mb-0 mt-2 mx-2 pb-2'>
         {elem.first_name} {elem.last_name}
       </p>
       <Row className='m-0'>

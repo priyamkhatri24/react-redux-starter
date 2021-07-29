@@ -24,6 +24,8 @@ const SelectQuestions = (props) => {
   const [selectedChapters, setSelectedChapters] = useState([]);
   const [noOfQuestions, setNoOfQuestions] = useState(0);
   const [totalQuestions, setTotalQuestions] = useState(0);
+  const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const [chapterInSubject, setChapterInSubject] = useState([]);
 
   useEffect(() => {
     get('', '/getClassesForHomeworkCreator').then((res) => {
@@ -43,10 +45,12 @@ const SelectQuestions = (props) => {
 
   const selectSubject = (elem) => {
     const newSubjectAraay = subjects.map((e) => {
-      if (e.class_subject_id === elem.class_subject_id) e.isSelected = !e.isSelected;
+      if (e.class_subject_id === elem.class_subject_id) {
+        e.isSelected = !e.isSelected;
+      }
       return e;
     });
-
+    console.log(newSubjectAraay, 'new');
     const payloadArray = newSubjectAraay
       .filter((e) => {
         return e.isSelected === true;
@@ -54,6 +58,7 @@ const SelectQuestions = (props) => {
       .map((e) => {
         return e.subject_id;
       });
+
     /** *********************Sets subject array to store**************** */
     const selectedSubjectArray = newSubjectAraay
       .filter((e) => {
@@ -62,6 +67,11 @@ const SelectQuestions = (props) => {
       .map((e) => {
         return e.class_subject_id;
       });
+    console.log(selectedSubjectArray, 'payload');
+    setSelectedSubjects(selectedSubjectArray);
+    setTimeout(() => {
+      console.log(selectedSubjects, 'selectedsubjects');
+    }, 5000);
 
     setCurrentSubjectArrayToStore(selectedSubjectArray);
     /** ************************************************************* */
@@ -72,6 +82,8 @@ const SelectQuestions = (props) => {
 
     get(payload, '/getChaptersOfClassSubject').then((res) => {
       const result = apiValidation(res);
+      setChapterInSubject(result);
+      console.log(chapterInSubject, 'chapters in subject');
       const modifiedChapters = result.map((e) => {
         e.client_batch_id = e.chapter_id;
         e.batch_name = e.chapter_name;
@@ -202,12 +214,17 @@ const SelectQuestions = (props) => {
         <small className='text-left Homework__smallHeading mx-3 my-2'>Chapters</small>
 
         <Row className='mx-3'>
-          {chapters.length === 0 && (
+          {chapterInSubject.length === 0 && selectedSubjects.length === 0 ? (
             <div className='w-100 text-left'>
               <h5 className='Homework__stepPlaceHolder'>Step 3 : Choose Chapters</h5>
             </div>
-          )}
-          {chapters.length > 0 && (
+          ) : null}
+          {chapterInSubject.length === 0 && selectedSubjects.length > 0 ? (
+            <div className='w-100 text-left'>
+              <h5 className='Homework__stepPlaceHolder'>No Chapters Avaiable</h5>
+            </div>
+          ) : null}
+          {chapterInSubject.length > 0 && (
             <>
               <div className='Homework__smallHeading  my-auto'>
                 {selectedChapters.length > 0
@@ -231,11 +248,16 @@ const SelectQuestions = (props) => {
         <small className='text-left Homework__smallHeading mx-3 my-2'>Questions</small>
 
         <Row className='mx-3 mb-3'>
-          {totalQuestions === 0 && (
+          {totalQuestions === 0 && selectedChapters.length === 0 ? (
             <div className='w-100 text-left'>
               <h5 className='Homework__stepPlaceHolder'>Step 4 : Choose Questions</h5>
             </div>
-          )}
+          ) : null}
+          {totalQuestions === 0 && selectedChapters.length > 0 ? (
+            <div className='w-100 text-left'>
+              <h5 className='Homework__stepPlaceHolder'>No Questions Avaiable</h5>
+            </div>
+          ) : null}
           {totalQuestions > 0 && (
             <>
               <small className='text-left Homework__smallHeading mx-3 my-2'>Total Questions</small>
@@ -286,6 +308,16 @@ const SelectQuestions = (props) => {
             </>
           )}
         </Row>
+        <Button
+          className='w-75 mx-auto m-3'
+          variant='customPrimarySmol'
+          onClick={() => goToCreateQuestion()}
+          onKeyDown={() => goToCreateQuestion()}
+          role='button'
+          tabIndex='-1'
+        >
+          Add Questions Manually.
+        </Button>
       </Card>
 
       <Modal show={showModal} onHide={handleClose} centered>
@@ -329,3 +361,39 @@ SelectQuestions.propTypes = {
   }).isRequired,
   fetch: PropTypes.func.isRequired,
 };
+
+// {subjects.length>0 && chapters.length === 0 ?
+//   (
+//     <Row className='mx-3'>
+//       <div className='w-100 text-left'>
+//         <h5 className='Homework__stepPlaceHolder'>No chapters Avaiable</h5>
+//       </div>
+//     </Row>
+//    ) :
+//     chapters.length>0 && (
+//     <Row className='mx-3'>
+//       {chapters.length === 0 &&(
+//         <div className='w-100 text-left'>
+//           <h5 className='Homework__stepPlaceHolder'>Step 3 : Choose Chapters</h5>
+//         </div>
+//       )}
+//       {chapters.length > 0 && (
+//         <>
+//           <div className='Homework__smallHeading  my-auto'>
+//             {selectedChapters.length > 0
+//               ? `${selectedChapters.length} chapter${
+//                   selectedChapters.length === 1 ? `` : `s`
+//                 } selected`
+//               : 'Click to select chapters'}
+//           </div>
+//           <Button
+//             variant='customPrimarySmol'
+//             className='ml-auto'
+//             onClick={() => setShowModal(true)}
+//           >
+//             Select Chapter
+//           </Button>
+//         </>
+//       )}
+//     </Row>
+// ) }

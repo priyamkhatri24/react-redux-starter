@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import Loadable from 'react-loadable';
 import Skeleton from 'react-loading-skeleton';
 import { AuthenticatedRoute } from './AuthenticatedRoute';
-import TeacherCourses from '../Components/Courses/TeacherCourses';
+// import TeacherCourses from '../Components/Courses/TeacherCourses';
 
 // import EditProfileHOC from '../Components/Admissions/EditProfileHoC';
 
@@ -40,6 +40,17 @@ const Login = Loadable({
   loading: Loading,
 });
 // import Login from '../Components/Login/Login';
+
+const Preloader = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'Preloader' */ '../Components/Login/Preloader/Preloader'),
+  loading: Loading,
+});
+
+const SignupForm = Loadable({
+  loader: () => import(/* webpackChunkName: 'SignUpForm' */ '../Components/Login/SignupForm'),
+  loading: Loading,
+});
 
 const SignIn = Loadable({
   loader: () => import(/* webpackChunkName: 'SignIn' */ '../Components/Login/SignIn/SignIn'),
@@ -183,6 +194,14 @@ const ViewCourses = Loadable({
   loading: Loading,
 });
 // import ViewCourses from '../Components/Courses/ViewCourses';
+
+const TeacherCourses = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'TeacherCourses' */ '../Components/Courses/TeacherCourses'),
+  loading: Loading,
+});
+
+// import TeacherCourses from '../Components/Courses/TeacherCourses';
 
 const BuyCourse = Loadable({
   loader: () => import(/* webpackChunkName: 'BuyCourse' */ '../Components/Courses/BuyCourse'),
@@ -355,15 +374,94 @@ const AttendanceBatch = Loadable({
 const SelectedDateAttendance = Loadable({
   loader: () =>
     import(
-      /* webpackChunkName: 'Attendancebatch' */ '../Components/Attendance/SelectedDateAttendance'
+      /* webpackChunkName: 'SelectedDate' */ '../Components/Attendance/SelectedDateAttendance'
     ),
+  loading: Loading,
+});
+
+const DisplayPage = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'DisplayPage' */ '../Components/DisplayPage/DisplayPage'),
+  loading: Loading,
+});
+
+const DisplayPageEdit = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'DisplayPageEdit' */ '../Components/DisplayPage/DisplayPageEdit'),
+  loading: Loading,
+});
+
+const DummyDashboard = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'DummyDashPage' */ '../Components/Login/DummyDashboard'),
+  loading: Loading,
+});
+
+const CRM = Loadable({
+  loader: () => import(/* webpackChunkName: 'CRMPage' */ '../Components/CRM/Crm'),
+  loading: Loading,
+});
+
+const Conversations = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'Conversations' */ '../Components/Conversations/Conversations'),
+  loading: Loading,
+});
+
+const Conversation = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'Conversation' */ '../Components/Conversations/Conversation'),
+  loading: Loading,
+});
+
+const ImageEditor = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'ImageEditor' */ '../Components/Conversations/ImageEditor/ImageEditor'
+    ),
+  loading: Loading,
+});
+
+const ConversationDetails = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'ConversationDetails' */ '../Components/Conversations/ConversationDetails'
+    ),
+  loading: Loading,
+});
+
+const ConversationFiles = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'ConversationFiles' */ '../Components/Conversations/ConversationFiles/ConversationFiles'
+    ),
+  loading: Loading,
+});
+
+const ConversationMedia = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'ConversationMedia' */ '../Components/Conversations/ConversationMedia/ConversationMedia'
+    ),
+  loading: Loading,
+});
+
+const CreatePost = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'CreatePost' */ '../Components/Conversations/Posts/CreatePost'),
+  loading: Loading,
+});
+
+const Post = Loadable({
+  loader: () => import(/* webpackChunkName: 'Post' */ '../Components/Conversations/Posts/Post'),
   loading: Loading,
 });
 
 // eslint-disable-next-line
 function Loading({ error }) {
   if (error) {
-    return 'oh-noes!';
+    console.error(error);
+    return 'Unable to load the webpage. Please reload the page and try again.';
   }
   return <Skeleton count={50} />;
 }
@@ -372,9 +470,12 @@ export function Routes() {
   return (
     <Switch>
       <AuthenticatedRoute exact path='/' component={Dashboard} />
+
       <Route path='/signin' component={SignIn} />
       <Route path='/signup' component={SignUp} />
-      <Route path='/login' component={Login} />
+      <Route exact path='/login' component={Login} />
+      <Route exact path='/preload' component={Preloader} />
+      <Route exact path='/login/signup' component={SignupForm} />
       <Route path='/admission' component={AdmissionChat} />
       <Route path='/admissionform' component={AdmissionForm} />
       <Route path='/forgotpassword' component={ForgotPassword} />
@@ -404,7 +505,7 @@ export function Routes() {
       <AuthenticatedRoute exact path='/homework/assign' component={HomeWorkAssigner} />
       <AuthenticatedRoute exact path='/homework/viewonly' component={HomeWorkViewOnly} />
       <AuthenticatedRoute exact path='/courses' component={ViewCourses} />
-      <AuthenticatedRoute exact path='/courses/buyCourse' component={BuyCourse} />
+      <Route exact path='/courses/buyCourse/:clientId?/:courseId?' component={BuyCourse} />
       <AuthenticatedRoute exact path='/courses/mycourse' component={Mycourse} />
       <AuthenticatedRoute exact path='/courses/teachercourse' component={TeacherCourses} />
       <AuthenticatedRoute
@@ -421,6 +522,18 @@ export function Routes() {
       <AuthenticatedRoute exact path='/admissions/add/class' component={SelectClass} />
       <AuthenticatedRoute exact path='/admissions/add/batch' component={AddBatch} />
       <AuthenticatedRoute exact path='/admissions/editprofile' component={EditProfileHOC} />
+
+      {/* Chat routes */}
+
+      <AuthenticatedRoute exact path='/conversations' component={Conversations} />
+      <AuthenticatedRoute exact path='/conversation' component={Conversation} />
+      <AuthenticatedRoute exact path='/image-editor' component={ImageEditor} />
+      <AuthenticatedRoute exact path='/conversation/details' component={ConversationDetails} />
+      <AuthenticatedRoute exact path='/conversations/:id/media' component={ConversationMedia} />
+      <AuthenticatedRoute exact path='/conversations/:id/:type' component={ConversationFiles} />
+      <AuthenticatedRoute exact path='/create-post' component={CreatePost} />
+      <AuthenticatedRoute exact path='/posts/:id' component={Post} />
+
       <AuthenticatedRoute exact path='/analysis/teacher' component={TeacherAnalysis} />
       <AuthenticatedRoute exact path='/analysis/assignment' component={AssignmentList} />
       <AuthenticatedRoute exact path='/analysis/studentanalysis' component={StudentAnalysis} />
@@ -428,6 +541,10 @@ export function Routes() {
       <AuthenticatedRoute exact path='/attendance' component={Attendance} />
       <AuthenticatedRoute exact path='/attendance/batch' component={AttendanceBatch} />
       <AuthenticatedRoute exact path='/attendance/date' component={SelectedDateAttendance} />
+      <AuthenticatedRoute exact path='/displaypage' component={DisplayPage} />
+      <AuthenticatedRoute exact path='/displaypage/editprofile' component={DisplayPageEdit} />
+      <AuthenticatedRoute exact path='/displaypage/preview' component={DummyDashboard} />
+      <AuthenticatedRoute exact path='/crm' component={CRM} />
 
       <Route path='/fileviewer' component={FileView} />
       <Route path='/otherfileviewer' component={TempViewFile} />

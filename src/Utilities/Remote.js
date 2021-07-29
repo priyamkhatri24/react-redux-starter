@@ -1,5 +1,8 @@
 import axios from 'axios';
+// import S3 from 'aws-sdk/clients/s3';
 import { history } from '../Routing/History';
+// import { apiValidation } from './utilities';
+// import { loadingActions } from '../redux/actions/loading.action';
 
 function authHeaderPost() {
   // return authorization header with jwt token
@@ -66,7 +69,60 @@ export const uploadImage = (file) => {
     .post(`${testUrl}/upload`, fd, authHeaderPost())
     .then((result) => result.data)
     .catch((err) => {
-      history.push('./error');
+      history.push('/error');
+      console.error(`The error is ${err}`);
+    });
+};
+
+// export const uploadImage = (file) => {
+//   console.log(file);
+
+//   return new Promise((resolve, rej) => {
+//     get(null, '/getAwsCredentialsWithBucketConfiguration').then((res) => {
+//       const result = apiValidation(res);
+//       // AWS.config.update({
+//       //   accessKeyId: result.key,
+//       //   secretAccessKey: result.secret,
+//       //   region: result.region,
+//       // }); // for simplicity. In prod, use loadConfigFromFile, or env variables
+
+//       const bucket = new S3({
+//         params: {
+//           Bucket: result.bucket_name,
+//         },
+//         accessKeyId: result.key,
+//         secretAccessKey: result.secret,
+//         region: result.region,
+//       });
+//       const params = { Key: file.name, ContentType: file.type, Body: file };
+
+//       bucket
+//         .upload(params)
+//         .on('httpUploadProgress', (evt) => {
+//           console.log('Progress:', evt.loaded, '/', evt.total);
+//           // StateManager.dispatch(loadingActions.setAmountLoadedToStore(evt.loaded));
+//           // StateManager.dispatch(loadingActions.setTotalLoadedToStore(evt.total));
+//         })
+//         .send((err, data) => {
+//           console.log(err, data);
+//           const obj = {};
+//           obj.filename = data.Location;
+//           resolve(obj);
+//         });
+//     });
+//   });
+// };
+
+export const uploadFiles = (files) => {
+  const fd = new FormData();
+  files.forEach(({ file, type }) => {
+    fd.append('upl', file, `${file.name}|${type}`);
+  });
+  console.log(files);
+  return axios
+    .post(`${testUrl}/multipleUpload`, fd, authHeaderPost())
+    .then((result) => result.data)
+    .catch((err) => {
       console.error(`The error is ${err}`);
     });
 };

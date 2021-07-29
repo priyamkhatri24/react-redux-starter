@@ -4,26 +4,24 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
-import CloseIcon from '@material-ui/icons/Close';
 import Col from 'react-bootstrap/Col';
 import ProgressBar from 'react-bootstrap/ProgressBar';
-import AdmissionStyle from '../Admissions/Admissions.style';
 import userAvatar from '../../assets/images/user.svg';
 import '../Dashboard/Dashboard.scss';
 import './Fees.scss';
 import { apiValidation, get } from '../../Utilities';
 
 const FeeBatches = (props) => {
-  const { clientId, clientUserId, history } = props;
+  const { clientId, clientUserId, history, searchString } = props;
 
   const [filters, setFilters] = useState([]);
-  const [currentClass, setCurrentClass] = useState({});
-  const [currentSubject, setCurrentSubject] = useState({});
+  // const [currentClass, setCurrentClass] = useState({});
+  // const [currentSubject, setCurrentSubject] = useState({});
   const [batches, setBatches] = useState([]);
 
   useEffect(() => {
     get({ client_id: clientId }, '/getFilters').then((res) => {
-      console.log(res);
+      console.log(res, 'filters array');
       const result = apiValidation(res);
       setFilters(result);
     });
@@ -31,48 +29,51 @@ const FeeBatches = (props) => {
 
   useEffect(() => {
     const payload = {
-      class_id: Object.keys(currentClass).length === 0 ? null : currentClass.class_id,
-      subject_id: Object.keys(currentSubject).length === 0 ? null : currentSubject.subject_id,
+      // class_id: Object.keys(currentClass).length === 0 ? null : currentClass.class_id,
+      // subject_id: Object.keys(currentSubject).length === 0 ? null : currentSubject.subject_id,
       client_user_id: clientUserId,
     };
 
     get(payload, '/getFeeDataForBatchesUsingFilter').then((res) => {
-      console.log(res);
       const result = apiValidation(res);
-      setBatches(result);
+      console.log(result);
+      const searchedArray = result.filter(
+        (e) => e.batch_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+      );
+      setBatches(searchedArray);
     });
-  }, [clientUserId, currentSubject, currentClass]);
+  }, [clientUserId, searchString]);
 
-  const select = (type, e) => {
-    switch (type) {
-      case 'class':
-        setCurrentClass(e);
-        break;
-      case 'subject':
-        setCurrentSubject(e);
-        break;
-      default:
-        console.log('hello');
-    }
-  };
+  // const select = (type, e) => {
+  //   switch (type) {
+  //     case 'class':
+  //       setCurrentClass(e);
+  //       break;
+  //     case 'subject':
+  //       setCurrentSubject(e);
+  //       break;
+  //     default:
+  //       console.log('hello');
+  //   }
+  // };
 
-  const remove = (type) => {
-    switch (type) {
-      case 'class':
-        setCurrentClass({});
-        break;
-      case 'subject':
-        setCurrentSubject({});
-        break;
-      default:
-        console.log('hello');
-    }
-  };
+  // const remove = (type) => {
+  //   switch (type) {
+  //     case 'class':
+  //       setCurrentClass({});
+  //       break;
+  //     case 'subject':
+  //       setCurrentSubject({});
+  //       break;
+  //     default:
+  //       console.log('hello');
+  //   }
+  // };
 
   return (
     <div>
-      {Object.keys(filters).length > 0 && (
-        <Card.Body className='p-0'>
+      {/* {Object.keys(filters).length > 0 && (
+        <Card.Body className='p-0 Fees__batchesTeacher' style={{ marginTop: '0.5rem' }}>
           <small css={AdmissionStyle.smallHeading} className='text-left mx-3 my-2'>
             Class
           </small>
@@ -139,7 +140,7 @@ const FeeBatches = (props) => {
               Subject
             </small>
 
-            <Row className='mx-3'>
+            <Row className='mx-3' style={{ marginBottom: '1rem' }}>
               <section
                 css={AdmissionStyle.scrollable}
                 style={{ backgroundColor: 'rgba(255, 255, 255, 1)' }}
@@ -198,13 +199,13 @@ const FeeBatches = (props) => {
             </Row>
           </>
         </Card.Body>
-      )}
+      )} */}
 
-      <div>
+      <div className='mt-4'>
         {batches.map((elem) => {
           return (
             <Card
-              className='m-2 p-2'
+              className='p-2 Fees__batchesTeacher'
               key={elem.user_batch_id}
               style={{ borderRadius: '5px', border: '1px solid rgba(112, 112, 112, 0.1)' }}
               onClick={() =>
@@ -214,7 +215,7 @@ const FeeBatches = (props) => {
                 })
               } // eslint-disable-line
             >
-              <Row>
+              <Row style={{ marginTop: '0.5rem' }}>
                 <Col xs={4} className='Fees__receivedAmount text-center my-auto'>
                   &#8377; {elem.total_paid_amount}
                 </Col>
@@ -233,7 +234,7 @@ const FeeBatches = (props) => {
                   &#8377; {elem.total_due_amount}
                 </Col>
               </Row>
-              <Row className='mx-auto m-3 Fees__orderSummary'>{elem.batch_name}</Row>
+              <Row className='mx-auto m-2 Fees__orderSummary'>{elem.batch_name}</Row>
               <ProgressBar
                 now={
                   elem.total_students === '0'
@@ -247,7 +248,7 @@ const FeeBatches = (props) => {
                   10,
                 )}`}
                 style={{ borderRadius: '50px', height: '20px', color: 'rgba(127, 196, 253, 1)' }}
-                className='m-2'
+                className='Fees__progressBar'
               />
               <p className='Fees__studentsPay mx-auto'>
                 {`${parseInt(elem.total_due_students, 10)}/${parseInt(elem.total_students, 10)}`}{' '}
@@ -267,4 +268,9 @@ FeeBatches.propTypes = {
   clientId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
+  searchString: PropTypes.string,
+};
+
+FeeBatches.defaultProps = {
+  searchString: '',
 };

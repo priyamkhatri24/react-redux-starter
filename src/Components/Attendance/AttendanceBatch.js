@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import DateRangeIcon from '@material-ui/icons/DateRange';
@@ -34,8 +34,9 @@ const AttendanceBatch = (props) => {
   const [students, setStudents] = useState([]);
   const [attendanceDate, setAttendanceDate] = useState('');
   const [submitStatus, setSubmitStatus] = useState(0);
+  const [swiper, setSwiper] = useState(null);
 
-  useEffect(() => {
+  const getInitialAttendanceData = useCallback(() => {
     get({ client_batch_id: attendanceBatch.client_batch_id }, '/getStudentsOfBatch').then((res) => {
       setSubmitStatus(res.status);
       setAttendanceDate(res.date);
@@ -43,6 +44,10 @@ const AttendanceBatch = (props) => {
       setStudents(result);
     });
   }, [attendanceBatch]);
+
+  useEffect(() => {
+    getInitialAttendanceData();
+  }, [getInitialAttendanceData]);
 
   const handleOpen = () => setShowModal(true);
 
@@ -124,6 +129,16 @@ const AttendanceBatch = (props) => {
         triggerSMSAndNotification(presentStudents, 'P');
         triggerSMSAndNotification(absentStudents, 'A');
         triggerSMSAndNotification(lateStudents, 'L');
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Updated!',
+          text: `Attendance successfully updated`,
+        }).then((resp) => {
+          if (resp.isConfirmed) {
+            getInitialAttendanceData();
+          }
+        });
       } else {
         Swal.fire({
           icon: 'error',
@@ -132,6 +147,10 @@ const AttendanceBatch = (props) => {
         });
       }
     });
+  };
+
+  const changeSlide = (index) => {
+    swiper.slideTo(index);
   };
 
   return (
@@ -145,11 +164,14 @@ const AttendanceBatch = (props) => {
         spaceBetween={50}
         slidesPerView={1}
         onSlideChange={() => console.log('slide change')}
-        onSwiper={(swiper) => console.log(swiper)}
-        initialSlide={2}
+        onSwiper={(s) => {
+          console.log('initialize swiper', s);
+          setSwiper(s);
+        }}
+        initialSlide={1}
       >
         <SwiperSlide>
-          <PreviousAttendance />
+          <PreviousAttendance changeSlide={changeSlide} />
         </SwiperSlide>
         <SwiperSlide>
           <TakeAttendance
@@ -157,6 +179,7 @@ const AttendanceBatch = (props) => {
             date={attendanceDate}
             submitStatus={submitStatus}
             updateStudents={setStudents}
+            changeSlide={changeSlide}
           />
         </SwiperSlide>
       </Swiper>

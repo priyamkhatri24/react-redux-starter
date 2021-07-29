@@ -14,12 +14,14 @@ import {
   getfeeMonthlyPlanArray,
   getfeeCustomPlanArray,
   getfeePlanType,
+  getFeeClientUserId,
 } from '../../redux/reducers/fees.reducer';
+import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { PageHeader } from '../Common';
 import MonthlyCustomPlan from './MonthlyCustomPlan';
 import { feeActions } from '../../redux/actions/fees.actions';
 import './Fees.scss';
-import { apiValidation, get } from '../../Utilities';
+import { apiValidation, get, post } from '../../Utilities';
 import OneTimeCharge from './OneTimeCharge';
 
 const EditFeePlan = (props) => {
@@ -32,6 +34,9 @@ const EditFeePlan = (props) => {
     setFeeCustomPlanArrayToStore,
     setFeeMonthlyPlanArrayToStore,
     setFeeOneTimePlanArrayToStore,
+    clientUserID,
+    feeStudentCLientUserID,
+    history,
   } = props;
   const [noOfInstallments, setNoOfInstallments] = useState(feeCustomPlanArray.length);
   const [oneTimePlanArray, setOneTimePlanArray] = useState([...feeOneTimePlanArray]);
@@ -58,6 +63,17 @@ const EditFeePlan = (props) => {
   const handlePlanSummaryShow = () => setShowModal(true);
   const handlePlanSummaryClose = () => setShowModal(false);
 
+  // useEffect(() => {
+  //   console.log(history.location.state.studentData.client_user_id,"zazazaz")
+  //   get(
+  //     { client_user_id: history.location.state.studentData.client_user_id},
+  //     '/getFeeDataForStudent',
+  //   ).then((res) => {
+  //     const result = apiValidation(res);
+  //     console.log(result,"safdfafafsgs");
+  //    })
+  // },[history])
+
   useEffect(() => {
     const minInstallments = feeCustomPlanArray.filter((e) => e.status !== 'due').length;
     setMinNoOfInstallments(minInstallments);
@@ -74,15 +90,22 @@ const EditFeePlan = (props) => {
       setMonthlyFeeAmount(feeMonthlyPlanArray[0].amount);
       setMonthlyFeeDate(fromUnixTime(parseInt(feeMonthlyPlanArray[0].due_date, 10)));
     }
-  }, [feeCustomPlanArray, feeMonthlyPlanArray, feePlanType]);
+
+    const newOnetimeArray = feeOneTimePlanArray.map((e) => {
+      delete e.due_date;
+      return e;
+    });
+    setOneTimePlanArray(newOnetimeArray);
+  }, [feeCustomPlanArray, feeMonthlyPlanArray, feePlanType, feeOneTimePlanArray, clientUserID]);
 
   useEffect(() => {
+    console.log(history, 'history');
     get(null, '/getFeeTags').then((res) => {
       console.log(res);
       const result = apiValidation(res);
       setFeeTags(result);
     });
-  }, []);
+  }, [history]);
 
   const planDeleted = () => {
     console.log('lulz');
@@ -140,6 +163,24 @@ const EditFeePlan = (props) => {
     });
 
     setOneTimePlanArray(addOneTimeChargeArray);
+  };
+
+  const saveChanges = () => {
+    const payload = {
+      client_user_id: feeStudentCLientUserID,
+      plan_array: JSON.stringify(customFeePlanArray),
+      one_time_array: JSON.stringify(oneTimePlanArray),
+      plan_type: monthlyOrCustom,
+    };
+    console.log(oneTimePlanArray);
+    console.log(customFeePlanArray);
+    console.log(payload, 'payload');
+    post(payload, '/editFeeDataOfUser').then((res) => {
+      console.log(res);
+      if (res.success) {
+        history.push('/teacherfees');
+      }
+    });
   };
 
   return (
@@ -322,7 +363,7 @@ const EditFeePlan = (props) => {
               })}
             </Row>
             <Row className='m-2 justify-content-center'>
-              <Button variant='customPrimarySmol' onClick={() => {}}>
+              <Button variant='customPrimarySmol' onClick={saveChanges}>
                 Save Changes
               </Button>
             </Row>
@@ -338,6 +379,8 @@ const mapStateToProps = (state) => ({
   feeMonthlyPlanArray: getfeeMonthlyPlanArray(state),
   feeCustomPlanArray: getfeeCustomPlanArray(state),
   feeOneTimePlanArray: getfeeOneTimePlanArray(state),
+  clientUserID: getClientUserId(state),
+  feeStudentCLientUserID: getFeeClientUserId(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -371,4 +414,7 @@ EditFeePlan.propTypes = {
   setFeeMonthlyPlanArrayToStore: PropTypes.func.isRequired,
   setFeeCustomPlanArrayToStore: PropTypes.func.isRequired,
   setFeeStudentClientUserIdToStore: PropTypes.func.isRequired,
+  clientUserID: PropTypes.number.isRequired,
+  history: PropTypes.instanceOf(Object).isRequired,
+  feeStudentCLientUserID: PropTypes.number.isRequired,
 };

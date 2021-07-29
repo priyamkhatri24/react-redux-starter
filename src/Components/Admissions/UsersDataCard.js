@@ -86,7 +86,13 @@ const UserDataCard = (props) => {
             return (
               // eslint-disable-next-line
               <span style={{ fontSize: '8px', color: '#212121' }} className='my-auto' key={i}>
-                {e === '1' ? 'Student' : e === '2' ? 'Parent' : e === '3 ' ? 'Teacher' : 'Admin'}
+                {e.toString() === '1'
+                  ? 'Student'
+                  : e.toString() === '2'
+                  ? 'Parent'
+                  : e.toString() === '3'
+                  ? 'Teacher'
+                  : 'Admin'}
                 {i !== elem.role_id.split(',').length - 1 && ','}
               </span>
             );
@@ -115,7 +121,11 @@ const UserDataCard = (props) => {
           </div>
         </Col>
         {FeeUser ? (
-          <Col xs={4} className='p-0 my-auto text-center'>
+          <Col
+            xs={4}
+            className='p-0 my-auto'
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+          >
             {elem.is_fee === 'false' ? (
               <span css={AdmissionStyle.batchStudents}>No Plan</span>
             ) : elem.fee_status === 'paid' ? (

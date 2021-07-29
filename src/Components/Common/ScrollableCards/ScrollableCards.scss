@@ -17,6 +17,18 @@
       min-width: 200px;
     }
   }
+
+  &__aspectCardContent {
+    min-width: 200px;
+    height: 113px;
+    border-radius: 5px;
+  }
+
+  &__aspectCardBig {
+    min-width: 315px;
+    height: 177px;
+  }
+
   &__card::-webkit-scrollbar {
     display: none;
   }
@@ -44,6 +56,15 @@
 
     @include media-breakpoint-up(md) {
       font-size: $spacer;
+    }
+  }
+
+  &__cardFlex {
+    flex-direction: row-reverse;
+    min-height: 113px;
+
+    @include media-breakpoint-up(md) {
+      flex-direction: row;
     }
   }
 
@@ -88,6 +109,10 @@
     color: $headingGrey;
     line-height: 15px;
     text-align: left;
+
+    @include media-breakpoint-up(sm) {
+      font-size: $spacer * 0.85;
+    }
   }
 
   &__courseCardSubHeading {
@@ -99,20 +124,29 @@
   }
 
   &__emoji {
-    width: $spacer * 0.5;
-    height: $spacer * 0.5;
+    width: $spacer !important;
+    height: $spacer !important;
     color: $dirtyYellow;
+
+    @include media-breakpoint-down(sm) {
+      width: 15px !important;
+      height: 15px !important;
+    }
   }
 
   &__bestSeller {
     background-color: $dirtyYellow;
-    text-align: left;
+    text-align: center;
     border-radius: 2px;
-    font-size: $spacer * 0.5;
+    font-size: $spacer * 0.4;
     line-height: 11px;
     color: $headingGrey;
     font-family: $bold;
-    width: 30%;
+    width: 38%;
+
+    @include media-breakpoint-up(sm) {
+      width: 20%;
+    }
   }
 
   &__viewAll {
@@ -142,6 +176,10 @@
     line-height: 15px;
     color: $dashboardBlack;
     font-family: $semiBold;
+
+    @include media-breakpoint-up(sm) {
+      font-size: $spacer * 0.825;
+    }
   }
 
   /*****************************Analysis Cards**********************************/

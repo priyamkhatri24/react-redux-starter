@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import compareAsc from 'date-fns/compareAsc';
 import differenceInSeconds from 'date-fns/differenceInSeconds';
-import { get, apiValidation, useInterval } from '../../Utilities';
+import { get, apiValidation } from '../../Utilities';
 
 const LiveTestCounter = (props) => {
   const [hours, setHours] = useState(60);
@@ -28,31 +28,62 @@ const LiveTestCounter = (props) => {
         setSeconds(Math.floor(durationTime % 60));
       } else if (Number(result.status) === 1 && dateResult > 0) {
         setLiveText('The Test is Live');
-        isAllowed(true, id, result.test_start_time, parseInt(result.test_end_time, 10));
+        isAllowed(
+          true,
+          id,
+          parseInt(result.test_start_time, 10),
+          parseInt(result.test_end_time, 10),
+        );
       }
     });
   }, [id, isAllowed]);
 
-  useInterval(() => {
-    if (seconds > 0) {
-      setSeconds(seconds - 1);
-    }
-
-    if (seconds === 0) {
-      if (minutes === 0) {
-        if (hours === 0) {
-          setLiveText('The Test is Live');
-          isAllowed(true, id);
-        } else {
-          setMinutes(59);
-          setHours(hours - 1);
-        }
-      } else {
-        setMinutes(minutes - 1);
-        setSeconds(59);
+  useEffect(() => {
+    const clear = setInterval(() => {
+      if (seconds > 0) {
+        setSeconds((second) => second - 1);
       }
-    }
-  }, 1000);
+
+      if (seconds === 0) {
+        if (minutes === 0) {
+          if (hours === 0) {
+            setLiveText('The Test is Live');
+            isAllowed(true, id);
+            clearInterval(clear);
+          } else {
+            setMinutes(59);
+            setHours((hour) => hour - 1);
+          }
+        } else {
+          setMinutes((minute) => minute - 1);
+          setSeconds(59);
+        }
+      }
+    }, 1000);
+
+    return () => clearInterval(clear); // This is important
+  }, [hours, seconds, minutes, isAllowed, id]);
+
+  // useInterval(() => {
+  //   if (seconds > 0) {
+  //     setSeconds(seconds - 1);
+  //   }
+
+  //   if (seconds === 0) {
+  //     if (minutes === 0) {
+  //       if (hours === 0) {
+  //         setLiveText('The Test is Live');
+  //         isAllowed(true, id);
+  //       } else {
+  //         setMinutes(59);
+  //         setHours(hours - 1);
+  //       }
+  //     } else {
+  //       setMinutes(minutes - 1);
+  //       setSeconds(59);
+  //     }
+  //   }
+  // }, 1000);
 
   return (
     <div>
@@ -61,9 +92,9 @@ const LiveTestCounter = (props) => {
         <p className='Tests__scrollableCardText pl-3 mt-1'>
           Starts In:{' '}
           <span className='Tests__Counter '>
-            {hours === 0 ? '' : `${hours}:` < 10 ? `0${hours}:` : `${hours}:`}{' '}
-            {minutes === 0 ? '' : `${minutes}:` < 10 ? `0${minutes}:` : `${minutes}:`}
-            {seconds < 0 ? '' : `${seconds}` < 10 ? `0${seconds}` : `${seconds}`}
+            {hours === 0 ? '00:' : hours < 10 ? `0${hours}:` : `${hours}:`}
+            {minutes === 0 ? '00:' : minutes < 10 ? `0${minutes}:` : `${minutes}:`}
+            {seconds < 0 ? '' : seconds < 10 ? `0${seconds}` : `${seconds}`}
           </span>
         </p>
       )}

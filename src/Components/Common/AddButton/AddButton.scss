@@ -16,6 +16,10 @@
     background-color: #bce0fd;
     height: 4.7rem;
     width: 5rem;
+    @include media-breakpoint-up(md) {
+      height: 5.6rem;
+      width: 6rem;
+    }
   }
 
   &__innerDivLong {

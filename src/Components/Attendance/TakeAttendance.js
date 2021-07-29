@@ -8,7 +8,7 @@ import './Attendance.scss';
 import userAvatar from '../../assets/images/user.svg';
 
 const TakeAttendance = (props) => {
-  const { students, submitStatus, date, updateStudents, isDateView } = props;
+  const { students, submitStatus, date, updateStudents, isDateView, changeSlide } = props;
 
   const changeAttendance = (value, elem) => {
     const newStudents = students.map((e) => {
@@ -26,7 +26,7 @@ const TakeAttendance = (props) => {
         boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)',
         borderRadius: '10px',
       }}
-      className='mx-2'
+      className='Attendance__Card'
     >
       <Row className='justify-content-end align-items-center mx-2 my-2'>
         {[
@@ -50,6 +50,10 @@ const TakeAttendance = (props) => {
           <span
             className='ml-2'
             style={{ color: 'rgba(0, 0, 0, 0.54)', transform: 'scale(0.5)', flex: 1 }}
+            onClick={() => changeSlide(0)}
+            onKeyDown={() => changeSlide(0)}
+            role='button'
+            tabIndex='-1'
           >
             <ArrowBackIosIcon />
           </span>
@@ -59,7 +63,7 @@ const TakeAttendance = (props) => {
           <span style={{ flex: 1 }} />
         </Row>
       )}
-      <div style={{ overflow: 'scroll', height: '70vh' }}>
+      <div style={{ overflow: 'scroll', height: '65vh' }}>
         {students.map((elem) => {
           return (
             <Row
@@ -82,9 +86,9 @@ const TakeAttendance = (props) => {
                   {elem.first_name} {elem.last_name}
                 </p>
               </Col>
-              <Col xs={5} className='text-center'>
+              <Col xs={5} className='text-right'>
                 <p className='m-0 Attendance__batchCount'>{elem.count}</p>
-                <p className='m-0 Attendance__batchStudents'>
+                <p className='m-0 Attendance__batchStudents Attendance__3buttons'>
                   {[
                     { key: 1, value: 'P', color: 'rgba(38, 153, 251, 1)' },
                     { key: 2, value: 'A', color: 'rgba(255, 0, 0, 0.87)' },
@@ -136,6 +140,7 @@ TakeAttendance.propTypes = {
   date: PropTypes.string,
   updateStudents: PropTypes.func,
   isDateView: PropTypes.bool,
+  changeSlide: PropTypes.func,
 };
 
 TakeAttendance.defaultProps = {
@@ -143,4 +148,5 @@ TakeAttendance.defaultProps = {
   submitStatus: 0,
   updateStudents: () => {},
   isDateView: false,
+  changeSlide: () => {},
 };

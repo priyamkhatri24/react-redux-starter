@@ -16,4 +16,43 @@
     font-family: 'Montserrat-Medium';
     color: $lightGrey;
   }
+  &__HeadingText {
+    font-size: $spacer * 1.75;
+    margin-left: 9%;
+
+    @include media-breakpoint-down(sm) {
+      font-size: 16px;
+      margin-left: 0;
+    }
+  }
+
+  &__inputCard {
+    width: 80%;
+
+    @include media-breakpoint-down(sm) {
+      width: 95%;
+    }
+  }
+  &__notice {
+    width: 80%;
+
+    @include media-breakpoint-down(sm) {
+      width: 95%;
+    }
+  }
+  &__NoticeHead {
+    height: auto;
+
+    @include media-breakpoint-down(sm) {
+      height: 90px;
+    }
+  }
 }
+.notice-text {
+  font-size: initial;
+}
+// @media screen and (max-width:400px){
+//   .notice-text{
+//     font-size: 1rem;
+//   }
+// }

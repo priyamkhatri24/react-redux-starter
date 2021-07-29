@@ -1,0 +1,59 @@
+.LoginDetailsSkeleton {
+  @import '../../../scss/bootstrap';
+  &__text {
+    color: $headingGrey;
+    font-size: $spacer;
+    line-height: 36px;
+    font-family: $medium;
+    @include media-breakpoint-up(md) {
+      font-size: 24px;
+      text-align: center;
+    }
+  }
+
+  &__phoneNoOnly {
+    @include media-breakpoint-down(md) {
+      margin-left: 1rem;
+      margin-right: 1rem;
+    }
+  }
+
+  &__phoneNoInput {
+    @include media-breakpoint-up(md) {
+      width: 40%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+  &__img {
+    width: 120px;
+    height: 125px;
+
+    @include media-breakpoint-up(sm) {
+      width: 150px;
+      height: auto;
+    }
+  }
+}
+
+.iti {
+  width: 100%;
+}
+
+.iti > input::placeholder {
+  font-family: 'Montserrat-SemiBold';
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 14px;
+  line-height: 24px;
+}
+
+.iti > input {
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.54);
+  color: rgba(0, 0, 0, 0.87);
+  font-family: 'Montserrat-SemiBold';
+  font-size: 14px;
+  height: 32px;
+  line-height: 24px;
+  width: 100%;
+}

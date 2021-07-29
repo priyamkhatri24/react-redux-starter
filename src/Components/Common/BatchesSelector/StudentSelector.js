@@ -13,6 +13,7 @@ export const StudentSelector = (props) => {
     });
     setModStudents(modifiedStudents);
   }, [students]);
+
   return (
     <BatchesSelector
       batches={modStudents}
@@ -20,6 +21,7 @@ export const StudentSelector = (props) => {
       getSelectedBatches={getSelectedStudents}
       title='Students'
       isStudentFee
+      sendBoth
     />
   );
 };

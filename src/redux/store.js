@@ -14,11 +14,7 @@ if (process.env.NODE_ENV === 'development') {
   middleware = [...middleware, loggerMiddleware];
 }
 
-export const store = createStore(
-  rootReducer(history),
-  persistedState,
-  applyMiddleware(...middleware),
-);
+const store = createStore(rootReducer(history), persistedState, applyMiddleware(...middleware));
 
 store.subscribe(() => {
   saveState({
@@ -30,8 +26,16 @@ store.subscribe(() => {
     homework: store.getState().homework,
     course: store.getState().course,
     studyBin: store.getState().studyBin,
+    conversations: {
+      conversations: store.getState().conversations.conversations,
+      conversation: store.getState().conversations.conversation,
+    },
     fees: store.getState().fees,
     analysis: store.getState().analysis,
     attendance: store.getState().attendance,
+    displayPage: store.getState().displayPage,
+    dashboard: store.getState().dashboard,
   });
 });
+
+export default store;

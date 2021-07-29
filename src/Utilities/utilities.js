@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // Custom hook to implement setInterval
 
 export const useInterval = (callback, delay) => {
@@ -63,17 +63,34 @@ export const setGlobalColors = (primary, light, lighter, superlight) => {
 
 // function to dynamically change document title
 
-export function changeFaviconAndDocumentTitle(favicon, documentTitle = 'Ingenium Education') {
-  const link = document.createElement('link');
-  const oldLink = document.getElementById('dynamic-favicon');
-  link.id = 'dynamic-favicon';
-  link.rel = 'shortcut icon';
-  link.href = favicon;
-  document.title = documentTitle;
-  if (oldLink) {
-    document.head.removeChild(oldLink);
-  }
-  document.head.appendChild(link);
+export function changeFaviconAndDocumentTitle(favicon, documentTitle) {
+  [
+    { id: 'dynamic-favicon', rel: 'shortcut icon' },
+    { id: 'apple-icon', rel: 'apple-touch-icon' },
+  ].forEach((elem) => {
+    const link = document.createElement('link');
+    const oldLink = document.getElementById(elem.id);
+    link.id = elem.id;
+    link.rel = elem.rel;
+    link.href = favicon;
+
+    if (oldLink) {
+      document.head.removeChild(oldLink);
+    }
+    document.head.appendChild(link);
+  });
+  if (documentTitle) document.title = documentTitle;
+  // const link = document.createElement('link');
+  // const oldLink = document.getElementById('dynamic-favicon');
+  // link.id = 'dynamic-favicon';
+  // link.rel = 'shortcut icon';
+  // link.href = favicon;
+  // document.title = documentTitle;
+
+  // if (oldLink) {
+  //   document.head.removeChild(oldLink);
+  // }
+  // document.head.appendChild(link);
 }
 
 // function to check whether development or environment
@@ -89,9 +106,68 @@ export function prodOrDev() {
 export const propComparator = (propName) => (a, b) =>
   a[propName] === b[propName] ? 0 : a[propName] < b[propName] ? -1 : 1;
 
+export const useFocus = () => {
+  const htmlElRef = useRef(null);
+  const setFocus = () => {
+    htmlElRef.current && htmlElRef.current.focus();
+  };
+
+  return [htmlElRef, setFocus];
+};
+
 // // function to validate file. Ideally should be server side but ab kya kar sakte h lol.
 
 // export const verifyFileExtension = (type, acceptedFile) => {
 //   const typeRegex = new RegExp(acceptedFile.replace(/\*/g, '.*').replace(/,/g, '|'));
 //   return typeRegex.test(type);
+// };
+
+export default function useWindowDimensions() {
+  function getWindowDimensions() {
+    const { innerWidth: width, innerHeight: height } = window;
+    return {
+      width,
+      height,
+    };
+  }
+
+  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowDimensions(getWindowDimensions());
+    }
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return windowDimensions;
+}
+
+export const shareThis = (url, clientName) => {
+  if (navigator.share) {
+    navigator
+      .share({
+        title: `Look at this awesome course!`,
+        // eslint-disable-next-line
+        text: `Hey, ${clientName} is a fast, simple and fun app that I use for learning and growing everyday`,
+        url,
+      })
+      .then(() => {
+        console.log('Thanks for sharing!');
+      })
+      .catch(console.error);
+    return 'navigator';
+  }
+  navigator.clipboard.writeText(url);
+  return 'clipboard';
+};
+
+// export const useDidMountEffect = (func, deps) => {
+//   const didMount = useRef(false);
+
+//   useEffect(() => {
+//     if (didMount.current) func();
+//     else didMount.current = true;
+//   }, deps);
 // };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
 import PropTypes from 'prop-types';
@@ -96,7 +96,7 @@ const CreateQuestion = (props) => {
       question_comment: null,
       question_image: questionImage,
       question_solution_text: ckSolution,
-      question_answer: answer,
+      question_answer: payload.type === 'subjective' ? ckSolution : answer,
       question_solution_image: solutionImage,
       client_id: clientId,
       options,
@@ -167,6 +167,10 @@ const CreateQuestion = (props) => {
       });
     });
   };
+
+  useEffect(() => {
+    console.log(ckAnswerArray);
+  }, [ckAnswerArray]);
 
   return (
     <div>

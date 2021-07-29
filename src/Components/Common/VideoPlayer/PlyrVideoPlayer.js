@@ -1,23 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import PlyrComponent from 'plyr-react';
 import 'plyr-react/dist/plyr.css';
 import { PageHeader } from '../PageHeader/PageHeader';
+import Comments from './Comments';
 
 const PlyrVideoPlayer = (props) => {
   const { match, history } = props;
   const options = {
     autoplay: true,
+    youtube: { noCookie: false, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
   };
   const [source, setSource] = useState({
     type: 'video',
     sources: [
       {
-        src: 'w5Aioq5VYF0',
+        src: 'PVt1MNXss-Y',
         provider: 'youtube',
       },
     ],
   });
+
+  const [videoId, setVideoId] = useState('');
 
   useEffect(() => {
     if (history.location.state && history.location.state.link) {
@@ -38,10 +42,16 @@ const PlyrVideoPlayer = (props) => {
     }
   }, [history, match]);
 
+  useEffect(() => {
+    if (history.location.state && history.location.state.videoId)
+      setVideoId(history.location.state.videoId);
+  }, [history]);
+
   return (
     <div>
       <PageHeader transparent />
       <PlyrComponent source={source} options={options} />
+      {videoId && <Comments videoId={videoId} />}
     </div>
   );
 };

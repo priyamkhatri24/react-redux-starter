@@ -6,7 +6,7 @@ import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import Button from 'react-bootstrap/Button';
 import { getParams } from '../../../Utilities';
 import { PageHeader } from '../PageHeader/PageHeader';
-import { Row } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const FileView = (props) => {
@@ -28,8 +28,9 @@ const FileView = (props) => {
     }
   }, [props.location.state]);
 
-  const onDocumentLoadSuccess = ({ numpages }) => {
-    setNumPages(numpages);
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    setNumPages(numPages);
+    console.log(numPages);
   };
 
   return (
@@ -48,8 +49,11 @@ const FileView = (props) => {
         >
           Previous
         </Button>
-
-        <Button variant='customPrimarySmol' onClick={() => setPageNumber((p) => p + 1)}>
+        <Button
+          variant='customPrimarySmol'
+          onClick={() => setPageNumber((p) => (p > numPages - 1 ? p : p + 1))}
+          style={pageNumber === numPages ? { display: 'none' } : {}}
+        >
           Next Page
         </Button>
       </Row>

@@ -20,6 +20,9 @@ import OneTimeCharge from './OneTimeCharge';
 const FeePlans = (props) => {
   const { history, clientId, clientUserId, feePlanType } = props;
   const [recentPlans, setRecentPlans] = useState([]);
+  const [batchSearchString, setBatchSearchString] = useState('');
+  const [studentSearchString, setStudentSearchString] = useState('');
+
   const [feeTags, setFeeTags] = useState([]);
   const [tagName, setTagName] = useState('');
   const [tagAmount, setTagAmount] = useState('');
@@ -53,29 +56,25 @@ const FeePlans = (props) => {
       const result = apiValidation(res);
       setRecentPlans(result);
     });
-
+    get({ client_id: clientId }, '/getAllBatchesOfCoaching').then((res) => {
+      console.log(res);
+      const result = apiValidation(res);
+      setBatches(result);
+    });
     get(null, '/getFeeTags').then((res) => {
       console.log(res);
       const result = apiValidation(res);
       setFeeTags(result);
     });
-  }, [clientUserId, feePlanType]);
+  }, [clientUserId, feePlanType, clientId]);
 
   const getPlanValue = (name, amount) => {
     setTagName(name);
     setTagAmount(amount);
   };
 
-  const getBatchesOfCoaching = () => {
-    get({ client_id: clientId }, '/getAllBatchesOfCoaching').then((res) => {
-      console.log(res);
-      const result = apiValidation(res);
-      setBatches(result);
-      handleBatchesOpen();
-    });
-  };
-
-  const getSelectedBatches = (selectBatches) => {
+  const getSelectedBatches = (allbatches, selectBatches) => {
+    setBatches(allbatches);
     setSelectedBatches(selectBatches);
   };
 
@@ -107,7 +106,7 @@ const FeePlans = (props) => {
   const handleStudentsClose = () => setShowStudentsModal(false);
   const handleStudentsOpen = () => setShowStudentsModal(true);
 
-  const getSelectedStudents = (selectStudents) => {
+  const getSelectedStudents = (allstudents, selectStudents) => {
     setSelectedStudents(selectStudents);
     console.log(selectStudents);
   };
@@ -123,6 +122,11 @@ const FeePlans = (props) => {
   };
 
   const assignFeesToStudents = () => {
+    const customPlanForPost = customFeePlanArray.map((elem) => {
+      elem.due_date = (elem.date.getTime() / 1000).toFixed(0);
+      return elem;
+    });
+
     const payload = {
       client_user_id: clientUserId,
       is_replace: feePlanType === 'onetimecharge' ? replaceOptions === 'replace' : true,
@@ -143,10 +147,11 @@ const FeePlans = (props) => {
                 due_date: parseInt((monthlyFeeDate.getTime() / 1000).toFixed(0), 10),
               },
             ]
-          : customFeePlanArray,
+          : customPlanForPost,
       ),
     };
 
+    console.log(customPlanForPost);
     post(payload, '/addFeeToMultipleUsers').then((res) => {
       console.log(res);
       if (res.success) {
@@ -169,24 +174,52 @@ const FeePlans = (props) => {
     } else {
       setMonthlyOrCustom('Custom');
       console.log(elem);
-      console.log(customFeePlanArray);
+      console.log(customFeePlanArray, 'ji');
       const addToFeePlan = elem.plan_array.map((e) => {
-        e.date = fromUnixTime(parseInt(e.due_date, 10));
-        e.isRead = true;
-        e.amount = parseInt(e.amount, 10);
-        return e;
+        const obj = {};
+        obj.id = Math.floor(Math.random() * 100000).toString(16);
+        obj.isRead = true;
+        obj.date = fromUnixTime(parseInt(e.due_date, 10));
+        obj.amount = parseInt(e.amount, 10);
+        obj.due_date = parseInt(e.due_date, 10);
+        return obj;
       });
       console.log('hamara,', addToFeePlan);
       setCustomFeePlanArray(addToFeePlan);
-      //  setNoOfInstallments(elem.plan_array.length + 1); // doing this to trigger a re render. I am stupid that way.
       setNoOfInstallments(elem.plan_array.length);
     }
+  };
+
+  const searchBatches = (search) => {
+    setBatchSearchString(search);
+  };
+
+  const filterBatches = (e) => {
+    if (e.batch_name.toLowerCase().indexOf(batchSearchString.toLowerCase()) > -1) {
+      e.dontShow = false;
+    } else e.dontShow = true;
+    return e;
+  };
+
+  const searchStudents = (search) => {
+    setStudentSearchString(search);
+  };
+
+  const filterStudents = (e) => {
+    if (
+      e.first_name.toLowerCase().indexOf(studentSearchString.toLowerCase()) > -1 ||
+      e.last_name.toLowerCase().indexOf(studentSearchString.toLowerCase()) > -1
+    ) {
+      e.dontShow = false;
+    } else e.dontShow = true;
+    return e;
   };
 
   return (
     <>
       <PageHeader title={feePlanType === 'onetimecharge' ? 'One Time Charge' : 'Fee Plans'} />
       <div
+        className='Fees__plansContainer'
         style={{
           marginTop: '4rem',
           height: '100vh',
@@ -225,19 +258,27 @@ const FeePlans = (props) => {
           />
         )}
         <Row className='justify-content-center my-3'>
-          <Button variant='customPrimary' onClick={() => getBatchesOfCoaching()}>
+          <Button variant='customPrimary' onClick={() => handleBatchesOpen()}>
             Next
           </Button>
         </Row>
         <Modal show={showBatchesModal} onHide={handleBatchesClose} centered>
           <Modal.Header closeButton>
-            <Modal.Title>Select Batches</Modal.Title>
+            <PageHeader
+              notFixed
+              noBack
+              search
+              searchFilter={searchBatches}
+              title='Select Batches'
+            />
           </Modal.Header>
           <BatchesSelector
-            batches={batches}
+            search
+            batches={batches.map(filterBatches)}
             selectBatches={selectedBatches}
             getSelectedBatches={getSelectedBatches}
             title='Batches'
+            sendBoth
           />
           <Modal.Footer>
             <Button variant='customPrimary' onClick={() => getStudentsOfBatches()}>
@@ -249,7 +290,13 @@ const FeePlans = (props) => {
         <Modal show={showStudentsModal} onHide={handleStudentsClose} centered>
           <Modal.Header closeButton>
             <Modal.Title>
-              Select Students{' '}
+              <PageHeader
+                notFixed
+                noBack
+                search
+                searchFilter={searchStudents}
+                title='Select Students'
+              />
               <p
                 style={{
                   fontSize: '10px',
@@ -263,7 +310,7 @@ const FeePlans = (props) => {
             </Modal.Title>
           </Modal.Header>
           <StudentSelector
-            students={students}
+            students={students.map(filterStudents)}
             selectedStudents={selectedStudents}
             getSelectedStudents={getSelectedStudents}
             title='Students'
