@@ -8,6 +8,7 @@ import footerIngenium from '../../../assets/images/ingiLOGO.png';
 import { changeFaviconAndDocumentTitle, setGlobalColors, useInterval } from '../../../Utilities';
 import { getBranding, getColor } from '../Login.service';
 import './Preloader.scss';
+import '../Login.scss';
 import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
 
 const Preloader = (props) => {
