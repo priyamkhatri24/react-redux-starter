@@ -141,7 +141,6 @@ class QuestionTaker extends Component {
 
   timerHasFinished = () => {
     const { result, testId } = this.state;
-    console.log('wtf');
     const {
       clientUserId,
       testType,
@@ -175,15 +174,11 @@ class QuestionTaker extends Component {
 
     const finalObject = Object.assign({}, ...finalArray);
 
-    console.log(finalObject, 'aja beti');
-
     const finalPayload = {
       client_user_id: clientUserId,
       test_id: testId,
       questions_array: JSON.stringify(finalObject),
     };
-
-    console.log('key ho rha h');
 
     post(finalPayload, '/studentTestActivityLatest').then((res) => {
       if (res.success) {
@@ -192,7 +187,6 @@ class QuestionTaker extends Component {
           test_id: testID,
           test_status: 'submitted',
         };
-        console.log('key ho rha h');
         if (testType === 'demotest') {
           post(updationPayload, '/updateTestStatus').then((response) => {
             if (response.success) {

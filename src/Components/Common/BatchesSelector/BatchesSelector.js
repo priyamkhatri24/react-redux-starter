@@ -7,15 +7,7 @@ import Button from 'react-bootstrap/Button';
 import './BatchesSelector.scss';
 
 export const BatchesSelector = (props) => {
-  const {
-    batches,
-    getSelectedBatches,
-    title,
-    selectBatches,
-    sendBoth,
-    isStudentFee,
-    search,
-  } = props;
+  const { batches, getSelectedBatches, title, selectBatches, sendBoth, isStudentFee } = props;
   const [selectedBatches, setSelectedBatches] = useState([...selectBatches]);
   const [selectAllStudents, setSelectAllStudents] = useState(false);
   const [allBatches, setAllBatches] = useState([...batches]);
@@ -139,11 +131,9 @@ BatchesSelector.propTypes = {
   title: PropTypes.string.isRequired,
   sendBoth: PropTypes.bool,
   isStudentFee: PropTypes.bool,
-  search: PropTypes.bool,
 };
 
 BatchesSelector.defaultProps = {
   sendBoth: false,
   isStudentFee: false,
-  search: false,
 };

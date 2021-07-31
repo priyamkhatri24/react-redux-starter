@@ -18,6 +18,7 @@ import { getAdmissionRoleArray } from '../../redux/reducers/admissions.reducer';
 import { admissionActions } from '../../redux/actions/admissions.action';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get, post } from '../../Utilities';
+import 'intl-tel-input/build/css/intlTelInput.css';
 
 const AddDetails = (props) => {
   const { history, admissionRoleArray, clientId } = props;

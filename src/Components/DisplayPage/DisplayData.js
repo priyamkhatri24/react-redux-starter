@@ -18,8 +18,8 @@ export const dataArray = [
   { label: 'Address', value: '', type: 'textarea', name: 'Address' },
   {
     label: 'State',
-    value: '',
-    type: 'select',
+    value: { value: '', label: '' },
+    type: 'reactSelect',
     name: 'State',
     data: [
       'Andaman and Nicobar Islands',
@@ -62,8 +62,8 @@ export const dataArray = [
   },
   {
     label: 'City',
-    value: '',
-    type: 'select',
+    value: { value: '', label: '' },
+    type: 'reactSelect',
     name: 'City',
     data: [
       'Kolhapur',

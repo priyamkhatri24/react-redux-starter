@@ -99,7 +99,8 @@
     "eject": "react-scripts eject",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "bundleCheck": "node webpackAnalyze.js",
-    "start-sw": "yarn build && serve -s build"
+    "start-sw": "yarn build && serve -s build",
+    "lint": "eslint ."
   },
   "eslintConfig": {
     "extends": "react-app"
