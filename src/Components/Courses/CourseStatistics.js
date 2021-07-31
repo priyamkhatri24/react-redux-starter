@@ -26,12 +26,13 @@ const CourseStatistics = (props) => {
   }, [id]);
 
   const goToCourseStatistics = () => {
-    history.push({ pathname: '/courses/teachercourse' });
+    console.log('test');
+    history.push({ pathname: '/courses/teachercourse', state: { activeTab: 'Statistics' } });
   };
 
   return (
     <>
-      <PageHeader title='Details' handleBack={goToCourseStatistics} />
+      <PageHeader title='Details' customBack handleBack={goToCourseStatistics} />
       <div className='Courses__statisticsConatiner'>
         {stats.map((course) => {
           return (
