@@ -14,7 +14,7 @@ const SelectUser = (props) => {
   const { userInfo, getUserName } = props;
 
   useEffect(() => {
-    console.log(userInfo);
+    console.log(userInfo, 'hahahaha');
     if (userInfo.length === 1) getUserName(userInfo[0].username);
   }, [userInfo, getUserName]);
 

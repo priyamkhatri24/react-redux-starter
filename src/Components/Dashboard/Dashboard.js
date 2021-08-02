@@ -298,6 +298,11 @@ const Dashboard = (props) => {
     push({ pathname: '/homework/savedsent', state: { testsType: type } });
   };
 
+  const goToChats = () => {
+    const { push } = history;
+    push({ pathname: '/conversations' });
+  };
+
   const startHomework = (responseArray, testId, languageType = 'english') => {
     const { push } = history;
     setTestResultArrayToStore(responseArray);
@@ -408,8 +413,7 @@ const Dashboard = (props) => {
               <img
                 src={param.feature_icon}
                 alt='hands'
-                style={{ width: '90px' }}
-                className='mx-auto d-block'
+                className='mx-auto d-block Dashboard__attendanceLogo'
               />
               <Row className='m-3'>
                 <span className='Dashboard__todaysHitsText my-auto'>Attendance</span>
@@ -474,7 +478,7 @@ const Dashboard = (props) => {
                 )}
               </Col>
               <Col xs={4} className='noticeboard_img'>
-                <img src={param.feature_icon} alt='notice' height='80' width='80' />
+                <img src={param.feature_icon} alt='notice' className='Dashboard__NoticeIcon' />
               </Col>
             </Row>
 
@@ -569,6 +573,8 @@ const Dashboard = (props) => {
         return (
           <DashboardCards
             image={param.feature_icon} // analysisHands
+            width={62}
+            height={78}
             heading='Analysis'
             subHeading='See detailed reports of every student and assignments.'
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
@@ -581,6 +587,8 @@ const Dashboard = (props) => {
         return (
           <DashboardCards
             image={param.feature_icon}
+            width={53}
+            height={78}
             heading='Fees'
             subHeading='See fees history and amount to be paid for coming months.'
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
@@ -729,6 +737,8 @@ const Dashboard = (props) => {
         ) : (
           <DashboardCards
             image={param.feature_icon}
+            width={51}
+            height={78}
             heading='Courses'
             subHeading='Increase your profit by building and selling your courses here.'
             boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
@@ -741,6 +751,8 @@ const Dashboard = (props) => {
         return (
           <DashboardCards
             image={param.feature_icon}
+            width={91}
+            height={73}
             heading='Live Classes'
             subHeading={
               roleArray.includes(3) || roleArray.includes(4)
@@ -764,6 +776,8 @@ const Dashboard = (props) => {
         return (
           <DashboardCards
             image={param.feature_icon} // student
+            width={56}
+            height={86}
             coloredHeading='Library'
             color='rgba(0, 102, 255, 0.87)'
             subHeading='Access content uploaded by institute here.'
@@ -883,6 +897,8 @@ const Dashboard = (props) => {
         return (
           <DashboardCards
             image={param.feature_icon} // analysis
+            width={76}
+            height={84}
             heading='CRM'
             subHeading='Manage All your customer Relations Management Enquiries here.'
             boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
@@ -911,6 +927,8 @@ const Dashboard = (props) => {
         return (
           <DashboardCards
             image={param.feature_icon} // student
+            width={78}
+            height={76}
             heading='My display page'
             color='rgba(255, 236, 222, 1)'
             subHeading='This is like your website. Choose what want to show your guests.'
@@ -919,7 +937,18 @@ const Dashboard = (props) => {
             buttonClick={goToDisplayPage}
           />
         );
-
+      // case 'chats':
+      //   return (
+      //     <DashboardCards
+      //       image={param.feature_icon}
+      //       heading='Chats'
+      //       boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
+      //       subHeading='Chat with your peers or teachers.'
+      //       backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
+      //       backGround={param.start_colour}
+      //       buttonClick={goToChats}
+      //     />
+      //   );
       default:
         return null;
     }

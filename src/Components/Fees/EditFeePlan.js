@@ -63,18 +63,20 @@ const EditFeePlan = (props) => {
   const handlePlanSummaryShow = () => setShowModal(true);
   const handlePlanSummaryClose = () => setShowModal(false);
 
-  // useEffect(() => {
-  //   console.log(history.location.state.studentData.client_user_id,"zazazaz")
-  //   get(
-  //     { client_user_id: history.location.state.studentData.client_user_id},
-  //     '/getFeeDataForStudent',
-  //   ).then((res) => {
-  //     const result = apiValidation(res);
-  //     console.log(result,"safdfafafsgs");
-  //    })
-  // },[history])
+  useEffect(() => {
+    console.log(history.location.state.client_user_id, 'history bro');
+    get({ client_user_id: history.location.state.client_user_id }, '/getFeeDataForStudent').then(
+      (res) => {
+        const result = apiValidation(res);
+        console.log(result, 'safdfafafsgs');
+      },
+    );
+  }, []);
 
   useEffect(() => {
+    console.log(feeCustomPlanArray, 'custom');
+    console.log(feeMonthlyPlanArray, 'month');
+    console.log(feeOneTimePlanArray, 'onetime');
     const minInstallments = feeCustomPlanArray.filter((e) => e.status !== 'due').length;
     setMinNoOfInstallments(minInstallments);
     if (feePlanType === 'Custom') {
@@ -86,9 +88,14 @@ const EditFeePlan = (props) => {
       });
 
       setCustomFeePlanArray(modCustomPlan);
+      console.log(modCustomPlan, 'modcustomfeeplanarray');
     } else {
-      setMonthlyFeeAmount(feeMonthlyPlanArray[0].amount);
-      setMonthlyFeeDate(fromUnixTime(parseInt(feeMonthlyPlanArray[0].due_date, 10)));
+      if (feeMonthlyPlanArray.length > 0) {
+        console.log('zzz');
+        setMonthlyFeeAmount(feeMonthlyPlanArray[0].amount);
+        setMonthlyFeeDate(fromUnixTime(parseInt(feeMonthlyPlanArray[0].due_date, 10)));
+      }
+      console.log('feeplanarrayempty');
     }
 
     const newOnetimeArray = feeOneTimePlanArray.map((e) => {
@@ -134,6 +141,7 @@ const EditFeePlan = (props) => {
     const updatedAmount = oneTimePlanArray.map((e) => {
       if (e.user_fee_id === id) {
         e.fee_tag = value;
+        e.name = value;
       }
       return e;
     });
@@ -172,13 +180,16 @@ const EditFeePlan = (props) => {
       one_time_array: JSON.stringify(oneTimePlanArray),
       plan_type: monthlyOrCustom,
     };
-    console.log(oneTimePlanArray);
-    console.log(customFeePlanArray);
+    console.log(oneTimePlanArray, 'onetimearray');
+    console.log(customFeePlanArray, 'customarray');
     console.log(payload, 'payload');
     post(payload, '/editFeeDataOfUser').then((res) => {
       console.log(res);
       if (res.success) {
         history.push('/teacherfees');
+        console.log('xyz');
+      } else {
+        console.log('error');
       }
     });
   };

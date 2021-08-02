@@ -35,7 +35,6 @@ const EnterPhone = (props) => {
       <LoginDetailsSkeleton
         heading="Let's start!"
         englishText='Please enter your mobile number'
-        hindiText='कृपया अपना मोबाइल नंबर दर्ज करें'
         image={phoneNo}
         value={mobileNo}
         setValue={onChange}

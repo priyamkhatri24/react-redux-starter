@@ -151,7 +151,7 @@ const FeePlans = (props) => {
       ),
     };
 
-    console.log(customPlanForPost);
+    console.log(customPlanForPost, 'aCustomPlanForPost');
     post(payload, '/addFeeToMultipleUsers').then((res) => {
       console.log(res);
       if (res.success) {
@@ -214,6 +214,10 @@ const FeePlans = (props) => {
     } else e.dontShow = true;
     return e;
   };
+
+  useEffect(() => {
+    console.log(customFeePlanArray, 'xxxCustomFEE');
+  }, [customFeePlanArray]);
 
   return (
     <>

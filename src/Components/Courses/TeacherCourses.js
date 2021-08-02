@@ -62,7 +62,7 @@ const TeacherCourses = (props) => {
       setCourses(searchedArray);
       console.log(result);
     });
-    console.log(history);
+    console.log(history, 'hiatory');
     get({ client_id: clientId }, '/getPublishedCoursesOfCoaching').then((res) => {
       const result = apiValidation(res);
       const searchedArray = result.filter(

@@ -161,6 +161,23 @@ class LiveClasses extends Component {
     history.push({ pathname: `/videoplayer`, state: { videoLink: e } });
   };
 
+  handleDelete = (e) => {
+    const payload = {
+      stream_name: e.stream_name,
+      status: 'deleted',
+      created_at: e.created_at,
+      client_user_id: e.client_user_id,
+    };
+    console.log(payload, 'payload');
+    console.log(e);
+    post(payload, '/changeLiveRecordingFileStatus').then((res) => {
+      console.log(res);
+      if (res.success) {
+        history.push('/liveclasses');
+      }
+    });
+  };
+
   startLiveStream = (element) => {
     const { domain, jitsiFirstName, jitsiLastName, role } = this.state;
     const {
@@ -962,7 +979,7 @@ class LiveClasses extends Component {
                       <Card
                         key={elem.stream_name}
                         css={LiveClassesStyle.card}
-                        className='mx-auto p-2 mb-3 mb-lg-5'
+                        className='mx-auto p-2 mt-3'
                       >
                         <div css={LiveClassesStyle.adminCard} className='p-2'>
                           <h6 css={LiveClassesStyle.adminHeading} className='mb-0'>
@@ -997,11 +1014,7 @@ class LiveClasses extends Component {
                             <div>
                               {elem.recording_link_array.map((e, i) => {
                                 return (
-                                  <Row
-                                    className='m-3'
-                                    style={{ justifyContent: 'space-between' }}
-                                    key={e}
-                                  >
+                                  <Row className='m-3' css={LiveClassesStyle.watch} key={e}>
                                     {i + 1}. Recording {1 + i}{' '}
                                     <Button
                                       variant='customPrimary'
@@ -1010,6 +1023,15 @@ class LiveClasses extends Component {
                                     >
                                       Watch Recording
                                     </Button>
+                                    {role === 'teacher' && (
+                                      <Button
+                                        variant='customPrimary'
+                                        size='sm'
+                                        onClick={() => this.handleDelete(elem)}
+                                      >
+                                        Delete Recording
+                                      </Button>
+                                    )}
                                   </Row>
                                 );
                               })}
