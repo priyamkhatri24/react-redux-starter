@@ -16,7 +16,6 @@ const PlyrVideoPlayer = (props) => {
     sources: [
       {
         src: 'PVt1MNXss-Y',
-        provider: 'youtube',
       },
     ],
   });
