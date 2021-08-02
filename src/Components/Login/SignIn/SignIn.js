@@ -39,14 +39,14 @@ const SignIn = (props) => {
     user_id: 0,
   });
   const [userStatus, setUserStatus] = useState('');
-
+  const [resendText, setResendText] = useState('Resend?');
+  const [userIdForOtp, setUserIdForOtp] = useState('');
   useEffect(() => {
     // checks whether the user is logged for the first time only
     if (firstTimeLogin) history.push('/');
   }, [firstTimeLogin, history]);
 
   const verifyOTP = (otp) => {
-    console.log(otp);
     const requestBody = {
       user_id: loginParams.user_id,
       phone_number: userProfile.contact,
@@ -84,16 +84,15 @@ const SignIn = (props) => {
     post(payload, '/sendOTPForCreatePassword').then((res) => {
       console.log(res);
       if (res.success) {
-        console.log('otp sent');
+        console.log('otp sent!');
       }
     });
-    console.log(userProfile, 'userProfile is here');
   };
   const getUserName = (param) => {
     const userParam = userInfo.filter((e) => {
       return e.username === param;
     });
-    console.log(userParam, '00000');
+    setUserIdForOtp(userParam[0].user_id);
     if (userParam && userParam.length) {
       if (userParam[0].user_status === 'pending') {
         setComponent('otp');
@@ -109,6 +108,21 @@ const SignIn = (props) => {
     } else {
       checkValidUser(true);
     }
+  };
+
+  const resendOtp = () => {
+    const payload = {
+      phone_number: userProfile.contact,
+      user_id: userIdForOtp,
+      country_code: userProfile.countryCode,
+    };
+    post(payload, '/sendOTPForCreatePassword').then((res) => {
+      if (res.success) {
+        setResendText('Sent!');
+      } else {
+        setResendText('Resend Failed. Try again?');
+      }
+    });
   };
 
   // const forgotUsername = () => {
@@ -294,9 +308,9 @@ const SignIn = (props) => {
         <div className='text-center'>
           <OTPInput
             contact={userProfile.contact}
-            resendOtp={() => {}}
+            resendOtp={resendOtp}
             verifyOTP={verifyOTP}
-            resendText='Resend?'
+            resendText={resendText}
           />
         </div>
       )}
