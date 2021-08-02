@@ -19,6 +19,8 @@ import { admissionActions } from '../../redux/actions/admissions.action';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get, post } from '../../Utilities';
 import 'intl-tel-input/build/css/intlTelInput.css';
+import '../Courses/Courses.scss';
+import '../Profile/Profile.scss';
 
 const AddDetails = (props) => {
   const { history, admissionRoleArray, clientId } = props;
@@ -29,12 +31,12 @@ const AddDetails = (props) => {
     admissionRoleArray[0] === '1'
       ? {
           name: '',
-          contact: '',
+          contact: { iso2: 'in', dialCode: '91', phone: '' },
           parent_contact: '',
           parent_name: '',
           isEditing: false,
         }
-      : { name: '', contact: '', isEditing: false },
+      : { name: '', contact: { iso2: 'in', dialCode: '91', phone: '' }, isEditing: false },
   );
 
   const [arrayEdit, setArrayEdit] = useState(
@@ -42,7 +44,7 @@ const AddDetails = (props) => {
       ? {
           id: new Date().getTime(),
           name: '',
-          contact: '',
+          contact: { iso2: 'in', dialCode: '91', phone: '' },
           parent_contact: '',
           parent_name: '',
           isEditing: false,
@@ -50,13 +52,21 @@ const AddDetails = (props) => {
       : {
           id: new Date().getTime(),
           name: '',
-          contact: '',
+          contact: { iso2: 'in', dialCode: '91', phone: '' },
           isEditing: false,
         },
   );
 
   const [detailArray, setDetailArray] = useState([]);
   const [isValid, setValid] = useState(false);
+
+  const inputProps = {
+    placeholder: 'Mobile Number',
+  };
+
+  const intlTelOpts = {
+    preferredCountries: ['in'],
+  };
 
   /** ****************************Batches Modal Logic***************************** */
 
@@ -80,7 +90,13 @@ const AddDetails = (props) => {
   const addUserToWhiteList = () => {
     const payload = {
       client_id: clientId,
-      user_array: JSON.stringify(detailArray),
+      user_array: JSON.stringify(
+        detailArray.map((e) => {
+          const phoneNo = e.contact.phone;
+          const countryCode = e.contact.dialCode;
+          return { ...e, contact: phoneNo, country_code: countryCode };
+        }),
+      ),
       role_array: JSON.stringify(admissionRoleArray),
       batch_array: JSON.stringify(selectedBatches.map((e) => e.client_batch_id)),
     };
@@ -104,19 +120,15 @@ const AddDetails = (props) => {
   };
   /** ********************************************************************* */
 
-  useEffect(() => {
-    console.log(admissionRoleArray);
-    console.log(details);
-  }, [admissionRoleArray, details]);
-
   const addToDetailArray = () => {
+    console.log(detailArray, details);
     const filteredDetails = Object.values(details).filter((e) => e !== '');
     if (admissionRoleArray[0] === '1' && filteredDetails.length === 5) {
       setDetailArray((e) => [...e, { ...details, id: new Date().getTime() }]);
       setValid(false);
       setDetails({
         name: '',
-        contact: '',
+        contact: { iso2: 'in', dialCode: '91', phone: '' },
         parent_contact: '',
         parent_name: '',
         isEditing: false,
@@ -129,7 +141,7 @@ const AddDetails = (props) => {
       setValid(false);
       setDetails({
         name: '',
-        contact: '',
+        contact: { iso2: 'in', dialCode: '91', phone: '' },
         isEditing: false,
       });
     } else setValid(true);
@@ -149,10 +161,12 @@ const AddDetails = (props) => {
       .map((e) => {
         if (e.id === id) {
           setArrayEdit(e);
+          console.log(e, 'wut');
           e.isEditing = true;
         }
         return e;
       });
+    console.log(updatedDetails, 'updateddetails');
     setDetailArray(updatedDetails);
   };
 
@@ -171,7 +185,7 @@ const AddDetails = (props) => {
         ? detailArray.map((elem) => {
             if (elem.id === arrayEdit.id) {
               elem.name = arrayEdit.name;
-              elem.contact = arrayEdit.contact;
+              elem.contact = { ...arrayEdit.contact };
               elem.parent_contact = arrayEdit.parent_contact;
               elem.parent_name = arrayEdit.parent_name;
               elem.isEditing = false;
@@ -181,12 +195,13 @@ const AddDetails = (props) => {
         : detailArray.map((elem) => {
             if (elem.id === arrayEdit.id) {
               elem.name = arrayEdit.name;
-              elem.contact = arrayEdit.contact;
+              elem.contact = { ...arrayEdit.contact };
               elem.isEditing = false;
             }
             return elem;
           });
 
+    console.log(updatedArray);
     setDetailArray(updatedArray);
     setArrayEdit({});
   };
@@ -236,23 +251,39 @@ const AddDetails = (props) => {
                       />
                       <span>First Name</span>
                     </label>
-                    <label className='has-float-label my-auto mt-3'>
+                    {/* <label className='has-float-label my-auto mt-3'>
                       <input
                         className='form-control mt-3'
                         name='Mobile Number'
                         type='number'
                         placeholder='Mobile Number'
-                        value={arrayEdit.contact}
+                        value={arrayEdit.contact.phone}
                         onChange={(elem) => {
                           const newObject = {
                             ...arrayEdit,
-                            contact: elem.target.value,
+                            contact: { ...arrayEdit.contact, phone: elem.target.value },
                           };
                           setArrayEdit(newObject);
                         }}
                       />
                       <span>Mobile Number</span>
-                    </label>
+                    </label> */}
+
+                    <ReactIntlTelInput
+                      inputProps={inputProps}
+                      intlTelOpts={intlTelOpts}
+                      value={arrayEdit.contact}
+                      onChange={(elem) => {
+                        const newObject = {
+                          ...arrayEdit,
+                          contact: elem,
+                        };
+                        setArrayEdit(newObject);
+                        console.log(newObject, 'abc');
+                      }}
+                      className='mt-3'
+                    />
+
                     {admissionRoleArray[0] === '1' && (
                       <>
                         <label className='has-float-label my-auto mt-3'>
@@ -351,7 +382,7 @@ const AddDetails = (props) => {
                       <p className='LiveClasses__adminDuration '>{e.name}</p>
 
                       <h6 className='LiveClasses__adminHeading mb-0'>Mobile Number</h6>
-                      <p className='LiveClasses__adminDuration '>{e.contact}</p>
+                      <p className='LiveClasses__adminDuration '>{e.contact.phone}</p>
 
                       {e.parent_name && (
                         <>
@@ -396,23 +427,38 @@ const AddDetails = (props) => {
                 />
                 <span>First Name</span>
               </label>
-              <label className='has-float-label my-auto mt-3'>
+              {/* <label className='has-float-label my-auto mt-3'>
                 <input
                   className='form-control mt-3'
                   name='Mobile Number'
                   type='number'
                   placeholder='Mobile Number'
-                  value={details.contact}
+                  value={details.contact.phone}
                   onChange={(e) => {
                     const newObject = {
                       ...details,
-                      contact: e.target.value,
+                      contact: { ...details.contact, phone: e.target.value },
                     };
                     setDetails(newObject);
                   }}
                 />
                 <span>Mobile Number</span>
-              </label>
+              </label> */}
+
+              <ReactIntlTelInput
+                inputProps={inputProps}
+                intlTelOpts={intlTelOpts}
+                value={details.contact}
+                onChange={(e) => {
+                  const newObject = {
+                    ...details,
+                    contact: e,
+                  };
+                  setDetails(newObject);
+                }}
+                className='mt-3'
+              />
+
               {admissionRoleArray[0] === '1' && (
                 <>
                   <label className='has-float-label my-auto mt-3'>
