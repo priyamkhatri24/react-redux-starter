@@ -557,6 +557,7 @@ class LiveClasses extends Component {
       showMeetModal,
       googleMeeting,
     } = this.state;
+    const { dashboardData } = this.props;
     return (
       <div css={LiveClassesStyle.liveClasses}>
         <PageHeader title='Live Stream' />
@@ -757,54 +758,62 @@ class LiveClasses extends Component {
                       </label>
                     </Card>
                     <Row className='justify-content-center mt-4 mt-lg-5 mx-2'>
-                      <Col className='text-center p-0'>
-                        <Button
-                          variant='customPrimarySmol'
-                          size='sm'
-                          onClick={(e) => this.createStream(e.target.id)}
-                          disabled={!selectedBatches.length || !duration}
-                          id='alpha'
-                          style={{ fontSize: '9px' }}
-                        >
-                          Go Live Alpha!
-                        </Button>
-                      </Col>
-                      <Col className='text-center p-0'>
-                        <Button
-                          variant='customPrimarySmol'
-                          size='sm'
-                          onClick={(e) => this.createStream(e.target.id)}
-                          disabled={!selectedBatches.length || !duration}
-                          id='beta'
-                          style={{ fontSize: '9px' }}
-                        >
-                          Go Live Beta!
-                        </Button>
-                      </Col>
-                      <Col className='text-center p-0'>
-                        <Button
-                          variant='customPrimarySmol'
-                          size='sm'
-                          onClick={(e) => this.openZoomModal()}
-                          disabled={!selectedBatches.length || !duration}
-                          id='beta'
-                          style={{ fontSize: '9px' }}
-                        >
-                          Go Live Zoom!
-                        </Button>
-                      </Col>
-                      <Col className='text-center p-0'>
-                        <Button
-                          variant='customPrimarySmol'
-                          size='sm'
-                          onClick={(e) => this.openMeetModal()}
-                          disabled={!selectedBatches.length || !duration}
-                          id='beta'
-                          style={{ fontSize: '9px' }}
-                        >
-                          Go Live Meet!
-                        </Button>
-                      </Col>
+                      {dashboardData.live_class_platform.alpha ? (
+                        <Col className='text-center p-0'>
+                          <Button
+                            variant='customPrimarySmol'
+                            size='sm'
+                            onClick={(e) => this.createStream(e.target.id)}
+                            disabled={!selectedBatches.length || !duration}
+                            id='alpha'
+                            style={{ fontSize: '9px' }}
+                          >
+                            Go Live Alpha!
+                          </Button>
+                        </Col>
+                      ) : null}
+                      {dashboardData.live_class_platform.beta ? (
+                        <Col className='text-center p-0'>
+                          <Button
+                            variant='customPrimarySmol'
+                            size='sm'
+                            onClick={(e) => this.createStream(e.target.id)}
+                            disabled={!selectedBatches.length || !duration}
+                            id='beta'
+                            style={{ fontSize: '9px' }}
+                          >
+                            Go Live Beta!
+                          </Button>
+                        </Col>
+                      ) : null}
+                      {dashboardData.live_class_platform.zoom ? (
+                        <Col className='text-center p-0'>
+                          <Button
+                            variant='customPrimarySmol'
+                            size='sm'
+                            onClick={(e) => this.openZoomModal()}
+                            disabled={!selectedBatches.length || !duration}
+                            id='beta'
+                            style={{ fontSize: '9px' }}
+                          >
+                            Go Live Zoom!
+                          </Button>
+                        </Col>
+                      ) : null}
+                      {dashboardData.live_class_platform.meet ? (
+                        <Col className='text-center p-0'>
+                          <Button
+                            variant='customPrimarySmol'
+                            size='sm'
+                            onClick={(e) => this.openMeetModal()}
+                            disabled={!selectedBatches.length || !duration}
+                            id='beta'
+                            style={{ fontSize: '9px' }}
+                          >
+                            Go Live Meet!
+                          </Button>
+                        </Col>
+                      ) : null}
                     </Row>
                   </>
                 )}
