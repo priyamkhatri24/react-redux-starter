@@ -50,6 +50,7 @@ export const AspectCards = (props) => {
           </span>
         </Card>
       )}
+
       <div style={{ display: 'flex' }}>
         {data.length > 0 &&
           data.map((elem) => {

@@ -10,9 +10,10 @@ import { clientUserIdActions } from '../../../redux/actions/clientUserId.action'
 import { userProfileActions } from '../../../redux/actions/userProfile.action';
 import { firstTimeLoginActions } from '../../../redux/actions/firsttimeLogin.action';
 import { getFirstTimeLoginState } from '../../../redux/reducers/firstTimeLogin.reducer';
+import { getUserProfile } from '../../../redux/reducers/userProfile.reducer';
 import SelectUser from './SelectUser';
 import passwordImage from '../../../assets/images/Login/password.svg';
-import { LoginDetailsSkeleton } from '../../Common';
+import { LoginDetailsSkeleton, OTPInput } from '../../Common';
 
 const SignIn = (props) => {
   const {
@@ -20,6 +21,7 @@ const SignIn = (props) => {
       state: { userInfo, contact },
     },
     firstTimeLogin,
+    userProfile,
     setFirstTimeLoginToStore,
     history,
   } = props;
@@ -37,18 +39,67 @@ const SignIn = (props) => {
     user_id: 0,
   });
   const [userStatus, setUserStatus] = useState('');
-
+  const [resendText, setResendText] = useState('Resend?');
+  const [userIdForOtp, setUserIdForOtp] = useState('');
   useEffect(() => {
     // checks whether the user is logged for the first time only
     if (firstTimeLogin) history.push('/');
   }, [firstTimeLogin, history]);
 
+  const verifyOTP = (otp) => {
+    const requestBody = {
+      user_id: loginParams.user_id,
+      phone_number: userProfile.contact,
+      filled_otp: otp,
+      country_code: userProfile.countryCode,
+    };
+    get(requestBody, '/verifyOTP')
+      .then((result) => {
+        console.log(result, 'verification');
+        if (result.msg.verification_status === 'wrong otp entered') {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Invalid OTP',
+          });
+        } else if (result.msg.verification_status === 'otp expired') {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'The OTP has expired. Click resend to get a new OTP',
+          });
+        } else if (result.msg.verification_status === 'otp verified') {
+          setComponent('password');
+        }
+      })
+      .catch((e) => console.error(e));
+  };
+
+  const sendOtpToVerifyNumber = (userId) => {
+    const payload = {
+      phone_number: userProfile.contact,
+      user_id: userId,
+      country_code: userProfile.countryCode,
+    };
+    post(payload, '/sendOTPForCreatePassword').then((res) => {
+      console.log(res);
+      if (res.success) {
+        console.log('otp sent!');
+      }
+    });
+  };
   const getUserName = (param) => {
     const userParam = userInfo.filter((e) => {
       return e.username === param;
     });
+    setUserIdForOtp(userParam[0].user_id);
     if (userParam && userParam.length) {
-      setComponent('password');
+      if (userParam[0].user_status === 'pending') {
+        setComponent('otp');
+        sendOtpToVerifyNumber(userParam[0].user_id);
+      } else {
+        setComponent('password');
+      }
       setLoginParams((prevState) => {
         return { ...prevState, user_name: userParam[0].username, user_id: userParam[0].user_id };
       });
@@ -57,6 +108,21 @@ const SignIn = (props) => {
     } else {
       checkValidUser(true);
     }
+  };
+
+  const resendOtp = () => {
+    const payload = {
+      phone_number: userProfile.contact,
+      user_id: userIdForOtp,
+      country_code: userProfile.countryCode,
+    };
+    post(payload, '/sendOTPForCreatePassword').then((res) => {
+      if (res.success) {
+        setResendText('Sent!');
+      } else {
+        setResendText('Resend Failed. Try again?');
+      }
+    });
   };
 
   // const forgotUsername = () => {
@@ -238,6 +304,16 @@ const SignIn = (props) => {
           <SelectUser userInfo={userInfo} getUserName={getUserName} />
         </>
       )}
+      {currentComponent === 'otp' && (
+        <div className='text-center'>
+          <OTPInput
+            contact={userProfile.contact}
+            resendOtp={resendOtp}
+            verifyOTP={verifyOTP}
+            resendText={resendText}
+          />
+        </div>
+      )}
 
       {currentComponent === 'password' && userStatus === 'active' && (
         <LoginDetailsSkeleton
@@ -279,6 +355,7 @@ const SignIn = (props) => {
 const mapStateToProps = (state) => ({
   currentbranding: getCurrentBranding(state),
   firstTimeLogin: getFirstTimeLoginState(state),
+  userProfile: getUserProfile(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -355,6 +432,7 @@ SignIn.propTypes = {
 
   setCLientUserIdToStore: PropTypes.func.isRequired,
   setUserIdToStore: PropTypes.func.isRequired,
+  userProfile: PropTypes.instanceOf(Object).isRequired,
   setUserUserIdToStore: PropTypes.func.isRequired,
   setRoleArrayToStore: PropTypes.func.isRequired,
   setFirstNameToStore: PropTypes.func.isRequired,

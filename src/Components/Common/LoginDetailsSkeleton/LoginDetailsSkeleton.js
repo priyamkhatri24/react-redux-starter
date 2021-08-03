@@ -71,7 +71,6 @@ export const LoginDetailsSkeleton = (props) => {
       </Row>
       <div className='LoginDetailsSkeleton mx-2 mt-5'>
         <p className='mx-lg-5 mx-3 mt-lg-3 mb-0 LoginDetailsSkeleton__text'>{englishText}</p>
-        <p className='mx-lg-5 mx-3 LoginDetailsSkeleton__text'>{hindiText}</p>
         {placeholder === 'Mobile number' ? (
           <div className='text-center mt-5 LoginDetailsSkeleton__phoneNoOnly LoginDetailsSkeleton__phoneNoInput'>
             <ReactIntlTelInput

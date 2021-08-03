@@ -84,6 +84,7 @@ const AddDetails = (props) => {
       console.log(res);
       const result = apiValidation(res);
       setBatches(result);
+      console.log('heelo');
     });
   }, [clientId]);
 

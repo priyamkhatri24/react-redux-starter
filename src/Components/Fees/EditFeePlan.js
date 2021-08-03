@@ -63,18 +63,20 @@ const EditFeePlan = (props) => {
   const handlePlanSummaryShow = () => setShowModal(true);
   const handlePlanSummaryClose = () => setShowModal(false);
 
-  // useEffect(() => {
-  //   console.log(history.location.state.studentData.client_user_id,"zazazaz")
-  //   get(
-  //     { client_user_id: history.location.state.studentData.client_user_id},
-  //     '/getFeeDataForStudent',
-  //   ).then((res) => {
-  //     const result = apiValidation(res);
-  //     console.log(result,"safdfafafsgs");
-  //    })
-  // },[history])
+  useEffect(() => {
+    console.log(history.location.state.client_user_id, 'history bro');
+    get({ client_user_id: history.location.state.client_user_id }, '/getFeeDataForStudent').then(
+      (res) => {
+        const result = apiValidation(res);
+        console.log(result, 'safdfafafsgs');
+      },
+    );
+  }, []);
 
   useEffect(() => {
+    console.log(feeCustomPlanArray, 'custom');
+    console.log(feeMonthlyPlanArray, 'month');
+    console.log(feeOneTimePlanArray, 'onetime');
     const minInstallments = feeCustomPlanArray.filter((e) => e.status !== 'due').length;
     setMinNoOfInstallments(minInstallments);
     if (feePlanType === 'Custom') {
@@ -134,6 +136,7 @@ const EditFeePlan = (props) => {
     const updatedAmount = oneTimePlanArray.map((e) => {
       if (e.user_fee_id === id) {
         e.fee_tag = value;
+        e.name = value;
       }
       return e;
     });
@@ -183,6 +186,9 @@ const EditFeePlan = (props) => {
       console.log(res);
       if (res.success) {
         history.push('/teacherfees');
+        console.log('xyz');
+      } else {
+        console.log('error');
       }
     });
   };

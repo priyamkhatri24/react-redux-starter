@@ -63,6 +63,13 @@ const LiveClassesStyle = {
     font-family: ${fonts.bold};
     color: ${colors.lightGrey};
   `,
+
+  watch: css`
+    justify-content: space-between;
+    @media (max-width: 768px) {
+      justify-content: center;
+    }
+  `,
 };
 
 export default LiveClassesStyle;

@@ -35,6 +35,7 @@ store.subscribe(() => {
     attendance: store.getState().attendance,
     displayPage: store.getState().displayPage,
     dashboard: store.getState().dashboard,
+    test: store.getState().test,
   });
 });
 

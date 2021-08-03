@@ -50,6 +50,7 @@ const StudentFee = (props) => {
     ).then((res) => {
       const result = apiValidation(res);
       setFees(result);
+      console.log(result, 'feeresult');
       setFeePlanTypeToStore(result.plan_type === 'custom' ? 'Custom' : 'Monthly');
       console.log('wtf');
       setFeeOneTimePlanArrayToStore(result.one_time_plan_array);
@@ -102,7 +103,11 @@ const StudentFee = (props) => {
   };
 
   const goToEditFeePlan = () => {
-    history.push('/fees/edit/studentfeeplan');
+    // eslint-disable-next-line max-len
+    history.push({
+      pathname: '/fees/edit/studentfeeplan',
+      state: { client_user_id: history.location.state.studentData.client_user_id },
+    });
   };
 
   return (
