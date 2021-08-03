@@ -86,7 +86,7 @@ const EditFeePlan = (props) => {
       });
 
       setCustomFeePlanArray(modCustomPlan);
-    } else {
+    } else if (feeMonthlyPlanArray.length > 0) {
       setMonthlyFeeAmount(feeMonthlyPlanArray[0].amount);
       setMonthlyFeeDate(fromUnixTime(parseInt(feeMonthlyPlanArray[0].due_date, 10)));
     }
@@ -166,14 +166,18 @@ const EditFeePlan = (props) => {
   };
 
   const saveChanges = () => {
+    const planArray =
+      monthlyOrCustom === 'Custom'
+        ? customFeePlanArray
+        : [{ amount: monthlyFeeAmount, due_date: Math.round(monthlyFeeDate.getTime() / 1000) }];
     const payload = {
       client_user_id: feeStudentCLientUserID,
-      plan_array: JSON.stringify(customFeePlanArray),
+      plan_array: JSON.stringify(planArray),
       one_time_array: JSON.stringify(oneTimePlanArray),
       plan_type: monthlyOrCustom,
     };
     console.log(oneTimePlanArray);
-    console.log(customFeePlanArray);
+    console.log(customFeePlanArray, 'fkfgjk');
     console.log(payload, 'payload');
     post(payload, '/editFeeDataOfUser').then((res) => {
       console.log(res);
