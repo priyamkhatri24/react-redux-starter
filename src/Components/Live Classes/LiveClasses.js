@@ -331,7 +331,6 @@ class LiveClasses extends Component {
       },
     } = this.props;
     const streamLink = `${Date.now()}${clientId}${clientUserId}`;
-    console.log(method);
     const payload = {
       stream_link: streamLink,
       duration,
@@ -352,18 +351,16 @@ class LiveClasses extends Component {
           domain: jitsiDomain,
           jitsiRoomName: streamLink,
           jitsiToken: result.user_auth ? result.jwt_token : null,
-          triggerJitsi: method === 'sdk',
+          triggerJitsi: false, // here earlier was (method === 'sdk') for sdk method jisti meet
         });
 
-        if (method !== 'sdk') {
-          this.openJitsiInNewWindow(
-            result.server_url,
-            streamLink,
-            userProfile.firstName,
-            userProfile.lastName,
-            result.user_auth ? result.jwt_token : null,
-          );
-        }
+        this.openJitsiInNewWindow(
+          result.server_url,
+          streamLink,
+          userProfile.firstName,
+          userProfile.lastName,
+          result.user_auth ? result.jwt_token : null,
+        );
       })
       .catch((e) => {
         console.error(e);
