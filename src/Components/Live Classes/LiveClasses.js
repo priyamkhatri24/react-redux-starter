@@ -197,17 +197,15 @@ class LiveClasses extends Component {
         jitsiLastName: userProfile.lastName,
         jitsiRoomName: element.stream_link,
         domain: strippedDomain,
-        triggerJitsi: method === 'sdk',
+        triggerJitsi: false, // method === 'sdk
       });
 
-      if (method !== 'sdk') {
-        this.openJitsiInNewWindow(
-          element.server_url,
-          element.stream_link,
-          userProfile.firstName,
-          userProfile.lastName,
-        );
-      }
+      this.openJitsiInNewWindow(
+        element.server_url,
+        element.stream_link,
+        userProfile.firstName,
+        userProfile.lastName,
+      );
     } else if (element.stream_type === 'big_blue_button') {
       rejoinBigBlueButtonStream(
         jitsiFirstName,
