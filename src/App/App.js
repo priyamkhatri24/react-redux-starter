@@ -22,8 +22,10 @@ function MainApp(props) {
 
   useEffect(() => {
     const SERVER = 'https://portal.tca.ingeniumedu.com';
-    const socket = io(SERVER, { transports: ['websocket', 'polling'] });
-
+    // console.log(io);
+    const socket = io(SERVER, {
+      transports: ['websocket', 'polling'],
+    });
     socket.on('connect', () => {
       console.log(socket.id, 'connect');
     });

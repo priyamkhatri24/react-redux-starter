@@ -76,10 +76,14 @@ const TeacherCourses = (props) => {
     });
   }, [clientId, clientUserId, history, roleArray, searchString]);
 
-  // useEffect(()=>{
-  //   setActiveTab(history)
-  // },[])
-  console.log(history.top, 'ZZZZ');
+  useEffect(() => {
+    console.log(history.location.state);
+    if (history.location.state && history.location.state.activeTab) {
+      handleSelect(history.location.state.activeTab);
+      delete history.location.state;
+    }
+  }, [history.location.state]);
+
   const getStatisticOfCourse = (id) => {
     history.push({ pathname: '/courses/teachercourse/statistics', state: { id } });
   };
@@ -179,6 +183,7 @@ const TeacherCourses = (props) => {
           justify
           style={{ marginTop: '3.5rem' }}
           onSelect={handleSelect}
+          activeKey={activeTab}
         >
           <Tab
             eventKey='My Courses'
