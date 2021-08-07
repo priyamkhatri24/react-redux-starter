@@ -50,6 +50,12 @@ const EditProfileHOC = (props) => {
         name: 'email',
       },
       {
+        label: 'Contact',
+        value: currentUser.contact,
+        type: 'input',
+        name: 'contact',
+      },
+      {
         label: 'Residential Address',
         value: currentUser.address || '',
         type: 'input',
