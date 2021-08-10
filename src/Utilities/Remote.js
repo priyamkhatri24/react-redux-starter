@@ -60,6 +60,16 @@ export const get = (requestBody = null, endpoint) => {
       console.error(`The error is ${err}`);
     });
 };
+export const getNoCors = (requestBody = null, endpoint) => {
+  // requestBody must be an object
+  return axios
+    .get(testUrl + endpoint, { params: requestBody, headers: authHeaderGet(), mode: 'no-cors' })
+    .then((result) => result.data)
+    .catch((err) => {
+      history.push('/error');
+      console.error(`The error is ${err}`);
+    });
+};
 
 export const uploadImage = (file) => {
   const fd = new FormData();

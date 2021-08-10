@@ -186,7 +186,6 @@ class LiveClasses extends Component {
         alpha: { method },
       },
     } = this.props;
-
     console.log(method, 'method');
 
     if (element.stream_type === 'jitsi') {

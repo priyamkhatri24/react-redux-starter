@@ -17,7 +17,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PlyrComponent from 'plyr-react';
 import 'plyr-react/dist/plyr.css';
 import Col from 'react-bootstrap/Col';
-import { apiValidation, get, post, shareThis } from '../../Utilities';
+import { apiValidation, getNoCors, get, post, shareThis } from '../../Utilities';
 import { PageHeader } from '../Common/PageHeader/PageHeader';
 import { testsActions } from '../../redux/actions/tests.action';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
@@ -55,7 +55,7 @@ const Mycourse = (props) => {
     type: 'video',
     sources: [
       {
-        src: 'w5Aioq5VYF0',
+        src: 'asadasds',
         provider: 'youtube',
       },
     ],
@@ -73,11 +73,19 @@ const Mycourse = (props) => {
         course_id: courseId,
       };
 
-      get(payload, '/getCourseDetails').then((res) => {
+      getNoCors(payload, '/getCourseDetails').then((res) => {
         const result = apiValidation(res);
         setCourse(result);
-        if (result.course_preview_video) setVideo(true);
-        setSource((s) => (s.sources = [{ src: result.course_preview_video }]));
+        if (result.course_preview_video) {
+          setVideo(true);
+          setSource((prevSource) => {
+            return {
+              type: 'video',
+              sources: [{ src: result.course_preview_video ? result.course_preview_video : 'asd' }],
+            };
+          });
+          console.log(source, 'newSource');
+        }
       });
     }
   }, [courseId, clientUserId, history]);
@@ -394,7 +402,7 @@ const Mycourse = (props) => {
       {Object.keys(course).length > 0 && (
         <div>
           {isVideo && (
-            <div>
+            <div style={{ height: '5%', overflow: 'hidden' }}>
               <PlyrComponent source={source} options={options} />
             </div>
           )}
