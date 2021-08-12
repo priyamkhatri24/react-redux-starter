@@ -17,7 +17,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PlyrComponent from 'plyr-react';
 import 'plyr-react/dist/plyr.css';
 import Col from 'react-bootstrap/Col';
-import { apiValidation, getNoCors, get, post, shareThis } from '../../Utilities';
+import { apiValidation, get, post, shareThis } from '../../Utilities';
 import { PageHeader } from '../Common/PageHeader/PageHeader';
 import { testsActions } from '../../redux/actions/tests.action';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
@@ -25,6 +25,7 @@ import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import { getCourseId } from '../../redux/reducers/course.reducer';
 import checkmark from '../../assets/images/order/icons8-checked.svg';
 import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
+import './Courses.scss';
 
 const Mycourse = (props) => {
   const {
@@ -73,7 +74,7 @@ const Mycourse = (props) => {
         course_id: courseId,
       };
 
-      getNoCors(payload, '/getCourseDetails').then((res) => {
+      get(payload, '/getCourseDetails').then((res) => {
         const result = apiValidation(res);
         setCourse(result);
         if (result.course_preview_video) {
@@ -402,7 +403,7 @@ const Mycourse = (props) => {
       {Object.keys(course).length > 0 && (
         <div>
           {isVideo && (
-            <div style={{ height: '5%', overflow: 'hidden' }}>
+            <div className='plyrComponent__myCourse'>
               <PlyrComponent source={source} options={options} />
             </div>
           )}

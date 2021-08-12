@@ -289,3 +289,18 @@
     font-size: 12px;
   }
 }
+
+.dashboardLogoImage {
+  display: block;
+  margin: auto;
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+}
+.nameAndProfilePic {
+  margin-left: 0px;
+  margin-right: 0px;
+  width: 100%;
+  transition-duration: 0.5s;
+  transition-property: opacity;
+}

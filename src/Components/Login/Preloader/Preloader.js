@@ -72,7 +72,7 @@ const Preloader = (props) => {
     if (count === 100) {
       setTimeout(() => {
         setCount(0);
-        history.push('/login');
+        history.replace('/login');
       }, 1000);
     }
   }, [count, history]);

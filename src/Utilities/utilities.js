@@ -65,7 +65,7 @@ export const setGlobalColors = (primary, light, lighter, superlight) => {
 
 export function changeFaviconAndDocumentTitle(favicon, documentTitle) {
   [
-    { id: 'dynamic-favicon', rel: 'shortcut icon' },
+    { id: 'dynamic-favicon', rel: 'icon' },
     { id: 'apple-icon', rel: 'apple-touch-icon' },
   ].forEach((elem) => {
     const link = document.createElement('link');
@@ -73,6 +73,7 @@ export function changeFaviconAndDocumentTitle(favicon, documentTitle) {
     link.id = elem.id;
     link.rel = elem.rel;
     link.href = favicon;
+    link.type = 'image/x-icon';
 
     if (oldLink) {
       document.head.removeChild(oldLink);

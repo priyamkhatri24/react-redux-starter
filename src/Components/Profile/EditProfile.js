@@ -47,6 +47,7 @@ const EditProfile = (props) => {
       data: ['Male', 'Female'],
     },
     { label: 'Email address', value: user.email, type: 'input', name: 'email' },
+    // { label: 'Contact', value: user.contact, type: 'input', name: 'contact' },
     { label: 'Residential Address', value: user.address, type: 'input', name: 'address' },
     {
       label: 'Date of Birth',

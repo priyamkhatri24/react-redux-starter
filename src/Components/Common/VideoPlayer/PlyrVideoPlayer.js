@@ -4,6 +4,7 @@ import PlyrComponent from 'plyr-react';
 import 'plyr-react/dist/plyr.css';
 import { PageHeader } from '../PageHeader/PageHeader';
 import Comments from './Comments';
+import './VideoPlayer.scss';
 
 const PlyrVideoPlayer = (props) => {
   const { match, history } = props;
@@ -47,7 +48,7 @@ const PlyrVideoPlayer = (props) => {
   }, [history]);
 
   return (
-    <div>
+    <div className='plyrComponent'>
       <PageHeader transparent />
       <PlyrComponent source={source} options={options} />
       {videoId && <Comments videoId={videoId} />}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -18,12 +18,23 @@ import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
 import carouselFirst from '../../../assets/images/Login/carousel1.svg';
 import carouselSecond from '../../../assets/images/Login/carousel2.svg';
 import carouselThird from '../../../assets/images/Login/carousel3.svg';
+import { useInterval } from '../../../Utilities';
 
 // install Swiper modules
 SwiperCore.use([Autoplay, Pagination, Navigation]);
 
 const WelcomeCarousel = (props) => {
   const { changeComponent, currentbranding } = props;
+  const [buttonFont, setButtonFont] = useState(18);
+  // useInterval(() => {
+  //   if (buttonFont <= 19) {
+  //     setButtonFont(buttonFont++);
+  //     return;
+  //   } else {
+  //     setButtonFont(17)
+  //     return;
+  //   }
+  // }, 3000);
 
   return (
     <>
@@ -56,6 +67,7 @@ const WelcomeCarousel = (props) => {
           { key: 2, text: 'Practice online', image: carouselSecond },
           { key: 3, text: 'Track your progress', image: carouselThird },
         ].map((elem) => {
+          // setButtonFont(buttonFont + elem.key);
           return (
             <SwiperSlide key={elem.key}>
               <div className='d-flex justify-content-center'>
@@ -70,7 +82,7 @@ const WelcomeCarousel = (props) => {
       <Button
         variant='JumboLogin'
         onClick={() => changeComponent('PhoneNo')}
-        style={{ zIndex: '999' }}
+        style={{ zIndex: '999', fontSize: `${buttonFont}px` }}
       >
         Log In / Sign Up
       </Button>

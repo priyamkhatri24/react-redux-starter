@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
@@ -24,6 +24,7 @@ const SignUp = (props) => {
     userProfile,
     currentbranding: { branding: { client_id: clientId = '' } = {} } = {},
     setFirstTimeLoginToStore,
+    history,
   } = props;
 
   const verifyOTP = (otp) => {
@@ -277,7 +278,10 @@ SignUp.propTypes = {
       contact: PropTypes.string.isRequired,
     }),
   }).isRequired,
-
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+    replace: PropTypes.func.isRequired,
+  }).isRequired,
   currentbranding: PropTypes.shape({
     branding: PropTypes.shape({
       client_id: PropTypes.number,

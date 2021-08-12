@@ -36,6 +36,7 @@ import offlineAssignment from '../../assets/images/Dashboard/offline.svg';
 import Tests from '../Tests/Tests';
 import './Dashboard.scss';
 import { admissionActions } from '../../redux/actions/admissions.action';
+import YCIcon from '../../assets/images/ycIcon.png';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import {
   getComeBackFromTests,
@@ -101,6 +102,24 @@ const Dashboard = (props) => {
   const closeOptionsModal = () => setOptionsModal(false);
   const [features, setFeatures] = useState([]);
   const [isToken, setIsToken] = useState(true);
+  const [nameDisplay, setNameDisplay] = useState(false);
+
+  // const nameDisplayTimer = setTimeout(() => {
+  //   setNameDisplayCounter(nameDisplayCounter + 1);
+  //   if (nameDisplayCounter >= 3) {
+  //     clearTimeout(nameDisplayTimer);
+  //   }
+  //   console.log('timer');
+  // }, 1000);
+  useEffect(() => {
+    const nameDisplayTimer = setTimeout(() => {
+      setNameDisplay(true);
+    }, 3000);
+
+    return () => {
+      clearTimeout(nameDisplayTimer);
+    };
+  }, []);
 
   const getTopicArray = useCallback(() => {
     return new Promise((resolve, reject) => {
@@ -964,7 +983,16 @@ const Dashboard = (props) => {
         {hasLoaded && (
           <p className='Dummy__tagline mb-4 text-center mb-5'>{data.client_tag_line}</p>
         )}
-        <Row className='mx-auto px-2 mt-4'>
+
+        <Row
+          style={{
+            height: `${nameDisplay ? '100%' : '0px'}`,
+            opacity: `${nameDisplay ? 1 : 0}`,
+            // display: `${nameDisplay ? 'flex' : 'none'}`,
+          }}
+          className=''
+          className='nameAndProfilePic mx-auto px-2 mt-4'
+        >
           <Col
             xs={4}
             md={roleArray.includes(1) || roleArray.includes(2) ? 1 : 2}
@@ -981,6 +1009,22 @@ const Dashboard = (props) => {
               {time} {firstName}
             </h4>
             {/* <h4 className='Dashboard__headingText'></h4> */}
+          </Col>
+        </Row>
+        <Row
+          style={{
+            display: `${nameDisplay ? 'none' : 'block'}`,
+          }}
+          className='dashboardLogoImage'
+        >
+          <Col className='mx-auto'>
+            <img
+              src={branding.client_logo || YCIcon}
+              className='img-fluid'
+              alt='profile'
+              width='80px'
+              height='80px'
+            />
           </Col>
         </Row>
 

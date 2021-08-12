@@ -23,12 +23,18 @@ const SignIn = (props) => {
     firstTimeLogin,
     userProfile,
     setFirstTimeLoginToStore,
+    currentbranding,
     history,
   } = props;
 
   const {
     currentbranding: { branding: { client_id: clientId = '', client_logo: image } = {} } = {},
   } = props;
+  useEffect(() => {
+    if (!Object.keys(currentbranding.branding).length) {
+      history.replace('/');
+    }
+  }, []);
   const [password, setPassword] = useState('');
   const [verify, setVerify] = useState(false);
   const [currentComponent, setComponent] = useState('username');
@@ -428,6 +434,7 @@ SignIn.propTypes = {
 
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
+    replace: PropTypes.func.isRequired,
   }).isRequired,
 
   setCLientUserIdToStore: PropTypes.func.isRequired,

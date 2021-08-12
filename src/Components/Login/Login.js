@@ -41,8 +41,10 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    const { currentComponent } = this.props;
-
+    const { currentComponent, currentbranding, history } = this.props;
+    if (!Object.keys(currentbranding.branding).length) {
+      history.replace('/');
+    }
     console.log(currentComponent);
     // const domain =
     //   process.env.NODE_ENV === 'development'
@@ -243,6 +245,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Login);
 Login.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
+    replace: PropTypes.func.isRequired,
   }).isRequired,
 
   currentbranding: PropTypes.shape({
