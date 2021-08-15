@@ -27,7 +27,7 @@ const ZoomMeeting = (props) => {
     userName: 'Example',
     userEmail: 'example@example.com', // must be the attendee email address
     passWord: meetingPass,
-    role: 0,
+    role: 1,
   };
 
   function joinMeeting(zoomsignature, meetConfig) {

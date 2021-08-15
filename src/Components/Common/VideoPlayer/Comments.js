@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import Button from 'react-bootstrap/Button';
 import CheckIcon from '@material-ui/icons/Check';
 import PropTypes from 'prop-types';
-import { apiValidation, get, post } from '../../../Utilities';
+import { apiValidation, get, post, getNoPushToError } from '../../../Utilities';
 import { getClientUserId } from '../../../redux/reducers/clientUserId.reducer';
 
 const Comments = (props) => {
@@ -16,21 +16,27 @@ const Comments = (props) => {
   const end = useRef(null);
   const commentLength = useRef(0);
 
+  const scrollToBottom = () => {
+    end.current.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const getComments = useCallback(() => {
     let result = [];
     if (videoId) {
-      get({ video_id: videoId }, '/getCommentsOfVideo').then((res) => {
+      getNoPushToError({ video_id: videoId }, '/getCommentsOfVideo').then((res) => {
         result = apiValidation(res);
-        setComments(result);
+        if (result) {
+          setComments(result);
+        }
         if (commentLength.current !== result.length) {
-          scrollToBottom();
+          // scrollToBottom();
           commentLength.current = result.length;
         }
 
-        console.log(result);
+        console.log(result, 'commnetsss');
       });
     }
-  }, [videoId]);
+  }, [videoId, apiValidation, commentLength]);
 
   useEffect(() => {
     const clear = setInterval(() => {
@@ -39,10 +45,6 @@ const Comments = (props) => {
 
     return () => clearInterval(clear);
   }, [getComments]);
-
-  const scrollToBottom = () => {
-    end.current.scrollIntoView({ behavior: 'smooth' });
-  };
 
   const addComment = () => {
     const payload = {

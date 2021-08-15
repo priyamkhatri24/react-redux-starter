@@ -48,11 +48,13 @@ const PlyrVideoPlayer = (props) => {
   }, [history]);
 
   return (
-    <div className='plyrComponent'>
+    <>
       <PageHeader transparent />
-      <PlyrComponent source={source} options={options} />
-      {videoId && <Comments videoId={videoId} />}
-    </div>
+      <div className='plyrComponent__overall'>
+        <PlyrComponent source={source} options={options} />
+        {videoId && <Comments videoId={videoId} />}
+      </div>
+    </>
   );
 };
 

@@ -60,13 +60,13 @@ export const get = (requestBody = null, endpoint) => {
       console.error(`The error is ${err}`);
     });
 };
-export const getNoCors = (requestBody = null, endpoint) => {
+export const getNoPushToError = (requestBody = null, endpoint) => {
   // requestBody must be an object
   return axios
-    .get(testUrl + endpoint, { params: requestBody, headers: authHeaderGet(), mode: 'no-cors' })
+    .get(testUrl + endpoint, { params: requestBody, headers: authHeaderGet() })
     .then((result) => result.data)
     .catch((err) => {
-      history.push('/error');
+      // history.push('/error');
       console.error(`The error is ${err}`);
     });
 };
