@@ -28,15 +28,15 @@ const Comments = (props) => {
         if (result) {
           setComments(result);
         }
-        if (commentLength.current !== result.length) {
-          // scrollToBottom();
-          commentLength.current = result.length;
-        }
+        // if (commentLength.current !== result.length) {
+        //   // scrollToBottom();
+        //   commentLength.current = result.length;
+        // }
 
         console.log(result, 'commnetsss');
       });
     }
-  }, [videoId, apiValidation, commentLength]);
+  }, [videoId, apiValidation]);
 
   useEffect(() => {
     const clear = setInterval(() => {
