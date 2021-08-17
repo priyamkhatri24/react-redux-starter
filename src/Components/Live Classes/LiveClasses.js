@@ -27,17 +27,20 @@ import {
   getRoleArray,
 } from '../../redux/reducers/clientUserId.reducer';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
+import classes from './LiveClasses.module.css';
 import { get, post, apiValidation } from '../../Utilities';
 import { PageHeader, BatchesSelector, Readmore } from '../Common';
 import Jitsi from './Jitsi';
 import { createBigBlueButtonStream, rejoinBigBlueButtonStream } from './bbb';
 import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
 import { history } from '../../Routing';
+import img from '../../assets/images/Dashboard/student.svg';
 
 class LiveClasses extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      pageTitle: 'Live Stream',
       batches: [],
       adminBatches: [],
       studentBatches: [],
@@ -456,8 +459,8 @@ class LiveClasses extends Component {
             //   apiKey: process.env.REACT_APP_ZOOM_SDK_KEY,
             //   apiSecret: process.env.REACT_APP_ZOOM_SDK_SECRET,
             // };
-            // window.open(`https://zoom.us/s/${zoomMeeting}?pwd=${zoomPassCode}`);
-            window.open(`https://zoom.us/s/`);
+            window.open(`https://zoom.us/j/${zoomMeeting}?pwd=${zoomPassCode}`);
+            // window.open(`https://zoom.us/s/${zoomMeeting}`);
           }
         });
       }
@@ -555,11 +558,27 @@ class LiveClasses extends Component {
       jitsiToken,
       showMeetModal,
       googleMeeting,
+      pageTitle,
     } = this.state;
     const { dashboardData } = this.props;
     return (
       <div css={LiveClassesStyle.liveClasses}>
-        <PageHeader title='Live Stream' />
+        <PageHeader title={pageTitle} />
+
+        <div className={classes.pageHeader}>
+          <div className={classes.pageHeaderDiv}>
+            <div className='mt-3'>
+              <p className={classes.pageHeader_h4}>Go Live now!!!</p>
+              <p className={classes.plageHeader_p}>
+                Conduct all your live classes here effectively.
+              </p>
+            </div>
+            <img
+              className={classes.feature_icon}
+              src={dashboardData.feature.liveClasses.feature_icon}
+            />
+          </div>
+        </div>
 
         {triggerJitsi && (
           <Jitsi
@@ -573,12 +592,12 @@ class LiveClasses extends Component {
           />
         )}
         <Tabs
-          style={{ marginTop: '4rem' }}
-          defaultActiveKey='Live Classes'
+          style={{ marginTop: '2rem' }}
+          defaultActiveKey='Live'
           className='Profile__Tabs'
           justify
         >
-          <Tab eventKey='Live Classes' title='Live Classes'>
+          <Tab eventKey='Live' title='Live'>
             {!triggerJitsi && role === 'student' && (
               <div className='mt-4'>
                 {studentBatches.length > 0 ? (
@@ -756,7 +775,7 @@ class LiveClasses extends Component {
                         <span className='mt-4'>Duration</span>
                       </label>
                     </Card>
-                    <Row className='justify-content-center mt-4 mt-lg-5 mx-2'>
+                    <Row className='justify-content-center my-4 mt-lg-5 mx-2'>
                       {dashboardData.live_class_platform.alpha ? (
                         <Col className='text-center p-0'>
                           <Button
@@ -978,6 +997,9 @@ class LiveClasses extends Component {
               </>
             )}
           </Tab>
+          {/* <Tab eventKey='Scheduled' title='Scheduled'>
+            <p>Scheduled</p>
+          </Tab> */}
           <Tab eventKey='Recordings' title='Recordings'>
             {recordings.length > 0 ? (
               <div>

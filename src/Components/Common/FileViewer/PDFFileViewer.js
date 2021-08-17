@@ -19,16 +19,19 @@ const FileView = (props) => {
   const [pageNumber, setPageNumber] = useState(1);
   const width = window.innerWidth;
   const sliderRef = useRef(null);
+  const pageRef = useRef(null);
   useEffect(() => {
     if (props.location.state) {
       const { type, filePath } = props.location.state;
       //  setFileType(type);
       setFilePath(filePath);
+      console.log(filePath, 'state');
     } else {
       const params = getParams(window.location.href);
       //    setFileType(params.fileType);
       setFilePath(params.filePath);
     }
+
     sliderRef.current.style.width = '60%';
     sliderRef.current.style.margin = 'auto';
   }, [props.location.state, sliderRef]);
@@ -45,6 +48,11 @@ const FileView = (props) => {
     margin: 'auto',
     width: '60%',
     color: 'red',
+  };
+
+  const options = {
+    cMapUrl: `//cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/cmaps/`,
+    cMapPacked: true,
   };
 
   return (
