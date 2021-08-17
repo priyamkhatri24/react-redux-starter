@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -19,6 +19,7 @@ import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import FeesCard from './FeesCard';
 import './Fees.scss';
+import Cashfree from '../Common/Cashfree/Cashfree';
 
 const Fees = (props) => {
   const {
@@ -153,13 +154,24 @@ const Fees = (props) => {
         </div>
         <footer className='Fees__footer text-center'>
           {fees.due_amount > 0 ? (
-            <Button
-              variant='customPrimary'
-              className='mt-4 Fees__PayButton'
-              onClick={() => startPayment()}
+            <div
+              style={{
+                display: 'flex',
+                margin: 'auto',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+                width: '80%',
+              }}
             >
-              Pay
-            </Button>
+              <Button
+                variant='customPrimary'
+                className='mt-4 Fees__PayButton'
+                onClick={() => startPayment()}
+              >
+                Razorpay
+              </Button>
+              <Cashfree orderAmount='10' history={history} />
+            </div>
           ) : (
             <p className='text-center'>No dues to be paid</p>
           )}
