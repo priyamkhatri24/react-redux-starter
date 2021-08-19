@@ -45,7 +45,7 @@ const DummyDashboard = (props) => {
   const [notices, setNotices] = useState([]);
   const [showToast, setShowToast] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
-  const [modalImage, setModalImage] = useState(null);
+  const [modalImage, setModalImage] = useState({});
   const [modalHeading, setModalHeading] = useState(null);
 
   useEffect(() => {
@@ -77,18 +77,17 @@ const DummyDashboard = (props) => {
   };
 
   const showCardOnModal = (card) => {
-    setModalImage(card.file_link);
+    setModalImage(card);
     setShowImageModal(true);
     if (card.homepage_section_homepage_section_id === 3) {
       setModalHeading('Testimonials');
     } else if (card.homepage_section_homepage_section_id === 2) {
       setModalHeading('Our Star Performers');
     }
-    // console.log(card);
   };
 
   const closeImageModal = () => {
-    setModalImage(null);
+    setModalImage({});
     setShowImageModal(false);
     setModalHeading(null);
   };
@@ -103,7 +102,20 @@ const DummyDashboard = (props) => {
             <Modal.Title>{modalHeading}</Modal.Title>{' '}
           </Modal.Header>
           <Modal.Body style={{ margin: 'auto' }}>
-            <img src={modalImage} alt='img' className='img-fluid' />
+            {modalImage.file_type === 'video' ? (
+              /* eslint-disable */
+              <video
+                width='inherit'
+                className='testimonialVideoTag'
+                controls='controls'
+                autoplay='autoplay'
+              >
+                <source src={modalImage.file_link} type='video/mp4' />
+                <track src='' kind='subtitles' srcLang='en' label='English' />
+              </video>
+            ) : (
+              <img src={modalImage.file_link} alt='img' className='img-fluid' />
+            )}
           </Modal.Body>
         </Modal>
         <div className='Dashboard__headerCard pt-5 mb-5'>

@@ -10,7 +10,15 @@ import Swal from 'sweetalert2';
 import './DisplayPage.scss';
 import { PageHeader, AspectCards } from '../Common';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
-import { apiValidation, get, post, propComparator, verifyIsImage } from '../../Utilities';
+import {
+  apiValidation,
+  get,
+  post,
+  propComparator,
+  verifyIsImage,
+  verifyIsVideo,
+} from '../../Utilities';
+import { uploadingImage } from '../../Utilities/customUpload';
 import { displayActions } from '../../redux/actions/displaypage.action';
 import AdmissionStyle from '../Admissions/Admissions.style';
 import '../Live Classes/LiveClasses.scss';
@@ -69,32 +77,11 @@ const DisplayPage = (props) => {
   function reverse(s) {
     return [...s].reverse().join('');
   }
-
-  const onSelectFile = (e) => {
-    let isFileAllowed = false;
-    const file = e.target.files[0];
-
-    const s = reverse(reverse(file.name).split('.')[0]);
-    if (verifyIsImage.test(s)) isFileAllowed = true;
-
-    if (file && isFileAllowed) {
-      const reader = new FileReader();
-      reader.addEventListener('load', () => setUpImg(reader.result));
-      reader.readAsDataURL(e.target.files[0]);
-      handleCropperOpen();
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Invalid File Type!',
-        text: `The supported file types are ${'gif, jpeg, jpg, tiff, png, webp, bmp'}`,
-      });
-    }
-  };
-
-  const addNewFile = (file) => {
+  const addNewFile = (file, type = 'image') => {
+    console.log(file, 'fileeee');
     const payload = {
       client_user_id: clientUserId,
-      file_type: 'image',
+      file_type: type,
       file_link: file,
       section_id: currentSection.homepage_section_id,
     };
@@ -103,6 +90,41 @@ const DisplayPage = (props) => {
       console.log(res);
       getHomepageContent();
     });
+  };
+
+  const onSelectFile = (e) => {
+    let isFileAllowed = false;
+    const file = e.target.files[0];
+    console.log(file);
+
+    const s = reverse(reverse(file.name).split('.')[0]);
+    if (verifyIsImage.test(s) || verifyIsVideo.test(s)) isFileAllowed = true;
+    const type = file.type.split('/')[0];
+    if (file && isFileAllowed) {
+      const reader = new FileReader();
+      reader.addEventListener('load', () => setUpImg(reader.result));
+      reader.readAsDataURL(e.target.files[0]);
+      if (type === 'image') {
+        handleCropperOpen();
+      } else if (type === 'video') {
+        uploadingImage(file).then((res) => {
+          console.log('videooolod ', res);
+          addNewFile(res.filename, 'video');
+        });
+      }
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid File Type!',
+        text: `The supported file types are ${
+          type === 'image'
+            ? 'gif, jpeg, jpg, tiff, png, webp, bmp'
+            : type === 'video'
+            ? 'mov,mp3, mp4 , mpg, avi, wmv, flv, 3gp'
+            : 'doc, docx, xls, xlsx, ppt, pptx, txt, pdf'
+        }`,
+      });
+    }
   };
 
   return (
@@ -189,7 +211,20 @@ const DisplayPage = (props) => {
           <Modal.Title>Selected File</Modal.Title>
         </Modal.Header>
         <Modal.Body className=' mx-auto'>
-          <img src={modalFile.file_link} alt='file' className='img-fluid' />
+          {modalFile.file_type === 'video' ? (
+            /* eslint-disable */
+            <video
+              width='inherit'
+              className='testimonialVideoTag'
+              controls='controls'
+              autoplay='autoplay'
+            >
+              <source src={modalFile.file_link} type='video/mp4' />
+              <track src='' kind='subtitles' srcLang='en' label='English' />
+            </video>
+          ) : (
+            <img src={modalFile.file_link} alt='file' className='img-fluid' />
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant='boldTextSecondary' onClick={() => closeDeleteModal()}>

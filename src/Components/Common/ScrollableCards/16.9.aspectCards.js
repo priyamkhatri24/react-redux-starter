@@ -65,9 +65,15 @@ export const AspectCards = (props) => {
                 style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)' }}
                 onClick={() => clickCard(elem)}
               >
-                {elem.type === 'video' ? (
+                {elem.file_type === 'video' ? (
                   /* eslint-disable */
-                  <video controls='controls' muted>
+                  <video
+                    height={bigAspectCard ? '177px' : '113px'}
+                    width={bigAspectCard ? '315px' : '200px'}
+                    style={{ borderRadius: '5px' }}
+                    muted
+                    autoplay='autoplay'
+                  >
                     <source src={elem.file_link} type='video/mp4' />
                     <track src='' kind='subtitles' srcLang='en' label='English' />
                   </video>

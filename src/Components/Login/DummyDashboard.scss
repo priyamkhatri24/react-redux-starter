@@ -68,3 +68,20 @@
     font-size: $spacer * 0.625;
   }
 }
+.testimonialVideoTag {
+  width: 450px !important;
+  height: auto !important;
+}
+@media screen and (max-width: 800px) {
+  .testimonialVideoTag {
+    width: 300px !important;
+    height: auto !important;
+  }
+}
+
+@media screen and (max-width: 300px) {
+  .testimonialVideoTag {
+    width: 220px !important;
+    height: auto !important;
+  }
+}
