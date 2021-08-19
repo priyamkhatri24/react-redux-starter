@@ -65,13 +65,21 @@ export const AspectCards = (props) => {
                 style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)' }}
                 onClick={() => clickCard(elem)}
               >
-                <img
-                  src={elem.file_link}
-                  alt='student'
-                  height={bigAspectCard ? '177px' : '113px'}
-                  width={bigAspectCard ? '315px' : '200px'}
-                  style={{ borderRadius: '5px' }}
-                />
+                {elem.type === 'video' ? (
+                  /* eslint-disable */
+                  <video controls='controls' muted>
+                    <source src={elem.file_link} type='video/mp4' />
+                    <track src='' kind='subtitles' srcLang='en' label='English' />
+                  </video>
+                ) : (
+                  <img
+                    src={elem.file_link}
+                    alt='student'
+                    height={bigAspectCard ? '177px' : '113px'}
+                    width={bigAspectCard ? '315px' : '200px'}
+                    style={{ borderRadius: '5px' }}
+                  />
+                )}
               </Card>
             );
           })}

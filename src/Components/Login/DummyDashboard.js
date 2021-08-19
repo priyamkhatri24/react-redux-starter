@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
+import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Toast from 'react-bootstrap/Toast';
 import fromUnixTime from 'date-fns/fromUnixTime';
@@ -43,6 +44,9 @@ const DummyDashboard = (props) => {
   const [dummyData, setDummyData] = useState({});
   const [notices, setNotices] = useState([]);
   const [showToast, setShowToast] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [modalImage, setModalImage] = useState(null);
+  const [modalHeading, setModalHeading] = useState(null);
 
   useEffect(() => {
     get({ client_id: clientId }, '/getRecentDataLatest').then((res) => {
@@ -72,11 +76,36 @@ const DummyDashboard = (props) => {
     }
   };
 
+  const showCardOnModal = (card) => {
+    setModalImage(card.file_link);
+    setShowImageModal(true);
+    if (card.homepage_section_homepage_section_id === 3) {
+      setModalHeading('Testimonials');
+    } else if (card.homepage_section_homepage_section_id === 2) {
+      setModalHeading('Our Star Performers');
+    }
+    // console.log(card);
+  };
+
+  const closeImageModal = () => {
+    setModalImage(null);
+    setShowImageModal(false);
+    setModalHeading(null);
+  };
+
   const imgUrl = branding.client_logo;
 
   return (
     Object.keys(dummyData).length > 0 && (
       <div className='text-center'>
+        <Modal show={showImageModal} onHide={closeImageModal} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>{modalHeading}</Modal.Title>{' '}
+          </Modal.Header>
+          <Modal.Body style={{ margin: 'auto' }}>
+            <img src={modalImage} alt='img' className='img-fluid' />
+          </Modal.Body>
+        </Modal>
         <div className='Dashboard__headerCard pt-5 mb-5'>
           <h3 className='Dummy__coachingName'>{dummyData.client_name}</h3>
           <p className='Dummy__tagline mb-4'>{dummyData.client_tag_line}</p>
@@ -158,7 +187,7 @@ const DummyDashboard = (props) => {
               </h6>
               <AspectCards
                 data={dummyData.testimonials}
-                clickCard={() => {}}
+                clickCard={showCardOnModal}
                 clickAddCard={() => {}}
                 section='notice'
                 noAddCard

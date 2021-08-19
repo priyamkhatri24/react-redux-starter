@@ -456,8 +456,7 @@ class LiveClasses extends Component {
             //   apiKey: process.env.REACT_APP_ZOOM_SDK_KEY,
             //   apiSecret: process.env.REACT_APP_ZOOM_SDK_SECRET,
             // };
-            // window.open(`https://zoom.us/s/${zoomMeeting}?pwd=${zoomPassCode}`);
-            window.open(`https://zoom.us/s/`);
+            window.open(`https://zoom.us/j/${zoomMeeting}?pwd=${zoomPassCode}`);
           }
         });
       }
