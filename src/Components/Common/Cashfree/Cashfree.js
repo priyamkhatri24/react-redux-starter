@@ -7,22 +7,25 @@ import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
 import { getClientId, getClientUserId } from '../../../redux/reducers/clientUserId.reducer';
 import { startCashfree } from '../../../Utilities/Cashfree';
 import classes from './cashfree.module.css';
+import { post, get, apiValidation } from '../../../Utilities';
 
 const Cashfree = (props) => {
-  const { userProfile, clientId, clientUserId, currentbranding, orderAmount, history } = props;
+  const { userProfile, clientId, clientUserId, currentbranding, fees, history } = props;
   const secretKey = 'e802e96ef246f9a5696f20f1c70a9d9581a4d283';
   const testId = '7986308f47083d2e4e125efed36897';
   const [orderCurrency, setOrderCurrency] = useState('INR');
+  const [orderAmount, setOrderAmount] = useState(fees.fee_data[0].amount);
   const [orderNote, setOrderNote] = useState('test');
   const [customerName, setCustomerName] = useState(
     `${userProfile.firstName} ${userProfile.lastName}`,
   );
   const [customerEmail, setCustomerEmail] = useState(userProfile.email || 'priyam@test.com');
   const [customerContact, setCustomerContact] = useState(userProfile.contact);
-  const [orderId, setOrderId] = useState('order007b');
+  const [orderId, setOrderId] = useState(fees.fee_data[0].order_id);
   // const [signature, setSignature] = useState(null);
   const [returnUrl, setReturnUrl] = useState(window.location.origin);
-  const [notifyUrl, setNotifyUrl] = useState(window.location.href);
+  const [notifyUrl, setNotifyUrl] = useState('https://portal.tca.ingeniumedu.com//cashfreeWebhook');
+  const [token, setToken] = useState({});
   // const [merchantData, setMerchantData] = useState(null);
 
   const postData = startCashfree(
@@ -36,6 +39,41 @@ const Cashfree = (props) => {
     returnUrl,
     notifyUrl,
   );
+  // useEffect(() => {
+  //   const payload = {
+  //     order_id: fees.fee_data[0].order_id,
+  //     user_fee_id: fees.fee_data[0].user_fee_id,
+  //     type: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
+  //   };
+  //   get(payload, '/fetchOrderByIDCashFree').then((res) => {
+  //     const result = apiValidation(res);
+  //     console.log(result, 'haha');
+  //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   const payload = {
+  //     client_user_id: clientUserId,
+  //     client_id: '25',
+  //     user_fee_id: fees.fee_data[0].user_fee_id,
+  //     orderAmount: fees.due_amount,
+  //     orderCurrency,
+  //     type: 'Development',
+  //   };
+  //   post(payload, '/genrateTokenForFeeOrder').then((res) => {
+  //     const result = apiValidation(res);
+  //     setToken(result);
+  //     console.log(result);
+  //   });
+  // }, [apiValidation]);
+  // const postHandler = () => {
+  //   console.log(fees.fee_data);
+
+  //   // get(payload, '/fetchOrderByIdCasgFree').then((res) => {
+  //   //   const result = apiValidation(res);
+  //   //   // history.push({ pathname: '/order', state: { order: result } });
+  //   // });
+  // };
 
   return (
     <form
@@ -70,7 +108,7 @@ export default connect(mapStateToProps)(Cashfree);
 
 Cashfree.propTypes = {
   clientId: PropTypes.number.isRequired,
-  orderAmount: PropTypes.string.isRequired,
+  fees: PropTypes.instanceOf(Object).isRequired,
   clientUserId: PropTypes.number.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,

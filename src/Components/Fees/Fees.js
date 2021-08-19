@@ -16,10 +16,12 @@ import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.
 import { BackButton } from '../Common';
 import avatarImage from '../../assets/images/avatarImage.jpg';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
+import { startCashfree } from '../../Utilities/Cashfree';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import FeesCard from './FeesCard';
-import './Fees.scss';
+
 import Cashfree from '../Common/Cashfree/Cashfree';
+import './Fees.scss';
 
 const Fees = (props) => {
   const {
@@ -33,17 +35,25 @@ const Fees = (props) => {
         client_logo: clientLogo,
         client_address: clientAddress,
         client_contact: clientContact,
+        client_email: clientEmail,
       },
     },
     history,
   } = props;
   const [fees, setFees] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [orderType, setOrderType] = useState(null);
 
   useEffect(() => {
     get({ client_user_id: clientUserId }, '/getFeeDataForStudent').then((res) => {
       const result = apiValidation(res);
       setFees(result);
+      console.log(result, 'feees');
+      if (result.fee_data[0].order_type === 'cashfree') {
+        setOrderType('cashfree');
+      } else if (result.fee_data[0].order_type === 'razorpay') {
+        setOrderType('razorpay');
+      }
     });
   }, [clientUserId]);
 
@@ -61,6 +71,7 @@ const Fees = (props) => {
     const paymentArray = fees.fee_data.filter((elem) => {
       return elem.status === 'due' || elem.status === 'pending';
     });
+    console.log(paymentArray[0]);
 
     const currentPayment = paymentArray[0];
 
@@ -75,7 +86,6 @@ const Fees = (props) => {
         status: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
         client_id: clientId,
       };
-
       get(razorPayload, '/getRazorPayCredentials').then((cred) => {
         const credentials = apiValidation(cred);
 
@@ -163,14 +173,17 @@ const Fees = (props) => {
                 width: '80%',
               }}
             >
-              <Button
-                variant='customPrimary'
-                className='mt-4 Fees__PayButton'
-                onClick={() => startPayment()}
-              >
-                Razorpay
-              </Button>
-              <Cashfree orderAmount='10' history={history} />
+              {orderType === 'razorpay' ? (
+                <Button
+                  variant='customPrimary'
+                  className='mt-4 Fees__PayButton'
+                  onClick={() => startPayment()}
+                >
+                  Razorpay
+                </Button>
+              ) : orderType === 'cashfree' ? (
+                <Cashfree fees={fees} history={history} />
+              ) : null}
             </div>
           ) : (
             <p className='text-center'>No dues to be paid</p>
@@ -280,6 +293,7 @@ Fees.propTypes = {
       client_name: PropTypes.string,
       client_address: PropTypes.string,
       client_contact: PropTypes.string,
+      client_email: PropTypes.string,
     }),
   }).isRequired,
   userProfile: PropTypes.shape({

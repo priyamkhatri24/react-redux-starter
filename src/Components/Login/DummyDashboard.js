@@ -72,6 +72,8 @@ const DummyDashboard = (props) => {
     }
   };
 
+  const showCardOnModal = () => {};
+
   const imgUrl = branding.client_logo;
 
   return (
@@ -158,7 +160,7 @@ const DummyDashboard = (props) => {
               </h6>
               <AspectCards
                 data={dummyData.testimonials}
-                clickCard={() => {}}
+                clickCard={showCardOnModal}
                 clickAddCard={() => {}}
                 section='notice'
                 noAddCard

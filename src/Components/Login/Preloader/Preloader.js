@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import ProgressBar from 'react-bootstrap/ProgressBar';
+// import ProgressBar from 'react-bootstrap/ProgressBar';
 import TextLoop from 'react-text-loop';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -10,6 +10,7 @@ import { getBranding, getColor } from '../Login.service';
 import './Preloader.scss';
 import '../Login.scss';
 import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
+import ProgressBar from '../../Common/ProgressBar/ProgressBar';
 
 const Preloader = (props) => {
   const { fetchColors, fetchBranding, currentBranding, history } = props;
@@ -96,7 +97,8 @@ const Preloader = (props) => {
           </TextLoop>
         </h6>
 
-        <ProgressBar now={count} label={`${count}%`} max={100} />
+        <ProgressBar width={`${count}%`} />
+        {/* <ProgressBar now={count} label={`${count}%`} max={100} /> */}
       </div>
       <footer className='py-4 Login__footer '>
         <h6 className='Login__footerText'>Powered By</h6>

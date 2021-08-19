@@ -17,3 +17,8 @@
   border-radius: 10px;
   margin: 20px auto;
 }
+@media screen and (min-width: 800px) {
+  .Login {
+    margin-top: 30px !important;
+  }
+}
