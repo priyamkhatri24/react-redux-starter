@@ -11,15 +11,14 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Button from 'react-bootstrap/Button';
 import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
-import { get, apiValidation, displayRazorpay } from '../../Utilities';
+import { get, post, apiValidation, displayRazorpay } from '../../Utilities';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { BackButton } from '../Common';
 import avatarImage from '../../assets/images/avatarImage.jpg';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
-import { startCashfree } from '../../Utilities/Cashfree';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
+import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
 import FeesCard from './FeesCard';
-
 import Cashfree from '../Common/Cashfree/Cashfree';
 import './Fees.scss';
 
@@ -28,6 +27,7 @@ const Fees = (props) => {
     clientUserId,
     clientId,
     userProfile,
+    dashboardData,
     currentbranding: {
       branding: {
         client_color: clientColor,
@@ -42,20 +42,23 @@ const Fees = (props) => {
   } = props;
   const [fees, setFees] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [orderType, setOrderType] = useState(null);
-
+  const [orderType, setOrderType] = useState('cashfree');
+  const [currentPayment, setCurrentPayment] = useState({});
+  const [showCashfreeModal, setShowCashfreeModal] = useState(false);
+  const [paymentSplits, setPaymentSplits] = useState(null);
+  const [newOrderId, setNewOrderId] = useState(null);
   useEffect(() => {
     get({ client_user_id: clientUserId }, '/getFeeDataForStudent').then((res) => {
       const result = apiValidation(res);
       setFees(result);
       console.log(result, 'feees');
-      if (result.fee_data[0].order_type === 'cashfree') {
-        setOrderType('cashfree');
-      } else if (result.fee_data[0].order_type === 'razorpay') {
-        setOrderType('razorpay');
-      }
+      const paymentArray = result.fee_data.filter((elem) => {
+        return elem.status === 'due' || elem.status === 'pending';
+      });
+
+      setCurrentPayment(paymentArray[0]);
     });
-  }, [clientUserId]);
+  }, []);
 
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
@@ -68,13 +71,7 @@ const Fees = (props) => {
   };
 
   const startPayment = () => {
-    const paymentArray = fees.fee_data.filter((elem) => {
-      return elem.status === 'due' || elem.status === 'pending';
-    });
-    console.log(paymentArray[0]);
-
-    const currentPayment = paymentArray[0];
-
+    console.log(currentPayment, 'RCP');
     if (currentPayment.status === 'pending') {
       Swal.fire({
         icon: 'error',
@@ -104,6 +101,38 @@ const Fees = (props) => {
           credentials.key_id,
           credentials.fee_account_id,
         ).then((res) => console.log(res, 'razor'));
+      });
+    }
+  };
+
+  const closeCashfreeModal = () => {
+    setShowCashfreeModal(false);
+    setPaymentSplits(null);
+  };
+
+  const startCashfree = () => {
+    if (currentPayment.status === 'pending') {
+      Swal.fire({
+        icon: 'error',
+        title: 'Pending',
+        text: 'You have a pending payment. Please wait while your bank processes the payment.',
+      });
+    } else if (currentPayment.status === 'due') {
+      const cashfreePayload = {
+        client_user_id: clientUserId,
+        client_id: clientId,
+        user_fee_id: currentPayment.user_fee_id,
+        orderAmount: currentPayment.amount,
+        orderCurrency: 'INR',
+        type: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
+      };
+      post(cashfreePayload, '/genrateTokenForFeeOrder').then((res) => {
+        const result = apiValidation(res);
+        // console.log(payload, 'PS');
+        setPaymentSplits(result.paymentSplits);
+        setNewOrderId(result.order_id);
+        setShowCashfreeModal(true);
+        console.log(result);
       });
     }
   };
@@ -181,9 +210,17 @@ const Fees = (props) => {
                 >
                   Razorpay
                 </Button>
-              ) : orderType === 'cashfree' ? (
-                <Cashfree fees={fees} history={history} />
-              ) : null}
+              ) : currentPayment.order_type === 'cashfree' ? (
+                <Button
+                  variant='customPrimary'
+                  className='mt-4 Fees__PayButton'
+                  onClick={() => startCashfree()}
+                >
+                  Cashfree
+                </Button>
+              ) : (
+                <p>Your institue has not registered any payment method</p>
+              )}
             </div>
           ) : (
             <p className='text-center'>No dues to be paid</p>
@@ -264,6 +301,27 @@ const Fees = (props) => {
           </Card>
         </Modal.Body>
       </Modal>
+      <Modal show={showCashfreeModal} onHide={closeCashfreeModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Success</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <p>Your fee order has been created.</p>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button onClick={closeCashfreeModal} variant='secondary'>
+            Close
+          </Button>
+          {/* <Button variant="primary">Continue</Button> */}
+          <Cashfree
+            currentPayment={currentPayment}
+            paymentSplits={paymentSplits}
+            orderId={newOrderId}
+          />
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
@@ -273,6 +331,7 @@ const mapStateToProps = (state) => ({
   clientId: getClientId(state),
   userProfile: getUserProfile(state),
   currentbranding: getCurrentBranding(state),
+  dashboardData: getCurrentDashboardData(state),
 });
 
 export default connect(mapStateToProps)(Fees);
@@ -280,6 +339,7 @@ export default connect(mapStateToProps)(Fees);
 Fees.propTypes = {
   clientId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
+  dashboardData: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,

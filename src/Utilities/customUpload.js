@@ -80,7 +80,7 @@ export const downloadFile = (url) => {
 };
 
 export const uploadMultipleImages = async (fileArray) => {
-  console.log(fileArray);
+  console.log(fileArray, 'CU');
   const arr = [];
   for (let i = 0; i < fileArray.length; i++) {
     arr.push(uploadingImage(fileArray[i]));
@@ -91,6 +91,8 @@ export const uploadMultipleImages = async (fileArray) => {
     const obj = {};
     obj.name = fileArray[i].name;
     obj.filename = e.filename;
+    /* eslint-disable */
+    obj.type = fileArray[i].type.split('/')[0];
     return obj;
   });
 };

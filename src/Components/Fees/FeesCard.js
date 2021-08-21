@@ -44,6 +44,7 @@ const FeesCard = (props) => {
     get(payload, '/fetchOrderById').then((res) => {
       const result = apiValidation(res);
       goToOrderDetails(result);
+      console.log(result);
     });
   };
 

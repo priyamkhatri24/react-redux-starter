@@ -7,26 +7,30 @@ import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
 import { getClientId, getClientUserId } from '../../../redux/reducers/clientUserId.reducer';
 import { startCashfree } from '../../../Utilities/Cashfree';
 import classes from './cashfree.module.css';
-import { post, get, apiValidation } from '../../../Utilities';
 
 const Cashfree = (props) => {
-  const { userProfile, clientId, clientUserId, currentbranding, fees, history } = props;
-  const secretKey = 'e802e96ef246f9a5696f20f1c70a9d9581a4d283';
+  const {
+    userProfile,
+    clientId,
+    clientUserId,
+    currentbranding,
+    paymentSplits,
+    orderId,
+    currentPayment: { amount: orderAmount, user_fee_id: userFeeId, status },
+  } = props;
   const testId = '7986308f47083d2e4e125efed36897';
   const [orderCurrency, setOrderCurrency] = useState('INR');
-  const [orderAmount, setOrderAmount] = useState(fees.fee_data[0].amount);
+  // const [orderAmount, setOrderAmount] = useState(currentPayment.amount);
   const [orderNote, setOrderNote] = useState('test');
   const [customerName, setCustomerName] = useState(
     `${userProfile.firstName} ${userProfile.lastName}`,
   );
   const [customerEmail, setCustomerEmail] = useState(userProfile.email || 'priyam@test.com');
   const [customerContact, setCustomerContact] = useState(userProfile.contact);
-  const [orderId, setOrderId] = useState(fees.fee_data[0].order_id);
+  // const [orderId, setOrderId] = useState(currentPayment.order_id);
   // const [signature, setSignature] = useState(null);
   const [returnUrl, setReturnUrl] = useState(window.location.origin);
   const [notifyUrl, setNotifyUrl] = useState('https://portal.tca.ingeniumedu.com//cashfreeWebhook');
-  const [token, setToken] = useState({});
-  // const [merchantData, setMerchantData] = useState(null);
 
   const postData = startCashfree(
     orderId,
@@ -38,33 +42,9 @@ const Cashfree = (props) => {
     customerContact,
     returnUrl,
     notifyUrl,
+    paymentSplits,
   );
-  // useEffect(() => {
-  //   const payload = {
-  //     order_id: fees.fee_data[0].order_id,
-  //     user_fee_id: fees.fee_data[0].user_fee_id,
-  //     type: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
-  //   };
-  //   get(payload, '/fetchOrderByIDCashFree').then((res) => {
-  //     const result = apiValidation(res);
-  //     console.log(result, 'haha');
-  //   });
-  // }, []);
 
-  // useEffect(() => {
-  //   const payload = {
-  //     client_user_id: clientUserId,
-  //     client_id: '25',
-  //     user_fee_id: fees.fee_data[0].user_fee_id,
-  //     orderAmount: fees.due_amount,
-  //     orderCurrency,
-  //     type: 'Development',
-  //   };
-  //   post(payload, '/genrateTokenForFeeOrder').then((res) => {
-  //     const result = apiValidation(res);
-  //     setToken(result);
-  //     console.log(result);
-  //   });
   // }, [apiValidation]);
   // const postHandler = () => {
   //   console.log(fees.fee_data);
@@ -92,8 +72,13 @@ const Cashfree = (props) => {
       {/* <input type='hidden' name='merchantData' value={merchantData} /> */}
       <input type='hidden' name='returnUrl' value={returnUrl} />
       <input type='hidden' name='notifyUrl' value={notifyUrl} />
+      <input type='hidden' name='paymentSplits' value={paymentSplits} />
       <input type='hidden' name='signature' value={postData.signature} />
-      <input className={[classes.cashfreeBtn, 'mt-4'].join(' ')} type='submit' value='Cashfree' />
+      {status === 'due' ? (
+        <input className={[classes.cashfreeBtn, 'mt-4'].join(' ')} type='submit' value='Cashfree' />
+      ) : status === 'pending' ? (
+        <p>You have a pending payment. Please wait while your bank processes the payment.</p>
+      ) : null}
     </form>
   );
 };
@@ -108,11 +93,11 @@ export default connect(mapStateToProps)(Cashfree);
 
 Cashfree.propTypes = {
   clientId: PropTypes.number.isRequired,
-  fees: PropTypes.instanceOf(Object).isRequired,
+  paymentSplits: PropTypes.string.isRequired,
+  orderId: PropTypes.number.isRequired,
+  currentPayment: PropTypes.instanceOf(Object).isRequired,
   clientUserId: PropTypes.number.isRequired,
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }).isRequired,
+
   currentbranding: PropTypes.shape({
     branding: PropTypes.shape({
       client_id: PropTypes.number,
