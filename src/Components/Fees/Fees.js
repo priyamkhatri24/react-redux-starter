@@ -42,7 +42,7 @@ const Fees = (props) => {
   } = props;
   const [fees, setFees] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [orderType, setOrderType] = useState('cashfree');
+  const [orderType, setOrderType] = useState(dashboardData.payment_gateway);
   const [currentPayment, setCurrentPayment] = useState({});
   const [showCashfreeModal, setShowCashfreeModal] = useState(false);
   const [paymentSplits, setPaymentSplits] = useState(null);
@@ -55,9 +55,11 @@ const Fees = (props) => {
       const paymentArray = result.fee_data.filter((elem) => {
         return elem.status === 'due' || elem.status === 'pending';
       });
-
-      setCurrentPayment(paymentArray[0]);
+      if (paymentArray[0]) {
+        setCurrentPayment(paymentArray[0]);
+      }
     });
+    console.log(window.location.href);
   }, []);
 
   const handleShow = () => setShowModal(true);
@@ -71,7 +73,7 @@ const Fees = (props) => {
   };
 
   const startPayment = () => {
-    console.log(currentPayment, 'RCP');
+    // console.log(currentPayment, 'RCP');
     if (currentPayment.status === 'pending') {
       Swal.fire({
         icon: 'error',
@@ -85,7 +87,7 @@ const Fees = (props) => {
       };
       get(razorPayload, '/getRazorPayCredentials').then((cred) => {
         const credentials = apiValidation(cred);
-
+        console.log(credentials, 'CRD');
         displayRazorpay(
           currentPayment.order_id,
           currentPayment.amount * 100,
@@ -124,7 +126,8 @@ const Fees = (props) => {
         user_fee_id: currentPayment.user_fee_id,
         orderAmount: currentPayment.amount,
         orderCurrency: 'INR',
-        type: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
+        type: 'Development',
+        // type: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
       };
       post(cashfreePayload, '/genrateTokenForFeeOrder').then((res) => {
         const result = apiValidation(res);
@@ -192,7 +195,7 @@ const Fees = (props) => {
             })}
         </div>
         <footer className='Fees__footer text-center'>
-          {fees.due_amount > 0 ? (
+          {currentPayment && currentPayment.amount > 0 ? (
             <div
               style={{
                 display: 'flex',
@@ -208,15 +211,15 @@ const Fees = (props) => {
                   className='mt-4 Fees__PayButton'
                   onClick={() => startPayment()}
                 >
-                  Razorpay
+                  Pay
                 </Button>
-              ) : currentPayment.order_type === 'cashfree' ? (
+              ) : orderType === 'cashfree' ? (
                 <Button
                   variant='customPrimary'
                   className='mt-4 Fees__PayButton'
                   onClick={() => startCashfree()}
                 >
-                  Cashfree
+                  Pay
                 </Button>
               ) : (
                 <p>Your institue has not registered any payment method</p>
@@ -303,17 +306,20 @@ const Fees = (props) => {
       </Modal>
       <Modal show={showCashfreeModal} onHide={closeCashfreeModal} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Success</Modal.Title>
+          <Modal.Title>Payment Summary</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
-          <p>Your fee order has been created.</p>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <p className='cashfreeModalOrderName'>{currentPayment.name}</p>
+            <p className='cashfreeModalOrderAmount'>₹{currentPayment.amount}</p>
+          </div>
         </Modal.Body>
 
         <Modal.Footer>
-          <Button onClick={closeCashfreeModal} variant='secondary'>
-            Close
-          </Button>
+          <button type='button' onClick={closeCashfreeModal} className='cashfreeCancelBtn'>
+            Cancel
+          </button>
           {/* <Button variant="primary">Continue</Button> */}
           <Cashfree
             currentPayment={currentPayment}

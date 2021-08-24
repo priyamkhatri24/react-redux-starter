@@ -13,7 +13,13 @@ const Cashfree = (props) => {
     userProfile,
     clientId,
     clientUserId,
-    currentbranding,
+    currentbranding: {
+      branding: {
+        client_name: clientName,
+        client_contact: clientContact,
+        client_email: clientEmail,
+      },
+    },
     paymentSplits,
     orderId,
     currentPayment: { amount: orderAmount, user_fee_id: userFeeId, status },
@@ -22,14 +28,12 @@ const Cashfree = (props) => {
   const [orderCurrency, setOrderCurrency] = useState('INR');
   // const [orderAmount, setOrderAmount] = useState(currentPayment.amount);
   const [orderNote, setOrderNote] = useState('test');
-  const [customerName, setCustomerName] = useState(
-    `${userProfile.firstName} ${userProfile.lastName}`,
-  );
-  const [customerEmail, setCustomerEmail] = useState(userProfile.email || 'priyam@test.com');
-  const [customerContact, setCustomerContact] = useState(userProfile.contact);
+  const [customerName, setCustomerName] = useState(clientName);
+  const [customerEmail, setCustomerEmail] = useState(clientEmail);
+  const [customerContact, setCustomerContact] = useState(clientContact);
   // const [orderId, setOrderId] = useState(currentPayment.order_id);
   // const [signature, setSignature] = useState(null);
-  const [returnUrl, setReturnUrl] = useState(window.location.origin);
+  const [returnUrl, setReturnUrl] = useState(window.location.href);
   const [notifyUrl, setNotifyUrl] = useState('https://portal.tca.ingeniumedu.com//cashfreeWebhook');
 
   const postData = startCashfree(
@@ -45,15 +49,10 @@ const Cashfree = (props) => {
     paymentSplits,
   );
 
-  // }, [apiValidation]);
-  // const postHandler = () => {
-  //   console.log(fees.fee_data);
-
-  //   // get(payload, '/fetchOrderByIdCasgFree').then((res) => {
-  //   //   const result = apiValidation(res);
-  //   //   // history.push({ pathname: '/order', state: { order: result } });
-  //   // });
-  // };
+  const url =
+    process.env.NODE_ENV === 'production'
+      ? 'https://www.cashfree.com/checkout/post/submit'
+      : 'https://test.cashfree.com/billpay/checkout/post/submit';
 
   return (
     <form
@@ -75,7 +74,7 @@ const Cashfree = (props) => {
       <input type='hidden' name='paymentSplits' value={paymentSplits} />
       <input type='hidden' name='signature' value={postData.signature} />
       {status === 'due' ? (
-        <input className={[classes.cashfreeBtn, 'mt-4'].join(' ')} type='submit' value='Cashfree' />
+        <input className={[classes.cashfreeBtn].join(' ')} type='submit' value='Pay' />
       ) : status === 'pending' ? (
         <p>You have a pending payment. Please wait while your bank processes the payment.</p>
       ) : null}
@@ -97,7 +96,6 @@ Cashfree.propTypes = {
   orderId: PropTypes.number.isRequired,
   currentPayment: PropTypes.instanceOf(Object).isRequired,
   clientUserId: PropTypes.number.isRequired,
-
   currentbranding: PropTypes.shape({
     branding: PropTypes.shape({
       client_id: PropTypes.number,
@@ -108,6 +106,7 @@ Cashfree.propTypes = {
       client_name: PropTypes.string,
       client_address: PropTypes.string,
       client_contact: PropTypes.string,
+      client_email: PropTypes.string,
     }),
   }).isRequired,
   userProfile: PropTypes.shape({

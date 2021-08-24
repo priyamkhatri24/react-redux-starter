@@ -1,15 +1,16 @@
 .cashfreeBtn {
   display: flex;
   align-items: center;
-  padding: 7px 5em;
-  background-color: var(--primary-blue);
-  border-radius: 100px;
+  padding: 7px 16px;
+  background-color: white;
+  border-radius: 5px;
   width: 100%;
   outline: none;
   border: transparent;
   cursor: pointer;
   color: white;
-  font-family: 'Montserrat-Regular';
+  color: var(--primary-blue);
+  font-family: 'Montserrat-Bold';
 }
 
 @media screen and (max-width: 800px) {

@@ -42,7 +42,7 @@ const FeesOrder = (props) => {
                 ? 'Payment Due'
                 : order.status === 'pending'
                 ? 'Payment Pending'
-                : order.status === 'paid'
+                : order.status === 'PAID'
                 ? 'Payment Successful'
                 : order.status === 'waived'
                 ? 'Payment Waived'
@@ -62,15 +62,43 @@ const FeesOrder = (props) => {
             </p>
           </div>
           <div className='Fees__orderDetailsContainer'>
-            <p className='Fees__orderDetailHeading mb-0 ml-3 mt-4'>DUE DATE</p>
+            <p className='Fees__orderDetailHeading mb-0 ml-3 mt-4'>
+              {order.status === 'PAID' ? 'DATE OF PAYMENT' : 'DUE DATE'}
+            </p>
             <p className='Fees_orderDetails ml-3'>
               {order.due_date
                 ? format(fromUnixTime(parseInt(order.due_date, 10)), 'dd-MMM-yyyy')
-                : 'Immediately'}
+                : order.paid_at
+                ? format(fromUnixTime(parseInt(order.paid_at, 10)), 'dd-MMM-yyyy')
+                : ''}
             </p>
-            <p className='Fees__orderDetailHeading mb-0 ml-3'>TO: {order.coaching_name}</p>
-            <p className='Fees_orderDetails'>{order.coaching_email}</p>
+            {order.status === 'PAID' ? (
+              <>
+                <p className='Fees__orderDetailHeading mb-0 ml-3'>Payment Method:</p>
+                <p className='Fees_orderDetails ml-3'>{order.payment_method}</p>
+              </>
+            ) : null}
+            <p className='Fees__orderDetailHeading mb-0 ml-3'>
+              TO: {order.coaching_name.toUpperCase()}
+            </p>
+            <p className='Fees_orderDetails ml-3'>{order.coaching_email}</p>
+            {order.status === 'PAID' ? (
+              <>
+                <p className='Fees__orderDetailHeading mb-0 ml-3'>
+                  FROM: {order.student_name.toUpperCase()}
+                </p>
+                <p className='Fees_orderDetails ml-3'>{order.student_email}</p>
+              </>
+            ) : null}
           </div>
+          {order.status === 'PAID' ? (
+            <div className='Fees__footnoteContainer'>
+              <p>
+                Payments may take upto 3 working days to be reflected in your account. Check your or
+                your recipient&apos;s bank statement for the latest status of your transaction.
+              </p>
+            </div>
+          ) : null}
         </>
       )}
     </>

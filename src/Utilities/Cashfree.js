@@ -45,8 +45,3 @@ export const startCashfree = (
   console.log(postData, 'postttdataa');
   return postData;
 };
-
-export const url =
-  process.env.NODE_ENV == 'production'
-    ? 'https://www.cashfree.com/checkout/post/submit'
-    : 'https://test.cashfree.com/billpay/checkout/post/submit';
