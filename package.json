@@ -33,6 +33,7 @@
     "ingenium-react-scripts": "^4.0.4",
     "intl-tel-input": "^17.0.12",
     "js-sha1": "^0.6.0",
+    "json2xls": "^0.1.2",
     "mic-recorder-to-mp3": "^2.2.2",
     "node-sass": "^4.14.1",
     "plyr-react": "^3.0.7",
@@ -151,5 +152,5 @@
       "git push sid-origin auto"
     ]
   },
-  "buildDate": 1629386056944
+  "buildDate": 1629799425117
 }

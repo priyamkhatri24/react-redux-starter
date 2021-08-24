@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import json2xls from 'json2xls';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import { getAnalysisAssignmentObject } from '../../redux/reducers/analysis.reducer';
 import { PageHeader } from '../Common';
-import { apiValidation, get, propComparator } from '../../Utilities';
+import { apiValidation, get, propComparator, json2xlsDownload } from '../../Utilities';
 import userAvatar from '../../assets/images/user.svg';
 import '../Dashboard/Dashboard.scss';
 import './Analysis.scss';
@@ -84,7 +85,17 @@ const AssignmentList = (props) => {
       setStudents(final);
     }
   };
-
+  const downloadReportHandler = () => {
+    const jsonObj = students.map((elem) => {
+      return {
+        Name: `${elem.first_name} ${elem.last_name}`,
+        Status: elem.status,
+        Sore: elem.score,
+      };
+    });
+    // console.log(jsonObj, students);
+    json2xlsDownload(JSON.stringify(jsonObj), `${Date.now()}`, true);
+  };
   const goToStudentAnalysis = (elem) => {
     const payload = {
       test_id: analysisAssignmentObject.test_id,
@@ -156,7 +167,9 @@ const AssignmentList = (props) => {
         </Row>
         <Row className='justify-content-around mx-2 my-5'>
           <Button variant='customPrimarySmol'>SMS results to parents</Button>
-          <Button variant='customPrimarySmol'>Download report</Button>
+          <Button onClick={downloadReportHandler} variant='customPrimarySmol'>
+            Download report
+          </Button>
         </Row>
         {students.map((elem) => {
           return (
