@@ -241,18 +241,16 @@ class LiveClasses extends Component {
         jitsiRoomName: element.stream_link,
         domain: strippedDomain,
         jitsiToken: element.moderator_password,
-        triggerJitsi: method === 'sdk',
+        triggerJitsi: false,
       });
 
-      if (method !== 'sdk') {
-        this.openJitsiInNewWindow(
-          element.server_url,
-          element.stream_link,
-          jitsiFirstName,
-          jitsiLastName,
-          element.moderator_password,
-        );
-      }
+      this.openJitsiInNewWindow(
+        element.server_url,
+        element.stream_link,
+        jitsiFirstName,
+        jitsiLastName,
+        element.moderator_password,
+      );
     } else if (element.stream_type === 'big_blue_button') {
       rejoinBigBlueButtonStream(
         jitsiFirstName,

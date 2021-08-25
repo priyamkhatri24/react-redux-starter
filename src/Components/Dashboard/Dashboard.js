@@ -1019,7 +1019,7 @@ const Dashboard = (props) => {
         >
           <Col className='mx-auto'>
             <img
-              src={branding.client_logo || YCIcon}
+              src={branding.branding.client_logo}
               className='img-fluid'
               alt='profile'
               width='80px'
