@@ -134,6 +134,11 @@ const FeesOrder = Loadable({
 });
 // import FeesOrder from '../Components/Fees/Fees.order';
 
+const FeeOrderSummary = Loadable({
+  loader: () => import(/* webpackChunkName: 'FeesOrder' */ '../Components/Fees/CFOrderSummary'),
+  loading: Loading,
+});
+
 const HomeWorkCreator = Loadable({
   loader: () =>
     import(
@@ -497,6 +502,7 @@ export function Routes() {
       <AuthenticatedRoute exact path='/fees/Feeplans' component={FeePlans} />
       <AuthenticatedRoute exact path='/fees/edit/studentfeeplan' component={EditFeePlan} />
       <AuthenticatedRoute exact path='/order' component={FeesOrder} />
+      <AuthenticatedRoute exact path='/ordersummary' component={FeeOrderSummary} />
       <AuthenticatedRoute exact path='/homework' component={HomeWorkCreator} />
       <AuthenticatedRoute exact path='/homework/savedtests' component={SavedSentTests} />
       <AuthenticatedRoute exact path='/homework/savedsent' component={SavedSentTestsUsingFilters} />

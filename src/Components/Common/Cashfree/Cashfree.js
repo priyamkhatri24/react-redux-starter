@@ -33,7 +33,9 @@ const Cashfree = (props) => {
   const [customerContact, setCustomerContact] = useState(clientContact);
   // const [orderId, setOrderId] = useState(currentPayment.order_id);
   // const [signature, setSignature] = useState(null);
-  const [returnUrl, setReturnUrl] = useState(window.location.href);
+  const [returnUrl, setReturnUrl] = useState(
+    `${window.location.origin}/ordersummary?oid=${orderId}&cid=${clientId}&ufid=${userFeeId}`,
+  );
   const [notifyUrl, setNotifyUrl] = useState('https://portal.tca.ingeniumedu.com//cashfreeWebhook');
 
   const postData = startCashfree(
