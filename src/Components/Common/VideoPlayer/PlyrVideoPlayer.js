@@ -20,7 +20,6 @@ const PlyrVideoPlayer = (props) => {
       },
     ],
   });
-
   const [videoId, setVideoId] = useState('');
 
   useEffect(() => {
@@ -46,6 +45,15 @@ const PlyrVideoPlayer = (props) => {
     if (history.location.state && history.location.state.videoId)
       setVideoId(history.location.state.videoId);
   }, [history]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', function (e) {
+      if (e.code === 'Tab') {
+        console.log('tab');
+        window.location.reload();
+      }
+    });
+  });
 
   return (
     <>

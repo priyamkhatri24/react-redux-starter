@@ -956,18 +956,18 @@ const Dashboard = (props) => {
             buttonClick={goToDisplayPage}
           />
         );
-      // case 'chats':
-      //   return (
-      //     <DashboardCards
-      //       image={param.feature_icon}
-      //       heading='Chats'
-      //       boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
-      //       subHeading='Chat with your peers or teachers.'
-      //       backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
-      //       backGround={param.start_colour}
-      //       buttonClick={goToChats}
-      //     />
-      //   );
+      case 'chats':
+        return (
+          <DashboardCards
+            image={param.feature_icon}
+            heading='Chats'
+            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
+            subHeading='Chat with your peers or teachers.'
+            backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
+            backGround={param.start_colour}
+            buttonClick={goToChats}
+          />
+        );
       default:
         return null;
     }
@@ -1044,7 +1044,7 @@ const Dashboard = (props) => {
           .filter((elem) => process.env.NODE_ENV === 'development' || elem.status === 'active')
           .map((elem) => renderComponents(elem))}
 
-      {/* <DashboardCards
+      <DashboardCards
         image={offlineAssignment} // student
         heading='Chats'
         color='rgba(255, 236, 222, 1)'
@@ -1053,7 +1053,7 @@ const Dashboard = (props) => {
         backgroundImg='linear-gradient(90deg, rgba(236,255,252,1) 0%, rgba(8,203,176,1) 100%)'
         backGround='rgb(236,255,252)'
         buttonClick={goToConversations}
-      /> */}
+      />
 
       <Modal show={optionsModal} onHide={closeOptionsModal} centered>
         <Modal.Header closeButton>

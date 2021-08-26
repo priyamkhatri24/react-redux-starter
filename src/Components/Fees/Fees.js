@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
@@ -40,6 +40,7 @@ const Fees = (props) => {
     },
     history,
   } = props;
+  const feesOverlay = useRef(null);
   const [fees, setFees] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [orderType, setOrderType] = useState(dashboardData.payment_gateway);
@@ -58,8 +59,8 @@ const Fees = (props) => {
       if (paymentArray[0]) {
         setCurrentPayment(paymentArray[0]);
       }
+      feesOverlay.current.scrollTop = feesOverlay.current.scrollHeight;
     });
-    console.log(window.location.href);
   }, []);
 
   const handleShow = () => setShowModal(true);
@@ -181,7 +182,7 @@ const Fees = (props) => {
             <span>Due Amount: {fees.due_amount}</span>
           </p>
         </div>
-        <div className='Fees__overlay'>
+        <div ref={feesOverlay} className='Fees__overlay'>
           {Object.keys(fees).length > 0 &&
             fees.fee_data.map((elem) => {
               return (
