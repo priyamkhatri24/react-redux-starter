@@ -53,7 +53,7 @@ const BuyCourse = (props) => {
     roleArray,
   } = props;
   const [course, setCourse] = useState({});
-  const [courseVideo, setCourseVideo] = useState({});
+  const [courseVideo, setCourseVideo] = useState(null);
   const [coursePrice, setCoursePrice] = useState(0);
   const [whiteStarArray, setWhiteStarArray] = useState([]);
   const [starArray, setStarArray] = useState([]);
@@ -354,9 +354,11 @@ const BuyCourse = (props) => {
               Share
             </Button>
           </Row>
-          <div className='mx-auto my-4 Courses__videoplayer'>
-            {courseVideo && <PlyrComponent source={courseVideo} options={options} />}
-          </div>
+          {courseVideo && (
+            <div className='mx-auto my-4 Courses__videoplayer'>
+              <PlyrComponent source={courseVideo} options={options} />
+            </div>
+          )}
           <p className='Courses__heading m-3'>What will I learn?</p>
           {course.tag_array
             .filter((e) => e.tag_type === 'learning')

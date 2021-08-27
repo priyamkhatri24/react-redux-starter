@@ -47,6 +47,15 @@ const PlyrVideoPlayer = (props) => {
       setVideoId(history.location.state.videoId);
   }, [history]);
 
+  useEffect(() => {
+    document.addEventListener('keydown', function (e) {
+      if (e.code === 'Tab') {
+        console.log('tab');
+        window.location.reload();
+      }
+    });
+  });
+
   return (
     <>
       <PageHeader transparent />
