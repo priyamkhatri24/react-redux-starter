@@ -2,6 +2,7 @@
   "name": "ingenium-web-portal",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://cors-anywhere.herokuapp.com/",
   "dependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^24.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^24.0.0",
@@ -152,5 +153,5 @@
       "git push sid-origin auto"
     ]
   },
-  "buildDate": 1630002402768
+  "buildDate": 1630346081874
 }

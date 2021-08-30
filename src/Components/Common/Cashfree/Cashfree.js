@@ -33,9 +33,11 @@ const Cashfree = (props) => {
   const [orderCurrency, setOrderCurrency] = useState('INR');
   // const [orderAmount, setOrderAmount] = useState(currentPayment.amount);
   const [orderNote, setOrderNote] = useState('test');
-  const [customerName, setCustomerName] = useState(clientName);
-  const [customerEmail, setCustomerEmail] = useState(clientEmail);
-  const [customerContact, setCustomerContact] = useState(clientContact);
+  const [customerName, setCustomerName] = useState(
+    `${userProfile.firstName} ${userProfile.lastName}`,
+  );
+  const [customerEmail, setCustomerEmail] = useState(userProfile.email);
+  const [customerContact, setCustomerContact] = useState(userProfile.contact);
   // const [orderId, setOrderId] = useState(currentPayment.order_id);
   // const [signature, setSignature] = useState(null);
   const [returnUrl, setReturnUrl] = useState(
@@ -46,6 +48,8 @@ const Cashfree = (props) => {
       : `${window.location.origin}`,
   );
   const [notifyUrl, setNotifyUrl] = useState('https://portal.tca.ingeniumedu.com//cashfreeWebhook');
+
+  console.log(userProfile, 'userProfileee');
 
   const postData = startCashfree(
     orderId,
