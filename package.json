@@ -1,7 +1,6 @@
 {
   "name": "ingenium-web-portal",
   "version": "0.1.0",
-  "proxy": "https://cors-anywhere.herokuapp.com/",
   "private": true,
   "dependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^24.0.0",
@@ -25,6 +24,7 @@
     "ckeditor5-math": "^24.0.0",
     "classnames": "^2.2.6",
     "connected-react-router": "^6.8.0",
+    "crypto-js": "^4.1.1",
     "date-fns": "^2.16.1",
     "firebase": "^8.6.8",
     "formik": "^2.1.5",
@@ -153,4 +153,5 @@
     ]
   },
   "buildDate": 1630002402768
+
 }

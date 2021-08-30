@@ -46,7 +46,7 @@ const Conversations = function ({
 
   const fetchConversations = function () {
     get(null, `/getConversationsOfUser?client_user_id=${clientUserId}`).then((res) => {
-      console.log(res);
+      console.log(res, 'balleee');
       const data = apiValidation(res);
       setConversations(formatConversations(data));
     });

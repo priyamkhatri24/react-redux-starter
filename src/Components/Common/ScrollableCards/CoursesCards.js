@@ -49,6 +49,7 @@ export const CoursesCards = (props) => {
               <div
                 className='course-card col-sm-6 col-md-4 col-lg-2'
                 style={{ paddingLeft: 0, paddingRight: 0 }}
+                key={`elem+${elem.course_id}`}
               >
                 <Card
                   className='Scrollable__courseCardContent text-center'

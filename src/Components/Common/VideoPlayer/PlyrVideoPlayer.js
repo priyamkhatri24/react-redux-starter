@@ -20,7 +20,6 @@ const PlyrVideoPlayer = (props) => {
       },
     ],
   });
-
   const [videoId, setVideoId] = useState('');
 
   useEffect(() => {

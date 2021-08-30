@@ -27,7 +27,7 @@ const AddButton = (props) => {
 
   const upload = (elem, e) => {
     const reader = new FileReader();
-    console.log(e.target.files);
+    console.log(e.target.files, 'AB');
     const file = e.target.files[0];
     if (file) {
       reader.readAsDataURL(e.target.files[0]);

@@ -20,6 +20,7 @@ import StarBorderIcon from '@material-ui/icons/StarBorder';
 import rupee from '../../assets/images/Courses/rupee.svg';
 import { apiValidation, get, post, displayRazorpay, shareThis } from '../../Utilities';
 import { PageHeader } from '../Common';
+import Cashfree from '../Common/Cashfree/Cashfree';
 import './Courses.scss';
 import {
   getClientId,
@@ -27,6 +28,7 @@ import {
   getRoleArray,
 } from '../../redux/reducers/clientUserId.reducer';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
+import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
 import YCIcon from '../../assets/images/ycIcon.png';
 import checkmark from '../../assets/images/order/icons8-checked.svg';
 import caution from '../../assets/images/order/icons8-medium-risk-50.png';
@@ -39,6 +41,7 @@ const BuyCourse = (props) => {
     match,
     clientId,
     clientUserId,
+    dashboardData,
     currentbranding: {
       branding: {
         client_color: clientColor,
@@ -53,6 +56,7 @@ const BuyCourse = (props) => {
     roleArray,
   } = props;
   const [course, setCourse] = useState({});
+  const [paymentGateway, setPaymentGateway] = useState(dashboardData.payment_gateway);
   const [courseVideo, setCourseVideo] = useState(null);
   const [coursePrice, setCoursePrice] = useState(0);
   const [whiteStarArray, setWhiteStarArray] = useState([]);
@@ -64,6 +68,9 @@ const BuyCourse = (props) => {
   const [couponMessage, setCouponMessage] = useState('');
   const [order, setOrder] = useState({});
   const [showToast, setShowToast] = useState(false);
+  const [paymentSplits, setPaymentSplits] = useState(null);
+  const [newOrderId, setNewOrderId] = useState(null);
+  const [courseOrderId, setCourseOrderId] = useState(null);
 
   const statusClass = cx({
     Fees__orderStatus: true,
@@ -91,6 +98,7 @@ const BuyCourse = (props) => {
       console.log(res, 'course details');
       const result = apiValidation(res);
       setCourse(result);
+      console.log(result, 'coursee');
       if (result.course_preview_vedio) {
         const source = {
           type: 'video',
@@ -157,10 +165,39 @@ const BuyCourse = (props) => {
     }
   };
 
-  const openCouponModal = () => setShowCouponModal(true);
+  const openCouponModal = () => {
+    if (paymentGateway === 'razorpay') {
+      setShowCouponModal(true);
+    } else if (paymentGateway === 'cashfree' && +coursePrice > 0) {
+      const cashfreePayload = {
+        client_user_id: clientUserId,
+        client_id: clientId,
+        course_id: match.params.courseId,
+        orderAmount: coursePrice,
+        orderCurrency: 'INR',
+        coupon_id: couponId,
+        type: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
+      };
+      post(cashfreePayload, '/genrateTokenForCourseOrder').then((res) => {
+        const result = apiValidation(res);
+        console.log(result, 'resss');
+        setPaymentSplits(result.paymentSplits);
+        setNewOrderId(result.order_id);
+        setCourseOrderId(result.course_order_id);
+        setShowCouponModal(true);
+      });
+    } else {
+      setShowCouponModal(true);
+    }
+  };
   const closeCouponModal = () => setShowCouponModal(false);
 
   const openFeeModal = () => setShowFeeModal(true);
+
+  const startCashfree = () => {
+    console.log('paid by cf');
+  };
+
   const closeFeeModal = () => {
     setShowFeeModal(false);
     if (order.status === 'marked' || order.status === 'waived' || order.status === 'paid') {
@@ -284,6 +321,14 @@ const BuyCourse = (props) => {
     console.log(url);
     const hasShared = shareThis(url, window.location.host.split('.')[0]);
     if (hasShared === 'clipboard') setShowToast(true);
+  };
+
+  const initPayment = () => {
+    if (+coursePrice > 0) {
+      payToRazorBaba();
+    } else {
+      basSubscribe();
+    }
   };
 
   return (
@@ -486,12 +531,28 @@ const BuyCourse = (props) => {
           <Button variant='boldTextSecondary' onClick={() => closeCouponModal()}>
             Cancel
           </Button>
-          <Button
-            variant='boldText'
-            onClick={coursePrice ? () => payToRazorBaba() : () => basSubscribe()}
-          >
-            Pay
-          </Button>
+          {+coursePrice > 0 ? (
+            <>
+              {paymentGateway === 'razorpay' ? (
+                <Button variant='boldText' onClick={initPayment}>
+                  Pay
+                </Button>
+              ) : paymentGateway === 'cashfree' ? (
+                <Cashfree
+                  orderAmount={coursePrice}
+                  courseOrderId={courseOrderId}
+                  paymentSplits={paymentSplits}
+                  orderId={newOrderId}
+                />
+              ) : (
+                <p>payment gateway not available</p>
+              )}
+            </>
+          ) : (
+            <Button variant='boldText' onClick={initPayment}>
+              Pay
+            </Button>
+          )}
         </Modal.Footer>
       </Modal>
 
@@ -559,6 +620,7 @@ const mapStateToProps = (state) => ({
   clientId: getClientId(state),
   clientUserId: getClientUserId(state),
   currentbranding: getCurrentBranding(state),
+  dashboardData: getCurrentDashboardData(state),
   roleArray: getRoleArray(state),
 });
 
@@ -574,6 +636,7 @@ BuyCourse.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   clientId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
+  dashboardData: PropTypes.instanceOf(Object).isRequired,
   currentbranding: PropTypes.shape({
     branding: PropTypes.shape({
       client_logo: PropTypes.string,

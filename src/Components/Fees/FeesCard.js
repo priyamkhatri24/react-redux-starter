@@ -44,6 +44,7 @@ const FeesCard = (props) => {
     get(payload, '/fetchOrderById').then((res) => {
       const result = apiValidation(res);
       goToOrderDetails(result);
+      console.log(result);
     });
   };
 
@@ -76,7 +77,7 @@ const FeesCard = (props) => {
       </p>
       <div className='text-center Fees__cardFooter w-100 p-1'>
         {dueDate !== null &&
-          `${name}${
+          `${name} ${
             PlanType === 'custom' ? format(fromUnixTime(parseInt(dueDate, 10)), 'dd-MMM-yyyy') : ''
           }`}
       </div>

@@ -175,6 +175,7 @@ const StudyBin = (props) => {
 
   const addNewFile = (files) => {
     const filesArray = files.map((elem) => {
+      console.log(elem, 'SBELEM');
       const obj = {};
       obj.file_link = elem.filename;
       obj.file_name = elem.name;
@@ -233,7 +234,7 @@ const StudyBin = (props) => {
     };
     post(payload, '/addMultipleFile')
       .then((res) => {
-        console.log(res);
+        console.log(res, 'SBUPL');
         rerenderFilesAndFolders();
       })
       .catch((e) => console.log(e));

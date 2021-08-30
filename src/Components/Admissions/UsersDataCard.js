@@ -115,8 +115,7 @@ const UserDataCard = (props) => {
               {`${elem.first_name} ${elem.last_name}`}
             </p>
             <p css={AdmissionStyle.avatarStatus}>
-              <PhoneIcon css={AdmissionStyle.onlineIcon} />
-              +91-{elem.contact}
+              <PhoneIcon css={AdmissionStyle.onlineIcon} />+{elem.country_code}-{elem.contact}
             </p>
           </div>
         </Col>

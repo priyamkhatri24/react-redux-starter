@@ -8,6 +8,7 @@
 
 .myBar {
   height: 15px;
+
   border-radius: 100px;
   background-color: var(--primary-blue);
 }
