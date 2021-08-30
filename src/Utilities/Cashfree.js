@@ -1,8 +1,14 @@
 import crypto from 'crypto';
 import { post, apiValidation } from './index';
 
-const secretKey = 'e802e96ef246f9a5696f20f1c70a9d9581a4d283';
-const testId = '7986308f47083d2e4e125efed36897';
+const secretKey =
+  process.env.NODE_ENV === 'development'
+    ? 'e802e96ef246f9a5696f20f1c70a9d9581a4d283'
+    : '8c21c14b2990bb15296b1e383593d5b0dd316f19';
+const testId =
+  process.env.NODE_ENV === 'development'
+    ? '7986308f47083d2e4e125efed36897'
+    : '122277951965233ea251da7c4f772221';
 
 export const startCashfree = (
   orderId,

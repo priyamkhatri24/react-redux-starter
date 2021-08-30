@@ -127,8 +127,7 @@ const Fees = (props) => {
         user_fee_id: currentPayment.user_fee_id,
         orderAmount: currentPayment.amount,
         orderCurrency: 'INR',
-        type: 'Development',
-        // type: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
+        type: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
       };
       post(cashfreePayload, '/genrateTokenForFeeOrder').then((res) => {
         const result = apiValidation(res);
@@ -323,7 +322,8 @@ const Fees = (props) => {
           </button>
           {/* <Button variant="primary">Continue</Button> */}
           <Cashfree
-            currentPayment={currentPayment}
+            orderAmount={currentPayment.amount}
+            userFeeId={currentPayment.user_fee_id}
             paymentSplits={paymentSplits}
             orderId={newOrderId}
           />

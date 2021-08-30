@@ -22,9 +22,14 @@ const Cashfree = (props) => {
     },
     paymentSplits,
     orderId,
-    currentPayment: { amount: orderAmount, user_fee_id: userFeeId, status },
+    orderAmount,
+    userFeeId,
+    courseOrderId,
   } = props;
-  const testId = '7986308f47083d2e4e125efed36897';
+  const testId =
+    process.env.NODE_ENV === 'development'
+      ? '7986308f47083d2e4e125efed36897'
+      : '122277951965233ea251da7c4f772221';
   const [orderCurrency, setOrderCurrency] = useState('INR');
   // const [orderAmount, setOrderAmount] = useState(currentPayment.amount);
   const [orderNote, setOrderNote] = useState('test');
@@ -34,7 +39,11 @@ const Cashfree = (props) => {
   // const [orderId, setOrderId] = useState(currentPayment.order_id);
   // const [signature, setSignature] = useState(null);
   const [returnUrl, setReturnUrl] = useState(
-    `${window.location.origin}/ordersummary?oid=${orderId}&cid=${clientId}&ufid=${userFeeId}`,
+    userFeeId
+      ? `${window.location.origin}/ordersummary?oid=${orderId}&cid=${clientId}&ufid=${userFeeId}`
+      : courseOrderId
+      ? `${window.location.origin}/ordersummary?oid=${orderId}&coid=${courseOrderId}`
+      : `${window.location.origin}`,
   );
   const [notifyUrl, setNotifyUrl] = useState('https://portal.tca.ingeniumedu.com//cashfreeWebhook');
 
@@ -52,16 +61,12 @@ const Cashfree = (props) => {
   );
 
   const url =
-    process.env.NODE_ENV === 'production'
-      ? 'https://www.cashfree.com/checkout/post/submit'
-      : 'https://test.cashfree.com/billpay/checkout/post/submit';
+    process.env.NODE_ENV === 'development'
+      ? 'https://test.cashfree.com/billpay/checkout/post/submit'
+      : 'https://www.cashfree.com/checkout/post/submit';
 
   return (
-    <form
-      id='redirectForm'
-      method='post'
-      action='https://test.cashfree.com/billpay/checkout/post/submit'
-    >
+    <form id='redirectForm' method='post' action={url}>
       <input type='hidden' name='appId' value={testId} />
       <input type='hidden' name='orderId' value={orderId} />
       <input type='hidden' name='orderAmount' value={orderAmount} />
@@ -75,11 +80,8 @@ const Cashfree = (props) => {
       <input type='hidden' name='notifyUrl' value={notifyUrl} />
       <input type='hidden' name='paymentSplits' value={paymentSplits} />
       <input type='hidden' name='signature' value={postData.signature} />
-      {status === 'due' ? (
-        <input className={[classes.cashfreeBtn].join(' ')} type='submit' value='Pay' />
-      ) : status === 'pending' ? (
-        <p>You have a pending payment. Please wait while your bank processes the payment.</p>
-      ) : null}
+
+      <input className={[classes.cashfreeBtn].join(' ')} type='submit' value='Pay' />
     </form>
   );
 };
@@ -96,7 +98,9 @@ Cashfree.propTypes = {
   clientId: PropTypes.number.isRequired,
   paymentSplits: PropTypes.string.isRequired,
   orderId: PropTypes.number.isRequired,
-  currentPayment: PropTypes.instanceOf(Object).isRequired,
+  orderAmount: PropTypes.string.isRequired,
+  userFeeId: PropTypes.number.isRequired,
+  courseOrderId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
   currentbranding: PropTypes.shape({
     branding: PropTypes.shape({
