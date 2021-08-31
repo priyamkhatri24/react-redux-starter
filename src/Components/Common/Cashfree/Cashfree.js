@@ -13,14 +13,8 @@ const Cashfree = (props) => {
     userProfile,
     clientId,
     clientUserId,
-    currentbranding: {
-      branding: {
-        client_name: clientName,
-        client_contact: clientContact,
-        client_email: clientEmail,
-      },
-    },
     paymentSplits,
+    notifyUrl,
     orderId,
     orderAmount,
     userFeeId,
@@ -47,7 +41,7 @@ const Cashfree = (props) => {
       ? `${window.location.origin}/ordersummary?oid=${orderId}&coid=${courseOrderId}`
       : `${window.location.origin}`,
   );
-  const [notifyUrl, setNotifyUrl] = useState('https://portal.tca.ingeniumedu.com//cashfreeWebhook');
+  // const [notifyUrl, setNotifyUrl] = useState('https://portal.tca.ingeniumedu.com//cashfreeWebhook');
 
   console.log(userProfile, 'userProfileee');
 
@@ -101,24 +95,12 @@ export default connect(mapStateToProps)(Cashfree);
 Cashfree.propTypes = {
   clientId: PropTypes.number.isRequired,
   paymentSplits: PropTypes.string.isRequired,
+  notifyUrl: PropTypes.string.isRequired,
   orderId: PropTypes.number.isRequired,
   orderAmount: PropTypes.string.isRequired,
   userFeeId: PropTypes.number.isRequired,
   courseOrderId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
-  currentbranding: PropTypes.shape({
-    branding: PropTypes.shape({
-      client_id: PropTypes.number,
-      client_logo: PropTypes.string,
-      client_color: PropTypes.string,
-      client_icon: PropTypes.string,
-      client_title: PropTypes.string,
-      client_name: PropTypes.string,
-      client_address: PropTypes.string,
-      client_contact: PropTypes.string,
-      client_email: PropTypes.string,
-    }),
-  }).isRequired,
   userProfile: PropTypes.shape({
     firstName: PropTypes.string.isRequired,
     lastName: PropTypes.string,

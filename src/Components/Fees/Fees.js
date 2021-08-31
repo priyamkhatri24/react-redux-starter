@@ -47,6 +47,7 @@ const Fees = (props) => {
   const [currentPayment, setCurrentPayment] = useState({});
   const [showCashfreeModal, setShowCashfreeModal] = useState(false);
   const [paymentSplits, setPaymentSplits] = useState(null);
+  const [ntfurl, setntfurl] = useState(null);
   const [newOrderId, setNewOrderId] = useState(null);
   useEffect(() => {
     get({ client_user_id: clientUserId }, '/getFeeDataForStudent').then((res) => {
@@ -131,8 +132,9 @@ const Fees = (props) => {
       };
       post(cashfreePayload, '/genrateTokenForFeeOrder').then((res) => {
         const result = apiValidation(res);
-        // console.log(payload, 'PS');
+        console.log(cashfreePayload, 'PS');
         setPaymentSplits(result.paymentSplits);
+        setntfurl(result.notifyUrl);
         setNewOrderId(result.order_id);
         setShowCashfreeModal(true);
         console.log(result);
@@ -326,6 +328,7 @@ const Fees = (props) => {
             userFeeId={currentPayment.user_fee_id}
             paymentSplits={paymentSplits}
             orderId={newOrderId}
+            notifyUrl={ntfurl}
           />
         </Modal.Footer>
       </Modal>

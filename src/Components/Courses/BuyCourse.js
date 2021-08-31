@@ -69,6 +69,7 @@ const BuyCourse = (props) => {
   const [order, setOrder] = useState({});
   const [showToast, setShowToast] = useState(false);
   const [paymentSplits, setPaymentSplits] = useState(null);
+  const [ntfurl, setntfurl] = useState(null);
   const [newOrderId, setNewOrderId] = useState(null);
   const [courseOrderId, setCourseOrderId] = useState(null);
 
@@ -182,6 +183,7 @@ const BuyCourse = (props) => {
         const result = apiValidation(res);
         console.log(result, 'resss');
         setPaymentSplits(result.paymentSplits);
+        setntfurl(result.notifyUrl);
         setNewOrderId(result.order_id);
         setCourseOrderId(result.course_order_id);
         setShowCouponModal(true);
@@ -543,6 +545,7 @@ const BuyCourse = (props) => {
                   courseOrderId={courseOrderId}
                   paymentSplits={paymentSplits}
                   orderId={newOrderId}
+                  notifyUrl={ntfurl}
                 />
               ) : (
                 <p>payment gateway not available</p>
