@@ -27,6 +27,15 @@ const AddYoutube = (props) => {
     });
   }, []);
 
+  const getIdFromUrl = (url) => {
+    let vidId = url.split('v=')[1];
+    const ampersandPosition = vidId.indexOf('&');
+    if (ampersandPosition != -1) {
+      vidId = vidId.substring(0, ampersandPosition);
+    }
+    return vidId;
+  };
+
   const checkVideoExists = () => {
     axios
       .get('https://www.googleapis.com/youtube/v3/videos', {
@@ -75,6 +84,19 @@ const AddYoutube = (props) => {
     });
   };
 
+  const extractVideoId = (e) => {
+    if (e.target.value.startsWith('https://www')) {
+      setVideoId(getIdFromUrl(e.target.value));
+    } else {
+      let vid = e.target.value;
+      const ampersandPosition = vid.indexOf('&');
+      if (ampersandPosition != -1) {
+        vid = vid.substring(0, ampersandPosition);
+      }
+      setVideoId(vid);
+    }
+  };
+
   return (
     <div className='AddYoutube'>
       <PageHeader title='Post Video' />
@@ -100,7 +122,7 @@ const AddYoutube = (props) => {
                   name='Video Id'
                   type='text'
                   placeholder='Video Id'
-                  onChange={(e) => setVideoId(e.target.value)}
+                  onChange={extractVideoId}
                 />
                 <span>Video Id</span>
               </label>
