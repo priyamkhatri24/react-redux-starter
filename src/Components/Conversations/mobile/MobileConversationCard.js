@@ -13,7 +13,13 @@ const MobileConversationCard = function ({ name, subTitle, thumbnail, unreadCoun
       <Col xs={12}>
         <div className='mt-1 mb-1'>
           <Media as='li' className='conversation-container p-2' onClick={onClick}>
-            <Image src={thumbnail} width={40} className='align-self-center mr-3' roundedCircle />
+            <Image
+              src={thumbnail}
+              width={40}
+              height={40}
+              className='align-self-center mr-3'
+              roundedCircle
+            />
             <Media.Body>
               <Container fluid>
                 <Row>

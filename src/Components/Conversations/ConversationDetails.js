@@ -34,7 +34,7 @@ const ConversationDetails = () => {
   const fetchDetails = () => {
     get(null, `/conversations/${conversation.id}/details`).then((res) => {
       const apiData = apiValidation(res);
-      console.log(apiData);
+      console.log(apiData, 'detailss');
       setDetails(apiData);
       setLoading(false);
     });
@@ -76,6 +76,7 @@ const ConversationDetails = () => {
               <Image
                 src={conversation.thumbnail}
                 width={88}
+                height={88}
                 className='align-self-center mr-3'
                 roundedCircle
               />
@@ -113,10 +114,20 @@ const ConversationDetails = () => {
             <Card>
               <Card.Header>
                 <div className='d-flex justify-content-between align-items-center'>
+                  <p className='details-heading mb-0'>Info</p>
+                </div>
+              </Card.Header>
+              <Card.Body>
+                <div className='d-flex align-items-center justify-content-between pb-2'>
+                  <p className='mb-0'>8746758748</p>
+                  <Form.Check type='switch' />
+                </div>
+              </Card.Body>
+            </Card>
+            <Card>
+              <Card.Header>
+                <div className='d-flex justify-content-between align-items-center'>
                   <p className='details-heading mb-0'>Settings</p>
-                  <Button variant='link' className='p-0 m-0'>
-                    <ChevronRight />
-                  </Button>
                 </div>
               </Card.Header>
               <Card.Body>
