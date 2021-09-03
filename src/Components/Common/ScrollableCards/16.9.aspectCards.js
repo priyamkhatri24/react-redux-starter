@@ -10,6 +10,13 @@ export const AspectCards = (props) => {
 
   const windowDimensions = useWindowDimensions();
 
+  const cardStyle = {
+    height: bigAspectCard ? '177px' : '113px',
+    width: bigAspectCard ? '315px' : '200px',
+    overflow: 'hidden',
+    boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)',
+  };
+
   const { width } = windowDimensions;
 
   const isScreenBig = () => {
@@ -62,7 +69,7 @@ export const AspectCards = (props) => {
                     : 'Scrollable__aspectCardContent text-center m-2'
                 }
                 key={`elem+${elem.homepage_section_file_id}`}
-                style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)' }}
+                style={cardStyle}
                 onClick={() => clickCard(elem)}
               >
                 {elem.file_type === 'video' ? (
@@ -81,8 +88,8 @@ export const AspectCards = (props) => {
                   <img
                     src={elem.file_link}
                     alt='student'
-                    height={bigAspectCard ? '177px' : '113px'}
-                    width={bigAspectCard ? '315px' : '200px'}
+                    // height={bigAspectCard ? '177px' : '113px'}
+                    // width={bigAspectCard ? '315px' : '200px'}
                     style={{ borderRadius: '5px' }}
                   />
                 )}
