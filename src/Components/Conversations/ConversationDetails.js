@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Media from 'react-bootstrap/Media';
@@ -16,12 +17,15 @@ import ChevronRight from '@material-ui/icons/ChevronRight';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import { get, apiValidation } from '../../Utilities';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
+import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
+import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import { getConversation, getSocket, getPosts } from '../../redux/reducers/conversations.reducer';
 import AudioIcon from '../../assets/images/audiotrack.svg';
 import FileIcon from '../../assets/images/file.svg';
 import './Conversation.scss';
 
-const ConversationDetails = () => {
+const ConversationDetails = (props) => {
+  const { currentbranding, dashboardData } = props;
   const history = useHistory();
   const [details, setDetails] = useState();
   const [loading, setLoading] = useState(true);
@@ -49,7 +53,7 @@ const ConversationDetails = () => {
 
   return (
     <>
-      <div style={{ boxShadow: '0px 2px 2px 0px #00000029' }}>
+      <div>
         <Row noGutters>
           <Col xs={12}>
             <div className='p-2 d-flex align-items-center justify-content-between'>
@@ -118,13 +122,17 @@ const ConversationDetails = () => {
                 </div>
               </Card.Header>
               <Card.Body>
-                <div className='d-flex align-items-center justify-content-between pb-2'>
-                  <p className='mb-0'>8746758748</p>
-                  <Form.Check type='switch' />
+                <div className='pb-2'>
+                  <p className='mb-0'>{currentbranding.branding.client_contact}</p>
+                  <p className='sub-head'>Phone</p>
+                </div>
+                <div className='pb-2'>
+                  <p className='mb-0'>{currentbranding.branding.client_email}</p>
+                  <p className='sub-head'>Email</p>
                 </div>
               </Card.Body>
             </Card>
-            <Card>
+            <Card className='mt-2'>
               <Card.Header>
                 <div className='d-flex justify-content-between align-items-center'>
                   <p className='details-heading mb-0'>Settings</p>
@@ -132,8 +140,16 @@ const ConversationDetails = () => {
               </Card.Header>
               <Card.Body>
                 <div className='d-flex align-items-center justify-content-between pb-2'>
-                  <p className='mb-0'>Notification</p>
-                  <Form.Check type='switch' />
+                  <p className='mb-0'>Notifications</p>
+                  <Form.Group controlId='formBasicCheckbox'>
+                    <Form.Check type='checkbox' label='' />
+                  </Form.Group>
+                </div>
+                <div className='d-flex align-items-center justify-content-between pb-2'>
+                  <p className='mb-0'>Students can message</p>
+                  <Form.Group controlId='formBasicCheckbox'>
+                    <Form.Check type='checkbox' label='' />
+                  </Form.Group>
                 </div>
               </Card.Body>
             </Card>
@@ -271,4 +287,13 @@ const ConversationDetails = () => {
   );
 };
 
-export default ConversationDetails;
+const mapStateToProps = (state) => ({
+  currentbranding: getCurrentBranding(state),
+  dashboardData: getCurrentDashboardData(state),
+});
+
+export default connect(mapStateToProps)(ConversationDetails);
+ConversationDetails.propTypes = {
+  dashboardData: PropTypes.number.isRequired,
+  currentbranding: PropTypes.number.isRequired,
+};

@@ -95,7 +95,13 @@ const Cropper = (props) => {
               src={sourceImage}
               onImageLoaded={onLoad}
               crop={crop}
-              onChange={(c) => setCrop(c)}
+              onChange={(c) => {
+                const cropp = {
+                  ...c,
+                  aspect: sourceImage.width / sourceImage.height,
+                };
+                setCrop(cropp);
+              }}
               onComplete={(c) => setCompletedCrop(c)}
             />
           </Col>

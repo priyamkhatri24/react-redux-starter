@@ -20,6 +20,7 @@ import PlayArrow from '@material-ui/icons/PlayArrow';
 import ChatBubbleOutline from '@material-ui/icons/ChatBubbleOutline';
 import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+import { useLongPress } from '../../../Utilities/utilities';
 import FileIcon from '../../../assets/images/file.svg';
 import './Message.scss';
 
@@ -37,6 +38,10 @@ class Message extends React.Component {
       seekValue: 0,
       xDiff: 0,
       yDiff: 0,
+    };
+    this.defaultOptions = {
+      shouldPreventDefault: true,
+      delay: 500,
     };
 
     this.TYPE_COMPONENT_MAPPING = {
@@ -111,6 +116,14 @@ class Message extends React.Component {
     this.setState({
       unlocked: true,
     });
+  };
+
+  onLongPress = () => {
+    console.log('longpress is triggered');
+  };
+
+  onClick = () => {
+    console.log('click is triggered');
   };
 
   stopDrag = () => {
@@ -445,6 +458,7 @@ class Message extends React.Component {
   }
 
   render() {
+    // const longPressEvent = useLongPress(this.onLongPress, this.onClick, this.defaultOptions);
     const { id, message, userIsAuthor, thumbnail, username, replyTo } = this.props;
 
     const messageComponent = this.TYPE_COMPONENT_MAPPING[message.type]();

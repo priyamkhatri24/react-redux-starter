@@ -85,14 +85,13 @@ const Conversation = () => {
       `/getChtOfConversation?conversation_id=${conversation.id}&client_user_id=${clientUserId}`,
     ).then((res) => {
       const apiData = apiValidation(res);
-      const {
-        next: { page },
-      } = res;
+      console.log(res, 'resss');
+      const page = res.next?.page;
       console.log(apiData, 'apiData');
       const { message_array: messageArray, participants_count: participantsCount } = apiData;
       const messages = formatMessages(messageArray, clientUserId);
       const { id, name, thumbnail } = conversation;
-      console.log(page);
+      console.log(page, 'pageeex');
       setConversation({
         id,
         participantsCount,
