@@ -4,14 +4,19 @@
   &__heading {
     color: $headingGrey;
     line-height: $spacer * 1.25;
-    font-family: $medium;
+    font-family: $bold;
   }
 
   &__subHeading {
-    font-family: $regular;
-    line-height: 15px;
+    font-family: 'Montserrat-Regular';
+    line-height: 20px;
     color: $dashboardBlack;
-    font-size: $spacer * 0.75;
+    font-size: 0.85rem;
+  }
+
+  &__courseCardHeading {
+    font-size: $spacer * 1.25;
+    font-family: 'Montserrat-Bold';
   }
 
   &__accordionHeading {
@@ -173,12 +178,29 @@
   }
 
   &__videoplayer {
-    height: 180px;
-    width: 273px;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    width: 100%;
 
     @include media-breakpoint-up(sm) {
-      width: 93%;
+      width: 100%;
+      // height: auto;
       height: 350px;
+    }
+  }
+  &__thumbnail {
+    height: auto;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    width: 100%;
+
+    @include media-breakpoint-up(sm) {
+      width: 100%;
+      // height: auto;
+      height: 210px;
     }
   }
   &__imageRow {
@@ -251,11 +273,48 @@
   }
 }
 
+.courseNameContainer {
+  display: flex;
+  width: 180% !important;
+  margin: auto 0px !important;
+}
+
+.shareButtonForCourse {
+  position: absolute;
+  z-index: 999;
+  right: 0%;
+  outline: none;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.16);
+  border: transparent;
+  border-radius: 0px 0px 0px 100px;
+}
+.Scrollable__smallText {
+  font-size: 12px;
+}
 #limited + label {
   font-family: 'Montserrat-Regular';
   font-size: 14px;
   color: rgba(0, 0, 0, 0.38);
   line-height: 18px;
+}
+
+.buyCourseBtn {
+  width: 95%;
+}
+@media screen and (max-width: 500px) {
+  .buyCourseBtn {
+    width: 90%;
+  }
+}
+
+.Scrollable__courseCardSubHeading {
+  width: 110%;
+}
+
+.coursesHeadingContainer {
+  position: absolute !important;
+  left: 20px !important;
 }
 
 #forever + label {
@@ -290,5 +349,24 @@
     height: 90vh;
 
     margin: auto;
+  }
+}
+.courseThumbnailImg {
+  max-height: 200px;
+  text-align: center;
+}
+
+@media screen and (min-width: 575px) {
+  .courseNameContainer {
+    width: 120% !important;
+  }
+  .Scrollable__bestSeller {
+    font-size: 0.6rem;
+  }
+}
+
+@media screen and (max-width: 575px) {
+  .Scrollable__courseCardSubHeading {
+    width: 94%;
   }
 }

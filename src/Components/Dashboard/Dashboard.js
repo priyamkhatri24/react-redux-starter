@@ -94,6 +94,7 @@ const Dashboard = (props) => {
   const [allCourses, setAllCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
   const [admissions, setAdmissions] = useState({});
+  const [studentLiveStream, setStudentLiveStream] = useState(null);
   const [data, setData] = useState({});
   const [hasLoaded, setHasLoaded] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -205,6 +206,29 @@ const Dashboard = (props) => {
 
     setRole(roleId);
   }, [roleArray]);
+
+  useEffect(() => {
+    if (roleArray.includes(1) || roleArray.includes(2)) {
+      const featArr = [...features];
+      const liveClassesFeature = featArr.filter(
+        (ele) => ele.client_feature_name === 'Live Classes',
+      )[0];
+      liveClassesFeature.isAddedByPriyam = true;
+      const indexOfConnect = featArr.findIndex(
+        (ele) => ele.client_feature_name === 'Connect with us',
+      );
+      setFeatures(featArr.splice(5, 0, liveClassesFeature));
+      console.log(featArr, 'hahahahahahhaaaa');
+      const payload = {
+        client_user_id: clientUserId,
+      };
+      get(payload, '/getLiveStreamsForStudent').then((res) => {
+        const result = apiValidation(res);
+        console.log(result, 'getLiveStreamsForStudent');
+        setStudentLiveStream(result);
+      });
+    }
+  }, [roleArray, clientUserId]);
 
   useEffect(() => {
     partsOfDay();
@@ -752,6 +776,7 @@ const Dashboard = (props) => {
             goToCourse={goToCourses}
             buyCourseId={goToBuyCourse}
             myCourseId={goToMyCourse}
+            clientLogo={branding.branding.client_logo}
           />
         ) : (
           <DashboardCards

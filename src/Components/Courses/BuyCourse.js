@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import cx from 'classnames';
@@ -8,6 +8,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Toast from 'react-bootstrap/Toast';
 import Card from 'react-bootstrap/Card';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
 import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -17,6 +19,7 @@ import 'plyr-react/dist/plyr.css';
 import StarIcon from '@material-ui/icons/Star';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
+import ShareIcon from '@material-ui/icons/Share';
 import rupee from '../../assets/images/Courses/rupee.svg';
 import { apiValidation, get, post, displayRazorpay, shareThis } from '../../Utilities';
 import { PageHeader } from '../Common';
@@ -58,6 +61,7 @@ const BuyCourse = (props) => {
   const [course, setCourse] = useState({});
   const [paymentGateway, setPaymentGateway] = useState(dashboardData.payment_gateway);
   const [courseVideo, setCourseVideo] = useState(null);
+  const [courseImage, setCourseImage] = useState(null);
   const [coursePrice, setCoursePrice] = useState(0);
   const [whiteStarArray, setWhiteStarArray] = useState([]);
   const [starArray, setStarArray] = useState([]);
@@ -99,6 +103,7 @@ const BuyCourse = (props) => {
       const result = apiValidation(res);
       setCourse(result);
       console.log(result, 'coursee');
+      setCourseImage(result.course_display_image);
       if (result.course_preview_vedio) {
         const source = {
           type: 'video',
@@ -331,56 +336,80 @@ const BuyCourse = (props) => {
     }
   };
 
+  const tabsClickHandler = (e) => {
+    e.target.scrollIntoView();
+  };
+
   return (
     <div>
-      <PageHeader title='Buy Course' />
+      <PageHeader notFixed iconColor='gray' transparent title='' />
+      <button className='shareButtonForCourse' type='button' onClick={() => shareCourse()}>
+        <ShareIcon style={{ margin: '13px 16px', color: 'white' }} />
+      </button>
+      {courseVideo && (
+        <div className='mx-auto Courses__videoplayer'>
+          <PlyrComponent source={courseVideo} options={options} />
+        </div>
+      )}
+      {!courseVideo && courseImage ? (
+        <div className='mx-auto Courses__thumbnail'>
+          <img src={courseImage} alt='course' className='mx-auto img-fluid courseThumbnailImg' />
+        </div>
+      ) : null}
+      {!courseVideo && !courseImage ? (
+        <div className='mx-auto Courses__thumbnail'>
+          <img src={YCIcon} alt='course' className='mx-auto img-fluid courseThumbnailImg' />
+        </div>
+      ) : null}
       {Object.keys(course).length > 0 && (
-        <div className='Courses__buycourseContainer' style={{ marginTop: '5rem' }}>
-          <Row className='mx-3'>
-            <Col xs={5} sm={3} className='Courses__imageRow'>
+        <div className='Courses__buycourseContainer' style={{ marginTop: '2rem' }}>
+          <div className='courseNameContainer'>
+            {/* <Col xs={5} sm={3} className='Courses__imageRow'>
               <img
                 src={course.course_display_image ? course.course_display_image : YCIcon}
                 alt='course'
                 className='mx-auto img-fluid Courses__displayImage'
               />
-            </Col>
+            </Col> */}
             <Col xs={7} sm={9} className='p-0'>
-              <p className='Scrollable__courseCardHeading mb-0 mx-2'>{course.course_title}</p>
-              <Row className='mx-2'>
+              <p className='Courses__courseCardHeading mb-0'>{course.course_title}</p>
+              <Row style={{ display: 'flex', alignItems: 'center' }} className='mx-2'>
                 {starArray.map((e) => {
                   return e;
                 })}
                 {whiteStarArray.map((e) => {
                   return e;
                 })}
-                <span
-                  className='Scrollable__smallText my-auto'
+                <p
+                  className='Scrollable__smallText mt-1 mb-0 ml-1'
                   style={{ color: 'rgba(0, 0, 0, 0.87)' }}
                 >
                   {course.course_rating}
-                </span>
-                <span
-                  className='Scrollable__smallText my-auto'
+                </p>
+                <p
+                  className='Scrollable__smallText mt-1 mb-0'
                   style={{ color: 'rgba(0, 0, 0, 0.87)' }}
                 >
                   ({course.total_votes})
-                </span>
+                </p>
               </Row>
               <Row className='Scrollable__courseCardSubHeading text-left mx-2'>
-                <img src={rupee} alt='rupee' height='10' width='10' className='my-auto' />
-                <span className='mx-1 Scrollable__courseCardHeading my-auto'>{coursePrice}</span>
-                <span className='my-auto'>
-                  <del>{course.course_price}</del>
-                </span>
+                <div>
+                  <img src={rupee} alt='rupee' height='10' width='10' className='my-auto' />
+                  <span className='mx-1 Scrollable__courseCardHeading my-auto'>{coursePrice}</span>
+                  <span className='my-auto'>
+                    <del>{course.course_price}</del>
+                  </span>
+                </div>
                 {course.bestseller_tag && (
                   <div className='Scrollable__bestSeller m-2 p-1 ml-auto my-auto'>Bestseller</div>
                 )}
               </Row>
             </Col>
-          </Row>
+          </div>
           <Row className='Courses__buyButton'>
             <Button
-              className='mt-3 mx-auto'
+              className='mt-3 mb-2 mx-auto buyCourseBtn'
               variant='greenButtonLong'
               onClick={
                 localStorage.getItem('state') &&
@@ -391,72 +420,79 @@ const BuyCourse = (props) => {
             >
               {course.course_type === 'free' ? 'Subscribe' : 'Buy Now'}
             </Button>
-            <Button
-              className='mt-3 mx-auto'
-              variant='greenButtonLong'
-              onClick={() => shareCourse()}
-            >
-              Share
-            </Button>
           </Row>
-          {courseVideo && (
-            <div className='mx-auto my-4 Courses__videoplayer'>
-              <PlyrComponent source={courseVideo} options={options} />
-            </div>
-          )}
-          <p className='Courses__heading m-3'>What will I learn?</p>
-          {course.tag_array
-            .filter((e) => e.tag_type === 'learning')
-            .map((e) => {
-              return (
-                <p className='Courses__subHeading mb-0 mx-3' key={e.course_tag_id}>
-                  - {e.tag_name}
-                </p>
-              );
-            })}
-          <hr className='mx-3' />
-          <p className='Courses__heading m-3'>Description</p>
-          <p className='Courses__subHeading mb-0 mx-3'>{course.course_description}</p>
-          <hr className='mx-3' />
-          <p className='Courses__heading m-3'>Requirements</p>
-          {course.tag_array
-            .filter((e) => e.tag_type === 'prerequisite' || e.tag_type === 'pre_requisite')
-            .map((e) => {
-              return (
-                <p className='Courses__subHeading mb-0 mx-3' key={e.course_tag_id}>
-                  - {e.tag_name}
-                </p>
-              );
-            })}
-          <hr className='mx-3' />
-          <p className='Courses__heading m-3'>Course Content</p>
-          {course.section_array.map((e) => {
-            return (
-              <Accordion key={e.section_id}>
-                <Card className='Courses__accordionHeading m-3'>
-                  <Accordion.Toggle as='div' eventKey='0'>
-                    <Row className='m-2'>
-                      <span>{e.section_name}</span>
-                      <span className='ml-auto'>
-                        <ExpandMoreIcon />
-                      </span>
-                    </Row>
-                  </Accordion.Toggle>
-                  <Accordion.Collapse eventKey='0'>
-                    <div>
-                      {e.content_array.map((elem, i) => {
-                        return (
-                          <p className='mx-2' key={elem.name}>
-                            {i + 1}. {elem.name}
-                          </p>
-                        );
-                      })}
-                    </div>
-                  </Accordion.Collapse>
-                </Card>
-              </Accordion>
-            );
-          })}
+          <Tabs
+            onClick={tabsClickHandler}
+            style={{ marginTop: '2rem' }}
+            defaultActiveKey='Details'
+            justify
+            className='Profile__Tabs'
+          >
+            <Tab eventKey='Details' title='Details'>
+              <p className='Courses__heading my-2'>What will I learn?</p>
+              {course.tag_array
+                .filter((e) => e.tag_type === 'learning')
+                .map((e) => {
+                  return e.tag_name.length ? (
+                    <p className='Courses__subHeading mb-1' key={e.course_tag_id}>
+                      - {e.tag_name}
+                    </p>
+                  ) : null;
+                })}
+              <hr className='' />
+              <p className='Courses__heading'>Description</p>
+              <p className='Courses__subHeading mb-1'>{course.course_description}</p>
+              <hr className='' />
+              <p className='Courses__heading my-2'>Requirements</p>
+              {course.tag_array
+                .filter((e) => e.tag_type === 'prereqisite' || e.tag_type === 'pre_requisite')
+                .map((e) => {
+                  return e.tag_name.length ? (
+                    <p className='Courses__subHeading mb-1' key={e.course_tag_id}>
+                      - {e.tag_name}
+                    </p>
+                  ) : null;
+                })}
+            </Tab>
+            <Tab eventKey='Content' title='Content'>
+              <p className='Courses__heading my-2'>Course Content</p>
+
+              {course.section_array.map((e) => {
+                return (
+                  <Accordion key={e.section_id}>
+                    <Card className='Courses__accordionHeading my-2'>
+                      <Accordion.Toggle as='div' eventKey='0'>
+                        <Row className='m-2'>
+                          <span>{e.section_name}</span>
+                          <span className='ml-auto'>
+                            <ExpandMoreIcon />
+                          </span>
+                        </Row>
+                      </Accordion.Toggle>
+                      <Accordion.Collapse eventKey='0'>
+                        <div>
+                          {e.content_array.map((elem, i) => {
+                            return (
+                              <p className='mx-2' key={elem.name}>
+                                {i + 1}. {elem.name}
+                              </p>
+                            );
+                          })}
+                        </div>
+                      </Accordion.Collapse>
+                    </Card>
+                  </Accordion>
+                );
+              })}
+            </Tab>
+            <Tab title='Reviews' eventKey='Review'>
+              <p style={{ textAlign: 'center', fontFamily: 'Montserrat-Bold', margin: '2rem' }}>
+                No Reviews to display
+              </p>
+            </Tab>
+          </Tabs>
+
+          {/* <hr className='' /> */}
         </div>
       )}
 

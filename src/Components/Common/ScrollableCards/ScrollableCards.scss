@@ -71,29 +71,66 @@
   /****************************Course Cards**********/
 
   &__courseCardContent {
-    min-width: 180px;
+    min-width: 220px;
     margin: 5px;
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
+    border-radius: 20px;
+    min-height: 264px;
+    margin: 20px;
+  }
+
+  &__courseCard {
+    background-image: linear-gradient(to top, #888888, #a0a0a0, #bababa, #e4e4e4, #efefef);
+    min-width: 100%;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto;
   }
 
   &__courseImage {
-    max-width: 100%;
-    width: 180px;
+    // max-width: 100%;
+    width: 100%;
+    border-radius: 20px 20px 0px 0px;
     height: 150px;
     object-fit: cover;
   }
 
+  &__subHeadTextUnderHeading {
+    font-family: $medium;
+    color: black;
+  }
+
   &__coursesInitialHeading {
-    position: absolute;
+    position: relative;
     top: 50%;
-    left: 20%;
-    z-index: 999;
     color: $headingGrey;
     font-family: $bold;
+    margin: 20px 0px;
   }
 
   &__blurCourseImage {
     filter: blur(3px);
+  }
+
+  &__viewAllButtonForCards {
+    outline: none;
+    cursor: pointer;
+    width: 150px;
+    background-color: transparent;
+    border: none;
+    font-size: 12px;
+    font-family: $medium;
+    margin: 20px 0px;
+  }
+
+  &__subHeadTextUnderHeading {
+    position: absolute !important;
+    left: 20px !important;
+    display: flex;
+    width: 94%;
+    justify-content: space-between;
+    align-items: flex-start;
   }
 
   &__smallText {
@@ -202,5 +239,18 @@
     font-family: $regular;
     color: $lightGrey;
     font-size: $spacer * 1.5;
+  }
+}
+@media screen and (min-width: 800px) {
+  .course-card {
+    margin-right: 40px;
+  }
+}
+@media screen and (max-width: 335px) {
+  .smallTextUnderHeading {
+    font-size: 12px;
+  }
+  .Scrollable__coursesInitialHeading {
+    font-size: 16px;
   }
 }
