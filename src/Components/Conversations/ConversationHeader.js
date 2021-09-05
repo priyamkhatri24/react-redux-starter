@@ -43,6 +43,7 @@ const ConversationHeader = function ({
                   <Image
                     src={thumbnail}
                     width={40}
+                    height={40}
                     className='align-self-center mr-3'
                     roundedCircle
                   />
@@ -78,7 +79,7 @@ const ConversationHeader = function ({
               </div>
             </div>
             <div className='d-flex justify-self-end align-items-center'>
-              <Search className='mr-1' />
+              {/* <Search className='mr-1' /> */}
               <MoreVert className=' ml-1' />
             </div>
           </div>

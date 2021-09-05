@@ -98,7 +98,7 @@ const ConversationMedia = ({}) => {
                         <div className='media-gallery pb-2'>
                           <>
                             {getFileExt(mediaObj.name) === 'image' && (
-                              <Image height='64px' rounded src={mediaObj.url} />
+                              <Image height='64px' width='auto' rounded src={mediaObj.url} />
                             )}
                             {getFileExt(mediaObj.name) === 'video' && (
                               <div style={{ height: '64px', maxWidth: '64px' }}>
