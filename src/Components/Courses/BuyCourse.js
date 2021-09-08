@@ -59,7 +59,7 @@ const BuyCourse = (props) => {
     roleArray,
   } = props;
   const [course, setCourse] = useState({});
-  const [paymentGateway, setPaymentGateway] = useState(dashboardData.payment_gateway);
+  const [paymentGateway, setPaymentGateway] = useState(null);
   const [courseVideo, setCourseVideo] = useState(null);
   const [courseImage, setCourseImage] = useState(null);
   const [coursePrice, setCoursePrice] = useState(0);
@@ -103,6 +103,7 @@ const BuyCourse = (props) => {
       console.log(res, 'course details');
       const result = apiValidation(res);
       setCourse(result);
+      setPaymentGateway(result.payment_gateway);
       console.log(result, 'coursee');
       setCourseImage(result.course_display_image);
       if (result.course_preview_vedio) {
@@ -325,8 +326,8 @@ const BuyCourse = (props) => {
   const shareCourse = () => {
     // eslint-disable-next-line
     const url = window.location.href;
-    console.log(url);
-    const hasShared = shareThis(url, window.location.host.split('.')[0]);
+    console.log(course.template);
+    const hasShared = shareThis(url, course.template);
     if (hasShared === 'clipboard') setShowToast(true);
   };
 

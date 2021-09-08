@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ReactCrop from 'react-image-crop';
+import Cropper from '../../Common/CropperModal/Cropper';
 import { uploadFiles } from '../../../Utilities';
 import { getConversation, getSocket } from '../../../redux/reducers/conversations.reducer';
 import { getClientUserId } from '../../../redux/reducers/clientUserId.reducer';
@@ -47,11 +48,16 @@ const ImageEditor = ({}) => {
       crop.height,
     );
 
+    // const img = document.createElement('img')
+    // img.src = canvas.toDataURL()
+    // return img
+
     // As a blob
     return new Promise((resolve, reject) => {
       canvas.toBlob(
         (blob) => {
           blob.name = fileName;
+          console.log(blob);
           resolve(blob);
         },
         state.file.type,

@@ -93,27 +93,28 @@ const ConversationMedia = ({}) => {
                 </div>
                 <Row>
                   {files[date].map((mediaObj) => (
-                    <Col span={3}>
+                    <div className='mediaContainer'>
                       <a href={mediaObj.url} target='__blank' style={{ color: 'inherit' }}>
-                        <div className='media-gallery pb-2'>
+                        <div style={{ width: '80%' }} className='media-gallery pb-2'>
                           <>
                             {getFileExt(mediaObj.name) === 'image' && (
-                              <Image height='64px' width='auto' rounded src={mediaObj.url} />
+                              <Image height='120px' width='auto' rounded src={mediaObj.url} />
                             )}
                             {getFileExt(mediaObj.name) === 'video' && (
-                              <div style={{ height: '64px', maxWidth: '64px' }}>
+                              <div>
                                 <ReactPlayer
                                   className='video-message'
                                   controls
                                   url={[{ src: mediaObj.url, type: 'video/mp4' }]}
-                                  height='64px'
+                                  height='120px'
+                                  width='auto'
                                 />
                               </div>
                             )}
                           </>
                         </div>
                       </a>
-                    </Col>
+                    </div>
                   ))}
                 </Row>
               </div>

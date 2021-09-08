@@ -3,3 +3,32 @@
   overflow-y: scroll;
   overflow-x: none;
 }
+
+@media screen and (max-width: 750px) {
+  .deskHeight {
+    height: 50vh;
+    margin-top: 0px !important;
+    margin-bottom: 2px !important;
+  }
+  .messages-container {
+    margin-top: 0px !important;
+    overflow-y: scroll !important;
+    overflow-x: none;
+  }
+}
+
+.desktopContainer {
+  overflow-x: none;
+  overflow-y: scroll;
+  width: 75%;
+  position: relative;
+  margin-top: 150px !important;
+  margin-right: 0px;
+}
+
+@media screen and (max-width: 767px) {
+  .desktopContainer {
+    width: 100%;
+    margin-top: 150px !important;
+  }
+}

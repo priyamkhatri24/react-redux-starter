@@ -145,13 +145,13 @@ export default function useWindowDimensions() {
   return windowDimensions;
 }
 
-export const shareThis = (url, clientName) => {
+export const shareThis = (url, content) => {
   if (navigator.share) {
     navigator
       .share({
         title: `Look at this awesome course!`,
         // eslint-disable-next-line
-        text: `Hey, ${clientName} is a fast, simple and fun app that I use for learning and growing everyday`,
+        text: content,
         url,
       })
       .then(() => {

@@ -103,6 +103,13 @@ class Message extends React.Component {
     }
   }
 
+  getTimeFromStamp = (time) => {
+    const date = new Date(+time);
+    /* eslint-disable */
+    const dateTime = `${date.getHours()}:${date.getMinutes()} ${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`;
+    return dateTime;
+  };
+
   reset = () => {
     if (this.unmounted) return;
     this.setState({ unlocked: false }, () => {
@@ -218,7 +225,7 @@ class Message extends React.Component {
     return (
       <div className={`drag-handler ${userIsAuthor ? 'p-2 image-by-author' : 'p-1 image-by-user'}`}>
         <a href={message.content}>
-          <Image className='image-message' src={message.content} />
+          <Image style={{ maxWidth: '240px' }} className='image-message' src={message.content} />
         </a>
         <div className='mt-1'>{this.MessageFooter()}</div>
       </div>
@@ -459,7 +466,7 @@ class Message extends React.Component {
 
   render() {
     // const longPressEvent = useLongPress(this.onLongPress, this.onClick, this.defaultOptions);
-    const { id, message, userIsAuthor, thumbnail, username, replyTo } = this.props;
+    const { id, message, userIsAuthor, thumbnail, username, replyTo, timestamp } = this.props;
 
     const messageComponent = this.TYPE_COMPONENT_MAPPING[message.type]();
 
@@ -517,6 +524,15 @@ class Message extends React.Component {
                       )}
                       <p className='username'>{username}</p>
                       {messageComponent}
+                      {/* <p
+                        style={{
+                          fontFamily: 'Montserrat-Regular',
+                          fontSize: '10px',
+                          marginBottom: '0px',
+                        }}
+                      >
+                        {this.getTimeFromStamp(timestamp)}
+                      </p> */}
                     </div>
                   </Col>
                 </Row>

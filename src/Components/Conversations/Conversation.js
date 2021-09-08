@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 // import { connect } from 'react-redux';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, connect } from 'react-redux';
 
 // import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
@@ -10,9 +10,15 @@ import Button from 'react-bootstrap/Button';
 import { v4 as uuidv4 } from 'uuid';
 import Add from '@material-ui/icons/Add';
 import { get, apiValidation, uploadFiles, post } from '../../Utilities';
+import MobileConversationCard from './mobile/MobileConversationCard';
 import { conversationsActions } from '../../redux/actions/conversations.action';
-import { getConversation, getSocket, getPosts } from '../../redux/reducers/conversations.reducer';
-import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
+import {
+  getConversation,
+  getSocket,
+  getPosts,
+  getConversations,
+} from '../../redux/reducers/conversations.reducer';
+import { getClientUserId, getRoleArray } from '../../redux/reducers/clientUserId.reducer';
 import ConversationHeader from './ConversationHeader';
 import ConversationInput from './ConversationInput';
 import { formatMessages, formatMessage } from './formatter';
@@ -24,19 +30,21 @@ const CONVERSATION_TYPES = {
   POST: 'discussions',
 };
 
-const Conversation = () => {
+const Conversation = (props) => {
   const history = useHistory();
-
   const dispatch = useDispatch();
 
   const conversation = useSelector((state) => getConversation(state));
+  const conversations = useSelector((state) => getConversations(state));
   const clientUserId = useSelector((state) => getClientUserId(state));
   const socket = useSelector((state) => getSocket(state));
   const posts = useSelector((state) => getPosts(state));
-
+  const roleArray = useSelector((state) => getRoleArray(state));
+  const [details, setDetails] = useState(null);
   const [activeTab, setActiveTab] = useState(CONVERSATION_TYPES.CHAT);
   const [reply, setReply] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [role, setRole] = useState('student');
 
   const setConversation = (data) => dispatch(conversationsActions.setConversation(data));
   const setPosts = (data) => dispatch(conversationsActions.setPosts(data));
@@ -45,6 +53,7 @@ const Conversation = () => {
 
   useEffect(() => {
     fetchMessages();
+    fetchDetails();
     socket.emit('join', { conversation_id: conversation.id, clientUserId });
     socket.on('conversationMessage', onReceiveMessage);
     return () => socket.emit('leave', { conversation_id: conversation.id });
@@ -53,6 +62,15 @@ const Conversation = () => {
   useEffect(() => {
     socket.on('conversationMessage', onReceiveMessage);
   }, [conversation]);
+
+  useEffect(() => {
+    if (roleArray.includes(1) || roleArray.includes(2)) {
+      setRole('student');
+    } else if (roleArray.includes(3) || roleArray.includes(4)) {
+      setRole('admin');
+    }
+    console.log(role);
+  }, [roleArray]);
 
   const addMessage = (message) => {
     const newConversation = { ...conversation };
@@ -133,6 +151,14 @@ const Conversation = () => {
         setIsLoading(false);
       });
     }
+  };
+
+  const fetchDetails = () => {
+    get(null, `/conversations/${conversation.id}/details`).then((res) => {
+      const apiData = apiValidation(res);
+      console.log(apiData, 'detailss');
+      setDetails(apiData);
+    });
   };
 
   const fetchPosts = () => {
@@ -418,9 +444,43 @@ const Conversation = () => {
     history.push('/conversation/details');
   };
 
+  const onConversationSelected = function (c) {
+    setConversation(c);
+    window.location.reload();
+    // history.push('/conversation');
+  };
+
+  const sideShadowStyle = {
+    borderRight: '1px solid #ccc',
+    boxShadow: '7px 0px 15px -10px rgba(0,0,0,0.05)',
+    position: 'fixed',
+    backgroundColor: 'white',
+  };
+
   return (
     <>
-      <div className='fixed-top' style={{ zIndex: 2, backgroundColor: '#fff' }}>
+      <Col className='hideOnMobile' style={sideShadowStyle} md={3}>
+        <div className='conversations-container overflow-auto mt-3'>
+          {conversations.length > 0 && (
+            <ul className='list-unstyled'>
+              {conversations.map((data) => (
+                <MobileConversationCard
+                  key={data.id}
+                  name={data.name}
+                  subTitle={data.subTitle}
+                  unreadCount={data.unreadCount}
+                  thumbnail={data.thumbnail}
+                  onClick={() => onConversationSelected(data)}
+                />
+              ))}
+            </ul>
+          )}
+          {conversations.length === 0 && (
+            <p className='text-center'>Seems like you dont have any chats</p>
+          )}
+        </div>
+      </Col>
+      <div className='desktopHeader' style={{ backgroundColor: '#fff' }}>
         <ConversationHeader
           thumbnail={conversation.thumbnail}
           name={conversation.name}
@@ -432,7 +492,7 @@ const Conversation = () => {
       </div>
       <Row>
         {activeTab === CONVERSATION_TYPES.CHAT && (
-          <Col md={12}>
+          <Col>
             <Messages
               ref={messagesEnd}
               list={conversation.messages}
@@ -443,12 +503,28 @@ const Conversation = () => {
               loadMore={(page) => fetchMoreMessages(page)}
               ref={messagesEnd}
             />
-            <ConversationInput
-              sendMessage={(message) => sendMessage(message)}
-              onFileUpload={(file, type) => uploadFile(file, type)}
-              reply={reply}
-              onRemoveReply={() => setReply(null)}
-            />
+            {role === 'admin' ? (
+              <ConversationInput
+                sendMessage={(message) => sendMessage(message)}
+                onFileUpload={(file, type) => uploadFile(file, type)}
+                reply={reply}
+                onRemoveReply={() => setReply(null)}
+              />
+            ) : role === 'student' && details && details.can_student_message !== 'false' ? (
+              <ConversationInput
+                sendMessage={(message) => sendMessage(message)}
+                onFileUpload={(file, type) => uploadFile(file, type)}
+                reply={reply}
+                onRemoveReply={() => setReply(null)}
+              />
+            ) : (
+              <p
+                style={{ textAlign: 'center', backgroundColor: 'white' }}
+                className='desktopInput mx-auto mb-0 py-2'
+              >
+                You cannot send messages in this conversation
+              </p>
+            )}
           </Col>
         )}
         {activeTab === CONVERSATION_TYPES.POST && (
@@ -462,17 +538,32 @@ const Conversation = () => {
                 loadMore={(page) => fetchMorePosts(page)}
                 ref={messagesEnd}
               />
-              <div className='p-2 fixed-bottom' style={{ backgroundColor: '#fff' }}>
-                <Button
-                  size='lg'
-                  variant='primary'
-                  block
-                  className='add-post-btn'
-                  onClick={() => history.push('/create-post')}
-                >
-                  <Add /> Add new post
-                </Button>
-              </div>
+              {role === 'admin' ? (
+                <div className='p-2 fixed-bottom' style={{ backgroundColor: '#fff' }}>
+                  <Button
+                    size='lg'
+                    variant='primary'
+                    block
+                    className='add-post-btn desktopInput2'
+                    onClick={() => history.push('/create-post')}
+                  >
+                    <Add /> Add new post
+                  </Button>
+                  {/* eslint-disable */}
+                </div>
+              ) : role === 'student' && details.can_student_post !== 'false' ? (
+                <div className='p-2 fixed-bottom' style={{ backgroundColor: '#fff' }}>
+                  <Button
+                    size='lg'
+                    variant='primary'
+                    block
+                    className='add-post-btn desktopInput2'
+                    onClick={() => history.push('/create-post')}
+                  >
+                    <Add /> Add new post
+                  </Button>
+                </div>
+              ) : null}
             </div>
           </Col>
         )}

@@ -209,16 +209,16 @@ const Dashboard = (props) => {
 
   useEffect(() => {
     if (roleArray.includes(1) || roleArray.includes(2)) {
-      const featArr = [...features];
-      const liveClassesFeature = featArr.filter(
-        (ele) => ele.client_feature_name === 'Live Classes',
-      )[0];
-      liveClassesFeature.isAddedByPriyam = true;
-      const indexOfConnect = featArr.findIndex(
-        (ele) => ele.client_feature_name === 'Connect with us',
-      );
-      setFeatures(featArr.splice(5, 0, liveClassesFeature));
-      console.log(featArr, 'hahahahahahhaaaa');
+      // const featArr = [...features];
+      // const liveClassesFeature = featArr.filter(
+      //   (ele) => ele.client_feature_name === 'Live Classes',
+      // )[0];
+      // liveClassesFeature.isAddedByPriyam = true;
+      // const indexOfConnect = featArr.findIndex(
+      //   (ele) => ele.client_feature_name === 'Connect with us',
+      // );
+      // setFeatures(featArr.splice(5, 0, liveClassesFeature));
+      // console.log(featArr, 'hahahahahahhaaaa');
       const payload = {
         client_user_id: clientUserId,
       };
@@ -641,7 +641,7 @@ const Dashboard = (props) => {
           />
         );
       case 'posters':
-        return (
+        return data.posters.length > 0 ? (
           <div className='m-2 mt-4'>
             <AspectCards
               data={data.posters}
@@ -652,9 +652,9 @@ const Dashboard = (props) => {
               bigAspectCard
             />
           </div>
-        );
+        ) : null;
       case 'starPerformers':
-        return (
+        return data.star_performers.length > 0 ? (
           <>
             <h6
               style={{
@@ -675,9 +675,9 @@ const Dashboard = (props) => {
               noAddCard
             />
           </>
-        );
-      case 'testimonials':
-        return (
+        ) : null;
+      case 'testimonial':
+        return data.testimonials.length > 0 ? (
           <>
             <h6
               style={{
@@ -698,7 +698,7 @@ const Dashboard = (props) => {
               noAddCard
             />
           </>
-        );
+        ) : null;
       case 'aboutUs':
         return (
           <div className='text-left m-3 mt-5'>
@@ -983,15 +983,18 @@ const Dashboard = (props) => {
         );
       case 'chats':
         return (
-          <DashboardCards
-            image={param.feature_icon}
-            heading='Chats'
-            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
-            subHeading='Chat with your peers or teachers.'
-            backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
-            backGround={param.start_colour}
-            buttonClick={goToChats}
-          />
+          // <DashboardCards
+          //   image={param.feature_icon}
+          //   heading='Chats'
+          //   boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
+          //   subHeading='Chat with your peers or teachers.'
+          //   backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
+          //   backGround={param.start_colour}
+          //   buttonClick={goToChats}
+          // />
+          <button type='button' onClick={goToChats} className='floatingChatButtonDashboard'>
+            Let&apos;s Chat
+          </button>
         );
       default:
         return null;

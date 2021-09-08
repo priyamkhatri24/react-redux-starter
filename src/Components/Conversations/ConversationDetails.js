@@ -15,8 +15,8 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 import MoreVert from '@material-ui/icons/MoreVert';
 import ChevronRight from '@material-ui/icons/ChevronRight';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import { get, apiValidation } from '../../Utilities';
-import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
+import { get, apiValidation, post } from '../../Utilities';
+import { getRoleArray } from '../../redux/reducers/clientUserId.reducer';
 import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import { getConversation, getSocket, getPosts } from '../../redux/reducers/conversations.reducer';
@@ -25,10 +25,11 @@ import FileIcon from '../../assets/images/file.svg';
 import './Conversation.scss';
 
 const ConversationDetails = (props) => {
-  const { currentbranding, dashboardData } = props;
+  const { currentbranding, dashboardData, roleArray } = props;
   const history = useHistory();
   const [details, setDetails] = useState();
   const [loading, setLoading] = useState(true);
+  const [canStudentMsg, setCanStudentMsg] = useState(false);
   const conversation = useSelector((state) => getConversation(state));
 
   useEffect(() => {
@@ -40,6 +41,11 @@ const ConversationDetails = (props) => {
       const apiData = apiValidation(res);
       console.log(apiData, 'detailss');
       setDetails(apiData);
+      if (apiData.can_student_message === 'true') {
+        setCanStudentMsg(true);
+      } else if (apiData.can_student_message === 'false') {
+        setCanStudentMsg(false);
+      }
       setLoading(false);
     });
   };
@@ -50,6 +56,30 @@ const ConversationDetails = (props) => {
     if (ext === 'mp4') return 'video';
     return 'image';
   };
+
+  const updateNotificationsHandler = (e) => {};
+  const updateCanStudentMsgHandler = (e) => {
+    const payload = {
+      conversation_id: conversation.id,
+      can_student_message: e.target.checked,
+    };
+    post(payload, '/changeConversationSetting').then((res) => {
+      console.log(res, 'updated');
+    });
+  };
+  const updateCanStudentPostHandler = (e) => {
+    const payload = {
+      conversation_id: conversation.id,
+      can_student_post: e.target.checked,
+    };
+    post(payload, '/changeConversationSetting2').then((res) => {
+      console.log(res, 'updated');
+    });
+  };
+
+  useEffect(() => {
+    console.log(roleArray, 'role chahiye');
+  }, []);
 
   return (
     <>
@@ -132,32 +162,62 @@ const ConversationDetails = (props) => {
                 </div>
               </Card.Body>
             </Card>
-            <Card className='mt-2'>
-              <Card.Header>
-                <div className='d-flex justify-content-between align-items-center'>
-                  <p className='details-heading mb-0'>Settings</p>
-                </div>
-              </Card.Header>
-              <Card.Body>
-                <div className='d-flex align-items-center justify-content-between pb-2'>
-                  <p className='mb-0'>Notifications</p>
-                  <Form.Group controlId='formBasicCheckbox'>
-                    <Form.Check type='checkbox' label='' />
-                  </Form.Group>
-                </div>
-                <div className='d-flex align-items-center justify-content-between pb-2'>
-                  <p className='mb-0'>Students can message</p>
-                  <Form.Group controlId='formBasicCheckbox'>
-                    <Form.Check type='checkbox' label='' />
-                  </Form.Group>
-                </div>
-              </Card.Body>
-            </Card>
+            {roleArray.includes(3) || roleArray.includes(4) ? (
+              <Card className='mt-2'>
+                <Card.Header>
+                  <div className='d-flex justify-content-between align-items-center'>
+                    <p className='details-heading mb-0'>Settings</p>
+                  </div>
+                </Card.Header>
+                <Card.Body>
+                  <div className='d-flex justify-content-between pb-2'>
+                    <p className='mb-0'>Notifications</p>
+                    <Form.Group controlId='formBasicCheckbox'>
+                      <Form.Check
+                        // defaultChecked=
+                        onClick={updateNotificationsHandler}
+                        id='formCheck1'
+                        type='switch'
+                        label=''
+                      />
+                    </Form.Group>
+                  </div>
+                  <div className='d-flex justify-content-between pb-2'>
+                    <p className='mb-0'>Students can message</p>
+                    <Form.Group controlId='formBasicCheckbox'>
+                      <Form.Check
+                        defaultChecked={canStudentMsg}
+                        onClick={updateCanStudentMsgHandler}
+                        id='formCheck2'
+                        type='switch'
+                        label=''
+                      />
+                    </Form.Group>
+                  </div>
+                  <div className='d-flex justify-content-between pb-2'>
+                    <p className='mb-0'>Students can post</p>
+                    <Form.Group controlId='formBasicCheckbox'>
+                      <Form.Check
+                        defaultChecked={details.can_student_post !== 'false'}
+                        onClick={updateCanStudentPostHandler}
+                        id='formCheck3'
+                        type='switch'
+                        label=''
+                      />
+                    </Form.Group>
+                  </div>
+                </Card.Body>
+              </Card>
+            ) : null}
             <Accordion>
               <Card className='mt-2'>
                 <Accordion.Toggle as={Card.Header} eventKey='0'>
                   <div className='d-flex justify-content-between align-items-center'>
-                    <p className='details-heading mb-0'>Members</p>
+                    <div>
+                      <p className='details-heading mb-0'>Participants</p>
+                      <p className='mb-0'>{conversation.participantsCount} Participants</p>
+                    </div>
+
                     <Button variant='link' className='p-0 m-0'>
                       <ExpandMore />
                     </Button>
@@ -290,10 +350,12 @@ const ConversationDetails = (props) => {
 const mapStateToProps = (state) => ({
   currentbranding: getCurrentBranding(state),
   dashboardData: getCurrentDashboardData(state),
+  roleArray: getRoleArray(state),
 });
 
 export default connect(mapStateToProps)(ConversationDetails);
 ConversationDetails.propTypes = {
   dashboardData: PropTypes.number.isRequired,
   currentbranding: PropTypes.number.isRequired,
+  roleArray: PropTypes.instanceOf(Array).isRequired,
 };

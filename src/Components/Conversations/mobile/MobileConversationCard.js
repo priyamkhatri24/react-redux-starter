@@ -6,6 +6,7 @@ import Image from 'react-bootstrap/Image';
 import Media from 'react-bootstrap/Media';
 import Container from 'react-bootstrap/Container';
 import Message from '../Message/Message';
+import '../Conversation.scss';
 
 const MobileConversationCard = function ({ name, subTitle, thumbnail, unreadCount, onClick }) {
   return (
@@ -22,13 +23,18 @@ const MobileConversationCard = function ({ name, subTitle, thumbnail, unreadCoun
             />
             <Media.Body>
               <Container fluid>
-                <Row>
+                <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Col xs={10}>
                     <b>{name}</b>
-                    <p className='card-subtitle'>{subTitle.text}</p>
+                    {subTitle.text ? (
+                      <p className='smallOnDesktop card-subtitle'>
+                        {subTitle.text.slice(0, 33)}
+                        {subTitle.text.length > 33 ? '...' : null}
+                      </p>
+                    ) : null}
                   </Col>
                   {unreadCount > 0 && (
-                    <Col xs={2} className='my-auto'>
+                    <div className='my-auto'>
                       <span
                         className='text-center'
                         style={{
@@ -36,12 +42,15 @@ const MobileConversationCard = function ({ name, subTitle, thumbnail, unreadCoun
                           backgroundColor: 'green',
                           color: '#fff',
                           borderRadius: '50%',
-                          padding: '3px 6px',
+                          padding: '4px 7px',
+                          marginRight: '10px',
+                          width: '16px',
+                          height: 'auto',
                         }}
                       >
                         {unreadCount}
                       </span>
-                    </Col>
+                    </div>
                   )}
                 </Row>
               </Container>

@@ -76,16 +76,6 @@ const DummyDashboard = (props) => {
     }
   };
 
-  const showCardOnModal = (card) => {
-    setModalImage(card);
-    setShowImageModal(true);
-    if (card.homepage_section_homepage_section_id === 3) {
-      setModalHeading('Testimonials');
-    } else if (card.homepage_section_homepage_section_id === 2) {
-      setModalHeading('Our Star Performers');
-    }
-  };
-
   const closeImageModal = () => {
     setModalImage({});
     setShowImageModal(false);
@@ -97,27 +87,6 @@ const DummyDashboard = (props) => {
   return (
     Object.keys(dummyData).length > 0 && (
       <div className='text-center'>
-        <Modal show={showImageModal} onHide={closeImageModal} centered>
-          <Modal.Header closeButton>
-            <Modal.Title>{modalHeading}</Modal.Title>{' '}
-          </Modal.Header>
-          <Modal.Body style={{ margin: 'auto' }}>
-            {modalImage.file_type === 'video' ? (
-              /* eslint-disable */
-              <video
-                width='inherit'
-                className='testimonialVideoTag'
-                controls='controls'
-                autoplay='autoplay'
-              >
-                <source src={modalImage.file_link} type='video/mp4' />
-                <track src='' kind='subtitles' srcLang='en' label='English' />
-              </video>
-            ) : (
-              <img src={modalImage.file_link} alt='img' className='img-fluid' />
-            )}
-          </Modal.Body>
-        </Modal>
         <div className='Dashboard__headerCard pt-5 mb-5'>
           <h3 className='Dummy__coachingName'>{dummyData.client_name}</h3>
           <p className='Dummy__tagline mb-4'>{dummyData.client_tag_line}</p>
@@ -199,7 +168,7 @@ const DummyDashboard = (props) => {
               </h6>
               <AspectCards
                 data={dummyData.testimonials}
-                clickCard={showCardOnModal}
+                clickCard={() => {}}
                 clickAddCard={() => {}}
                 section='notice'
                 noAddCard

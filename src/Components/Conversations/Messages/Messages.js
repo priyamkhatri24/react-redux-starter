@@ -12,7 +12,7 @@ const Messages = forwardRef(
 
     useEffect(
       function () {
-        if (list.length <= 15) {
+        if (list.length >= 15) {
           messagesEnd.current !== null && messagesEnd.current.scrollIntoView();
         }
       },
@@ -20,7 +20,7 @@ const Messages = forwardRef(
     );
 
     useEffect(function () {
-      if (list.length <= 15) {
+      if (list.length >= 15) {
         messagesEnd.current !== null && messagesEnd.current.scrollIntoView();
       }
     });
@@ -39,12 +39,7 @@ const Messages = forwardRef(
 
     return (
       <div
-        className='messages-container container-fluid mt-5 mb-5'
-        style={{
-          // height: '100vh',
-          overflowX: 'hidden',
-          overflowY: 'scroll',
-        }}
+        className='messages-container desktopContainer container-fluid mt-2 mb-2'
         ref={scrollParent}
       >
         {list.length > 0 && (

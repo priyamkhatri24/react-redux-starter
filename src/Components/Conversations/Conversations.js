@@ -56,41 +56,50 @@ const Conversations = function ({
     setConversation(conversation);
     history.push('/conversation');
   };
+  const onConversationSelectedDesk = function (conversation) {
+    setConversation(conversation);
+  };
 
   return (
-    <Container fluid>
-      <Row className='d-none d-md-flex'>
-        <Col md={3}>
+    <Container style={{ height: '100vh' }} fluid>
+      {/* <Row className='d-none d-md-flex'>
+        <Col style={{ maxWidth: '360px' }} md={4}>
           <h5 className='heading'>Chats</h5>
-          <ConversationCard />
+          <ConversationCard
+            conversations={conversations}
+           
+            onConversationSelected={onConversationSelectedDesk}
+          />
         </Col>
-        <Col md={9}>
+        <Col style={{ width: '100%' }}>
           <FocusedConversation />
         </Col>
-      </Row>
-      <Row className='d-block d-md-none'>
+      </Row> */}
+      <Row className='d-block'>
         <ConversationsHeader />
-        <Col md={3}>
-          <div className='conversations-container overflow-auto mt-3'>
-            {conversations.length > 0 && (
-              <ul className='list-unstyled'>
-                {conversations.map((data) => (
-                  <MobileConversationCard
-                    key={data.id}
-                    name={data.name}
-                    subTitle={data.subTitle}
-                    unreadCount={data.unreadCount}
-                    thumbnail={data.thumbnail}
-                    onClick={() => onConversationSelected(data)}
-                  />
-                ))}
-              </ul>
-            )}
-            {conversations.length === 0 && (
-              <p className='text-center'>Seems like you dont have any chats</p>
-            )}
-          </div>
-        </Col>
+        <div className='d-flex'>
+          <Col style={{ overflowY: 'scroll' }} md={12}>
+            <div className='conversations-container mt-3'>
+              {conversations.length > 0 && (
+                <ul className='list-unstyled'>
+                  {conversations.map((data) => (
+                    <MobileConversationCard
+                      key={data.id}
+                      name={data.name}
+                      subTitle={data.subTitle}
+                      unreadCount={data.unreadCount}
+                      thumbnail={data.thumbnail}
+                      onClick={() => onConversationSelected(data)}
+                    />
+                  ))}
+                </ul>
+              )}
+              {conversations.length === 0 && (
+                <p className='text-center'>Seems like you dont have any chats</p>
+              )}
+            </div>
+          </Col>
+        </div>
       </Row>
     </Container>
   );

@@ -77,9 +77,15 @@ const Basic = (props) => {
         tag_type: type === 'learning' ? 'learning' : 'prereqisite',
         meriId: type === 'learning' ? new Date().getTime() : new Date().getTime() + 1,
       };
-      type === 'learning'
-        ? setLearningTags((prev) => [...prev, newObject])
-        : setprerequisiteTags((prev) => [...prev, newObject]);
+      if (newObject.tag_name.trim().length) {
+        type === 'learning'
+          ? setLearningTags((prev) => [...prev, newObject])
+          : setprerequisiteTags((prev) => [...prev, newObject]);
+      } else {
+        type === 'learning'
+          ? setLearningTags((prev) => [...prev])
+          : setprerequisiteTags((prev) => [...prev]);
+      }
       type === 'learning' ? setCurrentLearning('') : setCurrentRequisite('');
     }
   };
@@ -107,7 +113,12 @@ const Basic = (props) => {
       tag_type: type === 'learning' ? 'learning' : 'prereqisite',
       meriId: type === 'learning' ? new Date().getTime() : new Date().getTime() + 1,
     };
-    return type === 'learning' ? [...learningtags, newObject] : [...prerequisiteTags, newObject];
+    /* eslint-disable */
+    if (newObject.tag_name.trim().length) {
+      return type === 'learning' ? [...learningtags, newObject] : [...prerequisiteTags, newObject];
+    } else {
+      return type === 'learning' ? [...learningtags] : [...prerequisiteTags];
+    }
   };
 
   const goToNext = () => {

@@ -182,7 +182,7 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
     <>
       {!recordingState.isVisible && (
         <Row
-          className='fixed-bottom pb-2 pt-2'
+          className='desktopInput'
           style={{ backgroundColor: '#fff', zIndex: 2, boxShadow: '0.5px 0.5px 10px #00000026' }}
         >
           {reply && (
@@ -216,6 +216,7 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
               <div className='d-flex flex-row input-container align-items-center'>
                 <DropdownButton
                   onSelect={(e) => openFilePicker(e)}
+                  style={{ left: '-20px' }}
                   as={ButtonGroup}
                   key='up'
                   id='dropdown-button-drop-up'
@@ -243,7 +244,7 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
                   onChange={(e) => setMessage(e.target.value)}
                 />
                 <span className='upload-actions'>
-                  <InsertEmoticon className='pr-2' />
+                  {/* <InsertEmoticon className='pr-2' /> */}
                   <Button variant='link' size='sm' className='camera-btn' onClick={handleShow}>
                     <PhotoCamera />
                   </Button>
@@ -251,7 +252,7 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
               </div>
               {!!message && (
                 <Button className='rounded-btn mr-2' onClick={() => send()}>
-                  <Send />
+                  <Send style={{ fontSize: '15px' }} />
                 </Button>
               )}
               {!message && !recordingState.isRecording && (
@@ -271,7 +272,7 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
 
       {recordingState.isVisible && (
         <div
-          className='fixed-bottom audio-input pt-3 pb-3'
+          className='desktopInput'
           style={{ boxShadow: '0px -4px 8px #1f00750f', background: '#fff', borderRadius: '10px' }}
         >
           <div className='text-center mb-3'>

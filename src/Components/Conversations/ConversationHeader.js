@@ -24,7 +24,7 @@ const ConversationHeader = function ({
   return (
     <div style={{ boxShadow: '0px 2px 2px 0px #00000029' }}>
       <Row noGutters>
-        <Col xs={12}>
+        <Col>
           <div className='p-2 d-flex align-items-center justify-content-between'>
             <div className='d-flex align-items-center'>
               <ArrowBack
