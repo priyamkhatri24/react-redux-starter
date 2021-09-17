@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import Row from 'react-bootstrap/Row';
@@ -27,44 +27,50 @@ import './Message.scss';
 const SLIDE_WIDTH = 50;
 const SLIDE_THRESHOLD = 20;
 
-class Message extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      wasDragged: false,
-      showTime: false,
-      duration: 0,
-      isAudioPlaying: false,
-      seekValue: 0,
-      xDiff: 0,
-      yDiff: 0,
-    };
-    this.defaultOptions = {
-      shouldPreventDefault: true,
-      delay: 500,
-    };
+class Message extends Component {
+  /* eslint-disable */
+  state = {
+    wasDragged: false,
+    showTime: false,
+    duration: 0,
+    isAudioPlaying: false,
+    seekValue: 0,
+    xDiff: 0,
+    yDiff: 0,
+    timePoller: null,
+  };
 
-    this.TYPE_COMPONENT_MAPPING = {
-      image: () => this.ImageMessage(),
-      gallery: () => this.ImageMessage(),
-      text: () => this.TextMessage(),
-      video: () => this.VideoMessage(),
-      audio: () => this.AudioMessage(),
-      doc: () => this.DocumentMessage(),
-      file: () => this.DocumentMessage(),
-      post: () => this.PostMessage(),
-    };
+  defaultOptions = {
+    shouldPreventDefault: true,
+    delay: 500,
+  };
 
-    this.audio = null;
-    this.timePoller = null;
-    this.audioContext = null;
-    this.myRef = React.createRef();
-    this.slider = React.createRef();
-    this.container = React.createRef();
-  }
+  audio = null;
+
+  // timePoller = null;
+
+  audioContext = null;
+
+  myRef = React.createRef();
+
+  slider = React.createRef();
+
+  container = React.createRef();
+
+  TYPE_COMPONENT_MAPPING = {
+    image: () => this.ImageMessage(),
+    gallery: () => this.ImageMessage(),
+    text: () => this.TextMessage(),
+    video: () => this.VideoMessage(),
+    audio: () => this.AudioMessage(),
+    doc: () => this.DocumentMessage(),
+    file: () => this.DocumentMessage(),
+    post: () => this.PostMessage(),
+  };
 
   componentDidMount() {
     const { message } = this.props;
+    if (!message.type) return;
     this.audio = new Audio(message.content);
     this.audio.addEventListener('loadedmetadata', this.audioMetadatalistener);
     this.audioContext = new AudioContext();
@@ -75,6 +81,7 @@ class Message extends React.Component {
   }
 
   componentWillUnmount() {
+    if (!this.audio) return;
     this.audio.removeEventListener('loadedmetadata', this.audioMetadatalistener);
     this.audio.addEventListener('onended', this.onAudioEnd);
     document.removeEventListener('touchmove', this.onDrag);
@@ -83,8 +90,8 @@ class Message extends React.Component {
   }
 
   onAudioEnd = () => {
-    this.setState({ isAudioPlaying: false, seekValue: 0 });
-    clearInterval(this.timePoller);
+    clearInterval(this.state.timePoller);
+    this.setState({ isAudioPlaying: false, seekValue: 0, timePoller: null });
     this.audio.currentTime = 0;
   };
 
@@ -193,16 +200,19 @@ class Message extends React.Component {
   };
 
   startPollingForTime = () => {
-    this.timePoller = setInterval(() => {
+    const timePoll = setInterval(() => {
       console.log('polling');
       const { currentTime, duration } = this.audio;
       if (currentTime >= duration) {
         this.onAudioEnd();
+        clearInterval(this.state.timePoll);
+        this.setState({ timePoller: null });
       } else {
         this.setState({ seekValue: currentTime });
         console.log(currentTime);
       }
     }, 500);
+    this.setState({ timePoller: timePoll });
   };
 
   MessageFooter() {
@@ -215,7 +225,7 @@ class Message extends React.Component {
     return (
       <div className='message-footer'>
         {showTime && <span className='text-right mr-2'>{d.toLocaleString()}</span>}
-        {isLoading && <Spinner animation='border' variant='primary' size='sm' />}
+        {/* {isLoading && <Spinner animation='border' variant='primary' size='sm' />} */}
       </div>
     );
   }
@@ -234,6 +244,7 @@ class Message extends React.Component {
 
   TextMessage() {
     const { message, userIsAuthor } = this.props;
+
     return userIsAuthor ? (
       <div className='drag-handler message-by-author p-2 mb-1'>
         <p className='mb-0'>{message.content}</p>
@@ -284,8 +295,8 @@ class Message extends React.Component {
             onTouchStart={(e) => {
               e.stopPropagation();
               console.log('rap');
-              this.setState({ isAudioPlaying: false, seekValue: 0 });
-              clearInterval(this.timePoller);
+              clearInterval(this.state.timePoller);
+              this.setState({ isAudioPlaying: false, seekValue: 0, timePoller: null });
               this.audio.pause();
               this.audio.currentTime = 0;
             }}
@@ -362,16 +373,15 @@ class Message extends React.Component {
       <div className={`drag-handler ${userIsAuthor ? 'doc-by-author' : 'doc-by-user'}`}>
         <div className='p-2 d-flex flex-row align-items-center'>
           {/* <i className='material-icons'>insert_drive_file</i> */}
-          <Image src={FileIcon} height='24px' />
-          <p className='ml-2' style={{ marginBottom: '0px' }}>
-            {message.name}
-          </p>
           <a
             href={message.content}
             style={{ color: '#000' }}
             className='ml-3 d-flex align-items-center'
           >
-            {/* <Download /> */}
+            <Image src={FileIcon} height='24px' />
+            <p className='ml-2' style={{ marginBottom: '0px' }}>
+              {message.name}
+            </p>
           </a>
         </div>
         <div className='pt-2 pr-2 pb-2'>{this.MessageFooter()}</div>
@@ -421,6 +431,7 @@ class Message extends React.Component {
                 {userHasReacted ? 'favorite' : 'favorite_border'}
               </i>{' '} */}
               {userHasReacted && reactions[0].count}
+              {/* {console.log(reactions)} */}
               {!userHasReacted && 0}
             </span>
             <span className='p-1'>
@@ -450,7 +461,7 @@ class Message extends React.Component {
                         boxShadow: 'none',
                       }}
                     >
-                      <p className='username'>ABC</p>
+                      <p className='username'></p>
                       {commentsInfo.featuredComment}
                     </div>
                   </Col>
@@ -467,7 +478,10 @@ class Message extends React.Component {
   render() {
     // const longPressEvent = useLongPress(this.onLongPress, this.onClick, this.defaultOptions);
     const { id, message, userIsAuthor, thumbnail, username, replyTo, timestamp } = this.props;
-
+    // console.log(message, '//////////////////////');
+    if (!message.type) {
+      return null;
+    }
     const messageComponent = this.TYPE_COMPONENT_MAPPING[message.type]();
 
     return (
@@ -488,7 +502,9 @@ class Message extends React.Component {
                       </div>
                     )}
                     {replyTo.message.type !== 'post' && (
-                      <div className='reply pl-2 pr-2 pt-1 pb-1'>{replyTo.message.content}</div>
+                      <a href={`/conversation#${replyTo.id - 2}`}>
+                        <div className='reply pl-2 pr-2 pt-1 pb-1'>{replyTo.message.content}</div>
+                      </a>
                     )}
                   </>
                 )}
@@ -515,7 +531,7 @@ class Message extends React.Component {
                     <div className='message-content pt-1 pb-1 pl-2 pr-2'>
                       {replyTo.id && (
                         <div className='pt-1 pb-1'>
-                          <a href={`/conversation#${replyTo.id}`}>
+                          <a href={`/conversation#${replyTo.id - 2}`}>
                             <div className='reply pl-2 pr-2 pt-1 pb-1'>
                               {replyTo.message.content}
                             </div>

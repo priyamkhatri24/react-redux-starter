@@ -17,9 +17,9 @@ export const formatMessageContent = (message) => {
 
   if (message.attachments_array && message.attachments_array.length > 0) {
     return {
-      type: message.attachments_array[0].file_type,
-      name: message.attachments_array[0].file_name,
-      content: message.attachments_array[0].file_url,
+      type: message.attachments_array[0].type || message.attachments_array[0].file_type,
+      name: message.attachments_array[0].name || message.attachments_array[0].file_name,
+      content: message.attachments_array[0].url || message.attachments_array[0].file_url,
     };
   }
 
@@ -33,7 +33,9 @@ export const formatMessages = (list, clientUserId) =>
   list.map((data) => ({
     id: data.chat_id,
     message: formatMessageContent(data),
-    thumbnail: data.sent_by.display_picture || 'https://i.pravatar.cc/40',
+    thumbnail:
+      data.sent_by.display_picture ||
+      'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1631183013255.png',
     userIsAuthor: data.sent_by.client_user_id === clientUserId,
     timestamp: data.sent_time,
     username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
@@ -61,7 +63,9 @@ export const formatMessages = (list, clientUserId) =>
 export const formatMessage = (data, userIsAuthor) => ({
   id: data.chat_id,
   message: formatMessageContent(data),
-  thumbnail: data.sent_by.display_picture || 'https://i.pravatar.cc/40',
+  thumbnail:
+    data.sent_by.display_picture ||
+    'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1631183013255.png',
   userIsAuthor,
   timestamp: data.sent_time,
   username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
@@ -76,13 +80,7 @@ export const formatMessage = (data, userIsAuthor) => ({
     featuredComment: data.commentsInfo ? data.commentsInfo.comment : '',
     commentsCount: data.commentsInfo ? data.commentsInfo.count : 0,
   },
-  replyTo: data.primaryChat
-    ? {
-        id: data.primaryChat.chat_id,
-        username: `${data.primaryChat.sent_by.first_name} ${data.primaryChat.sent_by.last_name}`,
-        message: formatMessageContent(data.primaryChat),
-      }
-    : {},
+  replyTo: data.primaryChat ? data.primaryChat : {},
 });
 
 export const formatConversation = (responseFromServer) => {};
@@ -91,7 +89,9 @@ export const formatConversations = (list) =>
   list.map((conversation) => ({
     id: conversation.conversation_id,
     name: conversation.name,
-    thumbnail: conversation.display_picture || 'https://i.pravatar.cc/40',
+    thumbnail:
+      conversation.display_picture ||
+      'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1631183013255.png',
     subTitle: conversation.last_message || '',
     unreadCount: conversation.unread_message_count || 0,
     messages: [],

@@ -21,8 +21,8 @@ const ConversationsHeader = function ({ title }) {
               className='mr-3'
               role='button'
               tabIndex={0}
-              onClick={() => history.goBack()}
-              onKeyDown={() => history.goBack()}
+              onClick={() => history.push('/')}
+              onKeyDown={() => history.push('/')}
             />
             <h5 className='heading pt-2'>{title}</h5>
           </div>

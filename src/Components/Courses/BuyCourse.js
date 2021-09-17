@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import cx from 'classnames';
@@ -17,13 +17,23 @@ import Swal from 'sweetalert2';
 import PlyrComponent from 'plyr-react';
 import 'plyr-react/dist/plyr.css';
 import StarIcon from '@material-ui/icons/Star';
+import LockIcon from '@material-ui/icons/Lock';
+import VideoIcon from '@material-ui/icons/VideoLibrary';
+import Play from '@material-ui/icons/PlayArrow';
+import LiveIcon from '@material-ui/icons/LiveTv';
+import DocIcon from '@material-ui/icons/Description';
+import TestIcon from '@material-ui/icons/LiveHelp';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ShareIcon from '@material-ui/icons/Share';
 import rupee from '../../assets/images/Courses/rupee.svg';
 import { apiValidation, get, post, displayRazorpay, shareThis } from '../../Utilities';
 import { PageHeader } from '../Common';
 import Cashfree from '../Common/Cashfree/Cashfree';
+import sampleReviews from './courseReviewsSample';
+import ViewCoursesList from './CoursesListComponent';
+import Reviews from './CourseReviews';
 import './Courses.scss';
 import {
   getClientId,
@@ -40,7 +50,7 @@ import { brandingActions } from '../../redux/actions/branding.action';
 
 const BuyCourse = (props) => {
   const {
-    history,
+    history: { location, push },
     match,
     clientId,
     clientUserId,
@@ -61,6 +71,7 @@ const BuyCourse = (props) => {
   const [course, setCourse] = useState({});
   const [paymentGateway, setPaymentGateway] = useState(null);
   const [courseVideo, setCourseVideo] = useState(null);
+  const [source, setSource] = useState(null);
   const [courseImage, setCourseImage] = useState(null);
   const [coursePrice, setCoursePrice] = useState(0);
   const [whiteStarArray, setWhiteStarArray] = useState([]);
@@ -76,6 +87,13 @@ const BuyCourse = (props) => {
   const [ntfurl, setntfurl] = useState(null);
   const [newOrderId, setNewOrderId] = useState(null);
   const [courseOrderId, setCourseOrderId] = useState(null);
+  const [contentArray, setContentArray] = useState([]);
+  const [tabHeight, setTabHeight] = useState(500);
+  const [isTabScrollable, setIsTabScrollable] = useState(false);
+  const [reviews, setReviews] = useState([]);
+  const [videoIsPlaying, setVideoIsPlaying] = useState(true);
+  const vidRef2 = useRef(null);
+  const mainCRef = useRef(null);
 
   const statusClass = cx({
     Fees__orderStatus: true,
@@ -84,9 +102,21 @@ const BuyCourse = (props) => {
     Fees__orderRed: order.status === 'pending' || order.status === 'due',
   });
 
-  const options = {
-    autoplay: true,
-  };
+  useEffect(() => {
+    document.addEventListener('scroll', function (e) {
+      if (window.innerHeight + window.scrollY >= document.body.clientHeight - 50) {
+        // setscrolledToBottom(true);
+        const tabHeightFromTop = document.getElementById('idForScroll')?.offsetTop;
+        const tabH = document.body.clientHeight - tabHeightFromTop;
+        setTabHeight(tabH - 50);
+        console.log(tabH, 'scrolled');
+        setIsTabScrollable(true);
+      } else {
+        setIsTabScrollable(false);
+        console.log('scrolling');
+      }
+    });
+  }, []);
 
   useEffect(() => {
     setRedirectPathToStore(null);
@@ -104,10 +134,12 @@ const BuyCourse = (props) => {
       const result = apiValidation(res);
       setCourse(result);
       setPaymentGateway(result.payment_gateway);
+      setReviews(result.reviews);
+      // setReviews(sampleReviews);
       console.log(result, 'coursee');
       setCourseImage(result.course_display_image);
       if (result.course_preview_vedio) {
-        const source = {
+        const src = {
           type: 'video',
           sources: [
             {
@@ -116,7 +148,8 @@ const BuyCourse = (props) => {
           ],
         };
 
-        setCourseVideo(source);
+        setCourseVideo(src);
+        setSource(result.course_preview_vedio);
       }
       setCoursePrice(result.discount_price);
       const numberOfStars = Math.round(parseInt(result.course_rating, 10));
@@ -124,7 +157,7 @@ const BuyCourse = (props) => {
         [...Array(numberOfStars)].map((e, i) => (
           /* eslint-disable-next-line */
           <span role='img' aria-label='emoji' key={i}>
-            <StarIcon className='Scrollable__emoji' />
+            <StarIcon className='Courses__emoji' />
           </span>
         )),
       );
@@ -135,16 +168,22 @@ const BuyCourse = (props) => {
         [...Array(normalStars)].map((e, i) => (
           /* eslint-disable-next-line */
           <span role='img' aria-label='emoji' key={i}>
-            <StarBorderIcon className='Scrollable__emoji' />
+            <StarBorderIcon className='Courses__emoji' />
           </span>
         )),
       );
+      const content = [...contentArray];
+      result.section_array.forEach((elem) => {
+        content.push(...elem.content_array);
+      });
+      setContentArray(content);
+      console.log(content, 'finalContentArray');
     });
-  }, [match]);
+  }, [match, location]);
 
   const subscribeOrBuy = () => {
     if (roleArray.includes(3) || roleArray.includes(4)) {
-      history.push('/');
+      push('/');
     }
     if (course.course_type === 'free') {
       const payload = {
@@ -158,7 +197,7 @@ const BuyCourse = (props) => {
             title: 'Subscribed!',
             text: `You have successfully subscribed to ${course.course_title}.`,
           });
-          history.push('/');
+          push('/');
         } else {
           Swal.fire({
             icon: 'error',
@@ -209,7 +248,7 @@ const BuyCourse = (props) => {
   const closeFeeModal = () => {
     setShowFeeModal(false);
     if (order.status === 'marked' || order.status === 'waived' || order.status === 'paid') {
-      history.push({
+      push({
         pathname: '/courses/mycourse',
         state: { id: match.params.courseId, clientUserId },
       });
@@ -306,7 +345,7 @@ const BuyCourse = (props) => {
           title: 'Subscribed!',
           text: `You have successfully subscribed to ${course.course_title}.`,
         });
-        history.push('/');
+        push('/');
       } else {
         Swal.fire({
           icon: 'error',
@@ -320,7 +359,7 @@ const BuyCourse = (props) => {
   const goToLogin = () => {
     setRedirectPathToStore(window.location.pathname);
     setCurrentComponentToStore('PhoneNo');
-    history.push('/preload');
+    push('/preload');
   };
 
   const shareCourse = () => {
@@ -343,16 +382,120 @@ const BuyCourse = (props) => {
     e.target.scrollIntoView();
   };
 
+  const getHistogram = (arr) => {
+    const array = [...arr];
+    const hist = {};
+    array.forEach((elem) => {
+      if (elem.file_type === 'image') {
+        elem.category = 'Documents';
+      } else if (elem.file_type === 'video') {
+        elem.category = 'Videos';
+      } else if (elem.file_type === 'youtube') {
+        elem.category = 'Videos';
+      } else if (elem.file_type === '') {
+        elem.category = 'Tests';
+      } else if (elem.file_type === 'live class') {
+        elem.category = 'Live Classes';
+      } else {
+        elem.category = 'Documents';
+      }
+      if (Object.keys(hist).includes(elem.category)) {
+        hist[elem.category] += 1;
+      } else {
+        hist[elem.category] = 1;
+      }
+    });
+    return hist;
+  };
+
+  const renderContentHistogram = () => {
+    return (
+      <div className='scrollableContentOfCourses mt-3'>
+        {Object.entries(getHistogram(contentArray)).map(([key, val]) => {
+          let icon;
+          if (key === 'Videos') {
+            icon = <VideoIcon style={{ color: '#9f16cf' }} />;
+          } else if (key === 'Documents') {
+            icon = <DocIcon style={{ color: 'green' }} />;
+          } else if (key === 'Live classes') {
+            icon = <LiveIcon style={{ color: '#faa300' }} />;
+          } else if (key === 'Tests') {
+            icon = <TestIcon style={{ color: '#4B0082' }} />;
+          }
+          return (
+            <div className='scrollableContentOfCourses_item'>
+              {icon}
+              <p style={{ fontSize: '10px', fontFamily: 'Montserrat-SemiBold' }}>
+                {val > 1 ? key : key.slice(0, key.length - 1)}
+              </p>
+              <h6 style={{ color: 'rgba(0,0,0,0.54)' }}>{val}</h6>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const goToCourse = (courseId) => {
+    // console.log('gotocourse', history);
+    // const { push } = history;
+    setCourse({});
+    setContentArray([]);
+    setCourseImage(null);
+    setCourseVideo(null);
+    setIsTabScrollable(false);
+    document.body.push(`/courses/buyCourse/${clientId}/${courseId}`);
+  };
+  const playVideo = () => {
+    vidRef2.current.play();
+  };
+
+  useEffect(() => {
+    if (vidRef2 && vidRef2.current) {
+      vidRef2.current.addEventListener('pause', (event) => {
+        setVideoIsPlaying(true);
+        console.log('paused');
+      });
+      vidRef2.current.addEventListener('play', (event) => {
+        setVideoIsPlaying(false);
+        console.log('playing');
+      });
+    }
+  });
+
   return (
-    <div>
-      <PageHeader notFixed iconColor='gray' transparent title='' />
+    <div ref={mainCRef}>
+      <div className='backButtonForCoursesPage'> </div>
+      <PageHeader iconColor='white' transparent title='' />
       <button className='shareButtonForCourse' type='button' onClick={() => shareCourse()}>
         <ShareIcon style={{ margin: '13px 16px', color: 'white' }} />
       </button>
-      {courseVideo && (
+      {/* {courseVideo && (
         <div className='mx-auto Courses__videoplayer'>
-          <PlyrComponent source={courseVideo} options={options} />
+          <PlyrComponent source={courseVideo} options={{ autoplay: true }} />
         </div>
+      )} */}
+      {source && (
+        <>
+          <div className='mx-auto Courses__videoplayer'>
+            {/* eslint-disable */}
+            <video
+              ref={vidRef2}
+              width='100%'
+              style={{ borderRadius: '5px' }}
+              autoplay='autoplay'
+              id='vidElement2'
+            >
+              <source src={source} type='video/mp4' />
+              <track src='' kind='subtitles' srcLang='en' label='English' />
+            </video>
+            <Play
+              style={{ opacity: `${videoIsPlaying ? '1' : '0'}` }}
+              onClick={playVideo}
+              className='playIconCourse'
+            />
+          </div>
+        </>
       )}
       {!courseVideo && courseImage ? (
         <div className='mx-auto Courses__thumbnail'>
@@ -364,8 +507,15 @@ const BuyCourse = (props) => {
           <img src={YCIcon} alt='course' className='mx-auto img-fluid courseThumbnailImg' />
         </div>
       ) : null}
+      {courseVideo ? (
+        <p className='previewVideoTextClass'>Preview video</p>
+      ) : (
+        <p style={{ opacity: '0' }} className='previewVideoTextClass'>
+          Preview
+        </p>
+      )}
       {Object.keys(course).length > 0 && (
-        <div className='Courses__buycourseContainer' style={{ marginTop: '2rem' }}>
+        <div className='Courses__buycourseContainer' style={{ marginTop: '0px' }}>
           <div className='courseNameContainer'>
             {/* <Col xs={5} sm={3} className='Courses__imageRow'>
               <img
@@ -376,7 +526,7 @@ const BuyCourse = (props) => {
             </Col> */}
             <Col xs={7} sm={9} className='p-0'>
               <p className='Courses__courseCardHeading mb-0'>{course.course_title}</p>
-              <Row style={{ display: 'flex', alignItems: 'center' }} className='mx-2'>
+              <Row className='d-flex align-items-center w-100 mx-auto'>
                 {starArray.map((e) => {
                   return e;
                 })}
@@ -385,29 +535,34 @@ const BuyCourse = (props) => {
                 })}
                 <p
                   className='Scrollable__smallText mt-1 mb-0 ml-1'
-                  style={{ color: 'rgba(0, 0, 0, 0.87)' }}
+                  style={{ color: 'rgba(0, 0, 0, 0.87)', fontSize: '10px' }}
                 >
                   {course.course_rating}
                 </p>
                 <p
                   className='Scrollable__smallText mt-1 mb-0'
-                  style={{ color: 'rgba(0, 0, 0, 0.87)' }}
+                  style={{ color: 'rgba(0, 0, 0, 0.87)', fontSize: '10px' }}
                 >
                   ({course.total_votes})
                 </p>
               </Row>
-              <Row className='Scrollable__courseCardSubHeading text-left mx-2'>
+              <div className='Scrollable__courseCardSubHeading text-left'>
                 <div>
-                  <img src={rupee} alt='rupee' height='10' width='10' className='my-auto' />
-                  <span className='mx-1 Scrollable__courseCardHeading my-auto'>{coursePrice}</span>
+                  {/* <img src={rupee} alt='rupee' height='10' width='10' className='my-auto' /> */}
+                  <span className='mx-1 Courses__Price my-auto'>₹ {coursePrice}</span>
                   <span className='my-auto'>
-                    <del>{course.course_price}</del>
+                    <del>₹ {course.course_price}</del>
                   </span>
                 </div>
                 {course.bestseller_tag && (
-                  <div className='Scrollable__bestSeller m-2 p-1 ml-auto my-auto'>Bestseller</div>
+                  <div
+                    style={{ fontSize: '12px' }}
+                    className='Scrollable__bestSeller m-2 p-1 ml-auto my-auto'
+                  >
+                    Bestseller
+                  </div>
                 )}
-              </Row>
+              </div>
             </Col>
           </div>
           <Row className='Courses__buyButton'>
@@ -426,18 +581,27 @@ const BuyCourse = (props) => {
           </Row>
           <Tabs
             onClick={tabsClickHandler}
-            style={{ marginTop: '2rem' }}
+            style={{ marginTop: '1rem' }}
             defaultActiveKey='Details'
             justify
             className='Profile__Tabs'
           >
-            <Tab eventKey='Details' title='Details'>
+            <Tab
+              id='idForScroll'
+              className={`scrollableTabsForCourses ${isTabScrollable ? 'scrollable' : null}`}
+              eventKey='Details'
+              title='Details'
+              style={{
+                // margin: 'auto 15px',
+                height: `${tabHeight}px`,
+              }}
+            >
               <p className='Courses__heading my-2'>What will I learn?</p>
               {course.tag_array
                 .filter((e) => e.tag_type === 'learning')
                 .map((e) => {
                   return e.tag_name.length ? (
-                    <p className='Courses__subHeading mb-1' key={e.course_tag_id}>
+                    <p className='Courses__subHeading mb-2' key={e.course_tag_id}>
                       - {e.tag_name}
                     </p>
                   ) : null;
@@ -451,22 +615,139 @@ const BuyCourse = (props) => {
                 .filter((e) => e.tag_type === 'prereqisite' || e.tag_type === 'pre_requisite')
                 .map((e) => {
                   return e.tag_name.length ? (
-                    <p className='Courses__subHeading mb-1' key={e.course_tag_id}>
+                    <p className='Courses__subHeading mb-2' key={e.course_tag_id}>
                       - {e.tag_name}
                     </p>
                   ) : null;
                 })}
-            </Tab>
-            <Tab eventKey='Content' title='Content'>
-              <p className='Courses__heading my-2'>Course Content</p>
+              <hr className='' />
+              <p className='Courses__heading'>This course includes</p>
+              <p className='Courses__subHeading mb-2'>- Lifetime access</p>
+              <p className='Courses__subHeading mb-2'>- Course completion certificate</p>
+              <p className='Courses__subHeading mb-2'>- Access on mobile, laptop and TV</p>
+              <hr className='' />
+              <p className='Courses__heading'>Course content</p>
+              {renderContentHistogram()}
+              <Button
+                onClick={() => {
+                  document.getElementById('contentTab').click();
+                }}
+                style={{
+                  width: '100%',
+                  color: 'white',
+                  backgroundColor: 'black',
+                  outline: 'none',
+                  border: 'transparent',
+                  fontFamily: 'Montserrat-Regular',
+                  fontSize: '14px',
+                }}
+                className='mt-3 mb-2 mx-auto buyCourseBtn'
+              >
+                View all content
+                <ChevronRightIcon />
+              </Button>
+              <hr className='' />
 
-              {course.section_array.map((e) => {
+              <Reviews displayTwo isFilterVisible={false} reviews={reviews} />
+              <Button
+                onClick={() => {
+                  document.getElementById('ReviewTab').click();
+                }}
+                style={{
+                  width: '100%',
+                  color: 'white',
+                  backgroundColor: 'black',
+                  outline: 'none',
+                  border: 'transparent',
+                  fontFamily: 'Montserrat-Regular',
+                  fontSize: '14px',
+                }}
+                className='mt-3 mb-2 mx-auto buyCourseBtn'
+              >
+                View all Reviews
+                <ChevronRightIcon />
+              </Button>
+              <p className='Courses__heading mt-4'>People also viewed</p>
+
+              <ViewCoursesList clientId={clientId} clicked={() => {}} />
+              <Button
+                onClick={
+                  localStorage.getItem('state') &&
+                  JSON.parse(localStorage.getItem('state')).userProfile.token
+                    ? () => push({ pathname: '/courses', state: { type: 'allCourses' } })
+                    : () => goToLogin()
+                }
+                style={{
+                  width: '100%',
+                  color: 'white',
+                  backgroundColor: 'black',
+                  outline: 'none',
+                  border: 'transparent',
+                  fontFamily: 'Montserrat-Regular',
+                  fontSize: '14px',
+                }}
+                className='mt-3 mb-2 mx-auto buyCourseBtn'
+              >
+                View all courses
+                <ChevronRightIcon />
+              </Button>
+              <Button
+                onClick={() => {
+                  push('/');
+                }}
+                style={{
+                  width: '100%',
+                  color: 'black',
+                  backgroundColor: 'transparent',
+                  outline: 'none',
+                  border: '1px solid black',
+                  fontFamily: 'Montserrat-Regular',
+                  fontSize: '14px',
+                }}
+                className='mt-3 mb-2 mx-auto buyCourseBtn d-flex align-items-center justify-content-center topMargin'
+              >
+                GO TO HOMEPAGE
+                <ChevronRightIcon />
+              </Button>
+            </Tab>
+            <Tab
+              className='scrollableTabsForCourses'
+              id='contentTab'
+              eventKey='Content'
+              title='Content'
+              style={{
+                // margin: 'auto 15px',
+                height: `${tabHeight}px`,
+                overflowY: `${isTabScrollable ? 'scroll' : 'none'}`,
+              }}
+            >
+              {renderContentHistogram()}
+              <hr className='' />
+
+              {course.section_array.map((e, secIndex) => {
                 return (
                   <Accordion key={e.section_id}>
                     <Card className='Courses__accordionHeading my-2'>
                       <Accordion.Toggle as='div' eventKey='0'>
                         <Row className='m-2'>
-                          <span>{e.section_name}</span>
+                          <div>
+                            <p style={{ fontSize: 'Montserrat-Bold' }} className='mb-0'>
+                              Section - {secIndex + 1}
+                            </p>
+                            <h5 className='courseContentCardHeading'>{e.section_name}</h5>
+                            <div className='d-flex'>
+                              {Object.entries(getHistogram(e.content_array)).map(([key, val]) => {
+                                return (
+                                  <div className='d-flex'>
+                                    <span className='mr-1 verySmallText'>{val}</span>
+                                    <span className='verySmallText mr-4'>
+                                      {val > 1 ? key : key.slice(0, key.length - 1)}
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
                           <span className='ml-auto'>
                             <ExpandMoreIcon />
                           </span>
@@ -475,10 +756,48 @@ const BuyCourse = (props) => {
                       <Accordion.Collapse eventKey='0'>
                         <div>
                           {e.content_array.map((elem, i) => {
+                            let icon;
+                            if (elem.category === 'Videos') {
+                              icon = <VideoIcon style={{ color: '#9f16cf' }} />;
+                            } else if (elem.category === 'Documents') {
+                              icon = <DocIcon style={{ color: 'green' }} />;
+                            } else if (elem.category === 'Live classes') {
+                              icon = <LiveIcon style={{ color: '#faa300' }} />;
+                            } else if (elem.category === 'Tests') {
+                              icon = <TestIcon style={{ color: '#4B0082' }} />;
+                            }
                             return (
-                              <p className='mx-2' key={elem.name}>
-                                {i + 1}. {elem.name}
-                              </p>
+                              <div
+                                style={{
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center',
+                                  width: '95%',
+                                }}
+                                className='d-flex my-2 mx-auto'
+                              >
+                                <div
+                                  style={{ maxWidth: '90%' }}
+                                  className='d-flex align-items-center'
+                                >
+                                  <div className='iconContainerForContents'>{icon}</div>
+                                  <div style={{ overflowX: 'hidden' }}>
+                                    <p
+                                      style={{ fontFamily: 'Montserrat-Bold' }}
+                                      className='mx-2 mb-0'
+                                      key={elem.name}
+                                    >
+                                      {elem.name}
+                                    </p>
+                                    <p
+                                      style={{ fontSize: '12px', color: '#fbfbfb' }}
+                                      className='mb-0 ml-2'
+                                    >
+                                      {elem.category.slice(0, elem.category.length - 1)}
+                                    </p>
+                                  </div>
+                                </div>
+                                <LockIcon style={{ color: 'gray' }} />
+                              </div>
                             );
                           })}
                         </div>
@@ -488,10 +807,20 @@ const BuyCourse = (props) => {
                 );
               })}
             </Tab>
-            <Tab title='Reviews' eventKey='Review'>
-              <p style={{ textAlign: 'center', fontFamily: 'Montserrat-Bold', margin: '2rem' }}>
-                No Reviews to display
-              </p>
+            <Tab
+              style={{
+                // margin: 'auto 15px',
+                height: `${tabHeight}px`,
+                overflowY: `${isTabScrollable ? 'scroll' : 'none'}`,
+              }}
+              className='scrollableTabsForCourses'
+              id='ReviewTab'
+              title='Reviews'
+              eventKey='Review'
+            >
+              <div style={{ marginTop: '1.2rem' }}>
+                <Reviews displayTwo={false} isFilterVisible reviews={reviews} />
+              </div>
             </Tab>
           </Tabs>
 
@@ -673,8 +1002,12 @@ const mapDispatchToProps = (dispatch) => ({
 export default connect(mapStateToProps, mapDispatchToProps)(BuyCourse);
 
 BuyCourse.propTypes = {
-  history: PropTypes.instanceOf(Object).isRequired,
+  // history: PropTypes.instanceOf(Object).isRequired,
   clientId: PropTypes.number.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+    location: PropTypes.instanceOf(Object).isRequired,
+  }).isRequired,
   clientUserId: PropTypes.number.isRequired,
   dashboardData: PropTypes.instanceOf(Object).isRequired,
   currentbranding: PropTypes.shape({

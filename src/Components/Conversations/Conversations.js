@@ -28,6 +28,10 @@ const Conversations = function ({
 
     socket.emit('user-connected', { client_user_id: clientUserId });
     console.log(socket);
+    socket.on('socket-connected', () => {
+      console.log('socketconnected');
+      socket.emit('user-connected', { client_user_id: clientUserId });
+    });
     socket.on('receiveMessage', addMessageToConversation);
   }, []);
 

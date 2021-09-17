@@ -112,6 +112,7 @@ const EditProfileHOC = (props) => {
       parent_contact: values.parent_contact === 'undefined' ? '' : values.parent_contact,
       parent_id: user.user_user_id,
     };
+    console.log(payload);
 
     const payloadWhiteList = {
       white_list_id: user.white_list_id,

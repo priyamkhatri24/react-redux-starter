@@ -65,6 +65,7 @@ const TeacherCourses = (props) => {
     console.log(history, 'hiatory');
     get({ client_id: clientId }, '/getPublishedCoursesOfCoaching').then((res) => {
       const result = apiValidation(res);
+      // console.log(result, 'getPubkishedoursesOfCoaching')
       const searchedArray = result.filter(
         (e) => e.course_title.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
       );

@@ -39,6 +39,7 @@ const FeesCard = (props) => {
       user_fee_id: userFeeId,
       client_id: clientId,
       order_id: orderId,
+      type: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
     };
 
     get(payload, '/fetchOrderById').then((res) => {

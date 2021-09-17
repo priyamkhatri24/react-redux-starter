@@ -227,7 +227,7 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
                   <Dropdown.Item eventKey='image'>Image</Dropdown.Item>
                   <Dropdown.Item eventKey='video'>Video</Dropdown.Item>
                   <Dropdown.Item eventKey='doc'>Document</Dropdown.Item>
-                  <Dropdown.Item eventKey='audio'>Audio</Dropdown.Item>
+                  {/* <Dropdown.Item eventKey='audio'>Audio</Dropdown.Item> */}
                 </DropdownButton>
                 <input
                   type='file'
@@ -242,6 +242,7 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
                   aria-label='Input field for your message'
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
+                  onKeyPress={(e) => (e.key === 'Enter' && !!message ? send() : null)}
                 />
                 <span className='upload-actions'>
                   {/* <InsertEmoticon className='pr-2' /> */}
@@ -318,7 +319,7 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
         </div>
       )}
 
-      <Modal show={show} onHide={handleClose} centered size='xl' style={{ height: '100%' }}>
+      <Modal show={show} onHide={handleClose} centered size='lg' style={{ height: '100%' }}>
         <Webcam ref={cameraSelector} videoConstraints={webcamOptions} />
         <Button onClick={() => captureImage()}>Capture</Button>
         <Button onClick={() => flipCamera()}>Flip</Button>

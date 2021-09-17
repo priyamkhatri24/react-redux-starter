@@ -140,7 +140,7 @@
 
       .gallery {
         display: flex;
-        overflow-x: scroll;
+        overflow-x: auto;
 
         img {
           margin-right: 10px;
@@ -184,6 +184,16 @@
   position: fixed;
   z-index: 1000;
   min-height: 100vh;
+}
+
+.viewAllButtonForCourses {
+  font-family: 'Montserrat-Regular';
+  width: 100%;
+  color: white;
+  background-color: black;
+  outline: none;
+  border: transparent;
+  font-size: 14px;
 }
 
 @media screen and (max-width: 767px) {

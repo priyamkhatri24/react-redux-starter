@@ -16,6 +16,7 @@ import LocationOnIcon from '@material-ui/icons/LocationOn';
 import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
 import PhoneIcon from '@material-ui/icons/Phone';
 import LinkIcon from '@material-ui/icons/Link';
+import io from 'socket.io-client';
 import { connect } from 'react-redux';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import Toast from 'react-bootstrap/Toast';
@@ -86,6 +87,7 @@ const Dashboard = (props) => {
     setTestLanguageToStore,
     redirectPath,
     firstTimeLogin,
+    // setSocket,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
@@ -121,6 +123,32 @@ const Dashboard = (props) => {
       clearTimeout(nameDisplayTimer);
     };
   }, []);
+  // useEffect(() => {
+  //   const SERVER = 'https://portal.tca.ingeniumedu.com';
+  //   // console.log(io);
+  //   const socket = io(SERVER, {
+  //     transports: ['websocket', 'polling'],
+  //   });
+  //   socket.on('connect', () => {
+  //     console.log(socket.id, 'connect');
+  //   });
+
+  //   socket.on('socket-connected', () => {
+  //     console.log('socketconnected');
+  //     socket.emit('user-connected', { client_user_id: clientUserId });
+  //   });
+
+  //   socket.on('disconnect', () => {
+  //     console.log(socket.id, 'disconnected');
+  //     const socket2 = io(SERVER, {
+  //       transports: ['websocket', 'polling'],
+  //     });
+  //     setSocket({ socket2 });
+  //   });
+
+  //   setSocket({ socket });
+  //   return () => socket.emit('disconnect');
+  // }, []);
 
   const getTopicArray = useCallback(() => {
     return new Promise((resolve, reject) => {
@@ -145,7 +173,7 @@ const Dashboard = (props) => {
       } else if (roleId === 3) {
         get({ client_user_id: clientUserId }, '/getBatchesOfTeacher').then((resp) => {
           result = apiValidation(resp);
-          const topicArr = result.map((e) => `${currEnv}batch${e.client_batch_id}`);
+          const topicArr = result?.map((e) => `${currEnv}batch${e.client_batch_id}`);
           resolve([...topicArray, ...topicArr]);
         });
       } else {
@@ -168,11 +196,11 @@ const Dashboard = (props) => {
       console.log(res);
       const token = res[1];
       const topicArray = res[0];
-      post({ topic_array: JSON.stringify(topicArray), token }, '/subscribeTokenToTopic').then(
-        (resp) => {
+      post({ topic_array: JSON.stringify(topicArray), token }, '/subscribeTokenToTopic')
+        .then((resp) => {
           onMessageListener();
-        },
-      );
+        })
+        .catch((err) => console.log(err));
     });
   }, [getTopicArray, firstTimeLogin]);
 
@@ -209,16 +237,8 @@ const Dashboard = (props) => {
 
   useEffect(() => {
     if (roleArray.includes(1) || roleArray.includes(2)) {
-      // const featArr = [...features];
-      // const liveClassesFeature = featArr.filter(
-      //   (ele) => ele.client_feature_name === 'Live Classes',
-      // )[0];
-      // liveClassesFeature.isAddedByPriyam = true;
-      // const indexOfConnect = featArr.findIndex(
-      //   (ele) => ele.client_feature_name === 'Connect with us',
-      // );
-      // setFeatures(featArr.splice(5, 0, liveClassesFeature));
-      // console.log(featArr, 'hahahahahahhaaaa');
+      const featArr = [...features];
+
       const payload = {
         client_user_id: clientUserId,
       };
@@ -237,7 +257,7 @@ const Dashboard = (props) => {
       const result = apiValidation(res);
       setAllCourses(result.assigned_courses);
       setMyCourses(result.subscribed_courses);
-      console.log(result);
+      console.log(result, 'recentCourses');
     });
   }, [clientId, clientUserId, setDashboardDataToStore]);
 
@@ -273,6 +293,18 @@ const Dashboard = (props) => {
         }, []);
       console.log(finalArr, 'hello');
       setFeatures(finalArr);
+      // const liveClassesFeature = finalArr.filter(
+      //   (ele) => ele.client_feature_name === 'Live Classes',
+      // )[0];
+      // if (liveClassesFeature) {
+      //   liveClassesFeature.isAddedByPriyam = true;
+      //   const indexOfConnect = finalArr.findIndex(
+      //     (ele) => ele.client_feature_name === 'Connect with us',
+      //   );
+      //   setFeatures(finalArr.splice(5, 0, liveClassesFeature));
+      //   console.log(finalArr, 'hahahahahahhaaaa');
+      //   setFeatures(finalArr);
+      // }
     });
   }, [clientId, roleArray, setDashboardDataToStore]);
 
@@ -945,7 +977,7 @@ const Dashboard = (props) => {
             height={84}
             heading='CRM'
             subHeading='Manage All your customer Relations Management Enquiries here.'
-            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             backGround={param.start_colour}
             buttonClick={goToCRM}
@@ -982,20 +1014,20 @@ const Dashboard = (props) => {
           />
         );
       case 'chats':
-        return (
-          // <DashboardCards
-          //   image={param.feature_icon}
-          //   heading='Chats'
-          //   boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
-          //   subHeading='Chat with your peers or teachers.'
-          //   backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
-          //   backGround={param.start_colour}
-          //   buttonClick={goToChats}
-          // />
-          <button type='button' onClick={goToChats} className='floatingChatButtonDashboard'>
-            Let&apos;s Chat
-          </button>
-        );
+        return null;
+      // <DashboardCards
+      //   image={param.feature_icon}
+      //   heading='Chats'
+      //   boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+      //   subHeading='Chat with your peers or teachers.'
+      //   backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
+      //   backGround={param.start_colour}
+      //   buttonClick={goToChats}
+      // />
+
+      // <button type='button' onClick={goToChats} className='floatingChatButtonDashboard'>
+      //   Let&apos;s Chat
+      // </button>
       default:
         return null;
     }
@@ -1174,6 +1206,9 @@ const mapDispatchToProps = (dispatch) => ({
   clearClientIdDetails: () => {
     dispatch(clientUserIdActions.clearClientIdDetails());
   },
+  // setSocket: (socket) => {
+  //   dispatch(conversationsActions.setSocket(socket));
+  // },
   clearProfile: () => {
     dispatch(userProfileActions.clearUserProfile());
   },
@@ -1243,5 +1278,6 @@ Dashboard.propTypes = {
   branding: PropTypes.instanceOf(Object).isRequired,
   comeBackFromTests: PropTypes.bool.isRequired,
   redirectPath: PropTypes.string.isRequired,
+  // setSocket: PropTypes.func.isRequired,
   firstTimeLogin: PropTypes.bool.isRequired,
 };

@@ -7,10 +7,11 @@ export const DynamicForm = (props) => {
 
   const getDynamicData = (e) => {
     for (const key of Object.keys(e)) {
-      if (typeof e[key] !== 'string') {
+      if (e[key] && typeof e[key] !== 'string') {
         e[key] = e[key].value;
       }
     }
+    console.log(e);
     getData(e);
   };
 

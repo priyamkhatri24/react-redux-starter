@@ -66,7 +66,7 @@ const PlyrVideoPlayer = (props) => {
   );
 };
 
-export default PlyrVideoPlayer;
+export default React.memp(PlyrVideoPlayer);
 
 PlyrVideoPlayer.propTypes = {
   match: PropTypes.instanceOf(Object).isRequired,

@@ -28,6 +28,7 @@ const FeesOrder = (props) => {
           user_fee_id: +urlParams.ufid,
           client_id: +urlParams.cid,
           order_id: urlParams.oid,
+          type: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
         };
         //   const testpload = {
         //     user_fee_id: 5272,
@@ -68,7 +69,7 @@ const FeesOrder = (props) => {
   const statusClass = cx({
     Fees__orderStatus: true,
     Fees__orderGreen:
-      order.status === 'marked' || order.status === 'waived' || order.status === 'paid',
+      order.status === 'marked' || order.status === 'waived' || order.status === 'PAID',
     Fees__orderRed: order.status === 'pending' || order.status === 'due' || !order.status,
   });
 
@@ -117,7 +118,7 @@ const FeesOrder = (props) => {
                 : order.status === 'marked'
                 ? 'Your payment has been marked as paid.'
                 : order.status === 'PAID'
-                ? 'Congrats. The payment of fees was successfully processed. Happy learning!'
+                ? 'Congrats. The payment was successfully processed. Happy learning!'
                 : 'Your payment was not successful. Please complete your payment.'}
             </p>
           </div>

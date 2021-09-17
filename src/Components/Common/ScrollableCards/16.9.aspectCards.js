@@ -17,6 +17,7 @@ export const AspectCards = (props) => {
     height: bigAspectCard ? '177px' : '113px',
     width: bigAspectCard ? '315px' : '200px',
     overflow: 'hidden',
+    borderRadius: '10px',
     boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)',
   };
 

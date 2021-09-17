@@ -20,7 +20,7 @@ const FeesOrder = (props) => {
   const statusClass = cx({
     Fees__orderStatus: true,
     Fees__orderGreen:
-      order.status === 'marked' || order.status === 'waived' || order.status === 'paid',
+      order.status === 'marked' || order.status === 'waived' || order.status === 'PAID',
     Fees__orderRed: order.status === 'pending' || order.status === 'due',
   });
 

@@ -98,7 +98,7 @@ const Preloader = (props) => {
         </h6>
 
         {/* <ProgressBar now={count} label={`${count}%`} max={100} /> */}
-        <ProgressBar width={`${count}%`} />
+        <ProgressBar width={`${count}%`} height='15px' />
       </div>
       <footer className='py-4 Login__footer '>
         <h6 className='Login__footerText'>Powered By</h6>

@@ -55,7 +55,12 @@ const Conversation = (props) => {
     fetchMessages();
     fetchDetails();
     socket.emit('join', { conversation_id: conversation.id, clientUserId });
+    socket.on('socket-connected', () => {
+      console.log('socketconnected');
+      socket.emit('user-connected', { client_user_id: clientUserId });
+    });
     socket.on('conversationMessage', onReceiveMessage);
+
     return () => socket.emit('leave', { conversation_id: conversation.id });
   }, []);
 
@@ -84,8 +89,8 @@ const Conversation = (props) => {
   };
 
   const onReceiveMessage = (data) => {
+    // socket.on("connect", 'connectedAgain')
     console.log(data, `receiveMessage emitted from  ${conversation.id}`);
-    console.log(conversation);
     // {
     //   id: data.chat_id,
     //   message: formatMessageContent(data),
@@ -94,6 +99,7 @@ const Conversation = (props) => {
     //   timestamp: data.sent_time,
     //   username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
     // }
+
     addMessage(formatMessage(data, false));
   };
 
@@ -103,13 +109,12 @@ const Conversation = (props) => {
       `/getChtOfConversation?conversation_id=${conversation.id}&client_user_id=${clientUserId}`,
     ).then((res) => {
       const apiData = apiValidation(res);
-      console.log(res, 'resss');
+      if (!res) return;
       const page = res.next?.page;
-      console.log(apiData, 'apiData');
+      console.log(apiData, 'apiiidattaaaa');
       const { message_array: messageArray, participants_count: participantsCount } = apiData;
       const messages = formatMessages(messageArray, clientUserId);
       const { id, name, thumbnail } = conversation;
-      console.log(page, 'pageeex');
       setConversation({
         id,
         participantsCount,
@@ -268,6 +273,7 @@ const Conversation = (props) => {
       '/addReactionToChat',
     )
       .then((res) => {
+        console.log(res, 'reacteddddddd');
         const newConversation = { ...conversation };
         const { messages } = newConversation;
         const index = messages.findIndex((message) => message.id === messageId);
@@ -286,7 +292,7 @@ const Conversation = (props) => {
             count: 1,
             id: 1,
             name: 'like',
-            url: 'abc.com',
+            url: 'abcd.com',
           });
           message.userHasReacted = true;
         }
@@ -333,6 +339,7 @@ const Conversation = (props) => {
   };
 
   const uploadFile = (file, fileType) => {
+    // console.log(file, fileType, 'uploadddddddddddd');
     if (!file) return;
     const url = URL.createObjectURL(file);
     const tempId = uuidv4();
@@ -342,6 +349,7 @@ const Conversation = (props) => {
       message: {
         type: fileType,
         content: url,
+        name: file.name,
       },
       userIsAuthor: true,
       thumbnail: '',
@@ -356,15 +364,12 @@ const Conversation = (props) => {
 
     const newConversation = { ...conversation };
     const { messages } = newConversation;
-    console.log(messages);
     const newMessages = [...messages];
     newMessages.push(newMessage);
-    console.log(newMessages);
     newConversation.messages = newMessages;
     setConversation(newConversation);
 
     uploadFiles([{ file, type: fileType }]).then((res) => {
-      console.log('res', res);
       const { attachments_array: arr } = res;
       const { url: filename } = arr[0];
       socket.emit(
@@ -375,17 +380,28 @@ const Conversation = (props) => {
           text: null,
           type: 'message',
           attachments_array: [{ url: filename, type: fileType, name: file.name }],
+          primaryChat: reply,
         },
         (error, data) => {
-          console.log('ack', data);
           setReply(null);
-          const index = newMessages.findIndex((message) => message.id === tempId);
-          console.log(index);
-          if (index === -1) return;
-          newMessages[index].id = data.chat_id;
-          newMessages[index].isLoading = false;
-          conversation.messages = newMessages;
-          setConversation(conversation);
+          console.log('upload data recved');
+          const indexOfMessage = newMessages.findIndex((message) => message.id === tempId);
+          console.log('indexOfMessage is: ', indexOfMessage);
+          if (indexOfMessage === -1) return;
+          newMessages[indexOfMessage].id = data.chat_id;
+          newMessages[indexOfMessage].isLoading = false;
+          setIsLoading(false);
+          newMessages[indexOfMessage].message = {
+            type: fileType,
+            name: file.name,
+            content: filename,
+          };
+          console.log(newMessages);
+          newConversation.messages = newMessages;
+          // newConversation.messages = newFnlMsg;
+          setConversation(newConversation);
+          console.log(conversation);
+
           messagesEnd.current !== null && messagesEnd.current.scrollIntoView();
         },
       );
@@ -401,10 +417,11 @@ const Conversation = (props) => {
         text: message,
         type: 'message',
         attachments_array: [],
+        primaryChat: reply,
         primary_chat_id: reply?.id,
       },
       (error, data) => {
-        console.log('ack', data);
+        console.log('accccccccck', data);
 
         addMessage({
           id: data.chat_id,
@@ -522,7 +539,7 @@ const Conversation = (props) => {
                 style={{ textAlign: 'center', backgroundColor: 'white' }}
                 className='desktopInput mx-auto mb-0 py-2'
               >
-                You cannot send messages in this conversation
+                Only admin can send messages
               </p>
             )}
           </Col>

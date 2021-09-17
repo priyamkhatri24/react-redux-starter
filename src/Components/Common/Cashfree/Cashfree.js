@@ -30,7 +30,9 @@ const Cashfree = (props) => {
   const [customerName, setCustomerName] = useState(
     `${userProfile.firstName} ${userProfile.lastName}`,
   );
-  const [customerEmail, setCustomerEmail] = useState(userProfile.email);
+  const [customerEmail, setCustomerEmail] = useState(
+    userProfile.email || 'cashfreepayment@ingeniumedu.com',
+  );
   const [customerContact, setCustomerContact] = useState(userProfile.contact);
   // const [orderId, setOrderId] = useState(currentPayment.order_id);
   // const [signature, setSignature] = useState(null);

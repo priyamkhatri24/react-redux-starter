@@ -26,7 +26,7 @@ const MobileConversationCard = function ({ name, subTitle, thumbnail, unreadCoun
                 <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Col xs={10}>
                     <b>{name}</b>
-                    {subTitle.text ? (
+                    {subTitle?.text ? (
                       <p className='smallOnDesktop card-subtitle'>
                         {subTitle.text.slice(0, 33)}
                         {subTitle.text.length > 33 ? '...' : null}
