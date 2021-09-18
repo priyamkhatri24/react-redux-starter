@@ -91,6 +91,7 @@ const BuyCourse = (props) => {
   const [tabHeight, setTabHeight] = useState(500);
   const [isTabScrollable, setIsTabScrollable] = useState(false);
   const [reviews, setReviews] = useState([]);
+  const [previewText, setPreviewText] = useState(true);
   const [videoIsPlaying, setVideoIsPlaying] = useState(true);
   const vidRef2 = useRef(null);
   const mainCRef = useRef(null);
@@ -104,9 +105,11 @@ const BuyCourse = (props) => {
 
   useEffect(() => {
     document.addEventListener('scroll', function (e) {
+      const tab = document.getElementById('idForScroll');
       if (window.innerHeight + window.scrollY >= document.body.clientHeight - 50) {
         // setscrolledToBottom(true);
-        const tabHeightFromTop = document.getElementById('idForScroll')?.offsetTop;
+
+        const tabHeightFromTop = tab?.offsetTop;
         const tabH = document.body.clientHeight - tabHeightFromTop;
         setTabHeight(tabH - 50);
         console.log(tabH, 'scrolled');
@@ -378,10 +381,6 @@ const BuyCourse = (props) => {
     }
   };
 
-  const tabsClickHandler = (e) => {
-    e.target.scrollIntoView();
-  };
-
   const getHistogram = (arr) => {
     const array = [...arr];
     const hist = {};
@@ -420,7 +419,7 @@ const BuyCourse = (props) => {
           } else if (key === 'Live classes') {
             icon = <LiveIcon style={{ color: '#faa300' }} />;
           } else if (key === 'Tests') {
-            icon = <TestIcon style={{ color: '#4B0082' }} />;
+            icon = <TestIcon style={{ color: '#530de1' }} />;
           }
           return (
             <div className='scrollableContentOfCourses_item'>
@@ -454,10 +453,12 @@ const BuyCourse = (props) => {
     if (vidRef2 && vidRef2.current) {
       vidRef2.current.addEventListener('pause', (event) => {
         setVideoIsPlaying(true);
+        setPreviewText(true);
         console.log('paused');
       });
       vidRef2.current.addEventListener('play', (event) => {
         setVideoIsPlaying(false);
+        setPreviewText(false);
         console.log('playing');
       });
     }
@@ -508,7 +509,9 @@ const BuyCourse = (props) => {
         </div>
       ) : null}
       {courseVideo ? (
-        <p className='previewVideoTextClass'>Preview video</p>
+        <p style={{ opacity: previewText ? '1' : '0' }} className='previewVideoTextClass'>
+          Preview video
+        </p>
       ) : (
         <p style={{ opacity: '0' }} className='previewVideoTextClass'>
           Preview
@@ -517,16 +520,9 @@ const BuyCourse = (props) => {
       {Object.keys(course).length > 0 && (
         <div className='Courses__buycourseContainer' style={{ marginTop: '0px' }}>
           <div className='courseNameContainer'>
-            {/* <Col xs={5} sm={3} className='Courses__imageRow'>
-              <img
-                src={course.course_display_image ? course.course_display_image : YCIcon}
-                alt='course'
-                className='mx-auto img-fluid Courses__displayImage'
-              />
-            </Col> */}
-            <Col xs={7} sm={9} className='p-0'>
+            <div>
               <p className='Courses__courseCardHeading mb-0'>{course.course_title}</p>
-              <Row className='d-flex align-items-center w-100 mx-auto'>
+              <div className='d-flex align-items-center w-100 mx-auto'>
                 {starArray.map((e) => {
                   return e;
                 })}
@@ -545,29 +541,30 @@ const BuyCourse = (props) => {
                 >
                   ({course.total_votes})
                 </p>
-              </Row>
-              <div className='Scrollable__courseCardSubHeading text-left'>
+              </div>
+              <div className='d-flex align-items-center justify-content-between'>
                 <div>
-                  {/* <img src={rupee} alt='rupee' height='10' width='10' className='my-auto' /> */}
                   <span className='mx-1 Courses__Price my-auto'>₹ {coursePrice}</span>
                   <span className='my-auto'>
-                    <del>₹ {course.course_price}</del>
+                    <del className='verySmallText'>₹ {course.course_price}</del>
                   </span>
                 </div>
-                {course.bestseller_tag && (
-                  <div
-                    style={{ fontSize: '12px' }}
-                    className='Scrollable__bestSeller m-2 p-1 ml-auto my-auto'
-                  >
-                    Bestseller
-                  </div>
-                )}
+                <div>
+                  {course.bestseller_tag && (
+                    <div
+                      style={{ fontSize: '12px' }}
+                      className='Scrollable__bestSeller mx-0 p-1 my-auto'
+                    >
+                      Bestseller
+                    </div>
+                  )}
+                </div>
               </div>
-            </Col>
+            </div>
           </div>
-          <Row className='Courses__buyButton'>
+          <div className='mx-auto d-flex'>
             <Button
-              className='mt-3 mb-2 mx-auto buyCourseBtn'
+              className='mt-3 mb-2 mx-auto w-90 buyCourseBtn'
               variant='greenButtonLong'
               onClick={
                 localStorage.getItem('state') &&
@@ -578,13 +575,12 @@ const BuyCourse = (props) => {
             >
               {course.course_type === 'free' ? 'Subscribe' : 'Buy Now'}
             </Button>
-          </Row>
+          </div>
           <Tabs
-            onClick={tabsClickHandler}
             style={{ marginTop: '1rem' }}
             defaultActiveKey='Details'
             justify
-            className='Profile__Tabs'
+            className='Courses__Tabs'
           >
             <Tab
               id='idForScroll'
@@ -592,7 +588,7 @@ const BuyCourse = (props) => {
               eventKey='Details'
               title='Details'
               style={{
-                // margin: 'auto 15px',
+                margin: 'auto 15px',
                 height: `${tabHeight}px`,
               }}
             >
@@ -648,7 +644,7 @@ const BuyCourse = (props) => {
               </Button>
               <hr className='' />
 
-              <Reviews displayTwo isFilterVisible={false} reviews={reviews} />
+              {/* <Reviews displayTwo isFilterVisible={false} reviews={reviews} />
               <Button
                 onClick={() => {
                   document.getElementById('ReviewTab').click();
@@ -666,7 +662,7 @@ const BuyCourse = (props) => {
               >
                 View all Reviews
                 <ChevronRightIcon />
-              </Button>
+              </Button> */}
               <p className='Courses__heading mt-4'>People also viewed</p>
 
               <ViewCoursesList clientId={clientId} clicked={() => {}} />
@@ -716,7 +712,7 @@ const BuyCourse = (props) => {
               eventKey='Content'
               title='Content'
               style={{
-                // margin: 'auto 15px',
+                margin: 'auto 15px',
                 height: `${tabHeight}px`,
                 overflowY: `${isTabScrollable ? 'scroll' : 'none'}`,
               }}
@@ -764,7 +760,7 @@ const BuyCourse = (props) => {
                             } else if (elem.category === 'Live classes') {
                               icon = <LiveIcon style={{ color: '#faa300' }} />;
                             } else if (elem.category === 'Tests') {
-                              icon = <TestIcon style={{ color: '#4B0082' }} />;
+                              icon = <TestIcon style={{ color: '#530de1' }} />;
                             }
                             return (
                               <div
@@ -807,9 +803,9 @@ const BuyCourse = (props) => {
                 );
               })}
             </Tab>
-            <Tab
+            {/* <Tab
               style={{
-                // margin: 'auto 15px',
+                margin: 'auto 15px',
                 height: `${tabHeight}px`,
                 overflowY: `${isTabScrollable ? 'scroll' : 'none'}`,
               }}
@@ -821,7 +817,7 @@ const BuyCourse = (props) => {
               <div style={{ marginTop: '1.2rem' }}>
                 <Reviews displayTwo={false} isFilterVisible reviews={reviews} />
               </div>
-            </Tab>
+            </Tab> */}
           </Tabs>
 
           {/* <hr className='' /> */}

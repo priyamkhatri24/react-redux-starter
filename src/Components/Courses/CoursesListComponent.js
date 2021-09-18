@@ -106,7 +106,7 @@ const ViewCoursesList = (props) => {
 
                   <div
                     style={{ fontSize: '9px' }}
-                    className='Scrollable__bestSeller p-1 ml-auto my-auto'
+                    className='Scrollable__bestSeller m-2 p-1 ml-auto my-auto'
                   >
                     Bestseller
                   </div>

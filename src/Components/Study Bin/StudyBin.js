@@ -313,6 +313,7 @@ const StudyBin = (props) => {
           const result = apiValidation(res);
           setFileArray(result.files);
           setFolderArray(result.folders);
+          console.log(result);
         })
         .catch((err) => {
           console.log(err);

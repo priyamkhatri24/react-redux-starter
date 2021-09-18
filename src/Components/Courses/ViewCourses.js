@@ -9,6 +9,7 @@ import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.
 import { apiValidation, get } from '../../Utilities';
 import { PageHeader } from '../Common';
 import rupee from '../../assets/images/Courses/rupee.svg';
+import ProgressBar from '../Common/ProgressBar/ProgressBar';
 import placeholder from '../../assets/images/ycIcon.png';
 import { courseActions } from '../../redux/actions/course.action';
 import './Courses.scss';
@@ -50,6 +51,8 @@ const ViewCourses = (props) => {
   return (
     <div>
       <PageHeader
+        search
+        shadow
         title={history.location.state.type === 'allCourses' ? ' All Courses' : 'My Courses'}
       />
       <div className='Courses__container'>
@@ -58,7 +61,7 @@ const ViewCourses = (props) => {
           const starArray = [...Array(numberOfStars)].map((e, i) => (
             /* eslint-disable-next-line */
             <span role='img' aria-label='emoji' key={i}>
-              <StarIcon className='Scrollable__emoji' />
+              <StarIcon className='Courses__emoji' />
             </span>
           ));
 
@@ -67,7 +70,7 @@ const ViewCourses = (props) => {
           const whiteStarArray = [...Array(normalStars)].map((e, i) => (
             /* eslint-disable-next-line */
             <span role='img' aria-label='emoji' key={i}>
-              <StarBorderIcon className='Scrollable__emoji' />
+              <StarBorderIcon className='Courses__emoji' />
             </span>
           ));
           return (
@@ -89,38 +92,74 @@ const ViewCourses = (props) => {
               </Col>
               <Col xs={8} sm={8} className='p-0'>
                 <p className='Scrollable__courseCardHeading mb-0 mx-2'>{course.course_title}</p>
-                <Row className='mx-2'>
-                  {starArray.map((e) => {
-                    return e;
-                  })}
-                  {whiteStarArray.map((e) => {
-                    return e;
-                  })}
-                  <span
-                    className='Scrollable__smallText my-auto'
-                    style={{ color: 'rgba(0, 0, 0, 0.87)', paddingLeft: '10px' }}
+                {history.location.state.type === 'allCourses' ? (
+                  <>
+                    <div className='mx-2 d-flex align-items-center'>
+                      {starArray.map((e) => {
+                        return e;
+                      })}
+                      {whiteStarArray.map((e) => {
+                        return e;
+                      })}
+                      <span
+                        className='Scrollable__smallText my-auto'
+                        style={{
+                          color: 'rgba(0, 0, 0, 0.87)',
+                          paddingLeft: '5px',
+                          fontSize: '10px',
+                        }}
+                      >
+                        {course.course_rating}
+                      </span>
+                      <span
+                        className='Scrollable__smallText my-auto'
+                        style={{ color: 'rgba(0, 0, 0, 0.87)', fontSize: '10px' }}
+                      >
+                        ({course.total_votes})
+                      </span>
+                    </div>
+                    <Row className='Scrollable__courseCardSubHeading text-left mx-2'>
+                      {/* <img src={rupee} alt='rupee' height='10' width='10' className='my-auto' /> */}
+                      <span className='mx-1 Scrollable__courseCardHeading my-auto'>
+                        ₹ {course.discount_price}
+                      </span>
+                      <span className='my-auto'>
+                        <del>₹ {course.course_price}</del>
+                      </span>
+                      {course.bestseller_tag && (
+                        <div
+                          style={{ fontSize: '9px' }}
+                          className='Scrollable__bestSeller m-2 p-1 ml-auto my-auto'
+                        >
+                          Bestseller
+                        </div>
+                      )}
+                    </Row>
+                  </>
+                ) : (
+                  <div
+                    style={{ width: '93%', margin: 'auto 0.5rem' }}
+                    className='d-flex align-items-center'
                   >
-                    {course.course_rating}
-                  </span>
-                  <span
-                    className='Scrollable__smallText my-auto'
-                    style={{ color: 'rgba(0, 0, 0, 0.87)' }}
-                  >
-                    ({course.total_votes})
-                  </span>
-                </Row>
-                <Row className='Scrollable__courseCardSubHeading text-left mx-2'>
-                  <img src={rupee} alt='rupee' height='10' width='10' className='my-auto' />
-                  <span className='mx-1 Scrollable__courseCardHeading my-auto'>
-                    {course.discount_price}
-                  </span>
-                  <span className='my-auto'>
-                    <del>{course.course_price}</del>
-                  </span>
-                  {course.bestseller_tag && (
-                    <div className='Scrollable__bestSeller m-2 p-1 ml-auto my-auto'>Bestseller</div>
-                  )}
-                </Row>
+                    <ProgressBar
+                      width={`${70}%`}
+                      height='2px'
+                      borderRadius='100px'
+                      customStyle={{
+                        backgroundColor: '#4154cf',
+                        borderRadius: '100px',
+                      }}
+                      myProgressCustomStyle={{
+                        width: '89%',
+                        margin: '14px 20px 0px 0px',
+                        backgroundColor: 'rgba(0,0,0,0.42)',
+                      }}
+                    />
+                    <p style={{ marginTop: '14px' }} className='verySmallText mb-0'>
+                      70%
+                    </p>
+                  </div>
+                )}
               </Col>
             </Row>
           );

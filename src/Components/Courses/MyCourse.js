@@ -78,6 +78,8 @@ const Mycourse = (props) => {
   const [reviews, setReviews] = useState([]);
   const [userHasCommented, setUserHasCommented] = useState(false);
   const [videoIsPlaying, setVideoIsPlaying] = useState(true);
+  const [previewText, setPreviewText] = useState(true);
+  const [nowPlayingVideo, setNowPlayingVideo] = useState(null);
   const vidRef = useRef(null);
   const handleImageOpen = () => setShowImageModal(true);
   const handleImageClose = () => setShowImageModal(false);
@@ -163,12 +165,16 @@ const Mycourse = (props) => {
           pathname: '/fileviewer',
           state: { filePath: elem.file_link },
         });
-      } else if (elem.file_type === 'youtube') {
-        history.push({
-          pathname: `/videoplayer/${elem.file_link}`,
-          state: { videoId: elem.file_id },
-        });
-      } else if (elem.file_type === 'video') {
+      } else if (elem.file_type === 'video' && elem.isYoutube) {
+        // history.push({
+        //   pathname: `/videoplayer/${elem.file_link}`,
+        //   state: { videoId: elem.file_id },
+        // });
+        /* eslint-disable */
+        document.body.scrollTop = document.documentElement.scrollTop = 0;
+        setNowPlayingVideo(elem);
+        setSource(false);
+      } else if (elem.file_type === 'video' && !elem.isYoutube) {
         history.push({
           pathname: `/videoplayer`,
           state: { videoLink: elem.file_link, videoId: elem.file_id },
@@ -475,7 +481,7 @@ const Mycourse = (props) => {
           } else if (key === 'Live classes') {
             icon = <LiveIcon style={{ color: '#faa300' }} />;
           } else if (key === 'Tests') {
-            icon = <TestIcon style={{ color: '#4B0082' }} />;
+            icon = <TestIcon style={{ color: '#530de1' }} />;
           }
           return (
             <div className='scrollableContentOfCourses_item'>
@@ -504,7 +510,7 @@ const Mycourse = (props) => {
 
   const addReviewHandler = (e) => {
     e.preventDefault();
-    document.getElementById('reviewsIdForScroll').scrollIntoView({ behavior: 'smooth' });
+    // document.getElementById('reviewsIdForScroll').scrollIntoView({ behavior: 'smooth' });
     const payload = {
       rating: addedRating,
       review_text: addedReview,
@@ -535,11 +541,13 @@ const Mycourse = (props) => {
   useEffect(() => {
     if (vidRef && vidRef.current) {
       vidRef.current.addEventListener('pause', (event) => {
+        setPreviewText(true);
         setVideoIsPlaying(true);
         console.log('paused');
       });
       vidRef.current.addEventListener('play', (event) => {
         setVideoIsPlaying(false);
+        setPreviewText(false);
         console.log('playing');
       });
     }
@@ -563,21 +571,22 @@ const Mycourse = (props) => {
       <button className='shareButtonForCourse' type='button' onClick={() => shareCourse()}>
         <ShareIcon style={{ margin: '13px 16px', color: 'white' }} />
       </button>
-      {/* {source && (
-        <div className='mx-auto Courses__videoplayer'>
+      {nowPlayingVideo && (
+        <div className='mx-auto Courses__lecturevideoplayer'>
           <PlyrComponent
             source={{
               type: 'video',
               sources: [
                 {
-                  src: source,
+                  src: nowPlayingVideo.file_link,
+                  provider: 'youtube',
                 },
               ],
             }}
-            options={{ autoplay: true }}
+            options={{ autoplay: false }}
           />
         </div>
-      )} */}
+      )}
       {source && (
         <>
           <div className='mx-auto Courses__videoplayer'>
@@ -601,14 +610,16 @@ const Mycourse = (props) => {
         </>
       )}
       {source ? (
-        <p className='previewVideoTextClass'>Preview video</p>
+        <p style={{ opacity: previewText ? '1' : '0' }} className='previewVideoTextClass'>
+          Preview video
+        </p>
       ) : (
         <p style={{ opacity: '0' }} className='previewVideoTextClass'>
           Preview
         </p>
       )}
-      {!source && (
-        <div className='mx-auto Courses__thumbnail'>
+      {!source && !nowPlayingVideo && (
+        <div className='mx-auto Courses__thumbnail mb-2'>
           <img
             src={course.course_display_image ? course.course_display_image : image}
             alt='course'
@@ -618,12 +629,10 @@ const Mycourse = (props) => {
       )}
       {Object.keys(course).length > 0 && (
         <div className='Courses__buycourseContainer'>
-          <p style={{ width: '90%' }} className='Courses__courseCardHeading mx-0 mb-0 mt-0'>
-            {course.course_title}
-          </p>
+          <p className='Courses__courseCardHeading mx-auto mb-0 mt-0 w-90'>{course.course_title}</p>
           <Tabs
             defaultActiveKey='Content'
-            className='Profile__Tabs'
+            className='Courses__Tabs'
             justify
             style={{ marginTop: '1rem', width: '100%' }}
           >
@@ -634,7 +643,7 @@ const Mycourse = (props) => {
               title='Content'
               style={{
                 height: `${tabHeight}px`,
-                // margin: 'auto 15px',
+                margin: 'auto 15px',
               }}
             >
               {renderContentHistogram()}
@@ -672,7 +681,7 @@ const Mycourse = (props) => {
                           style={{ width: '93%', margin: 'auto 0.5rem' }}
                           className='d-flex align-items-center'
                         >
-                          <ProgressBar
+                          {/* <ProgressBar
                             width={`${70}%`}
                             height='2px'
                             borderRadius='100px'
@@ -685,8 +694,8 @@ const Mycourse = (props) => {
                               margin: '0px 20px 17px 0px',
                               backgroundColor: 'rgba(0,0,0,0.42)',
                             }}
-                          />
-                          <p className='verySmallText'>70%</p>
+                          /> */}
+                          {/* <p className='verySmallText'>70%</p> */}
                         </div>
                       </Accordion.Toggle>
                       <Accordion.Collapse eventKey='0'>
@@ -694,16 +703,29 @@ const Mycourse = (props) => {
                           {e.content_array.map((elem, i) => {
                             if (elem.file_type === 'youtube') {
                               elem.file_type = 'video';
+                              elem.isYoutube = true;
                             }
                             let icon;
-                            if (elem.category === 'Videos') {
-                              icon = <VideoIcon style={{ color: '#9f16cf' }} />;
+                            if (elem.category === 'Videos' && !elem.isYoutube) {
+                              icon = (
+                                <video className='individualVideoThumbnail' preload='metadata'>
+                                  <source src={elem.file_link + '#t=0.1'} />
+                                </video>
+                              );
+                            } else if (elem.category === 'Videos' && elem.isYoutube) {
+                              icon = (
+                                <img
+                                  className='individualVideoThumbnail'
+                                  src={`https://img.youtube.com/vi/${elem.file_link}/1.jpg`}
+                                  alt='V'
+                                />
+                              );
                             } else if (elem.category === 'Documents') {
                               icon = <DocIcon style={{ color: 'green' }} />;
                             } else if (elem.category === 'Live classes') {
                               icon = <LiveIcon style={{ color: '#faa300' }} />;
                             } else if (elem.category === 'Tests') {
-                              icon = <TestIcon style={{ color: '#4B0082' }} />;
+                              icon = <TestIcon style={{ color: '#530de1' }} />;
                             }
                             return (
                               <Row
@@ -717,7 +739,12 @@ const Mycourse = (props) => {
                                 className='d-flex my-2 mx-auto'
                               >
                                 <div style={{ width: '90%' }} className='d-flex align-items-center'>
-                                  <div className='iconContainerForContents'>{icon}</div>
+                                  {elem.category !== 'Videos' ? (
+                                    <div className='iconContainerForContents'>{icon}</div>
+                                  ) : (
+                                    <div className='videoContainerForContents'>{icon}</div>
+                                  )}
+
                                   <div style={{ overflowX: 'hidden', width: '100%' }}>
                                     <p
                                       style={{ fontFamily: 'Montserrat-Bold' }}
@@ -735,7 +762,7 @@ const Mycourse = (props) => {
                                       style={{ width: '90%' }}
                                       className='d-flex mx-auto align-items-center'
                                     > */}
-                                    <ProgressBar
+                                    {/* <ProgressBar
                                       width={`${70}%`}
                                       height='2px'
                                       borderRadius='100px'
@@ -748,7 +775,7 @@ const Mycourse = (props) => {
                                         margin: '5px 8px',
                                         backgroundColor: 'rgba(0,0,0,0.42)',
                                       }}
-                                    />
+                                    /> */}
                                     {/* <p className='verySmallText mb-0'>70%</p> */}
                                     {/* </div> */}
                                   </div>
@@ -769,7 +796,7 @@ const Mycourse = (props) => {
               eventKey='Details'
               title='Details'
               style={{
-                // margin: 'auto 15px',
+                margin: 'auto 15px',
                 height: `${tabHeight}px`,
               }}
             >
@@ -803,10 +830,10 @@ const Mycourse = (props) => {
               <p className='Courses__subHeading mb-2'>- Course completion certificate</p>
               <p className='Courses__subHeading mb-2'>- Access on mobile, laptop and TV</p>
             </Tab>
-            <Tab
+            {/* <Tab
               style={{
                 height: `${tabHeight}px`,
-                // margin: 'auto 15px',
+                margin: 'auto 15px',
               }}
               className={`scrollableTabsForCourses ${isTabScrollable ? 'scrollable' : null}`}
               id='ReviewTab'
@@ -837,7 +864,6 @@ const Mycourse = (props) => {
                   </div>
                   <Form>
                     <Form.Group className='my-3'>
-                      {/* <Form.Label>Review</Form.Label> */}
                       <Form.Control
                         onChange={(e) => setAddedReview(e.target.value)}
                         value={addedReview}
@@ -852,13 +878,12 @@ const Mycourse = (props) => {
                       style={{
                         width: '100%',
                         color: 'white',
-                        backgroundColor: '#009ece',
                         outline: 'none',
                         border: 'transparent',
                         fontFamily: 'Montserrat-Regular',
                         fontSize: '14px',
                       }}
-                      className='mt-3 mb-2 mx-auto buyCourseBtn'
+                      className='mt-3 mb-2 mx-auto buyCourseBtn postBtnClr'
                     >
                       Post
                     </Button>
@@ -876,7 +901,7 @@ const Mycourse = (props) => {
                   reviews={reviews}
                 />
               </div>
-            </Tab>
+            </Tab> */}
             {/* <div
                 className='Scrollable__viewAll justify-content-center align-items-center d-flex'
                 style={{ height: '50vh' }}

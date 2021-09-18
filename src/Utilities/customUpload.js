@@ -7,7 +7,8 @@ import { apiValidation } from './utilities';
 
 export const uploadingImage = (file) => {
   console.log(file);
-
+  const newName = file.name.split('.')[0] + Date.now();
+  const finalName = newName + file.name.split('.').pop();
   return new Promise((resolve, rej) => {
     get(null, '/getAwsCredentialsWithBucketConfiguration').then((res) => {
       const result = apiValidation(res);
@@ -25,7 +26,8 @@ export const uploadingImage = (file) => {
         secretAccessKey: result.secret,
         region: result.region,
       });
-      const params = { Key: file.name, ContentType: file.type, Body: file };
+      const params = { Key: finalName, ContentType: file.type, Body: file };
+      // console.log(params, 'file uploaaaaaaaaaaaaaaaaad');
       store.dispatch(loadingActions.pending());
       bucket
         .upload(params)

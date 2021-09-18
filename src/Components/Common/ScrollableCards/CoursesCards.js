@@ -133,7 +133,7 @@ export const CoursesCards = (props) => {
                 <button
                   className='Scrollable__viewAllButtonForCards'
                   type='button'
-                  onClick={() => goToCourse('allCourses')}
+                  onClick={() => goToCourse('myCourses')}
                 >
                   View All <ChevronRightIcon />
                 </button>

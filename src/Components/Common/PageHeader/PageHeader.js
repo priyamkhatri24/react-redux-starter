@@ -23,6 +23,7 @@ export const PageHeader = (props) => {
     customIcon,
     handleCustomIcon,
     notFixed,
+    shadow,
     noBack,
     iconColor,
   } = props;
@@ -39,7 +40,10 @@ export const PageHeader = (props) => {
           ? 'notFixedPageHeader p-3 d-flex align-items-center'
           : 'PageHeader p-3 d-flex align-items-center'
       }
-      style={transparent ? { backgroundColor: 'transparent' } : {}}
+      style={{
+        backgroundColor: transparent ? 'transparent' : 'white',
+        boxShadow: shadow ? '0px 2px 2px 0px rgba(0,0,0,0.29)' : 'transparent',
+      }}
     >
       {!searchBar && (
         <>
@@ -110,6 +114,7 @@ PageHeader.propTypes = {
   title: PropTypes.string,
   search: PropTypes.bool,
   placeholder: PropTypes.string,
+  shadow: PropTypes.bool,
   searchFilter: PropTypes.func,
   triggerFilters: PropTypes.func,
   customBack: PropTypes.bool,
@@ -128,6 +133,7 @@ PageHeader.defaultProps = {
   search: false,
   iconColor: 'black',
   notFixed: false,
+  shadow: false,
   noBack: false,
   placeholder: '',
   searchFilter: () => {},
