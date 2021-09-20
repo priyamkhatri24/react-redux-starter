@@ -20,27 +20,27 @@ import withClearCache from './BustCache';
 function MainApp(props) {
   const { color, currentbranding, isLoading, setSocket, isSpinner } = props;
 
-  useEffect(() => {
-    const SERVER = 'https://portal.tca.ingeniumedu.com';
-    // console.log(io);
-    const socket = io(SERVER, {
-      transports: ['websocket', 'polling'],
-    });
-    socket.on('connect', () => {
-      console.log(socket.id, 'connect');
-    });
+  // useEffect(() => {
+  //   const SERVER = 'https://portal.tca.ingeniumedu.com';
+  //   // console.log(io);
+  //   const socket = io(SERVER, {
+  //     transports: ['websocket', 'polling'],
+  //   });
+  //   socket.on('connect', () => {
+  //     console.log(socket.id, 'connect');
+  //   });
 
-    socket.on('disconnect', () => {
-      console.log(socket.id, 'disconnected');
-      const socket2 = io(SERVER, {
-        transports: ['websocket', 'polling'],
-      });
-      setSocket({ socket2 });
-    });
+  //   socket.on('disconnect', () => {
+  //     console.log(socket.id, 'disconnected');
+  //     const socket2 = io(SERVER, {
+  //       transports: ['websocket', 'polling'],
+  //     });
+  //     setSocket({ socket2 });
+  //   });
 
-    setSocket({ socket });
-    return () => socket.emit('disconnect');
-  }, []);
+  //   setSocket({ socket });
+  //   return () => socket.emit('disconnect');
+  // }, []);
 
   useEffect(() => {
     console.log(isSpinner);
