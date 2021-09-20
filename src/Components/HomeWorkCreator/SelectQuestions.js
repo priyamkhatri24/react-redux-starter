@@ -135,6 +135,13 @@ const SelectQuestions = (props) => {
     });
   };
 
+  const goToSentSavedAddContent = () => {
+    history.push({
+      pathname: '/homework/savedtests',
+      state: { classId: {} },
+    });
+  };
+
   const goToCreateQuestion = () => {
     history.push('/homework/create');
   };
@@ -318,6 +325,18 @@ const SelectQuestions = (props) => {
         >
           Add Questions Manually.
         </Button>
+        <Card className='w-100 mt-4 p-3 mb-0'>
+          <p className='Homework__smallHeading text-left'>Other Options:</p>
+          <div
+            className='Homework__plainWhiteButton text-left mx-auto mb-1'
+            onClick={() => goToSentSavedAddContent()}
+            onKeyDown={() => goToSentSavedAddContent()}
+            role='button'
+            tabIndex='-1'
+          >
+            Add from saved/sent tests.
+          </div>
+        </Card>
       </Card>
 
       <Modal show={showModal} onHide={handleClose} centered>

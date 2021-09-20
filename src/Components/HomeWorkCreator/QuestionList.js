@@ -46,7 +46,11 @@ const QuestionList = (props) => {
 
   useEffect(() => {
     const newQuestions = homeworkQuestions.map((e) => {
-      e.isSelected = false;
+      if (e.directFromSaved) {
+        e.isSelected = true;
+      } else {
+        e.isSelected = false;
+      }
       return e;
     });
     setQuestions(newQuestions);

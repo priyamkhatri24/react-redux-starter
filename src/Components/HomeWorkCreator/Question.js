@@ -14,6 +14,7 @@ const Question = (props) => {
   const { question, index, update } = props;
 
   const addtoSelected = () => {
+    console.log(question, 'quesssssss');
     question.isSelected = !question.isSelected;
     update(question);
   };

@@ -62,6 +62,7 @@ const PreviewQuestions = (props) => {
     { id: 3, name: 'Unanswered', value: 0, color: 'rgba(86, 66, 61, 1)' },
   ]);
   const [sectionMarks, setSectionMarks] = useState([]);
+  const [oldTestId, setOldTestId] = useState(null);
 
   useEffect(() => {
     if (activeSection === 'Subject Wise') {
@@ -86,6 +87,9 @@ const PreviewQuestions = (props) => {
         setSectionedQuestions(resultArray);
 
         const tempSectionMarks = resultArray.map((elem) => {
+          if (!oldTestId) {
+            setOldTestId(elem.testId);
+          }
           const obj = {};
           obj.sectionName = elem.name;
           obj.marksArray = [
@@ -103,7 +107,7 @@ const PreviewQuestions = (props) => {
         ]);
       });
     } else {
-      get({ test_id: testId }, '/getTestQuestionsForHomeWorkCreator').then((res) => {
+      get({ test_id: testId || oldTestId }, '/getTestQuestionsForHomeWorkCreator').then((res) => {
         setTestClassSubjectToStore(res.class_subject);
         const result = apiValidation(res);
         const withMarks = result.map((e) => {

@@ -187,6 +187,16 @@
     }
   }
 
+  &__mycourseContainer {
+    width: 80%;
+    margin: auto;
+    height: fit-content;
+    height: calc(100vh - 75px);
+    @include media-breakpoint-down(md) {
+      width: 100%;
+    }
+  }
+
   &__videoplayer {
     height: auto;
     display: flex;
@@ -203,12 +213,15 @@
   }
   &__lecturevideoplayer {
     width: 100%;
+    display: content;
+    // height: 210px !important;
     background-color: black;
 
     @include media-breakpoint-up(sm) {
       // width: 100%;
+
       // height: auto;
-      width: auto;
+      display: block;
       height: 350px !important;
     }
   }
@@ -218,13 +231,32 @@
     justify-content: center;
     margin: 0px;
     width: 100%;
+    // background-color: #000000;
 
     @include media-breakpoint-up(sm) {
       width: 100%;
       // height: auto;
-      height: 210px;
+      overflow: hidden;
+      height: 350px;
     }
   }
+
+  &__docOpener {
+    height: auto;
+    margin: 0px;
+    text-align: center;
+    position: relative;
+    width: 100%;
+    background-color: #000000;
+
+    @include media-breakpoint-up(sm) {
+      width: 100%;
+      // height: auto;
+      height: 350px;
+      overflow: hidden;
+    }
+  }
+
   &__imageRow {
     @include media-breakpoint-down(md) {
       padding: 0;
@@ -302,7 +334,7 @@
   }
 
   &__Tabs {
-    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.29) !important;
+    box-shadow: 0px 2px 0px 0px rgba(0, 0, 0, 0.29) !important;
   }
 
   &__twoButtons {
@@ -370,6 +402,19 @@
 }
 
 #ReviewTab:hover {
+  color: black;
+  border-top: 1px solid transparent;
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+}
+
+#idForScroll2:hover {
+  color: black;
+  border-top: 1px solid transparent;
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+}
+#detailTab:hover {
   color: black;
   border-top: 1px solid transparent;
   border-left: 1px solid transparent;
@@ -606,14 +651,55 @@
   }
 }
 .courseThumbnailImg {
-  max-height: 200px;
+  // max-height: 200px;
   text-align: center;
+}
+.courseDocumentOpenerImg {
+  // max-height: 200px;
+  text-align: center;
+  filter: brightness(50%);
+  -webkit-filter: brightness(50%);
+}
+@media screen and (max-width: 575px) {
+  .courseThumbnailImg {
+    max-height: 350px;
+    text-align: center;
+  }
+  .courseDocumentOpenerImg {
+    max-height: 350px;
+    text-align: center;
+    margin: auto;
+  }
 }
 .scrollable {
   overflow-y: scroll;
 }
 .scrollableTabsForCourses::-webkit-scrollbar {
   display: none;
+}
+.TextOnImage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+  position: absolute;
+  width: 100%;
+  top: 40%;
+}
+.TextOnImage p {
+  color: white;
+  font-family: 'Montserrat-Bold';
+  font-size: 18px;
+}
+.openDocumentBtn {
+  background-color: transparent;
+  border: 1px solid white;
+  outline: none;
+  border-radius: 15px;
+  color: white;
+  cursor: pointer;
+  padding: 6px 12px;
 }
 
 @media screen and (min-width: 575px) {
@@ -634,4 +720,10 @@
     font-size: 9px !important;
     width: 62px;
   }
+  .unscrollableOnMobile {
+    height: 100vh !important;
+  }
 }
+// .unscrollableOnMobile {
+//   height: auto;
+// }

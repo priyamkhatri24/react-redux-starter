@@ -644,7 +644,7 @@ const BuyCourse = (props) => {
               </Button>
               <hr className='' />
 
-              {/* <Reviews displayTwo isFilterVisible={false} reviews={reviews} />
+              <Reviews displayTwo isFilterVisible={false} reviews={reviews} />
               <Button
                 onClick={() => {
                   document.getElementById('ReviewTab').click();
@@ -662,7 +662,7 @@ const BuyCourse = (props) => {
               >
                 View all Reviews
                 <ChevronRightIcon />
-              </Button> */}
+              </Button>
               <p className='Courses__heading mt-4'>People also viewed</p>
 
               <ViewCoursesList clientId={clientId} clicked={() => {}} />
@@ -752,9 +752,25 @@ const BuyCourse = (props) => {
                       <Accordion.Collapse eventKey='0'>
                         <div>
                           {e.content_array.map((elem, i) => {
+                            if (elem.file_type === 'youtube') {
+                              elem.file_type = 'video';
+                              elem.isYoutube = true;
+                            }
                             let icon;
-                            if (elem.category === 'Videos') {
-                              icon = <VideoIcon style={{ color: '#9f16cf' }} />;
+                            if (elem.category === 'Videos' && !elem.isYoutube) {
+                              icon = (
+                                <video className='individualVideoThumbnail' preload='metadata'>
+                                  <source src={elem.file_link + '#t=0.1'} />
+                                </video>
+                              );
+                            } else if (elem.category === 'Videos' && elem.isYoutube) {
+                              icon = (
+                                <img
+                                  className='individualVideoThumbnail'
+                                  src={`https://img.youtube.com/vi/${elem.file_link}/1.jpg`}
+                                  alt='V'
+                                />
+                              );
                             } else if (elem.category === 'Documents') {
                               icon = <DocIcon style={{ color: 'green' }} />;
                             } else if (elem.category === 'Live classes') {
@@ -775,7 +791,11 @@ const BuyCourse = (props) => {
                                   style={{ maxWidth: '90%' }}
                                   className='d-flex align-items-center'
                                 >
-                                  <div className='iconContainerForContents'>{icon}</div>
+                                  {elem.category !== 'Videos' ? (
+                                    <div className='iconContainerForContents'>{icon}</div>
+                                  ) : (
+                                    <div className='videoContainerForContents'>{icon}</div>
+                                  )}
                                   <div style={{ overflowX: 'hidden' }}>
                                     <p
                                       style={{ fontFamily: 'Montserrat-Bold' }}
@@ -784,6 +804,11 @@ const BuyCourse = (props) => {
                                     >
                                       {elem.name}
                                     </p>
+                                    <small className='verySmallText mx-2'>
+                                      {elem.file_type
+                                        ? elem.file_type.toUpperCase()
+                                        : elem.content_type.toUpperCase()}
+                                    </small>
                                     <p
                                       style={{ fontSize: '12px', color: '#fbfbfb' }}
                                       className='mb-0 ml-2'
@@ -803,7 +828,7 @@ const BuyCourse = (props) => {
                 );
               })}
             </Tab>
-            {/* <Tab
+            <Tab
               style={{
                 margin: 'auto 15px',
                 height: `${tabHeight}px`,
@@ -817,7 +842,7 @@ const BuyCourse = (props) => {
               <div style={{ marginTop: '1.2rem' }}>
                 <Reviews displayTwo={false} isFilterVisible reviews={reviews} />
               </div>
-            </Tab> */}
+            </Tab>
           </Tabs>
 
           {/* <hr className='' /> */}

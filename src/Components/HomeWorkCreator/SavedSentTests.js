@@ -27,6 +27,7 @@ const SavedSentTests = (props) => {
     setCurrentSlide,
     setQuestionArrayToStore,
     setCourseAddContentTestIdToStore,
+    setSelectedQuestionArrayToStore,
     history,
     clearTests,
   } = props;
@@ -34,6 +35,7 @@ const SavedSentTests = (props) => {
   const [savedTests, setSavedTests] = useState([]);
 
   useEffect(() => {
+    console.log(roleArray, 'roleeeearrraayyyy');
     const homeworkPayload = {
       client_user_id: clientUserId,
       is_admin: roleArray.includes(4) ? 'true' : 'false',
@@ -66,7 +68,18 @@ const SavedSentTests = (props) => {
       console.log(res);
       const result = apiValidation(res);
       clearTests();
-      setCurrentSlide(1);
+      if (goTo === 'addContent') {
+        setCurrentSlide(1);
+      } else {
+        result.forEach((elem) => {
+          elem.directFromSaved = true;
+          elem.isSelected = true;
+          elem.testIdOld = testId;
+        });
+        console.log(result, 'resultttttttttt');
+        setCurrentSlide(2);
+        setSelectedQuestionArrayToStore(result);
+      }
       setQuestionArrayToStore(result);
       history.push('/homework');
     });
@@ -164,6 +177,9 @@ const mapDispatchToProps = (dispatch) => {
     setCurrentSlide: (payload) => {
       dispatch(homeworkActions.setCurrentSlide(payload));
     },
+    setSelectedQuestionArrayToStore: (payload) => {
+      dispatch(homeworkActions.setSelectedQuestionArrayToStore(payload));
+    },
     setCourseAddContentTestIdToStore: (payload) => {
       dispatch(courseActions.setCourseAddContentTestIdToStore(payload));
     },
@@ -191,5 +207,6 @@ SavedSentTests.propTypes = {
   setCurrentSlide: PropTypes.func.isRequired,
   setQuestionArrayToStore: PropTypes.func.isRequired,
   setCourseAddContentTestIdToStore: PropTypes.func.isRequired,
+  setSelectedQuestionArrayToStore: PropTypes.func.isRequired,
   clearTests: PropTypes.func.isRequired,
 };

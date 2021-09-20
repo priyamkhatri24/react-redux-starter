@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
+import ReactPlayer from 'react-player';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import compareAsc from 'date-fns/compareAsc';
 import differenceInSeconds from 'date-fns/differenceInSeconds';
@@ -9,10 +10,10 @@ import Accordion from 'react-bootstrap/Accordion';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Row from 'react-bootstrap/Row';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
-import StarIcon from '@material-ui/icons/Star';
+import StarBorderIcon from '@material-ui/icons/StarBorderRounded';
+import StarIcon from '@material-ui/icons/StarRounded';
 import VideoIcon from '@material-ui/icons/VideoLibrary';
-import Play from '@material-ui/icons/PlayArrow';
+import Play from '@material-ui/icons/PlayArrowRounded';
 import LiveIcon from '@material-ui/icons/LiveTv';
 import DocIcon from '@material-ui/icons/Description';
 import TestIcon from '@material-ui/icons/LiveHelp';
@@ -66,7 +67,7 @@ const Mycourse = (props) => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [imgLink, setImgLink] = useState('');
   const [contentArray, setContentArray] = useState([]);
-  const [isTabScrollable, setIsTabScrollable] = useState(false);
+  const [isTabScrollable, setIsTabScrollable] = useState(true);
   const [reviewPlaceholder, setReviewPlaceholder] = useState(
     'Please describe your experience about this course here.',
   );
@@ -80,6 +81,8 @@ const Mycourse = (props) => {
   const [videoIsPlaying, setVideoIsPlaying] = useState(true);
   const [previewText, setPreviewText] = useState(true);
   const [nowPlayingVideo, setNowPlayingVideo] = useState(null);
+  const [documentToOpen, setDocumentToOpen] = useState({});
+  const [documentOpener, setDocumentOpener] = useState(false);
   const vidRef = useRef(null);
   const handleImageOpen = () => setShowImageModal(true);
   const handleImageClose = () => setShowImageModal(false);
@@ -99,6 +102,15 @@ const Mycourse = (props) => {
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (document.body.clientWidth < 575) {
+      // setscrolledToBottom(true);
+      const tabHeightFromTop = document.getElementById('idForScroll2')?.offsetTop;
+      const tabH = document.body.clientHeight - tabHeightFromTop;
+      setTabHeight(tabH - 50);
+    }
+  });
 
   useEffect(() => {
     if (!courseId) history.push('/');
@@ -144,12 +156,25 @@ const Mycourse = (props) => {
     }
   }, [courseId, clientUserId, history]);
 
-  const openImage = (elem) => {
-    setImgLink(elem.file_link);
+  const openImage = () => {
+    setImgLink(documentToOpen.file_link);
     handleImageOpen();
   };
 
+  const openDocument = () => {
+    if (documentToOpen.file_type === '.pdf') {
+      history.push({
+        pathname: '/fileviewer',
+        state: { filePath: documentToOpen.file_link },
+      });
+    } else if (documentToOpen.file_type === 'image') {
+      openImage();
+    }
+  };
+
   const displayContent = (elem, type) => {
+    // e.content_array.forEach((ele) => (ele.isPlayingNow = false));
+    // elem.isPlayingNow = true;
     if (type === 'file') {
       // if (elem.file_type === 'video') {
       //   setVideo(true);
@@ -158,26 +183,32 @@ const Mycourse = (props) => {
       //   setSource(newSource);
       // }
       console.log(elem);
-      if (elem.file_type === 'gallery') {
-        openImage(elem);
+      if (elem.file_type === 'gallery' || elem.file_type === 'image') {
+        setSource(false);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setNowPlayingVideo(false);
+        setDocumentOpener(true);
+        setDocumentToOpen(elem);
       } else if (elem.file_type === '.pdf') {
-        history.push({
-          pathname: '/fileviewer',
-          state: { filePath: elem.file_link },
-        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setNowPlayingVideo(false);
+        setSource(false);
+        setDocumentOpener(true);
+        setDocumentToOpen(elem);
       } else if (elem.file_type === 'video' && elem.isYoutube) {
-        // history.push({
-        //   pathname: `/videoplayer/${elem.file_link}`,
-        //   state: { videoId: elem.file_id },
-        // });
-        /* eslint-disable */
-        document.body.scrollTop = document.documentElement.scrollTop = 0;
-        setNowPlayingVideo(elem);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setNowPlayingVideo({
+          src: elem.file_link,
+          provider: 'youtube',
+        });
+        setDocumentOpener(false);
         setSource(false);
       } else if (elem.file_type === 'video' && !elem.isYoutube) {
-        history.push({
-          pathname: `/videoplayer`,
-          state: { videoLink: elem.file_link, videoId: elem.file_id },
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setDocumentOpener(false);
+        setSource(false);
+        setNowPlayingVideo({
+          src: elem.file_link,
         });
       } else {
         history.push({
@@ -553,18 +584,14 @@ const Mycourse = (props) => {
     }
   });
 
-  const scrollingHandler = () => {
-    console.log('scrolling handler');
-  };
-
-  const editReviewHandler = () => {
+  const editReviewHandler = useCallback(() => {
     setUserHasCommented(false);
-  };
+  }, []);
   const starArr = new Array(addedRating).fill(Math.random());
   const borderStarArr = new Array(5 - addedRating).fill(Math.random());
 
   return (
-    <div>
+    <div className='unscrollableOnMobile'>
       <PageHeader transparent />
       <div className='backButtonForCoursesPage'> </div>
       <PageHeader iconColor='white' transparent title='' />
@@ -576,17 +603,21 @@ const Mycourse = (props) => {
           <PlyrComponent
             source={{
               type: 'video',
-              sources: [
-                {
-                  src: nowPlayingVideo.file_link,
-                  provider: 'youtube',
-                },
-              ],
+              sources: [nowPlayingVideo],
             }}
             options={{ autoplay: false }}
           />
         </div>
       )}
+      {/* {nowPlayingVideo && (
+        <div className='mx-auto Courses__lecturevideoplayer'>
+          <ReactPlayer
+            className='Courses__lecturevideoplayer'
+            controls
+            url={`https://www.youtube.com/watch?v=${nowPlayingVideo.file_link}`}
+          />
+        </div>
+      )} */}
       {source && (
         <>
           <div className='mx-auto Courses__videoplayer'>
@@ -613,12 +644,8 @@ const Mycourse = (props) => {
         <p style={{ opacity: previewText ? '1' : '0' }} className='previewVideoTextClass'>
           Preview video
         </p>
-      ) : (
-        <p style={{ opacity: '0' }} className='previewVideoTextClass'>
-          Preview
-        </p>
-      )}
-      {!source && !nowPlayingVideo && (
+      ) : null}
+      {!source && !nowPlayingVideo && !documentOpener && (
         <div className='mx-auto Courses__thumbnail mb-2'>
           <img
             src={course.course_display_image ? course.course_display_image : image}
@@ -627,9 +654,26 @@ const Mycourse = (props) => {
           />
         </div>
       )}
+      {!source && !nowPlayingVideo && documentOpener && (
+        <div className='mx-auto Courses__docOpener mb-2'>
+          <div className='TextOnImage'>
+            <p>{documentToOpen.name}</p>
+            <button className='openDocumentBtn' onClick={openDocument}>
+              Open file
+            </button>
+          </div>
+          <img
+            src={course.course_display_image ? course.course_display_image : image}
+            alt='course'
+            className='mx-auto img-fluid courseDocumentOpenerImg'
+          />
+        </div>
+      )}
       {Object.keys(course).length > 0 && (
-        <div className='Courses__buycourseContainer'>
-          <p className='Courses__courseCardHeading mx-auto mb-0 mt-0 w-90'>{course.course_title}</p>
+        <div className='Courses__mycourseContainer'>
+          <p className={`Courses__courseCardHeading mx-auto mb-0 mt-${source ? '0' : '4'} w-90`}>
+            {course.course_title}
+          </p>
           <Tabs
             defaultActiveKey='Content'
             className='Courses__Tabs'
@@ -681,7 +725,7 @@ const Mycourse = (props) => {
                           style={{ width: '93%', margin: 'auto 0.5rem' }}
                           className='d-flex align-items-center'
                         >
-                          {/* <ProgressBar
+                          <ProgressBar
                             width={`${70}%`}
                             height='2px'
                             borderRadius='100px'
@@ -694,8 +738,8 @@ const Mycourse = (props) => {
                               margin: '0px 20px 17px 0px',
                               backgroundColor: 'rgba(0,0,0,0.42)',
                             }}
-                          /> */}
-                          {/* <p className='verySmallText'>70%</p> */}
+                          />
+                          <p className='verySmallText'>70%</p>
                         </div>
                       </Accordion.Toggle>
                       <Accordion.Collapse eventKey='0'>
@@ -762,7 +806,7 @@ const Mycourse = (props) => {
                                       style={{ width: '90%' }}
                                       className='d-flex mx-auto align-items-center'
                                     > */}
-                                    {/* <ProgressBar
+                                    <ProgressBar
                                       width={`${70}%`}
                                       height='2px'
                                       borderRadius='100px'
@@ -775,10 +819,11 @@ const Mycourse = (props) => {
                                         margin: '5px 8px',
                                         backgroundColor: 'rgba(0,0,0,0.42)',
                                       }}
-                                    /> */}
+                                    />
                                     {/* <p className='verySmallText mb-0'>70%</p> */}
                                     {/* </div> */}
                                   </div>
+                                  {elem.isPlayingNow ? <p>now playing</p> : null}
                                 </div>
                                 {/* <LockIcon style={{ color: 'gray' }} /> */}
                               </Row>
@@ -795,6 +840,7 @@ const Mycourse = (props) => {
               className={`scrollableTabsForCourses ${isTabScrollable ? 'scrollable' : null}`}
               eventKey='Details'
               title='Details'
+              id='detailTab'
               style={{
                 margin: 'auto 15px',
                 height: `${tabHeight}px`,
@@ -830,7 +876,7 @@ const Mycourse = (props) => {
               <p className='Courses__subHeading mb-2'>- Course completion certificate</p>
               <p className='Courses__subHeading mb-2'>- Access on mobile, laptop and TV</p>
             </Tab>
-            {/* <Tab
+            <Tab
               style={{
                 height: `${tabHeight}px`,
                 margin: 'auto 15px',
@@ -901,7 +947,7 @@ const Mycourse = (props) => {
                   reviews={reviews}
                 />
               </div>
-            </Tab> */}
+            </Tab>
             {/* <div
                 className='Scrollable__viewAll justify-content-center align-items-center d-flex'
                 style={{ height: '50vh' }}
@@ -988,9 +1034,11 @@ const Mycourse = (props) => {
 
       <Modal show={showImageModal} onHide={handleImageClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Uploaded Image</Modal.Title>
+          <Modal.Title>
+            {documentToOpen.name?.slice(0, documentToOpen.name?.length - 4)}
+          </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className='mx-auto'>
           <img src={imgLink} alt='img' className='img-fluid' />
         </Modal.Body>
       </Modal>

@@ -12,6 +12,18 @@
     background: transparent;
   }
 
+  &__plainWhiteButton {
+    border-radius: 10px;
+    border: 1px solid #0505058b;
+    color: var(--primary-blue);
+    cursor: pointer;
+    text-align: center;
+    font-family: $regular;
+    margin: auto;
+    padding: 3px 4px;
+    font-size: 14px;
+  }
+
   &__selectCard {
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
   }
