@@ -138,7 +138,12 @@ const Categories = (props) => {
 
   const downloadRecording = (event, link) => {
     event.stopPropagation();
-    downloadFile(link);
+    console.log(link, 'linnnnkkkkkkkkkk');
+    // downloadFile(link);
+    const downloadLink = document.createElement('a');
+    downloadLink.href = link;
+    downloadLink.click();
+    // document.removeElement(downloadLink)
   };
 
   const goToRecording = (link) => {
