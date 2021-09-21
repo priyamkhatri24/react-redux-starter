@@ -61,24 +61,26 @@ const QuestionList = (props) => {
   }, [selectedQuestionArray]);
 
   const removeQuestion = (question) => {
+    console.log(question, 'delettteeeee');
     const newSelectedQuestions = JSON.parse(JSON.stringify(selectedQuestions));
     console.log(question);
-    post({ question_id: question.question_id, test_id: testId }, '/deleteQuestionFromTest').then(
-      (res) => {
-        if (res.success) {
-          const removedSelectedQuestions = newSelectedQuestions.filter((e) => {
-            return e.question_id !== question.question_id;
-          });
-          setSelectedQuestionArrayToStore(removedSelectedQuestions);
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops',
-            text: 'Question could not be removed',
-          });
-        }
-      },
-    );
+    post(
+      { question_id: question.question_id, test_id: testId || question.testIdOld },
+      '/deleteQuestionFromTest',
+    ).then((res) => {
+      if (res.success) {
+        const removedSelectedQuestions = newSelectedQuestions.filter((e) => {
+          return e.question_id !== question.question_id;
+        });
+        setSelectedQuestionArrayToStore(removedSelectedQuestions);
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops',
+          text: 'Question could not be removed',
+        });
+      }
+    });
   };
 
   const removeAllQuestions = () => {
@@ -119,6 +121,7 @@ const QuestionList = (props) => {
     } else {
       payload = {
         chapter_array: JSON.stringify(currentChapterArray),
+
         teacher_id: clientUserId,
         test_id: testId,
         is_draft: isDraft,
@@ -164,13 +167,16 @@ const QuestionList = (props) => {
   const selectAll = (value) => {
     setSelectAllQuestions(value);
     if (value) {
-      setSelectedQuestionArrayToStore([]);
-      setSelectedQuestions([]);
-      addQuestions(questions, []);
+      setSelectedQuestions(questions);
+      console.log(questions);
+      const notSelectedQs = questions.filter((ele) => !ele.isSelected);
+      addQuestions(notSelectedQs);
+
       const allQuestions = questions.map((e) => {
         e.isSelected = true;
         return e;
       });
+      // setSelectedQuestionArrayToStore(allQuestions);
       setQuestions(allQuestions);
       setCurrentSlide(2);
     } else {

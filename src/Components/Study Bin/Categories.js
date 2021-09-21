@@ -138,8 +138,23 @@ const Categories = (props) => {
 
   const downloadRecording = (event, link) => {
     event.stopPropagation();
-    downloadFile(link);
+    console.log(link, 'linnnnkkkkkkkkkk');
+    // downloadFile(link);
+    const downloadLink = document.createElement('a');
+    downloadLink.href = link;
+    downloadLink.click();
+    // document.removeElement(downloadLink)
   };
+  // const downloadRecordingtest = (event, link) => {
+  //   event.stopPropagation();
+  //   console.log(link, 'linnnnkkkkkkkkkk');
+  //   // downloadFile(link);
+  //   const downloadLink = document.createElement('a');
+  //   downloadLink.href =
+  //     'https://alpha-recordings.s3.ap-south-1.amazonaws.com/1631445253422508140220_2021-09-12-11-28-56.mp4';
+  //   downloadLink.click();
+  //   // document.removeElement(downloadLink)
+  // };
 
   const goToRecording = (link) => {
     console.log(link, 'lodu');

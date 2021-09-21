@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
+import { post } from '../../Utilities';
 import Question from './Question';
 import { homeworkActions } from '../../redux/actions/homework.action';
-import { getSelectedQuestionArray } from '../../redux/reducers/homeworkCreator.reducer';
+import { getSelectedQuestionArray, getTestId } from '../../redux/reducers/homeworkCreator.reducer';
 
 const PreviewQuestions = (props) => {
-  const { selectedQuestionArray, setSelectedQuestionArrayToStore, history } = props;
+  const { selectedQuestionArray, setSelectedQuestionArrayToStore, history, testId } = props;
   const [selectedQuestions, setSelectedQuestions] = useState([]);
 
   useEffect(() => {
@@ -16,12 +18,29 @@ const PreviewQuestions = (props) => {
   }, [selectedQuestionArray]);
 
   const updateSelectedQuestions = (question) => {
+    const newSelectedQuestions = JSON.parse(JSON.stringify(selectedQuestions));
     const updatedSelectedQuestions = selectedQuestions.filter((e) => {
       return e.question_id !== question.question_id;
     });
-
-    setSelectedQuestions(updatedSelectedQuestions);
-    setSelectedQuestionArrayToStore(updatedSelectedQuestions);
+    post({ question_id: question.question_id, test_id: testId }, '/deleteQuestionFromTest').then(
+      (res) => {
+        if (res.success) {
+          console.log(res, 'deleteeddd');
+          const removedSelectedQuestions = newSelectedQuestions.filter((e) => {
+            return e.question_id !== question.question_id;
+          });
+          setSelectedQuestions(updatedSelectedQuestions);
+          setSelectedQuestionArrayToStore(removedSelectedQuestions);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops',
+            text: 'Question could not be removed',
+          });
+        }
+      },
+    );
+    // setSelectedQuestionArrayToStore(updatedSelectedQuestions);
   };
 
   const goToPreview = () => {
@@ -57,6 +76,7 @@ const PreviewQuestions = (props) => {
 
 const mapStateToProps = (state) => ({
   selectedQuestionArray: getSelectedQuestionArray(state),
+  testId: getTestId(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -75,6 +95,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(PreviewQuestions);
 PreviewQuestions.propTypes = {
   setSelectedQuestionArrayToStore: PropTypes.func.isRequired,
   selectedQuestionArray: PropTypes.instanceOf(Array).isRequired,
+  testId: PropTypes.number.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,

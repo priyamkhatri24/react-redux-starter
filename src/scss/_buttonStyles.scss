@@ -16,6 +16,16 @@
   font-size: 12px;
 }
 
+.btn-customPrimarySmol-outline {
+  background-color: transparent;
+  color: var(--lighter-blue, rgba(38, 153, 251, 1));
+  font-family: 'Montserrat-Medium';
+  line-height: 15px;
+  border-radius: 5px;
+  font-size: 12px;
+  border: 1px solid rgb(156, 156, 156);
+}
+
 .btn-customPrimaryWithShadow {
   background-color: var(--primary-blue, rgba(38, 153, 251, 1));
   color: #fff;
@@ -297,12 +307,33 @@
   position: absolute;
 }
 
+.btn-homeworkAddred {
+  color: #ffffff;
+  background-color: red;
+  height: 28px;
+  width: 28px;
+  border-radius: 14px;
+  padding: 0;
+  position: absolute;
+}
+
 .btn-homeworkAddToPaper {
   color: var(--primary-blue);
   font-size: 12px;
   line-height: 15px;
   font-family: 'Montserrat-Medium';
   border: 1px solid var(--primary-blue);
+  border-radius: 14px;
+  height: 28px;
+  padding-left: 28px;
+}
+
+.btn-homeworkAddToPaperred {
+  color: red;
+  font-size: 12px;
+  line-height: 15px;
+  font-family: 'Montserrat-Medium';
+  border: 1px solid red;
   border-radius: 14px;
   height: 28px;
   padding-left: 28px;

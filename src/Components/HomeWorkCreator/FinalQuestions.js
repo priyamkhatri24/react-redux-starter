@@ -88,7 +88,7 @@ const PreviewQuestions = (props) => {
 
         const tempSectionMarks = resultArray.map((elem) => {
           if (!oldTestId) {
-            setOldTestId(elem.testId);
+            setOldTestId(elem.testIdOld);
           }
           const obj = {};
           obj.sectionName = elem.name;

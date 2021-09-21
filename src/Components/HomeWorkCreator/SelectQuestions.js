@@ -34,6 +34,15 @@ const SelectQuestions = (props) => {
     });
   }, []);
 
+  const cancelBtnClicked = () => {
+    setCurrentQuestion({});
+    setChapters([]);
+    setSelectedChapters([]);
+    setSelectedSubjects([]);
+    setChapterInSubject([]);
+    setTotalQuestions(0);
+  };
+
   const selectQuestion = (elem) => {
     const subjectArray = elem.subject_array.map((e) => {
       e.isSelected = false;
@@ -173,8 +182,8 @@ const SelectQuestions = (props) => {
                 <div className='Homework__questionBubble'>{currentQuestion.class_name}</div>
                 <div
                   className='Homework__questionBubble'
-                  onClick={() => setCurrentQuestion({})}
-                  onKeyDown={() => setCurrentQuestion({})}
+                  onClick={cancelBtnClicked}
+                  onKeyDown={cancelBtnClicked}
                   role='button'
                   tabIndex='-1'
                 >
@@ -291,7 +300,7 @@ const SelectQuestions = (props) => {
                   Fetch
                 </Button>
               </Col>
-              <Card className='w-100 mt-4 p-3 mb-3'>
+              {/* <Card className='w-100 mt-4 p-3 mb-3'>
                 <p className='Homework__smallHeading text-left'>Other Options:</p>
                 <div
                   className='Homework__smallHeading text-left ml-3 mb-1'
@@ -311,31 +320,33 @@ const SelectQuestions = (props) => {
                 >
                   Add Questions Manually.
                 </div>
-              </Card>
+              </Card> */}
             </>
           )}
         </Row>
-        <Button
-          className='w-75 mx-auto m-3'
-          variant='customPrimarySmol'
-          onClick={() => goToCreateQuestion()}
-          onKeyDown={() => goToCreateQuestion()}
-          role='button'
-          tabIndex='-1'
-        >
-          Add Questions Manually.
-        </Button>
+
         <Card className='w-100 mt-4 p-3 mb-0'>
           <p className='Homework__smallHeading text-left'>Other Options:</p>
-          <div
-            className='Homework__plainWhiteButton text-left mx-auto mb-1'
+          <Button
+            className='w-75 mx-auto m-3'
+            variant='customPrimarySmol-outline'
             onClick={() => goToSentSavedAddContent()}
             onKeyDown={() => goToSentSavedAddContent()}
             role='button'
             tabIndex='-1'
           >
             Add from saved/sent tests.
-          </div>
+          </Button>
+          <Button
+            className='w-75 mx-auto m-3'
+            variant='customPrimarySmol-outline'
+            onClick={() => goToCreateQuestion()}
+            onKeyDown={() => goToCreateQuestion()}
+            role='button'
+            tabIndex='-1'
+          >
+            Add Questions Manually.
+          </Button>
         </Card>
       </Card>
 

@@ -92,12 +92,26 @@ const Question = (props) => {
               <ReportIcon /> Report
             </Button>
             <div className='ml-auto'>
-              <Button variant='homeworkAdd' onClick={() => addtoSelected()}>
-                {question.isSelected ? <RemoveIcon /> : <AddIcon />}
-              </Button>
-              <Button variant='homeworkAddToPaper' onClick={() => addtoSelected()}>
-                {question.isSelected ? 'Remove' : 'Add To Paper'}
-              </Button>
+              {question.isSelected ? (
+                <Button variant='homeworkAddred' onClick={() => addtoSelected()}>
+                  <RemoveIcon />
+                </Button>
+              ) : null}
+              {!question.isSelected ? (
+                <Button variant='homeworkAdd' onClick={() => addtoSelected()}>
+                  <AddIcon />
+                </Button>
+              ) : null}
+              {question.isSelected ? (
+                <Button variant='homeworkAddToPaperred' onClick={() => addtoSelected()}>
+                  Remove
+                </Button>
+              ) : null}
+              {!question.isSelected ? (
+                <Button variant='homeworkAddToPaper' onClick={() => addtoSelected()}>
+                  Add To Paper
+                </Button>
+              ) : null}
             </div>
           </Row>
         </>

@@ -15,6 +15,14 @@ import {
   getClientUserId,
   getRoleArray,
 } from '../../redux/reducers/clientUserId.reducer';
+import {
+  getSelectedQuestionArray,
+  getCurrentChapterArray,
+  getCurrentSubjectArray,
+  getTestId,
+  getTestName,
+  getHomeworkLanguageType,
+} from '../../redux/reducers/homeworkCreator.reducer';
 import { homeworkActions } from '../../redux/actions/homework.action';
 import { courseActions } from '../../redux/actions/course.action';
 
@@ -27,7 +35,18 @@ const SavedSentTests = (props) => {
     setCurrentSlide,
     setQuestionArrayToStore,
     setCourseAddContentTestIdToStore,
+    selectedQuestionArray,
+    setTestIdToStore,
     setSelectedQuestionArrayToStore,
+    setCurrentSubjectArrayToStore,
+    setCurrentChapterArrayToStore,
+    setTestNameToStore,
+    currentSubjectArray,
+    currentChapterArray,
+    testIdOld,
+    language,
+    setHomeworkLanguageTypeToStore,
+    testNameOld,
     history,
     clearTests,
   } = props;
@@ -41,6 +60,7 @@ const SavedSentTests = (props) => {
       is_admin: roleArray.includes(4) ? 'true' : 'false',
       client_id: clientId,
       class_id: goTo === 'addContent' ? null : classId.class_id,
+      language,
     };
 
     const sentAssignmentPayload = {
@@ -50,36 +70,85 @@ const SavedSentTests = (props) => {
       is_admin: roleArray.includes(4) ? 'true' : 'false',
       client_id: clientId,
       assignent_type: null,
+      language,
     };
 
-    get(homeworkPayload, '/getSavedHomeworksUsingFilters').then((res) => {
+    get(homeworkPayload, '/getSavedHomeworksUsingLanguage').then((res) => {
       const result = apiValidation(res);
       setSavedTests(result);
     });
 
-    get(sentAssignmentPayload, '/getSentAssignmentsUsingFilter').then((res) => {
+    get(sentAssignmentPayload, '/getSentAssignmentsUsingLanguage').then((res) => {
       const result = apiValidation(res);
+      console.log(result, 'sentAssignmentsListtttttttt');
       setSentTests(result);
     });
   }, [clientUserId, clientId, classId, roleArray, goTo]);
 
-  const getQuestions = (testId) => {
+  const getQuestions = (testId, test) => {
+    get({ test_id: testId }, '/getTestQuestions').then((res) => {
+      console.log(res, 'responseFromSavedTestssss');
+      const result = apiValidation(res);
+      clearTests();
+      if (selectedQuestionArray.length) {
+        console.log(testIdOld, testNameOld, 'hahahahhah');
+        setCurrentSlide(1);
+        // setTestIdToStore(testId);
+        const newQuestionArray = [...result, ...selectedQuestionArray];
+        setTestIdToStore(testIdOld);
+        setTestNameToStore(testNameOld);
+        setCurrentSubjectArrayToStore(currentSubjectArray);
+        setCurrentChapterArrayToStore(currentChapterArray);
+        setQuestionArrayToStore(newQuestionArray);
+        setSelectedQuestionArrayToStore(selectedQuestionArray);
+        history.push('/homework');
+        return;
+      }
+      result.forEach((elem) => {
+        elem.directFromSaved = true;
+        elem.isSelected = true;
+      });
+      console.log(result, 'resultttttttttt');
+      setCurrentSlide(2);
+      setTestIdToStore(testId);
+      setTestNameToStore(test.test_name);
+      setHomeworkLanguageTypeToStore(test.language_type);
+      setCurrentSubjectArrayToStore(res.class_subject.class_subject_array);
+      setCurrentChapterArrayToStore(res.chapter_array);
+      setSelectedQuestionArrayToStore(result);
+      setQuestionArrayToStore(result);
+      history.push('/homework');
+    });
+  };
+  const getQuestionsSent = (testId, test) => {
     get({ test_id: testId }, '/getTestQuestions').then((res) => {
       console.log(res);
       const result = apiValidation(res);
       clearTests();
-      if (goTo === 'addContent') {
+      if (selectedQuestionArray.length) {
+        console.log(testIdOld, testNameOld, 'hahahahhah');
         setCurrentSlide(1);
-      } else {
-        result.forEach((elem) => {
-          elem.directFromSaved = true;
-          elem.isSelected = true;
-          elem.testIdOld = testId;
-        });
-        console.log(result, 'resultttttttttt');
-        setCurrentSlide(2);
-        setSelectedQuestionArrayToStore(result);
+        // setTestIdToStore(testId);
+        const newQuestionArray = [...result, ...selectedQuestionArray];
+        setTestIdToStore(testIdOld);
+        setTestNameToStore(testNameOld);
+        setHomeworkLanguageTypeToStore(test.language_type);
+        setCurrentSubjectArrayToStore(currentSubjectArray);
+        setCurrentChapterArrayToStore(currentChapterArray);
+        setQuestionArrayToStore(newQuestionArray);
+        setSelectedQuestionArrayToStore(selectedQuestionArray);
+        history.push('/homework');
+        return;
       }
+      // result.forEach((elem) => {
+      //   elem.directFromSaved = true;
+      //   elem.isSelected = true;
+      // });
+      console.log(result, 'resultttttttttt');
+      setCurrentSubjectArrayToStore(res.class_subject.class_subject_array);
+      setCurrentChapterArrayToStore(res.chapter_array);
+      setCurrentSlide(1);
+      // setTestIdToStore(testId);
       setQuestionArrayToStore(result);
       history.push('/homework');
     });
@@ -96,15 +165,15 @@ const SavedSentTests = (props) => {
       <div style={{ marginTop: '5rem' }}>
         <Tabs defaultActiveKey='Sent Tests' className='Profile__Tabs' justify>
           <Tab eventKey='Sent Tests' title='Sent Tests'>
-            {sentTests.map((elem) => {
+            {sentTests.map((elem, i) => {
               return (
                 <Row
                   className='LiveClasses__adminCard p-2 m-3'
-                  key={`elem${elem.test_id}`}
+                  key={`elem${elem.test_id * Math.random() * i}`}
                   onClick={
                     goTo === 'addContent'
                       ? () => goToAddContent(elem.test_id, false)
-                      : () => getQuestions(elem.test_id)
+                      : () => getQuestionsSent(elem.test_id, elem)
                   }
                 >
                   <Col xs={2}>
@@ -130,15 +199,15 @@ const SavedSentTests = (props) => {
             })}
           </Tab>
           <Tab eventKey='Saved Tests' title='Saved Tests'>
-            {savedTests.map((elem) => {
+            {savedTests.map((elem, i) => {
               return (
                 <Row
                   className='LiveClasses__adminCard p-2 m-3'
-                  key={`elem${elem.test_id}`}
+                  key={`elem${elem.test_id * Math.random() * i}`}
                   onClick={
                     goTo === 'addContent'
                       ? () => goToAddContent(elem.test_id, true)
-                      : () => getQuestions(elem.test_id)
+                      : () => getQuestions(elem.test_id, elem)
                   }
                 >
                   <Col xs={2}>
@@ -167,6 +236,12 @@ const mapStateToProps = (state) => ({
   clientUserId: getClientUserId(state),
   clientId: getClientId(state),
   roleArray: getRoleArray(state),
+  testIdOld: getTestId(state),
+  testNameOld: getTestName(state),
+  selectedQuestionArray: getSelectedQuestionArray(state),
+  currentChapterArray: getCurrentChapterArray(state),
+  language: getHomeworkLanguageType(state),
+  currentSubjectArray: getCurrentSubjectArray(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -183,8 +258,23 @@ const mapDispatchToProps = (dispatch) => {
     setCourseAddContentTestIdToStore: (payload) => {
       dispatch(courseActions.setCourseAddContentTestIdToStore(payload));
     },
+    setTestNameToStore: (payload) => {
+      dispatch(homeworkActions.setTestNameToStore(payload));
+    },
+    setTestIdToStore: (payload) => {
+      dispatch(homeworkActions.setTestIdToStore(payload));
+    },
+    setHomeworkLanguageTypeToStore: (payload) => {
+      dispatch(homeworkActions.setHomeworkLanguageTypeToStore(payload));
+    },
     clearTests: () => {
       dispatch(homeworkActions.clearTests());
+    },
+    setCurrentChapterArrayToStore: (payload) => {
+      dispatch(homeworkActions.setCurrentChapterArrayToStore(payload));
+    },
+    setCurrentSubjectArrayToStore: (payload) => {
+      dispatch(homeworkActions.setCurrentSubjectArrayToStore(payload));
     },
   };
 };
@@ -202,6 +292,13 @@ SavedSentTests.propTypes = {
     }),
   }).isRequired,
   clientId: PropTypes.number.isRequired,
+  selectedQuestionArray: PropTypes.instanceOf(Array).isRequired,
+  setTestIdToStore: PropTypes.func.isRequired,
+  setCurrentSubjectArrayToStore: PropTypes.func.isRequired,
+  setCurrentChapterArrayToStore: PropTypes.func.isRequired,
+  setTestNameToStore: PropTypes.func.isRequired,
+  currentChapterArray: PropTypes.instanceOf(Array).isRequired,
+  currentSubjectArray: PropTypes.instanceOf(Array).isRequired,
   clientUserId: PropTypes.number.isRequired,
   roleArray: PropTypes.instanceOf(Array).isRequired,
   setCurrentSlide: PropTypes.func.isRequired,
@@ -209,4 +306,8 @@ SavedSentTests.propTypes = {
   setCourseAddContentTestIdToStore: PropTypes.func.isRequired,
   setSelectedQuestionArrayToStore: PropTypes.func.isRequired,
   clearTests: PropTypes.func.isRequired,
+  testIdOld: PropTypes.number.isRequired,
+  testNameOld: PropTypes.string.isRequired,
+  language: PropTypes.string.isRequired,
+  setHomeworkLanguageTypeToStore: PropTypes.func.isRequired,
 };
