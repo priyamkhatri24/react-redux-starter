@@ -7,8 +7,9 @@ import { apiValidation } from './utilities';
 
 export const uploadingImage = (file) => {
   console.log(file);
-  const newName = file.name.split('.')[0] + Date.now();
-  const finalName = newName + file.name.split('.').pop();
+  const { name } = file;
+  const newName = name.split('.')[0] + Date.now();
+  const finalName = `${newName}.${name.split('.').pop()}`;
   return new Promise((resolve, rej) => {
     get(null, '/getAwsCredentialsWithBucketConfiguration').then((res) => {
       const result = apiValidation(res);
