@@ -106,11 +106,13 @@ const Mycourse = (props) => {
   useEffect(() => {
     if (document.body.clientWidth < 575) {
       // setscrolledToBottom(true);
+      console.log('changinggg');
       const tabHeightFromTop = document.getElementById('idForScroll2')?.offsetTop;
       const tabH = document.body.clientHeight - tabHeightFromTop;
       setTabHeight(tabH - 50);
+      setIsTabScrollable(true);
     }
-  });
+  }, [videoIsPlaying, documentOpener, nowPlayingVideo]);
 
   useEffect(() => {
     if (!courseId) history.push('/');
@@ -681,7 +683,9 @@ const Mycourse = (props) => {
             style={{ marginTop: '1rem', width: '100%' }}
           >
             <Tab
-              className={`scrollableTabsForCourses ${isTabScrollable ? 'scrollable' : null}`}
+              className={`scrollableTabsForCourses ${
+                isTabScrollable ? 'scrollable' : 'unscrollable'
+              }`}
               id='idForScroll2'
               eventKey='Content'
               title='Content'

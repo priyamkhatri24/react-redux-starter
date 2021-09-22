@@ -246,7 +246,7 @@
     margin: 0px;
     text-align: center;
     position: relative;
-    width: 100%;
+    width: 85%;
     background-color: #000000;
 
     @include media-breakpoint-up(sm) {
@@ -673,6 +673,9 @@
 }
 .scrollable {
   overflow-y: scroll;
+}
+.unscrollable {
+  overflow-y: hidden;
 }
 .scrollableTabsForCourses::-webkit-scrollbar {
   display: none;

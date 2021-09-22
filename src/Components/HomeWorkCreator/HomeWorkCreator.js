@@ -118,7 +118,7 @@ const HomeWorkCreator = (props) => {
         >
           <SelectQuestions history={history} fetch={fetchQuestions} />
           <QuestionList homeworkQuestions={homeworkQuestionsArray} />
-          <PreviewQuestions history={history} />
+          <PreviewQuestions history={history} homeworkQuestions={homeworkQuestionsArray} />
         </Carousel>
       </div>
     </div>

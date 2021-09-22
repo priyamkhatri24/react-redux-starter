@@ -584,7 +584,9 @@ const BuyCourse = (props) => {
           >
             <Tab
               id='idForScroll'
-              className={`scrollableTabsForCourses ${isTabScrollable ? 'scrollable' : null}`}
+              className={`scrollableTabsForCourses ${
+                isTabScrollable ? 'scrollable' : 'unscrollable'
+              }`}
               eventKey='Details'
               title='Details'
               style={{
@@ -707,14 +709,15 @@ const BuyCourse = (props) => {
               </Button>
             </Tab>
             <Tab
-              className='scrollableTabsForCourses'
+              className={`scrollableTabsForCourses ${
+                isTabScrollable ? 'scrollable' : 'unscrollable'
+              }`}
               id='contentTab'
               eventKey='Content'
               title='Content'
               style={{
                 margin: 'auto 15px',
                 height: `${tabHeight}px`,
-                overflowY: `${isTabScrollable ? 'scroll' : 'none'}`,
               }}
             >
               {renderContentHistogram()}
@@ -832,9 +835,10 @@ const BuyCourse = (props) => {
               style={{
                 margin: 'auto 15px',
                 height: `${tabHeight}px`,
-                overflowY: `${isTabScrollable ? 'scroll' : 'none'}`,
               }}
-              className='scrollableTabsForCourses'
+              className={`scrollableTabsForCourses ${
+                isTabScrollable ? 'scrollable' : 'unscrollable'
+              }`}
               id='ReviewTab'
               title='Reviews'
               eventKey='Review'

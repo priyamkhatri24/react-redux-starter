@@ -10,7 +10,13 @@ import { homeworkActions } from '../../redux/actions/homework.action';
 import { getSelectedQuestionArray, getTestId } from '../../redux/reducers/homeworkCreator.reducer';
 
 const PreviewQuestions = (props) => {
-  const { selectedQuestionArray, setSelectedQuestionArrayToStore, history, testId } = props;
+  const {
+    homeworkQuestions,
+    selectedQuestionArray,
+    setSelectedQuestionArrayToStore,
+    history,
+    testId,
+  } = props;
   const [selectedQuestions, setSelectedQuestions] = useState([]);
 
   useEffect(() => {
@@ -18,6 +24,7 @@ const PreviewQuestions = (props) => {
   }, [selectedQuestionArray]);
 
   const updateSelectedQuestions = (question) => {
+    homeworkQuestions.find((e) => e.question_id === question.question_id).isSelected = false;
     const newSelectedQuestions = JSON.parse(JSON.stringify(selectedQuestions));
     const updatedSelectedQuestions = selectedQuestions.filter((e) => {
       return e.question_id !== question.question_id;
@@ -94,9 +101,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(PreviewQuestions);
 
 PreviewQuestions.propTypes = {
   setSelectedQuestionArrayToStore: PropTypes.func.isRequired,
+  homeworkQuestions: PropTypes.instanceOf(Array),
   selectedQuestionArray: PropTypes.instanceOf(Array).isRequired,
   testId: PropTypes.number.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+};
+PreviewQuestions.defaultProps = {
+  homeworkQuestions: [],
 };

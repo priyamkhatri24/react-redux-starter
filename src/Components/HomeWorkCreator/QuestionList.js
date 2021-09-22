@@ -64,23 +64,22 @@ const QuestionList = (props) => {
     console.log(question, 'delettteeeee');
     const newSelectedQuestions = JSON.parse(JSON.stringify(selectedQuestions));
     console.log(question);
-    post(
-      { question_id: question.question_id, test_id: testId || question.testIdOld },
-      '/deleteQuestionFromTest',
-    ).then((res) => {
-      if (res.success) {
-        const removedSelectedQuestions = newSelectedQuestions.filter((e) => {
-          return e.question_id !== question.question_id;
-        });
-        setSelectedQuestionArrayToStore(removedSelectedQuestions);
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops',
-          text: 'Question could not be removed',
-        });
-      }
-    });
+    post({ question_id: question.question_id, test_id: testId }, '/deleteQuestionFromTest').then(
+      (res) => {
+        if (res.success) {
+          const removedSelectedQuestions = newSelectedQuestions.filter((e) => {
+            return e.question_id !== question.question_id;
+          });
+          setSelectedQuestionArrayToStore(removedSelectedQuestions);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops',
+            text: 'Question could not be removed',
+          });
+        }
+      },
+    );
   };
 
   const removeAllQuestions = () => {

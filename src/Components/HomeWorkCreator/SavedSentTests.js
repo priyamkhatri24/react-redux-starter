@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Tabs from 'react-bootstrap/Tabs';
+import Spinner from 'react-bootstrap/Spinner';
 import Tab from 'react-bootstrap/Tab';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import format from 'date-fns/format';
@@ -10,6 +11,7 @@ import { connect } from 'react-redux';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import { PageHeader } from '../Common';
 import { get, apiValidation } from '../../Utilities';
+import { Loader } from '../Common/Loader/Loading';
 import {
   getClientId,
   getClientUserId,
@@ -52,6 +54,7 @@ const SavedSentTests = (props) => {
   } = props;
   const [sentTests, setSentTests] = useState([]);
   const [savedTests, setSavedTests] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     console.log(roleArray, 'roleeeearrraayyyy');
@@ -86,6 +89,7 @@ const SavedSentTests = (props) => {
   }, [clientUserId, clientId, classId, roleArray, goTo]);
 
   const getQuestions = (testId, test) => {
+    setIsLoading(true);
     get({ test_id: testId }, '/getTestQuestions').then((res) => {
       console.log(res, 'responseFromSavedTestssss');
       const result = apiValidation(res);
@@ -101,6 +105,7 @@ const SavedSentTests = (props) => {
         setCurrentChapterArrayToStore(currentChapterArray);
         setQuestionArrayToStore(newQuestionArray);
         setSelectedQuestionArrayToStore(selectedQuestionArray);
+        setIsLoading(false);
         history.push('/homework');
         return;
       }
@@ -110,6 +115,7 @@ const SavedSentTests = (props) => {
       });
       console.log(result, 'resultttttttttt');
       setCurrentSlide(2);
+      history.push('/homework');
       setTestIdToStore(testId);
       setTestNameToStore(test.test_name);
       setHomeworkLanguageTypeToStore(test.language_type);
@@ -117,10 +123,11 @@ const SavedSentTests = (props) => {
       setCurrentChapterArrayToStore(res.chapter_array);
       setSelectedQuestionArrayToStore(result);
       setQuestionArrayToStore(result);
-      history.push('/homework');
+      setIsLoading(false);
     });
   };
   const getQuestionsSent = (testId, test) => {
+    setIsLoading(true);
     get({ test_id: testId }, '/getTestQuestions').then((res) => {
       console.log(res);
       const result = apiValidation(res);
@@ -137,6 +144,7 @@ const SavedSentTests = (props) => {
         setCurrentChapterArrayToStore(currentChapterArray);
         setQuestionArrayToStore(newQuestionArray);
         setSelectedQuestionArrayToStore(selectedQuestionArray);
+        setIsLoading(false);
         history.push('/homework');
         return;
       }
@@ -150,6 +158,7 @@ const SavedSentTests = (props) => {
       setCurrentSlide(1);
       // setTestIdToStore(testId);
       setQuestionArrayToStore(result);
+      setIsLoading(false);
       history.push('/homework');
     });
   };
@@ -161,6 +170,25 @@ const SavedSentTests = (props) => {
 
   return (
     <div className='Assignments'>
+      {isLoading ? (
+        <div
+          className='d-flex  justify-content-center align-items-center'
+          style={{
+            height: '100%',
+            width: '100%',
+            position: 'fixed',
+            top: 0,
+            zIndex: 9999,
+            backgroundColor: 'rgba(255,255,255,0.8)',
+            overflow: 'hidden',
+            pointerEvents: 'none',
+          }}
+        >
+          <Spinner animation='border' role='status'>
+            <span className='sr-only'>Loading...</span>
+          </Spinner>{' '}
+        </div>
+      ) : null}
       <PageHeader title='Tests' />
       <div style={{ marginTop: '5rem' }}>
         <Tabs defaultActiveKey='Sent Tests' className='Profile__Tabs' justify>

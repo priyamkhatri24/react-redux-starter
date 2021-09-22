@@ -57,7 +57,7 @@ const PreviewQuestions = (props) => {
 
   const [isIndividualMarks, setIsIndividualMarks] = useState(false);
   const [fullPaperMarks, setFullPaperMarks] = useState([
-    { id: 1, name: 'Correct', value: 0, color: 'rgba(0, 151, 0, 1)' },
+    { id: 1, name: 'Correct', value: 1, color: 'rgba(0, 151, 0, 1)' },
     { id: 2, name: 'Incorrect', value: 0, color: 'rgba(255, 0, 0, 1)' },
     { id: 3, name: 'Unanswered', value: 0, color: 'rgba(86, 66, 61, 1)' },
   ]);
@@ -70,7 +70,7 @@ const PreviewQuestions = (props) => {
         const result = apiValidation(res);
         const values = Object.values(result).map((e) => {
           e.map((elem) => {
-            elem.question_positive_marks = 0;
+            elem.question_positive_marks = 1;
             elem.question_negative_marks = 0;
             elem.question_unanswered_marks = 0;
             return elem;
@@ -93,7 +93,7 @@ const PreviewQuestions = (props) => {
           const obj = {};
           obj.sectionName = elem.name;
           obj.marksArray = [
-            { id: 1, name: 'Correct', value: 0, color: 'rgba(0, 151, 0, 1)' },
+            { id: 1, name: 'Correct', value: 1, color: 'rgba(0, 151, 0, 1)' },
             { id: 2, name: 'Incorrect', value: 0, color: 'rgba(255, 0, 0, 1)' },
             { id: 3, name: 'Unanswered', value: 0, color: 'rgba(86, 66, 61, 1)' },
           ];
@@ -101,7 +101,7 @@ const PreviewQuestions = (props) => {
         });
         setSectionMarks(tempSectionMarks);
         setFullPaperMarks([
-          { id: 1, name: 'Correct', value: 0, color: 'rgba(0, 151, 0, 1)' },
+          { id: 1, name: 'Correct', value: 1, color: 'rgba(0, 151, 0, 1)' },
           { id: 2, name: 'Incorrect', value: 0, color: 'rgba(255, 0, 0, 1)' },
           { id: 3, name: 'Unanswered', value: 0, color: 'rgba(86, 66, 61, 1)' },
         ]);
@@ -111,14 +111,14 @@ const PreviewQuestions = (props) => {
         setTestClassSubjectToStore(res.class_subject);
         const result = apiValidation(res);
         const withMarks = result.map((e) => {
-          e.question_positive_marks = 0;
+          e.question_positive_marks = 1;
           e.question_negative_marks = 0;
           e.question_unanswered_marks = 0;
           return e;
         });
         setSelectedQuestions(withMarks);
         setFullPaperMarks([
-          { id: 1, name: 'Correct', value: 0, color: 'rgba(0, 151, 0, 1)' },
+          { id: 1, name: 'Correct', value: 1, color: 'rgba(0, 151, 0, 1)' },
           { id: 2, name: 'Incorrect', value: 0, color: 'rgba(255, 0, 0, 1)' },
           { id: 3, name: 'Unanswered', value: 0, color: 'rgba(86, 66, 61, 1)' },
         ]);
