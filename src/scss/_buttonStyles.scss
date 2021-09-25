@@ -106,6 +106,25 @@
   color: var(--lighter-blue);
 }
 
+.btn-dashboardHWletsGo {
+  border-radius: 5px;
+  background: linear-gradient(90deg, #fe979c, #feae96);
+  color: #fff;
+  font-family: 'Montserrat-Medium';
+  font-size: 18px;
+  line-height: 22px;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
+  height: 36px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 95%;
+}
+@media screen and (min-width: 575px) {
+  .btn-dashboardHWletsGo {
+    width: 52%;
+  }
+}
+
 .btn-courseBlueOnWhite {
   border-radius: 5px;
   background-color: #fff;

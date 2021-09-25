@@ -75,9 +75,13 @@ const SavedSentTests = (props) => {
       assignent_type: null,
       language,
     };
+    console.log(sentAssignmentPayload);
+    console.log(homeworkPayload);
 
     get(homeworkPayload, '/getSavedHomeworksUsingLanguage').then((res) => {
       const result = apiValidation(res);
+      console.log(result, 'savdedAssignmentsListtttttttt');
+
       setSavedTests(result);
     });
 
@@ -94,8 +98,8 @@ const SavedSentTests = (props) => {
       console.log(res, 'responseFromSavedTestssss');
       const result = apiValidation(res);
       clearTests();
+      console.log(test, 'hahahahhah');
       if (selectedQuestionArray.length) {
-        console.log(testIdOld, testNameOld, 'hahahahhah');
         setCurrentSlide(1);
         // setTestIdToStore(testId);
         const newQuestionArray = [...result, ...selectedQuestionArray];
@@ -104,6 +108,7 @@ const SavedSentTests = (props) => {
         setCurrentSubjectArrayToStore(currentSubjectArray);
         setCurrentChapterArrayToStore(currentChapterArray);
         setQuestionArrayToStore(newQuestionArray);
+        setHomeworkLanguageTypeToStore(test.language_type);
         setSelectedQuestionArrayToStore(selectedQuestionArray);
         setIsLoading(false);
         history.push('/homework');
@@ -154,6 +159,7 @@ const SavedSentTests = (props) => {
       // });
       console.log(result, 'resultttttttttt');
       setCurrentSubjectArrayToStore(res.class_subject.class_subject_array);
+      setHomeworkLanguageTypeToStore(test.language_type);
       setCurrentChapterArrayToStore(res.chapter_array);
       setCurrentSlide(1);
       // setTestIdToStore(testId);

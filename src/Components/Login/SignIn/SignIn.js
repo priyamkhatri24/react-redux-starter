@@ -272,13 +272,12 @@ const SignIn = (props) => {
 
   const forgotPassword = () => {
     const { push } = props.history;
-    console.log(loginParams);
+    console.log(loginParams, 'forgottttt');
     const requestBody = {
-      user_id: loginParams.user_id,
-      contact,
+      user_name: loginParams.user_name,
     };
 
-    post(requestBody, '/resendOTP').then((res) => {
+    post(requestBody, '/forgotPassword').then((res) => {
       const result = apiValidation(res);
       if (result.status === 'sending successful') {
         push({

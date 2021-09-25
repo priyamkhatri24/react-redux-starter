@@ -50,7 +50,7 @@
     "react-datepicker": "^3.3.0",
     "react-dom": "17.0.1",
     "react-draggable": "^4.4.3",
-    "react-duration-picker": "^1.1.1",
+    "react-duration-picker": "1.1.0",
     "react-image-crop": "^8.6.12",
     "react-indiana-drag-scroll": "^2.0.1",
     "react-infinite-scroller": "^1.2.4",
@@ -68,6 +68,7 @@
     "react-router-transition": "^2.0.0",
     "react-select": "^3.1.1",
     "react-text-loop": "^2.3.0",
+    "react-time-picker": "^4.4.1",
     "react-vertical-timeline-component": "^3.3.3",
     "react-video-thumbnail": "^0.1.3",
     "react-webcam": "^5.2.3",
@@ -152,5 +153,5 @@
       "git push sid-origin auto"
     ]
   },
-  "buildDate": 1632294907366
+  "buildDate": 1632458840734
 }

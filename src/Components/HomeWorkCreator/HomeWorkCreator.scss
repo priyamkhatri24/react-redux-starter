@@ -72,7 +72,8 @@
     font-size: $spacer * 0.875;
     font-family: $regular;
     border-radius: 50px;
-
+    padding-left: 10px !important;
+    padding-right: 10px !important;
     display: flex;
     justify-content: center;
     align-items: center;

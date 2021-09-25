@@ -126,7 +126,7 @@ const SavedSentTestsUsingFilters = (props) => {
       setTestIdToStore(testId);
       setHomeworkLanguageTypeToStore(language);
 
-      history.push('/homework/viewonly');
+      history.push('/homework/viewonly', { testsType });
     });
   };
 

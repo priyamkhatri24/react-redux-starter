@@ -203,6 +203,7 @@
     justify-content: center;
     margin: auto;
     width: 100%;
+
     background-color: black;
 
     @include media-breakpoint-up(sm) {
@@ -214,7 +215,7 @@
   &__lecturevideoplayer {
     width: 100%;
     display: content;
-    // height: 210px !important;
+    // height: 30vh;
     background-color: black;
 
     @include media-breakpoint-up(sm) {
@@ -730,3 +731,18 @@
 // .unscrollableOnMobile {
 //   height: auto;
 // }
+// .backdropOnPlayer {
+//   width: 100%;
+//   height: inherit;
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   z-index: 50;
+//   background-color: rgba(0, 0, 0, 0.253);
+// }
+.nowPlayingText {
+  margin: 0px auto;
+  color: #4154cf;
+  font-family: 'Montserrat-Bold';
+  font-size: 10px;
+}

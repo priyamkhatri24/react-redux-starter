@@ -6,6 +6,8 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import CachedIcon from '@material-ui/icons/Cached';
+import MoveIcon from '@material-ui/icons/Folder';
+import CopyIcon from '@material-ui/icons/FileCopy';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CreateIcon from '@material-ui/icons/Create';
 import { post } from '../../Utilities';
@@ -23,6 +25,8 @@ const StudyBinMenu = (props) => {
     finalBatches,
     currentFolderName,
     fromRecording,
+    handleMove,
+    handleCopy,
   } = props;
   const [showRenameModal, setShowRenameModal] = useState(false);
   const handleRenameClose = () => setShowRenameModal(false);
@@ -189,6 +193,8 @@ const StudyBinMenu = (props) => {
             { text: 'Make Inactive', func: changeStatus },
             { text: 'Delete', func: fromRecording ? changeRecordingStatus : changeStatus },
             { text: 'Rename', func: handleRenameOpen },
+            { text: 'Move', func: handleMove },
+            { text: 'Copy', func: handleCopy },
           ]
             .filter((e) => !fromRecording || e.text !== 'Rename')
             .map((elem, i) => {
@@ -202,8 +208,12 @@ const StudyBinMenu = (props) => {
                         <CachedIcon />
                       ) : i === 2 ? (
                         <DeleteIcon />
-                      ) : (
+                      ) : i === 3 ? (
                         <CreateIcon />
+                      ) : i === 4 ? (
+                        <MoveIcon />
+                      ) : (
+                        <CopyIcon />
                       )}
                     </span>
                   </Col>
@@ -268,6 +278,8 @@ export default StudyBinMenu;
 
 StudyBinMenu.propTypes = {
   kholdo: PropTypes.bool.isRequired,
+  handleMove: PropTypes.func.isRequired,
+  handleCopy: PropTypes.func.isRequired,
   rerenderFilesAndFolders: PropTypes.func.isRequired,
   handleClose: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,

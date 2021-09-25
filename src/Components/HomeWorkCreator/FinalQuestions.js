@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import {
   getSelectedQuestionArray,
   getTestId,
+  getHomeworkLanguageType,
   getTestName,
 } from '../../redux/reducers/homeworkCreator.reducer';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
@@ -39,6 +40,7 @@ const PreviewQuestions = (props) => {
   const {
     selectedQuestionArray,
     history,
+    language,
     testName,
     testId,
     clientUserId,
@@ -387,6 +389,7 @@ const PreviewQuestions = (props) => {
                   key={index} //eslint-disable-line
                   showMarks={isIndividualMarks}
                   updateQuestionMarks={updateQuestionMarks}
+                  language={language}
                 />
               );
             })
@@ -409,6 +412,7 @@ const PreviewQuestions = (props) => {
                         key={index} //eslint-disable-line
                         showMarks={isIndividualMarks}
                         updateQuestionMarks={updateQuestionMarks}
+                        language={language}
                         sectionName={elem.name}
                       />
                     );
@@ -431,6 +435,7 @@ const mapStateToProps = (state) => ({
   testName: getTestName(state),
   testId: getTestId(state),
   clientUserId: getClientUserId(state),
+  language: getHomeworkLanguageType(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -458,6 +463,7 @@ PreviewQuestions.propTypes = {
     }),
   }).isRequired,
   testName: PropTypes.string.isRequired,
+  language: PropTypes.string.isRequired,
   testId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
   setTestClassSubjectToStore: PropTypes.func.isRequired,

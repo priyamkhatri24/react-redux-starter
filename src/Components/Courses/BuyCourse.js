@@ -16,15 +16,15 @@ import Modal from 'react-bootstrap/Modal';
 import Swal from 'sweetalert2';
 import PlyrComponent from 'plyr-react';
 import 'plyr-react/dist/plyr.css';
-import StarIcon from '@material-ui/icons/Star';
+import StarIcon from '@material-ui/icons/StarRounded';
 import LockIcon from '@material-ui/icons/Lock';
 import VideoIcon from '@material-ui/icons/VideoLibrary';
-import Play from '@material-ui/icons/PlayArrow';
+import Play from '@material-ui/icons/PlayArrowRounded';
 import LiveIcon from '@material-ui/icons/LiveTv';
 import DocIcon from '@material-ui/icons/Description';
 import TestIcon from '@material-ui/icons/LiveHelp';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
+import StarBorderIcon from '@material-ui/icons/StarBorderRounded';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ShareIcon from '@material-ui/icons/Share';
 import rupee from '../../assets/images/Courses/rupee.svg';
@@ -112,11 +112,11 @@ const BuyCourse = (props) => {
         const tabHeightFromTop = tab?.offsetTop;
         const tabH = document.body.clientHeight - tabHeightFromTop;
         setTabHeight(tabH - 50);
-        console.log(tabH, 'scrolled');
+        // console.log(tabH, 'scrolled');
         setIsTabScrollable(true);
       } else {
         setIsTabScrollable(false);
-        console.log('scrolling');
+        // console.log('scrolling');
       }
     });
   }, []);
@@ -443,7 +443,8 @@ const BuyCourse = (props) => {
     setCourseImage(null);
     setCourseVideo(null);
     setIsTabScrollable(false);
-    document.body.push(`/courses/buyCourse/${clientId}/${courseId}`);
+    setSource(null);
+    push(`/courses/buyCourse/${clientId}/${courseId}`);
   };
   const playVideo = () => {
     vidRef2.current.play();
@@ -667,7 +668,7 @@ const BuyCourse = (props) => {
               </Button>
               <p className='Courses__heading mt-4'>People also viewed</p>
 
-              <ViewCoursesList clientId={clientId} clicked={() => {}} />
+              <ViewCoursesList clientId={clientId} clicked={goToCourse} />
               <Button
                 onClick={
                   localStorage.getItem('state') &&

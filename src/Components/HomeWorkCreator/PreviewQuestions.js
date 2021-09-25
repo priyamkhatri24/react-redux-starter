@@ -7,12 +7,17 @@ import { connect } from 'react-redux';
 import { post } from '../../Utilities';
 import Question from './Question';
 import { homeworkActions } from '../../redux/actions/homework.action';
-import { getSelectedQuestionArray, getTestId } from '../../redux/reducers/homeworkCreator.reducer';
+import {
+  getSelectedQuestionArray,
+  getTestId,
+  getHomeworkLanguageType,
+} from '../../redux/reducers/homeworkCreator.reducer';
 
 const PreviewQuestions = (props) => {
   const {
     homeworkQuestions,
     selectedQuestionArray,
+    language,
     setSelectedQuestionArrayToStore,
     history,
     testId,
@@ -74,6 +79,7 @@ const PreviewQuestions = (props) => {
             index={index + 1}
             update={updateSelectedQuestions}
             key={e.question_id}
+            language={language}
           />
         );
       })}
@@ -84,6 +90,7 @@ const PreviewQuestions = (props) => {
 const mapStateToProps = (state) => ({
   selectedQuestionArray: getSelectedQuestionArray(state),
   testId: getTestId(state),
+  language: getHomeworkLanguageType(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -102,6 +109,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(PreviewQuestions);
 PreviewQuestions.propTypes = {
   setSelectedQuestionArrayToStore: PropTypes.func.isRequired,
   homeworkQuestions: PropTypes.instanceOf(Array),
+  language: PropTypes.string.isRequired,
   selectedQuestionArray: PropTypes.instanceOf(Array).isRequired,
   testId: PropTypes.number.isRequired,
   history: PropTypes.shape({

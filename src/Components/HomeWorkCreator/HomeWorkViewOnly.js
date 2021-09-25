@@ -27,6 +27,18 @@ const HomeWorkViewOnly = (props) => {
   } = props;
 
   const modifyQuestions = () => {
+    const { testsType } = history.location.state;
+    if (testsType === 'saved') {
+      setSelectedQuestionArrayToStore(questionArray);
+      questionArray.forEach((ele) => {
+        ele.directFromSaved = true;
+        ele.isSelected = true;
+      });
+      setCurrentSlide(2);
+      history.push('/homework');
+      return;
+    }
+    setSelectedQuestionArrayToStore([]);
     setCurrentSlide(1);
     history.push('/homework');
   };
@@ -59,11 +71,10 @@ const HomeWorkViewOnly = (props) => {
         <Button variant='customPrimary' onClick={() => goToAssigner()}>
           Next
         </Button>
-        {testIsDraft === 1 && (
-          <Button variant='customPrimary' onClick={() => modifyQuestions()}>
-            Add/Remove
-          </Button>
-        )}
+
+        <Button variant='customPrimary' onClick={() => modifyQuestions()}>
+          Add/Remove
+        </Button>
       </Row>
     </>
   );
@@ -83,6 +94,18 @@ const mapDispatchToProps = (dispatch) => {
     },
     setSelectedQuestionArrayToStore: (payload) => {
       dispatch(homeworkActions.setSelectedQuestionArrayToStore(payload));
+    },
+    setHomeworkLanguageTypeToStore: (payload) => {
+      dispatch(homeworkActions.setHomeworkLanguageTypeToStore(payload));
+    },
+    clearTests: () => {
+      dispatch(homeworkActions.clearTests());
+    },
+    setCurrentChapterArrayToStore: (payload) => {
+      dispatch(homeworkActions.setCurrentChapterArrayToStore(payload));
+    },
+    setCurrentSubjectArrayToStore: (payload) => {
+      dispatch(homeworkActions.setCurrentSubjectArrayToStore(payload));
     },
   };
 };

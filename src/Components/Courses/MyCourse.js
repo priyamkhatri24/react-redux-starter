@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
@@ -41,6 +41,24 @@ import checkmark from '../../assets/images/order/icons8-checked.svg';
 import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
 import './Courses.scss';
 
+window.mobileCheck = function () {
+  let check = false;
+  (function (a) {
+    /* eslint-disable */
+    if (
+      /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
+        a,
+      ) ||
+      /* eslint-disable */
+      /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(
+        a.substr(0, 4),
+      )
+    )
+      check = true;
+  })(navigator.userAgent || navigator.vendor || window.opera);
+  return check;
+};
+
 const Mycourse = (props) => {
   const {
     history,
@@ -71,7 +89,7 @@ const Mycourse = (props) => {
   const [reviewPlaceholder, setReviewPlaceholder] = useState(
     'Please describe your experience about this course here.',
   );
-  const [tabHeight, setTabHeight] = useState(600);
+  const [tabHeight, setTabHeight] = useState(400);
   const [source, setSource] = useState(null);
   const [showToast, setShowToast] = useState(false);
   const [addedRating, setAddedRating] = useState(0);
@@ -83,9 +101,16 @@ const Mycourse = (props) => {
   const [nowPlayingVideo, setNowPlayingVideo] = useState(null);
   const [documentToOpen, setDocumentToOpen] = useState({});
   const [documentOpener, setDocumentOpener] = useState(false);
+  const [isBrowserCompatible, setIsBrowserCompatible] = useState(true);
   const vidRef = useRef(null);
   const handleImageOpen = () => setShowImageModal(true);
   const handleImageClose = () => setShowImageModal(false);
+
+  useEffect(() => {
+    const check = window.mobileCheck();
+    setIsBrowserCompatible(!check);
+    console.log(!check, 'checkMyBrowserrrrr');
+  }, []);
 
   useEffect(() => {
     document.addEventListener('scroll', function (e) {
@@ -94,8 +119,8 @@ const Mycourse = (props) => {
         const tabHeightFromTop = document.getElementById('idForScroll2')?.offsetTop;
         const tabH = document.body.clientHeight - tabHeightFromTop;
         setTabHeight(tabH - 50);
-        console.log(document.body.clientHeight, 'CH');
-        console.log(tabHeightFromTop, 'HT');
+        // console.log(document.body.clientHeight, 'CH');
+        // console.log(tabHeightFromTop, 'HT');
         setIsTabScrollable(true);
       } else {
         setIsTabScrollable(false);
@@ -112,7 +137,17 @@ const Mycourse = (props) => {
       setTabHeight(tabH - 50);
       setIsTabScrollable(true);
     }
-  }, [videoIsPlaying, documentOpener, nowPlayingVideo]);
+  });
+
+  const handleTabHeight = () => {
+    if (document.body.clientWidth < 575) {
+      const tabHeightFromTop = document.getElementById('idForScroll2')?.offsetTop;
+      const tabH = document.body.clientHeight - tabHeightFromTop;
+      setTabHeight(tabH - 50);
+      setIsTabScrollable(true);
+      console.log('tabscrolling');
+    }
+  };
 
   useEffect(() => {
     if (!courseId) history.push('/');
@@ -202,16 +237,23 @@ const Mycourse = (props) => {
         setNowPlayingVideo({
           src: elem.file_link,
           provider: 'youtube',
+          id: elem.id,
+          name: elem.name,
         });
+        setDocumentToOpen({});
         setDocumentOpener(false);
         setSource(false);
       } else if (elem.file_type === 'video' && !elem.isYoutube) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         setDocumentOpener(false);
         setSource(false);
+        console.log(elem, 'videoooooele');
         setNowPlayingVideo({
           src: elem.file_link,
+          id: elem.id,
+          name: elem.name,
         });
+        setDocumentToOpen({});
       } else {
         history.push({
           pathname: '/otherfileviewer',
@@ -586,6 +628,20 @@ const Mycourse = (props) => {
     }
   });
 
+  const renderVideoPlayer = useMemo(() => {
+    return (
+      <div className='mx-auto Courses__lecturevideoplayer'>
+        <PlyrComponent
+          source={{
+            type: 'video',
+            sources: [nowPlayingVideo],
+          }}
+          options={{ autoplay: false }}
+        />
+      </div>
+    );
+  }, [nowPlayingVideo]);
+
   const editReviewHandler = useCallback(() => {
     setUserHasCommented(false);
   }, []);
@@ -600,23 +656,14 @@ const Mycourse = (props) => {
       <button className='shareButtonForCourse' type='button' onClick={() => shareCourse()}>
         <ShareIcon style={{ margin: '13px 16px', color: 'white' }} />
       </button>
-      {nowPlayingVideo && (
-        <div className='mx-auto Courses__lecturevideoplayer'>
-          <PlyrComponent
-            source={{
-              type: 'video',
-              sources: [nowPlayingVideo],
-            }}
-            options={{ autoplay: false }}
-          />
-        </div>
-      )}
+      {nowPlayingVideo && renderVideoPlayer}
       {/* {nowPlayingVideo && (
         <div className='mx-auto Courses__lecturevideoplayer'>
+          <div className='backdropOnPlayer'> </div>
           <ReactPlayer
             className='Courses__lecturevideoplayer'
+            url={`https://www.youtube.com/watch?v=${nowPlayingVideo.src}`}
             controls
-            url={`https://www.youtube.com/watch?v=${nowPlayingVideo.file_link}`}
           />
         </div>
       )} */}
@@ -674,7 +721,7 @@ const Mycourse = (props) => {
       {Object.keys(course).length > 0 && (
         <div className='Courses__mycourseContainer'>
           <p className={`Courses__courseCardHeading mx-auto mb-0 mt-${source ? '0' : '4'} w-90`}>
-            {course.course_title}
+            {nowPlayingVideo?.name || documentToOpen?.name}
           </p>
           <Tabs
             defaultActiveKey='Content'
@@ -687,6 +734,7 @@ const Mycourse = (props) => {
                 isTabScrollable ? 'scrollable' : 'unscrollable'
               }`}
               id='idForScroll2'
+              onScroll={handleTabHeight}
               eventKey='Content'
               title='Content'
               style={{
@@ -786,7 +834,7 @@ const Mycourse = (props) => {
                                 onClick={() => displayContent(elem, elem.content_type)}
                                 className='d-flex my-2 mx-auto'
                               >
-                                <div style={{ width: '90%' }} className='d-flex align-items-center'>
+                                <div style={{ width: '90%' }} className='d-flex align-items-top'>
                                   {elem.category !== 'Videos' ? (
                                     <div className='iconContainerForContents'>{icon}</div>
                                   ) : (
@@ -810,26 +858,31 @@ const Mycourse = (props) => {
                                       style={{ width: '90%' }}
                                       className='d-flex mx-auto align-items-center'
                                     > */}
-                                    <ProgressBar
-                                      width={`${70}%`}
-                                      height='2px'
-                                      borderRadius='100px'
-                                      customStyle={{
-                                        backgroundColor: '#4154cf',
-                                        borderRadius: '100px',
-                                      }}
-                                      myProgressCustomStyle={{
-                                        width: '91%',
-                                        margin: '5px 8px',
-                                        backgroundColor: 'rgba(0,0,0,0.42)',
-                                      }}
-                                    />
-                                    {/* <p className='verySmallText mb-0'>70%</p> */}
-                                    {/* </div> */}
+                                    {elem.id === nowPlayingVideo?.id ||
+                                    elem.id === documentToOpen?.id ? (
+                                      <p className='nowPlayingText mx-2'>Now Playing</p>
+                                    ) : (
+                                      <ProgressBar
+                                        width={`${70}%`}
+                                        height='2px'
+                                        borderRadius='100px'
+                                        customStyle={{
+                                          backgroundColor: '#4154cf',
+                                          borderRadius: '100px',
+                                        }}
+                                        myProgressCustomStyle={{
+                                          width: '91%',
+                                          margin: '5px 8px',
+                                          backgroundColor: 'rgba(0,0,0,0.42)',
+                                        }}
+                                      />
+                                    )}
                                   </div>
-                                  {elem.isPlayingNow ? <p>now playing</p> : null}
+                                  {/* {elem.id === nowPlayingVideo?.id ||
+                                  elem.id === documentToOpen?.id ? (
+                                    <p>now playing</p>
+                                    ) : null} */}
                                 </div>
-                                {/* <LockIcon style={{ color: 'gray' }} /> */}
                               </Row>
                             );
                           })}
@@ -844,6 +897,7 @@ const Mycourse = (props) => {
               className={`scrollableTabsForCourses ${isTabScrollable ? 'scrollable' : null}`}
               eventKey='Details'
               title='Details'
+              onScroll={handleTabHeight}
               id='detailTab'
               style={{
                 margin: 'auto 15px',
@@ -887,6 +941,7 @@ const Mycourse = (props) => {
               }}
               className={`scrollableTabsForCourses ${isTabScrollable ? 'scrollable' : null}`}
               id='ReviewTab'
+              onScroll={handleTabHeight}
               title='Reviews'
               eventKey='Review'
             >

@@ -13,6 +13,7 @@ import {
   getSelectedQuestionArray,
   getTestId,
   getTestName,
+  getHomeworkLanguageType,
 } from '../../redux/reducers/homeworkCreator.reducer';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { post } from '../../Utilities';
@@ -32,6 +33,7 @@ const QuestionList = (props) => {
     setTestIdToStore,
     setTestNameToStore,
     setTestIsDraftToStore,
+    language,
     setHomeworkLanguageTypeToStore,
   } = props;
   const [questions, setQuestions] = useState([]);
@@ -47,6 +49,8 @@ const QuestionList = (props) => {
   useEffect(() => {
     const newQuestions = homeworkQuestions.map((e) => {
       if (e.directFromSaved) {
+        e.isSelected = true;
+      } else if (e.isSelected) {
         e.isSelected = true;
       } else {
         e.isSelected = false;
@@ -138,6 +142,7 @@ const QuestionList = (props) => {
           setTestNameToStore(res.test_name);
           setTestIsDraftToStore(1);
           setHomeworkLanguageTypeToStore('english');
+          setCurrentSlide(2);
         }
         newSelectedQuestions.push(...questionArray);
         setSelectedQuestionArrayToStore(newSelectedQuestions);
@@ -161,6 +166,7 @@ const QuestionList = (props) => {
 
   const goToNextSlide = () => {
     setCurrentSlide(2);
+    console.log('next');
   };
 
   const selectAll = (value) => {
@@ -217,6 +223,7 @@ const QuestionList = (props) => {
             index={index + 1}
             update={updateSelectedQuestions}
             key={e.question_id}
+            language={language}
           />
         );
       })}
@@ -231,6 +238,7 @@ const mapStateToProps = (state) => ({
   clientId: getClientId(state),
   clientUserId: getClientUserId(state),
   currentChapterArray: getCurrentChapterArray(state),
+  language: getHomeworkLanguageType(state),
   currentSubjectArray: getCurrentSubjectArray(state),
 });
 
@@ -262,6 +270,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(QuestionList);
 QuestionList.propTypes = {
   clientId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
+  language: PropTypes.string.isRequired,
   setCurrentSlide: PropTypes.func.isRequired,
   setTestIdToStore: PropTypes.func.isRequired,
   setTestNameToStore: PropTypes.func.isRequired,

@@ -102,8 +102,8 @@ const HomeWorkCreator = (props) => {
             return (
               <li
                 style={indicatorStyles}
-                onClick={onClickHandler}
-                onKeyDown={onClickHandler}
+                onClick={() => setCurrentSlide(index)}
+                onKeyDown={() => setCurrentSlide(index)}
                 value={index}
                 key={index}
                 role='button' // eslint-disable-line
