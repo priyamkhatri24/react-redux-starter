@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
+import ReactPlayer from 'react-player';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import compareAsc from 'date-fns/compareAsc';
 import differenceInSeconds from 'date-fns/differenceInSeconds';
@@ -9,10 +10,10 @@ import Accordion from 'react-bootstrap/Accordion';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Row from 'react-bootstrap/Row';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
-import StarIcon from '@material-ui/icons/Star';
+import StarBorderIcon from '@material-ui/icons/StarBorderRounded';
+import StarIcon from '@material-ui/icons/StarRounded';
 import VideoIcon from '@material-ui/icons/VideoLibrary';
-import Play from '@material-ui/icons/PlayArrow';
+import Play from '@material-ui/icons/PlayArrowRounded';
 import LiveIcon from '@material-ui/icons/LiveTv';
 import DocIcon from '@material-ui/icons/Description';
 import TestIcon from '@material-ui/icons/LiveHelp';
@@ -66,11 +67,13 @@ const Mycourse = (props) => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [imgLink, setImgLink] = useState('');
   const [contentArray, setContentArray] = useState([]);
-  const [isTabScrollable, setIsTabScrollable] = useState(false);
+  const [isTabScrollable, setIsTabScrollable] = useState(true);
+  const [currentTab, setCurrentTab] = useState('content');
+  const [isReviewing, setIsReviewing] = useState(false);
   const [reviewPlaceholder, setReviewPlaceholder] = useState(
     'Please describe your experience about this course here.',
   );
-  const [tabHeight, setTabHeight] = useState(600);
+  const [tabHeight, setTabHeight] = useState(400);
   const [source, setSource] = useState(null);
   const [showToast, setShowToast] = useState(false);
   const [addedRating, setAddedRating] = useState(0);
@@ -80,6 +83,9 @@ const Mycourse = (props) => {
   const [videoIsPlaying, setVideoIsPlaying] = useState(true);
   const [previewText, setPreviewText] = useState(true);
   const [nowPlayingVideo, setNowPlayingVideo] = useState(null);
+  const [documentToOpen, setDocumentToOpen] = useState({});
+  const [documentOpener, setDocumentOpener] = useState(false);
+  const [isBrowserCompatible, setIsBrowserCompatible] = useState(true);
   const vidRef = useRef(null);
   const handleImageOpen = () => setShowImageModal(true);
   const handleImageClose = () => setShowImageModal(false);
@@ -91,14 +97,36 @@ const Mycourse = (props) => {
         const tabHeightFromTop = document.getElementById('idForScroll2')?.offsetTop;
         const tabH = document.body.clientHeight - tabHeightFromTop;
         setTabHeight(tabH - 50);
-        console.log(document.body.clientHeight, 'CH');
-        console.log(tabHeightFromTop, 'HT');
+        // console.log(document.body.clientHeight, 'CH');
+        // console.log(tabHeightFromTop, 'HT');
         setIsTabScrollable(true);
       } else {
         setIsTabScrollable(false);
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (document.body.clientWidth < 575) {
+      if (currentTab === 'reviews') return;
+      // setscrolledToBottom(true);
+      console.log('changinggg');
+      const tabHeightFromTop = document.getElementById('idForScroll2')?.offsetTop;
+      const tabH = document.body.clientHeight - tabHeightFromTop;
+      setTabHeight(tabH - 50);
+      setIsTabScrollable(true);
+    }
+  });
+
+  const handleTabHeight = () => {
+    if (document.body.clientWidth < 575) {
+      const tabHeightFromTop = document.getElementById('idForScroll2')?.offsetTop;
+      const tabH = document.body.clientHeight - tabHeightFromTop;
+      setTabHeight(tabH - 50);
+      setIsTabScrollable(true);
+      console.log('tabscrolling');
+    }
+  };
 
   useEffect(() => {
     if (!courseId) history.push('/');
@@ -112,7 +140,6 @@ const Mycourse = (props) => {
         const result = apiValidation(res);
         setCourse(result);
         console.log(result);
-        setReviews(result.reviews);
         // setReviews(sampleReviews);
         if (result.course_preview_vedio) {
           const vidsource = {
@@ -132,24 +159,72 @@ const Mycourse = (props) => {
         });
         setContentArray(content);
         console.log(content, 'finalContentArray');
-        if (result.reviews.filter((ele) => ele.client_user_id === clientUserId).length) {
+      });
+      get({ course_id: courseId }, '/getReviewsOfCourse').then((resp) => {
+        const reviewsFetched = apiValidation(resp);
+        console.log(reviewsFetched, 'newReviewssss');
+        if (reviewsFetched.date_wise.filter((ele) => ele.client_user_id === clientUserId).length) {
           setUserHasCommented(true);
-          const userComment = result.reviews.filter((ele) => ele.client_user_id === clientUserId);
+          const userComment = reviewsFetched.date_wise.filter(
+            (ele) => ele.client_user_id === clientUserId,
+          );
           userComment[0].isUserComment = true;
-          const otherComments = result.reviews.filter((ele) => ele.client_user_id !== clientUserId);
+          setAddedReview(userComment[0].review_text);
+          // setAddedRating(userComment[0].rating);
+
+          const otherComments = reviewsFetched.date_wise.filter(
+            (ele) => ele.client_user_id !== clientUserId,
+          );
           const finalReviewArray = [...userComment, ...otherComments];
           setReviews(finalReviewArray);
+          console.log(userComment, 'userrrrr');
         }
       });
     }
   }, [courseId, clientUserId, history]);
 
-  const openImage = (elem) => {
-    setImgLink(elem.file_link);
+  const renderReviews = () => {
+    get({ course_id: courseId }, '/getReviewsOfCourse').then((resp) => {
+      const reviewsFetched = apiValidation(resp);
+      console.log(reviewsFetched, 'newReviewssss');
+      if (reviewsFetched.date_wise.filter((ele) => ele.client_user_id === clientUserId).length) {
+        setUserHasCommented(true);
+        const userComment = reviewsFetched.date_wise.filter(
+          (ele) => ele.client_user_id === clientUserId,
+        );
+        userComment[0].isUserComment = true;
+        setAddedReview(userComment[0].review_text);
+        // setAddedRating(userComment[0].rating);
+
+        const otherComments = reviewsFetched.date_wise.filter(
+          (ele) => ele.client_user_id !== clientUserId,
+        );
+        const finalReviewArray = [...userComment, ...otherComments];
+        setReviews(finalReviewArray);
+        console.log(userComment, 'userrrrr');
+      }
+    });
+  };
+
+  const openImage = () => {
+    setImgLink(documentToOpen.file_link);
     handleImageOpen();
   };
 
+  const openDocument = () => {
+    if (documentToOpen.file_type === '.pdf') {
+      history.push({
+        pathname: '/fileviewer',
+        state: { filePath: documentToOpen.file_link },
+      });
+    } else if (documentToOpen.file_type === 'image') {
+      openImage();
+    }
+  };
+
   const displayContent = (elem, type) => {
+    // e.content_array.forEach((ele) => (ele.isPlayingNow = false));
+    // elem.isPlayingNow = true;
     if (type === 'file') {
       // if (elem.file_type === 'video') {
       //   setVideo(true);
@@ -158,26 +233,50 @@ const Mycourse = (props) => {
       //   setSource(newSource);
       // }
       console.log(elem);
-      if (elem.file_type === 'gallery') {
-        openImage(elem);
-      } else if (elem.file_type === '.pdf') {
-        history.push({
-          pathname: '/fileviewer',
-          state: { filePath: elem.file_link },
-        });
-      } else if (elem.file_type === 'video' && elem.isYoutube) {
-        // history.push({
-        //   pathname: `/videoplayer/${elem.file_link}`,
-        //   state: { videoId: elem.file_id },
-        // });
-        /* eslint-disable */
-        document.body.scrollTop = document.documentElement.scrollTop = 0;
-        setNowPlayingVideo(elem);
+      if (elem.file_type === 'gallery' || elem.file_type === 'image') {
         setSource(false);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setNowPlayingVideo(false);
+        setDocumentOpener(true);
+        setDocumentToOpen(elem);
+      } else if (elem.file_type === '.pdf') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setNowPlayingVideo(false);
+        setSource(false);
+        setDocumentOpener(true);
+        setDocumentToOpen(elem);
+      } else if (elem.file_type === 'video' && elem.isYoutube) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setDocumentToOpen({});
+        setDocumentOpener(false);
+        setSource(false);
+        if (navigator.userAgent.includes('VivoBrowser')) {
+          console.log('browserIncompatible');
+          setIsBrowserCompatible(false);
+          return;
+        }
+        setNowPlayingVideo({
+          src: elem.file_link,
+          provider: 'youtube',
+          id: elem.id,
+          name: elem.name,
+        });
       } else if (elem.file_type === 'video' && !elem.isYoutube) {
-        history.push({
-          pathname: `/videoplayer`,
-          state: { videoLink: elem.file_link, videoId: elem.file_id },
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setDocumentOpener(false);
+        setSource(false);
+        console.log(elem, 'videoooooele');
+        console.log(navigator.userAgent);
+        setDocumentToOpen({});
+        if (navigator.userAgent.includes('VivoBrowser')) {
+          console.log('browserIncompatible');
+          setIsBrowserCompatible(false);
+          return;
+        }
+        setNowPlayingVideo({
+          src: elem.file_link,
+          id: elem.id,
+          name: elem.name,
         });
       } else {
         history.push({
@@ -519,18 +618,28 @@ const Mycourse = (props) => {
     };
     if (!addedRating || !addedReview) return;
     setTimeout(() => {
+      if (document.body.clientWidth < 575) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
       post(payload, '/addCourseReview').then((res) => {
         console.log(res);
-        const userReview = reviews.filter((ele) => ele.client_user_id === clientUserId);
-        userReview[0].review_text = addedReview;
-        userReview[0].rating = addedRating;
-        userReview[0].isUserComment = true;
-        const otherReviews = reviews.filter((ele) => ele.client_user_id !== clientUserId);
-        const finalReviewArray = [...userReview, ...otherReviews];
-        setReviews(finalReviewArray);
+        if (userHasCommented) {
+          const userReview = reviews.filter((ele) => ele.client_user_id === clientUserId);
+          userReview[0].review_text = addedReview;
+          userReview[0].rating = addedRating;
+          userReview[0].isUserComment = true;
+          const otherReviews = reviews.filter((ele) => ele.client_user_id !== clientUserId);
+          const finalReviewArray = [...userReview, ...otherReviews];
+          setReviews(finalReviewArray);
+          setUserHasCommented(true);
+        } else {
+          renderReviews();
+          setUserHasCommented(true);
+        }
         // alert('review added');
-        setUserHasCommented(true);
       });
+      setIsReviewing(false);
+      handleTabHeight();
     }, 300);
   };
 
@@ -553,46 +662,66 @@ const Mycourse = (props) => {
     }
   });
 
-  const scrollingHandler = () => {
-    console.log('scrolling handler');
-  };
+  // const controlPreview = () => {
+  //   if (vidRef && vidRef.current) {
+  //     if (videoIsPlaying) {
+  //       vidRef.current.pause();
+  //       console.log('kia');
+  //     }
+  //     if (!videoIsPlaying) {
+  //       console.log('kia');
+  //       vidRef.current.play();
+  //     }
+  //   }
+  // };
 
-  const editReviewHandler = () => {
+  const renderVideoPlayer = useMemo(() => {
+    return (
+      <div className='mx-auto Courses__lecturevideoplayer'>
+        <PlyrComponent
+          source={{
+            type: 'video',
+            sources: [nowPlayingVideo],
+          }}
+          options={{ autoplay: false }}
+        />
+      </div>
+    );
+  }, [nowPlayingVideo]);
+
+  const editReviewHandler = useCallback(() => {
     setUserHasCommented(false);
-  };
+    setIsReviewing(true);
+  }, []);
   const starArr = new Array(addedRating).fill(Math.random());
   const borderStarArr = new Array(5 - addedRating).fill(Math.random());
 
   return (
-    <div>
+    <div className={`${isReviewing ? null : 'unscrollableOnMobile'}`}>
       <PageHeader transparent />
       <div className='backButtonForCoursesPage'> </div>
       <PageHeader iconColor='white' transparent title='' />
       <button className='shareButtonForCourse' type='button' onClick={() => shareCourse()}>
         <ShareIcon style={{ margin: '13px 16px', color: 'white' }} />
       </button>
-      {nowPlayingVideo && (
+      {nowPlayingVideo && renderVideoPlayer}
+      {/* {nowPlayingVideo && (
         <div className='mx-auto Courses__lecturevideoplayer'>
-          <PlyrComponent
-            source={{
-              type: 'video',
-              sources: [
-                {
-                  src: nowPlayingVideo.file_link,
-                  provider: 'youtube',
-                },
-              ],
-            }}
-            options={{ autoplay: false }}
+          <div className='backdropOnPlayer'> </div>
+          <ReactPlayer
+            className='Courses__lecturevideoplayer'
+            url={`https://www.youtube.com/watch?v=${nowPlayingVideo.src}`}
+            controls
           />
         </div>
-      )}
+      )} */}
       {source && (
         <>
           <div className='mx-auto Courses__videoplayer'>
             {/* eslint-disable */}
             <video
               ref={vidRef}
+              // onClick={controlPreview}
               width='100%'
               style={{ borderRadius: '5px' }}
               autoplay='autoplay'
@@ -613,12 +742,8 @@ const Mycourse = (props) => {
         <p style={{ opacity: previewText ? '1' : '0' }} className='previewVideoTextClass'>
           Preview video
         </p>
-      ) : (
-        <p style={{ opacity: '0' }} className='previewVideoTextClass'>
-          Preview
-        </p>
-      )}
-      {!source && !nowPlayingVideo && (
+      ) : null}
+      {!source && !nowPlayingVideo && !documentOpener && (
         <div className='mx-auto Courses__thumbnail mb-2'>
           <img
             src={course.course_display_image ? course.course_display_image : image}
@@ -627,9 +752,26 @@ const Mycourse = (props) => {
           />
         </div>
       )}
+      {!source && !nowPlayingVideo && documentOpener && (
+        <div className='mx-auto Courses__docOpener mb-2'>
+          <div className='TextOnImage'>
+            <p>{documentToOpen.name}</p>
+            <button className='openDocumentBtn' onClick={openDocument}>
+              Open file
+            </button>
+          </div>
+          <img
+            src={course.course_display_image ? course.course_display_image : image}
+            alt='course'
+            className='mx-auto img-fluid courseDocumentOpenerImg'
+          />
+        </div>
+      )}
       {Object.keys(course).length > 0 && (
-        <div className='Courses__buycourseContainer'>
-          <p className='Courses__courseCardHeading mx-auto mb-0 mt-0 w-90'>{course.course_title}</p>
+        <div className='Courses__mycourseContainer'>
+          <p className={`Courses__courseCardHeading mx-auto mb-0 mt-${source ? '0' : '4'} w-90`}>
+            {nowPlayingVideo?.name || documentToOpen?.name || course.course_title}
+          </p>
           <Tabs
             defaultActiveKey='Content'
             className='Courses__Tabs'
@@ -637,8 +779,12 @@ const Mycourse = (props) => {
             style={{ marginTop: '1rem', width: '100%' }}
           >
             <Tab
-              className={`scrollableTabsForCourses ${isTabScrollable ? 'scrollable' : null}`}
+              className={`scrollableTabsForCourses ${
+                isTabScrollable ? 'scrollable' : 'unscrollable'
+              }`}
               id='idForScroll2'
+              onScroll={handleTabHeight}
+              onClick={() => setCurrentTab('content')}
               eventKey='Content'
               title='Content'
               style={{
@@ -694,8 +840,8 @@ const Mycourse = (props) => {
                               margin: '0px 20px 17px 0px',
                               backgroundColor: 'rgba(0,0,0,0.42)',
                             }}
-                          /> */}
-                          {/* <p className='verySmallText'>70%</p> */}
+                          />
+                          <p className='verySmallText'>70%</p> */}
                         </div>
                       </Accordion.Toggle>
                       <Accordion.Collapse eventKey='0'>
@@ -738,7 +884,7 @@ const Mycourse = (props) => {
                                 onClick={() => displayContent(elem, elem.content_type)}
                                 className='d-flex my-2 mx-auto'
                               >
-                                <div style={{ width: '90%' }} className='d-flex align-items-center'>
+                                <div style={{ width: '90%' }} className='d-flex align-items-top'>
                                   {elem.category !== 'Videos' ? (
                                     <div className='iconContainerForContents'>{icon}</div>
                                   ) : (
@@ -762,25 +908,32 @@ const Mycourse = (props) => {
                                       style={{ width: '90%' }}
                                       className='d-flex mx-auto align-items-center'
                                     > */}
-                                    {/* <ProgressBar
-                                      width={`${70}%`}
-                                      height='2px'
-                                      borderRadius='100px'
-                                      customStyle={{
-                                        backgroundColor: '#4154cf',
-                                        borderRadius: '100px',
-                                      }}
-                                      myProgressCustomStyle={{
-                                        width: '91%',
-                                        margin: '5px 8px',
-                                        backgroundColor: 'rgba(0,0,0,0.42)',
-                                      }}
-                                    /> */}
-                                    {/* <p className='verySmallText mb-0'>70%</p> */}
-                                    {/* </div> */}
+                                    {
+                                      elem.id === nowPlayingVideo?.id ||
+                                      elem.id === documentToOpen?.id ? (
+                                        <p className='nowPlayingText mx-2'>Now Playing</p>
+                                      ) : null
+                                      // <ProgressBar
+                                      //   width={`${70}%`}
+                                      //   height='2px'
+                                      //   borderRadius='100px'
+                                      //   customStyle={{
+                                      //     backgroundColor: '#4154cf',
+                                      //     borderRadius: '100px',
+                                      //   }}
+                                      //   myProgressCustomStyle={{
+                                      //     width: '91%',
+                                      //     margin: '5px 8px',
+                                      //     backgroundColor: 'rgba(0,0,0,0.42)',
+                                      //   }}
+                                      // />
+                                    }
                                   </div>
+                                  {/* {elem.id === nowPlayingVideo?.id ||
+                                  elem.id === documentToOpen?.id ? (
+                                    <p>now playing</p>
+                                    ) : null} */}
                                 </div>
-                                {/* <LockIcon style={{ color: 'gray' }} /> */}
                               </Row>
                             );
                           })}
@@ -795,6 +948,9 @@ const Mycourse = (props) => {
               className={`scrollableTabsForCourses ${isTabScrollable ? 'scrollable' : null}`}
               eventKey='Details'
               title='Details'
+              onScroll={handleTabHeight}
+              onClick={() => setCurrentTab('details')}
+              id='detailTab'
               style={{
                 margin: 'auto 15px',
                 height: `${tabHeight}px`,
@@ -837,6 +993,8 @@ const Mycourse = (props) => {
               }}
               className={`scrollableTabsForCourses ${isTabScrollable ? 'scrollable' : null}`}
               id='ReviewTab'
+              // onScroll={handleTabHeight}
+              onClick={() => setCurrentTab('reviews')}
               title='Reviews'
               eventKey='Review'
             >
@@ -988,9 +1146,11 @@ const Mycourse = (props) => {
 
       <Modal show={showImageModal} onHide={handleImageClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Uploaded Image</Modal.Title>
+          <Modal.Title>
+            {documentToOpen.name?.slice(0, documentToOpen.name?.length - 4)}
+          </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className='mx-auto'>
           <img src={imgLink} alt='img' className='img-fluid' />
         </Modal.Body>
       </Modal>

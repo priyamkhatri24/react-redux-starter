@@ -257,7 +257,7 @@ class QuestionCard extends Component {
             src={elem.image}
             alt='option'
             className='img-fluid m-2'
-            style={{ maxWidth: '90vw', maxHeight: '20vh' }}
+            style={{ maxWidth: '60%', height: 'auto' }}
           />
         )}
       </div>
@@ -296,7 +296,7 @@ class QuestionCard extends Component {
               src={elem.image}
               alt='option'
               className='img-fluid'
-              style={{ maxWidth: '90vw', maxHeight: '20vh' }}
+              style={{ width: '60%', height: 'auto' }}
             />
           )}
         </div>
@@ -363,7 +363,7 @@ class QuestionCard extends Component {
               src={question.question_image}
               alt='question'
               className='m-2'
-              style={{ maxWidth: '90vw', maxHeight: '30vh' }}
+              style={{ width: '60%', height: 'auto' }}
             />
           )}
           <div className='mt-4'>
@@ -427,7 +427,7 @@ class QuestionCard extends Component {
                           src={elem.image}
                           alt='option'
                           className='img-fluid'
-                          style={{ maxWidth: '90vw', maxHeight: '20vh' }}
+                          style={{ width: '60%', height: 'auto' }}
                         />
                       )}
                     </div>

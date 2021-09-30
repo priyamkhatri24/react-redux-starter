@@ -12,8 +12,21 @@
     background: transparent;
   }
 
+  &__plainWhiteButton {
+    border-radius: 10px;
+    border: 1px solid #0505058b;
+    color: var(--primary-blue);
+    cursor: pointer;
+    text-align: center;
+    font-family: $regular;
+    margin: auto;
+    padding: 3px 4px;
+    font-size: 14px;
+  }
+
   &__selectCard {
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
+    position: relative;
   }
 
   &__smallHeading {
@@ -60,7 +73,8 @@
     font-size: $spacer * 0.875;
     font-family: $regular;
     border-radius: 50px;
-
+    padding-left: 10px !important;
+    padding-right: 10px !important;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -243,4 +257,38 @@
 #react-mathjax-preview > .react-mathjax-preview-result > img {
   width: 90px;
   height: 90px;
+}
+
+.fixedPosition {
+  position: fixed;
+  width: 95%;
+
+  background-color: white;
+  height: fit-content;
+  z-index: 1000;
+}
+.experiment {
+  position: relative;
+}
+.viewOnlyBtnContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 97%;
+}
+.onlyOnMobile {
+  display: flex;
+}
+@media screen and (max-width: 575px) {
+  .viewOnlyBtnContainer {
+    justify-content: center;
+  }
+}
+@media screen and (min-width: 575px) {
+  .onlyOnMobile {
+    display: none;
+  }
+  .Homework__selectCard {
+    margin-top: 40px;
+  }
 }

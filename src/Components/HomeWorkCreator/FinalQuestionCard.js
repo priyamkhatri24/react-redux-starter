@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -16,6 +16,20 @@ const FinalQuestionCard = (props) => {
     isAnalysis,
     language,
   } = props;
+  // const [question, setQuestion] = useState({});
+
+  // useEffect(() => {
+  //   if (language === 'hindi') {
+  //     const questionn = { ...ques };
+  //     questionn.question_text = questionn.hindi_text;
+  //     questionn.question_solution_text = questionn.hindi_solution_text;
+  //     questionn.option_array = questionn.hindi_option_array;
+  //     setQuestion(questionn);
+  //   } else {
+  //     setQuestion(question);
+  //   }
+  //   console.log(question);
+  // }, [ques]);
 
   return (
     <Card className='m-1' key={question.question_id}>
@@ -94,11 +108,19 @@ const FinalQuestionCard = (props) => {
             <MathJax math={String.raw`${question.question_answer}`} />
           </div>
 
-          {question.question_solution_text && (
+          {language !== 'hindi' && question.question_solution_text && (
             <>
               <p className='Homework__options text-left m-2'>Solution:</p>
               <div className='d-flex mx-3 mb-2 Homework__multipleOptions soultion text-left'>
                 <MathJax math={String.raw`${question.question_solution_text}`} />
+              </div>
+            </>
+          )}
+          {language === 'hindi' && question.hindi_solution_text && (
+            <>
+              <p className='Homework__options text-left m-2'>Solution:</p>
+              <div className='d-flex mx-3 mb-2 Homework__multipleOptions soultion text-left'>
+                <MathJax math={String.raw`${question.hindi_solution_text}`} />
               </div>
             </>
           )}

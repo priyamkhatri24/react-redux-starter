@@ -21,7 +21,7 @@ import {
   verifyIsVideo,
   verifyIsFile,
 } from '../../Utilities';
-import { uploadingImage } from '../../Utilities/customUpload';
+import { uploadingImage, uploadMultipleImages } from '../../Utilities/customUpload';
 import {
   getCourseAddContentTestId,
   getCourseCurrentSectionId,
@@ -157,24 +157,24 @@ const AddContent = (props) => {
     }
   };
 
-  const postImageToSection = (name, fileUrl, type) => {
-    const newOrder = courseSectionPriorityOrder + 1;
-
+  const postImageToSection = (arr, type) => {
+    const newOrder = courseSectionPriorityOrder;
+    const fileArray = arr.map((elem, index) => {
+      return {
+        file_url: elem.filename,
+        order: newOrder + index + 1,
+        file_name: elem.name,
+        file_type: type,
+      };
+    });
     const payload = {
       section_id: sectionId,
-      file_array: JSON.stringify([
-        {
-          file_url: fileUrl,
-          order: newOrder,
-          file_name: name,
-          file_type: type,
-        },
-      ]),
+      file_array: JSON.stringify(fileArray),
       client_user_id: clientUserId,
     };
     post(payload, '/addSectionContent').then((res) => {
       getSectionContent();
-      setCourseSectionPriorityOrderToStore(newOrder);
+      setCourseSectionPriorityOrderToStore(newOrder + fileArray.length);
       handleClose();
     });
   };
@@ -185,34 +185,41 @@ const AddContent = (props) => {
 
   const getImageInput = (e, type) => {
     const reader = new FileReader();
-    const file = e.target.files[0];
-    let isFileAllowed = false;
-    console.log(file);
-    const s = reverse(reverse(file.name).split('.')[0]);
-
-    if (type === 'image' && verifyIsImage.test(s)) {
-      isFileAllowed = true;
-    } else if (type === 'video' && verifyIsVideo.test(s)) {
-      isFileAllowed = true;
-    } else if (type === 'file' && verifyIsFile.test(s)) {
-      isFileAllowed = true;
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Invalid File Type!',
-        text: `The supported file types are ${
-          type === 'image'
-            ? 'gif, jpeg, jpg, tiff, png, webp, bmp'
-            : type === 'video'
-            ? 'mov,mp3, mp4 , mpg, avi, wmv, flv, 3gp'
-            : 'doc, docx, xls, xlsx, ppt, pptx, txt, pdf'
-        }`,
-      });
+    const { files } = e.target;
+    const filesArr = [...files];
+    const isFileAllowedArray = [];
+    for (let i = 0; i < filesArr.length; i++) {
+      const file = filesArr[i];
+      const s = reverse(reverse(file.name).split('.')[0]);
+      if (type === 'image' && verifyIsImage.test(s)) {
+        isFileAllowedArray.push(true);
+      } else if (type === 'video' && verifyIsVideo.test(s)) {
+        isFileAllowedArray.push(true);
+      } else if (type === 'file' && verifyIsFile.test(s)) {
+        isFileAllowedArray.push(true);
+      } else {
+        isFileAllowedArray.push(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid File Type!',
+          text: `The supported file types are ${
+            type === 'image'
+              ? 'gif, jpeg, jpg, tiff, png, webp, bmp'
+              : type === 'video'
+              ? 'mov,mp3, mp4 , mpg, avi, wmv, flv, 3gp'
+              : 'doc, docx, xls, xlsx, ppt, pptx, txt, pdf'
+          }`,
+        });
+        break;
+      }
     }
-    if (file && isFileAllowed) {
-      reader.readAsDataURL(e.target.files[0]);
-      uploadingImage(file).then((res) => {
-        postImageToSection(file.name, res.filename, type);
+
+    if (filesArr?.length && isFileAllowedArray.every((ele) => ele === true)) {
+      // reader.readAsDataURL(e.target.files[0]);
+      uploadMultipleImages(filesArr).then((res) => {
+        console.log(res);
+        // postImageToSection(file.name, res.filename, type);
+        postImageToSection(res, type);
       });
     }
   };
@@ -430,6 +437,7 @@ const AddContent = (props) => {
             onChange={(e) => getImageInput(e, 'image')}
             style={{ display: 'none' }}
             ref={courseImageRef}
+            multiple='multiple'
           />
           <input
             id='file-input-video'
@@ -438,6 +446,7 @@ const AddContent = (props) => {
             onChange={(e) => getImageInput(e, 'video')}
             style={{ display: 'none' }}
             ref={courseVideoRef}
+            multiple='multiple'
           />
           <input
             id='file-input-all'
@@ -445,6 +454,7 @@ const AddContent = (props) => {
             onChange={(e) => getImageInput(e, 'file')}
             style={{ display: 'none' }}
             ref={courseFileRef}
+            multiple='multiple'
           />
         </Modal.Body>
       </Modal>

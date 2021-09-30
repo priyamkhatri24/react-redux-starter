@@ -590,7 +590,12 @@ const Dashboard = (props) => {
         );
       case 'homeworkCreator':
         return (
-          <div className='Dashboard__innovation pt-4 px-3 pb-3'>
+          <div
+            style={{
+              background: `linear-gradient(90deg, ${param.end_colour}, ${param.start_colour})`,
+            }}
+            className='Dashboard__innovation pt-4 pl-3 pr-0 pb-3 mx-2'
+          >
             <h4 className='Dashboard_homeworkCreator'>Witness </h4>
             <h4 className='Dashboard_homeworkCreator'>
               The <span>innovation</span>
@@ -600,7 +605,7 @@ const Dashboard = (props) => {
             </p>
             <Button
               className='Dashboard_homeworkCreator'
-              variant='dashboardBlueOnWhite'
+              variant='dashboardHWletsGo'
               onClick={() => goToHomeWorkCreator()}
             >
               Let&apos;s go
@@ -610,7 +615,7 @@ const Dashboard = (props) => {
             </Button>
             <div className='Dashboard__assignment my-4 Dashboard_homeworkCreator'>
               <section className='Dashboard__scrollableCard'>
-                <div>
+                <div className='HWscrollableCard'>
                   <Row>
                     <Col xs={8} className='pr-0' onClick={() => goToSentTests('sent')}>
                       <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
@@ -625,7 +630,7 @@ const Dashboard = (props) => {
                     </Col>
                   </Row>
                 </div>
-                <div>
+                <div className='HWscrollableCard2'>
                   <Row>
                     <Col xs={8} className='pr-0' onClick={() => goToSentTests('saved')}>
                       <p className='Dashboard__scrollableCardHeading pt-2 pl-3 mb-0'>
@@ -817,7 +822,7 @@ const Dashboard = (props) => {
             height={78}
             heading='Courses'
             subHeading='Increase your profit by building and selling your courses here.'
-            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             backGround={param.start_colour}
             buttonClick={goToCoursesForTeacher}
@@ -835,7 +840,7 @@ const Dashboard = (props) => {
                 ? 'Conduct all your live classes here effectively'
                 : 'Attend all your live classes from here.'
             }
-            boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             backGround={param.start_colour}
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             buttonText={roleArray.includes(3) || roleArray.includes(4) ? 'Go live now' : ''}
@@ -856,6 +861,7 @@ const Dashboard = (props) => {
             height={86}
             coloredHeading='Library'
             color='rgba(0, 102, 255, 0.87)'
+            backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             subHeading='Access content uploaded by institute here.'
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             buttonClick={goToStudyBin}

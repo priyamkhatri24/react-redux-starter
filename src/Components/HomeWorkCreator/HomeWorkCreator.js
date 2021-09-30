@@ -78,6 +78,27 @@ const HomeWorkCreator = (props) => {
   return (
     <div className='Homework'>
       <PageHeader title='Homework Creator' handleBack={handleBack} customBack />
+      {/* <div style={{ marginTop: '7rem' }} className='Homework__carousel'>
+        <div className='mt-3 mx-2 onlyOnMobile'>
+          <span className='text-left Homework__questionIndex my-auto'>
+            {selectedQuestions.length} selected of {questions.length}
+          </span>
+          <div className='ml-auto my-auto d-flex'>
+            <Button variant='customPrimarySmol' onClick={() => goToNextSlide()}>
+              Next
+            </Button>
+
+            <Form.Check
+              type='checkbox'
+              checked={selectAllQuestions}
+              onChange={(e) => selectAll(!selectAllQuestions)}
+              className='my-auto ml-1'
+              label='Select All'
+              name='selectAll'
+            />
+          </div>
+        <p className='fixedPosition'>haha</p>
+      </div> */}
       <div style={{ marginTop: '7rem' }} className='Homework__carousel'>
         <Carousel
           style={{ backgroundColor: 'red' }}
@@ -91,6 +112,7 @@ const HomeWorkCreator = (props) => {
             if (isSelected) {
               return (
                 <li
+                  // className='marginOnDesk'
                   style={selectedIndicatorStyles}
                   aria-label={`Selected: ${label} ${index + 1}`}
                   title={`Selected: ${label} ${index + 1}`}
@@ -101,9 +123,10 @@ const HomeWorkCreator = (props) => {
             }
             return (
               <li
+                // className='marginOnDesk'
                 style={indicatorStyles}
-                onClick={onClickHandler}
-                onKeyDown={onClickHandler}
+                onClick={() => setCurrentSlide(index)}
+                onKeyDown={() => setCurrentSlide(index)}
                 value={index}
                 key={index}
                 role='button' // eslint-disable-line
@@ -118,7 +141,7 @@ const HomeWorkCreator = (props) => {
         >
           <SelectQuestions history={history} fetch={fetchQuestions} />
           <QuestionList homeworkQuestions={homeworkQuestionsArray} />
-          <PreviewQuestions history={history} />
+          <PreviewQuestions history={history} homeworkQuestions={homeworkQuestionsArray} />
         </Carousel>
       </div>
     </div>

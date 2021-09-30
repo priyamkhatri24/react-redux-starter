@@ -16,15 +16,15 @@ import Modal from 'react-bootstrap/Modal';
 import Swal from 'sweetalert2';
 import PlyrComponent from 'plyr-react';
 import 'plyr-react/dist/plyr.css';
-import StarIcon from '@material-ui/icons/Star';
+import StarIcon from '@material-ui/icons/StarRounded';
 import LockIcon from '@material-ui/icons/Lock';
 import VideoIcon from '@material-ui/icons/VideoLibrary';
-import Play from '@material-ui/icons/PlayArrow';
+import Play from '@material-ui/icons/PlayArrowRounded';
 import LiveIcon from '@material-ui/icons/LiveTv';
 import DocIcon from '@material-ui/icons/Description';
 import TestIcon from '@material-ui/icons/LiveHelp';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
+import StarBorderIcon from '@material-ui/icons/StarBorderRounded';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ShareIcon from '@material-ui/icons/Share';
 import rupee from '../../assets/images/Courses/rupee.svg';
@@ -112,11 +112,11 @@ const BuyCourse = (props) => {
         const tabHeightFromTop = tab?.offsetTop;
         const tabH = document.body.clientHeight - tabHeightFromTop;
         setTabHeight(tabH - 50);
-        console.log(tabH, 'scrolled');
+        // console.log(tabH, 'scrolled');
         setIsTabScrollable(true);
       } else {
         setIsTabScrollable(false);
-        console.log('scrolling');
+        // console.log('scrolling');
       }
     });
   }, []);
@@ -188,7 +188,7 @@ const BuyCourse = (props) => {
     if (roleArray.includes(3) || roleArray.includes(4)) {
       push('/');
     }
-    if (course.course_type === 'free') {
+    if (+coursePrice === 0) {
       const payload = {
         client_user_id: clientUserId,
         course_id: match.params.courseId,
@@ -443,7 +443,8 @@ const BuyCourse = (props) => {
     setCourseImage(null);
     setCourseVideo(null);
     setIsTabScrollable(false);
-    document.body.push(`/courses/buyCourse/${clientId}/${courseId}`);
+    setSource(null);
+    push(`/courses/buyCourse/${clientId}/${courseId}`);
   };
   const playVideo = () => {
     vidRef2.current.play();
@@ -505,7 +506,11 @@ const BuyCourse = (props) => {
       ) : null}
       {!courseVideo && !courseImage ? (
         <div className='mx-auto Courses__thumbnail'>
-          <img src={YCIcon} alt='course' className='mx-auto img-fluid courseThumbnailImg' />
+          <img
+            src={clientLogo ? clientLogo : YCIcon}
+            alt='course'
+            className='mx-auto img-fluid courseThumbnailImg'
+          />
         </div>
       ) : null}
       {courseVideo ? (
@@ -573,7 +578,7 @@ const BuyCourse = (props) => {
                   : () => goToLogin()
               }
             >
-              {course.course_type === 'free' ? 'Subscribe' : 'Buy Now'}
+              {+coursePrice === 0 ? 'Subscribe' : 'Buy Now'}
             </Button>
           </div>
           <Tabs
@@ -584,7 +589,9 @@ const BuyCourse = (props) => {
           >
             <Tab
               id='idForScroll'
-              className={`scrollableTabsForCourses ${isTabScrollable ? 'scrollable' : null}`}
+              className={`scrollableTabsForCourses ${
+                isTabScrollable ? 'scrollable' : 'unscrollable'
+              }`}
               eventKey='Details'
               title='Details'
               style={{
@@ -665,7 +672,7 @@ const BuyCourse = (props) => {
               </Button> */}
               <p className='Courses__heading mt-4'>People also viewed</p>
 
-              <ViewCoursesList clientId={clientId} clicked={() => {}} />
+              <ViewCoursesList clientId={clientId} clicked={goToCourse} />
               <Button
                 onClick={
                   localStorage.getItem('state') &&
@@ -707,14 +714,15 @@ const BuyCourse = (props) => {
               </Button>
             </Tab>
             <Tab
-              className='scrollableTabsForCourses'
+              className={`scrollableTabsForCourses ${
+                isTabScrollable ? 'scrollable' : 'unscrollable'
+              }`}
               id='contentTab'
               eventKey='Content'
               title='Content'
               style={{
                 margin: 'auto 15px',
                 height: `${tabHeight}px`,
-                overflowY: `${isTabScrollable ? 'scroll' : 'none'}`,
               }}
             >
               {renderContentHistogram()}
@@ -752,9 +760,25 @@ const BuyCourse = (props) => {
                       <Accordion.Collapse eventKey='0'>
                         <div>
                           {e.content_array.map((elem, i) => {
+                            if (elem.file_type === 'youtube') {
+                              elem.file_type = 'video';
+                              elem.isYoutube = true;
+                            }
                             let icon;
-                            if (elem.category === 'Videos') {
-                              icon = <VideoIcon style={{ color: '#9f16cf' }} />;
+                            if (elem.category === 'Videos' && !elem.isYoutube) {
+                              icon = (
+                                <video className='individualVideoThumbnail' preload='metadata'>
+                                  <source src={elem.file_link + '#t=0.1'} />
+                                </video>
+                              );
+                            } else if (elem.category === 'Videos' && elem.isYoutube) {
+                              icon = (
+                                <img
+                                  className='individualVideoThumbnail'
+                                  src={`https://img.youtube.com/vi/${elem.file_link}/1.jpg`}
+                                  alt='V'
+                                />
+                              );
                             } else if (elem.category === 'Documents') {
                               icon = <DocIcon style={{ color: 'green' }} />;
                             } else if (elem.category === 'Live classes') {
@@ -775,7 +799,11 @@ const BuyCourse = (props) => {
                                   style={{ maxWidth: '90%' }}
                                   className='d-flex align-items-center'
                                 >
-                                  <div className='iconContainerForContents'>{icon}</div>
+                                  {elem.category !== 'Videos' ? (
+                                    <div className='iconContainerForContents'>{icon}</div>
+                                  ) : (
+                                    <div className='videoContainerForContents'>{icon}</div>
+                                  )}
                                   <div style={{ overflowX: 'hidden' }}>
                                     <p
                                       style={{ fontFamily: 'Montserrat-Bold' }}
@@ -784,6 +812,11 @@ const BuyCourse = (props) => {
                                     >
                                       {elem.name}
                                     </p>
+                                    <small className='verySmallText mx-2'>
+                                      {elem.file_type
+                                        ? elem.file_type.toUpperCase()
+                                        : elem.content_type.toUpperCase()}
+                                    </small>
                                     <p
                                       style={{ fontSize: '12px', color: '#fbfbfb' }}
                                       className='mb-0 ml-2'
@@ -807,9 +840,10 @@ const BuyCourse = (props) => {
               style={{
                 margin: 'auto 15px',
                 height: `${tabHeight}px`,
-                overflowY: `${isTabScrollable ? 'scroll' : 'none'}`,
               }}
-              className='scrollableTabsForCourses'
+              className={`scrollableTabsForCourses ${
+                isTabScrollable ? 'scrollable' : 'unscrollable'
+              }`}
               id='ReviewTab'
               title='Reviews'
               eventKey='Review'

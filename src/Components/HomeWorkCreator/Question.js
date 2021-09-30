@@ -11,12 +11,30 @@ import ReportIcon from '@material-ui/icons/Report';
 import './HomeWorkCreator.scss';
 
 const Question = (props) => {
-  const { question, index, update } = props;
+  const { question, index, update, language } = props;
 
   const addtoSelected = () => {
+    console.log(question, 'quesssssss');
     question.isSelected = !question.isSelected;
     update(question);
   };
+
+  // useEffect(() => {
+  //   console.log(language);
+  //   if (language === 'hindi') {
+  //     const ques = { ...question };
+  //     console.log(ques, 'quessbeforeee');
+  //     ques.question_text = ques.hindi_text;
+  //     ques.question_solution_text = ques.hindi_solution_text;
+  //     ques.option_array = ques.hindi_option_array;
+  //     console.log(ques, 'afterrrr');
+  //     console.log(question, 'orignalQuestionnnnn');
+  //     setQuestionFinal(ques);
+  //   } else {
+  //     setQuestionFinal(question);
+  //   }
+  //   console.log(questionFinal);
+  // }, [question]);
 
   return (
     <Card className='m-1'>
@@ -46,7 +64,11 @@ const Question = (props) => {
           </Row>
 
           <div className='Homework__questionHeading text-left m-2'>
-            <MathJax math={String.raw`${question.question_text}`} />
+            <MathJax
+              math={String.raw`${
+                language === 'hindi' ? question.hindi_text : question.question_text
+              }`}
+            />
             {question.question_image && (
               <div className=' mt-2 Homework__questionImgContainer'>
                 <img
@@ -62,24 +84,26 @@ const Question = (props) => {
             <p className='Homework__options text-left m-2'>Options</p>
           )}
 
-          {Object.keys(question).question_type !== 'subjective' &&
-            question.option_array.map((e, i) => {
-              return (
-                <>
-                  <div className='d-flex mx-3 mb-2 Homework__multipleOptions' key={e.order}>
-                    <span className='mr-2 my-auto'>{String.fromCharCode(i + 65)}.</span>{' '}
-                    <MathJax math={String.raw`${e.text}`} />
-                  </div>
-                  {e.image && (
-                    <img
-                      src={e.image}
-                      alt='option'
-                      className='img-fluid m-2 Homework__questionImg'
-                    />
-                  )}
-                </>
-              );
-            })}
+          {question.question_type !== 'subjective' &&
+            (language === 'hindi' ? question.hindi_option_array : question.option_array).map(
+              (e, i) => {
+                return (
+                  <>
+                    <div className='d-flex mx-3 mb-2 Homework__multipleOptions' key={e.order}>
+                      <span className='mr-2 my-auto'>{String.fromCharCode(i + 65)}.</span>{' '}
+                      <MathJax math={String.raw`${e.text}`} />
+                    </div>
+                    {e.image && (
+                      <img
+                        src={e.image}
+                        alt='option'
+                        className='img-fluid m-2 Homework__questionImg'
+                      />
+                    )}
+                  </>
+                );
+              },
+            )}
 
           {question.question_answer && <p className='Homework__options text-left m-2'>Solution:</p>}
           <div className='d-flex mx-3 mb-2 Homework__multipleOptions text-left'>
@@ -91,12 +115,26 @@ const Question = (props) => {
               <ReportIcon /> Report
             </Button>
             <div className='ml-auto'>
-              <Button variant='homeworkAdd' onClick={() => addtoSelected()}>
-                {question.isSelected ? <RemoveIcon /> : <AddIcon />}
-              </Button>
-              <Button variant='homeworkAddToPaper' onClick={() => addtoSelected()}>
-                {question.isSelected ? 'Remove' : 'Add To Paper'}
-              </Button>
+              {question.isSelected ? (
+                <Button variant='homeworkAddred' onClick={() => addtoSelected()}>
+                  <RemoveIcon />
+                </Button>
+              ) : null}
+              {!question.isSelected ? (
+                <Button variant='homeworkAdd' onClick={() => addtoSelected()}>
+                  <AddIcon />
+                </Button>
+              ) : null}
+              {question.isSelected ? (
+                <Button variant='homeworkAddToPaperred' onClick={() => addtoSelected()}>
+                  Remove
+                </Button>
+              ) : null}
+              {!question.isSelected ? (
+                <Button variant='homeworkAddToPaper' onClick={() => addtoSelected()}>
+                  Add To Paper
+                </Button>
+              ) : null}
             </div>
           </Row>
         </>
@@ -111,4 +149,5 @@ Question.propTypes = {
   question: PropTypes.instanceOf(Object).isRequired,
   index: PropTypes.number.isRequired,
   update: PropTypes.func.isRequired,
+  language: PropTypes.string.isRequired,
 };

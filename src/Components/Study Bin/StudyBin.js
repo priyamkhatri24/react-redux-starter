@@ -5,7 +5,10 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import Alert from 'react-bootstrap/Alert';
 import AddIcon from '@material-ui/icons/Add';
+
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import folder from '../../assets/images/FilesFolders/folderIcon.svg';
 import doc from '../../assets/images/FilesFolders/doc.svg';
@@ -54,6 +57,11 @@ const StudyBin = (props) => {
   const [categoryArray, setCategoryArray] = useState([]);
   const [showImageModal, setShowImageModal] = useState(false);
   const [imgLink, setImgLink] = useState('');
+  const [isMove, setIsMove] = useState(false);
+  const [isCopy, setIsCopy] = useState(false);
+  const [selectedToMove, setSelectedToMove] = useState([]);
+  const [selectedFreezed, setSelectedFreezed] = useState(false);
+  const [presentFolderId, setPresentFolderId] = useState(null);
   const [menuOptions, setMenuOptions] = useState({
     id: 0,
     type: '',
@@ -399,6 +407,84 @@ const StudyBin = (props) => {
     history.push(`/studybin/categories/${id}`);
   };
 
+  const handleMove = () => {
+    setIsMove(true);
+    setIsCopy(false);
+    setPresentFolderId(folderIdStack[folderIdStack.length - 1]);
+    const { id, type } = menuOptions;
+    const selectedArray = [...selectedToMove];
+    selectedArray.push({ id, type });
+    setSelectedToMove(selectedArray);
+    console.log(selectedArray, menuOptions);
+    handleMenuClose();
+    console.log('moved');
+  };
+
+  const handleCopy = () => {
+    console.log('copied');
+    setIsMove(false);
+    setIsCopy(true);
+    setPresentFolderId(folderIdStack[folderIdStack.length - 1]);
+    const { id, type } = menuOptions;
+    if (type === 'folder') {
+      handleMenuClose();
+      return;
+    }
+    const selectedArray = [...selectedToMove];
+    selectedArray.push({ id, type });
+    setSelectedToMove(selectedArray);
+    console.log(selectedArray, menuOptions);
+    handleMenuClose();
+  };
+
+  const cancelMovingAndCopying = () => {
+    setIsMove(false);
+    setIsCopy(false);
+    setSelectedFreezed(false);
+    setSelectedToMove([]);
+  };
+
+  const toggleFromSelectedArray = (elem) => {
+    console.log(elem);
+    const id = elem.folder_id ? elem.folder_id : elem.file_id;
+    const type = elem.folder_id ? 'folder' : elem.file_id ? 'file' : null;
+    if (selectedToMove.find((ele) => ele.id === id)) {
+      const selectedArray = [...selectedToMove];
+      const index = selectedArray.findIndex((ele) => ele.id === id);
+      selectedArray.splice(index, 1);
+      setSelectedToMove(selectedArray);
+      console.log(selectedArray, 'selectedToMoveArrayyy');
+    } else {
+      setSelectedToMove([...selectedToMove, { type, id }]);
+      console.log([...selectedToMove, { type, id }]);
+    }
+  };
+
+  const freezeSelectedHandler = () => {
+    setSelectedFreezed(true);
+    window.scroll({ top: 0, behavior: 'smooth' });
+  };
+
+  const copyOrMoveSelectedItems = () => {
+    console.log(selectedToMove, 'donee');
+    const payload = {
+      client_user_id: clientUserId,
+      object_array: JSON.stringify(selectedToMove),
+      destination_folder_id: folderIdStack[folderIdStack.length - 1],
+      present_folder_id: presentFolderId,
+      operation: isMove ? 'move' : isCopy ? 'copy' : null,
+    };
+    console.log(payload);
+    post(payload, '/copyOrMoveMultipleFile').then((res) => {
+      console.log(res);
+      rerenderFilesAndFolders();
+      setSelectedToMove([]);
+      setSelectedFreezed(false);
+      setIsMove(false);
+      setIsCopy(false);
+    });
+  };
+
   return (
     <>
       <StudyBinMenu
@@ -411,6 +497,8 @@ const StudyBin = (props) => {
         finalBatches={menuOptions.finalBatches}
         currentBatches={menuOptions.currentBatches}
         currentFolderName={menuOptions.currentFolderName}
+        handleMove={handleMove}
+        handleCopy={handleCopy}
       />
       <div className='StudyBin'>
         <PageHeader
@@ -489,6 +577,18 @@ const StudyBin = (props) => {
                         className='p-2 StudyBin__box my-2 mx-2'
                         style={elem.status === 'active' ? {} : { opacity: '0.4' }}
                       >
+                        {isMove ? (
+                          <Form.Group controlId='formBasicCheckbox'>
+                            <Form.Check
+                              type='checkbox'
+                              disabled={selectedFreezed}
+                              onChange={() => toggleFromSelectedArray(elem)}
+                              checked={selectedToMove.find(
+                                (ele) => ele.id === elem.file_id || ele.id === elem.folder_id,
+                              )}
+                            />
+                          </Form.Group>
+                        ) : null}
                         <span
                           className='StudyBin__verticalDots'
                           onClick={() => openContextMenu(elem, 'folder')}
@@ -539,6 +639,18 @@ const StudyBin = (props) => {
                         className='p-2 StudyBin__box my-2 mx-1'
                         style={elem.status === 'active' ? {} : { opacity: '0.4' }}
                       >
+                        {isMove || isCopy ? (
+                          <Form.Group controlId='formBasicCheckbox'>
+                            <Form.Check
+                              type='checkbox'
+                              disabled={selectedFreezed}
+                              onChange={() => toggleFromSelectedArray(elem)}
+                              checked={selectedToMove.find(
+                                (ele) => ele.id === elem.file_id || ele.id === elem.folder_id,
+                              )}
+                            />
+                          </Form.Group>
+                        ) : null}
                         {elem.file_type === 'youtube' ? (
                           <>
                             <span
@@ -716,6 +828,34 @@ const StudyBin = (props) => {
           <img src={imgLink} alt='img' className='img-fluid' />
         </Modal.Body>
       </Modal>
+      {isMove && !selectedFreezed ? (
+        <Alert className='alertModalToCopyAndMove' variant='secondary'>
+          {/* Click to move selected files and folders{' '} */}
+          <Button onClick={freezeSelectedHandler}>Move selected items</Button>
+          <Button variant='secondary' onClick={cancelMovingAndCopying}>
+            Cancel
+          </Button>
+        </Alert>
+      ) : null}
+      {isCopy && !selectedFreezed ? (
+        <Alert className='alertModalToCopyAndMove' variant='secondary'>
+          {/* Click to move selected files */}
+          <Button onClick={freezeSelectedHandler}>Copy selected items</Button>
+          <Button variant='secondary' onClick={cancelMovingAndCopying}>
+            Cancel
+          </Button>
+        </Alert>
+      ) : null}
+      {selectedFreezed ? (
+        <Alert className='alertModalToPaste' variant='secondary'>
+          <Button className='mx-2' onClick={copyOrMoveSelectedItems}>
+            {isMove ? 'Move here' : isCopy ? 'Paste here' : null}
+          </Button>
+          <Button className='mx-2' variant='secondary' onClick={cancelMovingAndCopying}>
+            Cancel
+          </Button>
+        </Alert>
+      ) : null}
     </>
   );
 };

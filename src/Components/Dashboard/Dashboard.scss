@@ -47,23 +47,26 @@
   }
 
   &__innovation {
-    background: rgb(0, 0, 0);
-    background: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(162, 162, 162, 1) 100%);
+    background: #fff4ec;
+    border-radius: 10px;
+
+    // background: linear-gradient(90deg, #fcf9f8, #fff4ec);
   }
 
   &__innovation > h4 {
     font-family: 'Montserrat-Bold';
     line-height: $spacer * 1.8125;
-    color: var(--primary-blue);
+    // color: var(--primary-blue);
+    color: #fe979c;
   }
 
   &__innovation > h4 > span {
-    color: $strongRed;
+    color: #3e3b6fde;
   }
 
   &__innovation > p {
     font-size: $spacer;
-    color: $white;
+    color: #575381;
     line-height: $spacer * 1.8;
     letter-spacing: 0.49px;
     font-family: 'Montserrat-SemiBold';
@@ -219,6 +222,15 @@
     height: 76px;
   }
 }
+.HWscrollableCard {
+  background: linear-gradient(103deg, #ffefeb, #feae96) !important;
+  border: 0px !important;
+}
+.HWscrollableCard2 {
+  background: linear-gradient(103deg, #f9efff, #705a7e) !important;
+  border: 0px !important;
+}
+
 .react_chart {
   width: 50%;
   margin: auto;

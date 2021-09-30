@@ -13,6 +13,7 @@ import {
   getSelectedQuestionArray,
   getTestId,
   getTestName,
+  getHomeworkLanguageType,
 } from '../../redux/reducers/homeworkCreator.reducer';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { post } from '../../Utilities';
@@ -32,6 +33,7 @@ const QuestionList = (props) => {
     setTestIdToStore,
     setTestNameToStore,
     setTestIsDraftToStore,
+    language,
     setHomeworkLanguageTypeToStore,
   } = props;
   const [questions, setQuestions] = useState([]);
@@ -40,13 +42,21 @@ const QuestionList = (props) => {
   const [selectAllQuestions, setSelectAllQuestions] = useState(false);
 
   useEffect(() => {
+    console.log(testId);
     const draft = testId === null ? 0 : 1;
     setDraft(draft);
+    console.log(draft, 'drraaffftttt');
   }, [testId]);
 
   useEffect(() => {
     const newQuestions = homeworkQuestions.map((e) => {
-      e.isSelected = false;
+      if (e.directFromSaved) {
+        e.isSelected = true;
+      } else if (e.isSelected) {
+        e.isSelected = true;
+      } else {
+        e.isSelected = false;
+      }
       return e;
     });
     setQuestions(newQuestions);
@@ -57,6 +67,7 @@ const QuestionList = (props) => {
   }, [selectedQuestionArray]);
 
   const removeQuestion = (question) => {
+    console.log(question, 'delettteeeee');
     const newSelectedQuestions = JSON.parse(JSON.stringify(selectedQuestions));
     console.log(question);
     post({ question_id: question.question_id, test_id: testId }, '/deleteQuestionFromTest').then(
@@ -115,6 +126,7 @@ const QuestionList = (props) => {
     } else {
       payload = {
         chapter_array: JSON.stringify(currentChapterArray),
+
         teacher_id: clientUserId,
         test_id: testId,
         is_draft: isDraft,
@@ -132,6 +144,7 @@ const QuestionList = (props) => {
           setTestNameToStore(res.test_name);
           setTestIsDraftToStore(1);
           setHomeworkLanguageTypeToStore('english');
+          setCurrentSlide(2);
         }
         newSelectedQuestions.push(...questionArray);
         setSelectedQuestionArrayToStore(newSelectedQuestions);
@@ -155,18 +168,22 @@ const QuestionList = (props) => {
 
   const goToNextSlide = () => {
     setCurrentSlide(2);
+    console.log('next');
   };
 
   const selectAll = (value) => {
     setSelectAllQuestions(value);
     if (value) {
-      setSelectedQuestionArrayToStore([]);
-      setSelectedQuestions([]);
-      addQuestions(questions, []);
+      setSelectedQuestions(questions);
+      console.log(questions);
+      const notSelectedQs = questions.filter((ele) => !ele.isSelected);
+      addQuestions(notSelectedQs);
+
       const allQuestions = questions.map((e) => {
         e.isSelected = true;
         return e;
       });
+      // setSelectedQuestionArrayToStore(allQuestions);
       setQuestions(allQuestions);
       setCurrentSlide(2);
     } else {
@@ -200,7 +217,7 @@ const QuestionList = (props) => {
           />
         </div>
       </div>
-      <hr />
+      <hr className='onlyOnMobile' />
       {questions.map((e, index) => {
         return (
           <Question
@@ -208,6 +225,7 @@ const QuestionList = (props) => {
             index={index + 1}
             update={updateSelectedQuestions}
             key={e.question_id}
+            language={language}
           />
         );
       })}
@@ -222,6 +240,7 @@ const mapStateToProps = (state) => ({
   clientId: getClientId(state),
   clientUserId: getClientUserId(state),
   currentChapterArray: getCurrentChapterArray(state),
+  language: getHomeworkLanguageType(state),
   currentSubjectArray: getCurrentSubjectArray(state),
 });
 
@@ -253,6 +272,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(QuestionList);
 QuestionList.propTypes = {
   clientId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
+  language: PropTypes.string.isRequired,
   setCurrentSlide: PropTypes.func.isRequired,
   setTestIdToStore: PropTypes.func.isRequired,
   setTestNameToStore: PropTypes.func.isRequired,

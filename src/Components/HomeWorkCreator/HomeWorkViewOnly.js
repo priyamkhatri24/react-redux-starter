@@ -27,6 +27,18 @@ const HomeWorkViewOnly = (props) => {
   } = props;
 
   const modifyQuestions = () => {
+    const { testsType } = history.location.state;
+    if (testsType === 'saved') {
+      setSelectedQuestionArrayToStore(questionArray);
+      questionArray.forEach((ele) => {
+        ele.directFromSaved = true;
+        ele.isSelected = true;
+      });
+      setCurrentSlide(2);
+      history.push('/homework');
+      return;
+    }
+    setSelectedQuestionArrayToStore([]);
     setCurrentSlide(1);
     history.push('/homework');
   };
@@ -53,18 +65,15 @@ const HomeWorkViewOnly = (props) => {
           );
         })}
       </Card>
-      <Row
-        className={testIsDraft === 1 ? 'justify-content-between m-3' : 'justify-content-center m-3'}
-      >
+      <div className='viewOnlyBtnContainer m-3'>
         <Button variant='customPrimary' onClick={() => goToAssigner()}>
           Next
         </Button>
-        {testIsDraft === 1 && (
-          <Button variant='customPrimary' onClick={() => modifyQuestions()}>
-            Add/Remove
-          </Button>
-        )}
-      </Row>
+
+        <Button variant='customPrimary ml-3' onClick={() => modifyQuestions()}>
+          Add/Remove
+        </Button>
+      </div>
     </>
   );
 };
@@ -83,6 +92,18 @@ const mapDispatchToProps = (dispatch) => {
     },
     setSelectedQuestionArrayToStore: (payload) => {
       dispatch(homeworkActions.setSelectedQuestionArrayToStore(payload));
+    },
+    setHomeworkLanguageTypeToStore: (payload) => {
+      dispatch(homeworkActions.setHomeworkLanguageTypeToStore(payload));
+    },
+    clearTests: () => {
+      dispatch(homeworkActions.clearTests());
+    },
+    setCurrentChapterArrayToStore: (payload) => {
+      dispatch(homeworkActions.setCurrentChapterArrayToStore(payload));
+    },
+    setCurrentSubjectArrayToStore: (payload) => {
+      dispatch(homeworkActions.setCurrentSubjectArrayToStore(payload));
     },
   };
 };

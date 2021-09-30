@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import {
   getSelectedQuestionArray,
   getTestId,
+  getHomeworkLanguageType,
   getTestName,
 } from '../../redux/reducers/homeworkCreator.reducer';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
@@ -39,6 +40,7 @@ const PreviewQuestions = (props) => {
   const {
     selectedQuestionArray,
     history,
+    language,
     testName,
     testId,
     clientUserId,
@@ -57,19 +59,21 @@ const PreviewQuestions = (props) => {
 
   const [isIndividualMarks, setIsIndividualMarks] = useState(false);
   const [fullPaperMarks, setFullPaperMarks] = useState([
-    { id: 1, name: 'Correct', value: 0, color: 'rgba(0, 151, 0, 1)' },
+    { id: 1, name: 'Correct', value: 1, color: 'rgba(0, 151, 0, 1)' },
     { id: 2, name: 'Incorrect', value: 0, color: 'rgba(255, 0, 0, 1)' },
     { id: 3, name: 'Unanswered', value: 0, color: 'rgba(86, 66, 61, 1)' },
   ]);
   const [sectionMarks, setSectionMarks] = useState([]);
+  const [oldTestId, setOldTestId] = useState(null);
 
   useEffect(() => {
+    console.log(selectedQuestionArray, 'selectedQuestionArrayyyyy');
     if (activeSection === 'Subject Wise') {
       get({ test_id: testId }, '/getTestQuestionsSubjectWiseForHomeWorkCreator').then((res) => {
         const result = apiValidation(res);
         const values = Object.values(result).map((e) => {
           e.map((elem) => {
-            elem.question_positive_marks = 0;
+            elem.question_positive_marks = 1;
             elem.question_negative_marks = 0;
             elem.question_unanswered_marks = 0;
             return elem;
@@ -86,10 +90,13 @@ const PreviewQuestions = (props) => {
         setSectionedQuestions(resultArray);
 
         const tempSectionMarks = resultArray.map((elem) => {
+          if (!oldTestId) {
+            setOldTestId(elem.testIdOld);
+          }
           const obj = {};
           obj.sectionName = elem.name;
           obj.marksArray = [
-            { id: 1, name: 'Correct', value: 0, color: 'rgba(0, 151, 0, 1)' },
+            { id: 1, name: 'Correct', value: 1, color: 'rgba(0, 151, 0, 1)' },
             { id: 2, name: 'Incorrect', value: 0, color: 'rgba(255, 0, 0, 1)' },
             { id: 3, name: 'Unanswered', value: 0, color: 'rgba(86, 66, 61, 1)' },
           ];
@@ -97,24 +104,26 @@ const PreviewQuestions = (props) => {
         });
         setSectionMarks(tempSectionMarks);
         setFullPaperMarks([
-          { id: 1, name: 'Correct', value: 0, color: 'rgba(0, 151, 0, 1)' },
+          { id: 1, name: 'Correct', value: 1, color: 'rgba(0, 151, 0, 1)' },
           { id: 2, name: 'Incorrect', value: 0, color: 'rgba(255, 0, 0, 1)' },
           { id: 3, name: 'Unanswered', value: 0, color: 'rgba(86, 66, 61, 1)' },
         ]);
       });
     } else {
+      console.log(testId, 'hahahahahah');
       get({ test_id: testId }, '/getTestQuestionsForHomeWorkCreator').then((res) => {
+        console.log(res, 'selectedResultArayyyy');
         setTestClassSubjectToStore(res.class_subject);
         const result = apiValidation(res);
         const withMarks = result.map((e) => {
-          e.question_positive_marks = 0;
+          e.question_positive_marks = 1;
           e.question_negative_marks = 0;
           e.question_unanswered_marks = 0;
           return e;
         });
         setSelectedQuestions(withMarks);
         setFullPaperMarks([
-          { id: 1, name: 'Correct', value: 0, color: 'rgba(0, 151, 0, 1)' },
+          { id: 1, name: 'Correct', value: 1, color: 'rgba(0, 151, 0, 1)' },
           { id: 2, name: 'Incorrect', value: 0, color: 'rgba(255, 0, 0, 1)' },
           { id: 3, name: 'Unanswered', value: 0, color: 'rgba(86, 66, 61, 1)' },
         ]);
@@ -383,6 +392,7 @@ const PreviewQuestions = (props) => {
                   key={index} //eslint-disable-line
                   showMarks={isIndividualMarks}
                   updateQuestionMarks={updateQuestionMarks}
+                  language={language}
                 />
               );
             })
@@ -405,6 +415,7 @@ const PreviewQuestions = (props) => {
                         key={index} //eslint-disable-line
                         showMarks={isIndividualMarks}
                         updateQuestionMarks={updateQuestionMarks}
+                        language={language}
                         sectionName={elem.name}
                       />
                     );
@@ -427,6 +438,7 @@ const mapStateToProps = (state) => ({
   testName: getTestName(state),
   testId: getTestId(state),
   clientUserId: getClientUserId(state),
+  language: getHomeworkLanguageType(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -454,6 +466,7 @@ PreviewQuestions.propTypes = {
     }),
   }).isRequired,
   testName: PropTypes.string.isRequired,
+  language: PropTypes.string.isRequired,
   testId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
   setTestClassSubjectToStore: PropTypes.func.isRequired,

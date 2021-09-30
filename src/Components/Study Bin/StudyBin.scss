@@ -62,3 +62,38 @@
   content: '';
   flex: 0 0 26%;
 }
+.alertModalToCopyAndMove {
+  position: fixed;
+  z-index: 99;
+  bottom: 5px;
+  left: 13%;
+  width: 75%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+@media screen and (max-width: 600px) {
+  .alertModalToCopyAndMove {
+    position: fixed;
+    z-index: 99;
+    bottom: 5px;
+    left: 10%;
+    width: 80%;
+  }
+}
+.alertModalToPaste {
+  position: fixed;
+  z-index: 999;
+  top: 10px;
+  left: 40%;
+  width: 25%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+@media screen and (max-width: 600px) {
+  .alertModalToPaste {
+    left: 15%;
+    width: 70%;
+  }
+}

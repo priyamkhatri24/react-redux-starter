@@ -14,6 +14,7 @@ import getUnixTime from 'date-fns/getUnixTime';
 import addSeconds from 'date-fns/addSeconds';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { BatchesSelector, PageHeader } from '../Common';
+import CustomDurationPicker from '../Common/DurationPicker/CustomDurationPicker';
 import {
   getCurrentChapterArray,
   getHomeworkLanguageType,
@@ -73,7 +74,7 @@ const HomeWorkAssigner = (props) => {
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [batchInputValue, setBatchInputValue] = useState('');
-  const [duration, setDuration] = useState({});
+  const [duration, setDuration] = useState({ hours: 1, minutes: 0, seconds: 0 });
   const [DurationModalOpen, setDurationModal] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [currentAssignentType, setCurrentAssignmentType] = useState('');
@@ -226,6 +227,8 @@ const HomeWorkAssigner = (props) => {
       start_time: testType !== 'live test' ? null : getUnixTime(startTimeDate),
       answer_key: answerKey,
     };
+
+    console.log(payload, 'kakakakskdasd');
 
     post(payload, '/addTest').then((res) => {
       console.log(res);
@@ -496,10 +499,12 @@ const HomeWorkAssigner = (props) => {
         </Modal.Footer>
       </Modal>
       <Modal show={DurationModalOpen} onHide={closeDurationModal} centered>
-        <DurationPicker
+        {/* <DurationPicker
           onChange={(durartion) => setDuration(durartion)}
+          // onChange={(durartion) => console.log(durartion)}
           initialDuration={{ hours: 1, minutes: 2, seconds: 3 }}
-        />
+        /> */}
+        <CustomDurationPicker changed={(durartion) => setDuration(durartion)} />
         <Modal.Footer>
           <Button variant='dashboardBlueOnWhite' onClick={closeDurationModal}>
             Next
