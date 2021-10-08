@@ -28,6 +28,14 @@ function setCourseAddContentTestIdToStore(payload) {
   return { type: courseConstants.COURSEADDCONTENTTESTID, payload };
 }
 
+function setCourseNowPlayingVideoToStore(payload) {
+  return { type: courseConstants.COURSENOWPLAYINGVIDEO, payload };
+}
+
+function setCourseDocumentToOpenToStore(payload) {
+  return { type: courseConstants.COURSEDOCUMENTTOOPEN, payload };
+}
+
 export const courseActions = {
   setCourseIdToStore,
   setCourseObjectToStore,
@@ -36,4 +44,6 @@ export const courseActions = {
   setCourseCurrentSectionNameToStore,
   setCourseSectionPriorityOrderToStore,
   setCourseAddContentTestIdToStore,
+  setCourseNowPlayingVideoToStore,
+  setCourseDocumentToOpenToStore,
 };

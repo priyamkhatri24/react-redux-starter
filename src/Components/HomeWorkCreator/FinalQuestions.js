@@ -312,7 +312,7 @@ const PreviewQuestions = (props) => {
         '/updateMarksAndSectionsOfQuestionsInTest',
       ).then((resp) => {
         if (resp.success) {
-          history.push('/homework/assign');
+          history.push({ pathname: '/homework/assign', state: {} });
         }
       });
     });

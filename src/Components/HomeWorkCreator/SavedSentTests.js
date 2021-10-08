@@ -33,10 +33,11 @@ const SavedSentTests = (props) => {
     clientUserId,
     clientId,
     roleArray,
-    history: { location: { state: { classId, goTo = null } } = {} } = {},
+    history: { location: { state: { courseId, sectionId, classId, goTo = null } } = {} } = {},
     setCurrentSlide,
     setQuestionArrayToStore,
     setCourseAddContentTestIdToStore,
+    setTestIsDraftToStore,
     selectedQuestionArray,
     setTestIdToStore,
     setSelectedQuestionArrayToStore,
@@ -169,9 +170,19 @@ const SavedSentTests = (props) => {
     });
   };
 
-  const goToAddContent = (testId, draft) => {
-    history.push({ pathname: '/courses/createcourse/addcontent', state: { draft } });
-    setCourseAddContentTestIdToStore(testId);
+  const goToAddContent = (test, draft, testsType) => {
+    if (testsType === 'sent') {
+      setTestIsDraftToStore(0);
+    } else if (testsType === 'saved') {
+      setTestIsDraftToStore(1);
+    }
+    console.log(test);
+    setHomeworkLanguageTypeToStore(test.language_type);
+    history.push({
+      pathname: '/homework/viewonly',
+      state: { draft, onlyNext: true, testIdd: test.test_id, courseId, sectionId, testsType },
+    });
+    // setCourseAddContentTestIdToStore(testId);
   };
 
   return (
@@ -206,7 +217,7 @@ const SavedSentTests = (props) => {
                   key={`elem${elem.test_id * Math.random() * i}`}
                   onClick={
                     goTo === 'addContent'
-                      ? () => goToAddContent(elem.test_id, false)
+                      ? () => goToAddContent(elem, false, 'sent')
                       : () => getQuestionsSent(elem.test_id, elem)
                   }
                 >
@@ -240,7 +251,7 @@ const SavedSentTests = (props) => {
                   key={`elem${elem.test_id * Math.random() * i}`}
                   onClick={
                     goTo === 'addContent'
-                      ? () => goToAddContent(elem.test_id, true)
+                      ? () => goToAddContent(elem, true, 'saved')
                       : () => getQuestions(elem.test_id, elem)
                   }
                 >
@@ -283,6 +294,9 @@ const mapDispatchToProps = (dispatch) => {
     setQuestionArrayToStore: (payload) => {
       dispatch(homeworkActions.setQuestionArrayToStore(payload));
     },
+    setTestIsDraftToStore: (payload) => {
+      dispatch(homeworkActions.setTestIsDraftToStore(payload));
+    },
     setCurrentSlide: (payload) => {
       dispatch(homeworkActions.setCurrentSlide(payload));
     },
@@ -322,10 +336,13 @@ SavedSentTests.propTypes = {
       state: PropTypes.shape({
         classId: PropTypes.instanceOf(Object),
         goTo: PropTypes.string,
+        courseId: PropTypes.number,
+        sectionId: PropTypes.number,
       }),
     }),
   }).isRequired,
   clientId: PropTypes.number.isRequired,
+  setTestIsDraftToStore: PropTypes.func.isRequired,
   selectedQuestionArray: PropTypes.instanceOf(Array).isRequired,
   setTestIdToStore: PropTypes.func.isRequired,
   setCurrentSubjectArrayToStore: PropTypes.func.isRequired,

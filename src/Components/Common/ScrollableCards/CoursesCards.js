@@ -208,20 +208,34 @@ export const CoursesCards = (props) => {
                       <p className='Scrollable__courseCardHeading mt-3 mb-0 mx-2'>
                         {elem.course_title}
                       </p>
-                      <ProgressBar
-                        width={`${70}%`}
-                        height='2px'
-                        borderRadius='100px'
-                        customStyle={{
-                          backgroundColor: '#4154cf',
-                          borderRadius: '100px',
-                        }}
-                        myProgressCustomStyle={{
-                          width: '90%',
-                          margin: '15px auto 5px auto',
-                          backgroundColor: 'rgba(0,0,0,0.42)',
-                        }}
-                      />
+                      <div style={{ width: '90%' }} className='d-flex align-items-center'>
+                        <ProgressBar
+                          width={`${elem.completed_percentage || 0}%`}
+                          height='2px'
+                          borderRadius='100px'
+                          customStyle={{
+                            backgroundColor: '#4154cf',
+                            height: '2px',
+                            borderRadius: '100px',
+                          }}
+                          myProgressCustomStyle={{
+                            width: '85%',
+                            height: '2px',
+                            margin: '15px auto 5px auto',
+                            backgroundColor: 'rgba(0,0,0,0.42)',
+                          }}
+                        />
+                        <p
+                          style={{
+                            fontSize: '10px',
+                            fontFamily: 'Montserrat-Regular',
+                            marginBottom: '0px',
+                            marginTop: '5px',
+                          }}
+                        >
+                          {elem.completed_percentage ? elem.completed_percentage.toFixed(0) : 0}%
+                        </p>
+                      </div>
                       {/* <p className='Scrollable__courseCardSubHeading text-left mx-2'>
                         <img src={rupee} alt='rupee' height='10' width='10' />
                         <span className='mx-1 Scrollable__courseCardHeading'>

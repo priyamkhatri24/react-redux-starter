@@ -27,7 +27,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import StarBorderIcon from '@material-ui/icons/StarBorderRounded';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ShareIcon from '@material-ui/icons/Share';
-import rupee from '../../assets/images/Courses/rupee.svg';
+import freeIcon from '../../assets/images/Courses/freeIcon.svg';
 import { apiValidation, get, post, displayRazorpay, shareThis } from '../../Utilities';
 import { PageHeader } from '../Common';
 import Cashfree from '../Common/Cashfree/Cashfree';
@@ -132,7 +132,7 @@ const BuyCourse = (props) => {
       course_id: match.params.courseId,
     };
 
-    get(payload, '/getCourseDetails').then((res) => {
+    get(payload, '/getCourseDetailsStudent').then((res) => {
       console.log(res, 'course details');
       const result = apiValidation(res);
       setCourse(result);
@@ -403,29 +403,46 @@ const BuyCourse = (props) => {
       } else {
         hist[elem.category] = 1;
       }
+      const freeContentArray = course.course_content.filter(
+        (ele) =>
+          (ele.url =
+            '"https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1632724891457.png"'),
+      );
+      if (freeContentArray.length && freeContentArray[0].count > 0) {
+        hist['Free Content'] = freeContentArray[0].count;
+      }
     });
     return hist;
   };
 
   const renderContentHistogram = () => {
+    const renderedHist = getHistogram(contentArray);
     return (
       <div className='scrollableContentOfCourses mt-3'>
-        {Object.entries(getHistogram(contentArray)).map(([key, val]) => {
+        {Object.entries(renderedHist).map(([key, val]) => {
           let icon;
           if (key === 'Videos') {
-            icon = <VideoIcon style={{ color: '#9f16cf' }} />;
+            icon = <VideoIcon style={{ color: '#9f16cf', marginBottom: '9px' }} />;
           } else if (key === 'Documents') {
-            icon = <DocIcon style={{ color: 'green' }} />;
+            icon = <DocIcon style={{ color: 'green', marginBottom: '9px' }} />;
           } else if (key === 'Live classes') {
-            icon = <LiveIcon style={{ color: '#faa300' }} />;
+            icon = <LiveIcon style={{ color: '#faa300', marginBottom: '9px' }} />;
           } else if (key === 'Tests') {
-            icon = <TestIcon style={{ color: '#530de1' }} />;
+            icon = <TestIcon style={{ color: '#530de1', marginBottom: '9px' }} />;
+          } else if (key === 'Free Content') {
+            icon = (
+              <img
+                className='freeIcon'
+                src='https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1632724891457.png'
+                alt='free'
+              />
+            );
           }
           return (
             <div className='scrollableContentOfCourses_item'>
               {icon}
               <p style={{ fontSize: '10px', fontFamily: 'Montserrat-SemiBold' }}>
-                {val > 1 ? key : key.slice(0, key.length - 1)}
+                {key === 'Free Content' || val > 1 ? key : key.slice(0, key.length - 1)}
               </p>
               <h6 style={{ color: 'rgba(0,0,0,0.54)' }}>{val}</h6>
             </div>
@@ -465,11 +482,16 @@ const BuyCourse = (props) => {
     }
   });
 
+  const displayContent = (elem) => {
+    if (elem.is_free === 'false') return;
+    console.log(elem);
+  };
+
   return (
     <div ref={mainCRef}>
       <div className='backButtonForCoursesPage'> </div>
       <PageHeader iconColor='white' transparent title='' />
-      <button className='shareButtonForCourse' type='button' onClick={() => shareCourse()}>
+      <button className='shareButtonForbuyCourse' type='button' onClick={() => shareCourse()}>
         <ShareIcon style={{ margin: '13px 16px', color: 'white' }} />
       </button>
       {/* {courseVideo && (
@@ -630,7 +652,9 @@ const BuyCourse = (props) => {
               <p className='Courses__subHeading mb-2'>- Access on mobile, laptop and TV</p>
               <hr className='' />
               <p className='Courses__heading'>Course content</p>
+
               {renderContentHistogram()}
+
               <Button
                 onClick={() => {
                   document.getElementById('contentTab').click();
@@ -788,6 +812,7 @@ const BuyCourse = (props) => {
                             }
                             return (
                               <div
+                                onClick={() => displayContent(elem)}
                                 style={{
                                   justifyContent: 'space-between',
                                   alignItems: 'center',
@@ -825,7 +850,15 @@ const BuyCourse = (props) => {
                                     </p>
                                   </div>
                                 </div>
-                                <LockIcon style={{ color: 'gray' }} />
+                                {elem.is_free === 'true' ? (
+                                  <img
+                                    className='freeIcon'
+                                    src='https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1632724891457.png'
+                                    alt='free'
+                                  />
+                                ) : (
+                                  <LockIcon style={{ color: 'gray' }} />
+                                )}
                               </div>
                             );
                           })}
@@ -836,7 +869,7 @@ const BuyCourse = (props) => {
                 );
               })}
             </Tab>
-            {/* <Tab
+            <Tab
               style={{
                 margin: 'auto 15px',
                 height: `${tabHeight}px`,
@@ -851,7 +884,7 @@ const BuyCourse = (props) => {
               <div style={{ marginTop: '1.2rem' }}>
                 <Reviews displayTwo={false} isFilterVisible reviews={reviews} />
               </div>
-            </Tab> */}
+            </Tab>
           </Tabs>
 
           {/* <hr className='' /> */}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+// import pdfjsLib from 'pdfjs-dist';
 import Swal from 'sweetalert2';
 import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
@@ -27,20 +28,26 @@ import {
   getCourseCurrentSectionId,
   getCourseCurrentSectionName,
   getCourseSectionPriorityOrder,
+  getCourseId,
 } from '../../redux/reducers/course.reducer';
 import { homeworkActions } from '../../redux/actions/homework.action';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { courseActions } from '../../redux/actions/course.action';
 import ContentRow from './ContentRow';
 
+window.URL = window.URL || window.webkitURL;
+const script = document.createElement('script');
+script.src = '//mozilla.github.io/pdf.js/build/pdf.js';
+document.head.appendChild(script);
 const AddContent = (props) => {
   const {
     history: {
       push,
-      location: { state: { draft, videoId, title } = {} },
+      location: { state: { draft, videoId, title, duration } = {} },
     },
     history,
     sectionId,
+    courseId,
     sectionName,
     setSelectedQuestionArrayToStore,
     clientUserId,
@@ -79,18 +86,18 @@ const AddContent = (props) => {
 
   useEffect(() => {
     if (courseAddContentTestId) {
-      const newOrder = courseSectionPriorityOrder + 1;
-      const payload = {
-        section_id: sectionId,
-        test_array: JSON.stringify([{ test_id: courseAddContentTestId, order: newOrder }]),
-        is_draft: draft,
-        client_user_id: clientUserId,
-      };
-      post(payload, '/addSectionContent').then((res) => {
-        console.log(res, 'test id');
-        getSectionContent();
-        setCourseSectionPriorityOrderToStore(newOrder);
-      });
+      // const newOrder = courseSectionPriorityOrder + 1;
+      // const payload = {
+      //   section_id: sectionId,
+      //   test_array: JSON.stringify([{ test_id: courseAddContentTestId, order: newOrder }]),
+      //   is_draft: draft,
+      //   client_user_id: clientUserId,
+      // };
+      // post(payload, '/addSectionContentLatest').then((res) => {
+      //   console.log(res, 'test id');
+      //   getSectionContent();
+      //   setCourseSectionPriorityOrderToStore(newOrder);
+      // });
       setCourseAddContentTestIdToStore(0);
     }
   }, [
@@ -112,11 +119,17 @@ const AddContent = (props) => {
       const payload = {
         section_id: sectionId,
         file_array: JSON.stringify([
-          { file_url: videoId, order: newOrder, file_name: title, file_type: 'youtube' },
+          {
+            file_url: videoId,
+            order: newOrder,
+            file_name: title,
+            file_type: 'youtube',
+            total_time: duration,
+          },
         ]),
         client_user_id: clientUserId,
       };
-      post(payload, '/addSectionContent').then((res) => {
+      post(payload, '/addSectionContentLatest').then((res) => {
         getSectionContent();
         setCourseSectionPriorityOrderToStore(newOrder);
       });
@@ -126,6 +139,7 @@ const AddContent = (props) => {
   }, [
     videoId,
     title,
+    duration,
     getSectionContent,
     clientUserId,
     sectionId,
@@ -151,7 +165,10 @@ const AddContent = (props) => {
     } else if (i === 5) {
       push({ pathname: '/addyoutubevideo', state: { goTo: 'addContent' } });
     } else if (i === 3) {
-      push({ pathname: '/homework/savedtests', state: { goTo: 'addContent' } });
+      push({
+        pathname: '/homework/savedtests',
+        state: { goTo: 'addContent', courseId, sectionId },
+      });
     } else if (i === 2) {
       courseFileRef.current.click();
     }
@@ -165,6 +182,7 @@ const AddContent = (props) => {
         order: newOrder + index + 1,
         file_name: elem.name,
         file_type: type,
+        total_time: elem.duration || 300,
       };
     });
     const payload = {
@@ -172,7 +190,7 @@ const AddContent = (props) => {
       file_array: JSON.stringify(fileArray),
       client_user_id: clientUserId,
     };
-    post(payload, '/addSectionContent').then((res) => {
+    post(payload, '/addSectionContentLatest').then((res) => {
       getSectionContent();
       setCourseSectionPriorityOrderToStore(newOrder + fileArray.length);
       handleClose();
@@ -183,20 +201,60 @@ const AddContent = (props) => {
     return [...s].reverse().join('');
   }
 
+  const getVideoDuration = (fileObj) => {
+    const video = document.createElement('video');
+    video.preload = 'metadata';
+    video.src = URL.createObjectURL(fileObj.file);
+    video.onloadedmetadata = function () {
+      window.URL.revokeObjectURL(video.src);
+      fileObj.duration = video.duration;
+    };
+  };
+
+  const getPdfPagesCount = (file) => {
+    if (file.file.type === 'application/pdf') {
+      const pdfjsLib = window['pdfjs-dist/build/pdf'];
+      pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // log to console
+        // logs data:<type>;base64,wL2dvYWwgbW9yZ...
+        console.log(reader.result);
+        const loadingTask = pdfjsLib.getDocument(reader.result);
+        loadingTask.promise.then(function (pdf) {
+          console.log('PDF loaded', pdf.numPages);
+          file.duration = 60 * 3 * pdf.numPages;
+        });
+      };
+      reader.readAsDataURL(file.file);
+    }
+  };
+
   const getImageInput = (e, type) => {
     const reader = new FileReader();
     const { files } = e.target;
     const filesArr = [...files];
+    const filess = filesArr.map((ele) => {
+      return {
+        file: ele,
+        duration: 0,
+      };
+    });
+    console.log(filess);
+    console.log(filesArr);
     const isFileAllowedArray = [];
     for (let i = 0; i < filesArr.length; i++) {
-      const file = filesArr[i];
+      const { file } = filess[i];
       const s = reverse(reverse(file.name).split('.')[0]);
       if (type === 'image' && verifyIsImage.test(s)) {
         isFileAllowedArray.push(true);
+        filess[i].duration = 300;
       } else if (type === 'video' && verifyIsVideo.test(s)) {
+        getVideoDuration(filess[i]);
         isFileAllowedArray.push(true);
       } else if (type === 'file' && verifyIsFile.test(s)) {
         isFileAllowedArray.push(true);
+        getPdfPagesCount(filess[i]);
       } else {
         isFileAllowedArray.push(false);
         Swal.fire({
@@ -214,10 +272,19 @@ const AddContent = (props) => {
       }
     }
 
-    if (filesArr?.length && isFileAllowedArray.every((ele) => ele === true)) {
+    if (filess?.length && isFileAllowedArray.every((ele) => ele === true)) {
       // reader.readAsDataURL(e.target.files[0]);
+      console.log(filess, 'beforeResponse');
       uploadMultipleImages(filesArr).then((res) => {
-        console.log(res);
+        res.forEach((ele, index) => {
+          filess.forEach((elem) => {
+            if (ele.name === elem.file.name) {
+              ele.duration = elem.duration;
+            }
+          });
+        });
+        console.log(res, 'uploadedResponse');
+
         // postImageToSection(file.name, res.filename, type);
         postImageToSection(res, type);
       });
@@ -473,6 +540,7 @@ const AddContent = (props) => {
 const mapStateToProps = (state) => ({
   sectionId: getCourseCurrentSectionId(state),
   sectionName: getCourseCurrentSectionName(state),
+  courseId: getCourseId(state),
   clientUserId: getClientUserId(state),
   courseSectionPriorityOrder: getCourseSectionPriorityOrder(state),
   courseAddContentTestId: getCourseAddContentTestId(state),
@@ -508,6 +576,7 @@ AddContent.propTypes = {
   // }).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   sectionId: PropTypes.number.isRequired,
+  courseId: PropTypes.number.isRequired,
   sectionName: PropTypes.string.isRequired,
   setSelectedQuestionArrayToStore: PropTypes.func.isRequired,
   clientUserId: PropTypes.number.isRequired,

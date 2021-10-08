@@ -57,6 +57,8 @@ class QuestionTaker extends Component {
       setComeBackFromTestsToStore,
       clearTests,
     } = this.props;
+    const { timerCurrentTime, currentTime, currentQuestionArray, testEndTime: tet } = this.state;
+
     let idAdd;
     if (comeBackFromTests) {
       Swal.fire({
@@ -103,7 +105,10 @@ class QuestionTaker extends Component {
         });
         return elem;
       });
-
+      if (!currentTime && !tet) {
+        this.setState({ currentQuestion: '', currentQuestionArray: [] });
+      }
+      console.log(currentQuestionArray);
       this.setState({
         result: idAdd,
         currentQuestion: testResultArray[0].question_list[0],
@@ -118,28 +123,49 @@ class QuestionTaker extends Component {
   }
 
   componentWillUnmount() {
-    const { history, setComeBackFromTestsToStore, setTestResultArrayToStore } = this.props;
-    const { result, userWantsToLeave } = this.state;
+    const {
+      history,
+      setComeBackFromTestsToStore,
+      setTestResultArrayToStore,
+      setTestEndTimeToStore,
+      testStartTime,
+    } = this.props;
+    const { result, userWantsToLeave, timerCurrentTime } = this.state;
     window.removeEventListener('beforeunload', this.onUnload);
     // clearTests();
     if (!userWantsToLeave) setComeBackFromTestsToStore(true);
     setTestResultArrayToStore(result);
+    console.log(timerCurrentTime, 'timeeeeee');
+
+    setTestEndTimeToStore(testStartTime + timerCurrentTime);
+
     history.push('/');
   }
 
   onUnload = (e) => {
-    this.setState({
-      result: [{ question_list: [], subject: '' }],
-      currentTime: 0,
-      testEndTime: 0,
-    });
-    const message = 'o/';
+    // this.submitOnReload();
+    const {
+      setComeBackFromTestsToStore,
+      setTestResultArrayToStore,
+      setTestEndTimeToStore,
+      testStartTime,
+    } = this.props;
+    const { result, userWantsToLeave, timerCurrentTime } = this.state;
+    window.removeEventListener('beforeunload', this.onUnload);
+    // clearTests();
+    if (!userWantsToLeave) setComeBackFromTestsToStore(true);
+    setTestResultArrayToStore(result);
+    console.log(timerCurrentTime, 'timeeeeee');
 
+    setTestEndTimeToStore(testStartTime + timerCurrentTime);
+
+    const message = 'o/';
     (e || window.event).returnValue = message; // Gecko + IE
     return message;
   };
 
-  timerHasFinished = () => {
+  submitOnReload = () => {
+    console.log('starteddddd');
     const { result, testId } = this.state;
     const {
       clientUserId,
@@ -190,11 +216,85 @@ class QuestionTaker extends Component {
         if (testType === 'demotest') {
           post(updationPayload, '/updateTestStatus').then((response) => {
             if (response.success) {
+              // this.testSubmissionAlert();
+              console.log(response, 'reloaddedddd');
+            }
+          });
+        } else if (testType === 'homework' || testType === 'livetest') {
+          post(updationPayload, '/submitTest').then((response) => {
+            if (response.success) {
+              // this.testSubmissionAlert();
+              console.log(response, 'reloadeddd');
+            }
+          });
+        }
+      }
+    });
+    console.log('doneeeee');
+    setTestEndTimeToStore(0);
+    setTestStartTimeToStore(0);
+  };
+
+  timerHasFinished = () => {
+    const { result, testId } = this.state;
+    const {
+      clientUserId,
+      testType,
+      testId: testID,
+      setTestStartTimeToStore,
+      setTestEndTimeToStore,
+    } = this.props;
+    const finalArray = result
+      .map((elem) => {
+        const flattenedQuestionArray = elem.question_list.map((e) => {
+          const payload = {};
+
+          payload[e.question_id] = {
+            totalTime: e.timer * 1000,
+            finalAnswer: e.student_answer === null ? '' : e.student_answer,
+            id: e.question_id.toString(),
+            totalCount: e.noOfTimesVisited.toString(),
+            correctAnswer: e.question_answer.toString(),
+            questionType: e.question_type.toString(),
+            status: e.question_status.toString(),
+            result: (e.isCorrect ? 1 : 0).toString(),
+            question_positive_marks: e.question_positive_marks,
+            question_negative_marks: e.question_negative_marks,
+          };
+
+          return payload;
+        });
+        return flattenedQuestionArray;
+      })
+      .flat();
+
+    const finalObject = Object.assign({}, ...finalArray);
+
+    const finalPayload = {
+      client_user_id: clientUserId,
+      test_id: testId,
+      questions_array: JSON.stringify(finalObject),
+    };
+    console.log(finalObject, 'finalPayload');
+
+    post(finalPayload, '/studentTestActivityLatest').then((res) => {
+      console.log(res, 'firsttt');
+      if (res.success) {
+        const updationPayload = {
+          client_user_id: clientUserId,
+          test_id: testID,
+          test_status: 'submitted',
+        };
+        if (testType === 'demotest') {
+          post(updationPayload, '/updateTestStatus').then((response) => {
+            console.log(response, 'timerFinished');
+            if (response.success) {
               this.testSubmissionAlert();
             }
           });
         } else if (testType === 'homework' || testType === 'livetest') {
           post(updationPayload, '/submitTest').then((response) => {
+            console.log(response, 'timerFinished');
             if (response.success) {
               this.testSubmissionAlert();
             }
@@ -227,6 +327,15 @@ class QuestionTaker extends Component {
   triggerFinish = () => {
     console.log('finished');
     this.setState({ modalOpen: true });
+  };
+
+  goBackReloaded = () => {
+    const { history, setComeBackFromTestsToStore, clearTests } = this.props;
+    this.setState({ userWantsToLeave: true }, () => {
+      setComeBackFromTestsToStore(false);
+      clearTests();
+      history.push('/');
+    });
   };
 
   changeQuestion = (subject, questionId) => {
@@ -345,7 +454,7 @@ class QuestionTaker extends Component {
       currentLanguage,
     } = this.state;
 
-    const { testLanguage } = this.props;
+    const { testLanguage, testType } = this.props;
 
     return (
       <div className='QuestionTaker'>
@@ -376,19 +485,32 @@ class QuestionTaker extends Component {
             <MoreVertIcon />
           </div>
         </div>
-        <Pallette
-          questions={result}
-          changeQuestion={this.changeQuestion}
-          currentQuestion={currentQuestion}
-          startingResult={startingResult}
-        />
-
-        <QuestionCard
-          currentQuestion={currentQuestion}
-          onUnmount={this.questionCardUnmount}
-          onSaveAndNext={this.onSaveAndNext}
-          language={currentLanguage}
-        />
+        {(currentTime !== 0 && testEndTime !== 0) || testType === 'homework' ? (
+          <>
+            {' '}
+            <Pallette
+              questions={result}
+              changeQuestion={this.changeQuestion}
+              currentQuestion={currentQuestion}
+              startingResult={startingResult}
+            />
+            <QuestionCard
+              currentQuestion={currentQuestion}
+              onUnmount={this.questionCardUnmount}
+              onSaveAndNext={this.onSaveAndNext}
+              language={currentLanguage}
+            />
+          </>
+        ) : (
+          <div className='testHasBeenSubContainer'>
+            <h2 className='testHasBeenSubmitted'>Your test has been submitted. Good luck!</h2>
+            <p>
+              <Button variant='customPrimary' onClick={this.goBackReloaded}>
+                Go back
+              </Button>
+            </p>
+          </div>
+        )}
 
         <Modal show={modalOpen} centered onHide={this.handleFinishClose}>
           <Modal.Body className='text-center'>
@@ -468,6 +590,7 @@ QuestionTaker.propTypes = {
   testEndTime: PropTypes.number.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
+    replace: PropTypes.func.isRequired,
   }).isRequired,
   setTestEndTimeToStore: PropTypes.func.isRequired,
   setTestStartTimeToStore: PropTypes.func.isRequired,

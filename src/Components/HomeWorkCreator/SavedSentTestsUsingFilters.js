@@ -127,6 +127,7 @@ const SavedSentTestsUsingFilters = (props) => {
       setCurrentSubjectArrayToStore(res.class_subject.class_subject_array);
       setCurrentChapterArrayToStore(res.chapter_array);
       setTestNameToStore(name);
+      setTestClassSubjectToStore(res.class_subject.class_subject_array);
       setTestIdToStore(testsType === 'saved' ? testId : null);
       setHomeworkLanguageTypeToStore(language);
 

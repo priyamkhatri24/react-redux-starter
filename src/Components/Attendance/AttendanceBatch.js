@@ -77,14 +77,14 @@ const AttendanceBatch = (props) => {
         }),
       ),
     };
-
-    post(payload, '/sendAttendanceMessageToParent').then((res) => console.log(res));
+    // console.log(payload, 'smsPayload');
+    post(payload, '/sendAttendanceMessageToParent').then((res) => console.log(res, 'hahaha'));
 
     const message = `Attendance updated to ${
       type === 'P' ? 'Present' : type === 'A' ? 'Absent' : 'Late'
     } for`;
 
-    const userArray = studentArray.map((e) => e.client_user_id);
+    const userArray = studentArray.map((e) => e.user_user_id);
     const topicArray = userArray.map((e) => {
       const el =
         process.env.NODE_ENV === 'production' ? `productionuser${e}` : `developmentuser${e}`;
