@@ -20,6 +20,7 @@ import Button from 'react-bootstrap/Button';
 import Swal from 'sweetalert2';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import CheckIcon from '@material-ui/icons/Check';
+import CustomDurationPicker from '../Common/DurationPicker/CustomDurationPicker';
 import LiveClassesStyle from './LiveClasses.style';
 import {
   getClientId,
@@ -981,10 +982,11 @@ class LiveClasses extends Component {
                 </Modal>
 
                 <Modal show={showDurationModal} onHide={this.closeDurationModal} centered>
-                  <DurationPicker
+                  {/* <DurationPicker
                     onChange={this.onDurationChange}
                     initialDuration={{ hours: 1, minutes: 2, seconds: 3 }}
-                  />
+                  /> */}
+                  <CustomDurationPicker changed={this.onDurationChange} />
                   <Modal.Footer>
                     <Button variant='dashboardBlueOnWhite' onClick={this.closeDurationModal}>
                       Next

@@ -8,15 +8,24 @@ const initialState = {
   courseCurrentSectionId: null,
   courseSectionPriorityOrder: 0,
   courseAddContentTestId: 0,
+  courseNowPlayingVideo: null,
+  courseDocumentToOpen: null,
 };
 
 export function course(state = initialState, action) {
   switch (action.type) {
     case courseConstants.COURSEID:
-      return {
-        ...state,
-        courseId: action.payload,
-      };
+      return state.courseId === action.payload
+        ? {
+            ...state,
+            courseId: action.payload,
+          }
+        : {
+            ...state,
+            courseId: action.payload,
+            courseNowPlayingVideo: null,
+            courseDocumentToOpen: null,
+          };
 
     case courseConstants.COURSEOBJECT:
       return {
@@ -54,6 +63,18 @@ export function course(state = initialState, action) {
         courseAddContentTestId: action.payload,
       };
 
+    case courseConstants.COURSENOWPLAYINGVIDEO:
+      return {
+        ...state,
+        courseNowPlayingVideo: action.payload,
+      };
+
+    case courseConstants.COURSEDOCUMENTTOOPEN:
+      return {
+        ...state,
+        courseDocumentToOpen: action.payload,
+      };
+
     default:
       return state;
   }
@@ -66,3 +87,5 @@ export const getCourseCurrentSectionName = (state) => state.course.courseCurrent
 export const getCourseCurrentSectionId = (state) => state.course.courseCurrentSectionId;
 export const getCourseSectionPriorityOrder = (state) => state.course.courseSectionPriorityOrder;
 export const getCourseAddContentTestId = (state) => state.course.courseAddContentTestId;
+export const getCourseNowPlayingVideo = (state) => state.course.courseNowPlayingVideo;
+export const getCourseDocumentToOpen = (state) => state.course.courseDocumentToOpen;

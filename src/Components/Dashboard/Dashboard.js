@@ -44,6 +44,7 @@ import {
   getFirstTimeLoginState,
 } from '../../redux/reducers/firstTimeLogin.reducer';
 import { studyBinActions } from '../../redux/actions/studybin.actions';
+import { homeworkActions } from '../../redux/actions/homework.action';
 import fb from '../../assets/images/dummyDashboard/fb.png';
 import linkedin from '../../assets/images/dummyDashboard/linkedin.svg';
 import insta from '../../assets/images/dummyDashboard/instagram.svg';
@@ -77,6 +78,7 @@ const Dashboard = (props) => {
     setTestStartTimeToStore,
     setTestTypeToStore,
     setTestIdToStore,
+    setHomeworkLanguageTypeToStore,
     setTestEndTimeToStore,
     setCourseIdToStore,
     setAdmissionRoleArrayToStore,
@@ -262,6 +264,10 @@ const Dashboard = (props) => {
   }, [clientId, clientUserId, setDashboardDataToStore]);
 
   useEffect(() => {
+    setHomeworkLanguageTypeToStore('');
+  }, []);
+
+  useEffect(() => {
     const roleId = roleArray.includes(4)
       ? 4
       : roleArray.includes(3)
@@ -269,7 +275,10 @@ const Dashboard = (props) => {
       : roleArray.includes(2)
       ? 2
       : 1;
-    get({ client_id: clientId, role_id: roleId }, '/getLoginPageInformation').then((res) => {
+    get(
+      { client_id: clientId, role_id: roleId, client_user_id: clientUserId },
+      '/getLoginPageInformation',
+    ).then((res) => {
       console.log(res, 'sadad');
       const result = apiValidation(res);
       setNotices(result.notice);
@@ -365,6 +374,7 @@ const Dashboard = (props) => {
 
   const goToHomeWorkCreator = () => {
     const { push } = history;
+
     push({ pathname: '/homework', state: { letsGo: true } });
   };
 
@@ -822,7 +832,7 @@ const Dashboard = (props) => {
             height={78}
             heading='Courses'
             subHeading='Increase your profit by building and selling your courses here.'
-            boxshadow='0px 1px 3px 0px rgba(8, 203, 176, 0.4)'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             backGround={param.start_colour}
             buttonClick={goToCoursesForTeacher}
@@ -840,7 +850,7 @@ const Dashboard = (props) => {
                 ? 'Conduct all your live classes here effectively'
                 : 'Attend all your live classes from here.'
             }
-            boxshadow='0px 1px 3px 0px rgba(154, 129, 171, 0.75)'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             backGround={param.start_colour}
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             buttonText={roleArray.includes(3) || roleArray.includes(4) ? 'Go live now' : ''}
@@ -1242,6 +1252,9 @@ const mapDispatchToProps = (dispatch) => ({
   setAdmissionRoleArrayToStore: (payload) => {
     dispatch(admissionActions.setAdmissionRoleArrayToStore(payload));
   },
+  setHomeworkLanguageTypeToStore: (payload) => {
+    dispatch(homeworkActions.setHomeworkLanguageTypeToStore(payload));
+  },
   setFolderIdArrayToStore: (payload) => {
     dispatch(studyBinActions.setFolderIDArrayToStore(payload));
   },
@@ -1266,6 +1279,7 @@ Dashboard.propTypes = {
   setTestStartTimeToStore: PropTypes.func.isRequired,
   setTestIdToStore: PropTypes.func.isRequired,
   setTestTypeToStore: PropTypes.func.isRequired,
+  setHomeworkLanguageTypeToStore: PropTypes.func.isRequired,
   setTestLanguageToStore: PropTypes.func.isRequired,
   setCourseIdToStore: PropTypes.func.isRequired,
   setDashboardDataToStore: PropTypes.func.isRequired,

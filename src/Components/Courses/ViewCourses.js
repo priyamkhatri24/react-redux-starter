@@ -28,7 +28,7 @@ const ViewCourses = (props) => {
         });
       } else {
         get({ client_user_id: clientUserId }, '/getSubscribedCoursesOfStudent').then((res) => {
-          console.log(res);
+          console.log(res, 'subsss');
           const result = apiValidation(res);
           setCourses(result);
         });
@@ -142,7 +142,7 @@ const ViewCourses = (props) => {
                     className='d-flex align-items-center'
                   >
                     <ProgressBar
-                      width={`${70}%`}
+                      width={`${course.completed_percentage}%`}
                       height='2px'
                       borderRadius='100px'
                       customStyle={{
@@ -156,7 +156,7 @@ const ViewCourses = (props) => {
                       }}
                     />
                     <p style={{ marginTop: '14px' }} className='verySmallText mb-0'>
-                      70%
+                      {course.completed_percentage.toFixed(0)}%
                     </p>
                   </div>
                 )}

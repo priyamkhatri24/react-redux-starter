@@ -74,7 +74,7 @@ const ViewCoursesList = (props) => {
               </Col>
               <Col xs={8} sm={8} className='p-0'>
                 <p className='Scrollable__courseCardHeading mb-0 mx-1'>{course.course_title}</p>
-                <p className='verySmallGrayText mx-1 mt-1 mb-0'>Aakash Gupta</p>
+                {/* <p className='verySmallGrayText mx-1 mt-1 mb-0'>Aakash Gupta</p> */}
                 <div style={{ marginTop: '-4px' }} className='mx-1'>
                   {starArray.map((e) => {
                     return e;

@@ -51,6 +51,7 @@ const Timer = (props) => {
             clearInterval(clear);
           } else {
             setMinutes(59);
+            setSeconds(59);
             setHours((hour) => hour - 1);
           }
         } else {

@@ -67,6 +67,7 @@ const PreviewQuestions = (props) => {
   const [oldTestId, setOldTestId] = useState(null);
 
   useEffect(() => {
+    console.log(selectedQuestionArray, 'selectedQuestionArrayyyyy');
     if (activeSection === 'Subject Wise') {
       get({ test_id: testId }, '/getTestQuestionsSubjectWiseForHomeWorkCreator').then((res) => {
         const result = apiValidation(res);
@@ -109,7 +110,9 @@ const PreviewQuestions = (props) => {
         ]);
       });
     } else {
-      get({ test_id: testId || oldTestId }, '/getTestQuestionsForHomeWorkCreator').then((res) => {
+      console.log(testId, 'hahahahahah');
+      get({ test_id: testId }, '/getTestQuestionsForHomeWorkCreator').then((res) => {
+        console.log(res, 'selectedResultArayyyy');
         setTestClassSubjectToStore(res.class_subject);
         const result = apiValidation(res);
         const withMarks = result.map((e) => {
@@ -309,7 +312,7 @@ const PreviewQuestions = (props) => {
         '/updateMarksAndSectionsOfQuestionsInTest',
       ).then((resp) => {
         if (resp.success) {
-          history.push('/homework/assign');
+          history.push({ pathname: '/homework/assign', state: {} });
         }
       });
     });

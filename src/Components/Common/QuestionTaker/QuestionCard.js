@@ -74,6 +74,17 @@ class QuestionCard extends Component {
     // remove the focused if not save and next done
   }
 
+  /** ********Timer logic***** */
+  handleChecked(order) {
+    const { checked } = this.state;
+    const checkedArray = checked.length === 0 ? [false, false, false, false] : [...checked];
+
+    checkedArray[order - 1] = !checkedArray[order - 1];
+    this.setState({ checked: checkedArray });
+    console.log(checkedArray);
+    console.log('CHANGE!');
+  }
+
   selectedAnswer = (e) => {
     // option arrays must be the same always
     const { question, currentLanguage } = this.state;
@@ -257,7 +268,7 @@ class QuestionCard extends Component {
             src={elem.image}
             alt='option'
             className='img-fluid m-2'
-            style={{ maxWidth: '90vw', maxHeight: '20vh' }}
+            style={{ maxWidth: '60%', height: 'auto' }}
           />
         )}
       </div>
@@ -296,7 +307,7 @@ class QuestionCard extends Component {
               src={elem.image}
               alt='option'
               className='img-fluid'
-              style={{ maxWidth: '90vw', maxHeight: '20vh' }}
+              style={{ width: '60%', height: 'auto' }}
             />
           )}
         </div>
@@ -319,17 +330,6 @@ class QuestionCard extends Component {
     this.sectionTimeIntervalId = setInterval(this.sectionTimerHandler, 1000);
     this.setState({ timer: 0 });
   };
-
-  /** ********Timer logic***** */
-  handleChecked(order) {
-    const { checked } = this.state;
-    const checkedArray = checked.length === 0 ? [false, false, false, false] : [...checked];
-
-    checkedArray[order - 1] = !checkedArray[order - 1];
-    this.setState({ checked: checkedArray });
-    console.log(checkedArray);
-    console.log('CHANGE!');
-  }
 
   /** *********** */
 
@@ -363,7 +363,7 @@ class QuestionCard extends Component {
               src={question.question_image}
               alt='question'
               className='m-2'
-              style={{ maxWidth: '90vw', maxHeight: '30vh' }}
+              style={{ width: '60%', height: 'auto' }}
             />
           )}
           <div className='mt-4'>
@@ -427,7 +427,7 @@ class QuestionCard extends Component {
                           src={elem.image}
                           alt='option'
                           className='img-fluid'
-                          style={{ maxWidth: '90vw', maxHeight: '20vh' }}
+                          style={{ width: '60%', height: 'auto' }}
                         />
                       )}
                     </div>

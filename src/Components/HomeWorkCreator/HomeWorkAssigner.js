@@ -20,6 +20,7 @@ import {
   getHomeworkLanguageType,
   getSelectedQuestionArray,
   getTestClassSubject,
+  getCurrentSubjectArray,
   getTestId,
   getTestIsDraft,
   getTestName,
@@ -33,6 +34,8 @@ import { get, apiValidation, post } from '../../Utilities';
 import '../Live Classes/LiveClasses.scss';
 import './HomeWorkCreator.scss';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
+import { courseActions } from '../../redux/actions/course.action';
+import { homeworkActions } from '../../redux/actions/homework.action';
 
 const CustomInput = ({ value, onClick }) => (
   <Row className='m-2 justify-content-center'>
@@ -62,12 +65,19 @@ const HomeWorkAssigner = (props) => {
     roleArray,
     testId,
     testIsDraft,
+    setHomeworkLanguageTypeToStore,
     testClassSubject,
     currentChapterArray,
     userProfile,
     homeworkLanguageType,
     selectedQuestionArray,
+    setCourseAddContentTestIdToStore,
     history,
+    history: {
+      location: {
+        state: { draft, onlyNext, testIdd, courseId, sectionId },
+      },
+    },
   } = props;
   const [currentTestName, setTestName] = useState('');
   const [batches, setBatches] = useState([]);
@@ -97,6 +107,15 @@ const HomeWorkAssigner = (props) => {
 
   const [analysisDate, setAnalysisDate] = useState(new Date());
   const [analysisStartTime, setAnalysisStartTime] = useState('');
+
+  useEffect(() => {
+    if (onlyNext) {
+      setAssignmentType([
+        { id: 1, text: 'Homework', isSelected: true, value: 'homework' },
+        { id: 3, text: 'Demo Test', isSelected: false, value: 'demo test' },
+      ]);
+    }
+  }, [onlyNext]);
 
   useEffect(() => {
     setTestName(testName);
@@ -221,18 +240,19 @@ const HomeWorkAssigner = (props) => {
       name: `${userProfile.firstName} ${userProfile.lastName}`,
       batch_array: JSON.stringify(selectedBatches.map((e) => e.client_batch_id)),
       questions_array: JSON.stringify(selectedQuestionArray.map((e) => e.question_id)),
-      class_subject: JSON.stringify(testClassSubject.class_subject_array), // class_subject_array
+      class_subject: JSON.stringify(testClassSubject), // class_subject_array
       chapter_array: JSON.stringify(currentChapterArray),
       test_duration: testType === 'homework' ? null : testDuration,
       start_time: testType !== 'live test' ? null : getUnixTime(startTimeDate),
       answer_key: answerKey,
     };
-
+    console.log(testClassSubject);
     console.log(payload, 'kakakakskdasd');
 
     post(payload, '/addTest').then((res) => {
       console.log(res);
       if (res.success) {
+        setHomeworkLanguageTypeToStore('');
         const messagePayload = {
           message,
           title: currentAssignentType,
@@ -276,6 +296,53 @@ const HomeWorkAssigner = (props) => {
 
     console.log(payload);
   };
+  const assignTestToCourse = () => {
+    const testType = assignmentType.filter((e) => e.isSelected === true)[0].value;
+    const testDuration = (duration.hours * 3600 + duration.minutes * 60 + duration.seconds) * 1000;
+    const startDateMidnight = new Date(startDate.toDateString());
+    const startTimeInSeconds = startTime.split(':').reduce((acc, curr) => {
+      return acc * 60 + parseInt(curr, 10);
+    }, 0);
+    const startTimeDate = addSeconds(startDateMidnight, startTimeInSeconds);
+    const answerKey = null;
+
+    /** ************************************************* */
+    const payload = {
+      is_public: postTo.filter((e) => e.isSelected === true)[0].id !== 1,
+      test_id: testIdd,
+      test_name: currentTestName,
+      test_date: getUnixTime(startDate),
+      test_type: testType,
+      language_type: homeworkLanguageType,
+      is_draft: testIsDraft,
+      teacher_id: clientUserId,
+      client_id: clientId,
+      name: `${userProfile.firstName} ${userProfile.lastName}`,
+      batch_array: JSON.stringify(selectedBatches.map((e) => e.client_batch_id)),
+      questions_array: JSON.stringify(selectedQuestionArray.map((e) => e.question_id)),
+      class_subject: JSON.stringify(testClassSubject), // class_subject_array
+      chapter_array: JSON.stringify(currentChapterArray),
+      test_duration: testType === 'homework' ? null : testDuration,
+      start_time: testType !== 'live test' ? null : getUnixTime(startTimeDate),
+      answer_key: answerKey,
+      course_id: courseId,
+      section_id: sectionId,
+    };
+    console.log(testClassSubject);
+    console.log(payload, 'kakakakskdasd');
+
+    post(payload, '/addTestToCourse').then((res) => {
+      console.log(res);
+      history.push({ pathname: '/courses/createcourse/addcontent', state: { draft } });
+      setCourseAddContentTestIdToStore(testIdd);
+      setHomeworkLanguageTypeToStore('');
+    });
+  };
+
+  const addTestToCourse = () => {
+    history.push({ pathname: '/courses/createcourse/addcontent', state: { draft } });
+    setCourseAddContentTestIdToStore(testIdd);
+  };
 
   return (
     <div style={{ height: '90vh' }}>
@@ -294,31 +361,35 @@ const HomeWorkAssigner = (props) => {
             <span>Test Name</span>
           </label>
         </Row>
-        <Row className='m-2'>
-          <label htmlFor='Select Batch' className='w-100 has-float-label my-auto'>
-            <input
-              className='form-control'
-              name='Select Batch'
-              type='text'
-              placeholder='Select Batch'
-              onClick={() => setShowModal(true)}
-              readOnly
-              value={batchInputValue}
+        {!onlyNext ? (
+          <Row className='m-2'>
+            <label htmlFor='Select Batch' className='w-100 has-float-label my-auto'>
+              <input
+                className='form-control'
+                name='Select Batch'
+                type='text'
+                placeholder='Select Batch'
+                onClick={() => setShowModal(true)}
+                readOnly
+                value={batchInputValue}
+              />
+              <span>Select Batch</span>
+              <i className='LiveClasses__show'>
+                <ExpandMoreIcon />
+              </i>
+            </label>
+          </Row>
+        ) : null}
+        {!onlyNext ? (
+          <Row className='m-0 justify-content-center'>
+            <DatePicker
+              selected={startDate}
+              dateFormat='dd/MM/yyyy'
+              onChange={(date) => setStartDate(date)}
+              customInput={<CustomInput />}
             />
-            <span>Select Batch</span>
-            <i className='LiveClasses__show'>
-              <ExpandMoreIcon />
-            </i>
-          </label>
-        </Row>
-        <Row className='m-0 justify-content-center'>
-          <DatePicker
-            selected={startDate}
-            dateFormat='dd/MM/yyyy'
-            onChange={(date) => setStartDate(date)}
-            customInput={<CustomInput />}
-          />
-        </Row>
+          </Row>
+        ) : null}
         <Row className='mx-2'>
           <small className='text-left Homework__smallHeading mx-3 my-2'>Assignment Type</small>
           <section className='Homework__scrollable'>
@@ -452,34 +523,39 @@ const HomeWorkAssigner = (props) => {
             </Col>
           </Row>
         )}
-        <Row className='mx-2'>
-          <small className='text-left Homework__smallHeading mx-3 mb-2 mt-4'>
-            Where Do You want to post this assignment
-          </small>
+        {!onlyNext ? (
+          <Row className='mx-2'>
+            <small className='text-left Homework__smallHeading mx-3 mb-2 mt-4'>
+              Where Do You want to post this assignment
+            </small>
 
-          {postTo.map((e) => {
-            return (
-              <div
-                key={e.id}
-                className={
-                  e.isSelected
-                    ? 'Homework__subjectBubble Homework__selected'
-                    : 'Homework__subjectBubble Homework__unselected'
-                }
-                onClick={() => selectPostTo(e.id)}
-                onKeyDown={() => selectPostTo(e.id)}
-                role='button'
-                tabIndex='-1'
-              >
-                {e.text}
-              </div>
-            );
-          })}
-        </Row>
+            {postTo.map((e) => {
+              return (
+                <div
+                  key={e.id}
+                  className={
+                    e.isSelected
+                      ? 'Homework__subjectBubble Homework__selected'
+                      : 'Homework__subjectBubble Homework__unselected'
+                  }
+                  onClick={() => selectPostTo(e.id)}
+                  onKeyDown={() => selectPostTo(e.id)}
+                  role='button'
+                  tabIndex='-1'
+                >
+                  {e.text}
+                </div>
+              );
+            })}
+          </Row>
+        ) : null}
       </Card>
       <Row className='justify-content-center mt-4'>
-        <Button variant='customPrimary' onClick={() => assignTestFinally()}>
-          Send
+        <Button
+          variant='customPrimary'
+          onClick={() => (onlyNext ? assignTestToCourse() : assignTestFinally())}
+        >
+          {onlyNext ? 'Add' : 'Send'}
         </Button>
       </Row>
       <Modal show={showModal} onHide={handleClose} centered>
@@ -522,14 +598,23 @@ const mapStateToProps = (state) => ({
   roleArray: getRoleArray(state),
   testId: getTestId(state),
   testIsDraft: getTestIsDraft(state),
-  testClassSubject: getTestClassSubject(state),
+  testClassSubject: getCurrentSubjectArray(state),
   currentChapterArray: getCurrentChapterArray(state),
   userProfile: getUserProfile(state),
   selectedQuestionArray: getSelectedQuestionArray(state),
   homeworkLanguageType: getHomeworkLanguageType(state),
 });
-
-export default connect(mapStateToProps)(HomeWorkAssigner);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setCourseAddContentTestIdToStore: (payload) => {
+      dispatch(courseActions.setCourseAddContentTestIdToStore(payload));
+    },
+    setHomeworkLanguageTypeToStore: (payload) => {
+      dispatch(homeworkActions.setHomeworkLanguageTypeToStore(payload));
+    },
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(HomeWorkAssigner);
 
 HomeWorkAssigner.propTypes = {
   testName: PropTypes.string.isRequired,
@@ -543,7 +628,21 @@ HomeWorkAssigner.propTypes = {
   userProfile: PropTypes.instanceOf(Object).isRequired,
   selectedQuestionArray: PropTypes.instanceOf(Array).isRequired,
   homeworkLanguageType: PropTypes.string.isRequired,
+  setHomeworkLanguageTypeToStore: PropTypes.func.isRequired,
+  setCourseAddContentTestIdToStore: PropTypes.func.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+    location: PropTypes.shape({
+      state: PropTypes.shape({
+        onlyNext: PropTypes.bool,
+        draft: PropTypes.bool,
+        testIdd: PropTypes.number,
+        courseId: PropTypes.number,
+        sectionId: PropTypes.number,
+      }),
+    }),
+  }).isRequired,
 };
 
 CustomInput.propTypes = {

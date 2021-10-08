@@ -7,12 +7,12 @@ import classes from './CustomDurationPicker.module.css';
 
 const CustomDurationPicker = (props) => {
   const { duration, changed } = props;
-  const [durationHrs, setDurationHrs] = useState(1);
+  const [durationHrs, setDurationHrs] = useState(0);
   const [durationMins, setDurationMins] = useState(0);
   const [durationSecs, setDurationSecs] = useState(0);
   // prettier-ignore
   /* eslint-disable */
-  const hrs = ["02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"];
+  const hrs = ["01","02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"];
   // prettier-ignore
   /* eslint-disable */
   const mins = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59"];
@@ -20,7 +20,7 @@ const CustomDurationPicker = (props) => {
   /* eslint-disable */
   const secs = ["01", "02", "03", "04", "05","06","07","08","09","10","11", "12", "13", "14", "15","16","17","18","19","20","21", "22", "23", "24", "25","26","27","28","29","30","31", "32", "33", "34", "35","36","37","38","39","40","41", "42", "43", "44", "45","46","47","48","49","50","51", "52", "53", "54", "55","56","57","58","59"];
 
-  const compInfo = [{ hh: '01', mm: '00', ss: '00' }];
+  const compInfo = [{ hh: '00', mm: '00', ss: '00' }];
 
   const handleChangeDuration = (event) => {
     setDurationHrs(event.target.value);
@@ -49,7 +49,7 @@ const CustomDurationPicker = (props) => {
         value={durationHrs}
         onChange={handleChangeDuration}
       >
-        <MenuItem value={1}>01</MenuItem>
+        <MenuItem value={0}>00</MenuItem>
         {hrs.map((info) => (
           <MenuItem value={info}>{info}</MenuItem>
         ))}

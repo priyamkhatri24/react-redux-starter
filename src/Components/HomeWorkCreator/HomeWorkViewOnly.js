@@ -21,13 +21,17 @@ const HomeWorkViewOnly = (props) => {
     testIsDraft,
     questionArray,
     history,
+    history: {
+      location: {
+        state: { draft, onlyNext, testsType, testIdd, courseId, sectionId },
+      },
+    },
     setCurrentSlide,
     setSelectedQuestionArrayToStore,
     homeworkLanguageType,
   } = props;
 
   const modifyQuestions = () => {
-    const { testsType } = history.location.state;
     if (testsType === 'saved') {
       setSelectedQuestionArrayToStore(questionArray);
       questionArray.forEach((ele) => {
@@ -45,7 +49,10 @@ const HomeWorkViewOnly = (props) => {
 
   const goToAssigner = () => {
     setSelectedQuestionArrayToStore(questionArray);
-    history.push('/homework/assign');
+    history.push({
+      pathname: '/homework/assign',
+      state: { draft, onlyNext, testIdd, courseId, sectionId },
+    });
   };
 
   return (
@@ -65,17 +72,17 @@ const HomeWorkViewOnly = (props) => {
           );
         })}
       </Card>
-      <Row
-        className={testIsDraft === 1 ? 'justify-content-between m-3' : 'justify-content-center m-3'}
-      >
+      <div className='viewOnlyBtnContainer m-3'>
         <Button variant='customPrimary' onClick={() => goToAssigner()}>
           Next
         </Button>
 
-        <Button variant='customPrimary' onClick={() => modifyQuestions()}>
-          Add/Remove
-        </Button>
-      </Row>
+        {!onlyNext ? (
+          <Button variant='customPrimary ml-3' onClick={() => modifyQuestions()}>
+            Add/Remove
+          </Button>
+        ) : null}
+      </div>
     </>
   );
 };
@@ -114,6 +121,19 @@ export default connect(mapStateToProps, mapDispatchToProps)(HomeWorkViewOnly);
 
 HomeWorkViewOnly.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+    location: PropTypes.shape({
+      state: PropTypes.shape({
+        onlyNext: PropTypes.bool,
+        testsType: PropTypes.string,
+        draft: PropTypes.bool,
+        testIdd: PropTypes.number,
+        courseId: PropTypes.number,
+        sectionId: PropTypes.number,
+      }),
+    }),
+  }).isRequired,
   testName: PropTypes.string.isRequired,
   homeworkLanguageType: PropTypes.string.isRequired,
   testIsDraft: PropTypes.number.isRequired,

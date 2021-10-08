@@ -66,8 +66,11 @@ const Reviews = (props) => {
 
   const filterNewest = () => {
     const newReviews = [...reviews];
+    const userComment = newReviews.filter((elem) => elem.isUserComment);
+    const indexOfUserComment = newReviews.findIndex((ele) => ele.isUserComment);
+    newReviews.splice(indexOfUserComment, 1);
     newReviews.sort((a, b) => b.created_at - a.created_at);
-    setFinalReviews(newReviews);
+    setFinalReviews([...userComment, ...newReviews]);
     setIsHighestActive(false);
     setIsLowestActive(false);
     setIs5StarActive(false);
@@ -124,7 +127,12 @@ const Reviews = (props) => {
           {!isNaN(findActualRating().toFixed(1)) ? findActualRating().toFixed(1) : '4.0'}
         </h2>
         <p style={{ fontSize: '14px', fontFamily: 'Montserrat-Medium' }} className='mb-0 ml-2'>
-          Course rating
+          Course rating{' '}
+          {finalReviews.length > 0 ? (
+            <span style={{ fontSize: '14px', fontFamily: 'Montserrat-Regular' }}>
+              (based on {finalReviews.length} {finalReviews.length > 1 ? 'Reviews' : 'Review'})
+            </span>
+          ) : null}
         </p>
       </div>
       <div>
@@ -158,7 +166,7 @@ const Reviews = (props) => {
                   <div className='leftAlignText'>
                     {generateStars(5 - index)}
                     <p style={{ minWidth: '25px' }} className='percentageValues'>
-                      {ele}%
+                      {ele.toFixed(0)}%
                     </p>
                   </div>
                 </div>

@@ -26,6 +26,7 @@ export const PageHeader = (props) => {
     shadow,
     noBack,
     iconColor,
+    width,
   } = props;
 
   const [searchBar, triggerSearchBar] = useState(false);
@@ -42,6 +43,7 @@ export const PageHeader = (props) => {
       }
       style={{
         backgroundColor: transparent ? 'transparent' : 'white',
+        width,
         boxShadow: shadow ? '0px 2px 2px 0px rgba(0,0,0,0.29)' : 'transparent',
       }}
     >
@@ -126,10 +128,12 @@ PageHeader.propTypes = {
   iconColor: PropTypes.string,
   customIcon: PropTypes.element,
   handleCustomIcon: PropTypes.func,
+  width: PropTypes.string,
 };
 
 PageHeader.defaultProps = {
   title: '',
+  width: '100%',
   search: false,
   iconColor: 'black',
   notFixed: false,

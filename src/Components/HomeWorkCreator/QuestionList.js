@@ -42,8 +42,10 @@ const QuestionList = (props) => {
   const [selectAllQuestions, setSelectAllQuestions] = useState(false);
 
   useEffect(() => {
+    console.log(testId);
     const draft = testId === null ? 0 : 1;
     setDraft(draft);
+    console.log(draft, 'drraaffftttt');
   }, [testId]);
 
   useEffect(() => {
@@ -215,7 +217,7 @@ const QuestionList = (props) => {
           />
         </div>
       </div>
-      <hr />
+      <hr className='onlyOnMobile' />
       {questions.map((e, index) => {
         return (
           <Question

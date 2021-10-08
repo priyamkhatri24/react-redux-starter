@@ -16,6 +16,7 @@ import { getClientUserId } from '../../../redux/reducers/clientUserId.reducer';
 const AddYoutube = (props) => {
   const { studyBinFolderIdArray, clientUserId } = props;
   const [videoId, setVideoId] = useState('');
+  const [videoDuration, setVideoDuration] = useState(0);
   const [key, setKey] = useState('');
   const [youtubeVideo, setYoutubeVideo] = useState({});
   const [isValid, setValid] = useState(false);
@@ -36,6 +37,24 @@ const AddYoutube = (props) => {
     return vidId;
   };
 
+  const YTDurationToSeconds = (duration) => {
+    let match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+    match = match.slice(1).map((x) => {
+      if (x != null) {
+        return x.replace(/\D/, '');
+      }
+      return x;
+    });
+
+    console.log(match);
+    /* eslint-disable */
+    const hours = parseInt(match[0]) || 0;
+    const minutes = parseInt(match[1]) || 0;
+    const seconds = parseInt(match[2]) || 0;
+
+    return hours * 3600 + minutes * 60 + seconds;
+  };
+
   const checkVideoExists = () => {
     axios
       .get('https://www.googleapis.com/youtube/v3/videos', {
@@ -49,6 +68,17 @@ const AddYoutube = (props) => {
         if (res.data.items.length) {
           setYoutubeVideo(res.data.items[0]);
           setValid(false);
+          fetch(
+            `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&part=contentDetails&key=${key}`,
+          )
+            .then((resp) => resp.json())
+            .then((data) => {
+              console.log(data);
+              const { duration } = data.items[0].contentDetails;
+              const inSeconds = YTDurationToSeconds(duration);
+              setVideoDuration(inSeconds);
+            })
+            .catch((err) => console.log(err));
         } else setValid(true);
         console.log(res.data.items[0]);
       });
@@ -80,7 +110,7 @@ const AddYoutube = (props) => {
 
     props.history.push({
       pathname: route,
-      state: { videoId, title: youtubeVideo.snippet.title },
+      state: { videoId, title: youtubeVideo.snippet.title, duration: videoDuration },
     });
   };
 

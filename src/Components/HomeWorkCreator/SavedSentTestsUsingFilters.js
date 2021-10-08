@@ -29,9 +29,11 @@ const SavedSentTestsUsingFilters = (props) => {
     setTestIsDraftToStore,
     setTestClassSubjectToStore,
     setCurrentChapterArrayToStore,
+    setCurrentSubjectArrayToStore,
     setTestNameToStore,
     setTestIdToStore,
     setHomeworkLanguageTypeToStore,
+    clearTests,
   } = props;
   const [isToggle, setToggle] = useState(0);
   const [filters, setFilters] = useState({});
@@ -115,15 +117,18 @@ const SavedSentTestsUsingFilters = (props) => {
 
   const getQuestions = (testId, name, language) => {
     get({ test_id: testId }, '/getTestQuestions').then((res) => {
+      clearTests();
       console.log(res);
       const result = apiValidation(res);
       //    setCurrentSlide(1);
       setQuestionArrayToStore(result);
       setTestIsDraftToStore(testsType === 'saved' ? 1 : 0);
-      setTestClassSubjectToStore(res.class_subject);
+      console.log(testsType);
+      setCurrentSubjectArrayToStore(res.class_subject.class_subject_array);
       setCurrentChapterArrayToStore(res.chapter_array);
       setTestNameToStore(name);
-      setTestIdToStore(testId);
+      setTestClassSubjectToStore(res.class_subject.class_subject_array);
+      setTestIdToStore(testsType === 'saved' ? testId : null);
       setHomeworkLanguageTypeToStore(language);
 
       history.push('/homework/viewonly', { testsType });
@@ -208,6 +213,9 @@ const mapDispatchToProps = (dispatch) => {
     setTestNameToStore: (payload) => {
       dispatch(homeworkActions.setTestNameToStore(payload));
     },
+    clearTests: () => {
+      dispatch(homeworkActions.clearTests());
+    },
     setTestIdToStore: (payload) => {
       dispatch(homeworkActions.setTestIdToStore(payload));
     },
@@ -220,6 +228,9 @@ const mapDispatchToProps = (dispatch) => {
     setCourseAddContentTestIdToStore: (payload) => {
       dispatch(courseActions.setCourseAddContentTestIdToStore(payload));
     },
+    setCurrentSubjectArrayToStore: (payload) => {
+      dispatch(homeworkActions.setCurrentSubjectArrayToStore(payload));
+    },
   };
 };
 
@@ -231,10 +242,12 @@ SavedSentTestsUsingFilters.propTypes = {
   clientId: PropTypes.number.isRequired,
   roleArray: PropTypes.instanceOf(Array).isRequired,
   setQuestionArrayToStore: PropTypes.func.isRequired,
+  setCurrentSubjectArrayToStore: PropTypes.func.isRequired,
   setTestIsDraftToStore: PropTypes.func.isRequired,
   setTestClassSubjectToStore: PropTypes.func.isRequired,
   setCurrentChapterArrayToStore: PropTypes.func.isRequired,
   setTestNameToStore: PropTypes.func.isRequired,
+  clearTests: PropTypes.func.isRequired,
   setTestIdToStore: PropTypes.func.isRequired,
   setHomeworkLanguageTypeToStore: PropTypes.func.isRequired,
 };
