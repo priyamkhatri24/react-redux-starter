@@ -26,7 +26,7 @@ const Conversations = function ({
   useEffect(function () {
     fetchConversations();
 
-    socket.emit('user-connected', { client_user_id: clientUserId });
+    socket?.emit('user-connected', { client_user_id: clientUserId });
     console.log(socket);
     socket.on('socket-connected', () => {
       console.log('socketconnected');

@@ -27,7 +27,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import StarBorderIcon from '@material-ui/icons/StarBorderRounded';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ShareIcon from '@material-ui/icons/Share';
-import freeIcon from '../../assets/images/Courses/freeIcon.svg';
+// import freeIcon from '../../assets/images/Courses/freeIcon.svg';
 import { apiValidation, get, post, displayRazorpay, shareThis } from '../../Utilities';
 import { PageHeader } from '../Common';
 import Cashfree from '../Common/Cashfree/Cashfree';

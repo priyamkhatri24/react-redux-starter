@@ -30,13 +30,9 @@ function MainApp(props) {
       console.log(socket.id, 'connect');
     });
 
-    // socket.on('disconnect', () => {
-    //   console.log(socket.id, 'disconnected');
-    //   const socket2 = io(SERVER, {
-    //     transports: ['websocket', 'polling'],
-    //   });
-    //   setSocket({ socket2 });
-    // });
+    socket.on('disconnect', () => {
+      console.log(socket.id, 'disconnected');
+    });
 
     setSocket({ socket });
     return () => socket.emit('disconnect');

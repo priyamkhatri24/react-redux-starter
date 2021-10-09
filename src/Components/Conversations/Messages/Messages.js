@@ -19,11 +19,11 @@ const Messages = forwardRef(
       [list],
     );
 
-    useEffect(function () {
-      if (list.length >= 15) {
-        messagesEnd.current !== null && messagesEnd.current.scrollIntoView();
-      }
-    });
+    // useEffect(function () {
+    //   if (list.length >= 15) {
+    //     messagesEnd.current !== null && messagesEnd.current.scrollIntoView();
+    //   }
+    // });
 
     useImperativeHandle(ref, () => ({
       scrollIntoView() {
@@ -70,12 +70,11 @@ const Messages = forwardRef(
                 onSlide={onSlide}
               />
             ))}
+            <span ref={messagesEnd} style={{ visibility: 'hidden' }} />
           </InfiniteScroll>
         )}
 
         <div style={{ height: '25px' }} />
-
-        <span ref={messagesEnd} style={{ visibility: 'hidden' }} />
       </div>
     );
   },

@@ -18,7 +18,11 @@ import {
   getPosts,
   getConversations,
 } from '../../redux/reducers/conversations.reducer';
-import { getClientUserId, getRoleArray } from '../../redux/reducers/clientUserId.reducer';
+import {
+  getClientUserId,
+  getRoleArray,
+  getClientId,
+} from '../../redux/reducers/clientUserId.reducer';
 import ConversationHeader from './ConversationHeader';
 import ConversationInput from './ConversationInput';
 import { formatMessages, formatMessage } from './formatter';
@@ -37,6 +41,7 @@ const Conversation = (props) => {
   const conversation = useSelector((state) => getConversation(state));
   const conversations = useSelector((state) => getConversations(state));
   const clientUserId = useSelector((state) => getClientUserId(state));
+  const clientId = useSelector((state) => getClientId(state));
   const socket = useSelector((state) => getSocket(state));
   const posts = useSelector((state) => getPosts(state));
   const roleArray = useSelector((state) => getRoleArray(state));
@@ -64,9 +69,9 @@ const Conversation = (props) => {
     return () => socket.emit('leave', { conversation_id: conversation.id });
   }, []);
 
-  useEffect(() => {
-    socket.on('conversationMessage', onReceiveMessage);
-  }, [conversation]);
+  // useEffect(() => {
+  //   socket.on('conversationMessage', onReceiveMessage);
+  // }, [conversation]);
 
   useEffect(() => {
     if (roleArray.includes(1) || roleArray.includes(2)) {
@@ -376,6 +381,7 @@ const Conversation = (props) => {
         'sendMessage',
         {
           sender_id: clientUserId,
+          client_id: clientId,
           conversation_id: conversation.id,
           text: null,
           type: 'message',
@@ -413,6 +419,7 @@ const Conversation = (props) => {
       'sendMessage',
       {
         sender_id: clientUserId,
+        client_id: clientId,
         conversation_id: conversation.id,
         text: message,
         type: 'message',

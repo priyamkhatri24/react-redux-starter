@@ -1030,16 +1030,17 @@ const Dashboard = (props) => {
           />
         );
       case 'chats':
-        return null;
-      // <DashboardCards
-      //   image={param.feature_icon}
-      //   heading='Chats'
-      //   boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-      //   subHeading='Chat with your peers or teachers.'
-      //   backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
-      //   backGround={param.start_colour}
-      //   buttonClick={goToChats}
-      // />
+        return (
+          <DashboardCards
+            image={param.feature_icon}
+            heading='Chats'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            subHeading='Chat with your peers or teachers.'
+            backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
+            backGround={param.start_colour}
+            buttonClick={goToChats}
+          />
+        );
 
       // <button type='button' onClick={goToChats} className='floatingChatButtonDashboard'>
       //   Let&apos;s Chat

@@ -233,14 +233,17 @@ class Message extends Component {
   ImageMessage() {
     const { message, userIsAuthor } = this.props;
     return (
-      <div className={`drag-handler ${userIsAuthor ? 'p-2 image-by-author' : 'p-1 image-by-user'}`}>
-        <a href={message.content}>
-          <Image style={{ maxWidth: '240px' }} className='image-message' src={message.content} />
-        </a>
+      <div
+        onClick={() => openImageModal(message)}
+        className={`drag-handler ${userIsAuthor ? 'p-2 image-by-author' : 'p-1 image-by-user'}`}
+      >
+        <Image style={{ maxWidth: '240px' }} className='image-message' src={message.content} />
         <div className='mt-1'>{this.MessageFooter()}</div>
       </div>
     );
   }
+
+  openImageModal = (message) => {};
 
   TextMessage() {
     const { message, userIsAuthor } = this.props;
@@ -374,7 +377,8 @@ class Message extends Component {
         <div className='p-2 d-flex flex-row align-items-center'>
           {/* <i className='material-icons'>insert_drive_file</i> */}
           <a
-            href={message.content}
+            href='#'
+            onClick={() => {}}
             style={{ color: '#000' }}
             className='ml-3 d-flex align-items-center'
           >
@@ -503,7 +507,34 @@ class Message extends Component {
                     )}
                     {replyTo.message.type !== 'post' && (
                       <a href={`/conversation#${replyTo.id - 2}`}>
-                        <div className='reply pl-2 pr-2 pt-1 pb-1'>{replyTo.message.content}</div>
+                        {console.log(replyTo, 'replyyyyyy')}
+                        <div className='reply replayusername pl-2 pr-2 pt-1 pb-1'>
+                          {replyTo.username}
+                        </div>
+                        {replyTo.message.type === 'image' ? (
+                          <div className='reply pl-2 pr-2 pt-1 pb-1'>
+                            <img
+                              style={{ maxWidth: '170px' }}
+                              className='image-message'
+                              src={replyTo.message.content}
+                              alt='image'
+                            />
+                          </div>
+                        ) : replyTo.message.type === 'audio' ? (
+                          <div className='reply pl-2 pr-2 pt-1 pb-1'>{replyTo.message.name}</div>
+                        ) : replyTo.message.type === 'video' ? (
+                          <div className='reply d-flex px-2 py-1 justify-content-center'>
+                            <video
+                              style={{ maxWidth: '170px' }}
+                              className='image-message'
+                              preload='metadata'
+                            >
+                              <source src={replyTo.message.content + '#t=0.1'} />
+                            </video>
+                          </div>
+                        ) : (
+                          <div className='reply pl-2 pr-2 pt-1 pb-1'>{replyTo.message.content}</div>
+                        )}
                       </a>
                     )}
                   </>
@@ -532,9 +563,37 @@ class Message extends Component {
                       {replyTo.id && (
                         <div className='pt-1 pb-1'>
                           <a href={`/conversation#${replyTo.id - 2}`}>
-                            <div className='reply pl-2 pr-2 pt-1 pb-1'>
-                              {replyTo.message.content}
+                            <div className='reply replayusername pl-2 pr-2 pt-1 pb-1'>
+                              {replyTo.username}
                             </div>
+                            {replyTo.message.type === 'image' ? (
+                              <div className='reply d-flex px-2 py-1 justify-content-center'>
+                                <img
+                                  style={{ maxWidth: '170px' }}
+                                  className='image-message'
+                                  src={replyTo.message.content}
+                                  alt='image'
+                                />
+                              </div>
+                            ) : replyTo.message.type === 'audio' ? (
+                              <div className='reply pl-2 pr-2 pt-1 pb-1'>
+                                {replyTo.message.name}
+                              </div>
+                            ) : replyTo.message.type === 'video' ? (
+                              <div className='reply d-flex px-2 py-1 justify-content-center'>
+                                <video
+                                  style={{ maxWidth: '170px' }}
+                                  className='image-message'
+                                  preload='metadata'
+                                >
+                                  <source src={replyTo.message.content + '#t=0.1'} />
+                                </video>
+                              </div>
+                            ) : (
+                              <div className='reply pl-2 pr-2 pt-1 pb-1'>
+                                {replyTo.message.content}
+                              </div>
+                            )}
                           </a>
                         </div>
                       )}
