@@ -194,7 +194,7 @@ const Mycourse = (props) => {
           section_has_file_id: nowPlayingVideo.sectionFileId,
           client_user_id: clientUserId,
           finished_time: isNaN(time) ? 0 : time,
-          total_time: nowPlayingVideo.duration,
+          total_time: nowPlayingVideoRef.current.plyr.duration || nowPlayingVideo.duration,
         };
         console.log(nowPlayingVideoRef.current.plyr);
         post(payload, '/updateCourseContentViewStatus').then((resp) => {
@@ -350,7 +350,7 @@ const Mycourse = (props) => {
         section_has_file_id: documentToOpen.section_has_file_id,
         client_user_id: clientUserId,
         total_time: documentToOpen.total_time,
-        finished_time: documentToOpen.total_time,
+        finished_time: nowPlayingVideoRef.current.plyr.duration || nowPlayingVideo.duration,
       };
       post(payload, '/updateCourseContentViewStatus').then((resp) => {
         console.log(resp);
