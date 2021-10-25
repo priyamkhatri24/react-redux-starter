@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -7,7 +7,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import { connect } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+// import { useHistory } from 'react-router-dom';
 import HighlightOff from '@material-ui/icons/HighlightOff';
 import Collections from '@material-ui/icons/Collections';
 import AttachFile from '@material-ui/icons/AttachFile';
@@ -35,15 +35,16 @@ function useOutsideAlerter(ref, cb) {
   }, [ref]);
 }
 
-const CreatePost = function ({ clientUserId, conversation }) {
-  const history = useHistory();
-  const wrapperRef = useRef(null);
-  const fileSelectorRef = useRef(null);
+const CreatePost = function ({ clientUserId, conversation, history }) {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({});
   const [fileType, setFileType] = useState('');
   const [showBottomSheet, setShowBottomSheet] = useState(false);
+  const [commentsEnabled, setCommentsEnabled] = useState(false);
+  const [likesEnabled, setLikesEnabled] = useState(false);
+  const wrapperRef = useRef(null);
+  const fileSelectorRef = useRef(null);
   useOutsideAlerter(wrapperRef, () => {
     setShowBottomSheet(false);
   });
@@ -58,8 +59,10 @@ const CreatePost = function ({ clientUserId, conversation }) {
     formDataObj.conversation_id = conversation.id;
     formDataObj.title_text = form.title;
     formDataObj.text = form.description;
+    formDataObj.comments_enabled = !commentsEnabled;
+    formDataObj.reactions_enabled = !likesEnabled;
 
-    if (selectedFiles.length > 0) {
+    if (selectedFiles?.length > 0) {
       const formatAttachments = (array) => array?.map((a) => a);
 
       uploadFiles(selectedFiles).then((resp) => {
@@ -116,11 +119,11 @@ const CreatePost = function ({ clientUserId, conversation }) {
   };
 
   const ImageFile = (url, index) => (
-    <div className='image-preview mt-2 mb-2'>
+    <div className='image-preview d-flex justify-content-center mt-2 mb-2'>
       <Button size='sm' variant='link' onClick={(e) => removeFile(index)} className='remove-btn'>
         <HighlightOff className='material-icons' />
       </Button>
-      <Image src={url} width='100%' rounded />
+      <Image src={url} width='40%' rounded />
     </div>
   );
 
@@ -164,11 +167,11 @@ const CreatePost = function ({ clientUserId, conversation }) {
             </label>
             <label className='mt-3 d-flex align-items-center justify-content-between'>
               <span className='permission-title'>Turn off comments</span>
-              <input type='checkbox' />
+              <input onChange={(e) => setCommentsEnabled(e.target.checked)} type='checkbox' />
             </label>
             <label className='mt-3 d-flex align-items-center justify-content-between'>
               <span className='permission-title'>Turn off likes</span>
-              <input type='checkbox' />
+              <input onChange={(e) => setLikesEnabled(e.target.checked)} type='checkbox' />
             </label>
             <div className='mt-4'>
               <p className='mb-0'>Attachments and more</p>
@@ -254,10 +257,9 @@ const CreatePost = function ({ clientUserId, conversation }) {
   );
 };
 
-const mapStateToProps = (state) => ({
-  conversation: getConversation(state),
-  clientUserId: getClientUserId(state),
-});
+const mapStateToProps = (state) => {
+  return { conversation: getConversation(state), clientUserId: getClientUserId(state) };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -268,8 +270,9 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 CreatePost.propTypes = {
+  history: PropTypes.instanceOf(Object).isRequired,
   clientUserId: PropTypes.number.isRequired,
-  conversation: PropTypes.objectOf(Conversation).isRequired,
+  conversation: PropTypes.instanceOf(Object).isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreatePost);

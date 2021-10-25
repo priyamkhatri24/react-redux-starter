@@ -1,0 +1,21 @@
+.imageEditorContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 70%;
+  margin: auto;
+}
+
+.picsendbtn {
+  width: 90%;
+  position: fixed;
+  bottom: 40px;
+}
+
+@media screen and (max-width: 775px) {
+  .imageEditorContainer {
+    width: 100%;
+  }
+}

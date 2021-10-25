@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import io from 'socket.io-client';
 import { Container, Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { get, apiValidation } from '../../Utilities';
@@ -20,20 +21,40 @@ const Conversations = function ({
   setConversation,
   socket,
   clientUserId,
+  setSocket,
 }) {
   const history = useHistory();
+  const [server, setServer] = useState('https://portal.tca.ingeniumedu.com');
 
-  useEffect(function () {
-    fetchConversations();
+  useEffect(
+    function () {
+      fetchConversations();
+      if (!socket) {
+        for (let i = 0; i < 10; i++) {
+          const sockett = io('https://portal.tca.ingeniumedu.com', {
+            transports: ['websocket', 'polling'],
+          });
+          sockett.on('connect', () => {
+            console.log(sockett.id, 'connect');
+          });
+          setSocket({ sockett });
+          if (sockett) break;
+        }
+      }
+      if (!socket) return () => {};
+      socket?.emit('user-connected', { client_user_id: clientUserId });
+      console.log(socket);
+      socket?.on('socket-connected', () => {
+        socket?.emit('user-connected', { client_user_id: clientUserId });
+      });
+      socket?.on('receiveMessage', addMessageToConversation);
 
-    socket?.emit('user-connected', { client_user_id: clientUserId });
-    console.log(socket);
-    socket.on('socket-connected', () => {
-      console.log('socketconnected');
-      socket.emit('user-connected', { client_user_id: clientUserId });
-    });
-    socket.on('receiveMessage', addMessageToConversation);
-  }, []);
+      return () => {
+        socket?.off('receiveMessage', addMessageToConversation);
+      };
+    },
+    [socket],
+  );
 
   const addMessageToConversation = function (data) {
     console.log(data, 'receiveMessage emitted from Conversations');
@@ -41,10 +62,17 @@ const Conversations = function ({
     if (conversationIndex === -1) return;
 
     const newConversations = [...conversations];
-    const conversation = newConversations[conversationIndex];
-    conversation.subTitle = data.text;
+    const conversationNew = newConversations[conversationIndex];
+    conversationNew.subTitle = {
+      text: data.text,
+      type: data.type,
+      file_type: data.attachments_array?.length ? data.attachments_array[0].type : '',
+    };
+
+    conversationNew.unreadCount += 1;
+
     newConversations.splice(conversationIndex, 1);
-    newConversations.unshift(conversation);
+    newConversations.unshift(conversationNew);
     setConversations(newConversations);
   };
 
@@ -58,11 +86,16 @@ const Conversations = function ({
 
   const onConversationSelected = function (conversation) {
     setConversation(conversation);
+    conversations.forEach((convo) => {
+      if (convo.id === conversation.id) {
+        convo.unreadCount = 0;
+      }
+    });
     history.push('/conversation');
   };
-  const onConversationSelectedDesk = function (conversation) {
-    setConversation(conversation);
-  };
+  // const onConversationSelectedDesk = function (conversation) {
+  //   setConversation(conversation);
+  // };
 
   return (
     <Container style={{ height: '100vh' }} fluid>
@@ -80,7 +113,7 @@ const Conversations = function ({
         </Col>
       </Row> */}
       <Row className='d-block'>
-        <ConversationsHeader />
+        <ConversationsHeader searchBar goToHome />
         <div className='d-flex'>
           <Col style={{ overflowY: 'scroll' }} md={12}>
             <div className='conversations-container mt-3'>
@@ -123,6 +156,9 @@ const mapDispatchToProps = (dispatch) => {
     setConversation: (conversation) => {
       dispatch(conversationsActions.setConversation(conversation));
     },
+    setSocket: (socket) => {
+      dispatch(conversationsActions.setSocket(socket));
+    },
   };
 };
 
@@ -132,6 +168,7 @@ Conversations.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   socket: PropTypes.objectOf(PropTypes.any).isRequired,
   conversations: PropTypes.arrayOf(PropTypes.object.isRequired),
+  setSocket: PropTypes.func.isRequired,
 };
 
 Conversations.defaultProps = {

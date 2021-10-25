@@ -10,6 +10,7 @@ import { useHistory } from 'react-router-dom';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import Search from '@material-ui/icons/Search';
 import MoreVert from '@material-ui/icons/MoreVert';
+import './Conversation.scss';
 
 const ConversationHeader = function ({
   thumbnail,
@@ -28,7 +29,7 @@ const ConversationHeader = function ({
           <div className='p-2 d-flex align-items-center justify-content-between'>
             <div className='d-flex align-items-center'>
               <ArrowBack
-                className='mr-3'
+                className='mr-3 hideOnDesktop'
                 role='button'
                 tabIndex={0}
                 onClick={() => history.push('/conversations')}

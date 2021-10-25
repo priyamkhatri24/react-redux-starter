@@ -41,8 +41,8 @@ input[type='range']:focus::-webkit-slider-runnable-track {
 
   .message-by-author {
     background-color: #f1f9ff;
-    box-shadow: 0.5px 0.5px 1px 0px #00000026;
-    border-radius: 5px;
+    // box-shadow: 0.5px 0.5px 1px 0px #00000026;
+    border-radius: 10px;
     font-size: 14px;
     font-family: 'Montserrat-Regular';
     color: #000;
@@ -77,8 +77,7 @@ input[type='range']:focus::-webkit-slider-runnable-track {
 
   .audio-message {
     max-width: 100%;
-    border-radius: 5px;
-    background-color: #f1f9ff;
+    border-radius: 10px;
   }
 
   .post-message {
@@ -165,10 +164,12 @@ input[type='range']:focus::-webkit-slider-runnable-track {
   .message-content {
     background-color: #fcfcfc;
     box-shadow: 0.5px 0.5px 1px 0px #00000026;
-    border-radius: 5px;
-    display: inline-block;
+    border-radius: 10px;
+    display: flex;
     // max-width: 80%;
-    min-width: 40%;
+    min-width: fit-content;
+    max-width: 66%;
+    justify-content: space-between;
 
     .username {
       font-size: 12px;
@@ -234,6 +235,10 @@ input[type='range']:focus::-webkit-slider-runnable-track {
 .dragger {
   width: fit-content;
   position: relative;
+  display: flex;
+  background-color: #f1f9ff;
+  border-radius: 10px;
+  box-shadow: 0.5px 0.5px 1px 0px #00000026;
 }
 
 .dragger-fullwidth {
@@ -247,10 +252,76 @@ input[type='range']:focus::-webkit-slider-runnable-track {
 
 .reply {
   width: 100%;
+  font-family: 'Montserrat-Medium';
 }
 
 .replayusername {
   color: black;
   font-family: 'Montserrat-Regular';
   font-size: 14px;
+}
+
+.messageDropdown {
+  position: relative;
+  z-index: 100;
+  background-color: white;
+  box-shadow: 1px 1px 1px 0px #00000036;
+  border-radius: 5px;
+  top: -14px;
+  width: 120px;
+}
+
+.messageDropdownNotAuthor {
+  position: relative;
+  z-index: 100;
+  background-color: white;
+  box-shadow: 1px 1px 1px 0px #00000036;
+  border-radius: 5px;
+  top: -14px;
+  width: 120px;
+}
+
+.chatOperations {
+  list-style: none;
+  padding: 8px 30px;
+  margin: 0px;
+}
+
+.chatOperations li {
+  font-family: 'Montserrat-Medium';
+  margin: 14px 1px;
+  cursor: pointer;
+}
+
+.modalImageChats {
+  max-height: 80vh;
+  max-width: 80vw;
+}
+
+.rhap_progress-container {
+  width: 50px;
+}
+
+.rhap_time {
+  font-size: 10px;
+}
+
+.rhap_container {
+  width: 190px !important;
+}
+
+.rhap_progress-indicator {
+  width: 15px !important;
+  height: 15px !important;
+  top: -5px !important;
+  box-shadow: none !important;
+}
+.rhap_controls-section {
+  flex: 0 1 auto !important;
+}
+.rhap_additional-controls {
+  display: none;
+}
+.rhap_progress-section {
+  margin-right: 5px;
 }

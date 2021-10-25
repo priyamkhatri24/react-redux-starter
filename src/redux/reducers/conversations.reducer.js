@@ -15,6 +15,7 @@ const initialState = {
   post: {},
   posts: [],
   repliesForComments: [],
+  globalMessageCount: 0,
 };
 
 export function conversations(state = initialState, action) {
@@ -54,6 +55,11 @@ export function conversations(state = initialState, action) {
         ...state,
         repliesForComments: action.payload,
       };
+    case conversationsConstants.GLOBALCOUNT:
+      return {
+        ...state,
+        globalMessageCount: action.payload,
+      };
     // case userConstants.USERID:
     //   return {
     //     ...state,
@@ -83,10 +89,13 @@ export function conversations(state = initialState, action) {
     //   };
     case conversationsConstants.CLEAR:
       return {
+        ...state,
         socket: null,
         conversations: [],
         conversation: {},
+        globalMessageCount: state.globalMessageCount,
       };
+
     default:
       return state;
   }
@@ -101,6 +110,8 @@ export const getConversation = (state) => state.conversations.conversation;
 export const getPost = (state) => state.conversations.post;
 
 export const getPosts = (state) => state.conversations.posts;
+
+export const getGlobalMessageCount = (state) => state.conversations.globalMessageCount;
 
 export const getRepliesForComments = (state) => state.conversations.repliesForComments;
 

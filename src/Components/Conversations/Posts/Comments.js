@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
 import Media from 'react-bootstrap/Media';
@@ -9,6 +10,7 @@ import Send from '@material-ui/icons/Send';
 import Close from '@material-ui/icons/Close';
 import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+import { getUserProfile } from '../../../redux/reducers/userProfile.reducer';
 import { post } from '../../../Utilities';
 import './Comments.scss';
 
@@ -29,6 +31,7 @@ const Comments = function ({
   const [comment, setComment] = useState('');
   const [replyingTo, setReplyingTo] = useState(null);
   const [showReplies, setShowReplies] = useState({});
+  const userProfile = useSelector((state) => getUserProfile(state));
 
   const getRepliesForComment = (commentId) =>
     repliesForComments.find((repliesObject) => repliesObject.commentId === commentId);
@@ -99,10 +102,10 @@ const Comments = function ({
           post_comments_post_comments_id: data.parent_comment_id,
           reactions: [],
           sent_by: {
-            first_name: 'Baddam Admin',
-            last_name: '',
-            display_picture: null,
-            client_user_id: 1801,
+            first_name: userProfile.firstName,
+            last_name: userProfile.lastName,
+            display_picture: userProfile.profileImage,
+            client_user_id: clientUserId,
           },
         });
       } else {
@@ -115,10 +118,10 @@ const Comments = function ({
           chat_id: postId,
           reactions: [],
           sent_by: {
-            first_name: 'Baddam Admin',
-            last_name: '',
-            display_picture: null,
-            client_user_id: 1801,
+            first_name: userProfile.firstName,
+            last_name: userProfile.lastName,
+            display_picture: userProfile.profileImage,
+            client_user_id: clientUserId,
           },
         });
         onCommentUpdate(newList);
@@ -127,135 +130,159 @@ const Comments = function ({
     });
   };
 
-  const commentsMarkup = () => (
-    <div className='mt-3 pb-5'>
-      {list.map((c, index) => (
-        <Media as='div' className='mb-2 comment'>
-          <Image src={thumbnail} width={30} className='align-self-start mr-1 mt-2' roundedCircle />
+  const commentsMarkup = () => {
+    console.log(list, 'commentssss');
+    return (
+      <div className='mt-3 pb-5'>
+        {list.map((c, index) => (
+          <Media as='div' className='mb-2 comment'>
+            <Image
+              src={
+                c.sent_by.display_picture ||
+                'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1631183013255.png'
+              }
+              width={30}
+              height={30}
+              className='align-self-start mr-1 mt-2'
+              roundedCircle
+            />
 
-          <Media.Body>
-            <div className='pt-1 pb-1 pl-2 pr-2' style={{ maxWidth: '90%' }}>
-              <p className='author-username'>{username}</p>
-              <div
-                style={{
-                  fontSize: '12px',
-                  marginBottom: '0px',
-                  whiteSpace: 'break-spaces',
-                  fontFamily: 'Montserrat-Regular',
-                }}
-              >
-                {c.comment_text}
+            <Media.Body>
+              <div className='pt-1 pb-1 pl-2 pr-2' style={{ maxWidth: '90%' }}>
+                <p className='author-username'>
+                  {c.sent_by.first_name} {c.sent_by.last_name}
+                </p>
+                <div
+                  style={{
+                    fontSize: '12px',
+                    marginBottom: '0px',
+                    whiteSpace: 'break-spaces',
+                    fontFamily: 'Montserrat-Regular',
+                  }}
+                >
+                  {c.comment_text}
+                </div>
               </div>
-            </div>
-            <div className='justify-content-end d-flex mb-2'>
-              <span
-                className='p-1 mr-3'
-                role='button'
-                tabIndex={0}
-                onKeyPress={(e) => e.key === 13 && reactToComment(c, index, 'comment')}
-                onClick={() => reactToComment(c, index, 'comment')}
-              >
-                {c.hasUserReacted ? (
-                  <Favorite className='material-icons red' />
-                ) : (
-                  <FavoriteBorder className='material-icons grey' />
-                )}
-                {c.reactions.length > 0 && c.reactions[0].no_of_reactions}
-                {c.reactions.length === 0 && 0}
-              </span>
+              <div className='justify-content-end d-flex mb-2'>
+                <span
+                  className='p-1 mr-3'
+                  role='button'
+                  tabIndex={0}
+                  onKeyPress={(e) => e.key === 13 && reactToComment(c, index, 'comment')}
+                  onClick={() => reactToComment(c, index, 'comment')}
+                >
+                  {c.hasUserReacted ? (
+                    <Favorite className='material-icons red' />
+                  ) : (
+                    <FavoriteBorder className='material-icons grey' />
+                  )}
+                  {c.reactions.length > 0 && c.reactions[0].no_of_reactions}
+                  {c.reactions.length === 0 && 0}
+                </span>
 
-              <Button variant='link p-0 m-0' className='like-btn' onClick={() => setReplyingTo(c)}>
-                Reply
-              </Button>
-            </div>
+                <Button
+                  variant='link p-0 m-0'
+                  className='like-btn'
+                  onClick={() => setReplyingTo(c)}
+                >
+                  Reply
+                </Button>
+              </div>
 
-            {showReplies[c.post_comments_id] && (
-              <div className='replies'>
-                {getRepliesForComment(c.post_comments_id) &&
-                  getRepliesForComment(c.post_comments_id).list.map((reply, replyIndex) => (
-                    <Media as='div' className='mb-2'>
-                      <Col xs={1}>
-                        <Image
-                          src={thumbnail}
-                          width={30}
-                          className='align-self-start mr-1 mt-2'
-                          roundedCircle
-                        />
-                      </Col>
-                      <Col xs={11}>
-                        <Media.Body>
-                          <div className='pt-1 pb-1 pl-2 pr-2' style={{ maxWidth: '90%' }}>
-                            <p className='author-username'>{username}</p>
-                            <div
-                              style={{
-                                fontSize: '12px',
-                                marginBottom: '0px',
-                                whiteSpace: 'break-spaces',
-                                fontFamily: 'Montserrat-Regular',
-                              }}
-                            >
-                              {reply.comment_text}
+              {showReplies[c.post_comments_id] && (
+                <div className='replies'>
+                  {getRepliesForComment(c.post_comments_id) &&
+                    getRepliesForComment(c.post_comments_id).list.map((reply, replyIndex) => (
+                      <Media as='div' className='mb-2'>
+                        <Col xs={1}>
+                          <Image
+                            src={
+                              reply.sent_by.display_picture ||
+                              'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1631183013255.png'
+                            }
+                            width={30}
+                            height={30}
+                            className='align-self-start mr-1 mt-2'
+                            roundedCircle
+                          />
+                        </Col>
+                        <Col xs={11}>
+                          <Media.Body>
+                            <div className='pt-1 pb-1 pl-2 pr-2' style={{ maxWidth: '90%' }}>
+                              <p className='author-username'>
+                                {reply.sent_by.first_name} {reply.sent_by.last_name}
+                              </p>
+                              <div
+                                style={{
+                                  fontSize: '12px',
+                                  marginBottom: '0px',
+                                  whiteSpace: 'break-spaces',
+                                  fontFamily: 'Montserrat-Regular',
+                                }}
+                              >
+                                {reply.comment_text}
+                              </div>
                             </div>
-                          </div>
-                          <div className='justify-content-end d-flex'>
-                            <span
-                              className='p-1 mr-3'
-                              role='button'
-                              tabIndex={0}
-                              onKeyPress={(e) =>
-                                e.key === 13 && reactToComment(reply, replyIndex, 'reply')
-                              }
-                              onClick={() => reactToComment(reply, replyIndex, 'reply')}
-                            >
-                              {reply.hasUserReacted ? (
-                                <Favorite className='material-icons red' />
-                              ) : (
-                                <FavoriteBorder className='material-icons grey' />
-                              )}
-                              {reply.reactions.length > 0 && reply.reactions[0].no_of_reactions}
-                              {reply.reactions.length === 0 && 0}
-                            </span>
+                            <div className='justify-content-end d-flex'>
+                              <span
+                                className='p-1 mr-3'
+                                role='button'
+                                tabIndex={0}
+                                onKeyPress={(e) =>
+                                  e.key === 13 && reactToComment(reply, replyIndex, 'reply')
+                                }
+                                onClick={() => reactToComment(reply, replyIndex, 'reply')}
+                              >
+                                {reply.hasUserReacted ? (
+                                  <Favorite className='material-icons red' />
+                                ) : (
+                                  <FavoriteBorder className='material-icons grey' />
+                                )}
+                                {reply.reactions.length > 0 && reply.reactions[0].no_of_reactions}
+                                {reply.reactions.length === 0 && 0}
+                              </span>
 
-                            {/* <Button
+                              {/* <Button
                             variant='link p-0 m-0'
                             className='like-btn'
                             onClick={() => setReplyingTo(reply)}
                           >
                             Reply
                           </Button> */}
-                          </div>
-                        </Media.Body>
-                      </Col>
-                    </Media>
-                  ))}
-              </div>
-            )}
+                            </div>
+                          </Media.Body>
+                        </Col>
+                      </Media>
+                    ))}
+                </div>
+              )}
 
-            {c.no_of_replies > 0 && (
-              <div className='text-center'>
-                <Button
-                  className='reply-btn'
-                  variant='link p-0 m-0'
-                  onClick={() => {
-                    setShowReplies({
-                      ...showReplies,
-                      [c.post_comments_id]: !showReplies[c.post_comments_id] || false,
-                    });
-                    if (!showReplies[c.post_comments_id]) {
-                      onFetchReplies(c.post_comments_id);
-                    }
-                  }}
-                >
-                  {showReplies[c.post_comments_id] ? 'Hide' : 'Show'} Replies
-                </Button>
-              </div>
-            )}
-            <div style={{ visibility: 'hidden', height: '20px' }} />
-          </Media.Body>
-        </Media>
-      ))}
-    </div>
-  );
+              {c.no_of_replies > 0 && (
+                <div className=''>
+                  <Button
+                    className='reply-btn'
+                    variant='link p-0 m-0'
+                    onClick={() => {
+                      setShowReplies({
+                        ...showReplies,
+                        [c.post_comments_id]: !showReplies[c.post_comments_id] || false,
+                      });
+                      if (!showReplies[c.post_comments_id]) {
+                        onFetchReplies(c.post_comments_id);
+                      }
+                    }}
+                  >
+                    {showReplies[c.post_comments_id] ? 'Hide' : 'Show'} Replies
+                  </Button>
+                </div>
+              )}
+              <div style={{ visibility: 'hidden', height: '20px' }} />
+            </Media.Body>
+          </Media>
+        ))}
+      </div>
+    );
+  };
 
   const input = () => (
     <div
