@@ -6,10 +6,12 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Modal from 'react-bootstrap/Modal';
 import Card from 'react-bootstrap/Card';
 import Accordion from 'react-bootstrap/Accordion';
 import PhoneIcon from '@material-ui/icons/Phone';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import TuneIcon from '@material-ui/icons/Tune';
 import avatarImage from '../../assets/images/user.svg';
 import { PageHeader } from '../Common/PageHeader/PageHeader';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
@@ -18,43 +20,66 @@ import { apiValidation, get } from '../../Utilities';
 
 const CRM = (props) => {
   const { clientId, history } = props;
+  const [inquiryObject, setInquiryObject] = useState({});
+  const [admissionObject, setAdmissionObject] = useState({});
   const [inquiryArray, setInquiryArray] = useState([]);
   const [admissionFormArray, setAdmissionFormArray] = useState([]);
   const [searchString, setSearchString] = useState('');
+  const [openFilterModal, setOpenFilterModal] = useState(false);
 
   useEffect(() => {
     get({ client_id: clientId }, '/getInquiryAndAdmissionDetailsOfClient').then((res) => {
       const result = apiValidation(res);
       console.log(result);
-      setInquiryArray(result.inquiry);
-      setAdmissionFormArray(result.admission);
+      setInquiryObject(result.inquiry_object);
+      setAdmissionObject(result.admission_object);
+      setInquiryArray(result.inquiry_object['Date wise']);
+      setAdmissionFormArray(result.admission_object['Date wise']);
     });
   }, [clientId]);
 
   useEffect(() => {
-    get({ client_id: clientId }, '/getInquiryAndAdmissionDetailsOfClient').then((res) => {
-      const result = apiValidation(res);
-      console.log(result);
-      const searchedArrayInquiry = result.inquiry.filter(
-        (e) => e.first_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
-      );
-      const searchedArrayAdmission = result.admission.filter(
-        (e) => e.first_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
-      );
-      setInquiryArray(searchedArrayInquiry);
-      setAdmissionFormArray(searchedArrayAdmission);
-    });
+    const timer = setTimeout(() => {
+      get({ client_id: clientId }, '/getInquiryAndAdmissionDetailsOfClient').then((res) => {
+        const result = apiValidation(res);
+        console.log(result);
+        const searchedArrayInquiry = result.inquiry_object['Date wise'].filter(
+          (e) => e.first_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+        );
+        const searchedArrayAdmission = result.admission_object['Date wise'].filter(
+          (e) => e.first_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+        );
+        setInquiryArray(searchedArrayInquiry);
+        setAdmissionFormArray(searchedArrayAdmission);
+      });
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, [searchString, clientId]);
+
+  const filterResult = (how) => {
+    if (how === 'alphabetically') {
+      setInquiryArray(inquiryObject.Alphabetical);
+      setAdmissionFormArray(admissionObject.Alphabetical);
+    } else {
+      setInquiryArray(inquiryObject['Date wise']);
+      setAdmissionFormArray(admissionObject['Date wise']);
+    }
+    setOpenFilterModal(false);
+  };
 
   const searchCRM = (search) => {
     setSearchString(search);
   };
 
-  console.log(inquiryArray, 'aa');
-  console.log(admissionFormArray, 'admissionArray');
-  // console.log(questionsAdmission, 'cc');
   const goToDashboard = () => {
     history.push('/');
+  };
+
+  const getReadableDate = (stamp) => {
+    return new Date(stamp * 1000).toString().split(' ').slice(1, 5).join(' ');
   };
 
   return (
@@ -62,7 +87,9 @@ const CRM = (props) => {
       <PageHeader
         title='CRM'
         search
+        filter
         searchFilter={searchCRM}
+        triggerFilters={() => setOpenFilterModal(true)}
         customBack
         handleBack={goToDashboard}
       />
@@ -76,7 +103,11 @@ const CRM = (props) => {
           <div css={AdmissionStyle.UserCards}>
             {inquiryArray.map((inquiry) => {
               return (
-                <Card css={AdmissionStyle.card} key={clientId} className=''>
+                <Card
+                  css={AdmissionStyle.card}
+                  key={inquiry.user_id + inquiry.first_name}
+                  className=''
+                >
                   <Row className=' m-0 px-2 my-auto'>
                     <Col xs={2} sm={1} style={{ paddingTop: '15px' }}>
                       <img
@@ -91,9 +122,16 @@ const CRM = (props) => {
                       <p css={AdmissionStyle.avatarHeading} className='mb-0 mt-2 ml-2'>
                         {`${inquiry.first_name} ${inquiry.last_name}`}
                       </p>
-                      <p css={AdmissionStyle.avatarStatus}>
+                      <p className='mb-0' css={AdmissionStyle.avatarStatus}>
                         <PhoneIcon css={AdmissionStyle.onlineIcon} />
                         +91-{inquiry.contact}
+                      </p>
+                      <p
+                        css={AdmissionStyle.avatarStatus}
+                        className='mb-2 ml-2'
+                        style={{ fontFamily: 'Montserrat-Regular' }}
+                      >
+                        Signup time: {getReadableDate(inquiry.signup_time)}
                       </p>
                     </Col>
                   </Row>
@@ -106,7 +144,7 @@ const CRM = (props) => {
           <div css={AdmissionStyle.UserCards}>
             {admissionFormArray.map((e) => {
               return (
-                <Accordion key={e.user_id}>
+                <Accordion key={e.user_id + e.first_name}>
                   <Card css={AdmissionStyle.card}>
                     <Accordion.Toggle as='div' eventKey='0'>
                       <Row className=' m-0 px-2 my-auto'>
@@ -127,9 +165,16 @@ const CRM = (props) => {
                             </span>
                           </p>
 
-                          <p css={AdmissionStyle.avatarStatus}>
+                          <p className='mb-0' css={AdmissionStyle.avatarStatus}>
                             <PhoneIcon css={AdmissionStyle.onlineIcon} />
                             +91-{e.contact}
+                          </p>
+                          <p
+                            css={AdmissionStyle.avatarStatus}
+                            className='mb-2 ml-2'
+                            style={{ fontFamily: 'Montserrat-Regular' }}
+                          >
+                            Signup time: {getReadableDate(e.signup_time)}
                           </p>
                         </Col>
                       </Row>
@@ -145,13 +190,19 @@ const CRM = (props) => {
                                     style={{
                                       fontSize: '12px',
                                       marginBottom: '6px',
-                                      fontWeight: '600',
+                                      fontFamily: 'Montserrat-Bold',
                                     }}
                                   >
                                     {' '}
                                     {elem.question}{' '}
                                   </p>
-                                  <p style={{ fontSize: '14px', marginBottom: '6px' }}>
+                                  <p
+                                    style={{
+                                      fontSize: '12px',
+                                      marginBottom: '6px',
+                                      fontFamily: 'Montserrat-Regular',
+                                    }}
+                                  >
                                     {' '}
                                     {elem.response}{' '}
                                   </p>
@@ -169,6 +220,23 @@ const CRM = (props) => {
           </div>
         </Tab>
       </Tabs>
+      <Modal centered show={openFilterModal} onHide={() => setOpenFilterModal(false)}>
+        <Modal.Body>
+          {/* eslint-disable */}
+          <p
+            style={{ fontFamily: 'Montserrat-Bold', cursor: 'pointer' }}
+            onClick={() => filterResult('datewise')}
+          >
+            Date wise
+          </p>
+          <p
+            style={{ fontFamily: 'Montserrat-Bold', cursor: 'pointer' }}
+            onClick={() => filterResult('alphabetically')}
+          >
+            Alphabetically
+          </p>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

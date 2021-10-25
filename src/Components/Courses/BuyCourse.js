@@ -114,6 +114,9 @@ const BuyCourse = (props) => {
         setTabHeight(tabH - 50);
         // console.log(tabH, 'scrolled');
         setIsTabScrollable(true);
+        if (vidRef2 && vidRef2.current) {
+          vidRef2.current.pause();
+        }
       } else {
         setIsTabScrollable(false);
         // console.log('scrolling');
@@ -467,6 +470,10 @@ const BuyCourse = (props) => {
     vidRef2.current.play();
   };
 
+  const pauseVideo = () => {
+    vidRef2.current.pause();
+  };
+
   useEffect(() => {
     if (vidRef2 && vidRef2.current) {
       vidRef2.current.addEventListener('pause', (event) => {
@@ -513,11 +520,15 @@ const BuyCourse = (props) => {
               <source src={source} type='video/mp4' />
               <track src='' kind='subtitles' srcLang='en' label='English' />
             </video>
-            <Play
-              style={{ opacity: `${videoIsPlaying ? '1' : '0'}` }}
-              onClick={playVideo}
-              className='playIconCourse'
-            />
+            {videoIsPlaying ? (
+              <Play
+                style={{ opacity: `${videoIsPlaying ? '1' : '0'}` }}
+                onClick={playVideo}
+                className='playIconCourse'
+              />
+            ) : (
+              <Play style={{ opacity: '0' }} onClick={pauseVideo} className='playIconCourse' />
+            )}
           </div>
         </>
       )}
