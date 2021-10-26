@@ -227,7 +227,7 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
                     {reply.message.type === 'image' && (
                       <div className='d-flex justify-content-between align-items-center'>
                         <p className='mb-0'>Image</p>
-                        {/* <Image src={reply.message.content} height={30} /> */}
+                        <Image src={reply.message.content} height={30} />
                         {/* <p className='mb-0'>{reply.message.content}</p> */}
                       </div>
                     )}

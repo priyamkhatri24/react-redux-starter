@@ -71,7 +71,7 @@ const ConversationsHeader = function ({
                     ? history.push('/')
                     : goToConversations
                     ? history.push('/conversations')
-                    : history.push('/conversation')
+                    : history.replace('/conversation')
                 }
                 onKeyDown={() => (goToHome ? history.push('/') : history.push('/conversation'))}
               />

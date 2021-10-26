@@ -29,19 +29,7 @@ const Conversations = function ({
   useEffect(
     function () {
       fetchConversations();
-      if (!socket) {
-        for (let i = 0; i < 10; i++) {
-          const sockett = io('https://portal.tca.ingeniumedu.com', {
-            transports: ['websocket', 'polling'],
-          });
-          sockett.on('connect', () => {
-            console.log(sockett.id, 'connect');
-          });
-          setSocket({ sockett });
-          if (sockett) break;
-        }
-      }
-      if (!socket) return () => {};
+
       socket?.emit('user-connected', { client_user_id: clientUserId });
       console.log(socket);
       socket?.on('socket-connected', () => {

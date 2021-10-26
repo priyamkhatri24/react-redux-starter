@@ -427,6 +427,7 @@ class Message extends Component {
           {/* <i className='material-icons'>insert_drive_file</i> */}
           <a
             href={message.content}
+            target={document.body.clientWidth < 600 ? '__blank' : ''}
             style={{ color: '#000' }}
             className='ml-3 d-flex align-items-center'
           >
@@ -453,7 +454,6 @@ class Message extends Component {
       attachmentsArray,
       history,
     } = this.props;
-    console.log(reactions);
     return (
       <>
         <div className={`drag-handler ${userIsAuthor ? 'p-3 ' : 'p-2 '} post-message `}>
@@ -469,9 +469,9 @@ class Message extends Component {
 
             {attachmentsArray && (
               <div className='d-flex justify-content-center'>
-                {attachmentsArray[attachmentsArray.length - 1]?.file_type === 'image' ? (
+                {attachmentsArray[0]?.file_type === 'image' ? (
                   <Image className='image-message' src={message.content.cover} />
-                ) : attachmentsArray[attachmentsArray.length - 1]?.file_type === 'file' &&
+                ) : attachmentsArray[0]?.file_type === 'file' &&
                   message.content.cover.slice(
                     message.content.cover.length - 4,
                     message.content.cover.length,
@@ -485,9 +485,9 @@ class Message extends Component {
                   />
                 ) : (
                   <>
-                    <Image src={FileIcon} height='24px' />
+                    {attachmentsArray[0]?.file_name ? <Image src={FileIcon} height='24px' /> : null}
                     <p style={{ fontFamily: 'Montserrat-Bold' }}>
-                      {attachmentsArray[attachmentsArray.length - 1]?.file_name}
+                      {attachmentsArray[0]?.file_name}
                     </p>
                   </>
                 )}
@@ -651,7 +651,9 @@ class Message extends Component {
                                   Video
                                 </p>
                               </div>
-                            ) : replyTo.message.type === 'doc' ? (
+                            ) : replyTo.message.type === 'doc' ||
+                              replyTo.message.type === 'document' ||
+                              replyTo.message.type === 'file' ? (
                               <div className='reply d-flex px-2 py-1 justify-content-center'>
                                 <Image src={FileIcon} height='24px' />
                                 <p className='ml-2' style={{ marginBottom: '0px' }}>
@@ -790,7 +792,9 @@ class Message extends Component {
                                     Video
                                   </p>
                                 </div>
-                              ) : replyTo.message.type === 'doc' ? (
+                              ) : replyTo.message.type === 'doc' ||
+                                replyTo.message.type === 'document' ||
+                                replyTo.message.type === 'file' ? (
                                 <div className='reply d-flex px-2 py-1 justify-content-center'>
                                   <Image src={FileIcon} height='24px' />
                                   <p className='ml-2' style={{ marginBottom: '0px' }}>

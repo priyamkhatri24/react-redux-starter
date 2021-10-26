@@ -23,7 +23,7 @@ function MainApp(props) {
   useEffect(() => {
     const SERVER = 'https://portal.tca.ingeniumedu.com';
     // console.log(io);
-    let socket = io(SERVER, {
+    const socket = io(SERVER, {
       transports: ['websocket', 'polling'],
       autoConnect: true,
     });
@@ -33,10 +33,7 @@ function MainApp(props) {
 
     socket.on('disconnect', () => {
       console.log(socket.id, 'disconnected');
-      socket = io(SERVER, {
-        transports: ['websocket', 'polling'],
-      });
-      setSocket({ socket });
+      socket.connect();
     });
 
     setSocket({ socket });

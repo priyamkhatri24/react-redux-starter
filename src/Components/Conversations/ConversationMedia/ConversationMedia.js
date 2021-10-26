@@ -6,6 +6,7 @@ import Image from 'react-bootstrap/Image';
 import Spinner from 'react-bootstrap/Spinner';
 
 import { useParams, useHistory } from 'react-router-dom';
+import InfiniteScrollComponent from 'react-infinite-scroll-component';
 import InfiniteScroll from 'react-infinite-scroller';
 import ReactPlayer from 'react-player';
 import ArrowBack from '@material-ui/icons/ArrowBack';
@@ -18,6 +19,8 @@ import '../Conversation.scss';
 const ConversationMedia = ({}) => {
   const [files, setFiles] = useState({});
   const [loading, setLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
+  const [nextPage, setNextPage] = useState(2);
   const history = useHistory();
   const conversation = useSelector((state) => getConversation(state));
   const { id } = useParams();
@@ -38,6 +41,29 @@ const ConversationMedia = ({}) => {
       const apiData = apiValidation(res);
       console.log(apiData);
       setFiles(apiData);
+      setLoading(false);
+    });
+  };
+
+  const fetchMoreFiles = () => {
+    console.log(id);
+    get(null, `/conversations/${conversation.id}/media?page=${nextPage}`).then((res) => {
+      const apiData = apiValidation(res);
+      console.log(apiData, 'apiDataa');
+      const newFiles = { ...files };
+      for (const date of Object.keys(apiData)) {
+        if (Object.keys(newFiles).includes(date)) {
+          newFiles[date] = [...newFiles[date], ...apiData[date]];
+        } else {
+          newFiles[date] = [...apiData[date]];
+        }
+      }
+      setFiles(newFiles);
+      // if (!Object.keys(apiData).length) {
+      //   setHasMore(false);
+      // }
+      console.log(files, 'filessss');
+      setNextPage(nextPage + 1);
       setLoading(false);
     });
   };
@@ -73,53 +99,66 @@ const ConversationMedia = ({}) => {
         </Row>
       </div>
       {!loading && (
-        <InfiniteScroll
-          isReverse
-          initialLoad={false}
-          threshold={500}
-          loader={loader()}
-          className='pl-3 pr-3'
+        <div
+          className='messages-container desktopContainer container-fluid mt-2'
+          // ref={scrollParent}
+          style={{
+            height: '80vh',
+            overflowY: 'auto',
+            display: 'flex',
+            // flexDirection: 'column-reverse',
+          }}
+          id='scrollableDiv'
         >
-          {Object.keys(files)
-            .sort((a, b) => {
-              const aa = new Date(a.split('-').reverse().join('-'));
-              const bb = new Date(b.split('-').reverse().join('-'));
-              return (aa > bb) - (aa < bb);
-            })
-            .map((date) => (
-              <div className='files pb-2'>
-                <div className='text-center'>
-                  <p className='file-date'>{date}</p>
+          <InfiniteScrollComponent
+            dataLength={Object.keys(files).length}
+            next={() => fetchMoreFiles(nextPage)}
+            hasMore={hasMore}
+            loader={<p />}
+            style={{ overflowY: 'auto' }}
+            scrollableTarget='scrollableDiv'
+          >
+            {Object.keys(files)
+              .sort((a, b) => {
+                const aa = new Date(a.split('-').reverse().join('-'));
+                const bb = new Date(b.split('-').reverse().join('-'));
+                return (aa > bb) - (aa < bb);
+              })
+              .map((date) => (
+                <div className='files pb-2'>
+                  <div className='text-center'>
+                    <p className='file-date'>{date}</p>
+                  </div>
+                  <Row>
+                    {files[date].map((mediaObj) => (
+                      <div className='mediaContainer'>
+                        <a href={mediaObj.url} target='__blank' style={{ color: 'inherit' }}>
+                          <div style={{ width: '80%' }} className='media-gallery pb-2'>
+                            <>
+                              {getFileExt(mediaObj.name) === 'image' && (
+                                <Image height='120px' width='auto' rounded src={mediaObj.url} />
+                              )}
+                              {getFileExt(mediaObj.name) === 'video' && (
+                                <div>
+                                  <ReactPlayer
+                                    className='video-message'
+                                    controls
+                                    url={[{ src: mediaObj.url, type: 'video/mp4' }]}
+                                    height='120px'
+                                    width='auto'
+                                  />
+                                </div>
+                              )}
+                            </>
+                          </div>
+                        </a>
+                      </div>
+                    ))}
+                  </Row>
                 </div>
-                <Row>
-                  {files[date].map((mediaObj) => (
-                    <div className='mediaContainer'>
-                      <a href={mediaObj.url} target='__blank' style={{ color: 'inherit' }}>
-                        <div style={{ width: '80%' }} className='media-gallery pb-2'>
-                          <>
-                            {getFileExt(mediaObj.name) === 'image' && (
-                              <Image height='120px' width='auto' rounded src={mediaObj.url} />
-                            )}
-                            {getFileExt(mediaObj.name) === 'video' && (
-                              <div>
-                                <ReactPlayer
-                                  className='video-message'
-                                  controls
-                                  url={[{ src: mediaObj.url, type: 'video/mp4' }]}
-                                  height='120px'
-                                  width='auto'
-                                />
-                              </div>
-                            )}
-                          </>
-                        </div>
-                      </a>
-                    </div>
-                  ))}
-                </Row>
-              </div>
-            ))}
-        </InfiniteScroll>
+              ))}
+          </InfiniteScrollComponent>
+        </div>
       )}
     </>
   );

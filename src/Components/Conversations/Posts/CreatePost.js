@@ -17,7 +17,7 @@ import { getConversation } from '../../../redux/reducers/conversations.reducer';
 import { getClientUserId } from '../../../redux/reducers/clientUserId.reducer';
 import Conversation from '../Conversation';
 import ConversationsHeader from '../ConversationsHeader';
-import { post, uploadFiles } from '../../../Utilities';
+import { post, uploadFiles, uploadImage } from '../../../Utilities';
 import './CreatePost.scss';
 
 function useOutsideAlerter(ref, cb) {
@@ -56,29 +56,35 @@ const CreatePost = function ({ clientUserId, conversation, history }) {
     const formDataObj = {};
     formDataObj.client_user_id = clientUserId;
     formDataObj.type = 'post';
-    formDataObj.conversation_id = conversation.id;
+    formDataObj.conversation_id = +conversation.id;
     formDataObj.title_text = form.title;
-    formDataObj.text = form.description;
+    formDataObj.text = form.description ? form.description : '';
     formDataObj.comments_enabled = !commentsEnabled;
     formDataObj.reactions_enabled = !likesEnabled;
 
     if (selectedFiles?.length > 0) {
       const formatAttachments = (array) => array?.map((a) => a);
-
       uploadFiles(selectedFiles).then((resp) => {
         console.log('response incoming');
         console.log(resp);
-        const attachments = JSON.stringify(formatAttachments(resp.attachments_array));
+        console.log(selectedFiles);
+        const sortedAttachmentsArray = [];
+        for (const file of selectedFiles) {
+          const sortedEle = resp.attachments_array.find(
+            (ele) => ele.name.split('|')[0] === file.file.name,
+          );
+          sortedAttachmentsArray.push(sortedEle);
+        }
+        const attachments = JSON.stringify(formatAttachments(sortedAttachmentsArray));
         formDataObj.attachments_array = attachments;
         post(formDataObj, '/createPost').then((res) => {
           history.push('/conversation');
         });
         setIsLoading(false);
-        // console.log(formDataObj);
       });
     } else {
       post(formDataObj, '/createPost').then((res) => {
-        history.push('/conversation');
+        history.replace('/conversation');
       });
       setIsLoading(false);
     }
@@ -89,7 +95,7 @@ const CreatePost = function ({ clientUserId, conversation, history }) {
     setFileType(type);
 
     if (type === 'image') {
-      accept = 'image/png,image/jpeg,image/jpg';
+      accept = 'image/png,image/jpeg,image/jpg,video/mp4,audio/mp3';
     } else if (type === 'audio') {
       accept = 'audio/mp3';
     } else if (type === 'video') {
@@ -226,9 +232,10 @@ const CreatePost = function ({ clientUserId, conversation, history }) {
                   onClick={() => openFilePicker('image')}
                 >
                   <Collections className='material-icons' />
-                  <p className='icon-action'>From Gallery</p>
+                  <p className='icon-action'>Images</p>
                 </Button>
               </div>
+
               <div className='text-center ml-3 mr-3' style={{ width: '80px' }}>
                 <Button
                   variant='link'

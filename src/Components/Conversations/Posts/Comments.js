@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Media from 'react-bootstrap/Media';
 import Image from 'react-bootstrap/Image';
 import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
 import PropTypes from 'prop-types';
 import Send from '@material-ui/icons/Send';
 import Close from '@material-ui/icons/Close';
@@ -110,11 +111,11 @@ const Comments = function ({
         });
       } else {
         const newList = [...list];
-        newList.push({
+        newList.unshift({
           comment_text: comment,
           hasUserReacted: false,
           client_user_id: clientUserId,
-          post_comments_post_comments_id: res.post_comments_id,
+          post_comments_id: res.post_comments_id,
           chat_id: postId,
           reactions: [],
           sent_by: {
@@ -301,7 +302,14 @@ const Comments = function ({
           </Button>
         </div>
       )}
-      <div className='p-2 d-flex align-items-center' style={{ width: '100%' }}>
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
+          addComment();
+        }}
+        className='p-2 d-flex align-items-center'
+        style={{ width: '100%' }}
+      >
         <FormControl
           placeholder='Type a comment'
           as='input'
@@ -314,7 +322,7 @@ const Comments = function ({
         <Button disabled={!comment} className='rounded-btn ml-2' onClick={() => addComment()}>
           <Send className='material-icons' />
         </Button>
-      </div>
+      </Form>
     </div>
   );
 

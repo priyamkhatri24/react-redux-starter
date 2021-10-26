@@ -11,7 +11,7 @@ export const formatMessageContent = (message) => {
         desc: message.text,
         cover:
           message.attachments_array && message.attachments_array.length > 0
-            ? message.attachments_array[message.attachments_array.length - 1].file_url
+            ? message.attachments_array[0].file_url
             : '',
       },
     };
@@ -116,10 +116,7 @@ export const formatPost = (data, clientUserId) => ({
     content: {
       title: data.title,
       desc: data.text,
-      cover:
-        data.attachments_array.length === 0
-          ? ''
-          : data.attachments_array[data.attachments_array.length - 1].file_url,
+      cover: data.attachments_array.length === 0 ? '' : data.attachments_array[0].file_url,
     },
     commentsEnabled: data.comments_enabled,
     reactionsEnabled: data.reactions_enabled,

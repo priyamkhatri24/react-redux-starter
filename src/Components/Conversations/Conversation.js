@@ -27,7 +27,7 @@ import {
 import ConversationHeader from './ConversationHeader';
 import ConversationsHeader from './ConversationsHeader';
 import ConversationInput from './ConversationInput';
-import { formatMessages, formatMessage } from './formatter';
+import { formatMessages, formatMessage, formatPost } from './formatter';
 import Messages from './Messages/Messages';
 import './Conversation.scss';
 
@@ -64,15 +64,14 @@ const Conversation = (props) => {
 
   useEffect(() => {
     fetchMessages(conversation);
-
-    if (!socket) return;
+    console.log('haha');
     socket?.emit('join', { conversation_id: conversation.id, clientUserId });
     socket?.emit('user-connected', { client_user_id: clientUserId });
     socket?.on('socket-connected', () => {
       socket.emit('user-connected', { client_user_id: clientUserId });
     });
     socket?.on('connect', () => console.log('connected'));
-    socket?.on('disconnect', connectAgain);
+    socket?.on('disconnect', () => console.log('disconnected'));
     /* eslint-disable */
     return () => socket?.emit('leave', { conversation_id: conversation.id });
   }, [socket]);
@@ -109,23 +108,54 @@ const Conversation = (props) => {
     socket.emit('user-connected', { client_user_id: clientUserId });
   };
 
-  const connectAgain = () => {
-    // console.log(socket.id, 'disconnected');
-    const sockett = io('https://portal.tca.ingeniumedu.com', {
-      transports: ['websocket', 'polling'],
-      autoConnect: true,
-    });
-    setSocket({ sockett });
-  };
+  // const connectAgain = () => {
+  //   // console.log(socket.id, 'disconnected');
+  //   const sockett = io('https://portal.tca.ingeniumedu.com', {
+  //     transports: ['websocket', 'polling'],
+  //   });
 
-  const checkSocketAndReconnect = () => {
-    console.log(socket);
-    if (!socket) {
-      console.log('reconnecting...');
-      connectAgain();
-      console.log('connectedAgain');
-    }
-  };
+  //   sockett.on('connect', () => {
+  //     console.log(socket.id, 'connect');
+  //   });
+
+  //   sockett.on('disconnect', () => {
+  //     console.log(socket.id, 'disconnected');
+  //     const sockettt = io(SERVER, {
+  //       transports: ['websocket', 'polling'],
+  //     });
+  //     setSocket({ sockettt });
+  //   });
+  //   setSocket({ sockett });
+  // };
+
+  // useEffect(() => {
+  //   window.addEventListener('focus', () => {
+  //     connectAgain();
+  //     fetchMessages(conversation);
+
+  //     socket?.emit('join', { conversation_id: conversation.id, clientUserId });
+  //     socket?.emit('user-connected', { client_user_id: clientUserId });
+  //     socket?.on('socket-connected', () => {
+  //       socket.emit('user-connected', { client_user_id: clientUserId });
+  //     });
+  //     socket?.on('connect', () => console.log('connected'));
+  //     socket?.on('disconnect', connectAgain);
+  //   });
+  // }, []);
+
+  // const checkSocketAndReconnect = () => {
+  //   console.log(socket);
+  //   if (!socket) {
+  //     console.log('reconnecting...');
+  //     connectAgain();
+  //     socket?.emit('join', { conversation_id: conversation.id, client_user_id: clientUserId });
+  //     socket?.emit('user-connected', { client_user_id: clientUserId });
+  //     socket?.on('socket-connected', () => {
+  //       socket.emit('user-connected', { client_user_id: clientUserId });
+  //     });
+  //     console.log('connectedAgain');
+  //   }
+  // };
 
   const addMessageToConversation = function (data) {
     setAction('newconversation');
@@ -198,7 +228,7 @@ const Conversation = (props) => {
     // socket.on("connect", 'connectedAgain')
     console.log(data, `receiveMessage emitted from  ${conversation.id}`);
 
-    if (data.conversation_id !== conversation.id) return;
+    if (+data.conversation_id !== conversation.id) return;
     // {
     //   id: data.chat_id,
     //   message: formatMessageContent(data),
@@ -553,7 +583,7 @@ const Conversation = (props) => {
   };
 
   const sendMessage = (message) => {
-    checkSocketAndReconnect();
+    // checkSocketAndReconnect();
     const emitData = {
       sender_id: clientUserId,
       client_id: clientId,

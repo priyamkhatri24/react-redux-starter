@@ -285,7 +285,7 @@ const Post = function ({
           {sliderIndex + 1}/{reversedAttachments.length}
         </p>
         <Carousel nextIcon={null} prevIcon={null} activeIndex={sliderIndex} onSelect={handleSelect}>
-          {reversedAttachments.map((a) => (
+          {attachments.map((a) => (
             <Carousel.Item className='text-center'>
               {a.file_type === 'image' ? (
                 <Image
