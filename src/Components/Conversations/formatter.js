@@ -11,7 +11,7 @@ export const formatMessageContent = (message) => {
         desc: message.text,
         cover:
           message.attachments_array && message.attachments_array.length > 0
-            ? message.attachments_array[0].file_url
+            ? message.attachments_array[0].file_url || message.attachments_array[0].url
             : '',
       },
     };
@@ -73,12 +73,16 @@ export const formatMessages = (list, clientUserId) =>
 
 export const formatMessage = (data, userIsAuthor) => ({
   id: data.chat_id,
+  attachmentsArray: data.attachments_array.length
+    ? [{ ...data.attachments_array[0], file_type: data.attachments_array[0].type }]
+    : [],
   message: formatMessageContent(data),
   thumbnail:
     data.sent_by.display_picture ||
     'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1631183013255.png',
   userIsAuthor,
   timestamp: data.sent_time,
+  userColor: data.user_color,
   username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
   reactions: (data.reactions || []).map((r) => ({
     count: r.no_of_reactions,
@@ -116,7 +120,10 @@ export const formatPost = (data, clientUserId) => ({
     content: {
       title: data.title,
       desc: data.text,
-      cover: data.attachments_array.length === 0 ? '' : data.attachments_array[0].file_url,
+      cover:
+        data.attachments_array.length === 0
+          ? ''
+          : data.attachments_array[0].file_url || data.attachments_array[0].url,
     },
     commentsEnabled: data.comments_enabled,
     reactionsEnabled: data.reactions_enabled,

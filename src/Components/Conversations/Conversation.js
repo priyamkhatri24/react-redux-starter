@@ -6,11 +6,12 @@ import { useDispatch, useSelector, connect } from 'react-redux';
 // import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import { v4 as uuidv4 } from 'uuid';
 import io from 'socket.io-client';
 import Add from '@material-ui/icons/Add';
-import { get, apiValidation, uploadFiles, post } from '../../Utilities';
+import { get, apiValidation, uploadFiles, post, shareThis } from '../../Utilities';
 import MobileConversationCard from './mobile/MobileConversationCard';
 import { conversationsActions } from '../../redux/actions/conversations.action';
 import {
@@ -502,7 +503,7 @@ const Conversation = (props) => {
   };
 
   const uploadFile = (file, fileType) => {
-    checkSocketAndReconnect();
+    // checkSocketAndReconnect();
     // console.log(file, fileType, 'uploadddddddddddd');
     if (!file) return;
     const url = URL.createObjectURL(file);
@@ -656,6 +657,9 @@ const Conversation = (props) => {
 
   return (
     <div style={{ height: '100vh' }}>
+      {/* <Alert key={1} variant='secondary' dismissible>
+          Link has been copied to clipboard
+      </Alert> */}
       <Col className='hideOnMobile' style={sideShadowStyle} md={3}>
         <ConversationsHeader searchBar goToConversations title='Chats' />
         <div className='conversations-container overflow-auto mt-3'>

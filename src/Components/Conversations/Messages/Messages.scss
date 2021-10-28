@@ -36,6 +36,9 @@
   overflow-x: hidden !important;
   overflow-y: auto;
 }
+.infinite-scroll-component__outerdiv::-webkit-scrollbar {
+  display: none;
+}
 
 .downArrowScroller {
   display: flex;

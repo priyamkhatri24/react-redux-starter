@@ -22,7 +22,7 @@ import BorderColorIcon from '@material-ui/icons/BorderColor';
 import Toast from 'react-bootstrap/Toast';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { getSocket, getGlobalMessageCount } from '../../redux/reducers/conversations.reducer';
-import { get, apiValidation, prodOrDev, post } from '../../Utilities';
+import { server, get, apiValidation, prodOrDev, post } from '../../Utilities';
 import {
   getClientId,
   getClientUserId,
@@ -125,7 +125,7 @@ const Dashboard = (props) => {
     function () {
       if (!socket) {
         for (let i = 0; i < 10; i++) {
-          const sockett = io('https://portal.tca.ingeniumedu.com', {
+          const sockett = io(server, {
             transports: ['websocket', 'polling'],
           });
           sockett.on('connect', () => {
@@ -149,15 +149,6 @@ const Dashboard = (props) => {
     },
     [socket],
   );
-
-  const connectAgain = () => {
-    // console.log(socket.id, 'disconnected');
-    const sockett = io('https://portal.tca.ingeniumedu.com', {
-      transports: ['websocket', 'polling'],
-      autoConnect: true,
-    });
-    setSocket({ sockett });
-  };
 
   const addMessageToGlobalCount = (messagedata) => {
     console.log(messagedata);

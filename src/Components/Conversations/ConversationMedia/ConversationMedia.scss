@@ -8,8 +8,49 @@
 .mediaContainer {
   display: flex;
   flex-flow: wrap;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  margin: 12px !important;
+  margin: 2px !important;
   margin: auto;
+  padding: 3px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  width: 31%;
+  overflow: hidden
+}
+
+.mediaImage {
+  height: 180px;
+  width: 100%;
+}
+
+@media screen and (max-width: 700px) {
+  .mediaImage {
+    height: 80px;
+  }
+}
+
+.scrollHideClass {
+  width: 90%;
+}
+@media screen and (min-width: 900px) {
+  .scrollHideClass {
+    width: 75%;
+  }
+}
+
+.scrollHideClass::-webkit-scrollbar {
+  display: none;
+}
+
+.wrapper {
+  display: flex;
+  flex-flow: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.modalImageChats {
+  max-height: 80vh;
+  max-width: 80vw;
 }

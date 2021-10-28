@@ -24,7 +24,6 @@ const Conversations = function ({
   setSocket,
 }) {
   const history = useHistory();
-  const [server, setServer] = useState('https://portal.tca.ingeniumedu.com');
 
   useEffect(
     function () {

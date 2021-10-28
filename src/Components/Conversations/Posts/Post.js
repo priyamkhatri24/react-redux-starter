@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import Modal from 'react-bootstrap/Modal';
 import Image from 'react-bootstrap/Image';
 import Media from 'react-bootstrap/Media';
+import Alert from 'react-bootstrap/Alert';
 import Carousel from 'react-bootstrap/Carousel';
 import { connect } from 'react-redux';
 import ChatBubbleOutline from '@material-ui/icons/ChatBubbleOutline';
@@ -21,12 +22,13 @@ import {
   getSocket,
 } from '../../../redux/reducers/conversations.reducer';
 import { getClientUserId } from '../../../redux/reducers/clientUserId.reducer';
+import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
 import Conversation from '../Conversation';
 import ConversationsHeader from '../ConversationsHeader';
 import FileIcon from '../../../assets/images/file.svg';
 import Comments from './Comments';
 import { formatPost, formatReplies } from '../formatter';
-import { get, apiValidation, post as postNetworkCall } from '../../../Utilities';
+import { server, get, shareThis, apiValidation, post as postNetworkCall } from '../../../Utilities';
 import './Post.scss';
 import '../Message/Message.scss';
 
@@ -46,10 +48,14 @@ const Post = function ({
   },
   socket,
   setSocket,
+  currentbranding,
 }) {
   const [openImageModal, setOpenImageModal] = useState(false);
   const [modalImage, setModalImage] = useState({});
   const [sliderIndex, setIndex] = useState(0);
+  const [postData, setPostData] = useState({});
+  const [showCopiedAlert, setShowCopiedAlert] = useState(false);
+  const [timestamp, setTimestamp] = useState(null);
   useEffect(() => {
     fetchPost();
     window.addEventListener('hashchange', () => {
@@ -67,7 +73,7 @@ const Post = function ({
       socket.emit('user-connected', { client_user_id: clientUserId });
     });
     socket?.on('connect', () => console.log('connected'));
-    socket?.on('disconnect', connectAgain);
+    // socket?.on('disconnect', connectAgain);
 
     /* eslint-disable */
   }, [socket]);
@@ -92,7 +98,7 @@ const Post = function ({
 
   const connectAgain = () => {
     // console.log(socket.id, 'disconnected');
-    const sockett = io('https://portal.tca.ingeniumedu.com', {
+    const sockett = io(server, {
       transports: ['websocket', 'polling'],
       autoConnect: true,
     });
@@ -155,8 +161,12 @@ const Post = function ({
     get(null, `/getPostDetails?chat_id=${match.params.id}&client_user_id=${clientUserId}`).then(
       (res) => {
         const data = apiValidation(res);
-        console.log(data);
+        console.log(data, 'postDetailss');
         setPost(formatPost(data, clientUserId));
+        setPostData(data);
+        const d = new Date(+data.created_at * 1000);
+
+        setTimestamp(`${d.toString().split(' ').slice(1, 5).join(' ')}`);
       },
     );
   }
@@ -316,37 +326,41 @@ const Post = function ({
           ))}
         </Carousel>
 
-        <div className='post-footer d-flex flex-row align-items-center justify-content-between mt-1 pl-3 pr-3'>
-          <span className='p-1'>
-            {post.message.reactionsEnabled === 'true' ? (
-              <>
-                <i
-                  role='button'
-                  tabIndex={0}
-                  onKeyPress={(e) => e.key === 13 && reactToMessage(post.id, post.userHasReacted)}
-                  onClick={() => reactToMessage(post.id, post.userHasReacted)}
-                >
-                  {post.userHasReacted ? (
-                    <Favorite className='material-icons red' />
-                  ) : (
-                    <FavoriteBorder className='material-icons grey' />
-                  )}
-                </i>
-                {post.reactions.length > 0 && post.reactions[0].count}
-                {post.reactions.length === 0 && 0}
-              </>
-            ) : null}
-          </span>
-
-          <span className='p-1'>
-            {post.message.commentsEnabled === 'true' ? (
+        <div
+          className={`post-footer d-flex flex-row align-items-center ${
+            post.message.reactionsEnabled === 'true' || post.message.commentsEnabled === 'true'
+              ? 'justify-content-between'
+              : 'justify-content-center'
+          } mt-1 pl-3 pr-3`}
+        >
+          {post.message.reactionsEnabled === 'true' ? (
+            <span className='p-1'>
+              <i
+                role='button'
+                tabIndex={0}
+                onKeyPress={(e) => e.key === 13 && reactToMessage(post.id, post.userHasReacted)}
+                onClick={() => reactToMessage(post.id, post.userHasReacted)}
+              >
+                {post.userHasReacted ? (
+                  <Favorite className='material-icons red' />
+                ) : (
+                  <FavoriteBorder className='material-icons grey' />
+                )}
+              </i>
+              {post.reactions.length > 0 && post.reactions[0].count}
+              {post.reactions.length === 0 && 0}
+            </span>
+          ) : null}
+          {post.message.commentsEnabled === 'true' ? (
+            <span className='p-1'>
               <>
                 {' '}
                 <ChatBubbleOutline className='material-icons chat-bubble' /> {post.comments.length}
               </>
-            ) : null}
-          </span>
-          <span className='p-1'>
+            </span>
+          ) : null}
+
+          <span style={{ cursor: 'pointer' }} onClick={sharePost} className='p-1'>
             <Share className='material-icons share' />
           </span>
         </div>
@@ -360,24 +374,55 @@ const Post = function ({
       comments: list,
     });
 
+  const sharePost = () => {
+    console.log(currentbranding);
+    const url = `${window.location.origin}/posts/${postData.chat_id}`;
+    const username = `${postData.sent_by.first_name} ${postData.sent_by.last_name}`;
+    const title = `${username} has shared a post on \n${currentbranding.branding.client_name}`;
+    const text = `${postData.title} \n${postData.text} \n\nTo view more details of the discussion visit: \n${url}`;
+    // eslint-disable-next-line
+    const hasShared = shareThis(url, text, title);
+    console.log(title, text);
+    if (hasShared === 'clipboard') {
+      setShowCopiedAlert(true);
+      console.log('copied');
+    }
+    setTimeout(() => {
+      setShowCopiedAlert(false);
+    }, 3000);
+  };
+
   return (
     <div>
+      <Alert
+        className='alert'
+        style={showCopiedAlert ? { top: '10px' } : {}}
+        key={1}
+        variant='secondary'
+        onClose={() => setShowCopiedAlert(false)}
+        dismissible
+      >
+        Link has been copied to clipboard
+      </Alert>
       <ConversationsHeader title='' />
       <>
-        <Media as='div' className='p-1 pl-3 mt-2'>
-          <Image
-            src={post.thumbnail}
-            width={40}
-            height={40}
-            className='align-self-start'
-            roundedCircle
-          />
-          <Media.Body>
-            <div className='message-content pt-1 pb-1 pl-2 pr-2'>
-              <p className='username'>{post.username}</p>
-            </div>
-          </Media.Body>
-        </Media>
+        <div style={{ width: '95%' }} className='d-flex justify-content-between align-items-center'>
+          <Media as='div' className='p-1 pl-3 mt-2'>
+            <Image
+              src={post.thumbnail}
+              width={40}
+              height={40}
+              className='align-self-start'
+              roundedCircle
+            />
+            <Media.Body>
+              <div className='message-content pt-1 pb-1 pl-2 pr-2'>
+                <p className='username'>{post.username}</p>
+              </div>
+            </Media.Body>
+          </Media>
+          <p style={{ fontSize: '12px', marginBottom: '0px' }}>{timestamp}</p>
+        </div>
         {postMarkup()}
         {post.message.commentsEnabled === 'true' ? (
           <Comments
@@ -418,6 +463,7 @@ const mapStateToProps = (state) => {
   return {
     conversation: getConversation(state),
     clientUserId: getClientUserId(state),
+    currentbranding: getCurrentBranding(state),
     post: getPost(state),
     match: matchSelector(state),
     repliesForComments: getRepliesForComments(state),
@@ -442,6 +488,7 @@ const mapDispatchToProps = (dispatch) => {
 Post.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   setPost: PropTypes.func.isRequired,
+  currentbranding: PropTypes.instanceOf(Object).isRequired,
   setReplies: PropTypes.func.isRequired,
   repliesForComments: PropTypes.shape([]),
   post: PropTypes.shape({

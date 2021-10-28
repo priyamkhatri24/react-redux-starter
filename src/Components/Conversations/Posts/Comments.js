@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
@@ -33,6 +33,7 @@ const Comments = function ({
   const [replyingTo, setReplyingTo] = useState(null);
   const [showReplies, setShowReplies] = useState({});
   const userProfile = useSelector((state) => getUserProfile(state));
+  const commentInputRef = useRef(null);
 
   const getRepliesForComment = (commentId) =>
     repliesForComments.find((repliesObject) => repliesObject.commentId === commentId);
@@ -184,7 +185,12 @@ const Comments = function ({
                 <Button
                   variant='link p-0 m-0'
                   className='like-btn'
-                  onClick={() => setReplyingTo(c)}
+                  onClick={() => {
+                    setReplyingTo(c);
+                    if (commentInputRef && commentInputRef.current) {
+                      commentInputRef.current.focus();
+                    }
+                  }}
                 >
                   Reply
                 </Button>
@@ -317,6 +323,7 @@ const Comments = function ({
           id='comment-input'
           aria-label='Input field for your comment'
           value={comment}
+          ref={commentInputRef}
           onChange={(e) => setComment(e.target.value)}
         />
         <Button disabled={!comment} className='rounded-btn ml-2' onClick={() => addComment()}>

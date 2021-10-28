@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Media from 'react-bootstrap/Media';
+import Alert from 'react-bootstrap/Alert';
 import Image from 'react-bootstrap/Image';
 import Spinner from 'react-bootstrap/Spinner';
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -29,9 +31,10 @@ import ContentCopyIcon from '@material-ui/icons/FileCopy';
 import Modal from 'react-bootstrap/Modal';
 import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
-import { useLongPress } from '../../../Utilities/utilities';
+import { useLongPress, shareThis } from '../../../Utilities/utilities';
 import FileIcon from '../../../assets/images/file.svg';
 import 'react-h5-audio-player/lib/styles.css';
+import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
 import './Message.scss';
 
 const SLIDE_WIDTH = 50;
@@ -299,13 +302,22 @@ class Message extends Component {
     const { message, userIsAuthor } = this.props;
     return (
       <div className={`drag-handler ${userIsAuthor ? 'p-2 video-by-author' : 'p-1 video-by-user'}`}>
-        <ReactPlayer
+        {/* <ReactPlayer
           className='video-message'
           controls
           url={[{ src: message.content, type: 'video/mp4' }]}
           width='100%'
           height='280px'
-        />
+        /> */}
+        <video
+          className='video-message'
+          controls='controls'
+          style={{ borderRadius: '5px', width: '100%', height: '280px' }}
+          id='vidElement'
+        >
+          <source src={message.content} type='video/mp4' />
+          <track src='' kind='subtitles' srcLang='en' label='English' />
+        </video>
         <div className='mt-1'>{this.MessageFooter()}</div>
       </div>
     );
@@ -442,6 +454,20 @@ class Message extends Component {
     );
   }
 
+  sharePost = () => {
+    const { id, message, currentbranding, username } = this.props;
+    console.log(currentbranding);
+    const url = `${window.location.origin}/posts/${id}`;
+    const title = `${username} has shared a post on \n${currentbranding.branding.client_name}`;
+    const text = `${message.content.title} \n${message.content.desc} \n\nTo view more details of the discussion visit: \n${url}`;
+    // eslint-disable-next-line
+    const hasShared = shareThis(url, text, title);
+    console.log(title, text);
+    if (hasShared === 'clipboard') {
+      console.log('copied');
+    }
+  };
+
   PostMessage() {
     const {
       id,
@@ -532,7 +558,7 @@ class Message extends Component {
                 {commentsInfo.commentsCount}
               </span>
             ) : null}
-            <span className='p-1'>
+            <span onClick={this.sharePost} className='p-1'>
               <Share className='share' />
             </span>
           </div>
@@ -934,6 +960,12 @@ class Message extends Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    currentbranding: getCurrentBranding(state),
+  };
+};
+
 const reactions = PropTypes.shape({
   count: PropTypes.number.isRequired,
   id: PropTypes.number.isRequired,
@@ -947,6 +979,7 @@ const commentsInfo = PropTypes.shape({
 });
 
 Message.propTypes = {
+  currentbranding: PropTypes.instanceOf(Object).isRequired,
   id: PropTypes.number.isRequired,
   onReactionToMessage: PropTypes.func.isRequired,
   username: PropTypes.string,
@@ -1006,4 +1039,4 @@ Message.defaultProps = {
   replyTo: {},
 };
 
-export default withRouter(Message);
+export default connect(mapStateToProps)(withRouter(Message));

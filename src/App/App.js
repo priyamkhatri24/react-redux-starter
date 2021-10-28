@@ -14,6 +14,7 @@ import './App.scss';
 import { history, Routes } from '../Routing';
 import { getCurrentLoadingStatus, getStatusOfSpinner } from '../redux/reducers/loading.reducer';
 import withClearCache from './BustCache';
+import { server } from '../Utilities/Remote';
 
 // const io = loadable.lib(() => import('socket.io-client'));
 
@@ -21,9 +22,7 @@ function MainApp(props) {
   const { color, currentbranding, isLoading, setSocket, isSpinner } = props;
 
   useEffect(() => {
-    const SERVER = 'https://portal.tca.ingeniumedu.com';
-    // console.log(io);
-    const socket = io(SERVER, {
+    const socket = io(server, {
       transports: ['websocket', 'polling'],
       autoConnect: true,
     });

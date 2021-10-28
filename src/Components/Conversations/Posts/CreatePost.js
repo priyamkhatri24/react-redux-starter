@@ -129,7 +129,7 @@ const CreatePost = function ({ clientUserId, conversation, history }) {
       <Button size='sm' variant='link' onClick={(e) => removeFile(index)} className='remove-btn'>
         <HighlightOff className='material-icons' />
       </Button>
-      <Image src={url} width='40%' rounded />
+      <Image src={url} style={{ maxWidth: '130px', maxHeight: '130px' }} />
     </div>
   );
 
