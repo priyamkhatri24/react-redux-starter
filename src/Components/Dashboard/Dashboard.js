@@ -21,7 +21,8 @@ import { connect } from 'react-redux';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import Toast from 'react-bootstrap/Toast';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
-import { get, apiValidation, prodOrDev, post } from '../../Utilities';
+import { getSocket, getGlobalMessageCount } from '../../redux/reducers/conversations.reducer';
+import { server, get, apiValidation, prodOrDev, post } from '../../Utilities';
 import {
   getClientId,
   getClientUserId,
@@ -56,6 +57,7 @@ import { dashboardActions } from '../../redux/actions/dashboard.action';
 import { analysisActions } from '../../redux/actions/analysis.action';
 import { getCurrentRedirectPath } from '../../redux/reducers/dashboard.reducer';
 import { getToken, onMessageListener } from '../../Utilities/firebase';
+import { conversationsActions } from '../../redux/actions/conversations.action';
 
 const DashBoardAdmissions = Loadable({
   loader: () => import('./DashBoardAdmissions'),
@@ -89,7 +91,8 @@ const Dashboard = (props) => {
     setTestLanguageToStore,
     redirectPath,
     firstTimeLogin,
-    // setSocket,
+    socket,
+    setSocket,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
@@ -101,6 +104,7 @@ const Dashboard = (props) => {
   const [studentLiveStream, setStudentLiveStream] = useState(null);
   const [data, setData] = useState({});
   const [hasLoaded, setHasLoaded] = useState(false);
+  const [globalMessageCountState, setGlobalMessageCountState] = useState(0);
   const [showToast, setShowToast] = useState(false);
   const [optionsModal, setOptionsModal] = useState(false);
   const openOptionsModal = () => setOptionsModal(true);
@@ -116,6 +120,41 @@ const Dashboard = (props) => {
   //   }
   //   console.log('timer');
   // }, 1000);
+
+  useEffect(
+    function () {
+      if (!socket) {
+        for (let i = 0; i < 10; i++) {
+          const sockett = io(server, {
+            transports: ['websocket', 'polling'],
+          });
+          sockett.on('connect', () => {
+            console.log(sockett.id, 'connect');
+          });
+          setSocket({ sockett });
+          if (sockett) break;
+        }
+      }
+      if (!socket) return () => {};
+      socket?.emit('user-connected', { client_user_id: clientUserId });
+      console.log(socket);
+      socket?.on('socket-connected', () => {
+        socket?.emit('user-connected', { client_user_id: clientUserId });
+      });
+      socket?.on('homeMessage', addMessageToGlobalCount);
+
+      return () => {
+        socket?.off('homeMessage', addMessageToGlobalCount);
+      };
+    },
+    [socket],
+  );
+
+  const addMessageToGlobalCount = (messagedata) => {
+    console.log(messagedata);
+    setGlobalMessageCountState((prev) => prev + 1);
+  };
+
   useEffect(() => {
     const nameDisplayTimer = setTimeout(() => {
       setNameDisplay(true);
@@ -125,32 +164,6 @@ const Dashboard = (props) => {
       clearTimeout(nameDisplayTimer);
     };
   }, []);
-  // useEffect(() => {
-  //   const SERVER = 'https://portal.tca.ingeniumedu.com';
-  //   // console.log(io);
-  //   const socket = io(SERVER, {
-  //     transports: ['websocket', 'polling'],
-  //   });
-  //   socket.on('connect', () => {
-  //     console.log(socket.id, 'connect');
-  //   });
-
-  //   socket.on('socket-connected', () => {
-  //     console.log('socketconnected');
-  //     socket.emit('user-connected', { client_user_id: clientUserId });
-  //   });
-
-  //   socket.on('disconnect', () => {
-  //     console.log(socket.id, 'disconnected');
-  //     const socket2 = io(SERVER, {
-  //       transports: ['websocket', 'polling'],
-  //     });
-  //     setSocket({ socket2 });
-  //   });
-
-  //   setSocket({ socket });
-  //   return () => socket.emit('disconnect');
-  // }, []);
 
   const getTopicArray = useCallback(() => {
     return new Promise((resolve, reject) => {
@@ -286,6 +299,7 @@ const Dashboard = (props) => {
       setAttendance(result.attendance);
       setData(result);
       setHasLoaded(true);
+      setGlobalMessageCountState(result.total_unread_message);
       setDashboardDataToStore(result);
       const sorterArr = [];
 
@@ -1030,20 +1044,27 @@ const Dashboard = (props) => {
           />
         );
       case 'chats':
-        return null;
-      // <DashboardCards
-      //   image={param.feature_icon}
-      //   heading='Chats'
-      //   boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-      //   subHeading='Chat with your peers or teachers.'
-      //   backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
-      //   backGround={param.start_colour}
-      //   buttonClick={goToChats}
-      // />
+        return role === 3 || role === 4 ? (
+          <DashboardCards
+            image={param.feature_icon}
+            heading='Chats'
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            subHeading='Chat with your peers or teachers.'
+            backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
+            backGround={param.start_colour}
+            buttonClick={goToChats}
+          />
+        ) : (
+          <>
+            <button type='button' onClick={goToChats} className='floatingChatButtonDashboard'>
+              Let&apos;s Chat
+            </button>
+            {globalMessageCountState > 0 ? (
+              <div className='dotOnFloatingButton'>{globalMessageCountState}</div>
+            ) : null}
+          </>
+        );
 
-      // <button type='button' onClick={goToChats} className='floatingChatButtonDashboard'>
-      //   Let&apos;s Chat
-      // </button>
       default:
         return null;
     }
@@ -1216,15 +1237,16 @@ const mapStateToProps = (state) => ({
   comeBackFromTests: getComeBackFromTests(state),
   redirectPath: getCurrentRedirectPath(state),
   firstTimeLogin: getFirstTimeLoginState(state),
+  socket: getSocket(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   clearClientIdDetails: () => {
     dispatch(clientUserIdActions.clearClientIdDetails());
   },
-  // setSocket: (socket) => {
-  //   dispatch(conversationsActions.setSocket(socket));
-  // },
+  setSocket: (socket) => {
+    dispatch(conversationsActions.setSocket(socket));
+  },
   clearProfile: () => {
     dispatch(userProfileActions.clearUserProfile());
   },
@@ -1298,6 +1320,7 @@ Dashboard.propTypes = {
   branding: PropTypes.instanceOf(Object).isRequired,
   comeBackFromTests: PropTypes.bool.isRequired,
   redirectPath: PropTypes.string.isRequired,
-  // setSocket: PropTypes.func.isRequired,
+  setSocket: PropTypes.func.isRequired,
   firstTimeLogin: PropTypes.bool.isRequired,
+  socket: PropTypes.instanceOf(Object).isRequired,
 };

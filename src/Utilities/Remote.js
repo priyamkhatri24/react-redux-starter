@@ -205,3 +205,8 @@ export const json2xlsDownload = (JSONData, ReportTitle, ShowLabel) => {
   link.click();
   document.body.removeChild(link);
 };
+
+export const server =
+  process.env.NODE_ENV === 'development'
+    ? 'https://portal.tca.ingeniumedu.com'
+    : 'https://class.ingeniumedu.com';

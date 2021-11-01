@@ -4,11 +4,12 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ReactCrop from 'react-image-crop';
 import Cropper from '../../Common/CropperModal/Cropper';
+import { PageHeader } from '../../Common/PageHeader/PageHeader';
 import { uploadFiles } from '../../../Utilities';
 import { getConversation, getSocket } from '../../../redux/reducers/conversations.reducer';
 import { getClientUserId } from '../../../redux/reducers/clientUserId.reducer';
-
 import 'react-image-crop/dist/ReactCrop.css';
+import './ImageEditor.scss';
 
 const ImageEditor = ({}) => {
   const history = useHistory();
@@ -16,7 +17,7 @@ const ImageEditor = ({}) => {
   const clientUserId = useSelector((state) => getClientUserId(state));
   const socket = useSelector((state) => getSocket(state));
   const [img, setImg] = useState(null);
-  const [crop, setCrop] = useState({});
+  const [crop, setCrop] = useState({ unit: '%', width: 100, height: 100 });
   const {
     location: { state },
   } = history;
@@ -72,20 +73,17 @@ const ImageEditor = ({}) => {
       console.log('res', res);
       const { attachments_array: arr } = res;
       const { url: filename } = arr[0];
-      socket.emit(
-        'sendMessage',
-        {
-          sender_id: clientUserId,
-          conversation_id: conversation.id,
-          text: null,
-          type: 'message',
-          attachments_array: [{ url: filename, type: 'image', name: state.file.name }],
-        },
-        (error, data) => {
-          console.log('ack', data);
-          history.push('/conversation');
-        },
-      );
+      const emitData = {
+        sender_id: clientUserId,
+        conversation_id: conversation.id,
+        text: '',
+        type: 'message',
+        attachments_array: [{ url: filename, type: 'image', name: state.file.name }],
+      };
+      socket?.emit('sendMessage', emitData, (error, data) => {
+        console.log('ack', data);
+        history.replace('/conversation');
+      });
     });
   };
 
@@ -93,23 +91,28 @@ const ImageEditor = ({}) => {
     setImg(image);
   };
 
+  const changeCropHandler = (newCrop) => {
+    setCrop(newCrop);
+    console.log(newCrop);
+  };
+
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        height: '100vh',
-      }}
-    >
+    <div className='imageEditorContainer'>
+      <PageHeader title='Preview Image' />
       <ReactCrop
+        className='mb-4 d-flex justify-content-center'
         src={state.message.content}
         crop={crop}
-        onChange={(newCrop) => setCrop(newCrop)}
+        onChange={(newCrop) => changeCropHandler(newCrop)}
         onImageLoaded={onImageLoaded}
-        imageStyle={{ width: '100%' }}
+        imageStyle={{
+          width: '100%',
+          height: 'auto',
+          maxHeight: '70vh',
+          maxWidth: '90vw',
+        }}
       />
-      <Button className='btn-block' onClick={sendCroppedImage}>
+      <Button className='btn-block picsendbtn' onClick={sendCroppedImage}>
         SEND
       </Button>
     </div>

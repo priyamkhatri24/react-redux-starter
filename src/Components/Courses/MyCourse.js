@@ -160,7 +160,6 @@ const Mycourse = (props) => {
       nowPlayingVideoRef.current.plyr.once('play', () => {
         nowPlayingVideoRef.current.plyr.currentTime = +nowPlayingVideo.finishedTime;
         console.log('seeking....', nowPlayingVideo);
-
         timer = setInterval(() => {
           time = nowPlayingVideoRef.current.plyr.currentTime;
           console.log(time);
@@ -169,9 +168,9 @@ const Mycourse = (props) => {
             section_has_file_id: nowPlayingVideo.sectionFileId,
             client_user_id: clientUserId,
             finished_time: time,
-            total_time: nowPlayingVideo.duration,
+            total_time: nowPlayingVideoRef.current.plyr.duration || nowPlayingVideo.duration,
           };
-
+          console.log(payload);
           post(payload, '/updateCourseContentViewStatus').then((resp) => {
             console.log(resp);
           });
@@ -196,7 +195,7 @@ const Mycourse = (props) => {
           finished_time: isNaN(time) ? 0 : time,
           total_time: nowPlayingVideoRef.current.plyr.duration || nowPlayingVideo.duration,
         };
-        console.log(nowPlayingVideoRef.current.plyr);
+        console.log(payload);
         post(payload, '/updateCourseContentViewStatus').then((resp) => {
           console.log(resp);
         });
@@ -350,7 +349,7 @@ const Mycourse = (props) => {
         section_has_file_id: documentToOpen.section_has_file_id,
         client_user_id: clientUserId,
         total_time: documentToOpen.total_time,
-        finished_time: nowPlayingVideoRef.current.plyr.duration || nowPlayingVideo.duration,
+        finished_time: documentToOpen.total_time,
       };
       post(payload, '/updateCourseContentViewStatus').then((resp) => {
         console.log(resp);
@@ -898,8 +897,11 @@ const Mycourse = (props) => {
   const calculateIndividualItemPercentage = (elem) => {
     if (elem.content_type === 'test') elem.total_time = 0;
 
-    const percentage = (+elem.finished_time * 100) / +elem.total_time;
+    let percentage = (+elem.finished_time * 100) / +elem.total_time;
     // if (isNaN(percentage)) percentage = 1800;
+    if (+percentage > 100) {
+      percentage = 100;
+    }
     return !isNaN(percentage) ? percentage : 0;
   };
 

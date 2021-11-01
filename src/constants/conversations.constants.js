@@ -8,4 +8,5 @@ export const conversationsConstants = {
   SET_POST: 'SET_POST',
   SET_POSTS: 'SET_POSTS',
   SET_REPLIES: 'SET_REPLIES',
+  GLOBALCOUNT: 'GLOBALCOUNT',
 };

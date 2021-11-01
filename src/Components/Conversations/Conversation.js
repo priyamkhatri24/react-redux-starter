@@ -6,10 +6,12 @@ import { useDispatch, useSelector, connect } from 'react-redux';
 // import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import { v4 as uuidv4 } from 'uuid';
+import io from 'socket.io-client';
 import Add from '@material-ui/icons/Add';
-import { get, apiValidation, uploadFiles, post } from '../../Utilities';
+import { get, apiValidation, uploadFiles, post, shareThis } from '../../Utilities';
 import MobileConversationCard from './mobile/MobileConversationCard';
 import { conversationsActions } from '../../redux/actions/conversations.action';
 import {
@@ -18,10 +20,15 @@ import {
   getPosts,
   getConversations,
 } from '../../redux/reducers/conversations.reducer';
-import { getClientUserId, getRoleArray } from '../../redux/reducers/clientUserId.reducer';
+import {
+  getClientUserId,
+  getRoleArray,
+  getClientId,
+} from '../../redux/reducers/clientUserId.reducer';
 import ConversationHeader from './ConversationHeader';
+import ConversationsHeader from './ConversationsHeader';
 import ConversationInput from './ConversationInput';
-import { formatMessages, formatMessage } from './formatter';
+import { formatMessages, formatMessage, formatPost } from './formatter';
 import Messages from './Messages/Messages';
 import './Conversation.scss';
 
@@ -31,12 +38,15 @@ const CONVERSATION_TYPES = {
 };
 
 const Conversation = (props) => {
+  const [action, setAction] = useState('');
   const history = useHistory();
   const dispatch = useDispatch();
+  // const [conversation, setConversation] = useState(useSelector((state) => getConversation(state)));
 
   const conversation = useSelector((state) => getConversation(state));
   const conversations = useSelector((state) => getConversations(state));
   const clientUserId = useSelector((state) => getClientUserId(state));
+  const clientId = useSelector((state) => getClientId(state));
   const socket = useSelector((state) => getSocket(state));
   const posts = useSelector((state) => getPosts(state));
   const roleArray = useSelector((state) => getRoleArray(state));
@@ -44,29 +54,131 @@ const Conversation = (props) => {
   const [activeTab, setActiveTab] = useState(CONVERSATION_TYPES.CHAT);
   const [reply, setReply] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [role, setRole] = useState('student');
+  const [role, setRole] = useState('');
 
   const setConversation = (data) => dispatch(conversationsActions.setConversation(data));
+  const setConversations = (data) => dispatch(conversationsActions.setConversations(data));
   const setPosts = (data) => dispatch(conversationsActions.setPosts(data));
+  const setSocket = (sockett) => dispatch(conversationsActions.setSocket(sockett));
 
   const messagesEnd = useRef();
 
   useEffect(() => {
-    fetchMessages();
-    fetchDetails();
-    socket.emit('join', { conversation_id: conversation.id, clientUserId });
-    socket.on('socket-connected', () => {
-      console.log('socketconnected');
+    fetchMessages(conversation);
+    console.log('haha');
+    socket?.emit('join', { conversation_id: conversation.id, clientUserId });
+    socket?.emit('user-connected', { client_user_id: clientUserId });
+    socket?.on('socket-connected', () => {
       socket.emit('user-connected', { client_user_id: clientUserId });
     });
-    socket.on('conversationMessage', onReceiveMessage);
-
-    return () => socket.emit('leave', { conversation_id: conversation.id });
-  }, []);
+    socket?.on('connect', () => console.log('connected'));
+    socket?.on('disconnect', () => console.log('disconnected'));
+    /* eslint-disable */
+    return () => socket?.emit('leave', { conversation_id: conversation.id });
+  }, [socket]);
 
   useEffect(() => {
-    socket.on('conversationMessage', onReceiveMessage);
+    console.log('whattttt');
+    socket?.on('receiveMessage', addMessageToConversation);
+    socket?.on('conversationMessage', onReceiveMessage);
+    socket?.on('deleteMessage', onDeleteMessage);
+    return () => {
+      socket?.off('conversationMessage', onReceiveMessage);
+      socket?.off('receiveMessage', addMessageToConversation);
+      socket?.off('deleteMessage', onDeleteMessage);
+    };
   }, [conversation]);
+
+  useEffect(() => {
+    console.log('getting changed....');
+    fetchDetails();
+    socket?.on('conversationMessage', onReceiveMessage);
+    socket?.on('deleteMessage', onDeleteMessage);
+    socket?.emit('join', { conversation_id: conversation.id, clientUserId });
+    socket?.emit('user-connected', { client_user_id: clientUserId });
+    socket?.on('socket-connected', emitUserConnected);
+    return () => {
+      socket?.off('conversationMessage', onReceiveMessage);
+      socket?.off('socket-connected', emitUserConnected);
+      socket?.off('deleteMessage', onDeleteMessage);
+      socket?.emit('leave', { conversation_id: conversation.id });
+    };
+  }, [conversation.id]);
+
+  const emitUserConnected = () => {
+    socket.emit('user-connected', { client_user_id: clientUserId });
+  };
+
+  // const connectAgain = () => {
+  //   // console.log(socket.id, 'disconnected');
+  //   const sockett = io('https://portal.tca.ingeniumedu.com', {
+  //     transports: ['websocket', 'polling'],
+  //   });
+
+  //   sockett.on('connect', () => {
+  //     console.log(socket.id, 'connect');
+  //   });
+
+  //   sockett.on('disconnect', () => {
+  //     console.log(socket.id, 'disconnected');
+  //     const sockettt = io(SERVER, {
+  //       transports: ['websocket', 'polling'],
+  //     });
+  //     setSocket({ sockettt });
+  //   });
+  //   setSocket({ sockett });
+  // };
+
+  // useEffect(() => {
+  //   window.addEventListener('focus', () => {
+  //     connectAgain();
+  //     fetchMessages(conversation);
+
+  //     socket?.emit('join', { conversation_id: conversation.id, clientUserId });
+  //     socket?.emit('user-connected', { client_user_id: clientUserId });
+  //     socket?.on('socket-connected', () => {
+  //       socket.emit('user-connected', { client_user_id: clientUserId });
+  //     });
+  //     socket?.on('connect', () => console.log('connected'));
+  //     socket?.on('disconnect', connectAgain);
+  //   });
+  // }, []);
+
+  // const checkSocketAndReconnect = () => {
+  //   console.log(socket);
+  //   if (!socket) {
+  //     console.log('reconnecting...');
+  //     connectAgain();
+  //     socket?.emit('join', { conversation_id: conversation.id, client_user_id: clientUserId });
+  //     socket?.emit('user-connected', { client_user_id: clientUserId });
+  //     socket?.on('socket-connected', () => {
+  //       socket.emit('user-connected', { client_user_id: clientUserId });
+  //     });
+  //     console.log('connectedAgain');
+  //   }
+  // };
+
+  const addMessageToConversation = function (data) {
+    setAction('newconversation');
+    console.log(data, 'receiveMessage emitted from Conversations');
+    const conversationIndex = conversations.findIndex((c) => c.id === data.conversation_id);
+    if (conversationIndex === -1) return;
+
+    const newConversations = [...conversations];
+    const conversationNew = newConversations[conversationIndex];
+    conversationNew.subTitle = {
+      text: data.text,
+      type: data.type,
+      file_type: data.attachments_array?.length ? data.attachments_array[0].type : '',
+    };
+    if (data.conversation_id !== conversation.id) {
+      conversationNew.unreadCount++;
+    }
+    newConversations.splice(conversationIndex, 1);
+    newConversations.unshift(conversationNew);
+    setConversations(newConversations);
+    // onReceiveMessage(data);
+  };
 
   useEffect(() => {
     if (roleArray.includes(1) || roleArray.includes(2)) {
@@ -85,12 +197,39 @@ const Conversation = (props) => {
     newMessages.push(message);
     console.log(newMessages);
     newConversation.messages = newMessages;
+    // setLocalConvo(newConversation);
     setConversation(newConversation);
   };
 
+  const onDeleteMessage = (data) => {
+    setAction('delete');
+    const newConvo = { ...conversation };
+    const { messages } = newConvo;
+    const newMessages = [...messages];
+    newMessages.forEach((ele) => {
+      const { message } = ele;
+      if (ele.id == data.chat_id) {
+        if (message.type !== 'text') {
+          message.type = 'text';
+          ele.attachments_array = [];
+        }
+        ele.replyTo = {};
+        message.content = 'This message was deleted';
+        console.log(message, 'converted');
+      }
+      ele.message = message;
+    });
+    newConvo.messages = newMessages;
+    console.log('deleted', data, conversation, newConvo);
+    setConversation(newConvo);
+  };
+
   const onReceiveMessage = (data) => {
+    setAction('recieve');
     // socket.on("connect", 'connectedAgain')
     console.log(data, `receiveMessage emitted from  ${conversation.id}`);
+
+    if (+data.conversation_id !== conversation.id) return;
     // {
     //   id: data.chat_id,
     //   message: formatMessageContent(data),
@@ -103,10 +242,23 @@ const Conversation = (props) => {
     addMessage(formatMessage(data, false));
   };
 
-  const fetchMessages = () => {
+  const deleteMessage = (chatId) => {
+    const payload = {
+      conversation_id: conversation.id,
+      client_user_id: clientUserId,
+      chat_id: chatId,
+    };
+    post(payload, '/deleteChat').then((res) => {
+      console.log(res);
+    });
+  };
+  const fetchMessages = (conversation) => {
     get(
-      null,
-      `/getChtOfConversation?conversation_id=${conversation.id}&client_user_id=${clientUserId}`,
+      {
+        conversation_id: conversation.id,
+        client_user_id: clientUserId,
+      },
+      `/getChtOfConversation`,
     ).then((res) => {
       const apiData = apiValidation(res);
       if (!res) return;
@@ -127,18 +279,14 @@ const Conversation = (props) => {
   };
 
   const fetchMoreMessages = (page) => {
+    setAction('fetch');
     const { id } = conversation;
-    console.log('fetching more messages');
-    console.log('page', page);
     if (!isLoading && page > 1) {
       setIsLoading(true);
       get(
         null,
         `/getChtOfConversation?conversation_id=${id}&client_user_id=${clientUserId}&page=${page}`,
       ).then((res) => {
-        console.log(
-          `/getChtOfConversation?conversation_id=${id}&client_user_id=${clientUserId}&page=${page}`,
-        );
         const apiData = apiValidation(res);
         const { next: { page: nextPage } = { page: null } } = res;
         console.log(apiData, 'apiData');
@@ -147,6 +295,11 @@ const Conversation = (props) => {
         const newMessages = formatMessages(messageArray, clientUserId);
         const { messages: prevMessages } = conversation;
         console.log(newMessages);
+        if (!nextPage) {
+          newMessages.unshift({
+            message: { type: 'begining', content: 'Begining of conversation' },
+          });
+        }
         console.log(newMessages.concat(prevMessages));
         setConversation({
           ...conversation,
@@ -167,20 +320,25 @@ const Conversation = (props) => {
   };
 
   const fetchPosts = () => {
+    setAction('fetchpost');
     get(
-      null,
-      `/getPostsOfConversation?client_user_id=${clientUserId}&conversation_id=${conversation.id}`,
+      {
+        client_user_id: clientUserId,
+        conversation_id: conversation.id,
+      },
+      `/getPostsOfConversation`,
     ).then((res) => {
       const apiData = apiValidation(res);
       const { next: { page: nextPage } = { page: null } } = res;
       const messages = formatMessages(apiData, clientUserId);
       setConversation({ ...conversation, page: nextPage });
       setPosts(messages);
-      console.log(messages);
+      console.log(messages, '');
     });
   };
 
   const fetchMorePosts = (page) => {
+    setAction('fetchmorepost');
     const { id } = conversation;
     console.log('fetching more post');
     console.log('page', page);
@@ -230,9 +388,10 @@ const Conversation = (props) => {
         console.log('index', index);
         if (!userHasReacted && reactions.length > 0) {
           const reaction = reactions.pop();
+          console.log(reaction, 'hehe gotcha1');
           reaction.count += 1;
-          newPost.userHasReacted = true;
-          newPost.reactions = [reaction];
+          message.userHasReacted = true;
+          message.reactions = [reaction];
         } else if (!userHasReacted && reactions.length === 0) {
           reactions.push({
             count: 1,
@@ -240,14 +399,16 @@ const Conversation = (props) => {
             name: 'like',
             url: 'abc.com',
           });
-          newPost.userHasReacted = true;
+          message.userHasReacted = true;
+          console.log(reactions, 'haha here you are');
         }
 
         if (userHasReacted) {
           const reaction = reactions.pop();
+          console.log(reaction, 'hehe gotcha2');
           reaction.count -= 1;
-          newPost.reactions = [reaction];
-          newPost.userHasReacted = false;
+          message.reactions = [reaction];
+          message.userHasReacted = false;
         }
 
         newPost.reactions = reactions;
@@ -284,9 +445,11 @@ const Conversation = (props) => {
         console.log('index', index);
         if (!userHasReacted && reactions.length > 0) {
           const reaction = reactions.pop();
-          reaction.count += 1;
+          console.log(reaction, 'hah gotvha2');
+
+          reaction.count = res.no_of_reactions;
           message.userHasReacted = true;
-          message.reactions = [reaction];
+          message.reactions.push(reaction);
         } else if (!userHasReacted && reactions.length === 0) {
           reactions.push({
             count: 1,
@@ -299,8 +462,9 @@ const Conversation = (props) => {
 
         if (userHasReacted) {
           const reaction = reactions.pop();
-          reaction.count -= 1;
-          message.reactions = [reaction];
+          console.log(reaction, 'hah gotvha1');
+          reaction.count = res.no_of_reactions;
+          message.reactions.push(reaction);
           message.userHasReacted = false;
         }
 
@@ -339,6 +503,7 @@ const Conversation = (props) => {
   };
 
   const uploadFile = (file, fileType) => {
+    // checkSocketAndReconnect();
     // console.log(file, fileType, 'uploadddddddddddd');
     if (!file) return;
     const url = URL.createObjectURL(file);
@@ -358,7 +523,17 @@ const Conversation = (props) => {
     };
 
     if (fileType === 'image') {
-      history.push({ pathname: '/image-editor', state: { ...newMessage, file } });
+      addMessageToConversation({
+        text: null,
+        conversation_id: conversation.id,
+        type: 'message',
+        file_type: 'image',
+        attachments_array: [{ type: 'image' }],
+      });
+      history.push({
+        pathname: '/image-editor',
+        state: { ...newMessage, file },
+      });
       return;
     }
 
@@ -372,72 +547,72 @@ const Conversation = (props) => {
     uploadFiles([{ file, type: fileType }]).then((res) => {
       const { attachments_array: arr } = res;
       const { url: filename } = arr[0];
-      socket.emit(
-        'sendMessage',
-        {
-          sender_id: clientUserId,
-          conversation_id: conversation.id,
-          text: null,
-          type: 'message',
-          attachments_array: [{ url: filename, type: fileType, name: file.name }],
-          primaryChat: reply,
-        },
-        (error, data) => {
-          setReply(null);
-          console.log('upload data recved');
-          const indexOfMessage = newMessages.findIndex((message) => message.id === tempId);
-          console.log('indexOfMessage is: ', indexOfMessage);
-          if (indexOfMessage === -1) return;
-          newMessages[indexOfMessage].id = data.chat_id;
-          newMessages[indexOfMessage].isLoading = false;
-          setIsLoading(false);
-          newMessages[indexOfMessage].message = {
-            type: fileType,
-            name: file.name,
-            content: filename,
-          };
-          console.log(newMessages);
-          newConversation.messages = newMessages;
-          // newConversation.messages = newFnlMsg;
-          setConversation(newConversation);
-          console.log(conversation);
+      const emitData = {
+        sender_id: clientUserId,
+        client_id: clientId,
+        conversation_id: conversation.id,
+        text: '',
+        type: 'message',
+        attachments_array: [{ url: filename, type: fileType, name: file.name }],
+        primaryChat: reply,
+      };
+      socket?.emit('sendMessage', emitData, (error, data) => {
+        setAction('add');
+        addMessageToConversation(emitData);
+        setReply(null);
+        console.log('upload data recved');
+        const indexOfMessage = newMessages.findIndex((message) => message.id === tempId);
+        console.log('indexOfMessage is: ', indexOfMessage);
+        if (indexOfMessage === -1) return;
+        newMessages[indexOfMessage].id = data.chat_id;
+        newMessages[indexOfMessage].isLoading = false;
+        setIsLoading(false);
+        newMessages[indexOfMessage].message = {
+          type: fileType,
+          name: file.name,
+          content: filename,
+        };
+        console.log(newMessages);
+        newConversation.messages = newMessages;
+        // newConversation.messages = newFnlMsg;
+        setConversation(newConversation);
+        console.log(conversation);
 
-          messagesEnd.current !== null && messagesEnd.current.scrollIntoView();
-        },
-      );
+        // messagesEnd.current !== null && messagesEnd.current.scrollIntoView();
+      });
     });
   };
 
   const sendMessage = (message) => {
-    socket.emit(
-      'sendMessage',
-      {
-        sender_id: clientUserId,
-        conversation_id: conversation.id,
-        text: message,
-        type: 'message',
-        attachments_array: [],
-        primaryChat: reply,
-        primary_chat_id: reply?.id,
-      },
-      (error, data) => {
-        console.log('accccccccck', data);
-
-        addMessage({
-          id: data.chat_id,
-          message: {
-            type: 'text',
-            content: message,
-          },
-          userIsAuthor: true,
-          thumbnail: '',
-          timestamp: Date.now().toString(),
-          replyTo: reply,
-        });
-        setReply(null);
-        messagesEnd.current !== null && messagesEnd.current.scrollIntoView();
-      },
-    );
+    // checkSocketAndReconnect();
+    const emitData = {
+      sender_id: clientUserId,
+      client_id: clientId,
+      conversation_id: conversation.id,
+      text: message,
+      type: 'message',
+      attachments_array: [],
+      primaryChat: reply,
+      primary_chat_id: reply?.id,
+    };
+    socket?.emit('sendMessage', emitData, (error, data) => {
+      setAction('add');
+      console.log('accccccccck', data);
+      addMessage({
+        id: data.chat_id,
+        message: {
+          type: 'text',
+          content: message,
+        },
+        userIsAuthor: true,
+        thumbnail: '',
+        timestamp: Date.now().toString(),
+        replyTo: reply,
+      });
+      addMessageToConversation(emitData);
+      setReply(null);
+      // messagesEnd.current !== null && messagesEnd.current.scrollIntoView();
+    });
   };
 
   const replyToMessage = (message) => {
@@ -449,7 +624,7 @@ const Conversation = (props) => {
 
   const onTabSelected = (tab) => {
     if (tab === CONVERSATION_TYPES.CHAT) {
-      fetchMessages();
+      fetchMessages(conversation);
     } else {
       fetchPosts();
     }
@@ -462,8 +637,13 @@ const Conversation = (props) => {
   };
 
   const onConversationSelected = function (c) {
-    setConversation(c);
-    window.location.reload();
+    fetchMessages(c);
+    conversations.forEach((convo) => {
+      if (convo.id === c.id) {
+        convo.unreadCount = 0;
+      }
+    });
+    // window.location.reload();
     // history.push('/conversation');
   };
 
@@ -472,11 +652,16 @@ const Conversation = (props) => {
     boxShadow: '7px 0px 15px -10px rgba(0,0,0,0.05)',
     position: 'fixed',
     backgroundColor: 'white',
+    padding: '0px',
   };
 
   return (
-    <>
+    <div style={{ height: '100vh' }}>
+      {/* <Alert key={1} variant='secondary' dismissible>
+          Link has been copied to clipboard
+      </Alert> */}
       <Col className='hideOnMobile' style={sideShadowStyle} md={3}>
+        <ConversationsHeader searchBar goToConversations title='Chats' />
         <div className='conversations-container overflow-auto mt-3'>
           {conversations.length > 0 && (
             <ul className='list-unstyled'>
@@ -519,6 +704,10 @@ const Conversation = (props) => {
               nextPage={conversation.page}
               loadMore={(page) => fetchMoreMessages(page)}
               ref={messagesEnd}
+              deleteMessage={deleteMessage}
+              role={role}
+              action={action}
+              conversations={conversations}
             />
             {role === 'admin' ? (
               <ConversationInput
@@ -534,13 +723,18 @@ const Conversation = (props) => {
                 reply={reply}
                 onRemoveReply={() => setReply(null)}
               />
-            ) : (
+            ) : role === 'student' && details && details.can_student_message === 'false' ? (
               <p
                 style={{ textAlign: 'center', backgroundColor: 'white' }}
                 className='desktopInput mx-auto mb-0 py-2'
               >
-                Only admin can send messages
+                Students can't message in this group
               </p>
+            ) : (
+              <p
+                style={{ textAlign: 'center', backgroundColor: 'white' }}
+                className='desktopInput mx-auto mb-0 py-2'
+              />
             )}
           </Col>
         )}
@@ -554,6 +748,9 @@ const Conversation = (props) => {
                 nextPage={conversation.page}
                 loadMore={(page) => fetchMorePosts(page)}
                 ref={messagesEnd}
+                deleteMessage={deleteMessage}
+                role={role}
+                action={action}
               />
               {role === 'admin' ? (
                 <div className='p-2 fixed-bottom' style={{ backgroundColor: '#fff' }}>
@@ -585,7 +782,7 @@ const Conversation = (props) => {
           </Col>
         )}
       </Row>
-    </>
+    </div>
   );
 };
 

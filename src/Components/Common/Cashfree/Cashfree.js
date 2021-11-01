@@ -43,7 +43,6 @@ const Cashfree = (props) => {
       ? `${window.location.origin}/ordersummary?oid=${orderId}&coid=${courseOrderId}`
       : `${window.location.origin}`,
   );
-  // const [notifyUrl, setNotifyUrl] = useState('https://portal.tca.ingeniumedu.com//cashfreeWebhook');
 
   console.log(userProfile, 'userProfileee');
 

@@ -2,7 +2,7 @@
   border-radius: 5rem;
   width: 100%;
   padding: 5px 10px;
-  margin: 0px 15px;
+  margin: 0px 8px;
   box-shadow: 0.5px 0.5px 1px 0px #00000026;
 
   .upload-actions {
@@ -34,6 +34,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: #007bff;
+    border: transparent;
+    outline: none;
+    cursor: pointer;
+    margin-right: 8px;
+    color: white;
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -157,10 +163,15 @@
   }
 }
 
+.gallery::-webkit-scrollbar {
+  display: none;
+}
+
 .desktopHeader {
   position: fixed;
   right: 0;
   width: 75%;
+  margin-left: 25%;
   z-index: 1000;
   top: 0;
 }
@@ -168,13 +179,16 @@
 .desktopInput {
   position: fixed;
   right: 0;
-  width: 76.2%;
+  width: 75%;
   z-index: 1000;
+  margin-left: 25%;
+  margin-right: 0px !important;
   bottom: 0;
 }
 .desktopInput2 {
   position: fixed;
   right: 0;
+  margin-left: 25%;
   width: 75%;
   z-index: 1000;
   bottom: 0;
@@ -196,15 +210,31 @@
   font-size: 14px;
 }
 
+.unreadCountBubble {
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: green;
+  color: #fff;
+  border-radius: 100px;
+  padding: 2px 2px;
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+}
+
 @media screen and (max-width: 767px) {
   .desktopHeader {
+    margin-left: 0px;
     width: 100%;
   }
   .desktopInput {
     width: 100%;
-    left: 15px;
+    margin-left: 0px;
   }
   .desktopInput2 {
+    margin-left: 0px;
     width: 100%;
   }
   .hideOnMobile {
@@ -212,9 +242,31 @@
   }
 }
 
+.hideOnDesktop {
+  color: black;
+}
+
+.chatsSearchInput {
+  border-radius: 100px;
+  outline: none;
+  padding: 3px 12px !important;
+  border: 1px solid rgba(128, 128, 128, 0.411);
+  font-family: 'Montserrat-Medium';
+  width: 88%;
+  margin-right: 5px;
+}
+
+.chatsSearchInput::placeholder {
+  color: rgba(128, 128, 128, 0.562);
+  font-family: 'Montserrat-Regular';
+}
+
 @media screen and (min-width: 767px) {
   .smallOnDesktop {
     font-size: 12px;
     margin-top: 5px;
+  }
+  .hideOnDesktop {
+    display: none !important;
   }
 }

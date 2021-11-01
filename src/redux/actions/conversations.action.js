@@ -28,6 +28,10 @@ function setReplies(payload) {
   return { type: conversationsConstants.SET_REPLIES, payload };
 }
 
+function setGlobalMessageCount(payload) {
+  return { type: conversationsConstants.GLOBALCOUNT, payload };
+}
+
 export const conversationsActions = {
   setSocket,
   setConversations,
@@ -36,6 +40,7 @@ export const conversationsActions = {
   setPost,
   setPosts,
   setReplies,
+  setGlobalMessageCount,
   //   setUserIdToStore,
   //   setCLientUserIdToStore,
   //   setUserUserIdToStore,

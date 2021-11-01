@@ -19,9 +19,11 @@ import Send from '@material-ui/icons/Send';
 import MicNone from '@material-ui/icons/MicNone';
 import Refresh from '@material-ui/icons/Refresh';
 import Stop from '@material-ui/icons/Stop';
+import './Conversations.scss';
 
 const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemoveReply }) {
   const [message, setMessage] = useState('');
+  const [attachmentOpen, setAttachmentOpen] = useState(false);
   const [webcamOptions, setWebcamOptions] = useState({
     facingMode: 'user',
   });
@@ -38,6 +40,7 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
   const [fileType, setFileType] = useState('');
   const fileSelector = useRef();
   const cameraSelector = useRef();
+  const messageInputRef = useRef();
 
   const [show, setShow] = useState(false);
 
@@ -45,11 +48,33 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
   const handleShow = () => setShow(true);
 
   const send = function () {
+    if (messageInputRef) {
+      messageInputRef.current.focus();
+    }
     sendMessage(message);
     setMessage('');
   };
 
+  useEffect(() => {
+    if (messageInputRef && messageInputRef.current) {
+      if (reply) {
+        console.log('haha');
+        setTimeout(() => {
+          messageInputRef.current.blur();
+          messageInputRef.current.focus();
+        }, 200);
+      }
+    }
+  });
+
+  const focusMessageInput = () => {
+    if (messageInputRef && messageInputRef.current) {
+      messageInputRef.current.focus();
+    }
+  };
+
   const openFilePicker = function (type) {
+    setAttachmentOpen(false);
     let accept = '*';
     setFileType(type);
 
@@ -137,7 +162,6 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
           return onFileUpload(new File([buf], 'image.png'), 'image');
         });
     }
-
     urltoFile(cameraSelector.current.getScreenshot());
   };
 
@@ -186,7 +210,7 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
           style={{ backgroundColor: '#fff', zIndex: 2, boxShadow: '0.5px 0.5px 10px #00000026' }}
         >
           {reply && (
-            <Col xs={12}>
+            <Col xs={12} className='py-1'>
               <div className='d-flex align-items-center p-2 justify-content-between reply'>
                 <div className='container'>
                   <div>
@@ -194,12 +218,23 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
                       {reply.userIsAuthor ? 'You' : reply.username}
                     </p>
                     {reply.message.type === 'text' && (
-                      <p className='mb-0'>{reply.message.content}</p>
+                      <p className='mb-0'>
+                        {reply.message.content.length > 40
+                          ? `${reply.message.content.slice(0, 40)}...`
+                          : reply.message.content}
+                      </p>
                     )}
                     {reply.message.type === 'image' && (
                       <div className='d-flex justify-content-between align-items-center'>
-                        <p className='mb-0'>{reply.message.name.slice(0, 25)}...</p>
+                        <p className='mb-0'>Image</p>
                         <Image src={reply.message.content} height={30} />
+                        {/* <p className='mb-0'>{reply.message.content}</p> */}
+                      </div>
+                    )}
+                    {reply.message.type === 'video' && (
+                      <div className='d-flex justify-content-between align-items-center'>
+                        <p className='mb-0'>Video</p>
+                        {/* <Image src={reply.message.content} height={30} /> */}
                         {/* <p className='mb-0'>{reply.message.content}</p> */}
                       </div>
                     )}
@@ -211,24 +246,30 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
               </div>
             </Col>
           )}
-          <Col xs={12}>
+          <Col xs={12} className='py-1' style={{ padding: '10px auto' }}>
             <div className='d-flex flex-row align-items-center justify-content-between'>
               <div className='d-flex flex-row input-container align-items-center'>
-                <DropdownButton
-                  onSelect={(e) => openFilePicker(e)}
-                  style={{ left: '-20px' }}
-                  as={ButtonGroup}
-                  key='up'
+                <button
                   id='dropdown-button-drop-up'
-                  drop='up'
-                  variant='primary'
-                  title={<Attachment />}
+                  onClick={() => setAttachmentOpen(!attachmentOpen)}
+                  type='button'
                 >
-                  <Dropdown.Item eventKey='image'>Image</Dropdown.Item>
-                  <Dropdown.Item eventKey='video'>Video</Dropdown.Item>
-                  <Dropdown.Item eventKey='doc'>Document</Dropdown.Item>
-                  {/* <Dropdown.Item eventKey='audio'>Audio</Dropdown.Item> */}
-                </DropdownButton>
+                  <Attachment />
+                </button>
+                {attachmentOpen && (
+                  <ul className='dropdownList' style={{ position: 'fixed', zIndex: '100' }}>
+                    {/* eslint-disable */}
+                    <li onClick={(e) => openFilePicker(e.target.textContent.toLowerCase())}>
+                      Image
+                    </li>
+                    <li onClick={(e) => openFilePicker(e.target.textContent.toLowerCase())}>
+                      Video
+                    </li>
+                    <li onClick={(e) => openFilePicker(e.target.textContent.toLowerCase())}>
+                      Document
+                    </li>
+                  </ul>
+                )}
                 <input
                   type='file'
                   ref={fileSelector}
@@ -238,15 +279,22 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
                 <FormControl
                   placeholder='Type a message'
                   as='input'
+                  ref={messageInputRef}
                   id='chat-input'
                   aria-label='Input field for your message'
                   value={message}
+                  // onBlur={(e) => e.target.focus()}
+                  onClick={() => window.scrollTo(0, document.body.clientHeight)}
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyPress={(e) => (e.key === 'Enter' && !!message ? send() : null)}
                 />
                 <span className='upload-actions'>
-                  {/* <InsertEmoticon className='pr-2' /> */}
-                  <Button variant='link' size='sm' className='camera-btn' onClick={handleShow}>
+                  <Button
+                    variant='link'
+                    size='sm'
+                    className='camera-btn hideOnMob'
+                    onClick={handleShow}
+                  >
                     <PhotoCamera />
                   </Button>
                 </span>
@@ -273,7 +321,7 @@ const ConversationInput = function ({ sendMessage, onFileUpload, reply, onRemove
 
       {recordingState.isVisible && (
         <div
-          className='desktopInput'
+          className='desktopInput py-1'
           style={{ boxShadow: '0px -4px 8px #1f00750f', background: '#fff', borderRadius: '10px' }}
         >
           <div className='text-center mb-3'>

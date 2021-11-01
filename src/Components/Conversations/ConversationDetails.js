@@ -145,7 +145,7 @@ const ConversationDetails = (props) => {
             </Media>
           </div>
           <div className='details-box p-2'>
-            <Card>
+            {/* <Card>
               <Card.Header>
                 <div className='d-flex justify-content-between align-items-center'>
                   <p className='details-heading mb-0'>Info</p>
@@ -161,7 +161,7 @@ const ConversationDetails = (props) => {
                   <p className='sub-head'>Email</p>
                 </div>
               </Card.Body>
-            </Card>
+            </Card> */}
             {roleArray.includes(3) || roleArray.includes(4) ? (
               <Card className='mt-2'>
                 <Card.Header>

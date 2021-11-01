@@ -266,21 +266,41 @@
   position: fixed;
   cursor: pointer;
   outline: none;
-  background-color: white;
+  background-color: var(--primary-blue);
   border-radius: 100px;
+  color: white;
   bottom: 18px;
-  right: 14px;
+  right: 20px;
   padding: 12px 50px;
   border: transparent;
   box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.46);
   z-index: 50;
 }
 
-// @media screen and (min-width: 768px) {
-//   .DashboardCard_Image {
-//     padding-left: 0px;
-//   }
-// }
+.dotOnFloatingButton {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 55px;
+  right: 26px;
+  color: white;
+  background-color: red;
+  border-radius: 100px;
+  width: 20px;
+  min-width: fit-content;
+  height: 20px;
+  z-index: 60;
+  font-family: 'Montserrat-Regular';
+  font-size: 12px;
+  padding: 3px;
+}
+
+@media screen and (max-width: 700px) {
+  .floatingChatButtonDashboard {
+    right: 14px;
+  }
+}
 
 @media screen and (max-width: 700px) {
   .noticeboard_img {

@@ -4,18 +4,26 @@ export const formatMessageContent = (message) => {
 
     return {
       type: 'post',
+      commentsEnabled: message.comments_enabled,
+      reactionsEnabled: message.reactions_enabled,
       content: {
         title: message.title,
         desc: message.text,
         cover:
           message.attachments_array && message.attachments_array.length > 0
-            ? message.attachments_array[0].file_url
+            ? message.attachments_array[0].file_url || message.attachments_array[0].url
             : '',
       },
     };
   }
 
   if (message.attachments_array && message.attachments_array.length > 0) {
+    if (message.message_status === 'deleted') {
+      return {
+        type: 'text',
+        content: 'This message was deleted',
+      };
+    }
     return {
       type: message.attachments_array[0].type || message.attachments_array[0].file_type,
       name: message.attachments_array[0].name || message.attachments_array[0].file_name,
@@ -25,7 +33,7 @@ export const formatMessageContent = (message) => {
 
   return {
     type: 'text',
-    content: message.text,
+    content: message.message_status === 'deleted' ? 'This message was deleted' : message.text,
   };
 };
 
@@ -48,10 +56,13 @@ export const formatMessages = (list, clientUserId) =>
     commentsInfo: {
       featuredComment: data.commentsInfo ? data.commentsInfo.comment : '',
       commentsCount: data.commentsInfo ? data.commentsInfo.count : 0,
+      ...data.commentsInfo,
     },
+    attachmentsArray: [...data.attachments_array],
     userHasReacted: data.hasUserReacted,
+    userColor: data.user_color,
     replyTo:
-      data.primaryChat && data.primaryChat.chat_id
+      data.message_status !== 'deleted' && data.primaryChat && data.primaryChat.chat_id
         ? {
             id: data.primaryChat.chat_id,
             username: `${data.primaryChat.sent_by.first_name} ${data.primaryChat.sent_by.last_name}`,
@@ -62,12 +73,16 @@ export const formatMessages = (list, clientUserId) =>
 
 export const formatMessage = (data, userIsAuthor) => ({
   id: data.chat_id,
+  attachmentsArray: data.attachments_array.length
+    ? [{ ...data.attachments_array[0], file_type: data.attachments_array[0].type }]
+    : [],
   message: formatMessageContent(data),
   thumbnail:
     data.sent_by.display_picture ||
     'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1631183013255.png',
   userIsAuthor,
   timestamp: data.sent_time,
+  userColor: data.user_color,
   username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
   reactions: (data.reactions || []).map((r) => ({
     count: r.no_of_reactions,
@@ -80,7 +95,7 @@ export const formatMessage = (data, userIsAuthor) => ({
     featuredComment: data.commentsInfo ? data.commentsInfo.comment : '',
     commentsCount: data.commentsInfo ? data.commentsInfo.count : 0,
   },
-  replyTo: data.primaryChat ? data.primaryChat : {},
+  replyTo: data.message_status !== 'deleted' && data.primaryChat ? data.primaryChat : {},
 });
 
 export const formatConversation = (responseFromServer) => {};
@@ -105,12 +120,19 @@ export const formatPost = (data, clientUserId) => ({
     content: {
       title: data.title,
       desc: data.text,
-      cover: data.attachments_array.length === 0 ? '' : data.attachments_array[0].file_url,
+      cover:
+        data.attachments_array.length === 0
+          ? ''
+          : data.attachments_array[0].file_url || data.attachments_array[0].url,
     },
+    commentsEnabled: data.comments_enabled,
+    reactionsEnabled: data.reactions_enabled,
   },
   comments: data.comments,
   attachments: data.attachments_array,
-  thumbnail: data.sent_by.display_picture || 'https://i.pravatar.cc/40',
+  thumbnail:
+    data.sent_by.display_picture ||
+    'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1631183013255.png',
   userIsAuthor: data.sent_by.client_user_id === clientUserId,
   timestamp: data.sent_time,
   username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,

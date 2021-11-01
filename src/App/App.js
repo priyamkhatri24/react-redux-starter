@@ -14,33 +14,30 @@ import './App.scss';
 import { history, Routes } from '../Routing';
 import { getCurrentLoadingStatus, getStatusOfSpinner } from '../redux/reducers/loading.reducer';
 import withClearCache from './BustCache';
+import { server } from '../Utilities/Remote';
 
 // const io = loadable.lib(() => import('socket.io-client'));
 
 function MainApp(props) {
   const { color, currentbranding, isLoading, setSocket, isSpinner } = props;
 
-  // useEffect(() => {
-  //   const SERVER = 'https://portal.tca.ingeniumedu.com';
-  //   // console.log(io);
-  //   const socket = io(SERVER, {
-  //     transports: ['websocket', 'polling'],
-  //   });
-  //   socket.on('connect', () => {
-  //     console.log(socket.id, 'connect');
-  //   });
+  useEffect(() => {
+    const socket = io(server, {
+      transports: ['websocket', 'polling'],
+      autoConnect: true,
+    });
+    socket.on('connect', () => {
+      console.log(socket.id, 'connect');
+    });
 
-  //   socket.on('disconnect', () => {
-  //     console.log(socket.id, 'disconnected');
-  //     const socket2 = io(SERVER, {
-  //       transports: ['websocket', 'polling'],
-  //     });
-  //     setSocket({ socket2 });
-  //   });
+    socket.on('disconnect', () => {
+      console.log(socket.id, 'disconnected');
+      socket.connect();
+    });
 
-  //   setSocket({ socket });
-  //   return () => socket.emit('disconnect');
-  // }, []);
+    setSocket({ socket });
+    return () => socket.emit('disconnect');
+  }, []);
 
   useEffect(() => {
     console.log(isSpinner);

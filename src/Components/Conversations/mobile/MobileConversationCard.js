@@ -4,6 +4,10 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import Media from 'react-bootstrap/Media';
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
+import VoiceIcon from '@material-ui/icons/SettingsVoice';
+import VideoCamIcon from '@material-ui/icons/Videocam';
+import DocumentIcon from '@material-ui/icons/Description';
 import Container from 'react-bootstrap/Container';
 import Message from '../Message/Message';
 import '../Conversation.scss';
@@ -12,7 +16,7 @@ const MobileConversationCard = function ({ name, subTitle, thumbnail, unreadCoun
   return (
     <Row noGutters>
       <Col xs={12}>
-        <div className='mt-1 mb-1'>
+        <div className='mt-1 mb-1 mx-2'>
           <Media as='li' className='conversation-container p-2' onClick={onClick}>
             <Image
               src={thumbnail}
@@ -26,30 +30,36 @@ const MobileConversationCard = function ({ name, subTitle, thumbnail, unreadCoun
                 <Row style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Col xs={10}>
                     <b>{name}</b>
-                    {subTitle?.text ? (
+                    {subTitle?.text && subTitle?.text !== 'null' ? (
                       <p className='smallOnDesktop card-subtitle'>
                         {subTitle.text.slice(0, 33)}
                         {subTitle.text.length > 33 ? '...' : null}
                       </p>
                     ) : null}
+                    {/* eslint-disable */}
+                    {subTitle?.file_type === 'image' ? (
+                      <p className='smallOnDesktop card-subtitle'>
+                        <PhotoCameraIcon style={{ fontSize: '14px', marginBottom: '3px' }} /> Photo
+                      </p>
+                    ) : subTitle?.file_type === 'video' ? (
+                      <p className='smallOnDesktop card-subtitle'>
+                        <VideoCamIcon style={{ fontSize: '14px', marginBottom: '3px' }} /> Video
+                      </p>
+                    ) : subTitle?.file_type === 'audio' ? (
+                      <p className='smallOnDesktop card-subtitle'>
+                        <VoiceIcon style={{ fontSize: '14px', marginBottom: '3px' }} /> Audio
+                      </p>
+                    ) : subTitle?.file_type === 'doc' ||
+                      subTitle?.file_type === 'file' ||
+                      subTitle?.file_type === 'document' ? (
+                      <p className='smallOnDesktop card-subtitle'>
+                        <DocumentIcon style={{ fontSize: '14px', marginBottom: '3px' }} /> Document
+                      </p>
+                    ) : null}
                   </Col>
                   {unreadCount > 0 && (
                     <div className='my-auto'>
-                      <span
-                        className='text-center'
-                        style={{
-                          fontSize: '11px',
-                          backgroundColor: 'green',
-                          color: '#fff',
-                          borderRadius: '50%',
-                          padding: '4px 7px',
-                          marginRight: '10px',
-                          width: '16px',
-                          height: 'auto',
-                        }}
-                      >
-                        {unreadCount}
-                      </span>
+                      <span className='text-center unreadCountBubble'>{unreadCount}</span>
                     </div>
                   )}
                 </Row>

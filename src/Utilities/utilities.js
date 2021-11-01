@@ -145,11 +145,11 @@ export default function useWindowDimensions() {
   return windowDimensions;
 }
 
-export const shareThis = (url, content) => {
+export const shareThis = (url, content, title = 'Look at this awesome course!') => {
   if (navigator.share) {
     navigator
       .share({
-        title: `Look at this awesome course!`,
+        title,
         // eslint-disable-next-line
         text: content,
         url,
