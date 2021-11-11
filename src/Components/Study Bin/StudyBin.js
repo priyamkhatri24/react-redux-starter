@@ -499,6 +499,7 @@ const StudyBin = (props) => {
         currentFolderName={menuOptions.currentFolderName}
         handleMove={handleMove}
         handleCopy={handleCopy}
+        clientUserId={clientUserId}
       />
       <div className='StudyBin'>
         <PageHeader

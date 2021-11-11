@@ -16,6 +16,7 @@ import { BatchesSelector } from '../Common';
 const StudyBinMenu = (props) => {
   const {
     kholdo,
+    clientUserId,
     rerenderFilesAndFolders,
     handleClose,
     type,
@@ -169,8 +170,10 @@ const StudyBinMenu = (props) => {
   const shareRecordingWithBatch = () => {
     const payload = {
       stream_name: id,
-      batch_add: JSON.stringify(batches),
-      batch_remove: JSON.stringify(allBatches.filter((e) => e.user_id !== null)),
+      batch_remove: JSON.stringify(batches),
+      batch_add: JSON.stringify(allBatches.filter((e) => e.user_id !== null)),
+      client_user_id: clientUserId,
+      created_at: '',
     };
 
     console.log(payload);
@@ -278,6 +281,7 @@ export default StudyBinMenu;
 
 StudyBinMenu.propTypes = {
   kholdo: PropTypes.bool.isRequired,
+  clientUserId: PropTypes.number.isRequired,
   handleMove: PropTypes.func.isRequired,
   handleCopy: PropTypes.func.isRequired,
   rerenderFilesAndFolders: PropTypes.func.isRequired,

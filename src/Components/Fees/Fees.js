@@ -48,6 +48,8 @@ const Fees = (props) => {
   const [showCashfreeModal, setShowCashfreeModal] = useState(false);
   const [paymentSplits, setPaymentSplits] = useState(null);
   const [ntfurl, setntfurl] = useState(null);
+  const [cfType, setCfType] = useState(null);
+  const [appId, setAppId] = useState(null);
   const [newOrderId, setNewOrderId] = useState(null);
   useEffect(() => {
     get({ client_user_id: clientUserId }, '/getFeeDataForStudent').then((res) => {
@@ -137,6 +139,8 @@ const Fees = (props) => {
         setntfurl(result.notifyUrl);
         setNewOrderId(result.order_id);
         setShowCashfreeModal(true);
+        setAppId(result.appId);
+        setCfType(result.secret);
         console.log(result);
       });
     }
@@ -314,7 +318,7 @@ const Fees = (props) => {
         <Modal.Body>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <p className='cashfreeModalOrderName'>{currentPayment.name}</p>
-            <p className='cashfreeModalOrderAmount'>₹{currentPayment.amount}</p>
+            <p className='cashfreeModalOrderAmount'>₹ {currentPayment.amount}</p>
           </div>
         </Modal.Body>
 
@@ -329,6 +333,8 @@ const Fees = (props) => {
             paymentSplits={paymentSplits}
             orderId={newOrderId}
             notifyUrl={ntfurl}
+            testId={appId}
+            cfType={orderType}
           />
         </Modal.Footer>
       </Modal>

@@ -111,7 +111,7 @@ const Conversation = (props) => {
 
   // const connectAgain = () => {
   //   // console.log(socket.id, 'disconnected');
-  //   const sockett = io('https://portal.tca.ingeniumedu.com', {
+  //   const sockett = io('https://portal.ingeniumedu.com', {
   //     transports: ['websocket', 'polling'],
   //   });
 

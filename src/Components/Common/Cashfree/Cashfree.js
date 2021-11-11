@@ -19,11 +19,13 @@ const Cashfree = (props) => {
     orderAmount,
     userFeeId,
     courseOrderId,
+    cfType,
+    testId,
   } = props;
-  const testId =
-    process.env.NODE_ENV === 'development'
-      ? '7986308f47083d2e4e125efed36897'
-      : '122277951965233ea251da7c4f772221';
+  // const testId =
+  //   process.env.NODE_ENV === 'development'
+  //     ? '7986308f47083d2e4e125efed36897'
+  //     : '122277951965233ea251da7c4f772221';
   const [orderCurrency, setOrderCurrency] = useState('INR');
   // const [orderAmount, setOrderAmount] = useState(currentPayment.amount);
   const [orderNote, setOrderNote] = useState('test');
@@ -57,6 +59,8 @@ const Cashfree = (props) => {
     returnUrl,
     notifyUrl,
     paymentSplits,
+    testId,
+    cfType,
   );
 
   const url =
@@ -95,6 +99,8 @@ export default connect(mapStateToProps)(Cashfree);
 
 Cashfree.propTypes = {
   clientId: PropTypes.number.isRequired,
+  testId: PropTypes.string.isRequired,
+  cfType: PropTypes.string.isRequired,
   paymentSplits: PropTypes.string.isRequired,
   notifyUrl: PropTypes.string.isRequired,
   orderId: PropTypes.number.isRequired,

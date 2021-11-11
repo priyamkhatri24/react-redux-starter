@@ -84,6 +84,8 @@ const BuyCourse = (props) => {
   const [order, setOrder] = useState({});
   const [showToast, setShowToast] = useState(false);
   const [paymentSplits, setPaymentSplits] = useState(null);
+  const [appId, setAppId] = useState(null);
+  const [cfSecret, setCfSecret] = useState(null);
   const [ntfurl, setntfurl] = useState(null);
   const [newOrderId, setNewOrderId] = useState(null);
   const [courseOrderId, setCourseOrderId] = useState(null);
@@ -234,6 +236,8 @@ const BuyCourse = (props) => {
         setntfurl(result.notifyUrl);
         setNewOrderId(result.order_id);
         setCourseOrderId(result.course_order_id);
+        setCfSecret(result.secret);
+        setAppId(result.appId);
         setShowCouponModal(true);
       });
     } else {
@@ -975,9 +979,11 @@ const BuyCourse = (props) => {
                   paymentSplits={paymentSplits}
                   orderId={newOrderId}
                   notifyUrl={ntfurl}
+                  testId={appId}
+                  cfType={paymentGateway}
                 />
               ) : (
-                <p>payment gateway not available</p>
+                <p>Payments not available</p>
               )}
             </>
           ) : (

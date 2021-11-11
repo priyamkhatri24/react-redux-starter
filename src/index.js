@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import './index.scss';
 import App from './App/App';
 import store from './redux/store';
-// import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
@@ -19,5 +19,9 @@ ReactDOM.render(
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-// serviceWorkerRegistration.register();
+try {
+  serviceWorkerRegistration.register();
+} catch (err) {
+  console.log('failed to load service-worker', err);
+}
 if (process.env.NODE_ENV === 'development') reportWebVitals();

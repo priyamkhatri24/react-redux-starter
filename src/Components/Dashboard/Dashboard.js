@@ -17,9 +17,12 @@ import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
 import PhoneIcon from '@material-ui/icons/Phone';
 import LinkIcon from '@material-ui/icons/Link';
 import io from 'socket.io-client';
+
 import { connect } from 'react-redux';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import Toast from 'react-bootstrap/Toast';
+import teacherImg from '../../assets/images/LiveClasses/teacher.png';
+import TimerWatch from '../Live Classes/TimerWatch';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { getSocket, getGlobalMessageCount } from '../../redux/reducers/conversations.reducer';
 import { server, get, apiValidation, prodOrDev, post } from '../../Utilities';
@@ -101,7 +104,7 @@ const Dashboard = (props) => {
   const [allCourses, setAllCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
   const [admissions, setAdmissions] = useState({});
-  const [studentLiveStream, setStudentLiveStream] = useState(null);
+  const [studentLiveStream, setStudentLiveStream] = useState([]);
   const [data, setData] = useState({});
   const [hasLoaded, setHasLoaded] = useState(false);
   const [globalMessageCountState, setGlobalMessageCountState] = useState(0);
@@ -257,9 +260,9 @@ const Dashboard = (props) => {
       const payload = {
         client_user_id: clientUserId,
       };
-      get(payload, '/getLiveStreamsForStudent').then((res) => {
+      get(payload, '/getAllScheduledClassesForStudent').then((res) => {
         const result = apiValidation(res);
-        console.log(result, 'getLiveStreamsForStudent');
+        console.log(result, 'getAllScheduledClassesForStudent');
         setStudentLiveStream(result);
       });
     }
@@ -853,7 +856,37 @@ const Dashboard = (props) => {
           />
         );
       case 'liveClasses':
-        return (
+        /* eslint-disable */
+        let startTimeText = '';
+        let date = '';
+        let timeArray = [];
+        let time = '';
+        let timeLeftInSeconds = '';
+        let timeLeft = '';
+        let batchesText = '';
+        if (studentLiveStream.length) {
+          startTimeText = new Date(+studentLiveStream[0].stream_start_time * 1000).toString();
+          date = startTimeText.split(' ').slice(1, 3).join(' ');
+          timeArray = startTimeText.split(' ')[4].split(':');
+          time = '';
+          timeLeftInSeconds =
+            +studentLiveStream[0].stream_start_time - +studentLiveStream[0].current_time;
+          timeLeft = new Date(timeLeftInSeconds * 1000).toISOString().substr(11, 5);
+          if (timeArray[0] > 12) {
+            time = `${timeArray[0] - 12}:${timeArray[1]} PM`;
+          } else {
+            time = `${timeArray[0]}:${timeArray[1]} AM`;
+          }
+          batchesText = '';
+          if (studentLiveStream[0].batch_array.length > 1) {
+            batchesText = `with ${studentLiveStream[0].batch_array[0]} and ${
+              studentLiveStream[0].batch_array.length - 1
+            } ${studentLiveStream[0].batch_array.length - 1 > 1 ? 'others' : 'other'}`;
+          } else if (studentLiveStream[0].batch_array.length === 1) {
+            batchesText = `with ${studentLiveStream[0].batch_array[0]}`;
+          }
+        }
+        return role === 3 || role === 4 ? (
           <DashboardCards
             image={param.feature_icon}
             width={91}
@@ -870,6 +903,70 @@ const Dashboard = (props) => {
             buttonText={roleArray.includes(3) || roleArray.includes(4) ? 'Go live now' : ''}
             buttonClick={goToLiveClasses}
           />
+        ) : (
+          <>
+            <div className='w-85 mx-auto d-flex align-items-start mt-2'>
+              <div className='w-100'>
+                <p className='headingText mb-0'>Live Classes</p>
+                <p className='plainText mb-0'>Attend all your live classes here</p>
+              </div>
+              <div
+                onClick={() => history.push('/liveclasses')}
+                className='d-flex align-items-center'
+              >
+                <p style={{ width: '60px' }} className='boldText mb-0'>
+                  View All
+                </p>
+                <ChevronRightIcon />
+              </div>
+            </div>
+            <Card key={studentLiveStream[0]?.stream_id} className='scheduleCard'>
+              <div className='scheduleCardLeft'>
+                <p className='scheduleCardHeading'>
+                  <span className='redTag'>LIVE</span> Class
+                </p>
+                <p className='scheduleCardText'>
+                  by {`${studentLiveStream[0]?.first_name} ${studentLiveStream[0]?.last_name}`}
+                </p>
+                <p className='scheduleCardSmallText'>{batchesText}</p>
+                <h5 className='scheduleCardHeading my-3'>{studentLiveStream[0]?.topic}</h5>
+                {studentLiveStream[0]?.stream_status === 'pending' && (
+                  <p className='scheduleCardText'>
+                    starts @ {time} on {date}
+                  </p>
+                )}
+                {studentLiveStream[0]?.stream_status === 'active' && (
+                  <>
+                    <p style={{ fontFamily: 'Montserrat-Bold' }} className='scheduleCardHeading'>
+                      Live Class is in progress...
+                    </p>
+                    <button
+                      onClick={() => {}}
+                      type='button'
+                      className='startNowButton blackBackground'
+                    >
+                      ATTEND LIVE NOW
+                    </button>
+                  </>
+                )}
+              </div>
+              <div className='scheduleCardRight'>
+                {timeLeftInSeconds < 86400 && (
+                  <TimerWatch started={timeLeftInSeconds < 0} time={timeLeft} />
+                )}
+                {timeLeftInSeconds >= 86400 && (
+                  <img className='teacherImage' src={teacherImg} alt='icon' />
+                )}
+                {/* eslint-disable */}
+                {/* <div
+                        onClick={() => this.deleteScheduledClass(elem)}
+                        className='deleteContainer'
+                      >
+                        <DeleteIcon style={{ color: '#00000061' }} />
+                      </div> */}
+              </div>
+            </Card>
+          </>
         );
       case 'onlineAssignment':
         return (
