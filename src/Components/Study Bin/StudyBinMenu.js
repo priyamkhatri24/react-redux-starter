@@ -16,6 +16,8 @@ import { BatchesSelector } from '../Common';
 const StudyBinMenu = (props) => {
   const {
     kholdo,
+    clientUserId,
+    createdAt,
     rerenderFilesAndFolders,
     handleClose,
     type,
@@ -33,6 +35,7 @@ const StudyBinMenu = (props) => {
   const handleRenameOpen = () => setShowRenameModal(true);
   const [newName, setNewName] = useState(currentFolderName);
   const [batches, setBatches] = useState([]);
+  const [removedBatches, setRemovedBatches] = useState([]);
   const [allBatches, setAllBatches] = useState([]);
   const [showBatchModal, setShowBatchModal] = useState(false);
 
@@ -161,21 +164,26 @@ const StudyBinMenu = (props) => {
     }
   };
 
-  const getSelectedBatches = (allbatches, selectedBatches) => {
+  const getSelectedBatches = (allbatches, selectedBatches, removed) => {
     setBatches(selectedBatches);
     setAllBatches(allbatches);
+    setRemovedBatches(removed);
+    console.log(removed, 'removedddd');
   };
 
   const shareRecordingWithBatch = () => {
     const payload = {
       stream_name: id,
-      batch_add: JSON.stringify(batches),
-      batch_remove: JSON.stringify(allBatches.filter((e) => e.user_id !== null)),
+      batch_remove: JSON.stringify(batches),
+      batch_add: JSON.stringify(removedBatches),
+      client_user_id: clientUserId,
+      created_at: createdAt,
     };
 
     console.log(payload);
 
     post(payload, '/shareRecordedStream').then((res) => {
+      console.log(res);
       if (res.success) {
         rerenderFilesAndFolders();
         closeBatchModal();
@@ -278,6 +286,8 @@ export default StudyBinMenu;
 
 StudyBinMenu.propTypes = {
   kholdo: PropTypes.bool.isRequired,
+  clientUserId: PropTypes.number.isRequired,
+  createdAt: PropTypes.string.isRequired,
   handleMove: PropTypes.func.isRequired,
   handleCopy: PropTypes.func.isRequired,
   rerenderFilesAndFolders: PropTypes.func.isRequired,

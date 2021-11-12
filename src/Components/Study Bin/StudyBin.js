@@ -69,6 +69,7 @@ const StudyBin = (props) => {
     finalBatches: [],
     currentBatches: [],
     currentFolderName: '',
+    createdAt: '',
   });
   const [openMenu, setOpenMenu] = useState(false);
   const handleImageOpen = () => setShowImageModal(true);
@@ -391,6 +392,7 @@ const StudyBin = (props) => {
   ];
 
   const openContextMenu = (elem, type) => {
+    console.log(elem, 'elememememm');
     setMenuOptions({
       ...menuOptions,
       type,
@@ -399,6 +401,7 @@ const StudyBin = (props) => {
       finalBatches: elem.final_batch,
       currentBatches: elem.current_batch,
       currentFolderName: elem.folder_name,
+      createdAt: elem.created_at,
     });
     handleMenuShow();
   };
@@ -493,6 +496,7 @@ const StudyBin = (props) => {
         rerenderFilesAndFolders={rerenderFilesAndFolders}
         id={menuOptions.id}
         type={menuOptions.type}
+        createdAt={menuOptions.createdAt}
         currentStatus={menuOptions.status}
         finalBatches={menuOptions.finalBatches}
         currentBatches={menuOptions.currentBatches}

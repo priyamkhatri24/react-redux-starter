@@ -49,6 +49,8 @@ const Categories = (props) => {
     status: '',
     finalBatches: [],
     currentBatches: [],
+    createdAt: '',
+    clientUserId: '',
   });
   const [openMenu, setOpenMenu] = useState(false);
   const handleMenuClose = () => setOpenMenu(false);
@@ -123,6 +125,7 @@ const Categories = (props) => {
 
   const openContextMenu = (elem, type) => {
     console.log(elem);
+    if (!(roleArray.includes(4) || roleArray.includes(3))) return;
     if (match.params.id === '4') {
       setMenuOptions({
         ...menuOptions,
@@ -131,6 +134,8 @@ const Categories = (props) => {
         id: elem.stream_name,
         finalBatches: elem.final_batch,
         currentBatches: elem.current_batch,
+        createdAt: elem.created_at,
+        clientUserId: elem.client_user_id,
       });
       handleMenuShow();
     }
@@ -181,6 +186,8 @@ const Categories = (props) => {
       />
       <StudyBinMenu
         kholdo={openMenu}
+        createdAt={menuOptions.createdAt}
+        clientUserId={menuOptions.clientUserId}
         handleClose={handleMenuClose}
         rerenderFilesAndFolders={getLiveRecordings}
         id={menuOptions.id}

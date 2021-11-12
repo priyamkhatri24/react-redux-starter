@@ -11,6 +11,7 @@ export const BatchesSelector = (props) => {
   const [selectedBatches, setSelectedBatches] = useState([...selectBatches]);
   const [selectAllStudents, setSelectAllStudents] = useState(false);
   const [allBatches, setAllBatches] = useState([...batches]);
+  const [removedBatches, setRemovedBatches] = useState([]);
 
   const batchesLength = useRef(0);
 
@@ -29,19 +30,26 @@ export const BatchesSelector = (props) => {
   }, [isStudentFee, batches]);
 
   useEffect(() => {
-    if (sendBoth) getSelectedBatches(allBatches, selectedBatches);
+    if (sendBoth) getSelectedBatches(allBatches, selectedBatches, removedBatches);
     else getSelectedBatches(selectedBatches);
   }, [selectedBatches, getSelectedBatches, allBatches, sendBoth]);
 
   const selectBatch = (elem) => {
     const batchess = [...allBatches];
+    const newRemoved = removedBatches.filter(
+      (batch) => batch.client_batch_id !== elem.client_batch_id,
+    );
     const index = batchess.findIndex((e) => e.client_batch_id === elem.client_batch_id);
     batchess.splice(index, 1);
     setAllBatches(batchess);
+    setRemovedBatches(newRemoved);
     setSelectedBatches((prevstate) => [...prevstate, elem]);
   };
 
   const removeBatch = (elem) => {
+    const newRemoved = [...removedBatches];
+    newRemoved.push(elem);
+    setRemovedBatches(newRemoved);
     const batchess = [...allBatches];
     const index = selectedBatches.findIndex((e) => e.client_batch_id === elem.client_batch_id);
     batchess.push(elem);

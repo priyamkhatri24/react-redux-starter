@@ -44,10 +44,12 @@ const Fees = (props) => {
   const [fees, setFees] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [orderType, setOrderType] = useState(dashboardData.payment_gateway);
+  const [cfType, setCfType] = useState(dashboardData.payment_gateway1);
   const [currentPayment, setCurrentPayment] = useState({});
   const [showCashfreeModal, setShowCashfreeModal] = useState(false);
   const [paymentSplits, setPaymentSplits] = useState(null);
   const [ntfurl, setntfurl] = useState(null);
+  const [appId, setAppId] = useState(null);
   const [newOrderId, setNewOrderId] = useState(null);
   useEffect(() => {
     get({ client_user_id: clientUserId }, '/getFeeDataForStudent').then((res) => {
@@ -137,6 +139,8 @@ const Fees = (props) => {
         setntfurl(result.notifyUrl);
         setNewOrderId(result.order_id);
         setShowCashfreeModal(true);
+        setAppId(result.appId);
+
         console.log(result);
       });
     }
@@ -329,6 +333,8 @@ const Fees = (props) => {
             paymentSplits={paymentSplits}
             orderId={newOrderId}
             notifyUrl={ntfurl}
+            testId={appId}
+            cfType={cfType}
           />
         </Modal.Footer>
       </Modal>

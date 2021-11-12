@@ -84,6 +84,7 @@ const BuyCourse = (props) => {
   const [order, setOrder] = useState({});
   const [showToast, setShowToast] = useState(false);
   const [paymentSplits, setPaymentSplits] = useState(null);
+  const [appId, setAppid] = useState('');
   const [ntfurl, setntfurl] = useState(null);
   const [newOrderId, setNewOrderId] = useState(null);
   const [courseOrderId, setCourseOrderId] = useState(null);
@@ -93,8 +94,14 @@ const BuyCourse = (props) => {
   const [reviews, setReviews] = useState([]);
   const [previewText, setPreviewText] = useState(true);
   const [videoIsPlaying, setVideoIsPlaying] = useState(true);
+  const [reference, setReference] = useState(null);
   const vidRef2 = useRef(null);
   const mainCRef = useRef(null);
+  // const cfRef = useRef(null);
+  const getCfRef = (cfref) => {
+    setReference(cfref);
+    console.log(cfref);
+  };
 
   const statusClass = cx({
     Fees__orderStatus: true,
@@ -217,10 +224,8 @@ const BuyCourse = (props) => {
     }
   };
 
-  const openCouponModal = () => {
-    if (paymentGateway === 'razorpay') {
-      setShowCouponModal(true);
-    } else if (paymentGateway === 'cashfree' && +coursePrice > 0) {
+  const startCashfreePayment = () => {
+    if (paymentGateway.includes('cashfree') && +coursePrice > 0) {
       const cashfreePayload = {
         client_user_id: clientUserId,
         client_id: clientId,
@@ -238,7 +243,18 @@ const BuyCourse = (props) => {
         setNewOrderId(result.order_id);
         setCourseOrderId(result.course_order_id);
         setShowCouponModal(true);
+        setAppid(result.appId);
+        // console.log(cfRef);
+        setTimeout(() => {
+          reference.click();
+        }, 1500);
       });
+    }
+  };
+
+  const openCouponModal = () => {
+    if (paymentGateway === 'razorpay') {
+      setShowCouponModal(true);
     } else {
       setShowCouponModal(true);
     }
@@ -979,16 +995,12 @@ const BuyCourse = (props) => {
                 <Button variant='boldText' onClick={initPayment}>
                   Pay
                 </Button>
-              ) : paymentGateway === 'cashfree' ? (
-                <Cashfree
-                  orderAmount={coursePrice}
-                  courseOrderId={courseOrderId}
-                  paymentSplits={paymentSplits}
-                  orderId={newOrderId}
-                  notifyUrl={ntfurl}
-                />
+              ) : paymentGateway.includes('cashfree') ? (
+                <Button variant='boldText' onClick={startCashfreePayment}>
+                  Pay
+                </Button>
               ) : (
-                <p>payment gateway not available</p>
+                <p>Payments not available</p>
               )}
             </>
           ) : (
@@ -1055,6 +1067,18 @@ const BuyCourse = (props) => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <Cashfree
+        noDisplay
+        getCfRef={getCfRef}
+        orderAmount={coursePrice}
+        courseOrderId={courseOrderId}
+        paymentSplits={paymentSplits}
+        orderId={newOrderId}
+        notifyUrl={ntfurl}
+        testId={appId}
+        cfType={paymentGateway}
+      />
     </div>
   );
 };
