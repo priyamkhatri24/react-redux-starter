@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 /* eslint-disable */
 const TimerWatch = (props) => {
-  const { time, started } = props;
+  const { time, started, isLive } = props;
   return (
     <div>
       <svg
@@ -45,21 +45,22 @@ const TimerWatch = (props) => {
             data-name='23:59 hrs left'
             transform='translate(17 40)'
             fill='#f44336'
-            font-size={started ? '8px' : '16px'}
+            font-size={!isLive && started ? '8px' : '15px'}
             font-family='Montserrat-ExtraBold, Montserrat'
             font-weight='800'
           >
             <tspan x='4' y='15'>
-              {!started && time}
+              {!isLive && !started && time}
             </tspan>
-            <tspan x='3' y='10'>
-              {started && 'waiting to'}
+            <tspan x={isLive ? '4' : '3'} y={isLive ? '20' : '10'}>
+              {!isLive && started && 'waiting to'}
+              {isLive && 'LIVE!'}
             </tspan>
             <tspan y='15' font-family='Montserrat-Medium, Montserrat' font-weight='500'>
               {' '}
             </tspan>
             <tspan x='11' y='25'>
-              {started && 'start...'}
+              {!isLive && started && 'start...'}
             </tspan>
             <tspan y='15' font-family='Montserrat-Medium, Montserrat' font-weight='500'>
               {' '}
@@ -71,7 +72,7 @@ const TimerWatch = (props) => {
               font-family='Montserrat-Regular, Montserrat'
               font-weight='400'
             >
-              {!started && 'hrs left'}
+              {!isLive && !started && 'hrs left'}
             </tspan>
           </text>
         </g>
@@ -83,6 +84,7 @@ const TimerWatch = (props) => {
 TimerWatch.propTypes = {
   time: PropTypes.string.isRequired,
   started: PropTypes.bool.isRequired,
+  isLive: PropTypes.bool.isRequired,
 };
 
 export default TimerWatch;

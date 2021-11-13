@@ -13,6 +13,7 @@ export * from './LoginDetailsSkeleton/LoginDetailsSkeleton';
 // export * from './FileViewer/PDFFileViewer';
 export * from './ScrollableCards/CoursesCards';
 export * from './ScrollableCards/FeeScrollableCards';
+export * from './ScrollableCards/LiveClassesCards';
 // export * from './FileViewer/FileViewer';
 export * from './Loader/Loading';
 export * from './Readmore';

@@ -249,6 +249,20 @@
     color: $lightGrey;
     font-size: $spacer * 1.5;
   }
+
+  //////////////live classes//////////////
+
+  &__liveClassesCard {
+    min-width: 100%;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto;
+  }
+
+  &__liveClassesCard::-webkit-scrollbar {
+    display: none;
+  }
 }
 .smallTextUnderHeading {
   font-size: 12px;
@@ -267,5 +281,100 @@
   }
   .Scrollable__coursesInitialHeading {
     font-size: 16px;
+  }
+}
+
+.scheduleCardDashboard {
+  background-color: #ff000012;
+  display: flex;
+  flex-direction: row;
+  border-radius: 10px;
+  width: 100%;
+  min-width: 300px;
+  min-height: 200px;
+  margin: 20px 0px;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.scheduleCardLeft {
+  flex-grow: 3;
+}
+
+.scheduleCardRight {
+  flex-grow: 1;
+}
+
+.redTag {
+  background-color: red;
+  border-radius: 5px;
+  padding: 3px 17px;
+  color: white;
+}
+
+.scheduleCardHeading {
+  font-family: 'Montserrat-Medium';
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.scheduleCardText {
+  font-family: 'Montserrat-Regular';
+  font-size: 12px;
+  margin: 1px 0px;
+}
+
+.scheduleCardSmallText {
+  font-family: 'Montserrat-Regular';
+  font-size: 10px;
+  margin: 1px 0px;
+  width: 80%;
+}
+
+.teacherImage {
+  width: 83px;
+  position: relative;
+  left: 20px;
+}
+
+.startNowButton {
+  outline: none;
+  border: 1px solid black;
+  background-color: transparent;
+  border-radius: 5px;
+  color: black;
+  font-family: 'Montserrat-Medium';
+  cursor: pointer;
+  margin-top: 20px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.w-85 {
+  width: 85%;
+}
+
+.headingText {
+  font-family: 'Montserrat-Bold';
+  font-size: 20px;
+}
+
+.plainText {
+  font-family: 'Montserrat-Regular';
+  font-size: 12px;
+}
+
+.boldText {
+  font-family: 'Montserrat-Medium';
+  font-size: 12px;
+}
+
+@media screen and (max-width: 770px) {
+  .scheduleCardDashboard {
+    width: 95%;
+  }
+  .w-85 {
+    width: 95%;
   }
 }

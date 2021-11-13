@@ -121,6 +121,11 @@ class LiveClasses extends Component {
       allLiveClasses: [],
       liveArray: [],
       toBeLive: [],
+      scheduledMeet: {},
+      scheduledYTLive: {},
+      showAskToDeleteModal: false,
+      streamToBeDeleted: {},
+      deleteMethod: '',
     };
   }
 
@@ -327,12 +332,12 @@ class LiveClasses extends Component {
       });
       //  window.open(`https://zoom.us/j/${element.meeting_id}?pwd=${element.password}`);
     } else if (element.stream_type === 'meet') {
-      window.open(`https://meet.google.com/${element.meeting_id}`, '_blank');
+      window.open(`https://meet.google.com/${element.google_meet_id}`, '_blank');
     } else if (element.stream_type === 'youtube') {
       let vidId = element.meeting_id.split('v=')[1];
-      const ampersandPosition = vidId.indexOf('&');
+      const ampersandPosition = vidId?.indexOf('&');
       if (ampersandPosition != -1) {
-        vidId = vidId.substring(0, ampersandPosition);
+        vidId = vidId?.substring(0, ampersandPosition);
       }
       history.push({ pathname: '/videoplayer', state: { link: vidId } });
     } else console.error('invalid stream type');
@@ -378,9 +383,9 @@ class LiveClasses extends Component {
       window.open(`https://meet.google.com/${element.meeting_id}`, '_blank');
     } else if (element.stream_type === 'youtube') {
       let vidId = element.meeting_id.split('v=')[1];
-      const ampersandPosition = vidId.indexOf('&');
+      const ampersandPosition = vidId?.indexOf('&');
       if (ampersandPosition != -1) {
-        vidId = vidId.substring(0, ampersandPosition);
+        vidId = vidId?.substring(0, ampersandPosition);
       }
       history.push({ pathname: '/videoplayer', state: { link: vidId } });
       console.log(element);
@@ -406,7 +411,7 @@ class LiveClasses extends Component {
   handleCloseGoLive = () =>
     this.setState({
       showGoLiveModal: false,
-      // selectedBatches: [],
+      selectedBatches: [],
       scheduledDate: '',
       liveClassTopic: '',
       scheduledTime: '',
@@ -483,6 +488,7 @@ class LiveClasses extends Component {
         });
 
         this.rerenderArrays();
+        this.handleCloseGoLive();
 
         this.openJitsiInNewWindow(
           result.server_url,
@@ -590,6 +596,7 @@ class LiveClasses extends Component {
         if (res.success) {
           this.rerenderArrays();
           this.closeZoomModal();
+          this.handleCloseGoLive();
           Swal.fire({
             title: 'Success',
             text: 'Meeting Created Successfully',
@@ -625,8 +632,9 @@ class LiveClasses extends Component {
       youtubeModalType,
       jitsiLastName,
       jitsiFirstName,
+      scheduledMeet,
     } = this.state;
-    const { clientUserId, clientId, roleArray } = this.props;
+    const { clientUserId, clientId, roleArray, userProfile } = this.props;
     const batchIdArray = JSON.stringify(selectedBatches.map((elem) => elem.client_batch_id));
 
     const durationArray = [];
@@ -646,6 +654,7 @@ class LiveClasses extends Component {
       post(payload, '/addGoogleMeeting').then((res) => {
         if (res.success) {
           this.rerenderArrays();
+          this.handleCloseGoLive();
           Swal.fire({
             title: 'Success',
             text:
@@ -664,12 +673,29 @@ class LiveClasses extends Component {
     }
 
     if (youtubeModalType === 'scheduled') {
-      this.rerenderArrays();
-      Swal.fire({
-        title: 'Success',
-        text:
-          'Meeting Created Successfully. Students will be able to join the meeting using the code you provided.',
-        icon: 'success',
+      const scPayload = {
+        client_user_id: clientUserId,
+        stream_id: scheduledMeet.stream_id,
+        client_id: clientId,
+        name: `${userProfile.firstName} ${userProfile.lastName}`,
+        contact: `${userProfile.contact}`,
+        google_meet_id: googleMeeting.split('/').pop(),
+        meeting_id: googleMeeting.split('/').pop(),
+      };
+
+      console.log(scPayload);
+      post(scPayload, '/startGoogleStream').then((resp) => {
+        console.log(resp);
+        this.rerenderArrays();
+        Swal.fire({
+          title: 'Success',
+          text:
+            'Meeting Created Successfully. Students will be able to join the meeting using the code you provided.',
+          icon: 'success',
+        });
+        // const result = apiValidation(resp);
+        // this.setState({ showGoLiveModal: false });
+        // window.open(result.conference_link, '_blank');
       });
     }
 
@@ -683,14 +709,15 @@ class LiveClasses extends Component {
       jitsiLastName,
       youtubeStreamLink,
       youtubeModalType,
+      scheduledYTLive,
     } = this.state;
-    const { clientUserId, clientId, roleArray } = this.props;
+    const { clientUserId, clientId, roleArray, userProfile } = this.props;
     if (!youtubeStreamLink) return;
     const batchIdArray = JSON.stringify(selectedBatches.map((elem) => elem.client_batch_id));
     let vidId = youtubeStreamLink.split('v=')[1];
-    const ampersandPosition = vidId.indexOf('&');
+    const ampersandPosition = vidId?.indexOf('&');
     if (ampersandPosition != -1) {
-      vidId = vidId.substring(0, ampersandPosition);
+      vidId = vidId?.substring(0, ampersandPosition);
     }
     const payload = {
       meeting_id: youtubeStreamLink,
@@ -700,10 +727,11 @@ class LiveClasses extends Component {
       name: `${jitsiFirstName} ${jitsiLastName}`,
     };
 
-    if (!(youtubeModalType === 'schedule')) {
+    if (!(youtubeModalType === 'scheduled')) {
       post(payload, '/startInstantYoutubeStream').then((res) => {
         if (res.success) {
           this.rerenderArrays();
+          this.handleCloseGoLive();
           Swal.fire({
             title: 'Success',
             text:
@@ -718,6 +746,35 @@ class LiveClasses extends Component {
             timer: 3000,
           });
         }
+      });
+    } else if (youtubeModalType === 'scheduled') {
+      const scPayload = {
+        client_user_id: clientUserId,
+        stream_id: scheduledYTLive.stream_id,
+        meeting_id: youtubeStreamLink,
+        client_id: clientId,
+        name: `${userProfile.firstName} ${userProfile.lastName}`,
+        contact: `${userProfile.contact}`,
+      };
+      post(scPayload, '/startYoutubeStream').then((resp) => {
+        console.log(resp);
+        if (resp.success) {
+          Swal.fire({
+            title: 'Success',
+            text:
+              'Stream Created Successfully. Students will be able to join the Stream using the Link provided.',
+            icon: 'success',
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops!',
+            test: 'Meeting Creation failed.',
+            timer: 3000,
+          });
+        }
+        // const result = apiValidation(resp);
+        // window.open(result.conference_link, '_blank');
       });
     }
     history.push({ pathname: '/videoplayer', state: { link: vidId } });
@@ -847,45 +904,18 @@ class LiveClasses extends Component {
   startGoogleLiveStreamScheduled = (elem) => {
     const { userProfile, clientId, clientUserId } = this.props;
     const streamLink = `${Date.now()}${clientId}${clientUserId}`;
-    const payload = {
-      client_user_id: clientUserId,
-      stream_id: elem.stream_id,
-      client_id: clientId,
-      name: `${userProfile.firstName} ${userProfile.lastName}`,
-      contact: `${userProfile.contact}`,
-      google_meet_id: elem.google_meet_id,
-    };
 
-    this.setState({ youtubeModalType: 'scheduled' });
+    this.setState({ youtubeModalType: 'scheduled', scheduledMeet: elem });
     console.log(elem);
-
-    post(payload, '/startGoogleStream').then((resp) => {
-      console.log(resp);
-      this.openMeetModal();
-      // const result = apiValidation(resp);
-      // this.setState({ showGoLiveModal: false });
-      // window.open(result.conference_link, '_blank');
-    });
+    this.openMeetModal();
   };
 
   startYoutubeLiveStreamScheduled = (elem) => {
     const { userProfile, clientId, clientUserId } = this.props;
     const streamLink = `${Date.now()}${clientId}${clientUserId}`;
-    const payload = {
-      client_user_id: clientUserId,
-      stream_id: elem.stream_id,
-      client_id: clientId,
-      name: `${userProfile.firstName} ${userProfile.lastName}`,
-      contact: `${userProfile.contact}`,
-    };
 
-    post(payload, '/startYoutubeStream').then((resp) => {
-      console.log(resp);
-      this.openYoutubeModal();
-      // const result = apiValidation(resp);
-      this.setState({ youtubeModalType: 'scheduled' });
-      // window.open(result.conference_link, '_blank');
-    });
+    this.setState({ youtubeModalType: 'scheduled', scheduledYTLive: elem });
+    this.openYoutubeModal();
   };
 
   startScheduledLiveStream = (elem) => {
@@ -944,6 +974,7 @@ class LiveClasses extends Component {
     post(payload, '/scheduleLiveClass').then((res) => {
       console.log(res);
       this.rerenderArrays();
+      this.handleCloseGoLive();
       if (res.success) {
         document.getElementById('scheduleTab')?.click();
         Swal.fire({
@@ -978,20 +1009,67 @@ class LiveClasses extends Component {
     console.log(stream);
     const { myScheduled, liveArray } = this.state;
 
-    post(payload, '/deleteLiveStreamLatest').then((res) => {
-      console.log(res);
-      Swal.fire({
-        title: 'Success',
-        text: 'Meeting deleted successfully',
-        icon: 'success',
+    if (stream.frequency === 'do_not_repeat') {
+      post(payload, '/deleteLiveStreamLatest').then((res) => {
+        console.log(res);
+        Swal.fire({
+          title: 'Success',
+          text: 'Meeting deleted successfully',
+          icon: 'success',
+        });
+        this.rerenderArrays();
+        this.setState({ existingStream: {}, doesLiveStreamExist: false });
       });
-      const newMyScheduled = myScheduled.filter((ele) => ele.stream_id !== stream.stream_id);
-      const newLiveArray = liveArray.filter((ele) => ele.stream_id !== stream.stream_id);
-      this.setState({ myScheduled: newMyScheduled, liveArray: newLiveArray });
-      this.setState({ existingStream: {}, doesLiveStreamExist: false });
-    });
+    } else {
+      this.setState({ showAskToDeleteModal: true, streamToBeDeleted: stream });
+    }
   };
 
+  deleteScheduledClassByAsking = () => {
+    const { streamToBeDeleted, deleteMethod } = this.state;
+    const payload = {
+      stream_id: streamToBeDeleted.stream_id,
+      stream_type: streamToBeDeleted.stream_type,
+    };
+
+    console.log(streamToBeDeleted, deleteMethod);
+
+    if (deleteMethod === 'one') {
+      post(payload, '/deleteLiveStreamLatest').then((res) => {
+        console.log(res);
+        Swal.fire({
+          title: 'Success',
+          text: 'Meeting deleted successfully',
+          icon: 'success',
+        });
+        this.rerenderArrays();
+        this.setState({
+          existingStream: {},
+          doesLiveStreamExist: false,
+          deleteMethod: '',
+          streamToBeDeleted: {},
+          showAskToDeleteModal: false,
+        });
+      });
+    } else if (deleteMethod === 'all') {
+      post(payload, '/deleteLiveStreamCompletely').then((res) => {
+        console.log(res);
+        Swal.fire({
+          title: 'Success',
+          text: 'Meetings deleted successfully',
+          icon: 'success',
+        });
+        this.rerenderArrays();
+        this.setState({
+          existingStream: {},
+          doesLiveStreamExist: false,
+          deleteMethod: '',
+          showAskToDeleteModal: false,
+          streamToBeDeleted: {},
+        });
+      });
+    }
+  };
   render() {
     const {
       adminBatches,
@@ -1033,6 +1111,9 @@ class LiveClasses extends Component {
       liveArray,
       toBeLive,
       allLiveClasses,
+      deleteMethod,
+      streamToBeDeleted,
+      showAskToDeleteModal,
     } = this.state;
     const { dashboardData } = this.props;
     return (
@@ -1070,6 +1151,9 @@ class LiveClasses extends Component {
                   time = `${timeArray[0] - 12}:${timeArray[1]} PM`;
                 } else {
                   time = `${timeArray[0]}:${timeArray[1]} AM`;
+                }
+                if (elem.stream_status === 'active') {
+                  time = 'LIVE!';
                 }
                 let batchesText = '';
                 if (elem.batch_array.length > 1) {
@@ -1115,7 +1199,11 @@ class LiveClasses extends Component {
                     </div>
                     <div className='scheduleCardRight'>
                       {timeLeftInSeconds < 86400 && (
-                        <TimerWatch started={timeLeftInSeconds < 0} time={timeLeft} />
+                        <TimerWatch
+                          isLive={time === 'LIVE!'}
+                          started={timeLeftInSeconds < 0}
+                          time={timeLeft}
+                        />
                       )}
                       {timeLeftInSeconds >= 86400 && (
                         <img className='teacherImage' src={teacherImg} alt='icon' />
@@ -1244,7 +1332,7 @@ class LiveClasses extends Component {
             <Tab id='liveTab' eventKey='Live' title='Live'>
               {!triggerJitsi && role === 'teacher' && (
                 <>
-                  {liveArray.map((existing) => {
+                  {/* {liveArray.map((existing) => {
                     return (
                       <div css={LiveClassesStyle.adminCard} className='p-2 m-3'>
                         <h6 css={LiveClassesStyle.adminHeading} className='mb-0'>
@@ -1288,6 +1376,69 @@ class LiveClasses extends Component {
                         </Row>
                       </div>
                     );
+                  })} */}
+
+                  {liveArray.map((elem) => {
+                    const startTimeText = new Date(+elem.stream_start_time * 1000).toString();
+                    const date = startTimeText.split(' ').slice(1, 3).join(' ');
+                    const timeArray = startTimeText.split(' ')[4].split(':');
+                    let time = '';
+                    const timeLeftInSeconds = +elem.stream_start_time - +elem.current_time;
+                    const timeLeft = new Date(timeLeftInSeconds * 1000).toISOString().substr(11, 5);
+                    time = 'LIVE!';
+                    let batchesText = '';
+                    if (elem.batch_array.length > 1) {
+                      batchesText = `with ${elem.batch_array[0]} and ${
+                        elem.batch_array.length - 1
+                      } ${elem.batch_array.length - 1 > 1 ? 'others' : 'other'}`;
+                    } else if (elem.batch_array.length === 1) {
+                      batchesText = `with ${elem.batch_array[0]}`;
+                    }
+                    return (
+                      <Card key={elem.stream_id} className='scheduleCard'>
+                        <div className='scheduleCardLeft'>
+                          <p className='scheduleCardHeading'>
+                            <span className='redTag'>LIVE</span> Class
+                          </p>
+                          <p className='scheduleCardText'>
+                            by {`${elem.first_name} ${elem.last_name}`}
+                          </p>
+                          <p className='scheduleCardSmallText'>{batchesText}</p>
+                          <h5 className='scheduleCardHeading my-3'>{elem.topic}</h5>
+                          <p
+                            style={{ fontFamily: 'Montserrat-Bold' }}
+                            className='scheduleCardHeading'
+                          >
+                            Your Live Class is in progress...
+                          </p>
+                          <button
+                            onClick={() => this.rejoinLiveStream(elem)}
+                            type='button'
+                            className='startNowButton w-100 blackBackground'
+                          >
+                            REJOIN
+                          </button>
+                        </div>
+                        <div className='scheduleCardRight'>
+                          {timeLeftInSeconds < 86400 && (
+                            <TimerWatch isLive started={timeLeftInSeconds < 0} time={timeLeft} />
+                          )}
+                          {timeLeftInSeconds >= 86400 && (
+                            <img className='teacherImage' src={teacherImg} alt='icon' />
+                          )}
+                          {/* eslint-disable */}
+                          <div
+                            onClick={() => {
+                              this.deleteLiveStream(elem);
+                              this.deleteScheduledClass(elem);
+                            }}
+                            className='deleteContainer'
+                          >
+                            <DeleteIcon style={{ color: '#00000061' }} />
+                          </div>
+                        </div>
+                      </Card>
+                    );
                   })}
 
                   {liveArray.length <= 0 && (
@@ -1327,6 +1478,69 @@ class LiveClasses extends Component {
                         <span className='mt-4'>Duration</span>
                       </label>
                     </Card> */}
+                      {toBeLive.map((elem) => {
+                        const startTimeText = new Date(+elem.stream_start_time * 1000).toString();
+                        const date = startTimeText.split(' ').slice(1, 3).join(' ');
+                        const timeArray = startTimeText.split(' ')[4].split(':');
+                        let time = '';
+                        const timeLeftInSeconds = +elem.stream_start_time - +elem.current_time;
+                        const timeLeft = new Date(timeLeftInSeconds * 1000)
+                          .toISOString()
+                          .substr(11, 5);
+                        if (timeArray[0] > 12) {
+                          time = `${timeArray[0] - 12}:${timeArray[1]} PM`;
+                        } else {
+                          time = `${timeArray[0]}:${timeArray[1]} AM`;
+                        }
+                        let batchesText = '';
+                        if (elem.batch_array.length > 1) {
+                          batchesText = `with ${elem.batch_array[0]} and ${
+                            elem.batch_array.length - 1
+                          } ${elem.batch_array.length - 1 > 1 ? 'others' : 'other'}`;
+                        } else if (elem.batch_array.length === 1) {
+                          batchesText = `with ${elem.batch_array[0]}`;
+                        }
+                        return (
+                          <Card key={elem.stream_id} className='scheduleCard'>
+                            <div className='scheduleCardLeft'>
+                              <p className='scheduleCardHeading'>
+                                <span className='redTag'>LIVE</span> Class
+                              </p>
+                              <p className='scheduleCardText'>
+                                by {`${elem.first_name} ${elem.last_name}`}
+                              </p>
+                              <p className='scheduleCardSmallText'>{batchesText}</p>
+                              <h5 className='scheduleCardHeading my-3'>{elem.topic}</h5>
+                              <p className='scheduleCardText'>
+                                starts @ {time} on {date}
+                              </p>
+                              <button
+                                onClick={() => this.startScheduledLiveStream(elem)}
+                                type='button'
+                                className='startNowButton'
+                              >
+                                START NOW
+                              </button>
+                            </div>
+                            <div className='scheduleCardRight'>
+                              {timeLeftInSeconds < 86400 && (
+                                <TimerWatch started={timeLeftInSeconds < 0} time={timeLeft} />
+                              )}
+                              {timeLeftInSeconds >= 86400 && (
+                                <img className='teacherImage' src={teacherImg} alt='icon' />
+                              )}
+                              {/* eslint-disable */}
+                              <div
+                                onClick={() => this.deleteScheduledClass(elem)}
+                                className='deleteContainer'
+                              >
+                                <DeleteIcon style={{ color: '#00000061' }} />
+                              </div>
+                            </div>
+                          </Card>
+                        );
+                      })}
+
                       <div className='my-4 mt-lg-5 mx-2'>
                         {dashboardData.live_class_platform.alpha ? (
                           <Card
@@ -1764,6 +1978,55 @@ class LiveClasses extends Component {
                     </Modal.Footer>
                   </Modal>
 
+                  <Modal
+                    show={showAskToDeleteModal}
+                    // show
+                    centered
+                    onHide={() => this.setState({ showAskToDeleteModal: false, deleteMethod: '' })}
+                  >
+                    <Modal.Header closeButton>
+                      <span
+                        className='Scrollable__courseCardHeading my-auto'
+                        style={{ fontSize: '14px', lineHeight: '18px' }}
+                      >
+                        The frequency of this live class is "${streamToBeDeleted.frequency}". Please
+                        select if you want to delete this live class or delete all upcoming versions
+                        of this live class.
+                      </span>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <p
+                        onClick={() => this.setState({ deleteMethod: 'one' })}
+                        className={`borderedSelectors${
+                          deleteMethod === 'one' ? ' selectedMethod' : ''
+                        }`}
+                      >
+                        Delete this live class.
+                      </p>
+                      <p
+                        onClick={() => this.setState({ deleteMethod: 'all' })}
+                        className={`borderedSelectors${
+                          deleteMethod === 'all' ? ' selectedMethod' : ''
+                        }`}
+                      >
+                        Delete all upcoming versions of this live class.
+                      </p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button
+                        variant='boldTextSecondary'
+                        onClick={() =>
+                          this.setState({ showAskToDeleteModal: false, deleteMethod: false })
+                        }
+                      >
+                        Cancel
+                      </Button>
+                      <Button variant='boldText' onClick={this.deleteScheduledClassByAsking}>
+                        Delete
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
+
                   <Modal show={showDurationModal} onHide={this.closeDurationModal} centered>
                     {/* <DurationPicker
                     onChange={this.onDurationChange}
@@ -1781,117 +2044,127 @@ class LiveClasses extends Component {
             </Tab>
             {liveArray.length <= 0 && (
               <Tab id='scheduleTab' eventKey='Schedule' title='Schedule'>
-                {myScheduled.map((elem) => {
-                  toBeLive.forEach((ele) => {
-                    if (ele.stream_id === elem.stream_id) {
-                      elem.isToBeLive = true;
+                {myScheduled.length > 0 ? (
+                  myScheduled.map((elem) => {
+                    toBeLive.forEach((ele) => {
+                      if (ele.stream_id === elem.stream_id) {
+                        elem.isToBeLive = true;
+                      }
+                    });
+                    const startTimeText = new Date(+elem.stream_start_time * 1000).toString();
+                    const date = startTimeText.split(' ').slice(1, 3).join(' ');
+                    const timeArray = startTimeText.split(' ')[4].split(':');
+                    let time = '';
+                    const timeLeftInSeconds = +elem.stream_start_time - +elem.current_time;
+                    const timeLeft = new Date(timeLeftInSeconds * 1000).toISOString().substr(11, 5);
+                    if (timeArray[0] > 12) {
+                      time = `${timeArray[0] - 12}:${timeArray[1]} PM`;
+                    } else {
+                      time = `${timeArray[0]}:${timeArray[1]} AM`;
                     }
-                  });
-                  const startTimeText = new Date(+elem.stream_start_time * 1000).toString();
-                  const date = startTimeText.split(' ').slice(1, 3).join(' ');
-                  const timeArray = startTimeText.split(' ')[4].split(':');
-                  let time = '';
-                  const timeLeftInSeconds = +elem.stream_start_time - +elem.current_time;
-                  const timeLeft = new Date(timeLeftInSeconds * 1000).toISOString().substr(11, 5);
-                  if (timeArray[0] > 12) {
-                    time = `${timeArray[0] - 12}:${timeArray[1]} PM`;
-                  } else {
-                    time = `${timeArray[0]}:${timeArray[1]} AM`;
-                  }
-                  let batchesText = '';
-                  if (elem.batch_array.length > 1) {
-                    batchesText = `with ${elem.batch_array[0]} and ${elem.batch_array.length - 1} ${
-                      elem.batch_array.length - 1 > 1 ? 'others' : 'other'
-                    }`;
-                  } else if (elem.batch_array.length === 1) {
-                    batchesText = `with ${elem.batch_array[0]}`;
-                  }
-                  return (
-                    <Card key={elem.stream_id} className='scheduleCard'>
-                      <div className='scheduleCardLeft'>
-                        <p className='scheduleCardHeading'>
-                          <span className='redTag'>LIVE</span> Class
-                        </p>
-                        <p className='scheduleCardText'>
-                          by {`${elem.first_name} ${elem.last_name}`}
-                        </p>
-                        <p className='scheduleCardSmallText'>{batchesText}</p>
-                        <h5 className='scheduleCardHeading my-3'>{elem.topic}</h5>
-                        <p className='scheduleCardText'>
-                          starts @ {time} on {date}
-                        </p>
-                        {elem.isToBeLive && (
-                          <button
-                            onClick={() => this.startScheduledLiveStream(elem)}
-                            type='button'
-                            className='startNowButton'
-                          >
-                            START NOW
-                          </button>
-                        )}
-                      </div>
-                      <div className='scheduleCardRight'>
-                        {timeLeftInSeconds < 86400 && (
-                          <TimerWatch started={timeLeftInSeconds < 0} time={timeLeft} />
-                        )}
-                        {timeLeftInSeconds >= 86400 && (
-                          <img className='teacherImage' src={teacherImg} alt='icon' />
-                        )}
-                        {/* eslint-disable */}
-                        <div
-                          onClick={() => this.deleteScheduledClass(elem)}
-                          className='deleteContainer'
-                        >
-                          <DeleteIcon style={{ color: '#00000061' }} />
+                    let batchesText = '';
+                    if (elem.batch_array.length > 1) {
+                      batchesText = `with ${elem.batch_array[0]} and ${
+                        elem.batch_array.length - 1
+                      } ${elem.batch_array.length - 1 > 1 ? 'others' : 'other'}`;
+                    } else if (elem.batch_array.length === 1) {
+                      batchesText = `with ${elem.batch_array[0]}`;
+                    }
+                    return (
+                      <Card key={elem.stream_id} className='scheduleCard'>
+                        <div className='scheduleCardLeft'>
+                          <p className='scheduleCardHeading'>
+                            <span className='redTag'>LIVE</span> Class
+                          </p>
+                          <p className='scheduleCardText'>
+                            by {`${elem.first_name} ${elem.last_name}`}
+                          </p>
+                          <p className='scheduleCardSmallText'>{batchesText}</p>
+                          <h5 className='scheduleCardHeading my-3'>{elem.topic}</h5>
+                          <p className='scheduleCardText'>
+                            starts @ {time} on {date}
+                          </p>
+                          {elem.isToBeLive && (
+                            <button
+                              onClick={() => this.startScheduledLiveStream(elem)}
+                              type='button'
+                              className='startNowButton'
+                            >
+                              START NOW
+                            </button>
+                          )}
                         </div>
-                      </div>
-                    </Card>
-                  );
-                })}
+                        <div className='scheduleCardRight'>
+                          {timeLeftInSeconds < 86400 && (
+                            <TimerWatch started={timeLeftInSeconds < 0} time={timeLeft} />
+                          )}
+                          {timeLeftInSeconds >= 86400 && (
+                            <img className='teacherImage' src={teacherImg} alt='icon' />
+                          )}
+                          {/* eslint-disable */}
+                          <div
+                            onClick={() => this.deleteScheduledClass(elem)}
+                            className='deleteContainer'
+                          >
+                            <DeleteIcon style={{ color: '#00000061' }} />
+                          </div>
+                        </div>
+                      </Card>
+                    );
+                  })
+                ) : (
+                  <h5
+                    style={{ fontSize: '16px' }}
+                    className='scheduleCardHeading justify-content-center d-flex mt-3 w-75 mx-auto'
+                  >
+                    No Live classes are scheduled at this moment.
+                  </h5>
+                )}
               </Tab>
             )}
             {liveArray.length <= 0 && (
               <Tab eventKey='Others' title='Others'>
-                {allLiveClasses.map((elem) => {
-                  toBeLive.forEach((ele) => {
-                    if (ele.stream_id === elem.stream_id) {
-                      elem.isToBeLive = true;
+                {allLiveClasses.length > 0 ? (
+                  allLiveClasses.map((elem) => {
+                    toBeLive.forEach((ele) => {
+                      if (ele.stream_id === elem.stream_id) {
+                        elem.isToBeLive = true;
+                      }
+                    });
+                    const startTimeText = new Date(+elem.stream_start_time * 1000).toString();
+                    const date = startTimeText.split(' ').slice(1, 3).join(' ');
+                    const timeArray = startTimeText.split(' ')[4].split(':');
+                    let time = '';
+                    const timeLeftInSeconds = +elem.stream_start_time - +elem.current_time;
+                    const timeLeft = new Date(timeLeftInSeconds * 1000).toISOString().substr(11, 5);
+                    if (timeArray[0] > 12) {
+                      time = `${timeArray[0] - 12}:${timeArray[1]} PM`;
+                    } else {
+                      time = `${timeArray[0]}:${timeArray[1]} AM`;
                     }
-                  });
-                  const startTimeText = new Date(+elem.stream_start_time * 1000).toString();
-                  const date = startTimeText.split(' ').slice(1, 3).join(' ');
-                  const timeArray = startTimeText.split(' ')[4].split(':');
-                  let time = '';
-                  const timeLeftInSeconds = +elem.stream_start_time - +elem.current_time;
-                  const timeLeft = new Date(timeLeftInSeconds * 1000).toISOString().substr(11, 5);
-                  if (timeArray[0] > 12) {
-                    time = `${timeArray[0] - 12}:${timeArray[1]} PM`;
-                  } else {
-                    time = `${timeArray[0]}:${timeArray[1]} AM`;
-                  }
-                  let batchesText = '';
-                  if (elem.batch_array.length > 1) {
-                    batchesText = `with ${elem.batch_array[0]} and ${elem.batch_array.length - 1} ${
-                      elem.batch_array.length - 1 > 1 ? 'others' : 'other'
-                    }`;
-                  } else if (elem.batch_array.length === 1) {
-                    batchesText = `with ${elem.batch_array[0]}`;
-                  }
-                  return (
-                    <Card key={elem.stream_id} className='scheduleCard'>
-                      <div className='scheduleCardLeft'>
-                        <p className='scheduleCardHeading'>
-                          <span className='redTag'>LIVE</span> Class
-                        </p>
-                        <p className='scheduleCardText'>
-                          by {`${elem.first_name} ${elem.last_name}`}
-                        </p>
-                        <p className='scheduleCardSmallText'>{batchesText}</p>
-                        <h5 className='scheduleCardHeading my-3'>{elem.topic}</h5>
-                        <p className='scheduleCardText'>
-                          starts @ {time} on {date}
-                        </p>
-                        {/* {elem.isToBeLive && (
+                    let batchesText = '';
+                    if (elem.batch_array.length > 1) {
+                      batchesText = `with ${elem.batch_array[0]} and ${
+                        elem.batch_array.length - 1
+                      } ${elem.batch_array.length - 1 > 1 ? 'others' : 'other'}`;
+                    } else if (elem.batch_array.length === 1) {
+                      batchesText = `with ${elem.batch_array[0]}`;
+                    }
+                    return (
+                      <Card key={elem.stream_id} className='scheduleCard'>
+                        <div className='scheduleCardLeft'>
+                          <p className='scheduleCardHeading'>
+                            <span className='redTag'>LIVE</span> Class
+                          </p>
+                          <p className='scheduleCardText'>
+                            by {`${elem.first_name} ${elem.last_name}`}
+                          </p>
+                          <p className='scheduleCardSmallText'>{batchesText}</p>
+                          <h5 className='scheduleCardHeading my-3'>{elem.topic}</h5>
+                          <p className='scheduleCardText'>
+                            starts @ {time} on {date}
+                          </p>
+                          {/* {elem.isToBeLive && (
                       <button
                         onClick={() => this.startScheduledLiveStream(elem)}
                         type='button'
@@ -1900,25 +2173,33 @@ class LiveClasses extends Component {
                         START NOW
                       </button>
                     )} */}
-                      </div>
-                      <div className='scheduleCardRight'>
-                        {timeLeftInSeconds < 86400 && (
-                          <TimerWatch started={timeLeftInSeconds < 0} time={timeLeft} />
-                        )}
-                        {timeLeftInSeconds >= 86400 && (
-                          <img className='teacherImage' src={teacherImg} alt='icon' />
-                        )}
-                        {/* eslint-disable */}
-                        {/* <div
+                        </div>
+                        <div className='scheduleCardRight'>
+                          {timeLeftInSeconds < 86400 && (
+                            <TimerWatch started={timeLeftInSeconds < 0} time={timeLeft} />
+                          )}
+                          {timeLeftInSeconds >= 86400 && (
+                            <img className='teacherImage' src={teacherImg} alt='icon' />
+                          )}
+                          {/* eslint-disable */}
+                          {/* <div
                       onClick={() => this.deleteScheduledClass(elem)}
                       className='deleteContainer'
                     >
                       <DeleteIcon style={{ color: '#00000061' }} />
                     </div> */}
-                      </div>
-                    </Card>
-                  );
-                })}
+                        </div>
+                      </Card>
+                    );
+                  })
+                ) : (
+                  <h5
+                    style={{ fontSize: '16px' }}
+                    className='scheduleCardHeading justify-content-center d-flex mt-3 w-75 mx-auto'
+                  >
+                    No Live classes are scheduled at this moment.
+                  </h5>
+                )}
               </Tab>
             )}
             {/* <Tab eventKey='Recordings' title='Recordings'>
