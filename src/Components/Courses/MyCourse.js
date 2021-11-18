@@ -157,10 +157,35 @@ const Mycourse = (props) => {
     let timer;
     let time;
     if (nowPlayingVideo) {
+      // nowPlayingVideoRef.current.plyr.elements.settings.buttons.quality.hidden = false;
+      nowPlayingVideoRef.current.plyr.config.quality = {
+        default: 576,
+        forced: true,
+        selected: 576,
+        onChange: function (e) {
+          // nowPlayingVideoRef.current.plyr.quality = e;
+          this.selected = e;
+        },
+        options: [4320, 2880, 2160, 1440, 1080, 720, 576, 480, 360, 240, 'default'],
+      };
+      // nowPlayingVideoRef.current.plyr.options.quality = [
+      //   4320,
+      //   2880,
+      //   2160,
+      //   1440,
+      //   1080,
+      //   720,
+      //   576,
+      //   480,
+      //   360,
+      //   240,
+      // ];
       nowPlayingVideoRef.current.plyr.once('play', () => {
         nowPlayingVideoRef.current.plyr.currentTime = +nowPlayingVideo.finishedTime;
         console.log('seeking....', nowPlayingVideo);
         timer = setInterval(() => {
+          console.log(nowPlayingVideoRef.current.plyr.quality, 'qualityy');
+          console.log(nowPlayingVideoRef.current.plyr);
           time = nowPlayingVideoRef.current.plyr.currentTime;
           console.log(time);
           if (isNaN(time)) return;
@@ -872,7 +897,15 @@ const Mycourse = (props) => {
             type: 'video',
             sources: [nowPlayingVideo],
           }}
-          options={{ autoplay: false }}
+          options={{
+            autoplay: false,
+            settings: ['quality', 'speed'],
+            hideControls: false,
+            quality: {
+              default: 576,
+              options: [4320, 2880, 2160, 1440, 1080, 720, 576, 480, 360, 240, 'default'],
+            },
+          }}
         />
       </div>
     );

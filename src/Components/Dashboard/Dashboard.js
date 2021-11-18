@@ -17,9 +17,11 @@ import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
 import PhoneIcon from '@material-ui/icons/Phone';
 import LinkIcon from '@material-ui/icons/Link';
 import io from 'socket.io-client';
+
 import { connect } from 'react-redux';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import Toast from 'react-bootstrap/Toast';
+
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { getSocket, getGlobalMessageCount } from '../../redux/reducers/conversations.reducer';
 import { server, get, apiValidation, prodOrDev, post } from '../../Utilities';
@@ -33,7 +35,7 @@ import { userProfileActions } from '../../redux/actions/userProfile.action';
 import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { testsActions } from '../../redux/actions/tests.action';
 import { courseActions } from '../../redux/actions/course.action';
-import { AspectCards, CoursesCards, DashboardCards } from '../Common';
+import { AspectCards, CoursesCards, DashboardCards, LiveClassesCards } from '../Common';
 import offlineAssignment from '../../assets/images/Dashboard/offline.svg';
 import Tests from '../Tests/Tests';
 import './Dashboard.scss';
@@ -101,7 +103,7 @@ const Dashboard = (props) => {
   const [allCourses, setAllCourses] = useState([]);
   const [myCourses, setMyCourses] = useState([]);
   const [admissions, setAdmissions] = useState({});
-  const [studentLiveStream, setStudentLiveStream] = useState(null);
+  const [studentLiveStream, setStudentLiveStream] = useState([]);
   const [data, setData] = useState({});
   const [hasLoaded, setHasLoaded] = useState(false);
   const [globalMessageCountState, setGlobalMessageCountState] = useState(0);
@@ -257,9 +259,9 @@ const Dashboard = (props) => {
       const payload = {
         client_user_id: clientUserId,
       };
-      get(payload, '/getLiveStreamsForStudent').then((res) => {
+      get(payload, '/getAllScheduledClassesForStudent').then((res) => {
         const result = apiValidation(res);
-        console.log(result, 'getLiveStreamsForStudent');
+        console.log(result, 'getAllScheduledClassesForStudent');
         setStudentLiveStream(result);
       });
     }
@@ -853,7 +855,7 @@ const Dashboard = (props) => {
           />
         );
       case 'liveClasses':
-        return (
+        return role === 3 || role === 4 ? (
           <DashboardCards
             image={param.feature_icon}
             width={91}
@@ -870,6 +872,15 @@ const Dashboard = (props) => {
             buttonText={roleArray.includes(3) || roleArray.includes(4) ? 'Go live now' : ''}
             buttonClick={goToLiveClasses}
           />
+        ) : (
+          <>
+            <LiveClassesCards
+              firstName={firstName}
+              lastName={lastName}
+              liveClasses={studentLiveStream.slice(0, 4)}
+              history={history}
+            />
+          </>
         );
       case 'onlineAssignment':
         return (

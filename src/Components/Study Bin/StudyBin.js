@@ -188,7 +188,7 @@ const StudyBin = (props) => {
       const obj = {};
       obj.file_link = elem.filename;
       obj.file_name = elem.name;
-      const extension = elem.name.slice(((elem.name.lastIndexOf('.') - 1) >>> 0) + 2); // eslint-disable-line
+      const extension = elem.name.slice(((elem.name.lastIndexOf('.') - 1) >>> 0) + 2).toLowerCase(); // eslint-disable-line
       obj.file_type =
         extension === 'doc'
           ? '.doc'
@@ -503,6 +503,7 @@ const StudyBin = (props) => {
         currentFolderName={menuOptions.currentFolderName}
         handleMove={handleMove}
         handleCopy={handleCopy}
+        clientUserId={clientUserId}
       />
       <div className='StudyBin'>
         <PageHeader

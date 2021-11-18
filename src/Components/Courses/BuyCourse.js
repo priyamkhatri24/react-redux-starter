@@ -242,6 +242,8 @@ const BuyCourse = (props) => {
         setntfurl(result.notifyUrl);
         setNewOrderId(result.order_id);
         setCourseOrderId(result.course_order_id);
+        // setCfSecret(result.secret);
+        // setAppId(result.appId);
         setShowCouponModal(true);
         setAppid(result.appId);
         // console.log(cfRef);

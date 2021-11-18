@@ -140,7 +140,6 @@ const Fees = (props) => {
         setNewOrderId(result.order_id);
         setShowCashfreeModal(true);
         setAppId(result.appId);
-
         console.log(result);
       });
     }
@@ -318,7 +317,7 @@ const Fees = (props) => {
         <Modal.Body>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <p className='cashfreeModalOrderName'>{currentPayment.name}</p>
-            <p className='cashfreeModalOrderAmount'>₹{currentPayment.amount}</p>
+            <p className='cashfreeModalOrderAmount'>₹ {currentPayment.amount}</p>
           </div>
         </Modal.Body>
 
