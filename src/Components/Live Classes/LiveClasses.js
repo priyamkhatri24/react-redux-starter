@@ -48,6 +48,8 @@ import meetSvg from '../../assets/images/LiveClasses/meet.svg';
 import youtubeSvg from '../../assets/images/LiveClasses/youtube.svg';
 import './LiveClasses.scss';
 
+const startTimerFromGivenTime = (time) => {};
+
 const CustomInput = ({ value, onClick }) => (
   <div className='justify-content-center'>
     <label htmlFor='Select Date' className='has-float-label my-auto w-100 margin-8'>
@@ -126,6 +128,8 @@ class LiveClasses extends Component {
       showAskToDeleteModal: false,
       streamToBeDeleted: {},
       deleteMethod: '',
+      zoomMeetingIdInput: true,
+      zoomMeetingLink: '',
     };
   }
 
@@ -169,14 +173,14 @@ class LiveClasses extends Component {
           this.setState({
             existingStream: result,
             doesLiveStreamExist: true,
-            zoomMeeting: result.permanent_zoom_meeting_id,
-            zoomPassCode: result.permanent_zoom_password,
+            // zoomMeeting: result.permanent_zoom_meeting_id,
+            // zoomPassCode: result.permanent_zoom_password,
           });
         } else {
-          this.setState({
-            zoomMeeting: result.permanent_zoom_meeting_id,
-            zoomPassCode: result.permanent_zoom_password,
-          });
+          // this.setState({
+          //   zoomMeeting: result.permanent_zoom_meeting_id,
+          //   zoomPassCode: result.permanent_zoom_password,
+          // });
         }
       });
 
@@ -330,6 +334,8 @@ class LiveClasses extends Component {
       this.setState({ zoomPassCode: element.password, zoomMeeting: element.meeting_id }, () => {
         this.openZoomPasscodeModal();
       });
+      // this.openZoomPasscodeModal();
+
       //  window.open(`https://zoom.us/j/${element.meeting_id}?pwd=${element.password}`);
     } else if (element.stream_type === 'meet') {
       window.open(`https://meet.google.com/${element.google_meet_id}`, '_blank');
@@ -554,7 +560,14 @@ class LiveClasses extends Component {
 
   openZoomPasscodeModal = () => this.setState({ zoomPasscodeModal: true });
 
-  closeZoomModal = () => this.setState({ showZoomModal: false, youtubeModalType: '' });
+  closeZoomModal = () =>
+    this.setState({
+      showZoomModal: false,
+      youtubeModalType: '',
+      zoomMeeting: '',
+      zoomPassCode: '',
+      zoomMeetingLink: '',
+    });
 
   openZoomModal = () => this.setState({ showZoomModal: true });
 
@@ -571,6 +584,7 @@ class LiveClasses extends Component {
       youtubeModalType,
       jitsiFirstName,
       jitsiLastName,
+      zoomMeetingLink,
     } = this.state;
     const { clientUserId, clientId, roleArray } = this.props;
     const batchIdArray = JSON.stringify(selectedBatches.map((elem) => elem.client_batch_id));
@@ -580,15 +594,21 @@ class LiveClasses extends Component {
     console.log(durationArray);
     const milliseconds = 3600000;
     // (durationArray[0] * 3600 + durationArray[1] * 60 + durationArray[2]) * 1000;
+    let zoomPwd = '';
+    let zoomIdFromLink = '';
+    if (!zoomMeeting && zoomMeetingLink) {
+      zoomPwd = zoomMeetingLink.split('pwd=')[1];
+      zoomIdFromLink = zoomMeetingLink.split('?pwd=')[0].split('/').pop();
+    }
 
     const payload = {
-      meeting_id: zoomMeeting,
+      meeting_id: zoomMeeting.split(' ').join('') || zoomIdFromLink,
       client_user_id: clientUserId,
-      password: zoomPassCode,
+      password: zoomPassCode || zoomPwd,
       batch_array: batchIdArray,
       duration: milliseconds,
     };
-    console.log(payload);
+    console.log(zoomPwd, 'pwd');
 
     if (!(youtubeModalType === 'scheduled')) {
       post(payload, '/addZoomMeeting').then((res) => {
@@ -612,14 +632,22 @@ class LiveClasses extends Component {
               //   apiKey: process.env.REACT_APP_ZOOM_SDK_KEY,
               //   apiSecret: process.env.REACT_APP_ZOOM_SDK_SECRET,
               // };
-              window.open(`https://zoom.us/j/${zoomMeeting}?pwd=${zoomPassCode}`);
+              if (zoomMeeting) {
+                window.open(`https://zoom.us/j/${zoomMeeting}?pwd=${zoomPassCode}`);
+              } else if (zoomMeetingLink) {
+                window.open(`https://us04web.zoom.us/j/${zoomIdFromLink}?pwd=${zoomPwd}`);
+              }
             }
           });
         }
       });
     }
     if (youtubeModalType === 'scheduled') {
-      window.open(`https://zoom.us/j/${zoomMeeting}?pwd=${zoomPassCode}`);
+      if (zoomMeeting) {
+        window.open(`https://zoom.us/j/${zoomMeeting}?pwd=${zoomPassCode}`);
+      } else if (zoomMeetingLink) {
+        window.open(`https://us04web.zoom.us/j/${zoomIdFromLink}?pwd=${zoomPwd}`);
+      }
       this.rerenderArrays();
     }
   };
@@ -1025,6 +1053,10 @@ class LiveClasses extends Component {
     }
   };
 
+  showStartNow = (elem) => {
+    elem.isToBeLive = true;
+  };
+
   deleteScheduledClassByAsking = () => {
     const { streamToBeDeleted, deleteMethod } = this.state;
     const payload = {
@@ -1114,6 +1146,8 @@ class LiveClasses extends Component {
       deleteMethod,
       streamToBeDeleted,
       showAskToDeleteModal,
+      zoomMeetingIdInput,
+      zoomMeetingLink,
     } = this.state;
     const { dashboardData } = this.props;
     return (
@@ -1146,7 +1180,7 @@ class LiveClasses extends Component {
                 const timeArray = startTimeText.split(' ')[4].split(':');
                 let time = '';
                 const timeLeftInSeconds = +elem.stream_start_time - +elem.current_time;
-                const timeLeft = new Date(timeLeftInSeconds * 1000).toISOString().substr(11, 5);
+                const timeLeft = new Date(timeLeftInSeconds * 1000).toISOString().substr(11, 8);
                 if (timeArray[0] > 12) {
                   time = `${timeArray[0] - 12}:${timeArray[1]} PM`;
                 } else {
@@ -1190,7 +1224,7 @@ class LiveClasses extends Component {
                           <button
                             onClick={() => this.startLiveStream(elem)}
                             type='button'
-                            className='startNowButton blackBackground'
+                            className='startNowButton'
                           >
                             ATTEND LIVE NOW
                           </button>
@@ -1201,7 +1235,7 @@ class LiveClasses extends Component {
                       {timeLeftInSeconds < 86400 && (
                         <TimerWatch
                           isLive={time === 'LIVE!'}
-                          started={timeLeftInSeconds < 0}
+                          startedProp={timeLeftInSeconds < 0}
                           time={timeLeft}
                         />
                       )}
@@ -1263,46 +1297,50 @@ class LiveClasses extends Component {
             )}
             <Modal show={zoomPasscodeModal} onHide={this.closeZoomPasscodeModal} centered>
               <Modal.Header closeButton>
-                <Modal.Title>Copy PassCode</Modal.Title>
+                <Modal.Title>
+                  {zoomPassCode.length > 25 ? 'Join Meeting' : 'Copy PassCode'}
+                </Modal.Title>
               </Modal.Header>
-              <Modal.Body>
-                <Row>
-                  <Col xs={7} className='text-center' css={LiveClassesStyle.passcode}>
-                    {zoomPassCode}
-                  </Col>
-                  <Col
-                    cs={5}
-                    className='text-center my-auto'
-                    onClick={() => this.copyToClipboard()}
-                  >
-                    {copiedToClipboard ? (
-                      <span
-                        style={{
-                          fontFamily: 'Montserrat-Medium',
-                          fontSize: '14px',
-                          color: 'rgba(58, 255, 0, 0.87)',
-                        }}
-                      >
-                        <CheckIcon />
-                        Copied To Clipboard!
-                      </span>
-                    ) : (
-                      <Button variant='dark'>
-                        <AssignmentIcon /> Copy
-                      </Button>
-                    )}
-                  </Col>
-                </Row>
-              </Modal.Body>
+              {zoomPassCode.length < 25 && (
+                <Modal.Body>
+                  <Row>
+                    <Col xs={7} className='text-center' css={LiveClassesStyle.passcode}>
+                      {zoomPassCode}
+                    </Col>
+                    <Col
+                      cs={5}
+                      className='text-center my-auto'
+                      onClick={() => this.copyToClipboard()}
+                    >
+                      {copiedToClipboard ? (
+                        <span
+                          style={{
+                            fontFamily: 'Montserrat-Medium',
+                            fontSize: '14px',
+                            color: 'rgba(58, 255, 0, 0.87)',
+                          }}
+                        >
+                          <CheckIcon />
+                          Copied To Clipboard!
+                        </span>
+                      ) : (
+                        <Button variant='dark'>
+                          <AssignmentIcon /> Copy
+                        </Button>
+                      )}
+                    </Col>
+                  </Row>
+                </Modal.Body>
+              )}
               <Modal.Footer>
                 <Button variant='boldTextSecondary' onClick={this.closeZoomPasscodeModal}>
                   Cancel
                 </Button>
                 <Button
                   variant='boldText'
-                  onClick={() =>
-                    window.open(`https://zoom.us/j/${zoomMeeting}?pwd=${zoomPassCode}`)
-                  } //eslint-disable-line
+                  onClick={() => {
+                    window.open(`https://zoom.us/j/${zoomMeeting}?pwd=${zoomPassCode}`);
+                  }} //eslint-disable-line
                 >
                   Attend Meeting Now!
                 </Button>
@@ -1384,7 +1422,7 @@ class LiveClasses extends Component {
                     const timeArray = startTimeText.split(' ')[4].split(':');
                     let time = '';
                     const timeLeftInSeconds = +elem.stream_start_time - +elem.current_time;
-                    const timeLeft = new Date(timeLeftInSeconds * 1000).toISOString().substr(11, 5);
+                    const timeLeft = new Date(timeLeftInSeconds * 1000).toISOString().substr(11, 8);
                     time = 'LIVE!';
                     let batchesText = '';
                     if (elem.batch_array.length > 1) {
@@ -1421,7 +1459,11 @@ class LiveClasses extends Component {
                         </div>
                         <div className='scheduleCardRight'>
                           {timeLeftInSeconds < 86400 && (
-                            <TimerWatch isLive started={timeLeftInSeconds < 0} time={timeLeft} />
+                            <TimerWatch
+                              isLive
+                              startedProp={timeLeftInSeconds < 0}
+                              time={timeLeft}
+                            />
                           )}
                           {timeLeftInSeconds >= 86400 && (
                             <img className='teacherImage' src={teacherImg} alt='icon' />
@@ -1486,7 +1528,7 @@ class LiveClasses extends Component {
                         const timeLeftInSeconds = +elem.stream_start_time - +elem.current_time;
                         const timeLeft = new Date(timeLeftInSeconds * 1000)
                           .toISOString()
-                          .substr(11, 5);
+                          .substr(11, 8);
                         if (timeArray[0] > 12) {
                           time = `${timeArray[0] - 12}:${timeArray[1]} PM`;
                         } else {
@@ -1524,7 +1566,7 @@ class LiveClasses extends Component {
                             </div>
                             <div className='scheduleCardRight'>
                               {timeLeftInSeconds < 86400 && (
-                                <TimerWatch started={timeLeftInSeconds < 0} time={timeLeft} />
+                                <TimerWatch startedProp={timeLeftInSeconds < 0} time={timeLeft} />
                               )}
                               {timeLeftInSeconds >= 86400 && (
                                 <img className='teacherImage' src={teacherImg} alt='icon' />
@@ -1863,6 +1905,7 @@ class LiveClasses extends Component {
                     </Modal.Body>
                   </Modal>
 
+                  {/* <Modal show centered onHide={this.closeZoomModal}> */}
                   <Modal show={showZoomModal} centered onHide={this.closeZoomModal}>
                     <Modal.Header closeButton>
                       <span
@@ -1873,31 +1916,75 @@ class LiveClasses extends Component {
                       </span>
                     </Modal.Header>
                     <Modal.Body>
-                      <Row className='mx-2'>
-                        <label className='has-float-label my-auto w-100'>
-                          <input
-                            className='form-control'
-                            name='Meeting ID'
-                            type='text'
-                            placeholder='Meeting ID'
-                            onChange={(e) => this.setState({ zoomMeeting: e.target.value })}
-                            value={zoomMeeting}
-                          />
-                          <span>Meeting ID</span>
-                        </label>
-                      </Row>
-                      <Row className='mx-2 mt-2'>
-                        <label className='has-float-label my-auto w-100'>
-                          <input
-                            className='form-control'
-                            name='Enter Passcode'
-                            type='text'
-                            placeholder='Enter Passcode'
-                            onChange={(e) => this.setState({ zoomPassCode: e.target.value })}
-                            value={zoomPassCode}
-                          />
-                          <span>Enter Passcode</span>
-                        </label>
+                      {zoomMeetingIdInput && (
+                        <>
+                          <Row className='mx-2'>
+                            <label className='has-float-label my-auto w-100'>
+                              <input
+                                className='form-control'
+                                name='Meeting ID'
+                                type='text'
+                                placeholder='Meeting ID'
+                                onChange={(e) => this.setState({ zoomMeeting: e.target.value })}
+                                value={zoomMeeting}
+                              />
+                              <span>Meeting ID</span>
+                            </label>
+                          </Row>
+                          <Row className='mx-2 mt-2'>
+                            <label className='has-float-label my-auto w-100'>
+                              <input
+                                className='form-control'
+                                name='Enter Passcode'
+                                type='text'
+                                placeholder='Enter Passcode'
+                                onChange={(e) => this.setState({ zoomPassCode: e.target.value })}
+                                value={zoomPassCode}
+                              />
+                              <span>Enter Passcode</span>
+                            </label>
+                          </Row>{' '}
+                        </>
+                      )}
+                      {!zoomMeetingIdInput && (
+                        <Row className='mx-2 mt-2'>
+                          <label className='has-float-label my-auto w-100'>
+                            <input
+                              className='form-control'
+                              name='Meeting Link'
+                              type='text'
+                              placeholder='Meeting Link'
+                              onChange={(e) => this.setState({ zoomMeetingLink: e.target.value })}
+                              value={zoomMeetingLink}
+                            />
+                            <span>Meeting link</span>
+                          </label>
+                        </Row>
+                      )}
+                      <Row>
+                        {zoomMeetingIdInput ? (
+                          <p
+                            className='zoomFormChanger'
+                            onClick={() =>
+                              this.setState({
+                                zoomMeetingIdInput: false,
+                                zoomPassCode: '',
+                                zoomMeeting: '',
+                              })
+                            }
+                          >
+                            Or enter meeting link?
+                          </p>
+                        ) : (
+                          <p
+                            className='zoomFormChanger'
+                            onClick={() =>
+                              this.setState({ zoomMeetingIdInput: true, zoomMeetingLink: '' })
+                            }
+                          >
+                            Enter ID and Password?
+                          </p>
+                        )}
                       </Row>
                     </Modal.Body>
                     <Modal.Footer>
@@ -1989,7 +2076,7 @@ class LiveClasses extends Component {
                         className='Scrollable__courseCardHeading my-auto'
                         style={{ fontSize: '14px', lineHeight: '18px' }}
                       >
-                        The frequency of this live class is "${streamToBeDeleted.frequency}". Please
+                        The frequency of this live class is "{streamToBeDeleted.frequency}". Please
                         select if you want to delete this live class or delete all upcoming versions
                         of this live class.
                       </span>
@@ -2056,7 +2143,7 @@ class LiveClasses extends Component {
                     const timeArray = startTimeText.split(' ')[4].split(':');
                     let time = '';
                     const timeLeftInSeconds = +elem.stream_start_time - +elem.current_time;
-                    const timeLeft = new Date(timeLeftInSeconds * 1000).toISOString().substr(11, 5);
+                    const timeLeft = new Date(timeLeftInSeconds * 1000).toISOString().substr(11, 8);
                     if (timeArray[0] > 12) {
                       time = `${timeArray[0] - 12}:${timeArray[1]} PM`;
                     } else {
@@ -2096,7 +2183,11 @@ class LiveClasses extends Component {
                         </div>
                         <div className='scheduleCardRight'>
                           {timeLeftInSeconds < 86400 && (
-                            <TimerWatch started={timeLeftInSeconds < 0} time={timeLeft} />
+                            <TimerWatch
+                              showStartNow={() => this.rerenderArrays()}
+                              startedProp={timeLeftInSeconds < 0}
+                              time={timeLeft}
+                            />
                           )}
                           {timeLeftInSeconds >= 86400 && (
                             <img className='teacherImage' src={teacherImg} alt='icon' />
@@ -2136,7 +2227,7 @@ class LiveClasses extends Component {
                     const timeArray = startTimeText.split(' ')[4].split(':');
                     let time = '';
                     const timeLeftInSeconds = +elem.stream_start_time - +elem.current_time;
-                    const timeLeft = new Date(timeLeftInSeconds * 1000).toISOString().substr(11, 5);
+                    const timeLeft = new Date(timeLeftInSeconds * 1000).toISOString().substr(11, 8);
                     if (timeArray[0] > 12) {
                       time = `${timeArray[0] - 12}:${timeArray[1]} PM`;
                     } else {
@@ -2176,7 +2267,7 @@ class LiveClasses extends Component {
                         </div>
                         <div className='scheduleCardRight'>
                           {timeLeftInSeconds < 86400 && (
-                            <TimerWatch started={timeLeftInSeconds < 0} time={timeLeft} />
+                            <TimerWatch startedProp={timeLeftInSeconds < 0} time={timeLeft} />
                           )}
                           {timeLeftInSeconds >= 86400 && (
                             <img className='teacherImage' src={teacherImg} alt='icon' />

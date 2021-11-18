@@ -1,8 +1,105 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useInterval } from '../../Utilities';
 /* eslint-disable */
 const TimerWatch = (props) => {
-  const { time, started, isLive } = props;
+  const { time, isLive, startedProp, showStartNow } = props;
+  const [currentTime, setCurrentTime] = useState(time);
+  const [hours, setHours] = useState(time.split(':')[0]);
+  const [minutes, setMinutes] = useState(time.split(':')[1]);
+  const [seconds, setSeconds] = useState(time.split(':')[2]);
+  const [inSeconds, setInSeconds] = useState(false);
+  const [isWaitingToStart, setIsWaitingToStart] = useState(false);
+  // const [isLiveState, setIsLiveState] = useState(false);
+  const [started, setStarted] = useState(false);
+  useEffect(() => {
+    console.log(time, hours, minutes, 'haha');
+    if (hours === '00' && parseInt(minutes) < 15) {
+      console.log(currentTime, 'nklaaa');
+      console.log(currentTime.split(':'));
+      setCurrentTime((time) => time.slice(3, 8));
+      setInSeconds(true);
+    } else {
+      setCurrentTime((time) => time.slice(0, 5));
+      setInSeconds(false);
+    }
+    if (startedProp) {
+      setStarted(true);
+      console.log('startedProp');
+    }
+  }, []);
+  useEffect(() => {
+    const clear = setInterval(() => {
+      if (seconds > 0) {
+        setSeconds((second) => second - 1);
+      }
+
+      if (seconds === 0) {
+        if (minutes === 0) {
+          if (hours === 0) {
+            // setIsWaitingToStart(true)
+            clearInterval(clear);
+          } else {
+            setMinutes(59);
+            setSeconds(59);
+            setHours((hour) => hour - 1);
+          }
+        } else {
+          setMinutes((minute) => minute - 1);
+          setSeconds(59);
+        }
+      }
+
+      if (hours === '00' && parseInt(minutes) < 15) {
+        // console.log(currentTime.split(':'));
+        const min = minutes.toLocaleString('en-US', {
+          minimumIntegerDigits: 2,
+          useGrouping: false,
+        });
+        // if (min < 10) {
+        //   min = `0${min}`;
+        // }
+        const sec = seconds.toLocaleString('en-US', {
+          minimumIntegerDigits: 2,
+          useGrouping: false,
+        });
+        // if (sec < 10) {
+        //   sec = `0${sec}`;
+        // }
+        setCurrentTime(`${min}:${sec}`);
+        setInSeconds(true);
+        // showStartNow();
+      } else {
+        const hr = hours.toLocaleString('en-US', {
+          minimumIntegerDigits: 2,
+          useGrouping: false,
+        });
+
+        const min = minutes.toLocaleString('en-US', {
+          minimumIntegerDigits: 2,
+          useGrouping: false,
+        });
+        // if (min < 10) {
+        //   min = `0${min}`;
+        // }
+        setCurrentTime(`${hr}:${min}`);
+        setInSeconds(false);
+      }
+
+      // if (parseInt(hours) < 0) {
+      //   setIsWaitingToStart(true);
+      // }
+      if (hours === '00' && parseInt(minutes) === 14 && parseInt(seconds) === 59) {
+        showStartNow();
+      }
+      if (parseInt(hours) <= 0 && parseInt(minutes) <= 0 && parseInt(seconds) <= 0) {
+        setStarted(true);
+      }
+    }, 1000);
+
+    return () => clearInterval(clear); // This is important
+  }, [hours, seconds, minutes, started, isLive]);
+
   return (
     <div>
       <svg
@@ -50,7 +147,7 @@ const TimerWatch = (props) => {
             font-weight='800'
           >
             <tspan x='4' y='15'>
-              {!isLive && !started && time}
+              {!isLive && !started && currentTime}
             </tspan>
             <tspan x={isLive ? '4' : '3'} y={isLive ? '20' : '10'}>
               {!isLive && started && 'waiting to'}
@@ -65,15 +162,28 @@ const TimerWatch = (props) => {
             <tspan y='15' font-family='Montserrat-Medium, Montserrat' font-weight='500'>
               {' '}
             </tspan>
-            <tspan
-              x='4'
-              y='35'
-              font-size='12'
-              font-family='Montserrat-Regular, Montserrat'
-              font-weight='400'
-            >
-              {!isLive && !started && 'hrs left'}
-            </tspan>
+            {!inSeconds && (
+              <tspan
+                x='4'
+                y='35'
+                font-size='12'
+                font-family='Montserrat-Regular, Montserrat'
+                font-weight='400'
+              >
+                {!isLive && !started && 'hrs left'}
+              </tspan>
+            )}
+            {inSeconds && (
+              <tspan
+                x='4'
+                y='35'
+                font-size='10'
+                font-family='Montserrat-Regular, Montserrat'
+                font-weight='400'
+              >
+                {!isLive && !started && 'mins left'}
+              </tspan>
+            )}
           </text>
         </g>
       </svg>
@@ -83,8 +193,13 @@ const TimerWatch = (props) => {
 
 TimerWatch.propTypes = {
   time: PropTypes.string.isRequired,
-  started: PropTypes.bool.isRequired,
+  startedProp: PropTypes.bool.isRequired,
   isLive: PropTypes.bool.isRequired,
+  showStartNow: PropTypes.func,
+};
+
+TimerWatch.defaultProps = {
+  showStartNow: () => {},
 };
 
 export default TimerWatch;

@@ -110,7 +110,7 @@ export const LiveClassesCards = (props) => {
                 timeArray = startTimeText.split(' ')[4].split(':');
                 time = '';
                 timeLeftInSeconds = +elem.stream_start_time - +elem.current_time;
-                timeLeft = new Date(timeLeftInSeconds * 1000).toISOString().substr(11, 5);
+                timeLeft = new Date(timeLeftInSeconds * 1000).toISOString().substr(11, 8);
                 if (timeArray[0] > 12) {
                   time = `${timeArray[0] - 12}:${timeArray[1]} PM`;
                 } else {
@@ -152,16 +152,16 @@ export const LiveClassesCards = (props) => {
                       )}
                       {elem?.stream_status === 'active' && (
                         <>
-                          <p
+                          {/* <p
                             style={{ fontFamily: 'Montserrat-Bold' }}
                             className='scheduleCardHeading'
                           >
                             Live Class is in progress...
-                          </p>
+                          </p> */}
                           <button
                             onClick={() => startLiveStream(elem)}
                             type='button'
-                            className='startNowButton blackBackground'
+                            className='startNowButton'
                           >
                             ATTEND LIVE NOW
                           </button>
@@ -172,7 +172,7 @@ export const LiveClassesCards = (props) => {
                       {timeLeftInSeconds < 86400 && (
                         <TimerWatch
                           isLive={time === 'LIVE!'}
-                          started={timeLeftInSeconds < 0}
+                          startedProp={timeLeftInSeconds < 0}
                           time={timeLeft}
                         />
                       )}

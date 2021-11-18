@@ -298,6 +298,17 @@
   color: white;
 }
 
+.zoomFormChanger {
+  display: flex;
+  text-align: center;
+  width: 100%;
+  justify-content: center;
+  margin-top: 18px;
+  color: var(--primary-blue);
+  cursor: pointer;
+  font-family: 'Montserrat-Regular';
+}
+
 @media screen and (max-width: 700px) {
   .scheduleCard {
     width: 95%;
