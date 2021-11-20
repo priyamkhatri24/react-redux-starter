@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import compareAsc from 'date-fns/compareAsc';
 import format from 'date-fns/format';
@@ -81,20 +82,23 @@ const Tests = (props) => {
     });
   };
 
-  const isAllowed = useCallback((bool, id, startTime, endTime) => {
-    console.log(bool, startTime, endTime, id, allowLiveTest);
-    if (allowLiveTest.length) {
-      const newCheckLiveExpiryArray = allowLiveTest.map((elem) => {
-        if (elem.id === id) {
-          elem.isAllowed = bool;
-          elem.startTime = startTime;
-          elem.endTime = endTime;
-        }
-        return elem;
-      });
-      setAllowLiveTest(newCheckLiveExpiryArray);
-    }
-  }, []);
+  const isAllowed = useCallback(
+    (bool, id, startTime, endTime) => {
+      console.log(bool, startTime, endTime, id, allowLiveTest, 'sara kuchhh');
+      if (allowLiveTest.length) {
+        const newCheckLiveExpiryArray = allowLiveTest.map((elem) => {
+          if (elem.id === id) {
+            elem.isAllowed = bool;
+            elem.startTime = startTime;
+            elem.endTime = endTime;
+          }
+          return elem;
+        });
+        setAllowLiveTest(newCheckLiveExpiryArray);
+      }
+    },
+    [allowLiveTest],
+  );
 
   const startLiveTest = (elem) => {
     console.log(elem, allowLiveTest);
@@ -244,130 +248,148 @@ const Tests = (props) => {
 
   return (
     <div>
-      {liveTests.length > 0 && allowLiveTest.length > 0 && (
-        <section className='Tests__scrollableCard'>
-          {liveTests.map((elem) => {
-            return (
-              <div
-                key={elem.test_id}
-                className='ml-2'
-                onClick={() => startLiveTest(elem)}
-                onKeyDown={() => startLiveTest(elem)}
-                tabIndex='-1'
-                role='button'
-              >
-                <Row>
-                  <Col xs={9} className='pr-0'>
-                    <p className='Tests__scrollableCardHeading pt-2 pl-3 mb-0'>
-                      <span style={{ color: 'rgba(255, 0, 0, 0.87)' }}>Live</span>{' '}
-                      <span style={{ color: 'rgba(0, 0, 0, 0.87)' }}>Test</span>
-                    </p>
-                    <p className='Tests__scrollableCardText pl-3 mt-1'>{elem.test_name}</p>
-                    <LiveTestCounter id={elem.test_id} isAllowed={isAllowed} />
-                  </Col>
-                  <Col xs={3} className='pt-3 px-0'>
-                    <img
-                      src={dashboardAssignmentImage}
-                      alt='assignment'
-                      height='63px'
-                      width='57px'
-                      style={{
-                        filter:
-                          'invert(16%) sepia(88%) saturate(7487%) hue-rotate(2deg) brightness(95%) contrast(117%)',
-                      }}
-                    />
-                  </Col>
-                </Row>
-              </div>
-            );
-          })}
-        </section>
-      )}
-      {demoTests.length > 0 && (
-        <section className='Tests__scrollableCard'>
-          {demoTests.map((elem) => {
-            return (
-              <div
-                key={elem.test_id}
-                className='ml-2'
-                onClick={() => startDemoTest(elem)}
-                onKeyDown={() => startDemoTest(elem)}
-                tabIndex='-1'
-                role='button'
-              >
-                <Row>
-                  <Col xs={9} className='pr-0'>
-                    <p className='Tests__scrollableCardHeading pt-2 pl-3 mb-0'>
-                      <span style={{ color: 'rgba(207, 236, 0, 0.87)' }}>Demo</span>{' '}
-                      <span style={{ color: 'rgba(0, 0, 0, 0.87)' }}>Test</span>
-                    </p>
-                    <p className='Tests__scrollableCardText pl-3 mt-1 mb-0'>{elem.test_name}</p>
-                    <p className='Tests__scrollableCardText pl-3 mt-1'>
-                      Due:{' '}
-                      <span className='Tests__Counter'>
-                        {format(fromUnixTime(elem.due_date), 'MMM dd, yyyy')}
-                      </span>
-                    </p>
-                  </Col>
-                  <Col xs={3} className='pt-3 px-0'>
-                    <img
-                      src={dashboardAssignmentImage}
-                      alt='assignment'
-                      height='63px'
-                      width='57px'
-                      style={{
-                        filter:
-                          'invert(79%) sepia(86%) saturate(518%) hue-rotate(10deg) brightness(95%) contrast(102%)',
-                      }}
-                    />
-                  </Col>
-                </Row>
-              </div>
-            );
-          })}
-        </section>
-      )}
-      {homework.length > 0 && (
-        <section className='Tests__scrollableCard'>
-          {homework.map((elem) => {
-            return (
-              <div
-                key={elem.test_id}
-                className='ml-2'
-                onClick={() => startHomeworkTest(elem)}
-                onKeyDown={() => startHomeworkTest(elem)}
-                tabIndex='-1'
-                role='button'
-              >
-                <Row>
-                  <Col xs={9} className='pr-0'>
-                    <p className='Tests__scrollableCardHeading pt-2 pl-3 mb-0'>Homework</p>
-                    <p className='Tests__scrollableCardText pl-3 mt-1 mb-0'>{elem.test_name}</p>
-                    <p className='Tests__scrollableCardText pl-3 mt-1'>
-                      Due:{' '}
-                      <span className='Tests__Counter'>
-                        {format(fromUnixTime(elem.due_date), 'MMM dd, yyyy')}
-                      </span>
-                    </p>
-                  </Col>
-                  <Col xs={3} className='pt-3 px-0'>
-                    <img
-                      src={dashboardAssignmentImage}
-                      alt='assignment'
-                      height='63px'
-                      width='57px'
-                      style={{
-                        filter:
-                          'invert(35%) sepia(80%) saturate(6195%) hue-rotate(211deg) brightness(102%) contrast(106%)',
-                      }}
-                    />
-                  </Col>
-                </Row>
-              </div>
-            );
-          })}
-        </section>
-      )}
+      <div className='Tests__headingContainer'>
+        <div className='d-flex justify-content-between w-100'>
+          <h5 className='Tests__initialHeading mb-1'>Online assignments</h5>
+          <button
+            className='Tests__viewAllButtonForCards mb-0'
+            type='button'
+            style={{ opacity: '0.2' }}
+            // onClick={() => history.push('/liveclasses')}
+          >
+            View All <ChevronRightIcon />
+          </button>
+        </div>
+        <p className='Tests__smallTextUnderHeading'>
+          Attempt online homework and assignments provided by your teachers here.
+        </p>
+      </div>
+      <>
+        {liveTests.length > 0 && allowLiveTest.length > 0 && (
+          <section className='Tests__scrollableCard'>
+            {liveTests.map((elem) => {
+              return (
+                <div
+                  key={elem.test_id}
+                  className='ml-2'
+                  onClick={() => startLiveTest(elem)}
+                  onKeyDown={() => startLiveTest(elem)}
+                  tabIndex='-1'
+                  role='button'
+                >
+                  <Row>
+                    <Col xs={9} className='pr-0'>
+                      <p className='Tests__scrollableCardHeading pt-2 pl-3 mb-0'>
+                        <span style={{ color: 'rgba(255, 0, 0, 0.87)' }}>Live</span>{' '}
+                        <span style={{ color: 'rgba(0, 0, 0, 0.87)' }}>Test</span>
+                      </p>
+                      <p className='Tests__scrollableCardText pl-3 mt-1'>{elem.test_name}</p>
+                      <LiveTestCounter id={elem.test_id} isAllowed={isAllowed} />
+                    </Col>
+                    <Col xs={3} className='pt-3 px-0'>
+                      <img
+                        src={dashboardAssignmentImage}
+                        alt='assignment'
+                        height='63px'
+                        width='57px'
+                        style={{
+                          filter:
+                            'invert(16%) sepia(88%) saturate(7487%) hue-rotate(2deg) brightness(95%) contrast(117%)',
+                        }}
+                      />
+                    </Col>
+                  </Row>
+                </div>
+              );
+            })}
+          </section>
+        )}
+        {demoTests.length > 0 && (
+          <section className='Tests__scrollableCard'>
+            {demoTests.map((elem) => {
+              return (
+                <div
+                  key={elem.test_id}
+                  className='ml-2'
+                  onClick={() => startDemoTest(elem)}
+                  onKeyDown={() => startDemoTest(elem)}
+                  tabIndex='-1'
+                  role='button'
+                >
+                  <Row>
+                    <Col xs={9} className='pr-0'>
+                      <p className='Tests__scrollableCardHeading pt-2 pl-3 mb-0'>
+                        <span style={{ color: 'rgba(207, 236, 0, 0.87)' }}>Demo</span>{' '}
+                        <span style={{ color: 'rgba(0, 0, 0, 0.87)' }}>Test</span>
+                      </p>
+                      <p className='Tests__scrollableCardText pl-3 mt-1 mb-0'>{elem.test_name}</p>
+                      <p className='Tests__scrollableCardText pl-3 mt-1'>
+                        Due:{' '}
+                        <span className='Tests__Counter'>
+                          {format(fromUnixTime(elem.due_date), 'MMM dd, yyyy')}
+                        </span>
+                      </p>
+                    </Col>
+                    <Col xs={3} className='pt-3 px-0'>
+                      <img
+                        src={dashboardAssignmentImage}
+                        alt='assignment'
+                        height='63px'
+                        width='57px'
+                        style={{
+                          filter:
+                            'invert(79%) sepia(86%) saturate(518%) hue-rotate(10deg) brightness(95%) contrast(102%)',
+                        }}
+                      />
+                    </Col>
+                  </Row>
+                </div>
+              );
+            })}
+          </section>
+        )}
+        {homework.length > 0 && (
+          <section className='Tests__scrollableCard'>
+            {homework.map((elem) => {
+              return (
+                <div
+                  key={elem.test_id}
+                  className='ml-2'
+                  onClick={() => startHomeworkTest(elem)}
+                  onKeyDown={() => startHomeworkTest(elem)}
+                  tabIndex='-1'
+                  role='button'
+                >
+                  <Row>
+                    <Col xs={9} className='pr-0'>
+                      <p className='Tests__scrollableCardHeading pt-2 pl-3 mb-0'>Homework</p>
+                      <p className='Tests__scrollableCardText pl-3 mt-1 mb-0'>{elem.test_name}</p>
+                      <p className='Tests__scrollableCardText pl-3 mt-1'>
+                        Due:{' '}
+                        <span className='Tests__Counter'>
+                          {format(fromUnixTime(elem.due_date), 'MMM dd, yyyy')}
+                        </span>
+                      </p>
+                    </Col>
+                    <Col xs={3} className='pt-3 px-0'>
+                      <img
+                        src={dashboardAssignmentImage}
+                        alt='assignment'
+                        height='63px'
+                        width='57px'
+                        style={{
+                          filter:
+                            'invert(35%) sepia(80%) saturate(6195%) hue-rotate(211deg) brightness(102%) contrast(106%)',
+                        }}
+                      />
+                    </Col>
+                  </Row>
+                </div>
+              );
+            })}
+          </section>
+        )}
+      </>
     </div>
   );
 };

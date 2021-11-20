@@ -577,6 +577,11 @@ const Dashboard = (props) => {
                     <span className='m-2'>Write a post</span>
                   </Button>
                 )}
+                {(roleArray.includes(1) || roleArray.includes(2)) && (
+                  <p className='Dashboard__attendanceSubHeading'>
+                    Get the latest details of everything going on in your institute.
+                  </p>
+                )}
               </Col>
               <Col xs={4} className='noticeboard_img'>
                 <img src={param.feature_icon} alt='notice' className='Dashboard__NoticeIcon' />
@@ -864,7 +869,7 @@ const Dashboard = (props) => {
             subHeading={
               roleArray.includes(3) || roleArray.includes(4)
                 ? 'Conduct all your live classes here effectively'
-                : 'Attend all your live classes from here.'
+                : 'Attend all of your live classes from here.'
             }
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             backGround={param.start_colour}

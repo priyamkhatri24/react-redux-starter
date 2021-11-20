@@ -28,6 +28,7 @@ const LiveTestCounter = (props) => {
         setSeconds(Math.floor(durationTime % 60));
       } else if (Number(result.status) === 1 && dateResult > 0) {
         setLiveText('The Test is Live');
+        console.log('livee');
         isAllowed(
           true,
           id,
@@ -36,7 +37,7 @@ const LiveTestCounter = (props) => {
         );
       }
     });
-  }, [id, isAllowed]);
+  }, []);
 
   useEffect(() => {
     const clear = setInterval(() => {
@@ -49,6 +50,7 @@ const LiveTestCounter = (props) => {
           if (hours === 0) {
             setLiveText('The Test is Live');
             isAllowed(true, id);
+            console.log('livee');
             clearInterval(clear);
           } else {
             setMinutes(59);
