@@ -1895,6 +1895,12 @@ class LiveClasses extends Component {
                                 onClick={this.scheduleLiveClass}
                                 type='button'
                                 className='scheduleButton'
+                                disabled={
+                                  !scheduledDate ||
+                                  !scheduledFrequency ||
+                                  !scheduledTime ||
+                                  !liveClassTopic
+                                }
                               >
                                 Schedule
                               </button>
