@@ -200,6 +200,10 @@
   margin: 14px auto;
 }
 
+.scheduleButton:disabled {
+  color: gray;
+}
+
 .scheduleCard {
   background-color: #ff000012;
   display: flex;
