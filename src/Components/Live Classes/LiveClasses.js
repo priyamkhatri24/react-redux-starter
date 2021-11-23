@@ -338,7 +338,7 @@ class LiveClasses extends Component {
 
       //  window.open(`https://zoom.us/j/${element.meeting_id}?pwd=${element.password}`);
     } else if (element.stream_type === 'meet') {
-      window.open(`https://meet.google.com/${element.google_meet_id}`, '_blank');
+      window.open(`https://meet.google.com/${element.meeting_id}`, '_blank');
     } else if (element.stream_type === 'youtube') {
       let vidId = element.meeting_id.split('v=')[1];
       const ampersandPosition = vidId?.indexOf('&');
@@ -1149,7 +1149,7 @@ class LiveClasses extends Component {
       zoomMeetingIdInput,
       zoomMeetingLink,
     } = this.state;
-    const { dashboardData } = this.props;
+    const { dashboardData, roleArray } = this.props;
     return (
       <div css={LiveClassesStyle.liveClasses}>
         <PageHeader title={pageTitle} />
@@ -2219,15 +2219,10 @@ class LiveClasses extends Component {
                 )}
               </Tab>
             )}
-            {liveArray.length <= 0 && (
+            {liveArray.length <= 0 && roleArray.includes(4) && (
               <Tab eventKey='Others' title='Others'>
                 {allLiveClasses.length > 0 ? (
                   allLiveClasses.map((elem) => {
-                    toBeLive.forEach((ele) => {
-                      if (ele.stream_id === elem.stream_id) {
-                        elem.isToBeLive = true;
-                      }
-                    });
                     const startTimeText = new Date(+elem.stream_start_time * 1000).toString();
                     const date = startTimeText.split(' ').slice(1, 3).join(' ');
                     const timeArray = startTimeText.split(' ')[4].split(':');
@@ -2261,19 +2256,23 @@ class LiveClasses extends Component {
                           <p className='scheduleCardText'>
                             starts @ {time} on {date}
                           </p>
-                          {/* {elem.isToBeLive && (
-                      <button
-                        onClick={() => this.startScheduledLiveStream(elem)}
-                        type='button'
-                        className='startNowButton'
-                      >
-                        START NOW
-                      </button>
-                    )} */}
+                          {elem.stream_status === 'active' && (
+                            <button
+                              onClick={() => this.startLiveStream(elem)}
+                              type='button'
+                              className='startNowButton'
+                            >
+                              JOIN NOW
+                            </button>
+                          )}
                         </div>
                         <div className='scheduleCardRight'>
                           {timeLeftInSeconds < 86400 && (
-                            <TimerWatch startedProp={timeLeftInSeconds < 0} time={timeLeft} />
+                            <TimerWatch
+                              startedProp={timeLeftInSeconds < 0}
+                              time={timeLeft}
+                              isLive={elem.stream_status === 'active'}
+                            />
                           )}
                           {timeLeftInSeconds >= 86400 && (
                             <img className='teacherImage' src={teacherImg} alt='icon' />

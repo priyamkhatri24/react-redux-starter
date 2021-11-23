@@ -170,11 +170,11 @@
 }
 
 .margin-8 span {
-  z-index: 1;
+  z-index: 0;
 }
 
 .margin-18 span {
-  z-index: 1;
+  z-index: 0;
 }
 
 .blackBackground {
@@ -202,6 +202,7 @@
 
 .scheduleButton:disabled {
   color: gray;
+  cursor: default;
 }
 
 .scheduleCard {
