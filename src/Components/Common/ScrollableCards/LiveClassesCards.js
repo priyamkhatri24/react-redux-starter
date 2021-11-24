@@ -12,6 +12,22 @@ import Modal from 'react-bootstrap/Modal';
 import teacherImg from '../../../assets/images/LiveClasses/teacher.png';
 import TimerWatch from '../../Live Classes/TimerWatch';
 
+const getYoutubeIdFromLink = (link) => {
+  let viId = '';
+  if (link.includes('.be')) {
+    viId = link.split('/').pop();
+  } else {
+    /* eslint-disable */
+    viId = link.split('v=')[1];
+    const ampersandPosition = viId?.indexOf('&');
+    if (ampersandPosition != -1) {
+      viId = viId?.substring(0, ampersandPosition);
+    }
+  }
+
+  return viId;
+};
+
 export const LiveClassesCards = (props) => {
   const { liveClasses, history, firstName, lastName } = props;
   const [domain, setDomain] = useState('tcalive.ingenimedu.com');
@@ -66,11 +82,7 @@ export const LiveClassesCards = (props) => {
     } else if (element.stream_type === 'meet') {
       window.open(`https://meet.google.com/${element.meeting_id}`, '_blank');
     } else if (element.stream_type === 'youtube') {
-      let vidId = element.meeting_id.split('v=')[1];
-      const ampersandPosition = vidId?.indexOf('&');
-      if (ampersandPosition != -1) {
-        vidId = vidId?.substring(0, ampersandPosition);
-      }
+      const vidId = getYoutubeIdFromLink(element.meeting_id);
       history.push({ pathname: '/videoplayer', state: { link: vidId } });
     } else console.error('invalid stream type');
   };

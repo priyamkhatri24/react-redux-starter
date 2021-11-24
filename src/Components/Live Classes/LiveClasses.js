@@ -48,7 +48,21 @@ import meetSvg from '../../assets/images/LiveClasses/meet.svg';
 import youtubeSvg from '../../assets/images/LiveClasses/youtube.svg';
 import './LiveClasses.scss';
 
-const startTimerFromGivenTime = (time) => {};
+const getYoutubeIdFromLink = (link) => {
+  let viId = '';
+  if (link.includes('.be')) {
+    viId = link.split('/').pop();
+  } else {
+    /* eslint-disable */
+    viId = link.split('v=')[1];
+    const ampersandPosition = viId?.indexOf('&');
+    if (ampersandPosition != -1) {
+      viId = viId?.substring(0, ampersandPosition);
+    }
+  }
+
+  return viId;
+};
 
 const CustomInput = ({ value, onClick }) => (
   <div className='justify-content-center'>
@@ -340,11 +354,8 @@ class LiveClasses extends Component {
     } else if (element.stream_type === 'meet') {
       window.open(`https://meet.google.com/${element.meeting_id}`, '_blank');
     } else if (element.stream_type === 'youtube') {
-      let vidId = element.meeting_id.split('v=')[1];
-      const ampersandPosition = vidId?.indexOf('&');
-      if (ampersandPosition != -1) {
-        vidId = vidId?.substring(0, ampersandPosition);
-      }
+      const vidId = getYoutubeIdFromLink(element.meeting_id);
+
       history.push({ pathname: '/videoplayer', state: { link: vidId } });
     } else console.error('invalid stream type');
   };
@@ -388,11 +399,7 @@ class LiveClasses extends Component {
     } else if (element.stream_type === 'meet') {
       window.open(`https://meet.google.com/${element.meeting_id}`, '_blank');
     } else if (element.stream_type === 'youtube') {
-      let vidId = element.meeting_id.split('v=')[1];
-      const ampersandPosition = vidId?.indexOf('&');
-      if (ampersandPosition != -1) {
-        vidId = vidId?.substring(0, ampersandPosition);
-      }
+      const vidId = getYoutubeIdFromLink(element.meeting_id);
       history.push({ pathname: '/videoplayer', state: { link: vidId } });
       console.log(element);
     } else console.error('invalid stream type');
@@ -742,11 +749,8 @@ class LiveClasses extends Component {
     const { clientUserId, clientId, roleArray, userProfile } = this.props;
     if (!youtubeStreamLink) return;
     const batchIdArray = JSON.stringify(selectedBatches.map((elem) => elem.client_batch_id));
-    let vidId = youtubeStreamLink.split('v=')[1];
-    const ampersandPosition = vidId?.indexOf('&');
-    if (ampersandPosition != -1) {
-      vidId = vidId?.substring(0, ampersandPosition);
-    }
+    const vidId = getYoutubeIdFromLink(youtubeStreamLink);
+
     const payload = {
       meeting_id: youtubeStreamLink,
       client_user_id: clientUserId,
