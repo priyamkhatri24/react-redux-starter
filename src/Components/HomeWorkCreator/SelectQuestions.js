@@ -15,7 +15,13 @@ import { BatchesSelector } from '../Common';
 import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 
 const SelectQuestions = (props) => {
-  const { history, fetch, setCurrentSubjectArrayToStore, setCurrentChapterArrayToStore } = props;
+  const {
+    history,
+    fetch,
+    setCurrentSubjectArrayToStore,
+    setCurrentChapterArrayToStore,
+    desktop,
+  } = props;
   const [classes, setClasses] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState({});
@@ -157,7 +163,7 @@ const SelectQuestions = (props) => {
 
   return (
     <>
-      <Card className='mx-4 Homework__selectCard mb-3'>
+      <Card className='mobileMargin Homework__selectCard mb-3'>
         <small className='text-left Homework__smallHeading mx-3 my-2'>Course</small>
         <Row className='mx-3'>
           <section className='Homework__scrollable'>
@@ -390,6 +396,7 @@ SelectQuestions.propTypes = {
     push: PropTypes.func,
   }).isRequired,
   fetch: PropTypes.func.isRequired,
+  desktop: PropTypes.bool.isRequired,
 };
 
 // {subjects.length>0 && chapters.length === 0 ?

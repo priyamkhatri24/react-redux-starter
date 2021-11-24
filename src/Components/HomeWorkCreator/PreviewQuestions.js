@@ -60,7 +60,7 @@ const PreviewQuestions = (props) => {
   };
 
   return (
-    <Card className='Homework__selectCard mb-3 mx-2'>
+    <Card className='Homework__selectCard mb-3 mobileMargin'>
       <div className='d-flex mt-3 mx-2'>
         <span className='text-left Homework__questionIndex my-auto'>
           {selectedQuestions.length} selected

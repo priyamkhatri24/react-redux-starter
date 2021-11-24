@@ -24,9 +24,17 @@ const HomeWorkCreator = (props) => {
     clearTests,
   } = props;
   const [slide, setSlide] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
   const [homeworkQuestionsArray, setQuestionArray] = useState([]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    if (document.body.clientWidth < 600) {
+      setIsMobile(true);
+    }
     setSlide(currentSlide);
     setQuestionArray(questionArray);
   }, [currentSlide, questionArray]);
@@ -99,51 +107,60 @@ const HomeWorkCreator = (props) => {
           </div>
         <p className='fixedPosition'>haha</p>
       </div> */}
-      <div style={{ marginTop: '7rem' }} className='Homework__carousel'>
-        <Carousel
-          style={{ backgroundColor: 'red' }}
-          showArrows={false}
-          showThumbs={false}
-          autoPlay={false}
-          showStatus={false}
-          swipeable={false}
-          selectedItem={slide}
-          renderIndicator={(onClickHandler, isSelected, index, label) => {
-            if (isSelected) {
+      {isMobile && (
+        <div style={{ marginTop: '7rem' }} className='Homework__carousel'>
+          <Carousel
+            style={{ backgroundColor: 'red' }}
+            showArrows={false}
+            showThumbs={false}
+            autoPlay={false}
+            showStatus={false}
+            swipeable={false}
+            selectedItem={slide}
+            renderIndicator={(onClickHandler, isSelected, index, label) => {
+              if (isSelected) {
+                return (
+                  <li
+                    // className='marginOnDesk'
+                    style={selectedIndicatorStyles}
+                    aria-label={`Selected: ${label} ${index + 1}`}
+                    title={`Selected: ${label} ${index + 1}`}
+                  >
+                    {index === 0 ? 'Filters' : index === 1 ? 'Questions' : 'Selected'}
+                  </li>
+                );
+              }
               return (
                 <li
                   // className='marginOnDesk'
-                  style={selectedIndicatorStyles}
-                  aria-label={`Selected: ${label} ${index + 1}`}
-                  title={`Selected: ${label} ${index + 1}`}
+                  style={indicatorStyles}
+                  onClick={() => setCurrentSlide(index)}
+                  onKeyDown={() => setCurrentSlide(index)}
+                  value={index}
+                  key={index}
+                  role='button' // eslint-disable-line
+                  tabIndex={0}
+                  title={`${label} ${index + 1}`}
+                  aria-label={`${label} ${index + 1}`}
                 >
                   {index === 0 ? 'Filters' : index === 1 ? 'Questions' : 'Selected'}
                 </li>
               );
-            }
-            return (
-              <li
-                // className='marginOnDesk'
-                style={indicatorStyles}
-                onClick={() => setCurrentSlide(index)}
-                onKeyDown={() => setCurrentSlide(index)}
-                value={index}
-                key={index}
-                role='button' // eslint-disable-line
-                tabIndex={0}
-                title={`${label} ${index + 1}`}
-                aria-label={`${label} ${index + 1}`}
-              >
-                {index === 0 ? 'Filters' : index === 1 ? 'Questions' : 'Selected'}
-              </li>
-            );
-          }}
-        >
-          <SelectQuestions history={history} fetch={fetchQuestions} />
-          <QuestionList homeworkQuestions={homeworkQuestionsArray} />
-          <PreviewQuestions history={history} homeworkQuestions={homeworkQuestionsArray} />
-        </Carousel>
-      </div>
+            }}
+          >
+            <SelectQuestions history={history} fetch={fetchQuestions} />
+            <QuestionList homeworkQuestions={homeworkQuestionsArray} />
+            <PreviewQuestions history={history} homeworkQuestions={homeworkQuestionsArray} />
+          </Carousel>
+        </div>
+      )}
+      {!isMobile && (
+        <div style={{ marginTop: '3rem' }} className='Homework__desktopViewContainer'>
+          <SelectQuestions desktop history={history} fetch={fetchQuestions} />
+          <QuestionList desktop homeworkQuestions={homeworkQuestionsArray} />
+          <PreviewQuestions desktop history={history} homeworkQuestions={homeworkQuestionsArray} />
+        </div>
+      )}
     </div>
   );
 };

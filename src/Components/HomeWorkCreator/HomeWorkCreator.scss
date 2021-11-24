@@ -12,6 +12,14 @@
     background: transparent;
   }
 
+  &__desktopViewContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 98%;
+    margin: auto;
+  }
+
   &__plainWhiteButton {
     border-radius: 10px;
     border: 1px solid #0505058b;
@@ -27,6 +35,7 @@
   &__selectCard {
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
     position: relative;
+    min-width: 33%;
   }
 
   &__smallHeading {
@@ -290,5 +299,30 @@
   }
   .Homework__selectCard {
     margin-top: 40px;
+  }
+}
+
+.hideOnDesktopHWC {
+  cursor: pointer; // just to assign some css
+}
+
+.mobileMargin {
+  margin-right: 2px;
+  margin-left: 2px;
+  max-height: 760px;
+  overflow-y: auto;
+}
+
+.mobileMargin::-webkit-scrollbar {
+  display: none;
+}
+
+@media screen and (max-width: 775px) {
+  .hideOnDesktopHWC {
+    display: none;
+  }
+  .mobileMargin {
+    margin-right: 8px;
+    margin-left: 8px;
   }
 }
