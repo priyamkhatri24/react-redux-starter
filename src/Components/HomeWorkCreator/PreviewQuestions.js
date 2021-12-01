@@ -29,7 +29,10 @@ const PreviewQuestions = (props) => {
   }, [selectedQuestionArray]);
 
   const updateSelectedQuestions = (question) => {
-    homeworkQuestions.find((e) => e.question_id === question.question_id).isSelected = false;
+    /* eslint-disable */
+    homeworkQuestions.find((e) => e.question_id === question.question_id)
+      ? (homeworkQuestions.find((e) => e.question_id === question.question_id).isSelected = false)
+      : null;
     const newSelectedQuestions = JSON.parse(JSON.stringify(selectedQuestions));
     const updatedSelectedQuestions = selectedQuestions.filter((e) => {
       return e.question_id !== question.question_id;

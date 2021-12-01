@@ -457,3 +457,7 @@
   font-size: 14px;
   font-family: 'Montserrat-Bold';
 }
+
+.addBtnHW:disabled {
+  background-color: gray;
+}

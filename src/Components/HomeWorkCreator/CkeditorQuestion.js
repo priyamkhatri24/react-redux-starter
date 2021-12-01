@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
@@ -23,6 +24,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { get, apiValidation, uploadImage, post } from '../../Utilities';
+import { homeworkActions } from '../../redux/actions/homework.action';
 import './HomeWorkCreator.scss';
 
 const CkeditorQuestion = (props) => {
@@ -35,6 +37,12 @@ const CkeditorQuestion = (props) => {
     updateQuestionImages,
     updateSolutionImage,
     questionImage,
+    answerText,
+    updateAnswerText,
+    questionText,
+    updateType,
+    setCurrentChapterArrayToStore,
+    setCurrentSubjectArrayToStore,
     add,
     clientId,
   } = props;
@@ -59,6 +67,37 @@ const CkeditorQuestion = (props) => {
   const classSelectRef = useRef(null);
   const subjectSelectRef = useRef(null);
   const chapterSelectRef = useRef(null);
+  const [addButtonDisabledCheck, setAddButtonDisabledCheck] = useState(false);
+
+  useEffect(() => {
+    console.log({
+      selectedClass,
+      selectedSubject,
+      selectedChapter,
+      type,
+      questionImage,
+      questionText,
+      answerArray,
+      answerText,
+    });
+    if (!selectedClass || !selectedSubject || !selectedChapter || !type) {
+      setAddButtonDisabledCheck(false);
+    } else if (!questionImage && !questionText) {
+      setAddButtonDisabledCheck(false);
+    } else if (type === 'single' && answerArray.every((ele) => !ele.text && !ele.image)) {
+      setAddButtonDisabledCheck(false);
+    } else if (type === 'multiple' && answerArray.every((ele) => !ele.text && !ele.image)) {
+      setAddButtonDisabledCheck(false);
+    } else if (type === 'single' && !answerArray.find((ele) => ele.isSelected)) {
+      setAddButtonDisabledCheck(false);
+    } else if (type === 'multiple' && !answerArray.find((ele) => ele.isSelected)) {
+      setAddButtonDisabledCheck(false);
+    } else if (type === 'sujective' && !answerText) {
+      setAddButtonDisabledCheck(false);
+    } else {
+      setAddButtonDisabledCheck(true);
+    }
+  });
 
   useEffect(() => {
     if (classes.length) {
@@ -191,6 +230,7 @@ const CkeditorQuestion = (props) => {
           setTimeout(() => {
             subjectSelectRef.current.value = selectedSubObj.subject_id;
             setSelectedSubject(selectedSubObj);
+            setCurrentSubjectArrayToStore([selectedSubObj.subject_id]);
           }, 200);
         });
       });
@@ -235,6 +275,7 @@ const CkeditorQuestion = (props) => {
                 const selectedChapObj = result.find((ele) => ele.chapter_name === newChapter);
                 chapterSelectRef.current.value = selectedChapObj.chapter_id;
                 setSelectedChapter(selectedChapObj);
+                setCurrentChapterArrayToStore([selectedChapObj.chapter_id]);
                 console.log(result, 'MC');
               }, 200);
             });
@@ -368,7 +409,7 @@ const CkeditorQuestion = (props) => {
                   setCurrentSubjects(opt);
                 }}
               /> */}
-            <label className='my-auto w-100 margin-18'>
+            <label className='my-auto w-100'>
               <select
                 ref={classSelectRef}
                 style={{ boxShadow: 'none' }}
@@ -404,7 +445,7 @@ const CkeditorQuestion = (props) => {
                 isDisabled={!currentClassId}
                 onChange={(opt) => setCurrentChapters(opt)}
               /> */}
-            <label className='my-auto w-100 margin-18'>
+            <label className='my-auto w-100'>
               <select
                 ref={subjectSelectRef}
                 style={{ boxShadow: 'none' }}
@@ -421,6 +462,8 @@ const CkeditorQuestion = (props) => {
                   } else {
                     const selectedSubObj = subjects.find((ele) => ele.subject_id == e.target.value);
                     setSelectedSubject(selectedSubObj);
+                    setCurrentSubjectArrayToStore([selectedSubObj.subject_id]);
+
                     setCurrentChapters(selectedSubObj);
                   }
                 }}
@@ -447,7 +490,7 @@ const CkeditorQuestion = (props) => {
                   }
                 }}
               /> */}
-            <label className='my-auto w-100 margin-18'>
+            <label className='my-auto w-100'>
               <select
                 ref={chapterSelectRef}
                 style={{ boxShadow: 'none' }}
@@ -466,6 +509,7 @@ const CkeditorQuestion = (props) => {
                       (ele) => ele.chapter_id == e.target.value,
                     );
                     setSelectedChapter(selectedChapObj);
+                    setCurrentChapterArrayToStore([selectedChapObj.chapter_id]);
                     // setCurrentChapters(selectedChapObj);
                   }
                 }}
@@ -482,7 +526,10 @@ const CkeditorQuestion = (props) => {
             <Select
               options={typeOfQuestion}
               placeholder='Type'
-              onChange={(opt) => setType(opt.value)}
+              onChange={(opt) => {
+                setType(opt.value);
+                updateType(opt.value);
+              }}
             />
           </Col>
         </Row>
@@ -523,7 +570,6 @@ const CkeditorQuestion = (props) => {
           <div>
             {type !== 'subjective' &&
               answerArray.map((e) => {
-                console.log(e, 'ansArrayele');
                 return (
                   <Row key={e.value}>
                     <Col xs={10}>
@@ -576,6 +622,40 @@ const CkeditorQuestion = (props) => {
               })}
           </div>
         </div>
+        {type === 'subjective' ? (
+          <div className='d-flex questionUpperC my-2 mx-3'>
+            <textarea
+              placeholder='Answer'
+              onChange={(e) => updateAnswerText(e.target.value)}
+              className='questionTextarea'
+            />
+            {/* <span className='Homework__ckAttach mt-1'>
+            <label htmlFor='file-inputer'>
+              {solutionImage ? (
+                <CancelIcon
+                  style={{ width: '30px', marginTop: '8px' }}
+                  onClick={() => {
+                    setTimeout(() => {
+                      updateSolutionImage('');
+                    }, 100);
+                  }}
+                />
+              ) : (
+                <AttachFileIcon style={{ width: '19px', marginTop: '8px' }} />
+              )}
+              {!solutionImage && (
+                <input
+                  id='file-inputer'
+                  type='file'
+                  style={{ display: 'none' }}
+                  onChange={(e) => getAttachment(e, 'solution')}
+                  accept='*'
+                />
+              )}
+            </label>
+          </span> */}
+          </div>
+        ) : null}
         <div className='d-flex questionUpperC my-2 mx-3'>
           <textarea
             placeholder='Solution'
@@ -609,7 +689,12 @@ const CkeditorQuestion = (props) => {
           </span>
         </div>
         <div className='d-flex justify-content-end m-3 mt-4'>
-          <Button variant='customPrimarySmol' onClick={() => addQuestion()}>
+          <Button
+            className='addBtnHW'
+            disabled={!addButtonDisabledCheck}
+            variant='customPrimarySmol'
+            onClick={() => addQuestion()}
+          >
             ADD
           </Button>
         </div>
@@ -684,17 +769,38 @@ const CkeditorQuestion = (props) => {
   );
 };
 
-export default CkeditorQuestion;
+const mapStateToProps = (state) => {
+  return {};
+};
+
+const mapActionsToProps = (dispatch) => {
+  return {
+    setCurrentChapterArrayToStore: (payload) => {
+      dispatch(homeworkActions.setCurrentChapterArrayToStore(payload));
+    },
+    setCurrentSubjectArrayToStore: (payload) => {
+      dispatch(homeworkActions.setCurrentSubjectArrayToStore(payload));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(CkeditorQuestion);
 
 CkeditorQuestion.propTypes = {
   updateQuestion: PropTypes.func.isRequired,
+  questionText: PropTypes.string.isRequired,
   updateOptionArray: PropTypes.func.isRequired,
   updateQuestionImages: PropTypes.func.isRequired,
   questionImage: PropTypes.string.isRequired,
   answerArray: PropTypes.instanceOf(Array).isRequired,
   updateSolution: PropTypes.func.isRequired,
+  updateAnswerText: PropTypes.func.isRequired,
+  answerText: PropTypes.string.isRequired,
+  updateType: PropTypes.func.isRequired,
   solutionImage: PropTypes.string.isRequired,
   updateSolutionImage: PropTypes.func.isRequired,
   add: PropTypes.func.isRequired,
   clientId: PropTypes.number.isRequired,
+  setCurrentSubjectArrayToStore: PropTypes.func.isRequired,
+  setCurrentChapterArrayToStore: PropTypes.func.isRequired,
 };

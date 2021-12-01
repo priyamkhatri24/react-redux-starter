@@ -38,6 +38,7 @@ const CreateQuestion = (props) => {
     currentSubjectArray,
     setTestIdToStore,
     setTestNameToStore,
+    setFilterType,
   } = props;
   const [ckQuestion, setCkQuestion] = useState('');
   const [questionImage, setQuestionImage] = useState('');
@@ -164,7 +165,7 @@ const CreateQuestion = (props) => {
             setCurrentSlide(1);
             questionArray.push(newQuestion[0]);
             setQuestionArrayToStore(questionArray);
-            history.push({ pathname: '/homework', state: { letsGo: false } });
+            // history.push({ pathname: '/homework', state: { letsGo: false } });
           });
         } else {
           Swal.fire({
@@ -302,6 +303,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(CreateQuestion);
 
 CreateQuestion.propTypes = {
   clientId: PropTypes.number.isRequired,
+  setFilterType: PropTypes.func.isRequired,
   clientUserId: PropTypes.number.isRequired,
   testId: PropTypes.number.isRequired,
   testName: PropTypes.string.isRequired,

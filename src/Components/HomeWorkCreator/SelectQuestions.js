@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
@@ -87,9 +87,9 @@ const SelectQuestions = (props) => {
       });
     console.log(selectedSubjectArray, 'payload');
     setSelectedSubjects(selectedSubjectArray);
-    setTimeout(() => {
-      console.log(selectedSubjects, 'selectedsubjects');
-    }, 5000);
+    // setTimeout(() => {
+    //   console.log(selectedSubjects, 'selectedsubjects');
+    // }, 5000);
 
     setCurrentSubjectArrayToStore(selectedSubjectArray);
     /** ************************************************************* */
@@ -124,14 +124,14 @@ const SelectQuestions = (props) => {
     setTotalQuestions(totalNoOfQuestions);
   };
 
-  const getSelectedBatches = (payload) => {
+  const getSelectedBatches = useCallback((payload) => {
     setSelectedChapters(payload);
 
     const chapterArray = payload.map((e) => e.chapter_id);
     /** ************************Set Chapter Array to Store */
     setCurrentChapterArrayToStore(chapterArray);
     /** ************************************************** */
-  };
+  }, []);
 
   const fetchQuestions = () => {
     const chapterArray = selectedChapters.map((e) => e.chapter_id);
