@@ -6,17 +6,22 @@ import { connect } from 'react-redux';
 import { PageHeader } from '../Common';
 import PreviewQuestions from './PreviewQuestions';
 import QuestionList from './QuestionList';
+import CreateQuestion from './CreateQuestion';
 import SelectQuestions from './SelectQuestions';
+import CkeditorQuestion from './CkeditorQuestion';
+import PreviewCkeditor from './PreviewCkeditor';
 import {
   getHomeworkQuestionArray,
   getCurrentSlide,
 } from '../../redux/reducers/homeworkCreator.reducer';
+import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { homeworkActions } from '../../redux/actions/homework.action';
 import './HomeWorkCreator.scss';
 
 const HomeWorkCreator = (props) => {
   const {
     history,
+    clientId,
     questionArray,
     currentSlide,
     setQuestionArrayToStore,
@@ -26,7 +31,19 @@ const HomeWorkCreator = (props) => {
   const [slide, setSlide] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [homeworkQuestionsArray, setQuestionArray] = useState([]);
-
+  const [filterType, setFilterType] = useState('fetched');
+  //
+  const [ckQuestion, setCkQuestion] = useState('');
+  const [questionImage, setQuestionImage] = useState('');
+  const [ckSolution, setCkSolution] = useState('');
+  const [solutionImage, setSolutionImage] = useState('');
+  const [ckAnswerArray, setCkAnswerArray] = useState([
+    { value: '1', image: '', isSelected: false, text: '' },
+    { value: '2', image: '', isSelected: false, text: '' },
+    { value: '3', image: '', isSelected: false, text: '' },
+    { value: '4', image: '', isSelected: false, text: '' },
+  ]);
+  //
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -44,6 +61,8 @@ const HomeWorkCreator = (props) => {
       clearTests();
     }
   }, [history, clearTests]);
+
+  const addQuestion = () => {};
 
   const fetchQuestions = (result) => {
     setQuestionArray(result);
@@ -107,66 +126,135 @@ const HomeWorkCreator = (props) => {
           </div>
         <p className='fixedPosition'>haha</p>
       </div> */}
-      {isMobile && (
-        <div style={{ marginTop: '7rem' }} className='Homework__carousel'>
-          <Carousel
-            style={{ backgroundColor: 'red' }}
-            showArrows={false}
-            showThumbs={false}
-            autoPlay={false}
-            showStatus={false}
-            swipeable={false}
-            selectedItem={slide}
-            renderIndicator={(onClickHandler, isSelected, index, label) => {
-              if (isSelected) {
-                return (
-                  <li
-                    // className='marginOnDesk'
-                    style={selectedIndicatorStyles}
-                    aria-label={`Selected: ${label} ${index + 1}`}
-                    title={`Selected: ${label} ${index + 1}`}
-                  >
-                    {index === 0 ? 'Filters' : index === 1 ? 'Questions' : 'Selected'}
-                  </li>
-                );
-              }
+      <div
+        style={{ marginTop: '5rem' }}
+        className='hideOnMobileHW d-flex justify-content-around w-100 desktopHeadingsDiv'
+      >
+        <p>Filters</p>
+        {filterType === 'fetched' ? <p>Questions</p> : <p>Add question</p>}
+        {filterType === 'fetched' ? <p>Selected</p> : <p>Preview</p>}
+      </div>
+      <div style={{ marginTop: '7rem' }} className='Homework__carousel hideOnDesktopHW'>
+        <Carousel
+          style={{ backgroundColor: 'red' }}
+          showArrows={false}
+          showThumbs={false}
+          autoPlay={false}
+          showStatus={false}
+          swipeable={false}
+          selectedItem={slide}
+          renderIndicator={(onClickHandler, isSelected, index, label) => {
+            if (isSelected) {
               return (
                 <li
                   // className='marginOnDesk'
-                  style={indicatorStyles}
-                  onClick={() => setCurrentSlide(index)}
-                  onKeyDown={() => setCurrentSlide(index)}
-                  value={index}
-                  key={index}
-                  role='button' // eslint-disable-line
-                  tabIndex={0}
-                  title={`${label} ${index + 1}`}
-                  aria-label={`${label} ${index + 1}`}
+                  style={selectedIndicatorStyles}
+                  aria-label={`Selected: ${label} ${index + 1}`}
+                  title={`Selected: ${label} ${index + 1}`}
                 >
-                  {index === 0 ? 'Filters' : index === 1 ? 'Questions' : 'Selected'}
+                  {index === 0
+                    ? 'Filters'
+                    : index === 1
+                    ? `${filterType === 'fetched' ? 'Questions' : 'Add question'}`
+                    : `${filterType === 'fetched' ? 'Selected' : 'Preview'}`}
                 </li>
               );
-            }}
-          >
-            <SelectQuestions history={history} fetch={fetchQuestions} />
+            }
+            return (
+              <li
+                // className='marginOnDesk'
+                style={indicatorStyles}
+                onClick={() => setCurrentSlide(index)}
+                onKeyDown={() => setCurrentSlide(index)}
+                value={index}
+                key={index}
+                role='button' // eslint-disable-line
+                tabIndex={0}
+                title={`${label} ${index + 1}`}
+                aria-label={`${label} ${index + 1}`}
+              >
+                {index === 0
+                  ? 'Filters'
+                  : index === 1
+                  ? `${filterType === 'fetched' ? 'Questions' : 'Add question'}`
+                  : `${filterType === 'fetched' ? 'Selected' : 'Preview'}`}
+              </li>
+            );
+          }}
+        >
+          <SelectQuestions setFilterType={setFilterType} history={history} fetch={fetchQuestions} />
+          {filterType === 'fetched' ? (
             <QuestionList homeworkQuestions={homeworkQuestionsArray} />
+          ) : (
+            <CkeditorQuestion
+              updateQuestion={setCkQuestion}
+              updateSolution={setCkSolution}
+              updateOptionArray={setCkAnswerArray}
+              updateQuestionImages={setQuestionImage}
+              updateSolutionImage={setSolutionImage}
+              questionImage={questionImage}
+              solutionImage={solutionImage}
+              answerArray={ckAnswerArray}
+              add={addQuestion}
+              clientId={clientId}
+            />
+          )}
+          {filterType === 'fetched' ? (
             <PreviewQuestions history={history} homeworkQuestions={homeworkQuestionsArray} />
-          </Carousel>
-        </div>
-      )}
-      {!isMobile && (
-        <div style={{ marginTop: '3rem' }} className='Homework__desktopViewContainer'>
-          <SelectQuestions desktop history={history} fetch={fetchQuestions} />
-          <QuestionList desktop homeworkQuestions={homeworkQuestionsArray} />
-          <PreviewQuestions desktop history={history} homeworkQuestions={homeworkQuestionsArray} />
-        </div>
-      )}
+          ) : (
+            <PreviewCkeditor
+              question={ckQuestion}
+              solution={ckSolution}
+              options={ckAnswerArray}
+              questionImage={questionImage}
+              solutionImage={solutionImage}
+            />
+          )}
+        </Carousel>
+      </div>
+      <div style={{ marginTop: '-3rem' }} className='Homework__desktopViewContainer hideOnMobileHW'>
+        <SelectQuestions
+          setFilterType={setFilterType}
+          desktop
+          history={history}
+          fetch={fetchQuestions}
+        />
+
+        {filterType === 'fetched' ? (
+          <QuestionList homeworkQuestions={homeworkQuestionsArray} />
+        ) : (
+          <CkeditorQuestion
+            updateQuestion={setCkQuestion}
+            updateSolution={setCkSolution}
+            updateOptionArray={setCkAnswerArray}
+            updateQuestionImages={setQuestionImage}
+            updateSolutionImage={setSolutionImage}
+            questionImage={questionImage}
+            solutionImage={solutionImage}
+            answerArray={ckAnswerArray}
+            add={addQuestion}
+            clientId={clientId}
+          />
+        )}
+        {filterType === 'fetched' ? (
+          <PreviewQuestions history={history} homeworkQuestions={homeworkQuestionsArray} />
+        ) : (
+          <PreviewCkeditor
+            question={ckQuestion}
+            solution={ckSolution}
+            options={ckAnswerArray}
+            questionImage={questionImage}
+            solutionImage={solutionImage}
+          />
+        )}
+      </div>
     </div>
   );
 };
 
 const mapStateToProps = (state) => ({
   questionArray: getHomeworkQuestionArray(state),
+  clientId: getClientId(state),
   currentSlide: getCurrentSlide(state),
 });
 
@@ -188,6 +276,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(HomeWorkCreator);
 
 HomeWorkCreator.propTypes = {
   setCurrentSlide: PropTypes.func.isRequired,
+  clientId: PropTypes.number.isRequired,
   clearTests: PropTypes.func.isRequired,
   currentSlide: PropTypes.number.isRequired,
   history: PropTypes.shape({

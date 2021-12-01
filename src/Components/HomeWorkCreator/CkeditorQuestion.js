@@ -1,13 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
+import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 import Swal from 'sweetalert2';
 import Select from 'react-select';
+import CreatableSelect from 'react-select/creatable';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
+import CancelIcon from '@material-ui/icons/Cancel';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 // NOTE: Use the editor from source (not a build)!
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
@@ -17,7 +22,8 @@ import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { get, apiValidation, uploadImage } from '../../Utilities';
+import { get, apiValidation, uploadImage, post } from '../../Utilities';
+import './HomeWorkCreator.scss';
 
 const CkeditorQuestion = (props) => {
   const {
@@ -30,44 +36,64 @@ const CkeditorQuestion = (props) => {
     updateSolutionImage,
     questionImage,
     add,
+    clientId,
   } = props;
   const [classes, setClasses] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [currentClassId, setCurrentClassId] = useState(0);
   const [chapters, setChapters] = useState([]);
   const [type, setType] = useState('');
+  const [selectedClass, setSelectedClass] = useState('');
+  const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedChapter, setSelectedChapter] = useState('');
-  const [currentSubject, setCurrentSubject] = useState();
+  const [currentSubject, setCurrentSubject] = useState('');
+  const [createNewClassModal, setCreateNewClassModal] = useState(false);
+  const [createNewSubjectModal, setCreateNewSubjectModal] = useState(false);
+  const [createNewChapterModal, setCreateNewChapterModal] = useState(false);
+  const [newCourse, setNewCourse] = useState('');
+  const [newSubject, setNewSubject] = useState('');
+  const [newChapter, setNewChapter] = useState('');
+  const [classesMarkup, setClassesMarkup] = useState('');
+  const [chapterMarkup, setChapterMarkup] = useState('');
+  const [subjectMarkup, setSubjectMarkup] = useState('');
+  const classSelectRef = useRef(null);
+  const subjectSelectRef = useRef(null);
+  const chapterSelectRef = useRef(null);
 
-  const editorConfiguration = {
-    plugins: [Essentials, Bold, Italic, Paragraph, Mathematics],
-    toolbar: ['bold', 'italic', 'math'],
-    math: {
-      engine: 'mathjax', // or katex or function. E.g. (equation, element, display) => { ... }
-      lazyLoad: undefined, // async () => { ... }, called once before rendering first equation if engine doesn't exist.
-      // After resolving promise, plugin renders equations.
-      outputType: 'span', // or span
-      forceOutputType: false, // forces output to use outputType
-      enablePreview: true, // Enable preview view
-    },
-    placeholder: 'Question',
-    styles: ['full', 'side'],
-  };
+  useEffect(() => {
+    if (classes.length) {
+      const markup = classes.map((elem) => {
+        return (
+          <option key={elem.class_id} value={elem.class_id}>
+            {elem.class_name}
+          </option>
+        );
+      });
+      setClassesMarkup(markup);
+    }
+  }, [classes]);
 
-  const solutionConfiguration = {
-    plugins: [Essentials, Bold, Italic, Paragraph, Mathematics],
-    toolbar: ['bold', 'italic', 'math'],
-    math: {
-      engine: 'mathjax', // or katex or function. E.g. (equation, element, display) => { ... }
-      lazyLoad: undefined, // async () => { ... }, called once before rendering first equation if engine doesn't exist.
-      // After resolving promise, plugin renders equations.
-      outputType: 'span', // or span
-      forceOutputType: false, // forces output to use outputType
-      enablePreview: true, // Enable preview view
-    },
-    placeholder: 'Solution',
-    styles: ['full', 'side'],
-  };
+  useEffect(() => {
+    const markup = subjects.map((elem) => {
+      return (
+        <option key={elem.subject_id} value={elem.subject_id}>
+          {elem.subject_name}
+        </option>
+      );
+    });
+    setSubjectMarkup(markup);
+  }, [subjects]);
+
+  useEffect(() => {
+    const markup = chapters.map((elem) => {
+      return (
+        <option key={elem.chapter_id} value={elem.chapter_id}>
+          {elem.chapter_name}
+        </option>
+      );
+    });
+    setChapterMarkup(markup);
+  }, [chapters]);
 
   const typeOfQuestion = [
     { label: 'MCQ - Single Choice', value: 'single' },
@@ -76,49 +102,189 @@ const CkeditorQuestion = (props) => {
   ];
 
   useEffect(() => {
-    get('', '/getClassesForHomeworkCreator').then((res) => {
+    get({ client_id: clientId }, '/getClassesForClient').then((res) => {
       const result = apiValidation(res);
       const selectClasses = result.map((e) => {
         e.label = e.class_name;
         e.value = e.class_id;
         return e;
       });
-      console.log(selectClasses);
+      console.log(selectClasses, 'classess');
+      // selectClasses.push({ label: 'Create new', value: 'createNew', color: '#2699FB' });
       setClasses(selectClasses);
       console.log(result);
     });
   }, []);
 
-  const setCurrentSubjects = (opt) => {
-    setSubjects({ label: null, value: null });
-    const selectSubject = opt.subject_array.map((e) => {
-      e.label = e.subject_name;
-      e.value = e.subject_id;
-      return e;
+  const createNewClassForClient = () => {
+    const payload = {
+      client_id: clientId,
+      class_name: newCourse,
+    };
+    console.log(payload);
+    const newClasses = [...classes];
+    newClasses.push({
+      value: newCourse,
+      label: newCourse,
+      class_name: newCourse,
+      subject_array: [],
+      class_id: newCourse,
     });
+    setClasses(newClasses);
+    classSelectRef.current.value = newCourse;
+    setCreateNewClassModal(false);
+    console.log(newClasses, 'newClasses');
 
-    setCurrentClassId(opt.class_id);
-    setSubjects(selectSubject);
+    post(payload, '/addClassToClient').then((res) => {
+      Swal.fire({
+        title: 'Success',
+        text: 'New course created',
+        icon: 'success',
+        confirmButtonText: `Okay`,
+        showCloseButton: false,
+        showCancelButton: false,
+        cancelButtonText: `No`,
+        customClass: 'Assignments__SweetAlert',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          get({ client_id: clientId }, '/getClassesForClient').then((resp) => {
+            const resultant = apiValidation(resp);
+            setClasses(resultant);
+            const newSelectedCourse = resultant.find((ele) => ele.class_name === newCourse);
+            setSelectedClass(newSelectedCourse);
+            setSubjects(newSelectedCourse.subject_array);
+            setCurrentClassId(newSelectedCourse.class_id);
+            setTimeout(() => {
+              classSelectRef.current.value = newSelectedCourse.class_id;
+            }, 200);
+          });
+        }
+      });
+    });
+  };
+
+  const createNewSubjectForClient = () => {
+    const payload = {
+      class_id: selectedClass.class_id,
+      subject_name: newSubject,
+    };
+    console.log(payload);
+    post(payload, '/addSubject2').then((res) => {
+      Swal.fire({
+        title: 'Success',
+        text: 'New subject added to course',
+        icon: 'success',
+        confirmButtonText: `Okay`,
+        showCloseButton: false,
+        showCancelButton: false,
+        cancelButtonText: `No`,
+        customClass: 'Assignments__SweetAlert',
+      }).then((result) => {
+        setCreateNewSubjectModal(false);
+        get({ client_id: clientId }, '/getClassesForClient').then((resp) => {
+          const resultant = apiValidation(resp);
+          const selectedClassObj = resultant.find((ele) => ele.class_id === selectedClass.class_id);
+          setSubjects(selectedClassObj.subject_array);
+          const selectedSubObj = selectedClassObj.subject_array.find(
+            (ele) => ele.subject_name === newSubject,
+          );
+          setTimeout(() => {
+            subjectSelectRef.current.value = selectedSubObj.subject_id;
+            setSelectedSubject(selectedSubObj);
+          }, 200);
+        });
+      });
+    });
+  };
+
+  const createNewChapterForClient = () => {
+    const payload = {
+      class_subject_id: selectedSubject.class_subject_id,
+      chapter_name: newChapter,
+    };
+    console.log(payload);
+    post(payload, '/addChapter2').then((res) => {
+      Swal.fire({
+        title: 'Success',
+        text: 'New chapter added to subject',
+        icon: 'success',
+        confirmButtonText: `Okay`,
+        showCloseButton: false,
+        showCancelButton: false,
+        cancelButtonText: `No`,
+        customClass: 'Assignments__SweetAlert',
+      }).then((result) => {
+        setCreateNewChapterModal(false);
+        get({ client_id: clientId }, '/getClassesForClient').then((resp) => {
+          const resultant = apiValidation(resp);
+          const selectedClassObj = resultant.find((ele) => ele.class_id === selectedClass.class_id);
+          const selectedSubObj = selectedClassObj.subject_array.find(
+            (ele) => ele.subject_name === selectedSubject.subject_name,
+          );
+          setTimeout(() => {
+            get(
+              { class_subject_id: selectedSubObj.class_subject_id },
+              '/getChaptersOfClassSubject2',
+            ).then((respp) => {
+              /* eslint-disable */
+              const result = apiValidation(respp);
+
+              // modifiedChapters.push({ label: 'Create new', value: 'createNew', color: '#2699FB' });
+              setChapters(result);
+              setTimeout(() => {
+                const selectedChapObj = result.find((ele) => ele.chapter_name === newChapter);
+                chapterSelectRef.current.value = selectedChapObj.chapter_id;
+                setSelectedChapter(selectedChapObj);
+                console.log(result, 'MC');
+              }, 200);
+            });
+          }, 200);
+        });
+      });
+    });
+  };
+
+  const setCurrentSubjects = (opt) => {
+    if (opt.value === 'createNew') {
+      setCreateNewClassModal(true);
+    } else {
+      setSubjects({ label: null, value: null });
+      const selectSubject = opt.subject_array.map((e) => {
+        e.label = e.subject_name;
+        e.value = e.subject_id;
+        return e;
+      });
+      // selectSubject.push({ label: 'Create new', value: 'createNew', color: '#2699FB' });
+      setCurrentClassId(opt.class_id);
+      setSubjects(selectSubject);
+    }
   };
 
   const setCurrentChapters = (opt) => {
-    const subjectArray = [];
-    subjectArray.push(opt.value);
-    setCurrentSubject(opt.value);
-    const payload = {
-      class_id: currentClassId,
-      subject_array: JSON.stringify(subjectArray),
-    };
+    console.log(opt);
+    if (opt.value === 'createNew') {
+      setCreateNewSubjectModal(true);
+    } else {
+      const subjectArray = [];
+      subjectArray.push(opt.value);
+      setCurrentSubject(opt.value);
+      const payload = {
+        class_id: currentClassId,
+        subject_array: JSON.stringify(subjectArray),
+      };
 
-    get(payload, '/getChaptersOfClassSubject').then((res) => {
-      const result = apiValidation(res);
-      const modifiedChapters = result.map((e) => {
-        e.value = e.chapter_id;
-        e.label = e.chapter_name;
-        return e;
+      get(payload, '/getChaptersOfClassSubject').then((res) => {
+        const result = apiValidation(res);
+        const modifiedChapters = result.map((e) => {
+          e.value = e.chapter_id;
+          e.label = e.chapter_name;
+          return e;
+        });
+        // modifiedChapters.push({ label: 'Create new', value: 'createNew', color: '#2699FB' });
+        setChapters(modifiedChapters);
+        console.log(modifiedChapters, 'MC');
       });
-      setChapters(modifiedChapters);
-    });
+    }
   };
 
   const getAttachment = (e, types) => {
@@ -141,6 +307,12 @@ const CkeditorQuestion = (props) => {
       newAnswerArray[value - 1].image = res.filename; // this currently works because value is index+1.
       updateOptionArray(newAnswerArray);
     }); // if made dynamic shall not work
+  };
+
+  const removeAnswerAttachment = (value) => {
+    const newAnswerArray = [...answerArray];
+    newAnswerArray[value - 1].image = '';
+    updateOptionArray(newAnswerArray);
   };
 
   const selectDefaultOption = (value) => {
@@ -184,154 +356,247 @@ const CkeditorQuestion = (props) => {
   };
 
   return (
-    <Card className='Homework__selectCard mb-3 mx-2'>
-      <Row className='m-0 justify-content-center'>
-        <Col xs={5} className='my-3 mx-auto p-0'>
-          <Select
-            options={classes}
-            placeholder='Course'
-            onChange={(opt) => {
-              setCurrentSubjects(opt);
-            }}
+    <>
+      <Card className='mobileMargin Homework__selectCard mb-3 prvm-0'>
+        <Row className='m-0'>
+          <Col xs={5} className='my-2 mx-auto p-0'>
+            {/* <Select
+                options={classes}
+                placeholder='Course'
+                styles={colourStyles}
+                onChange={(opt) => {
+                  setCurrentSubjects(opt);
+                }}
+              /> */}
+            <label className='my-auto w-100 margin-18'>
+              <select
+                ref={classSelectRef}
+                style={{ boxShadow: 'none' }}
+                className='form-control'
+                name='Course'
+                type='select'
+                step='1'
+                placeholder='Course'
+                value={selectedClass.class_id}
+                onChange={(e) => {
+                  if (e.target.value === 'createNew') {
+                    setCurrentSubjects({ value: e.target.value });
+                  } else {
+                    const selectedClassObj = classes.find((ele) => ele.class_id == e.target.value);
+                    setSelectedClass(selectedClassObj);
+                    setCurrentSubjects(selectedClassObj);
+                  }
+                }}
+              >
+                <option value='' disabled selected={!newCourse}>
+                  Course
+                </option>
+                {classesMarkup}
+                <option value='createNew'>Create new class</option>
+              </select>
+            </label>
+          </Col>
+          <Col xs={5} className='my-2 mx-auto p-0'>
+            {/* <Select
+                options={subjects}
+                styles={colourStyles}
+                placeholder='Subject'
+                isDisabled={!currentClassId}
+                onChange={(opt) => setCurrentChapters(opt)}
+              /> */}
+            <label className='my-auto w-100 margin-18'>
+              <select
+                ref={subjectSelectRef}
+                style={{ boxShadow: 'none' }}
+                className='form-control'
+                name='Subject'
+                disabled={!currentClassId}
+                type='select'
+                step='1'
+                placeholder='Subject'
+                value={selectedSubject.subject_id}
+                onChange={(e) => {
+                  if (e.target.value === 'createNew') {
+                    setCurrentChapters({ value: e.target.value });
+                  } else {
+                    const selectedSubObj = subjects.find((ele) => ele.subject_id == e.target.value);
+                    setSelectedSubject(selectedSubObj);
+                    setCurrentChapters(selectedSubObj);
+                  }
+                }}
+              >
+                <option value='' disabled selected>
+                  Subject
+                </option>
+                {subjectMarkup}
+                <option value='createNew'>Create new subject</option>
+              </select>
+            </label>
+          </Col>
+          <Col xs={5} className='my-2 mx-auto p-0'>
+            {/* <Select
+                options={chapters}
+                styles={colourStyles}
+                placeholder='Chapter'
+                isDisabled={!currentSubject}
+                onChange={(opt) => {
+                  if (opt.value === 'createNew') {
+                    setCreateNewChapterModal(true);
+                  } else {
+                    setSelectedChapter(opt.value);
+                  }
+                }}
+              /> */}
+            <label className='my-auto w-100 margin-18'>
+              <select
+                ref={chapterSelectRef}
+                style={{ boxShadow: 'none' }}
+                className='form-control'
+                name='Chapter'
+                disabled={!selectedSubject}
+                type='select'
+                step='1'
+                placeholder='Chapter'
+                value={selectedChapter.chapter_id}
+                onChange={(e) => {
+                  if (e.target.value === 'createNew') {
+                    setCreateNewChapterModal(true);
+                  } else {
+                    const selectedChapObj = chapters.find(
+                      (ele) => ele.chapter_id == e.target.value,
+                    );
+                    setSelectedChapter(selectedChapObj);
+                    // setCurrentChapters(selectedChapObj);
+                  }
+                }}
+              >
+                <option value='' disabled selected>
+                  Chapter
+                </option>
+                {chapterMarkup}
+                <option value='createNew'>Create new chapter</option>
+              </select>
+            </label>
+          </Col>
+          <Col xs={5} className='my-2 mx-auto p-0'>
+            <Select
+              options={typeOfQuestion}
+              placeholder='Type'
+              onChange={(opt) => setType(opt.value)}
+            />
+          </Col>
+        </Row>
+        <div className='d-flex questionUpperC my-2 mx-3'>
+          <textarea
+            onChange={(e) => updateQuestion(e.target.value)}
+            placeholder='Question'
+            className='questionTextarea'
           />
-        </Col>
-        <Col xs={5} className='my-3 mx-auto p-0'>
-          <Select
-            options={subjects}
-            placeholder='Subject'
-            isDisabled={!currentClassId}
-            onChange={(opt) => setCurrentChapters(opt)}
-          />
-        </Col>
-        <Col xs={5} className='my-3 mx-auto p-0'>
-          <Select
-            options={chapters}
-            placeholder='Chapter'
-            isDisabled={!currentSubject}
-            onChange={(opt) => setSelectedChapter(opt.value)}
-          />
-        </Col>
-        <Col xs={5} className='my-3 mx-auto p-0'>
-          <Select
-            options={typeOfQuestion}
-            placeholder='Type'
-            onChange={(opt) => setType(opt.value)}
-          />
-        </Col>
-      </Row>
-      <div className='d-flex my-2 mx-3'>
-        <span className='Homework__ckQuestion my-auto'>Question</span>
-        <span className='ml-auto'>
-          {questionImage && <span className='Homework__ckQuestion mr-2'>Atachment Selected</span>}
-          <span className='Homework__ckAttach'>
+          <span className='Homework__ckAttach mt-1'>
             <label htmlFor='file-input'>
-              <AttachFileIcon />
-              <input
-                id='file-input'
-                type='file'
-                style={{ display: 'none' }}
-                onChange={(e) => getAttachment(e, 'question')}
-                accept='*'
-              />
+              {questionImage ? (
+                <CancelIcon
+                  style={{ width: '30px', marginTop: '8px' }}
+                  onClick={() => {
+                    setTimeout(() => {
+                      updateQuestionImages('');
+                    }, 100);
+                  }}
+                />
+              ) : (
+                <AttachFileIcon style={{ width: '19px', marginTop: '8px' }} />
+              )}
+
+              {!questionImage && (
+                <input
+                  id='file-input'
+                  type='file'
+                  style={{ display: 'none' }}
+                  onChange={(e) => getAttachment(e, 'question')}
+                  accept='*'
+                />
+              )}
             </label>
           </span>
-        </span>
-      </div>
-      <div className='mx-2'>
-        <CKEditor
-          editor={ClassicEditor}
-          config={editorConfiguration}
-          onReady={(editor) => {
-            // You can store the "editor" and use when it is needed.
-            console.log('Editor is ready to use!', editor);
-            console.log(document.getElementsByClassName('ck-balloon-panel').style);
-          }}
-          onChange={(event, editor) => {
-            const data = editor.getData();
-            //   console.log({ event, editor, data });
-            updateQuestion(data);
-          }}
-          onBlur={(event, editor) => {
-            //   console.log('Blur.', editor);
-          }}
-          onFocus={(event, editor) => {
-            //   console.log('Focus.', editor);
-          }}
-        />
-        <div className='mt-4'>
-          {type !== 'subjective' &&
-            answerArray.map((e) => {
-              const configurationOptions = {
-                plugins: [Essentials, Bold, Italic, Paragraph, Mathematics],
-                toolbar: ['bold', 'italic', 'math'],
-                math: {
-                  engine: 'mathjax', // or katex or function. E.g. (equation, element, display) => { ... }
-                  lazyLoad: undefined,
-                  outputType: 'span', // or span
-                  forceOutputType: false, // forces output to use outputType
-                  enablePreview: true, // Enable preview view
-                },
-                placeholder: `Option ${e.value}`,
-                styles: ['full', 'side'],
-              };
-              return (
-                <Row key={e.value}>
-                  <Col xs={10}>
-                    <div className='Homework__inlineEditor m-2'>
-                      <CKEditor
-                        editor={InlineEditor}
-                        config={configurationOptions}
-                        onReady={(editor) => {
-                          // You can store the "editor" and use when it is needed.
-                          //    console.log('Editor is ready to use!', editor);
-                        }}
-                        onChange={(event, editor) => {
-                          const data = editor.getData();
-                          //   console.log({ event, editor, data });
-                          updateOptionText(data, e.value);
-                        }}
-                        onBlur={(event, editor) => {
-                          //     console.log('Blur.', editor);
-                        }}
-                        onFocus={(event, editor) => {
-                          //     console.log('Focus.', editor);
-                        }}
-                      />
-                    </div>
-                  </Col>
-                  <Col xs={2} className='p-0'>
-                    <div className='d-flex'>
-                      <span className='Homework__ckAttach'>
-                        <label htmlFor={`file-inputer${e.value}`}>
-                          <AttachFileIcon />
-                          <input
-                            id={`file-inputer${e.value}`}
-                            type='file'
-                            style={{ display: 'none' }}
-                            onChange={(evt) => getImageAttachment(evt, e.value)}
-                            accept='*'
-                          />
-                        </label>
-                      </span>
+        </div>
+        <div className='mx-2'>
+          <div>
+            {type !== 'subjective' &&
+              answerArray.map((e) => {
+                console.log(e, 'ansArrayele');
+                return (
+                  <Row key={e.value}>
+                    <Col xs={10}>
+                      <div className='Homework__inlineEditor optionUpperC m-2'>
+                        <input
+                          className='optionsInput'
+                          type='text'
+                          onChange={(ev) => updateOptionText(ev.target.value, e.value)}
+                          placeholder={`Option ${e.value}`}
+                        />
+                        <span className='Homework__ckAttach'>
+                          <label htmlFor={`file-inputer${e.value}`}>
+                            {e.image ? (
+                              <CancelIcon
+                                style={{ width: '30px', marginTop: '8px' }}
+                                onClick={() => {
+                                  setTimeout(() => {
+                                    removeAnswerAttachment(e.value);
+                                  }, 100);
+                                }}
+                              />
+                            ) : (
+                              <AttachFileIcon style={{ width: '19px', marginTop: '8px' }} />
+                            )}
+
+                            {answerArray[e.value - 1].image ? null : (
+                              <input
+                                id={`file-inputer${e.value}`}
+                                type='file'
+                                style={{ display: 'none' }}
+                                onChange={(evt) => getImageAttachment(evt, e.value)}
+                                accept='*'
+                              />
+                            )}
+                          </label>
+                        </span>
+                      </div>
+                    </Col>
+                    <Col style={{ display: 'flex' }} xs={1} className='p-0'>
                       <Form.Check
                         type='checkbox'
                         checked={e.isSelected}
                         onChange={() => selectDefaultOption(e.value)}
                         className='my-auto'
+                        name='option'
                       />
-                    </div>
-                  </Col>
-                </Row>
-              );
-            })}
+                    </Col>
+                  </Row>
+                );
+              })}
+          </div>
         </div>
-        <div className='d-flex mt-4 mb-2 mx-3'>
-          <span className='Homework__ckQuestion my-auto'>Solution</span>
-          <span className='ml-auto'>
-            {solutionImage && <span className='Homework__ckQuestion mr-2'>Atachment Selected</span>}
-            <span className='Homework__ckAttach'>
-              <label htmlFor='file-inputer'>
-                <AttachFileIcon />
+        <div className='d-flex questionUpperC my-2 mx-3'>
+          <textarea
+            placeholder='Solution'
+            onChange={(e) => updateSolution(e.target.value)}
+            className='questionTextarea'
+          />
+          <span className='Homework__ckAttach mt-1'>
+            <label htmlFor='file-inputer'>
+              {solutionImage ? (
+                <CancelIcon
+                  style={{ width: '30px', marginTop: '8px' }}
+                  onClick={() => {
+                    setTimeout(() => {
+                      updateSolutionImage('');
+                    }, 100);
+                  }}
+                />
+              ) : (
+                <AttachFileIcon style={{ width: '19px', marginTop: '8px' }} />
+              )}
+              {!solutionImage && (
                 <input
                   id='file-inputer'
                   type='file'
@@ -339,38 +604,83 @@ const CkeditorQuestion = (props) => {
                   onChange={(e) => getAttachment(e, 'solution')}
                   accept='*'
                 />
-              </label>
-            </span>
+              )}
+            </label>
           </span>
         </div>
-        <div className='mx-2'>
-          <CKEditor
-            editor={ClassicEditor}
-            config={solutionConfiguration}
-            onReady={(editor) => {
-              // You can store the "editor" and use when it is needed.
-              console.log('Editor is ready to use!', editor);
-            }}
-            onChange={(event, editor) => {
-              const data = editor.getData();
-              //   console.log({ event, editor, data });
-              updateSolution(data);
-            }}
-            onBlur={(event, editor) => {
-              //     console.log('Blur.', editor);
-            }}
-            onFocus={(event, editor) => {
-              //     console.log('Focus.', editor);
-            }}
-          />
+        <div className='d-flex justify-content-end m-3 mt-4'>
+          <Button variant='customPrimarySmol' onClick={() => addQuestion()}>
+            ADD
+          </Button>
         </div>
-      </div>
-      <div className='d-flex justify-content-end m-3 mt-4'>
-        <Button variant='customPrimarySmol' onClick={() => addQuestion()}>
-          ADD
-        </Button>
-      </div>
-    </Card>
+      </Card>
+
+      <Modal show={createNewClassModal} onHide={() => setCreateNewClassModal(false)} centered>
+        <Modal.Body>
+          <form className='text-center'>
+            <label className='has-float-label w-75 my-3'>
+              <input
+                className='form-control'
+                placeholder='Enter course name'
+                type='text'
+                value={newCourse}
+                onChange={(e) => setNewCourse(e.target.value)}
+              />
+              <span>Enter course name</span>
+            </label>
+          </form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='dashboardBlueOnWhite' onClick={createNewClassForClient}>
+            Create new class
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={createNewSubjectModal} onHide={() => setCreateNewSubjectModal(false)} centered>
+        <Modal.Body>
+          <form className='text-center'>
+            <label className='has-float-label w-75 my-3'>
+              <input
+                className='form-control'
+                placeholder='Enter Subject name'
+                type='text'
+                value={newSubject}
+                onChange={(e) => setNewSubject(e.target.value)}
+              />
+              <span>Enter Subject name</span>
+            </label>
+          </form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='dashboardBlueOnWhite' onClick={createNewSubjectForClient}>
+            Create new subject
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={createNewChapterModal} onHide={() => setCreateNewChapterModal(false)} centered>
+        <Modal.Body>
+          <form className='text-center'>
+            <label className='has-float-label w-75 my-3'>
+              <input
+                className='form-control'
+                placeholder='Enter Chapter name'
+                type='text'
+                value={newChapter}
+                onChange={(e) => setNewChapter(e.target.value)}
+              />
+              <span>Enter Chapter name</span>
+            </label>
+          </form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='dashboardBlueOnWhite' onClick={createNewChapterForClient}>
+            Create new chapter
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 };
 
@@ -386,4 +696,5 @@ CkeditorQuestion.propTypes = {
   solutionImage: PropTypes.string.isRequired,
   updateSolutionImage: PropTypes.func.isRequired,
   add: PropTypes.func.isRequired,
+  clientId: PropTypes.number.isRequired,
 };

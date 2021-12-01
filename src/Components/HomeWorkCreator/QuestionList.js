@@ -199,12 +199,12 @@ const QuestionList = (props) => {
 
   return (
     <Card className='Homework__selectCard mb-3 mobileMargin'>
-      <div className='d-flex mt-3 mx-2'>
+      <div className='d-flex mb-1 mt-3 mx-2'>
         <span className='text-left Homework__questionIndex my-auto'>
           {selectedQuestions.length} selected of {questions.length}
         </span>
         <div className='ml-auto my-auto d-flex'>
-          <Button variant='customPrimarySmol hideOnDesktopHWC' onClick={() => goToNextSlide()}>
+          <Button variant='customPrimarySmol hideOnDesktopHW' onClick={() => goToNextSlide()}>
             Next
           </Button>
 

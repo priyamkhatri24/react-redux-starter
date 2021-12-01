@@ -21,6 +21,8 @@ const SelectQuestions = (props) => {
     setCurrentSubjectArrayToStore,
     setCurrentChapterArrayToStore,
     desktop,
+    setFilterType,
+    setCurrentSlide,
   } = props;
   const [classes, setClasses] = useState([]);
   const [subjects, setSubjects] = useState([]);
@@ -56,6 +58,7 @@ const SelectQuestions = (props) => {
     });
     setSubjects(subjectArray);
     setCurrentQuestion(elem);
+    setFilterType('fetched');
   };
 
   const selectSubject = (elem) => {
@@ -158,7 +161,9 @@ const SelectQuestions = (props) => {
   };
 
   const goToCreateQuestion = () => {
-    history.push('/homework/create');
+    // history.push('/homework/create');
+    setFilterType('create');
+    setCurrentSlide(1);
   };
 
   return (
@@ -384,6 +389,9 @@ const mapDispatchToProps = (dispatch) => {
     setCurrentSubjectArrayToStore: (payload) => {
       dispatch(homeworkActions.setCurrentSubjectArrayToStore(payload));
     },
+    setCurrentSlide: (payload) => {
+      dispatch(homeworkActions.setCurrentSlide(payload));
+    },
   };
 };
 
@@ -397,6 +405,8 @@ SelectQuestions.propTypes = {
   }).isRequired,
   fetch: PropTypes.func.isRequired,
   desktop: PropTypes.bool.isRequired,
+  setFilterType: PropTypes.func.isRequired,
+  setCurrentSlide: PropTypes.func.isRequired,
 };
 
 // {subjects.length>0 && chapters.length === 0 ?

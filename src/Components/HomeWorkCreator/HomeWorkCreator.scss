@@ -4,7 +4,7 @@
   &__carousel .carousel-root .carousel .control-dots {
     position: fixed;
     top: 6%;
-    height: 5vh;
+    height: 7vh;
     background-color: white;
   }
 
@@ -170,6 +170,13 @@
     border-radius: 50px;
     height: 1.5 * $spacer;
     width: 1.5 * $spacer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__inlineEditor {
+    display: flex;
   }
 
   &__inlineEditor .ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-rounded-corners {
@@ -184,11 +191,13 @@
 
   /************************/
   &__preview {
-    font-family: $bold;
+    font-family: 'Montserrat-Bold';
+    font-size: 16px;
   }
 
   &__previewHeading {
-    font-family: $semiBold;
+    font-family: 'Montserrat-Bold';
+    font-size: 14px;
   }
 
   &__previewText {
@@ -251,6 +260,11 @@
   height: 20px;
   width: 20px;
   margin-right: 2px;
+}
+
+[name='option'] {
+  height: 18px;
+  width: 18px;
 }
 
 [name='selectAll'] + label {
@@ -317,12 +331,129 @@
   display: none;
 }
 
+.desktopPreviewContainer {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin: auto;
+}
+
+.hideOnDesktopHW {
+  cursor: default;
+}
+
+.hideOnMobileHW {
+  cursor: default;
+}
+
+// .showOnMobileHW {
+//   cursor: default;
+// }
+
+// .showOnDesktopHW {
+//   cursor: default;
+// }
+
+.prvm-0 {
+  margin-top: 15px !important;
+}
+
+@media screen and (min-width: 775px) {
+  .hideOnDesktopHW {
+    display: none !important;
+  }
+  .prvm-0 {
+    margin-top: 40px !important;
+  }
+}
+
 @media screen and (max-width: 775px) {
   .hideOnDesktopHWC {
+    display: none !important;
+  }
+  .hideOnMobileHW {
+    display: none !important;
+  }
+  .desktopPreviewContainer {
     display: none;
   }
   .mobileMargin {
     margin-right: 8px;
     margin-left: 8px;
   }
+}
+
+.attachementContainer {
+  background-color: transparent;
+  border-left: transparent;
+  border-radius: 0px;
+  display: flex;
+  border-radius: 0px 4px 4px 0px;
+}
+
+.questionTextarea {
+  width: 90%;
+  outline: none;
+  border: transparent;
+  font-family: 'Montserrat-Regular';
+  padding: 10px;
+}
+
+.questionTextarea::placeholder {
+  color: rgba(128, 128, 128, 0.397);
+}
+
+.questionUpperC {
+  width: 90%;
+  margin: auto;
+  border: 1px solid rgba(128, 128, 128, 0.281);
+  border-radius: 4px;
+}
+
+.optionUpperC {
+  width: 90%;
+  padding: 5px 10px;
+  margin: auto;
+  border: 1px solid rgba(128, 128, 128, 0.281);
+  border-radius: 4px;
+}
+
+.optionsInput {
+  width: 100%;
+  border: transparent;
+  outline: none;
+  font-family: 'Montserrat-Regular';
+}
+
+.optionsInput::placeholder {
+  color: rgba(128, 128, 128, 0.397);
+}
+
+.Homework__carousel ul {
+  list-style: none;
+  padding-left: 0px;
+}
+
+.createNewModalInputs {
+  width: 90%;
+  margin: 5px auto;
+  border-radius: 4px;
+  border: 1px solid rgba(128, 128, 128, 0.349);
+  outline: rgba(128, 128, 128, 0.349);
+  padding: 5px;
+  font-family: 'Montserrat-Medium';
+}
+
+.createNewModalInputs::placeholder {
+  font-family: 'Montserrat-Regular';
+  color: rgba(128, 128, 128, 0.349);
+}
+
+.Homework__selectCard::-webkit-scrollbar {
+  display: none;
+}
+
+.desktopHeadingsDiv p {
+  font-size: 14px;
+  font-family: 'Montserrat-Bold';
 }

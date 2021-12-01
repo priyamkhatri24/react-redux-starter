@@ -8,12 +8,19 @@ const PreviewCkeditor = (props) => {
   const { question, solution, options, questionImage, solutionImage } = props;
 
   return (
-    <div className='mx-2 text-left'>
+    <div
+      style={{
+        border: '1px solid rgba(0,0,0,0.125)',
+        padding: '10px',
+      }}
+      className='mobileMargin Homework__selectCard prvm-0 mb-3 text-left'
+    >
       <h1 className='Homework__preview text-center'>Preview</h1>
 
       <h3 className='Homework__previewHeading'>Question</h3>
-      <div className='d-flex'>
-        <MathJax math={String.raw`${question}`} />
+      <div className='d-flex mb-3'>
+        {/* <MathJax math={String.raw`${question}`} /> */}
+        {question}
       </div>
       {questionImage && <img src={questionImage} alt='question ' className='img-fluid m-1' />}
 
@@ -26,7 +33,8 @@ const PreviewCkeditor = (props) => {
             </Col>
             <Col xs={6}>
               <div>
-                <MathJax math={String.raw`${e.text}`} />
+                {/* <MathJax math={String.raw`${e.text}`} /> */}
+                {e.text}
               </div>
             </Col>
             <Col xs={4}>
@@ -40,7 +48,8 @@ const PreviewCkeditor = (props) => {
 
       <h3 className='Homework__previewHeading'>Solution</h3>
       <div className='d-flex'>
-        <MathJax math={String.raw`${solution}`} />
+        {/* <MathJax math={String.raw`${solution}`} /> */}
+        {solution}
       </div>
       {solutionImage && <img src={solutionImage} alt='solution' className='img-fluid m-1' />}
     </div>

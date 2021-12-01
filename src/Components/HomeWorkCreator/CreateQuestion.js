@@ -8,6 +8,7 @@ import Col from 'react-bootstrap/Col';
 import { PageHeader } from '../Common';
 import CkeditorQuestion from './CkeditorQuestion';
 import PreviewCkeditor from './PreviewCkeditor';
+import SelectQuestions from './SelectQuestions';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get, post } from '../../Utilities';
 import {
@@ -19,6 +20,7 @@ import {
   getCurrentSubjectArray,
 } from '../../redux/reducers/homeworkCreator.reducer';
 import { homeworkActions } from '../../redux/actions/homework.action';
+import './HomeWorkCreator.scss';
 
 const CreateQuestion = (props) => {
   const {
@@ -47,6 +49,9 @@ const CreateQuestion = (props) => {
     { value: '3', image: '', isSelected: false, text: '' },
     { value: '4', image: '', isSelected: false, text: '' },
   ]);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, []);
 
   const indicatorStyles = {
     background: 'rgba(0, 0, 0, 0.11)',
@@ -80,12 +85,14 @@ const CreateQuestion = (props) => {
       }),
     );
 
-    const options = ckAnswerArray.map((e) => e.text).join('~');
-    const optionsImage = ckAnswerArray.map((e) => e.image).join('~');
+    const optionsArr = ckAnswerArray.map((e) => e.text);
+    const options = optionsArr.join('').length ? optionsArr.join('~') : '';
+    const optionsImageArr = ckAnswerArray.map((e) => e.image);
+    const optionsImage = optionsImageArr.join('').length ? optionsImageArr.join('~') : '';
 
     const finalPayload = {
       macroskill_array: null,
-      chapter_id: payload.selectedChapter,
+      chapter_id: payload.selectedChapter.chapter_id,
       question_text: ckQuestion,
       question_type: payload.type,
       question_positive_marks: null,
@@ -108,6 +115,8 @@ const CreateQuestion = (props) => {
       hindi_solution_text: null,
     };
 
+    console.log(finalPayload, 'FINAL PAYLOAD');
+
     post(finalPayload, '/addQuestion').then((res) => {
       console.log(res);
       const result = apiValidation(res);
@@ -121,18 +130,18 @@ const CreateQuestion = (props) => {
           client_id: clientId,
           questions_array: JSON.stringify(ques),
           is_draft: isDraft,
-          chapter_array: JSON.stringify(currentChapterArray),
+          chapter_array: JSON.stringify(currentChapterArray), //
           teacher_id: clientUserId,
-          class_subject: JSON.stringify(currentSubjectArray),
+          class_subject: JSON.stringify(currentSubjectArray), //
         };
       } else {
         addQuestionPayload = {
-          chapter_array: JSON.stringify(currentChapterArray),
+          chapter_array: JSON.stringify(currentChapterArray), //
           teacher_id: clientUserId,
           test_id: testId,
           is_draft: isDraft,
           questions_array: JSON.stringify(ques),
-          class_subject: JSON.stringify(currentSubjectArray),
+          class_subject: JSON.stringify(currentSubjectArray), //
           client_id: clientId,
           test_name: testName,
         };
@@ -174,10 +183,10 @@ const CreateQuestion = (props) => {
 
   return (
     <div>
-      <PageHeader title='Create Question' />
-      <div style={{ marginTop: '7rem' }} className='Homework__carousel d-lg-none'>
+      {/* <PageHeader title='Create Question' /> */}
+      <div style={{ marginTop: '25px' }} className='Homework__carousel hideOnDesktopHW'>
         <Carousel
-          style={{ backgroundColor: 'red' }}
+          style={{ backgroundColor: 'red', listStyle: 'none' }}
           showArrows={false}
           showThumbs={false}
           autoPlay={false}
@@ -186,7 +195,7 @@ const CreateQuestion = (props) => {
           renderIndicator={(onClickHandler, isSelected, index, label) => {
             if (isSelected) {
               return (
-                <li
+                <div
                   style={{ ...indicatorStyles, background: 'var(--primary-blue)' }}
                   aria-label={`Selected: ${label} ${index + 1}`}
                   title={`Selected: ${label} ${index + 1}`}
@@ -194,7 +203,7 @@ const CreateQuestion = (props) => {
               );
             }
             return (
-              <li
+              <div
                 style={indicatorStyles}
                 onClick={onClickHandler}
                 onKeyDown={onClickHandler}
@@ -217,6 +226,7 @@ const CreateQuestion = (props) => {
             questionImage={questionImage}
             solutionImage={solutionImage}
             answerArray={ckAnswerArray}
+            clientId={clientId}
             add={addQuestion}
           />
           <PreviewCkeditor
@@ -228,8 +238,8 @@ const CreateQuestion = (props) => {
           />
         </Carousel>
       </div>
-      <Row className='d-none d-lg-flex ' style={{ marginTop: '5rem' }}>
-        <Col xs={8} className='p-0'>
+      <div className='desktopPreviewContainer' style={{ marginTop: '25px' }}>
+        <div className='p-0 w-100'>
           <CkeditorQuestion
             updateQuestion={setCkQuestion}
             updateSolution={setCkSolution}
@@ -240,9 +250,10 @@ const CreateQuestion = (props) => {
             solutionImage={solutionImage}
             answerArray={ckAnswerArray}
             add={addQuestion}
+            clientId={clientId}
           />
-        </Col>
-        <Col xs={4}>
+        </div>
+        <div className='w-100'>
           <PreviewCkeditor
             question={ckQuestion}
             solution={ckSolution}
@@ -250,8 +261,8 @@ const CreateQuestion = (props) => {
             questionImage={questionImage}
             solutionImage={solutionImage}
           />
-        </Col>
-      </Row>
+        </div>
+      </div>
     </div>
   );
 };
