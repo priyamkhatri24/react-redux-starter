@@ -17,7 +17,7 @@ import FinalQuestionCard from '../HomeWorkCreator/FinalQuestionCard';
 import '../HomeWorkCreator/HomeWorkCreator.scss';
 
 const StudentAnalysis = (props) => {
-  const { analysisTestObject, analysisAssignmentObject, analysisSubjectArray } = props;
+  const { analysisTestObject, analysisAssignmentObject, analysisSubjectArray, history } = props;
 
   const [scrollableData, setScrollableData] = useState([]);
   const [questions, setQuestions] = useState([]);
@@ -32,6 +32,7 @@ const StudentAnalysis = (props) => {
       { key: 6, name: 'Negative Marks', value: analysisTestObject.analysis.wrong },
       { key: 7, name: 'Percentage', value: analysisTestObject.analysis.percentage },
     ];
+
     setScrollableData(data);
 
     const subjects = Object.keys(analysisTestObject.result);
@@ -53,7 +54,7 @@ const StudentAnalysis = (props) => {
       <PageHeader title={analysisTestObject.name} />
       <div style={{ marginTop: '4rem' }}>
         <h2 className='text-center mx-3 Analysis__studentHeading'>
-          {analysisAssignmentObject.test_name}
+          {history.location?.state?.name || analysisAssignmentObject.test_name}
         </h2>
         <h6
           className='text-center mx-3 Analysis__studentSubHeading'
@@ -198,7 +199,9 @@ const StudentAnalysis = (props) => {
                       key={index}
                       isViewOnly
                       isAnalysis
-                      language={analysisAssignmentObject.language_type}
+                      language={
+                        history.location?.state?.language || analysisAssignmentObject.language_type
+                      }
                     />
                   );
                 })}
@@ -219,6 +222,7 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps)(StudentAnalysis);
 
 StudentAnalysis.propTypes = {
+  history: PropTypes.instanceOf(Object).isRequired,
   analysisAssignmentObject: PropTypes.instanceOf(Object).isRequired,
   analysisTestObject: PropTypes.instanceOf(Object).isRequired,
   analysisSubjectArray: PropTypes.instanceOf(Array).isRequired,

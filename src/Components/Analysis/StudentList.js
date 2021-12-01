@@ -105,7 +105,7 @@ const StudentList = (props) => {
       });
 
       get(payload, '/getAllSubmittedBatchTestAnalysisOfStudent').then((res) => {
-        console.log(res);
+        console.log(res, 'tests');
         const result = apiValidation(res);
         setTests(result);
       });
@@ -327,6 +327,7 @@ const StudentList = (props) => {
                   history={history}
                   testId={elem.test_id}
                   clientUserId={elem.client_user_id}
+                  language={elem.language_type}
                 />
               );
             })
@@ -338,6 +339,7 @@ const StudentList = (props) => {
         {topButtons[2].isSelected &&
           (homework.length > 0 ? (
             homework.map((elem) => {
+              console.log(elem, 'klkkkkkklklk');
               return (
                 <AnalysisTestsCard
                   key={elem.test_id}
@@ -348,6 +350,7 @@ const StudentList = (props) => {
                   history={history}
                   testId={elem.test_id}
                   clientUserId={elem.client_user_id}
+                  language={elem.language_type}
                 />
               );
             })

@@ -19,6 +19,7 @@ const AnalysisTestCard = (props) => {
     setAnalysisTestObjectToStore,
     testId,
     clientUserId,
+    language,
   } = props;
 
   const goToStudentAnalysis = (elem) => {
@@ -33,10 +34,11 @@ const AnalysisTestCard = (props) => {
 
     Promise.all([subjectAnalysis, testAnalysis]).then((res) => {
       const subjects = apiValidation(res[0]);
+      console.log(res, 'promiseArrayTestAnalysis');
       setAnalysisSubjectArrayToStore(subjects);
       setAnalysisTestObjectToStore({ ...res[1], name });
-      console.log(subjects);
-      history.push('/analysis/studentanalysis');
+      console.log(subjects, 'aaaaaa');
+      history.push({ pathname: '/analysis/studentanalysis', state: { language, name } });
     });
   };
 
@@ -104,4 +106,5 @@ AnalysisTestCard.propTypes = {
   setAnalysisSubjectArrayToStore: PropTypes.func.isRequired,
   clientUserId: PropTypes.number.isRequired,
   testId: PropTypes.number.isRequired,
+  language: PropTypes.string.isRequired,
 };
