@@ -36,7 +36,7 @@ const FileView = (props) => {
       {
         path: './public',
         licenseKey: `${
-          process.env.NODE_ENV === 'development' ? 'q1oxn6WyDRc572siUU5z' : 'GvijE5XlpCs4ewd2fI2q'
+          process.env.NODE_ENV === 'development' ? 'q1oxn6WyDRc572siUU5z' : 'gouud4ANiuGZf2TRV8jO'
         }`,
         initialDoc: `${url}`,
       },

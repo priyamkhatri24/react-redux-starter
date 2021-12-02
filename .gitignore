@@ -29,5 +29,4 @@ netlify.toml
 .VSCodeCounter
 # .vscode
 
-src/Components/Common/FileViewer/public
-public/public
+/public/public

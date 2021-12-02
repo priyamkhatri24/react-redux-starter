@@ -22,7 +22,7 @@ const PreviewCkeditor = (props) => {
       }}
       className='mobileMargin Homework__selectCard prvm-0 mb-3 text-left'
     >
-      <h1 className='Homework__options text-center'>Preview</h1>
+      <h1 className='Homework__options text-center hideOnDesktopHW'>Preview</h1>
 
       <h3 className='Homework__options'>Question</h3>
       <div className='d-flex mb-3 Homework__questionHeading'>
