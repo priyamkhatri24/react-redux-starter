@@ -13,6 +13,7 @@ import Button from 'react-bootstrap/Button';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
+
 import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
 import PhoneIcon from '@material-ui/icons/Phone';
 import LinkIcon from '@material-ui/icons/Link';
@@ -21,7 +22,7 @@ import io from 'socket.io-client';
 import { connect } from 'react-redux';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import Toast from 'react-bootstrap/Toast';
-
+import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { getSocket, getGlobalMessageCount } from '../../redux/reducers/conversations.reducer';
 import { server, get, apiValidation, prodOrDev, post } from '../../Utilities';
@@ -114,6 +115,7 @@ const Dashboard = (props) => {
   const [features, setFeatures] = useState([]);
   const [isToken, setIsToken] = useState(true);
   const [nameDisplay, setNameDisplay] = useState(false);
+  const [activeNav, setActiveNav] = useState('home');
 
   // const nameDisplayTimer = setTimeout(() => {
   //   setNameDisplayCounter(nameDisplayCounter + 1);
@@ -1082,7 +1084,7 @@ const Dashboard = (props) => {
   };
 
   return (
-    <div className='mb-4'>
+    <div style={{ marginBottom: '3.5rem' }}>
       <div className='Dashboard__headerCard pb-3 mb-4'>
         <Row className='pt-4 pr-4'>
           <span className='ml-auto p-3'>{/* <MoreVertIcon /> */}</span>
@@ -1235,6 +1237,8 @@ const Dashboard = (props) => {
           Please allow notifications to receive prompt updates and important notifications
         </Toast.Body>
       </Toast>
+
+      <BottomNavigation history={history} activeNav='home' />
     </div>
   );
 };

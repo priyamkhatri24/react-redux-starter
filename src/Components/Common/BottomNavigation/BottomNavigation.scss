@@ -1,0 +1,41 @@
+.bottomNavigation {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  background-color: #efefef;
+  box-shadow: 0px -4px 8px #1f00750f;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  justify-content: space-around;
+  align-items: center;
+  height: 50px;
+  color: #0000008a;
+}
+.bottomNavItems {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 6px 14px;
+}
+
+.bottomNavSmallText {
+  font-size: 10px;
+  font-family: 'Montserrat-Bold';
+  text-align: center;
+  margin: auto;
+}
+
+.activeNav {
+  background-color: #009ece22;
+  border-radius: 10px;
+  color: #009ece !important;
+}
+
+@media screen and (max-width: 600px) {
+  .bottomNavItems {
+    padding: 6px 9px;
+  }
+}
