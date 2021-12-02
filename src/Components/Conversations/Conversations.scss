@@ -1,0 +1,56 @@
+.conversations-container {
+  height: 100vh;
+}
+.conversations-container::-webkit-scrollbar {
+  display: none;
+}
+
+.dropdown-toggle::after {
+  display: none !important;
+}
+
+.card-subtitle {
+  color: grey;
+  padding-top: 0.4rem;
+  font-size: 13px;
+}
+
+.conversation-container {
+  border: 1px solid #efefef;
+  border-radius: 5px;
+}
+
+.badge {
+  border-radius: 50%;
+  padding: 5px;
+  font-size: 10px;
+}
+
+.hideOnMob {
+  cursor: pointer;
+}
+
+@media screen and (max-width: 700px) {
+  .hideOnMob {
+    display: none;
+  }
+}
+
+.dropdownList {
+  list-style: none;
+  background-color: white;
+  border-radius: 10px;
+  display: absolute;
+  bottom: 35px;
+
+  padding: 10px;
+  border: 1px solid rgba(58, 58, 58, 0.322);
+  font-family: 'Montserrat-Medium';
+}
+.dropdownList li {
+  cursor: pointer;
+  margin: 5px auto;
+}
+.dropdownList li:hover {
+  color: #007bff;
+}

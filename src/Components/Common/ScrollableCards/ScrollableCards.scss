@@ -1,0 +1,380 @@
+.Scrollable {
+  @import '../../../scss/bootstrap';
+
+  &__card {
+    background-color: #fff;
+    min-width: 100%;
+    min-height: 200px;
+    display: flex;
+    overflow-x: auto;
+  }
+
+  &__cardContent {
+    min-width: 150px;
+    margin: 5px;
+
+    @include media-breakpoint-up(md) {
+      min-width: 200px;
+    }
+  }
+
+  &__aspectCardContent {
+    min-width: 200px;
+    height: 113px;
+    border-radius: 10px;
+  }
+
+  &__aspectCardBig {
+    min-width: 315px;
+    height: 177px;
+    // border-radius: 10px;
+  }
+
+  &__card::-webkit-scrollbar {
+    display: none;
+  }
+
+  &__image {
+    height: 60px;
+    width: 60px;
+    border-radius: 50px;
+  }
+
+  &__cardHeading {
+    font-family: 'Montserrat-Regular';
+    font-weight: 700;
+    color: $lightGrey;
+
+    @include media-breakpoint-up(md) {
+      font-size: $spacer * 1.5;
+    }
+  }
+
+  &__cardSubHeading {
+    font-family: 'Montserrat-Regular';
+    font-size: $spacer * 0.75;
+    color: $lightGrey;
+
+    @include media-breakpoint-up(md) {
+      font-size: $spacer;
+    }
+  }
+
+  &__cardFlex {
+    flex-direction: row-reverse;
+    min-height: 113px;
+
+    @include media-breakpoint-up(md) {
+      flex-direction: row;
+    }
+  }
+
+  /****************************Course Cards**********/
+
+  &__courseCardContent {
+    min-width: 220px;
+    margin: 5px;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
+    border-radius: 10px;
+    min-height: 232px;
+    margin: 20px 10px;
+  }
+
+  &__courseCard {
+    background-image: linear-gradient(#f8f8f8, #9b9b9b);
+    min-width: 100%;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto;
+  }
+
+  &__courseCard::-webkit-scrollbar {
+    display: none;
+  }
+
+  &__courseImage {
+    // max-width: 100%;
+    width: 100%;
+    border-radius: 10px 10px 0px 0px;
+    height: 150px;
+    object-fit: cover;
+  }
+
+  &__subHeadTextUnderHeading {
+    font-family: $medium;
+    color: black;
+    display: 'flex';
+    flex-direction: column;
+  }
+
+  &__coursesInitialHeading {
+    position: relative;
+    top: 50%;
+    color: $headingGrey;
+    font-family: $bold;
+    margin: 20px 0px;
+  }
+
+  &__blurCourseImage {
+    filter: blur(3px);
+  }
+
+  &__viewAllButtonForCards {
+    outline: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    background-color: transparent;
+    border: none;
+    font-size: 12px;
+    font-family: $medium;
+    margin: 20px 0px;
+  }
+
+  &__subHeadTextUnderHeading {
+    position: absolute !important;
+    left: 20px !important;
+    display: flex;
+    width: 94%;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  &__smallText {
+    color: $white;
+    font-size: $spacer * 0.625;
+    font-family: $regular;
+    line-height: 13px;
+  }
+
+  &__courseCardHeading {
+    font-size: $spacer * 0.75;
+    font-family: $semiBold;
+    color: $headingGrey;
+    line-height: 15px;
+    text-align: left;
+
+    @include media-breakpoint-up(sm) {
+      font-size: $spacer * 0.85;
+    }
+  }
+
+  &__courseCardSubHeading {
+    font-size: $spacer * 0.625;
+    font-family: $regular;
+    color: $lightGrey;
+    line-height: 13px;
+    text-align: left;
+  }
+
+  &__emoji {
+    width: $spacer !important;
+    height: $spacer !important;
+    color: $dirtyYellow;
+
+    @include media-breakpoint-down(sm) {
+      width: 15px !important;
+      height: 15px !important;
+    }
+  }
+
+  &__bestSeller {
+    background-color: $dirtyYellow;
+    text-align: center;
+    border-radius: 2px;
+    font-size: $spacer * 0.4;
+    line-height: 11px;
+    color: $headingGrey;
+    font-family: $bold;
+    width: fit-content !important;
+
+    @include media-breakpoint-up(sm) {
+      width: 20%;
+    }
+  }
+
+  &__viewAll {
+    font-size: $spacer * 1.5;
+    font-family: $medium;
+    letter-spacing: 2px;
+    line-height: 28px;
+  }
+
+  /****************Fee Cards*****************/
+
+  &__recentlyUsed {
+    font-size: $spacer * 0.875;
+    line-height: 20px;
+    color: $headingGrey;
+    font-family: $semiBold;
+  }
+
+  &__feeCardContent {
+    min-width: 116px;
+    margin: 5px;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
+  }
+
+  &__feecardHeading {
+    font-size: $spacer * 0.625;
+    line-height: 15px;
+    color: $dashboardBlack;
+    font-family: $semiBold;
+
+    @include media-breakpoint-up(sm) {
+      font-size: $spacer * 0.825;
+    }
+  }
+
+  /*****************************Analysis Cards**********************************/
+
+  &__analysisHeading {
+    border-left: 1px solid $primaryBlue;
+    border-bottom: 1px solid $primaryBlue;
+    border-top: 1px solid $primaryBlue;
+    height: 20%;
+    border-radius: 10px 0 0 10px;
+    font-size: $spacer * 0.625;
+    font-family: $medium;
+  }
+
+  &__analysisValue {
+    border: 1px solid $primaryBlue;
+    height: 30%;
+    width: 30%;
+    border-radius: 5px;
+    font-family: $regular;
+    color: $lightGrey;
+    font-size: $spacer * 1.5;
+  }
+
+  //////////////live classes//////////////
+
+  &__liveClassesCard {
+    min-width: 100%;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto;
+  }
+
+  &__liveClassesCard::-webkit-scrollbar {
+    display: none;
+  }
+}
+.smallTextUnderHeading {
+  font-size: 12px;
+  font-family: 'Montserrat-Regular';
+  width: 60%;
+  margin-bottom: 18px;
+}
+@media screen and (min-width: 800px) {
+  .course-card {
+    margin-right: 40px;
+  }
+}
+@media screen and (max-width: 335px) {
+  .smallTextUnderHeading {
+    font-size: 10px;
+  }
+  .Scrollable__coursesInitialHeading {
+    font-size: 16px;
+  }
+}
+
+.scheduleCardDashboard {
+  background-color: #ff000012;
+  display: flex;
+  flex-direction: row;
+  border-radius: 10px;
+  width: 100%;
+  min-width: 300px;
+  min-height: 200px;
+  margin: 20px 0px;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.scheduleCardLeft {
+  flex-grow: 3;
+}
+
+.scheduleCardRight {
+  flex-grow: 1;
+}
+
+.redTag {
+  background-color: red;
+  border-radius: 5px;
+  padding: 3px 17px;
+  color: white;
+}
+
+.scheduleCardHeading {
+  font-family: 'Montserrat-Medium';
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.scheduleCardText {
+  font-family: 'Montserrat-Regular';
+  font-size: 12px;
+  margin: 1px 0px;
+}
+
+.scheduleCardSmallText {
+  font-family: 'Montserrat-Regular';
+  font-size: 10px;
+  margin: 1px 0px;
+  width: 80%;
+}
+
+.teacherImage {
+  width: 83px;
+  position: relative;
+  left: 20px;
+}
+
+.startNowButton {
+  outline: none;
+  border: 1px solid black;
+  background-color: transparent;
+  border-radius: 5px;
+  color: black;
+  font-family: 'Montserrat-Medium';
+  cursor: pointer;
+  margin-top: 20px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.w-85 {
+  width: 85%;
+}
+
+.headingText {
+  font-family: 'Montserrat-Bold';
+  font-size: 20px;
+}
+
+.plainText {
+  font-family: 'Montserrat-Regular';
+  font-size: 12px;
+}
+
+.boldText {
+  font-family: 'Montserrat-Medium';
+  font-size: 12px;
+}
+
+@media screen and (max-width: 770px) {
+  .scheduleCardDashboard {
+    width: 95%;
+  }
+  .w-85 {
+    width: 95%;
+  }
+}

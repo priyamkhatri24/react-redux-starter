@@ -1,0 +1,80 @@
+.Attendance {
+  @import '../../scss/bootstrap';
+
+  &__batchName {
+    font-family: $medium;
+    font-size: $spacer * 0.875;
+    color: $headingGrey;
+    line-height: $spacer * 1.25;
+    text-transform: capitalize;
+
+    @include media-breakpoint-up(sm) {
+      font-size: $spacer * 0.975;
+    }
+  }
+
+  &__batchCount {
+    font-family: $bold;
+    color: var(--primary-blue);
+    font-size: $spacer * 1.5;
+    line-height: 29px;
+  }
+
+  &__batchStudents {
+    font-family: $regular;
+    line-height: 15px;
+    font-size: $spacer * 0.75;
+    color: $dashboardBlack;
+    @include media-breakpoint-up(sm) {
+      font-size: $spacer * 0.875;
+    }
+  }
+
+  &__dot {
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    display: inline-block;
+    font-family: $regular;
+    color: $lightGrey;
+    font-size: $spacer * 0.75;
+    line-height: 15px;
+    padding: 5px;
+  }
+
+  &__bulletNames {
+    font-family: $medium;
+    color: #000;
+    font-size: $spacer * 0.625;
+    line-height: 13px;
+  }
+
+  &__headingSmall {
+    font-size: $spacer * 0.75;
+    font-family: $medium;
+    color: var(--primary-blue);
+    line-height: 15px;
+  }
+  &__Card {
+    width: 75%;
+    margin: auto;
+    @include media-breakpoint-down(sm) {
+      width: 95%;
+    }
+  }
+  &__3buttons {
+    @include media-breakpoint-up(sm) {
+      padding-right: 3rem;
+    }
+  }
+  &__PrevNames {
+    @include media-breakpoint-up(sm) {
+      padding-left: 3rem;
+    }
+  }
+}
+
+::-webkit-scrollbar {
+  width: 0; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
+}

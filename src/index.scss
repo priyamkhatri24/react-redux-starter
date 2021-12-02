@@ -1,0 +1,20 @@
+@import '~bootstrap/scss/bootstrap';
+@import './scss/bootstrap';
+
+// overrides bootstraps default tabbing style
+
+.nav-tabs .nav-link.active {
+  color: var(--primary-blue);
+  border-bottom: 3px solid var(--primary-blue);
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  font-family: $regular;
+}
+
+.nav-link {
+  color: $black;
+  font-family: $regular;
+}
+
+/****************************************Tab Style ENDS*****************/

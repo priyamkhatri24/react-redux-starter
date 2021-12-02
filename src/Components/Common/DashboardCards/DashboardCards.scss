@@ -1,0 +1,31 @@
+.DashboardCards {
+  @import '../../../scss/bootstrap';
+
+  position: relative;
+  width: 95%;
+  border-radius: 10px;
+
+  @include media-breakpoint-up(md) {
+    width: 85%;
+  }
+
+  &__verticalDots {
+    position: absolute;
+    top: 15px;
+    right: 5px;
+  }
+
+  &__heading {
+    font-size: x-large;
+    font-weight: 200;
+    @include media-breakpoint-down(md) {
+      font-size: $spacer * 0.875;
+      font-family: $semiBold;
+      line-height: 20px;
+    }
+  }
+}
+.DashboardCard_Image {
+  text-align: right;
+  padding-right: 40px;
+}

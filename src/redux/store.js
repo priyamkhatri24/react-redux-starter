@@ -1,0 +1,42 @@
+import { createStore, applyMiddleware } from 'redux';
+import thunkMiddleware from 'redux-thunk';
+import { createLogger } from 'redux-logger';
+import { routerMiddleware } from 'connected-react-router';
+import { history } from '../Routing';
+import { saveState, loadState } from './localStorage';
+import rootReducer from './reducers';
+
+const loggerMiddleware = createLogger();
+const persistedState = loadState();
+
+let middleware = [routerMiddleware(history), thunkMiddleware];
+if (process.env.NODE_ENV === 'development') {
+  middleware = [...middleware, loggerMiddleware];
+}
+
+const store = createStore(rootReducer(history), persistedState, applyMiddleware(...middleware));
+
+store.subscribe(() => {
+  saveState({
+    branding: store.getState().branding,
+    clientUserIdUpdate: store.getState().clientUserIdUpdate,
+    userProfile: store.getState().userProfile,
+    color: store.getState().color,
+    testsUpdate: store.getState().testsUpdate,
+    homework: store.getState().homework,
+    course: store.getState().course,
+    studyBin: store.getState().studyBin,
+    conversations: {
+      conversations: store.getState().conversations.conversations,
+      conversation: store.getState().conversations.conversation,
+    },
+    fees: store.getState().fees,
+    analysis: store.getState().analysis,
+    attendance: store.getState().attendance,
+    displayPage: store.getState().displayPage,
+    dashboard: store.getState().dashboard,
+    test: store.getState().test,
+  });
+});
+
+export default store;

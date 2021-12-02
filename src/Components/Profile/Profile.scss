@@ -1,0 +1,49 @@
+.Profile {
+  @import '../../scss/bootstrap';
+
+  &__mainName {
+    font-family: $medium;
+    color: $black;
+  }
+
+  // .nav-link.active {
+  //   color: var(--primary-blue);
+  //   border-bottom: 3px solid var(--primary-blue);
+  //   border-top: 0;
+  //   border-left: 0;
+  //   border-right: 0;
+  //   font-family: $regular;
+  // }
+
+  // .nav-link {
+  //   color: $black;
+  //   font-family: $regular;
+  // }
+
+  &__edit {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 50px;
+    border-radius: 20px 0 0 20px;
+    background-color: $lightestBlue;
+  }
+
+  &__batchname {
+    font-size: $spacer * 0.75;
+    font-family: $semiBold;
+    color: $black;
+  }
+
+  &__batchStudents {
+    color: $black;
+    font-size: $spacer * 1.5;
+    opacity: 0.16;
+    font-family: $bold;
+  }
+
+  &__students {
+    font-size: $spacer * 0.625;
+    font-family: $light;
+  }
+}

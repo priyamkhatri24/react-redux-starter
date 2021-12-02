@@ -1,0 +1,4 @@
+export const firstTimeLoginConstants = {
+  FIRSTTIMELOGIN: 'FIRST_TIME_LOGIN',
+  COMEBACKFROMTESTS: 'COME_BACK_FROM_TESTS',
+};

@@ -1,0 +1,158 @@
+.has-float-label {
+  display: block;
+  position: relative;
+}
+.has-float-label label,
+.has-float-label > span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  cursor: text;
+  font-size: 75%;
+  opacity: 1;
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
+  top: -0.5em;
+  left: 0.75rem;
+  z-index: 3;
+  line-height: 1;
+  padding: 0 1px;
+  font-family: 'Montserrat-Regular';
+  color: rgba(0, 0, 0, 0.87);
+  font-weight: 900;
+}
+
+.has-float-label > input[type='text']:focus + span,
+.has-float-label > input[type='password']:focus + span,
+.has-float-label > input[type='number']:focus + span,
+.has-float-label > input[type='date']:focus + span,
+.has-float-label > input[type='time']:focus + span,
+.has-float-label > textarea:focus + span {
+  color: var(--primary-blue);
+}
+
+.has-float-label > textarea + span {
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.has-float-label label::after,
+.has-float-label > span::after,
+.has-float-label > textarea::after {
+  content: ' ';
+  display: block;
+  position: absolute;
+  background: white;
+  height: 2px;
+  top: 50%;
+  left: -0.2em;
+  right: -0.2em;
+  z-index: -1;
+  color: var(--primary-blue);
+}
+.has-float-label .form-control::-webkit-input-placeholder {
+  opacity: 1;
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
+}
+.has-float-label .form-control::-moz-placeholder {
+  opacity: 1;
+  transition: all 0.2s;
+}
+.has-float-label .form-control:-ms-input-placeholder {
+  opacity: 1;
+  transition: all 0.2s;
+}
+.has-float-label .form-control::placeholder {
+  opacity: 1;
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
+}
+.has-float-label .form-control:placeholder-shown:not(:focus)::-webkit-input-placeholder {
+  opacity: 0;
+}
+.has-float-label .form-control:placeholder-shown:not(:focus)::-moz-placeholder {
+  opacity: 0;
+}
+.has-float-label .form-control:placeholder-shown:not(:focus):-ms-input-placeholder {
+  opacity: 0;
+}
+.has-float-label .form-control:placeholder-shown:not(:focus)::placeholder {
+  opacity: 0;
+}
+.has-float-label .form-control:placeholder-shown:not(:focus) + * {
+  font-size: 14px;
+  opacity: 0.7;
+  top: 0.7em;
+}
+
+.input-group .has-float-label {
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  margin-bottom: 0;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.input-group .has-float-label .form-control {
+  width: 100%;
+  border-radius: 0.25rem;
+}
+
+input[readonly].form-control {
+  background-color: transparent;
+}
+.input-group .has-float-label:not(:last-child),
+.input-group .has-float-label:not(:last-child) .form-control {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+  border-right: 0;
+}
+.input-group .has-float-label:not(:first-child),
+.input-group .has-float-label:not(:first-child) .form-control {
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+}
+
+.has-float-label > input[type='text']:focus,
+.has-float-label > input[type='date']:focus,
+.has-float-label > input[type='password']:focus,
+.has-float-label > input[type='number']:focus,
+.has-float-label > input[type='time']:focus,
+.has-float-label > textarea:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(255, 255, 255, 0.6);
+  outline: 0 none;
+}
+
+.has-float-label > input[type='text'],
+.has-float-label > input[type='password'],
+.has-float-label > input[type='date'],
+.has-float-label > input[type='number'],
+.has-float-label > input[type='text'],
+.has-float-label > input[type='time'] {
+  border-color: rgba(0, 0, 0, 0.54);
+  border-radius: 5px;
+  color: rgba(0, 0, 0, 0.87);
+  font-family: 'Montserrat-SemiBold';
+  height: 32px;
+}
+
+.has-float-label > textarea {
+  border-color: rgba(0, 0, 0, 0.54);
+  border-radius: 5px;
+  color: rgba(0, 0, 0, 0.87);
+  font-family: 'Montserrat-SemiBold';
+}

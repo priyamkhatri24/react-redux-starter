@@ -1,0 +1,15 @@
+@mixin transition-effect($property: all, $time: 0.5s, $direction: ease) {
+  -webkit-transition: $property $time $direction; /* Safari and Chrome */
+  -moz-transition: $property $time $direction; /* Firefox */
+  -o-transition: $property $time $direction; /* IE 9 */
+  -ms-transition: $property $time $direction; /* Opera */
+  transition: $property $time $direction;
+}
+
+@mixin transform-scale($multiplier: 1) {
+  -webkit-transform: scale($multiplier); /* Safari and Chrome */
+  -moz-transform: scale($multiplier); /* Firefox */
+  -ms-transform: scale($multiplier); /* IE 9 */
+  -o-transform: scale($multiplier); /* Opera */
+  transform: scale($multiplier);
+}

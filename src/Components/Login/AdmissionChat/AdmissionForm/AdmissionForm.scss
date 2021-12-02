@@ -1,0 +1,22 @@
+.AdmissionForm {
+  @import '../../../../scss/bootstrap';
+
+  &__navHeading {
+    font-family: 'Montserrat-Regular';
+  }
+
+  &__fileUpload > label > input {
+    display: none;
+  }
+
+  &__avatarImage {
+    height: 50%;
+    width: 50%;
+    border-radius: 100%;
+
+    @include media-breakpoint-up(md) {
+      height: 100%;
+      width: 100%;
+    }
+  }
+}

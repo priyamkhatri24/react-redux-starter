@@ -1,0 +1,76 @@
+.Login {
+  @import '../../scss/bootstrap';
+
+  margin-top: 125px;
+
+  @include media-breakpoint-up(lg) {
+    margin-top: 100px;
+  }
+
+  &__jumbo {
+    width: 50%;
+    background: transparent;
+    max-width: 200px;
+    max-height: 25vh;
+    width: auto;
+    // @include media-breakpoint-down(md) {
+    //   max-height: 25vh;
+    //   width: auto;
+    // }
+  }
+
+  &__footer {
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+    padding-bottom: 30px;
+
+    @include media-breakpoint-down(md) {
+      height: 40px;
+    }
+    text-align: center;
+  }
+
+  &__footerText {
+    font-family: 'Montserrat-Regular';
+    font-size: $spacer * 0.75;
+    color: rgba($color: $black, $alpha: 0.6);
+    line-height: 15px;
+  }
+
+  /***************Signup Form Styles********/
+
+  &__signupHeading {
+    font-family: $bold;
+    font-size: $spacer * 1.5;
+    line-height: 29px;
+    color: $headingGrey;
+    padding-left: 8px;
+    @include media-breakpoint-up(md) {
+      padding-left: 15%;
+      text-align: center;
+    }
+  }
+
+  &__photoPlaceHolder {
+    width: 70px;
+    height: 70px;
+    background-color: $disabledGrey;
+    color: $dashboardBlack;
+    font-size: $spacer * 0.75;
+    line-height: 15px;
+    font-family: $semiBold;
+    text-align: center;
+    border-radius: 70px;
+    padding: 18px;
+    position: relative;
+  }
+
+  &__camera {
+    position: absolute;
+    font-size: $spacer;
+    color: $headingGrey;
+    right: 0;
+    bottom: 0;
+  }
+}

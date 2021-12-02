@@ -1,0 +1,24 @@
+.Preloader {
+  @import '../../../scss/bootstrap';
+
+  width: 25%;
+  @include media-breakpoint-down(md) {
+    width: 75%;
+  }
+
+  &__hello {
+    color: $grey;
+    line-height: $spacer * 1.5;
+  }
+}
+.Login__jumbo {
+  width: 200px;
+  height: auto;
+  border-radius: 10px;
+  margin: 20px auto;
+}
+@media screen and (min-width: 800px) {
+  .Login {
+    margin-top: 30px !important;
+  }
+}

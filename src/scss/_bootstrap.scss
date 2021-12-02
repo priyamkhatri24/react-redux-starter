@@ -1,0 +1,25 @@
+// All imports to be imported in this file
+
+// Project imports to be done here
+@import './variables';
+@import './fonts';
+@import './buttonStyles';
+@import './rangeStyle.scss';
+
+// Mixins imports
+@import './mixins/transitions';
+
+// ***Vendor imports [Bootstrap scss files] to be done here***
+// Import all the bootstrap scss files at the bottom of the file
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+
+// Breakpoint viewport sizes and media queries.
+// Breakpoints are defined as a map of (name: minimum width), order from small to large:
+// (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px)
+// Available mixins: media-breakpoint-up, media-breakpoint-down, media-breakpoint-between, media-breakpoint-only
+@import '~bootstrap/scss/mixins/breakpoints';
+
+// Import to build floating labels in forms
+
+@import './floatingLabel';

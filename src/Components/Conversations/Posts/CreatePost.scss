@@ -1,0 +1,111 @@
+.has-float-label > input[type='text'] {
+  height: 40px;
+  font-size: 14px;
+  font-family: 'Montserrat-Regular';
+}
+
+.has-float-label > input[type='text']:focus {
+  border-color: #2699fb;
+  font-family: 'Montserrat-Regular';
+  font-size: 14px;
+}
+
+.has-float-label > input[type='text']:focus + span {
+  color: #2699fb;
+}
+
+.has-float-label .form-control:placeholder-shown:not(:focus) + * {
+  top: 0.8rem;
+}
+
+.create-post-container {
+  font-family: 'Montserrat-Regular';
+
+  p {
+    font-family: 'Montserrat-Medium';
+  }
+}
+
+.add-cta {
+  font-family: 'Montserrat-Medium';
+
+  &:focus {
+    box-shadow: none;
+  }
+}
+
+.heading {
+  font-family: 'Montserrat-Medium';
+}
+
+.image-preview,
+.doc-preview {
+  position: relative;
+  width: 100%;
+  margin-right: 15px;
+
+  .doc-name {
+    width: 100%;
+    min-height: 120px;
+    font-size: 10px;
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #efefef;
+    border-radius: 5px;
+  }
+
+  .remove-btn {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    padding: 2.5px;
+    margin: 0px;
+
+    .material-icons {
+      font-size: 15px;
+    }
+  }
+}
+
+.file-preview {
+  margin-bottom: 120px;
+}
+
+.bottom-sheet {
+  background-color: #bce0fd;
+
+  height: 120px;
+
+  .action-btn {
+    color: #161616;
+    text-decoration: none;
+
+    &:focus {
+      color: #161616;
+      text-decoration: none;
+      box-shadow: none;
+    }
+  }
+
+  .title {
+    font-size: 14px;
+    font-family: 'Montserrat-Medium';
+  }
+
+  .material-icons {
+    font-size: 20px;
+  }
+  .icon-action {
+    font-size: 10px;
+    font-family: 'Montserrat-Regular';
+    color: #161616;
+  }
+}
+
+.permission-title {
+  font-size: 14px;
+  font-family: 'Montserrat-Medium';
+  color: #000000de;
+}
