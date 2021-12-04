@@ -58,6 +58,7 @@ const AdmissionForm = (props) => {
       client_user_id: clientUserId,
     };
     get(payload, '/getAdmissionFormQuestionsForWeb').then((res) => {
+      console.log(res, 'getAdmissionFormQuestions');
       autoApproval.current = res.auto_approval;
       const formData = res.result
         .filter((e) => e.placeholder !== 'profile_image')

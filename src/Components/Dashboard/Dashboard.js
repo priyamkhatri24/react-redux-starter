@@ -916,26 +916,37 @@ const Dashboard = (props) => {
             <Row className='mx-0 justify-content-center mt-2'>
               <Col xs={8} className='text-left p-3'>
                 <h6 className='Dummy__joinUs'>Join us NOW!</h6>
-                <p className='mb-0 Dummy__joinDetails'>Your are not in any batch yet</p>
-                <p className='Dummy__joinSmall'>Fill admission form to join us.</p>
-                <Button
-                  variant='customPrimarySmol'
-                  className='mb-3'
-                  onClick={() => history.push('/admissionform')}
-                >
-                  Fill admission form
-                </Button>
+                <p className='mb-0 mt-3 Dummy__joinDetails'>Your are not in any batch yet</p>
+                <p className='Dummy__joinSmall mt-1'>Fill admission form to join us.</p>
               </Col>
-              <Col xs={4} className='p-3 mt-3' style={{ textAlign: 'right' }}>
+              <Col xs={4} className='p-2' style={{ textAlign: 'right' }}>
                 {/* form */}
                 <img
                   src={param.feature_icon}
                   alt='form'
-                  style={{ width: '100px' }}
-                  className='DashboardCard_Image'
+                  // style={{ width: '100px' }}
+                  className='Dashboard_image'
                 />
               </Col>
             </Row>
+            <div className='Dashboard__admissionButtonContainer'>
+              {data.admission_form_filled !== 'true' ? (
+                <Button
+                  variant='customPrimarySmol'
+                  className='mb-3 fillAdmissionFormButton'
+                  onClick={() => history.push('/admissionform')}
+                >
+                  Fill admission form
+                </Button>
+              ) : (
+                <p
+                  // style={{ textAlign: 'center' }}
+                  className='Dashboard__attendanceSubHeading mb-3 text-center'
+                >
+                  You have already filled the admission form!
+                </p>
+              )}
+            </div>
           </Card>
         );
       case 'share':
@@ -948,7 +959,7 @@ const Dashboard = (props) => {
               <Col xs={7} className='text-left p-3'>
                 <h6 className='Dummy__connect'>Share app with friends</h6>
                 <p className='mb-0 Dummy__joinDetails'>Enjoying the application?</p>
-                <p className='Dummy__joinSmall'>Share with your friends</p>
+                <p className='Dummy__joinSmall mt-1'>Share with your friends</p>
                 <Button
                   variant='customPrimarySmol'
                   className='mb-3'
@@ -958,13 +969,13 @@ const Dashboard = (props) => {
                   Share
                 </Button>
               </Col>
-              <Col xs={5} className='p-3 mt-3' style={{ textAlign: 'right' }}>
+              <Col xs={5} className='p-3' style={{ textAlign: 'right' }}>
                 {/* share */}
                 <img
                   src={param.feature_icon}
                   alt='form'
                   style={{ width: '100px' }}
-                  className='DashboardCard_Image'
+                  className='Dashboard_image'
                 />
               </Col>
             </Row>

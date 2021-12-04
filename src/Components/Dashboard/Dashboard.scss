@@ -217,6 +217,12 @@
     }
   }
 
+  &__admissionButtonContainer {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
   &__NoticeIcon {
     width: 82px;
     height: 76px;
@@ -349,4 +355,23 @@
   width: 100%;
   transition-duration: 0.5s;
   transition-property: opacity;
+}
+
+.fillAdmissionFormButton {
+  width: 30%;
+}
+
+.Dashboard_image {
+  width: 92px;
+  padding-right: 20px;
+}
+
+@media screen and (max-width: 600px) {
+  .fillAdmissionFormButton {
+    width: 53%;
+  }
+  .Dashboard_image {
+    padding-right: 0px;
+    width: 73px;
+  }
 }
