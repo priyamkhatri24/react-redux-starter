@@ -32,6 +32,7 @@ import './StudyBin.scss';
 import { studyBinActions } from '../../redux/actions/studybin.actions';
 import { getStudyBinFolderIDArray } from '../../redux/reducers/studybin.reducer';
 import StudyBinMenu from './StudyBinMenu';
+import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { loadingActions } from '../../redux/actions/loading.action';
 
 const StudyBin = (props) => {
@@ -794,6 +795,9 @@ const StudyBin = (props) => {
 
       {(roleArray.includes(3) || roleArray.includes(4)) && (
         <AddButton addButtonArray={addButtonArray} />
+      )}
+      {(roleArray.includes(3) || roleArray.includes(4)) && (
+        <BottomNavigation activeNav='library' history={history} />
       )}
 
       <Modal show={showModal} onHide={handleClose} centered>
