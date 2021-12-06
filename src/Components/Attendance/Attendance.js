@@ -9,6 +9,7 @@ import { PageHeader } from '../Common';
 import '../Profile/Profile.scss';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get } from '../../Utilities';
+import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { attendanceActions } from '../../redux/actions/attendance.action';
 import './Attendance.scss';
 
@@ -40,7 +41,7 @@ const Attendance = (props) => {
   return (
     <>
       <PageHeader title='Attendance' search searchFilter={searchUsers} />
-      <div style={{ marginTop: '5rem' }}>
+      <div style={{ marginTop: '5rem', marginBottom: '3.5rem' }}>
         {batches.length > 0 ? (
           batches.map((elem) => {
             return (
@@ -75,6 +76,8 @@ const Attendance = (props) => {
           <p>There Are No batches Added Currently</p>
         )}
       </div>
+
+      <BottomNavigation histroy={history} activeNav='attendance' />
     </>
   );
 };

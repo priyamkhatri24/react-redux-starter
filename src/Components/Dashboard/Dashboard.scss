@@ -35,6 +35,23 @@
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.7);
   }
 
+  &__searchContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+    margin: auto !important;
+    background-color: white;
+    width: 80% !important;
+    height: 30px;
+    box-shadow: 1px 5px 10px #0000002e;
+    border-radius: 5px;
+
+    @include media-breakpoint-down(sm) {
+      width: 90%;
+    }
+  }
+
   &__todaysHitsText {
     font-family: 'Montserrat-SemiBold';
     color: $headingGrey;
@@ -349,4 +366,42 @@
   width: 100%;
   transition-duration: 0.5s;
   transition-property: opacity;
+}
+.searchInputContainer {
+  display: flex;
+  align-items: center;
+  width: 91%;
+  justify-content: flex-start;
+}
+.searchBarInputOnDashboard {
+  width: 100%;
+  outline: none;
+  border: none;
+  margin: auto 5px;
+  font-family: 'Montserrat-Medium';
+  color: gray;
+}
+  
+.searchBarInputOnDashboard::placeholder{
+  color: rgba(128, 128, 128, 0.295);
+}
+@media screen and (max-width: 775px) {
+  .searchInputContainer {
+    width: 87%;
+  }
+}
+@media screen and (max-width: 543px) {
+  .searchInputContainer {
+    width: 79%;
+  }
+}
+@media screen and (max-width: 380px) {
+  .searchInputContainer {
+    width: 75%;
+  }
+}
+@media screen and (max-width: 315px) {
+  .searchInputContainer {
+    width: 72%;
+  }
 }

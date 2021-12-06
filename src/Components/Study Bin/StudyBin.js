@@ -796,9 +796,7 @@ const StudyBin = (props) => {
       {(roleArray.includes(3) || roleArray.includes(4)) && (
         <AddButton addButtonArray={addButtonArray} />
       )}
-      {(roleArray.includes(3) || roleArray.includes(4)) && (
-        <BottomNavigation activeNav='library' history={history} />
-      )}
+      <BottomNavigation activeNav='studyBin' history={history} />
 
       <Modal show={showModal} onHide={handleClose} centered>
         <Modal.Header closeButton>

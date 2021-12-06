@@ -11,6 +11,7 @@ import Modal from 'react-bootstrap/Modal';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import SearchIcon from '@material-ui/icons/Search';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
@@ -1094,33 +1095,69 @@ const Dashboard = (props) => {
           <p className='Dummy__tagline mb-4 text-center mb-5'>{data.client_tag_line}</p>
         )}
 
-        <Row
-          style={{
-            height: `${nameDisplay ? '100%' : '0px'}`,
-            opacity: `${nameDisplay ? 1 : 0}`,
-            // display: `${nameDisplay ? 'flex' : 'none'}`,
-          }}
-          className=''
-          className='nameAndProfilePic mx-auto px-2 mt-4'
-        >
-          <Col
-            xs={4}
-            md={roleArray.includes(1) || roleArray.includes(2) ? 1 : 2}
-            onClick={() => goToProfile()}
+        {roleArray.includes(3) || roleArray.includes(4) ? (
+          <div
+            className='Dashboard__searchContainer nameAndProfilePic'
+            style={{
+              height: `${nameDisplay ? '100%' : '0px'}`,
+              opacity: `${nameDisplay ? 1 : 0}`,
+            }}
           >
-            <img
-              src={profileImage || userAvatar}
-              className='Dashboard__profileImage float-right img-responsive'
-              alt='profile'
-            />
-          </Col>
-          <Col xs={8} md={roleArray.includes(1) || roleArray.includes(2) ? 11 : 10}>
-            <h4 className='Dashboard__headingText'>
-              {time} {firstName}
-            </h4>
-            {/* <h4 className='Dashboard__headingText'></h4> */}
-          </Col>
-        </Row>
+            <div>
+              <img
+                src={`${
+                  process.env.NODE_ENV === 'development' ? YCIcon : branding.branding.client_logo
+                }`}
+                className='img-fluid mx-1 mr-1'
+                alt='profile'
+                width='27px'
+                height='27px'
+              />
+              <SearchIcon style={{ width: '20px', marginLeft: '5px' }} />
+            </div>
+            <div className='searchInputContainer'>
+              <input className='searchBarInputOnDashboard' type='text' placeholder='Search' />
+              <vr />
+              <img
+                src={profileImage || userAvatar}
+                width='27px'
+                height='27px'
+                alt='profile'
+                className='ml-1 mx-1'
+              />
+            </div>
+          </div>
+        ) : null}
+
+        {roleArray.includes(2) || roleArray.includes(1) ? (
+          <Row
+            style={{
+              height: `${nameDisplay ? '100%' : '0px'}`,
+              opacity: `${nameDisplay ? 1 : 0}`,
+              // display: `${nameDisplay ? 'flex' : 'none'}`,
+            }}
+            className=''
+            className='nameAndProfilePic mx-auto px-2 mt-4'
+          >
+            <Col
+              xs={4}
+              md={roleArray.includes(1) || roleArray.includes(2) ? 1 : 2}
+              onClick={() => goToProfile()}
+            >
+              <img
+                src={profileImage || userAvatar}
+                className='Dashboard__profileImage float-right img-responsive'
+                alt='profile'
+              />
+            </Col>
+            <Col xs={8} md={roleArray.includes(1) || roleArray.includes(2) ? 11 : 10}>
+              <h4 className='Dashboard__headingText'>
+                {time} {firstName}
+              </h4>
+              {/* <h4 className='Dashboard__headingText'></h4> */}
+            </Col>
+          </Row>
+        ) : null}
         <Row
           style={{
             display: `${nameDisplay ? 'none' : 'block'}`,

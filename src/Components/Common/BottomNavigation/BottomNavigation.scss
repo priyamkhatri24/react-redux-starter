@@ -97,6 +97,12 @@
   background-color: #009ece12;
   height: 150px;
   border-radius: 10px;
+  cursor: pointer;
+}
+
+.activeSquare {
+  color: #009ece !important;
+  background-color: #0193c028;
 }
 
 @media screen and (max-width: 600px) {

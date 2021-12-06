@@ -33,6 +33,79 @@ const BottomNavigation = (props) => {
     history.push({ pathname: '/courses/teachercourse' });
   };
 
+  const goToDisplayPage = () => {
+    history.push('/displayPage');
+  };
+
+  const goToCRM = () => {
+    history.push('/crm');
+  };
+
+  const goToFees = () => {
+    history.push('/fees');
+  };
+
+  const gotToAttendance = () => {
+    history.push('/attendance');
+  };
+
+  const goToTeacherAnalysis = () => {
+    history.push('/analysis/teacher');
+  };
+
+  const goToTeacherFees = () => {
+    history.push('/teacherfees');
+  };
+
+  const goToHomeWorkCreator = () => {
+    history.push({ pathname: '/homework', state: { letsGo: true } });
+  };
+
+  const goToLiveClasses = () => {
+    history.push({ pathname: '/liveclasses' });
+  };
+
+  const goToAdmissions = () => {
+    history.push({ pathname: '/admissions' });
+  };
+
+  const goToNoticeBoard = () => {
+    history.push({ pathname: '/noticeboard' });
+    // console.log(history);
+  };
+
+  const goToClickedPage = (page) => {
+    if (page === 'displayPage') {
+      goToDisplayPage();
+    } else if (page === 'courses') {
+      goToCoursesForTeacher();
+    } else if (page === 'chats') {
+      goToChats();
+    } else if (page === 'crm') {
+      goToCRM();
+    } else if (page === 'fees') {
+      goToTeacherFees();
+    } else if (page === 'liveClasses') {
+      goToLiveClasses();
+    } else if (page === 'studyBin') {
+      goToStudyBin();
+    } else if (page === 'admission') {
+      goToAdmissions();
+    } else if (page === 'videos') {
+      console.log('videos');
+    } else if (page === 'homeworkCreator') {
+      goToHomeWorkCreator();
+    } else if (page === 'analysis') {
+      goToTeacherAnalysis();
+    } else if (page === 'attendance') {
+      gotToAttendance();
+    } else if (page === 'noticeBoard') {
+      goToNoticeBoard();
+    } else {
+      console.log(page);
+    }
+  };
+
   const moreClicked = () => {
     setScrolledUp((prev) => !prev);
     if (!scrolledUp) {
@@ -56,7 +129,11 @@ const BottomNavigation = (props) => {
         <div className='squaresC'>
           {dashboardData.featureOrder.map((ele) => {
             return (
-              <div key={ele} className='square'>
+              <div
+                onClick={() => goToClickedPage(ele)}
+                key={ele}
+                className={`square${ele === activeNav ? ' activeSquare' : ''}`}
+              >
                 {ele}
               </div>
             );
@@ -80,7 +157,7 @@ const BottomNavigation = (props) => {
         </div>
         <div
           onClick={goToStudyBin}
-          className={`bottomNavItems${active === 'library' ? ' activeNav' : ''}`}
+          className={`bottomNavItems${active === 'studyBin' ? ' activeNav' : ''}`}
         >
           <LibraryIcon />
           <p className='bottomNavSmallText'>Library</p>

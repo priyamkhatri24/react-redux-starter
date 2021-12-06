@@ -38,6 +38,7 @@ import Jitsi from './Jitsi';
 import { createBigBlueButtonStream, rejoinBigBlueButtonStream } from './bbb';
 import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
 import { history } from '../../Routing';
+import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import img from '../../assets/images/Dashboard/student.svg';
 import teacherImg from '../../assets/images/LiveClasses/teacher.png';
 import TimerWatch from './TimerWatch';
@@ -1367,7 +1368,7 @@ class LiveClasses extends Component {
             className='Profile__Tabs'
             justify
           >
-            <Tab id='liveTab' eventKey='Live' title='Live'>
+            <Tab id='liveTab' eventKey='Live' title='Live' style={{ marginBottom: '3.5rem' }}>
               {!triggerJitsi && role === 'teacher' && (
                 <>
                   {/* {liveArray.map((existing) => {
@@ -2130,7 +2131,12 @@ class LiveClasses extends Component {
               )}
             </Tab>
             {liveArray.length <= 0 && (
-              <Tab id='scheduleTab' eventKey='Schedule' title='Schedule'>
+              <Tab
+                id='scheduleTab'
+                eventKey='Schedule'
+                title='Schedule'
+                style={{ marginBottom: '3.5rem' }}
+              >
                 {myScheduled.length > 0 ? (
                   myScheduled.map((elem) => {
                     toBeLive.forEach((ele) => {
@@ -2214,7 +2220,7 @@ class LiveClasses extends Component {
               </Tab>
             )}
             {liveArray.length <= 0 && (
-              <Tab eventKey='Others' title='Others'>
+              <Tab eventKey='Others' title='Others' style={{ marginBottom: '3.5rem' }}>
                 {allLiveClasses.length > 0 ? (
                   allLiveClasses.map((elem) => {
                     toBeLive.forEach((ele) => {
@@ -2372,6 +2378,8 @@ class LiveClasses extends Component {
           </Tab> */}
           </Tabs>
         )}
+
+        <BottomNavigation activeNav='liveClasses' history={history} />
       </div>
     );
   }
