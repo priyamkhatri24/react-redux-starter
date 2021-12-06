@@ -1117,7 +1117,7 @@ const Dashboard = (props) => {
             </div>
             <div className='searchInputContainer'>
               <input className='searchBarInputOnDashboard' type='text' placeholder='Search' />
-              <vr />
+
               <img
                 src={profileImage || userAvatar}
                 width='27px'
