@@ -43,12 +43,12 @@
     margin: auto !important;
     background-color: white;
     width: 80% !important;
-    height: 30px;
+    height: 45px !important;
     box-shadow: 1px 5px 10px #0000002e;
     border-radius: 5px;
 
     @include media-breakpoint-down(sm) {
-      width: 90%;
+      width: 90% !important;
     }
   }
 
@@ -382,8 +382,19 @@
   color: gray;
 }
 
+.vl {
+  border-left: 1px solid rgba(128, 128, 128, 0.3);
+  height: 25px;
+  width: 5px;
+}
+
 .searchBarInputOnDashboard::placeholder {
   color: rgba(128, 128, 128, 0.295);
+}
+@media screen and (max-width: 855px) {
+  .searchInputContainer {
+    width: 90%;
+  }
 }
 @media screen and (max-width: 775px) {
   .searchInputContainer {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Loadable from 'react-loadable';
 import Skeleton from 'react-loading-skeleton';
@@ -116,8 +116,18 @@ const Dashboard = (props) => {
   const [features, setFeatures] = useState([]);
   const [isToken, setIsToken] = useState(true);
   const [nameDisplay, setNameDisplay] = useState(false);
-  const [activeNav, setActiveNav] = useState('home');
+  const searchContainerRef = useRef(null);
 
+  useEffect(() => {
+    if (searchContainerRef?.current)
+      document.addEventListener('scroll', () => {
+        console.log(searchContainerRef?.current.offSet());
+      });
+
+    return document.removeEventListener('scroll', () => {
+      console.log('removed scroll listener');
+    });
+  }, [searchContainerRef]);
   // const nameDisplayTimer = setTimeout(() => {
   //   setNameDisplayCounter(nameDisplayCounter + 1);
   //   if (nameDisplayCounter >= 3) {
@@ -1102,6 +1112,7 @@ const Dashboard = (props) => {
               height: `${nameDisplay ? '100%' : '0px'}`,
               opacity: `${nameDisplay ? 1 : 0}`,
             }}
+            ref={searchContainerRef}
           >
             <div>
               <img
@@ -1117,7 +1128,7 @@ const Dashboard = (props) => {
             </div>
             <div className='searchInputContainer'>
               <input className='searchBarInputOnDashboard' type='text' placeholder='Search' />
-
+              <div className='vl'> </div>
               <img
                 src={profileImage || userAvatar}
                 width='27px'
