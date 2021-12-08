@@ -10,6 +10,7 @@ import { apiValidation, get } from '../../Utilities';
 import FeeCarousel from './FeeCarousel';
 import FeesTimeline from './FeesTimeline';
 import FeeBatches from './FeeBatches';
+import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { PageHeader } from '../Common';
 import { feeActions } from '../../redux/actions/fees.actions';
 import './Fees.scss';
@@ -86,11 +87,17 @@ const TeacherFees = (props) => {
           <Tab
             eventKey='Notifications'
             title='Notifications'
+            style={{ marginBottom: '3.5rem' }}
             onClick={() => handleSelect('Notifications')}
           >
             <FeesTimeline clientId={clientId} />
           </Tab>
-          <Tab eventKey='Batches' title='Batches' onClick={() => handleSelect('Batches')}>
+          <Tab
+            style={{ marginBottom: '3.5rem' }}
+            eventKey='Batches'
+            title='Batches'
+            onClick={() => handleSelect('Batches')}
+          >
             <FeeBatches
               clientId={clientId}
               clientUserId={clientUserId}
@@ -98,7 +105,12 @@ const TeacherFees = (props) => {
               searchString={searchString}
             />
           </Tab>
-          <Tab eventKey='Summary' title='Summary' onClick={() => handleSelect('Summary')}>
+          <Tab
+            style={{ marginBottom: '3.5rem' }}
+            eventKey='Summary'
+            title='Summary'
+            onClick={() => handleSelect('Summary')}
+          >
             <div
               className='Scrollable__viewAll justify-content-center align-items-center d-flex'
               style={{ height: '50vh' }}
@@ -108,6 +120,7 @@ const TeacherFees = (props) => {
           </Tab>
         </Tabs>
       </div>
+      <BottomNavigation activeNav='fees' history={history} />
     </>
   );
 };

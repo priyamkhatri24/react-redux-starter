@@ -12,6 +12,7 @@ import { apiValidation, get } from '../../Utilities';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import AdmissionStyle from '../Admissions/Admissions.style';
 import AnalysisDataCard from './AnalysisDataCard';
+import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { analysisActions } from '../../redux/actions/analysis.action';
 
 const TeacherAnalysis = (props) => {
@@ -173,7 +174,7 @@ const TeacherAnalysis = (props) => {
               <GetAppIcon />
             </span>
           </Row>
-          <div style={{ height: '65vh', overflow: 'scroll' }}>
+          <div style={{ height: '65vh', overflow: 'scroll', paddingBottom: '3rem' }}>
             {tab === 'Assignments' ? (
               assignments.map((elem) => {
                 return (
@@ -201,6 +202,8 @@ const TeacherAnalysis = (props) => {
           </div>
         </div>
       </div>
+
+      <BottomNavigation history={history} activeNav='analysis' />
     </>
   );
 };

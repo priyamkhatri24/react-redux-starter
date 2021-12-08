@@ -105,7 +105,7 @@ const Question = (props) => {
               },
             )}
 
-          {question.question_answer && <p className='Homework__options text-left m-2'>Solution:</p>}
+          {question.question_answer && <p className='Homework__options text-left m-2'>Answer:</p>}
           <div className='d-flex mx-3 mb-2 Homework__multipleOptions text-left'>
             <MathJax math={String.raw`${question.question_answer}`} />
           </div>

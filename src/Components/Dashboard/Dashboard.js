@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Loadable from 'react-loadable';
 import Skeleton from 'react-loading-skeleton';
@@ -11,8 +11,10 @@ import Modal from 'react-bootstrap/Modal';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
+
 import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
 import PhoneIcon from '@material-ui/icons/Phone';
 import LinkIcon from '@material-ui/icons/Link';
@@ -21,7 +23,8 @@ import io from 'socket.io-client';
 import { connect } from 'react-redux';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import Toast from 'react-bootstrap/Toast';
-
+import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
+import GlobalSearchBar from '../Common/GlobalSearchBar/GlobalSearchBar';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { getSocket, getGlobalMessageCount } from '../../redux/reducers/conversations.reducer';
 import { server, get, apiValidation, prodOrDev, post } from '../../Utilities';
@@ -32,6 +35,7 @@ import {
 } from '../../redux/reducers/clientUserId.reducer';
 import userAvatar from '../../assets/images/user.svg';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
+import { firstTimeLoginActions } from '../../redux/actions/firsttimeLogin.action';
 import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { testsActions } from '../../redux/actions/tests.action';
 import { courseActions } from '../../redux/actions/course.action';
@@ -81,6 +85,7 @@ const Dashboard = (props) => {
     setTestResultArrayToStore,
     setTestStartTimeToStore,
     setTestTypeToStore,
+    setFirstTimeLoginToStore,
     setTestIdToStore,
     setHomeworkLanguageTypeToStore,
     setTestEndTimeToStore,
@@ -95,6 +100,10 @@ const Dashboard = (props) => {
     firstTimeLogin,
     socket,
     setSocket,
+    setSelectedCourseToStore,
+    setSelectedChapterToStore,
+    setSelectedSubjectToStore,
+    setSelectedTypeToStore,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
@@ -115,6 +124,16 @@ const Dashboard = (props) => {
   const [isToken, setIsToken] = useState(true);
   const [nameDisplay, setNameDisplay] = useState(false);
 
+  // useEffect(() => {
+  //   if (searchContainerRef?.current)
+  //     document.addEventListener('scroll', () => {
+  //       console.log(searchContainerRef?.current?.offSet());
+  //     });
+
+  //   return document.removeEventListener('scroll', () => {
+  //     console.log('removed scroll listener');
+  //   });
+  // }, [searchContainerRef]);
   // const nameDisplayTimer = setTimeout(() => {
   //   setNameDisplayCounter(nameDisplayCounter + 1);
   //   if (nameDisplayCounter >= 3) {
@@ -280,6 +299,10 @@ const Dashboard = (props) => {
 
   useEffect(() => {
     setHomeworkLanguageTypeToStore('');
+    setSelectedCourseToStore('');
+    setSelectedChapterToStore('');
+    setSelectedTypeToStore('');
+    setSelectedSubjectToStore('');
   }, []);
 
   useEffect(() => {
@@ -1098,8 +1121,13 @@ const Dashboard = (props) => {
   };
 
   return (
-    <div className='mb-4'>
-      <div className='Dashboard__headerCard pb-3 mb-4'>
+    <div style={{ marginBottom: '4rem' }}>
+      <div
+        className='Dashboard__headerCard pb-3'
+        // className={`Dashboard__headerCard pb-3 ${
+        //   roleArray.includes(1) || roleArray.includes(2) ? 'mb-4' : 'mb-0'
+        // }`}
+      >
         <Row className='pt-4 pr-4'>
           <span className='ml-auto p-3'>{/* <MoreVertIcon /> */}</span>
         </Row>
@@ -1108,33 +1136,43 @@ const Dashboard = (props) => {
           <p className='Dummy__tagline mb-4 text-center mb-5'>{data.client_tag_line}</p>
         )}
 
-        <Row
+        <GlobalSearchBar
           style={{
             height: `${nameDisplay ? '100%' : '0px'}`,
             opacity: `${nameDisplay ? 1 : 0}`,
             // display: `${nameDisplay ? 'flex' : 'none'}`,
           }}
-          className=''
-          className='nameAndProfilePic mx-auto px-2 mt-4'
-        >
-          <Col
-            xs={4}
-            md={roleArray.includes(1) || roleArray.includes(2) ? 1 : 2}
-            onClick={() => goToProfile()}
+        />
+
+        {roleArray.includes(2) || roleArray.includes(1) ? (
+          <Row
+            style={{
+              height: `${nameDisplay ? '100%' : '0px'}`,
+              opacity: `${nameDisplay ? 1 : 0}`,
+              // display: `${nameDisplay ? 'flex' : 'none'}`,
+            }}
+            className=''
+            className='nameAndProfilePic mx-auto px-2 mt-4'
           >
-            <img
-              src={profileImage || userAvatar}
-              className='Dashboard__profileImage float-right img-responsive'
-              alt='profile'
-            />
-          </Col>
-          <Col xs={8} md={roleArray.includes(1) || roleArray.includes(2) ? 11 : 10}>
-            <h4 className='Dashboard__headingText'>
-              {time} {firstName}
-            </h4>
-            {/* <h4 className='Dashboard__headingText'></h4> */}
-          </Col>
-        </Row>
+            <Col
+              xs={4}
+              md={roleArray.includes(1) || roleArray.includes(2) ? 1 : 2}
+              onClick={() => goToProfile()}
+            >
+              <img
+                src={profileImage || userAvatar}
+                className='Dashboard__profileImage float-right img-responsive'
+                alt='profile'
+              />
+            </Col>
+            <Col xs={8} md={roleArray.includes(1) || roleArray.includes(2) ? 11 : 10}>
+              <h4 className='Dashboard__headingText'>
+                {time} {firstName}
+              </h4>
+              {/* <h4 className='Dashboard__headingText'></h4> */}
+            </Col>
+          </Row>
+        ) : null}
         <Row
           style={{
             display: `${nameDisplay ? 'none' : 'block'}`,
@@ -1251,6 +1289,8 @@ const Dashboard = (props) => {
           Please allow notifications to receive prompt updates and important notifications
         </Toast.Body>
       </Toast>
+
+      <BottomNavigation history={history} activeNav='home' />
     </div>
   );
 };
@@ -1276,6 +1316,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   clearProfile: () => {
     dispatch(userProfileActions.clearUserProfile());
+  },
+  setFirstTimeLoginToStore: () => {
+    dispatch(firstTimeLoginActions.setFirstTimeLoginToStore());
   },
   setTestIdToStore: (payload) => {
     dispatch(testsActions.setTestIdToStore(payload));
@@ -1310,9 +1353,20 @@ const mapDispatchToProps = (dispatch) => ({
   setDashboardDataToStore: (payload) => {
     dispatch(dashboardActions.setDashboardDataToStore(payload));
   },
-
   setAnalysisStudentObjectToStore: (payload) => {
     dispatch(analysisActions.setAnalysisStudentObjectToStore(payload));
+  },
+  setSelectedCourseToStore: (payload) => {
+    dispatch(homeworkActions.setSelectedCourseToStore(payload));
+  },
+  setSelectedSubjectToStore: (payload) => {
+    dispatch(homeworkActions.setSelectedSubjectToStore(payload));
+  },
+  setSelectedChapterToStore: (payload) => {
+    dispatch(homeworkActions.setSelectedChapterToStore(payload));
+  },
+  setSelectedTypeToStore: (payload) => {
+    dispatch(homeworkActions.setSelectedTypeToStore(payload));
   },
 });
 
@@ -1327,6 +1381,7 @@ Dashboard.propTypes = {
   setTestEndTimeToStore: PropTypes.func.isRequired,
   setTestStartTimeToStore: PropTypes.func.isRequired,
   setTestIdToStore: PropTypes.func.isRequired,
+  setFirstTimeLoginToStore: PropTypes.func.isRequired,
   setTestTypeToStore: PropTypes.func.isRequired,
   setHomeworkLanguageTypeToStore: PropTypes.func.isRequired,
   setTestLanguageToStore: PropTypes.func.isRequired,
@@ -1350,4 +1405,8 @@ Dashboard.propTypes = {
   setSocket: PropTypes.func.isRequired,
   firstTimeLogin: PropTypes.bool.isRequired,
   socket: PropTypes.instanceOf(Object).isRequired,
+  setSelectedCourseToStore: PropTypes.func.isRequired,
+  setSelectedChapterToStore: PropTypes.func.isRequired,
+  setSelectedTypeToStore: PropTypes.func.isRequired,
+  setSelectedSubjectToStore: PropTypes.func.isRequired,
 };

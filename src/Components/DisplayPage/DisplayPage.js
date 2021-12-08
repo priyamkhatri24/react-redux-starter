@@ -9,6 +9,7 @@ import Modal from 'react-bootstrap/Modal';
 import Swal from 'sweetalert2';
 import './DisplayPage.scss';
 import { PageHeader, AspectCards } from '../Common';
+import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import {
   apiValidation,
@@ -130,7 +131,7 @@ const DisplayPage = (props) => {
   return (
     <>
       <PageHeader title='Display Page' />
-      <div className='Display' style={{ marginTop: '4rem' }}>
+      <div className='Display' style={{ marginTop: '4rem', marginBottom: '3rem' }}>
         <div>
           <Button
             variant='courseBlueOnWhite'
@@ -235,6 +236,8 @@ const DisplayPage = (props) => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <BottomNavigation activeNav='displayPage' history={history} />
     </>
   );
 };

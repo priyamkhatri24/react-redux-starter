@@ -6,6 +6,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { get, apiValidation } from '../../Utilities';
 import ConversationCard from './desktop/ConversationCard';
+import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import MobileConversationCard from './mobile/MobileConversationCard';
 import FocusedConversation from './desktop/FocusedConversation';
 import ConversationsHeader from './ConversationsHeader';
@@ -125,6 +126,8 @@ const Conversations = function ({
           </Col>
         </div>
       </Row>
+
+      <BottomNavigation history={history} activeNav='chats' />
     </Container>
   );
 };

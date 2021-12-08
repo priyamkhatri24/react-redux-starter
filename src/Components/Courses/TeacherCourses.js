@@ -19,6 +19,7 @@ import { getCourseId } from '../../redux/reducers/course.reducer';
 import { get, post } from '../../Utilities/Remote';
 import { apiValidation, shareThis } from '../../Utilities';
 import { Readmore, PageHeader } from '../Common';
+import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { courseActions } from '../../redux/actions/course.action';
 import './Courses.scss';
 import '../Profile/Profile.scss';
@@ -189,14 +190,14 @@ const TeacherCourses = (props) => {
           <Tab
             eventKey='My Courses'
             title='My Courses'
-            style={{ marginTop: '7rem' }}
+            style={{ marginTop: '7rem', marginBottom: '4rem' }}
             onclick={() => handleSelect('My Courses')}
           >
             <Button
               variant='customPrimaryWithShadow'
               style={{
                 position: 'fixed',
-                bottom: 10,
+                bottom: 70,
                 zIndex: '10',
                 left: '50%',
                 transform: 'translate(-50%, 0)',
@@ -360,6 +361,8 @@ const TeacherCourses = (props) => {
             </Button>
           </Modal.Footer>
         </Modal>
+
+        <BottomNavigation activeNav='courses' history={history} />
       </div>
       <Toast
         style={{
