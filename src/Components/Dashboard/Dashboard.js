@@ -11,7 +11,7 @@ import Modal from 'react-bootstrap/Modal';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import SearchIcon from '@material-ui/icons/Search';
+
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
@@ -24,6 +24,7 @@ import { connect } from 'react-redux';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import Toast from 'react-bootstrap/Toast';
 import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
+import GlobalSearchBar from '../Common/GlobalSearchBar/GlobalSearchBar';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { getSocket, getGlobalMessageCount } from '../../redux/reducers/conversations.reducer';
 import { server, get, apiValidation, prodOrDev, post } from '../../Utilities';
@@ -34,6 +35,7 @@ import {
 } from '../../redux/reducers/clientUserId.reducer';
 import userAvatar from '../../assets/images/user.svg';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
+import { firstTimeLoginActions } from '../../redux/actions/firsttimeLogin.action';
 import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { testsActions } from '../../redux/actions/tests.action';
 import { courseActions } from '../../redux/actions/course.action';
@@ -83,6 +85,7 @@ const Dashboard = (props) => {
     setTestResultArrayToStore,
     setTestStartTimeToStore,
     setTestTypeToStore,
+    setFirstTimeLoginToStore,
     setTestIdToStore,
     setHomeworkLanguageTypeToStore,
     setTestEndTimeToStore,
@@ -97,6 +100,10 @@ const Dashboard = (props) => {
     firstTimeLogin,
     socket,
     setSocket,
+    setSelectedCourseToStore,
+    setSelectedChapterToStore,
+    setSelectedSubjectToStore,
+    setSelectedTypeToStore,
   } = props;
   const [time, setTime] = useState('');
   const [notices, setNotices] = useState([]);
@@ -116,18 +123,17 @@ const Dashboard = (props) => {
   const [features, setFeatures] = useState([]);
   const [isToken, setIsToken] = useState(true);
   const [nameDisplay, setNameDisplay] = useState(false);
-  const searchContainerRef = useRef(null);
 
-  useEffect(() => {
-    if (searchContainerRef?.current)
-      document.addEventListener('scroll', () => {
-        console.log(searchContainerRef?.current.offSet());
-      });
+  // useEffect(() => {
+  //   if (searchContainerRef?.current)
+  //     document.addEventListener('scroll', () => {
+  //       console.log(searchContainerRef?.current?.offSet());
+  //     });
 
-    return document.removeEventListener('scroll', () => {
-      console.log('removed scroll listener');
-    });
-  }, [searchContainerRef]);
+  //   return document.removeEventListener('scroll', () => {
+  //     console.log('removed scroll listener');
+  //   });
+  // }, [searchContainerRef]);
   // const nameDisplayTimer = setTimeout(() => {
   //   setNameDisplayCounter(nameDisplayCounter + 1);
   //   if (nameDisplayCounter >= 3) {
@@ -293,6 +299,10 @@ const Dashboard = (props) => {
 
   useEffect(() => {
     setHomeworkLanguageTypeToStore('');
+    setSelectedCourseToStore('');
+    setSelectedChapterToStore('');
+    setSelectedTypeToStore('');
+    setSelectedSubjectToStore('');
   }, []);
 
   useEffect(() => {
@@ -1095,8 +1105,13 @@ const Dashboard = (props) => {
   };
 
   return (
-    <div style={{ marginBottom: '3.5rem' }}>
-      <div className='Dashboard__headerCard pb-3 mb-4'>
+    <div style={{ marginBottom: '4rem' }}>
+      <div
+        className='Dashboard__headerCard pb-3'
+        // className={`Dashboard__headerCard pb-3 ${
+        //   roleArray.includes(1) || roleArray.includes(2) ? 'mb-4' : 'mb-0'
+        // }`}
+      >
         <Row className='pt-4 pr-4'>
           <span className='ml-auto p-3'>{/* <MoreVertIcon /> */}</span>
         </Row>
@@ -1105,40 +1120,13 @@ const Dashboard = (props) => {
           <p className='Dummy__tagline mb-4 text-center mb-5'>{data.client_tag_line}</p>
         )}
 
-        {roleArray.includes(3) || roleArray.includes(4) ? (
-          <div
-            className='Dashboard__searchContainer nameAndProfilePic'
-            style={{
-              height: `${nameDisplay ? '100%' : '0px'}`,
-              opacity: `${nameDisplay ? 1 : 0}`,
-            }}
-            ref={searchContainerRef}
-          >
-            <div>
-              <img
-                src={`${
-                  process.env.NODE_ENV === 'development' ? YCIcon : branding.branding.client_logo
-                }`}
-                className='img-fluid mx-1 mr-1'
-                alt='profile'
-                width='27px'
-                height='27px'
-              />
-              <SearchIcon style={{ width: '20px', marginLeft: '5px' }} />
-            </div>
-            <div className='searchInputContainer'>
-              <input className='searchBarInputOnDashboard' type='text' placeholder='Search' />
-              <div className='vl'> </div>
-              <img
-                src={profileImage || userAvatar}
-                width='27px'
-                height='27px'
-                alt='profile'
-                className='ml-1 mx-1'
-              />
-            </div>
-          </div>
-        ) : null}
+        <GlobalSearchBar
+          style={{
+            height: `${nameDisplay ? '100%' : '0px'}`,
+            opacity: `${nameDisplay ? 1 : 0}`,
+            // display: `${nameDisplay ? 'flex' : 'none'}`,
+          }}
+        />
 
         {roleArray.includes(2) || roleArray.includes(1) ? (
           <Row
@@ -1313,6 +1301,9 @@ const mapDispatchToProps = (dispatch) => ({
   clearProfile: () => {
     dispatch(userProfileActions.clearUserProfile());
   },
+  setFirstTimeLoginToStore: () => {
+    dispatch(firstTimeLoginActions.setFirstTimeLoginToStore());
+  },
   setTestIdToStore: (payload) => {
     dispatch(testsActions.setTestIdToStore(payload));
   },
@@ -1346,9 +1337,20 @@ const mapDispatchToProps = (dispatch) => ({
   setDashboardDataToStore: (payload) => {
     dispatch(dashboardActions.setDashboardDataToStore(payload));
   },
-
   setAnalysisStudentObjectToStore: (payload) => {
     dispatch(analysisActions.setAnalysisStudentObjectToStore(payload));
+  },
+  setSelectedCourseToStore: (payload) => {
+    dispatch(homeworkActions.setSelectedCourseToStore(payload));
+  },
+  setSelectedSubjectToStore: (payload) => {
+    dispatch(homeworkActions.setSelectedSubjectToStore(payload));
+  },
+  setSelectedChapterToStore: (payload) => {
+    dispatch(homeworkActions.setSelectedChapterToStore(payload));
+  },
+  setSelectedTypeToStore: (payload) => {
+    dispatch(homeworkActions.setSelectedTypeToStore(payload));
   },
 });
 
@@ -1363,6 +1365,7 @@ Dashboard.propTypes = {
   setTestEndTimeToStore: PropTypes.func.isRequired,
   setTestStartTimeToStore: PropTypes.func.isRequired,
   setTestIdToStore: PropTypes.func.isRequired,
+  setFirstTimeLoginToStore: PropTypes.func.isRequired,
   setTestTypeToStore: PropTypes.func.isRequired,
   setHomeworkLanguageTypeToStore: PropTypes.func.isRequired,
   setTestLanguageToStore: PropTypes.func.isRequired,
@@ -1386,4 +1389,8 @@ Dashboard.propTypes = {
   setSocket: PropTypes.func.isRequired,
   firstTimeLogin: PropTypes.bool.isRequired,
   socket: PropTypes.instanceOf(Object).isRequired,
+  setSelectedCourseToStore: PropTypes.func.isRequired,
+  setSelectedChapterToStore: PropTypes.func.isRequired,
+  setSelectedTypeToStore: PropTypes.func.isRequired,
+  setSelectedSubjectToStore: PropTypes.func.isRequired,
 };

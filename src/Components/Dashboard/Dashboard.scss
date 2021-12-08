@@ -7,6 +7,10 @@
     // background: rgba(38, 153, 251, 0.7);
     background: var(--primary-blue);
     background: linear-gradient(180deg, var(--primary-blue) 0%, rgba(249, 253, 255, 0.7) 100%);
+
+    @include media-breakpoint-up(sm) {
+      height: 260px;
+    }
   }
 
   &__profileImage {
@@ -33,23 +37,6 @@
     border-radius: 10px;
     background-color: $white;
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.7);
-  }
-
-  &__searchContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 10px;
-    margin: auto !important;
-    background-color: white;
-    width: 80% !important;
-    height: 45px !important;
-    box-shadow: 1px 5px 10px #0000002e;
-    border-radius: 5px;
-
-    @include media-breakpoint-down(sm) {
-      width: 90% !important;
-    }
   }
 
   &__todaysHitsText {
@@ -367,52 +354,9 @@
   transition-duration: 0.5s;
   transition-property: opacity;
 }
-.searchInputContainer {
-  display: flex;
-  align-items: center;
-  width: 91%;
-  justify-content: flex-start;
-}
-.searchBarInputOnDashboard {
-  width: 100%;
-  outline: none;
-  border: none;
-  margin: auto 5px;
-  font-family: 'Montserrat-Medium';
-  color: gray;
-}
 
-.vl {
-  border-left: 1px solid rgba(128, 128, 128, 0.3);
-  height: 25px;
-  width: 5px;
-}
-
-.searchBarInputOnDashboard::placeholder {
-  color: rgba(128, 128, 128, 0.295);
-}
-@media screen and (max-width: 855px) {
-  .searchInputContainer {
-    width: 90%;
-  }
-}
-@media screen and (max-width: 775px) {
-  .searchInputContainer {
-    width: 87%;
-  }
-}
-@media screen and (max-width: 543px) {
-  .searchInputContainer {
-    width: 79%;
-  }
-}
-@media screen and (max-width: 380px) {
-  .searchInputContainer {
-    width: 75%;
-  }
-}
-@media screen and (max-width: 315px) {
-  .searchInputContainer {
-    width: 72%;
+@media screen and (max-width: 600px) {
+  .Dashboard__headerCard {
+    margin-bottom: 60px;
   }
 }

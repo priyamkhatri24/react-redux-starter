@@ -5,7 +5,16 @@ import PropTypes from 'prop-types';
 import MathJax from 'react-mathjax-preview';
 
 const PreviewCkeditor = (props) => {
-  const { question, solution, options, questionImage, solutionImage, type, answerText } = props;
+  const {
+    question,
+    solution,
+    options,
+    questionImage,
+    solutionImage,
+    type,
+    answerText,
+    compressed,
+  } = props;
 
   const [qType, setQType] = useState('');
 
@@ -16,11 +25,10 @@ const PreviewCkeditor = (props) => {
 
   return (
     <div
-      style={{
-        border: '1px solid rgba(0,0,0,0.125)',
-        padding: '10px',
-      }}
-      className='mobileMargin Homework__selectCard prvm-0 mb-3 text-left'
+      style={{ border: '1px solid rgba(0,0,0,0.125)', padding: '10px' }}
+      className={`mobileMargin Homework__selectCard prvm-0 mb-3 text-left${
+        compressed ? ' expanded' : ''
+      }`}
     >
       <h1 className='Homework__options text-center hideOnDesktopHW'>Preview</h1>
 
@@ -106,4 +114,9 @@ PreviewCkeditor.propTypes = {
   solutionImage: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   answerText: PropTypes.string.isRequired,
+  compressed: PropTypes.bool,
+};
+
+PreviewCkeditor.defaultProps = {
+  compressed: false,
 };

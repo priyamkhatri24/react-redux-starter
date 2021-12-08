@@ -13,23 +13,51 @@ import './BottomNavigation.scss';
 const BottomNavigation = (props) => {
   const { history, roleArray, activeNav, dashboardData } = props;
   const [scrolledUp, setScrolledUp] = useState(false);
+  const [filteredFeatures, setFilteredFeatures] = useState([]);
   const [active, setActive] = useState(activeNav);
 
-  // useEffect(() => {}, []);
+  useEffect(() => {
+    const { feature, featureOrder } = dashboardData;
+    /* eslint-disable */
+    const filtered = featureOrder.map((ele) => {
+      if (Object.keys(feature).includes(ele)) {
+        feature[ele].keyName = ele;
+        return feature[ele];
+      }
+    });
+    console.log(filtered, 'lol');
+    setFilteredFeatures(filtered);
+  }, [dashboardData]);
+
+  useEffect(() => {
+    if (scrolledUp) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [scrolledUp]);
 
   const goToHome = () => {
+    setScrolledUp(false);
+    setActive(activeNav);
     history.push('/');
   };
 
   const goToChats = () => {
+    setScrolledUp(false);
+    setActive(activeNav);
     history.push('/conversations');
   };
 
   const goToStudyBin = () => {
+    setScrolledUp(false);
+    setActive(activeNav);
     history.push('/studybin');
   };
 
   const goToCoursesForTeacher = () => {
+    setScrolledUp(false);
+    setActive(activeNav);
     history.push({ pathname: '/courses/teachercourse' });
   };
 
@@ -75,6 +103,9 @@ const BottomNavigation = (props) => {
   };
 
   const goToClickedPage = (page) => {
+    setScrolledUp(false);
+    setActive(activeNav);
+    document.body.style.overflow = 'auto';
     if (page === 'displayPage') {
       goToDisplayPage();
     } else if (page === 'courses') {
@@ -127,14 +158,20 @@ const BottomNavigation = (props) => {
       <div className={`bottomScrollBar${scrolledUp ? ' scrolledUp' : ''}`}>
         <div onClick={backDropClicked} className='horizontalLine' />
         <div className='squaresC'>
-          {dashboardData.featureOrder.map((ele) => {
+          {filteredFeatures?.map((ele) => {
+            if (ele.keyName === 'share') return null;
             return (
               <div
-                onClick={() => goToClickedPage(ele)}
-                key={ele}
-                className={`square${ele === activeNav ? ' activeSquare' : ''}`}
+                onClick={() => goToClickedPage(ele.keyName)}
+                key={ele.keyName}
+                className={`square${ele.keyName === activeNav ? ' activeSquare' : ''}`}
               >
-                {ele}
+                <img src={ele.feature_icon} className='BNImage' />
+                <p className='textFeatureNameBN'>
+                  {ele.client_feature_name.startsWith('<')
+                    ? 'Homework Creator'
+                    : ele.client_feature_name}
+                </p>
               </div>
             );
           })}

@@ -36,6 +36,7 @@ const QuestionList = (props) => {
     language,
     desktop,
     setHomeworkLanguageTypeToStore,
+    compressed,
   } = props;
   const [questions, setQuestions] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
@@ -198,10 +199,15 @@ const QuestionList = (props) => {
   };
 
   return (
-    <Card className='Homework__selectCard mb-3 mobileMargin'>
+    <Card className={`Homework__selectCard mb-3 mobileMargin${compressed ? ' expanded' : ''}`}>
       <div className='d-flex mb-1 mt-3 mx-2'>
         <span className='text-left Homework__questionIndex my-auto'>
-          {selectedQuestions.length} selected of {questions.length}
+          {
+            selectedQuestions.filter((ques) => {
+              return questions.find((q) => q.question_id === ques.question_id);
+            }).length
+          }{' '}
+          selected of {questions.length}
         </span>
         <div className='ml-auto my-auto d-flex'>
           <Button variant='customPrimarySmol hideOnDesktopHW' onClick={() => goToNextSlide()}>
@@ -287,10 +293,12 @@ QuestionList.propTypes = {
   setTestIsDraftToStore: PropTypes.func.isRequired,
   desktop: PropTypes.bool.isRequired,
   setHomeworkLanguageTypeToStore: PropTypes.func.isRequired,
+  compressed: PropTypes.bool,
 };
 
 QuestionList.defaultProps = {
   homeworkQuestions: [],
   selectedQuestionArray: [],
   testId: null,
+  compressed: false,
 };

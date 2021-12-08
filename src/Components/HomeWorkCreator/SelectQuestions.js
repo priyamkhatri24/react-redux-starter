@@ -7,6 +7,8 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import CloseIcon from '@material-ui/icons/Close';
+import RightIcon from '@material-ui/icons/ArrowForward';
+import LeftIcon from '@material-ui/icons/ArrowBack';
 import Button from 'react-bootstrap/Button';
 import RangeSlider from 'react-bootstrap-range-slider';
 import { get, apiValidation } from '../../Utilities';
@@ -23,6 +25,7 @@ const SelectQuestions = (props) => {
     desktop,
     setFilterType,
     setCurrentSlide,
+    updateCompressed,
   } = props;
   const [classes, setClasses] = useState([]);
   const [subjects, setSubjects] = useState([]);
@@ -34,6 +37,7 @@ const SelectQuestions = (props) => {
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [chapterInSubject, setChapterInSubject] = useState([]);
+  const [compressed, setCompressed] = useState(false);
 
   useEffect(() => {
     get('', '/getClassesForHomeworkCreator').then((res) => {
@@ -166,152 +170,178 @@ const SelectQuestions = (props) => {
     setCurrentSlide(1);
   };
 
+  const compressOrExpand = () => {
+    setCompressed((prev) => {
+      updateCompressed(!prev);
+      return !prev;
+    });
+    // updateCompressed(compressed)
+  };
+
   return (
     <>
-      <Card className='mobileMargin Homework__selectCard mb-3'>
-        <small className='text-left Homework__smallHeading mx-3 my-2'>Course</small>
-        <Row className='mx-3'>
-          <section className='Homework__scrollable'>
-            {Object.keys(currentQuestion).length === 0 &&
-              classes.map((e) => {
-                return (
+      <Card className={`mobileMargin Homework__selectCard mb-3${compressed ? ' compressed' : ''}`}>
+        <div className={`d-flex ${compressed ? 'justify-content-end' : 'justify-content-between'}`}>
+          <small
+            style={compressed ? { display: 'none' } : {}}
+            className='text-left Homework__smallHeading mx-3 my-2'
+          >
+            Course
+          </small>
+          {/* eslint-disable */}
+          <div className='leftRighticons hideOnMobileHW' onClick={compressOrExpand}>
+            {compressed ? <RightIcon /> : <LeftIcon />}
+          </div>
+        </div>
+        <div style={compressed ? { display: 'none' } : {}}>
+          <Row className='mx-3'>
+            <section className='Homework__scrollable'>
+              {Object.keys(currentQuestion).length === 0 &&
+                classes.map((e) => {
+                  return (
+                    <div
+                      key={e.class_id}
+                      className='Homework__questionBubble'
+                      onClick={() => selectQuestion(e)}
+                      onKeyDown={() => selectQuestion(e)}
+                      role='button'
+                      tabIndex='-1'
+                    >
+                      {e.class_name}
+                    </div>
+                  );
+                })}
+
+              {Object.keys(currentQuestion).length > 0 && (
+                <>
+                  <div className='Homework__questionBubble'>{currentQuestion.class_name}</div>
                   <div
-                    key={e.class_id}
                     className='Homework__questionBubble'
-                    onClick={() => selectQuestion(e)}
-                    onKeyDown={() => selectQuestion(e)}
+                    onClick={cancelBtnClicked}
+                    onKeyDown={cancelBtnClicked}
                     role='button'
                     tabIndex='-1'
                   >
-                    {e.class_name}
+                    <CloseIcon />
                   </div>
-                );
-              })}
+                </>
+              )}
+            </section>
+          </Row>
+          <hr />
+          <small className='text-left Homework__smallHeading mx-3 my-2'>Subject</small>
 
+          <Row className='mx-3'>
+            {Object.keys(currentQuestion).length === 0 && (
+              <div className='w-100 text-left'>
+                <h5 className='Homework__stepPlaceHolder'>Step 2 : Choose Subject</h5>
+              </div>
+            )}
             {Object.keys(currentQuestion).length > 0 && (
+              <section className='Homework__scrollable'>
+                {subjects.map((e) => {
+                  return (
+                    <div
+                      key={e.class_subject_id}
+                      className={
+                        e.isSelected
+                          ? 'Homework__subjectBubble Homework__selected'
+                          : 'Homework__subjectBubble Homework__unselected'
+                      }
+                      onClick={() => selectSubject(e)}
+                      onKeyDown={() => selectSubject(e)}
+                      role='button'
+                      tabIndex='-1'
+                    >
+                      {e.subject_name}
+                    </div>
+                  );
+                })}
+              </section>
+            )}
+          </Row>
+
+          <hr />
+          <small className='text-left Homework__smallHeading mx-3 my-2'>Chapters</small>
+
+          <Row className='mx-3'>
+            {chapterInSubject.length === 0 && selectedSubjects.length === 0 ? (
+              <div className='w-100 text-left'>
+                <h5 className='Homework__stepPlaceHolder'>Step 3 : Choose Chapters</h5>
+              </div>
+            ) : null}
+            {chapterInSubject.length === 0 && selectedSubjects.length > 0 ? (
+              <div className='w-100 text-left'>
+                <h5 className='Homework__stepPlaceHolder'>No Chapters Avaiable</h5>
+              </div>
+            ) : null}
+            {chapterInSubject.length > 0 && (
               <>
-                <div className='Homework__questionBubble'>{currentQuestion.class_name}</div>
-                <div
-                  className='Homework__questionBubble'
-                  onClick={cancelBtnClicked}
-                  onKeyDown={cancelBtnClicked}
-                  role='button'
-                  tabIndex='-1'
-                >
-                  <CloseIcon />
+                <div className='Homework__smallHeading  my-auto'>
+                  {selectedChapters.length > 0
+                    ? `${selectedChapters.length} chapter${
+                        selectedChapters.length === 1 ? `` : `s`
+                      } selected`
+                    : 'Click to select chapters'}
                 </div>
+                <Button
+                  variant='customPrimarySmol'
+                  className='ml-auto'
+                  onClick={() => setShowModal(true)}
+                >
+                  Select Chapter
+                </Button>
               </>
             )}
-          </section>
-        </Row>
-        <hr />
-        <small className='text-left Homework__smallHeading mx-3 my-2'>Subject</small>
+          </Row>
 
-        <Row className='mx-3'>
-          {Object.keys(currentQuestion).length === 0 && (
-            <div className='w-100 text-left'>
-              <h5 className='Homework__stepPlaceHolder'>Step 2 : Choose Subject</h5>
-            </div>
-          )}
-          {Object.keys(currentQuestion).length > 0 && (
-            <section className='Homework__scrollable'>
-              {subjects.map((e) => {
-                return (
-                  <div
-                    key={e.class_subject_id}
-                    className={
-                      e.isSelected
-                        ? 'Homework__subjectBubble Homework__selected'
-                        : 'Homework__subjectBubble Homework__unselected'
-                    }
-                    onClick={() => selectSubject(e)}
-                    onKeyDown={() => selectSubject(e)}
-                    role='button'
-                    tabIndex='-1'
-                  >
-                    {e.subject_name}
-                  </div>
-                );
-              })}
-            </section>
-          )}
-        </Row>
+          <hr />
+          <small className='text-left Homework__smallHeading mx-3 my-2'>Questions</small>
 
-        <hr />
-        <small className='text-left Homework__smallHeading mx-3 my-2'>Chapters</small>
-
-        <Row className='mx-3'>
-          {chapterInSubject.length === 0 && selectedSubjects.length === 0 ? (
-            <div className='w-100 text-left'>
-              <h5 className='Homework__stepPlaceHolder'>Step 3 : Choose Chapters</h5>
-            </div>
-          ) : null}
-          {chapterInSubject.length === 0 && selectedSubjects.length > 0 ? (
-            <div className='w-100 text-left'>
-              <h5 className='Homework__stepPlaceHolder'>No Chapters Avaiable</h5>
-            </div>
-          ) : null}
-          {chapterInSubject.length > 0 && (
-            <>
-              <div className='Homework__smallHeading  my-auto'>
-                {selectedChapters.length > 0
-                  ? `${selectedChapters.length} chapter${
-                      selectedChapters.length === 1 ? `` : `s`
-                    } selected`
-                  : 'Click to select chapters'}
+          <Row className='mx-3 mb-3'>
+            {totalQuestions === 0 && selectedChapters.length === 0 ? (
+              <div className='w-100 text-left'>
+                <h5 className='Homework__stepPlaceHolder'>Step 4 : Choose Questions</h5>
               </div>
-              <Button
-                variant='customPrimarySmol'
-                className='ml-auto'
-                onClick={() => setShowModal(true)}
-              >
-                Select Chapter
-              </Button>
-            </>
-          )}
-        </Row>
-
-        <hr />
-        <small className='text-left Homework__smallHeading mx-3 my-2'>Questions</small>
-
-        <Row className='mx-3 mb-3'>
-          {totalQuestions === 0 && selectedChapters.length === 0 ? (
-            <div className='w-100 text-left'>
-              <h5 className='Homework__stepPlaceHolder'>Step 4 : Choose Questions</h5>
-            </div>
-          ) : null}
-          {totalQuestions === 0 && selectedChapters.length > 0 ? (
-            <div className='w-100 text-left'>
-              <h5 className='Homework__stepPlaceHolder'>No Questions Avaiable</h5>
-            </div>
-          ) : null}
-          {totalQuestions > 0 && (
-            <>
-              <small className='text-left Homework__smallHeading mx-3 my-2'>Total Questions</small>
-              <Form className='mt-3'>
-                <Form.Group as={Row}>
-                  <Col xs='9'>
-                    <RangeSlider
-                      max={90}
-                      min={1}
-                      value={noOfQuestions}
-                      onChange={(e) => setNoOfQuestions(e.target.value)}
-                    />
-                  </Col>
-                  <Col xs='3'>
-                    <Form.Control readOnly value={noOfQuestions} />
-                  </Col>
-                </Form.Group>
-              </Form>
-              <Col xs={12} className='text-center mt-3'>
-                <p className='Homework__smallHeading' style={{ color: 'var(--primary-blue)' }}>
-                  Show Advanced Filters
-                </p>
-                <Button variant='customPrimary' onClick={() => fetchQuestions()}>
-                  Fetch
-                </Button>
-              </Col>
-              {/* <Card className='w-100 mt-4 p-3 mb-3'>
+            ) : null}
+            {totalQuestions === 0 && selectedChapters.length > 0 ? (
+              <div className='w-100 text-left'>
+                <h5 className='Homework__stepPlaceHolder'>No Questions Avaiable</h5>
+              </div>
+            ) : null}
+            {totalQuestions > 0 && (
+              <>
+                <small className='text-left Homework__smallHeading mx-3 my-2'>
+                  Total Questions
+                </small>
+                <Form className='mt-3'>
+                  <Form.Group as={Row}>
+                    <Col xs='9'>
+                      <RangeSlider
+                        max={90}
+                        min={1}
+                        value={noOfQuestions}
+                        onChange={(e) => setNoOfQuestions(e.target.value)}
+                      />
+                    </Col>
+                    <Col xs='3'>
+                      <Form.Control
+                        onChange={(e) => setNoOfQuestions(e.target.value)}
+                        value={noOfQuestions}
+                        type='number'
+                      />
+                    </Col>
+                  </Form.Group>
+                </Form>
+                <Col xs={12} className='text-center mt-3'>
+                  <p className='Homework__smallHeading' style={{ color: 'var(--primary-blue)' }}>
+                    Show Advanced Filters
+                  </p>
+                  <Button variant='customPrimary' onClick={() => fetchQuestions()}>
+                    Fetch
+                  </Button>
+                </Col>
+                {/* <Card className='w-100 mt-4 p-3 mb-3'>
                 <p className='Homework__smallHeading text-left'>Other Options:</p>
                 <div
                   className='Homework__smallHeading text-left ml-3 mb-1'
@@ -332,33 +362,54 @@ const SelectQuestions = (props) => {
                   Add Questions Manually.
                 </div>
               </Card> */}
-            </>
-          )}
-        </Row>
+              </>
+            )}
+          </Row>
 
-        <Card className='w-100 mt-4 p-3 mb-0'>
-          <p className='Homework__smallHeading text-left'>Other Options:</p>
-          <Button
-            className='w-75 mx-auto m-3'
-            variant='customPrimarySmol-outline'
-            onClick={() => goToSentSavedAddContent()}
-            onKeyDown={() => goToSentSavedAddContent()}
-            role='button'
-            tabIndex='-1'
-          >
-            Add from saved/sent tests.
-          </Button>
-          <Button
-            className='w-75 mx-auto m-3'
-            variant='customPrimarySmol-outline'
-            onClick={() => goToCreateQuestion()}
-            onKeyDown={() => goToCreateQuestion()}
-            role='button'
-            tabIndex='-1'
-          >
-            Add Questions Manually.
-          </Button>
-        </Card>
+          <Card className='w-100 mt-4 p-3 mb-0'>
+            <p className='Homework__smallHeading text-left'>Other Options:</p>
+            <Button
+              className='w-75 mx-auto m-3'
+              variant='customPrimarySmol-outline'
+              onClick={() => goToSentSavedAddContent()}
+              onKeyDown={() => goToSentSavedAddContent()}
+              role='button'
+              tabIndex='-1'
+            >
+              Add from saved/sent tests.
+            </Button>
+            <Button
+              className='w-75 mx-auto m-3 hideOnMobileHW'
+              variant='customPrimarySmol-outline'
+              onClick={() => {
+                goToCreateQuestion();
+                compressOrExpand();
+              }}
+              onKeyDown={() => {
+                goToCreateQuestion();
+                compressOrExpand();
+              }}
+              role='button'
+              tabIndex='-1'
+            >
+              Add Questions Manually.
+            </Button>
+            <Button
+              className='w-75 mx-auto m-3 hideOnDesktopHW'
+              variant='customPrimarySmol-outline'
+              onClick={() => {
+                goToCreateQuestion();
+              }}
+              onKeyDown={() => {
+                goToCreateQuestion();
+              }}
+              role='button'
+              tabIndex='-1'
+            >
+              Add Questions Manually.
+            </Button>
+          </Card>
+        </div>
       </Card>
 
       <Modal show={showModal} onHide={handleClose} centered>
@@ -407,6 +458,7 @@ SelectQuestions.propTypes = {
   desktop: PropTypes.bool.isRequired,
   setFilterType: PropTypes.func.isRequired,
   setCurrentSlide: PropTypes.func.isRequired,
+  updateCompressed: PropTypes.func.isRequired,
 };
 
 // {subjects.length>0 && chapters.length === 0 ?

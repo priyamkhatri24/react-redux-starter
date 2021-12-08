@@ -43,18 +43,20 @@ const HomeWorkCreator = (props) => {
     currentSubjectArray,
     setTestIdToStore,
     setTestNameToStore,
+    setSelectedCourseToStore,
+    setSelectedChapterToStore,
+    setSelectedSubjectToStore,
   } = props;
   const [slide, setSlide] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
   const [homeworkQuestionsArray, setQuestionArray] = useState([]);
   const [filterType, setFilterType] = useState('fetched');
-  const [btnDisableCheck, setBtnDisableCheck] = useState(false);
   const [ckQuestion, setCkQuestion] = useState('');
   const [type, setType] = useState('');
   const [questionImage, setQuestionImage] = useState('');
   const [ckSolution, setCkSolution] = useState('');
   const [ckAnswerText, setCkAnswerText] = useState('');
   const [solutionImage, setSolutionImage] = useState('');
+  const [compressed, setCompressed] = useState(false);
   const [ckAnswerArray, setCkAnswerArray] = useState([
     { value: '1', image: '', isSelected: false, text: '' },
     { value: '2', image: '', isSelected: false, text: '' },
@@ -64,6 +66,21 @@ const HomeWorkCreator = (props) => {
   //
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
+
+  const onUnload = (e) => {
+    const message = 'o/';
+    (e || window.event).returnValue = message; // Gecko + IE
+    return message;
+  };
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', onUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', onUnload);
+      history.push('/');
+    };
   }, []);
 
   const addQuestion = (payload) => {
@@ -181,9 +198,6 @@ const HomeWorkCreator = (props) => {
   };
 
   useEffect(() => {
-    if (document.body.clientWidth < 600) {
-      setIsMobile(true);
-    }
     setSlide(currentSlide);
     setQuestionArray(questionArray);
   }, [currentSlide, questionArray]);
@@ -202,6 +216,9 @@ const HomeWorkCreator = (props) => {
 
   const handleBack = () => {
     if (currentSlide === 0) {
+      setSelectedCourseToStore('');
+      setSelectedChapterToStore('');
+      setSelectedSubjectToStore('');
       history.push('/');
     } else if (currentSlide === 1) {
       setCurrentSlide(0);
@@ -260,7 +277,7 @@ const HomeWorkCreator = (props) => {
         style={{ marginTop: '5rem' }}
         className='hideOnMobileHW d-flex justify-content-around w-100 desktopHeadingsDiv'
       >
-        <p>Filters</p>
+        {!compressed ? <p>Filters</p> : null}
         {filterType === 'fetched' ? <p>Questions</p> : <p>Add question</p>}
         {filterType === 'fetched' ? <p>Selected</p> : <p>Preview</p>}
       </div>
@@ -335,7 +352,11 @@ const HomeWorkCreator = (props) => {
             />
           )}
           {filterType === 'fetched' ? (
-            <PreviewQuestions history={history} homeworkQuestions={homeworkQuestionsArray} />
+            <PreviewQuestions
+              history={history}
+              homeworkQuestions={homeworkQuestionsArray}
+              updateQuestionArray={setQuestionArray}
+            />
           ) : (
             <PreviewCkeditor
               question={ckQuestion}
@@ -355,10 +376,11 @@ const HomeWorkCreator = (props) => {
           desktop
           history={history}
           fetch={fetchQuestions}
+          updateCompressed={setCompressed}
         />
 
         {filterType === 'fetched' ? (
-          <QuestionList homeworkQuestions={homeworkQuestionsArray} />
+          <QuestionList compressed={compressed} homeworkQuestions={homeworkQuestionsArray} />
         ) : (
           <CkeditorQuestion
             updateQuestion={setCkQuestion}
@@ -376,10 +398,16 @@ const HomeWorkCreator = (props) => {
             setFilterType={setFilterType}
             updateAnswerText={setCkAnswerText}
             updateType={setType}
+            compressed={compressed}
           />
         )}
         {filterType === 'fetched' ? (
-          <PreviewQuestions history={history} homeworkQuestions={homeworkQuestionsArray} />
+          <PreviewQuestions
+            compressed={compressed}
+            history={history}
+            homeworkQuestions={homeworkQuestionsArray}
+            updateQuestionArray={setQuestionArray}
+          />
         ) : (
           <PreviewCkeditor
             question={ckQuestion}
@@ -389,6 +417,7 @@ const HomeWorkCreator = (props) => {
             answerText={ckAnswerText}
             solutionImage={solutionImage}
             type={type}
+            compressed={compressed}
             answerText={ckAnswerText}
           />
         )}
@@ -429,6 +458,15 @@ const mapDispatchToProps = (dispatch) => {
     setTestNameToStore: (payload) => {
       dispatch(homeworkActions.setTestNameToStore(payload));
     },
+    setSelectedCourseToStore: (payload) => {
+      dispatch(homeworkActions.setSelectedCourseToStore(payload));
+    },
+    setSelectedSubjectToStore: (payload) => {
+      dispatch(homeworkActions.setSelectedSubjectToStore(payload));
+    },
+    setSelectedChapterToStore: (payload) => {
+      dispatch(homeworkActions.setSelectedChapterToStore(payload));
+    },
   };
 };
 
@@ -458,6 +496,9 @@ HomeWorkCreator.propTypes = {
   }),
   setQuestionArrayToStore: PropTypes.func.isRequired,
   questionArray: PropTypes.instanceOf(Array).isRequired,
+  setSelectedCourseToStore: PropTypes.instanceOf(Object).isRequired,
+  setSelectedChapterToStore: PropTypes.instanceOf(Object).isRequired,
+  setSelectedSubjectToStore: PropTypes.instanceOf(Object).isRequired,
 };
 
 HomeWorkCreator.defaultProps = {

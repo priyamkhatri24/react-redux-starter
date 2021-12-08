@@ -6,6 +6,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { BackButton } from '../BackButton/BackButton';
+import GlobalSearchBar from '../GlobalSearchBar/GlobalSearchBar';
 
 import './PageHeader.scss';
 
@@ -27,6 +28,7 @@ export const PageHeader = (props) => {
     noBack,
     iconColor,
     width,
+    globalSearch,
   } = props;
 
   const [searchBar, triggerSearchBar] = useState(false);
@@ -56,6 +58,7 @@ export const PageHeader = (props) => {
               <BackButton color={iconColor} />
             ))}
           <span className='ml-3 PageHeader__title'>{title}</span>
+          {globalSearch ? <GlobalSearchBar /> : null}
           <div className='ml-auto '>
             {search && (
               <span
@@ -129,6 +132,7 @@ PageHeader.propTypes = {
   customIcon: PropTypes.element,
   handleCustomIcon: PropTypes.func,
   width: PropTypes.string,
+  globalSearch: PropTypes.bool,
 };
 
 PageHeader.defaultProps = {
@@ -148,4 +152,5 @@ PageHeader.defaultProps = {
   filter: false,
   customIcon: null,
   handleCustomIcon: () => {},
+  globalSearch: false,
 };

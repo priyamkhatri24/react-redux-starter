@@ -40,6 +40,22 @@ function setHomeworkLanguageTypeToStore(payload) {
   return { type: homeworkConstants.HOMEWORKLANGUAGETYPE, payload };
 }
 
+function setSelectedCourseToStore(payload) {
+  return { type: homeworkConstants.SELECTEDCOURSE, payload };
+}
+
+function setSelectedSubjectToStore(payload) {
+  return { type: homeworkConstants.SELECTEDSUBJECT, payload };
+}
+
+function setSelectedChapterToStore(payload) {
+  return { type: homeworkConstants.SELECTEDCHAPTER, payload };
+}
+
+function setSelectedTypeToStore(payload) {
+  return { type: homeworkConstants.SELECTEDTYPE, payload };
+}
+
 function clearTests() {
   return { type: homeworkConstants.CLEARTESTS };
 }
@@ -56,4 +72,8 @@ export const homeworkActions = {
   setTestClassSubjectToStore,
   setTestIsDraftToStore,
   setHomeworkLanguageTypeToStore,
+  setSelectedChapterToStore,
+  setSelectedCourseToStore,
+  setSelectedSubjectToStore,
+  setSelectedTypeToStore,
 };

@@ -1,0 +1,190 @@
+.GlobalSearch {
+  @import '../../../scss/bootstrap';
+
+  &__upperC {
+    box-shadow: 1px 5px 10px #0000002e;
+    height: 45px !important;
+    min-height: 45px;
+    position: absolute;
+    background-color: white;
+    width: 80% !important;
+    z-index: 200;
+    left: 10%;
+    transition-duration: 0.3s;
+    border-radius: 10px;
+    overflow: hidden;
+
+    @include media-breakpoint-down(sm) {
+      width: 90% !important;
+      left: 5%;
+    }
+  }
+  &__searchContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 10px;
+    margin: auto !important;
+    background-color: white;
+    width: 100% !important;
+    border-radius: 10px;
+    height: 45px !important;
+    // box-shadow: 1px 5px 10px #0000002e;
+    position: absolute;
+
+    @include media-breakpoint-down(sm) {
+      // width: 90% !important;
+    }
+  }
+}
+.stuckBar {
+  position: fixed !important;
+  top: 10px;
+  left: 10%;
+}
+
+@media screen and (max-width: 600px) {
+  .stuckBar {
+    left: 5%;
+  }
+}
+
+.searchInputContainer {
+  display: flex;
+  align-items: center;
+  width: 91%;
+  justify-content: flex-start;
+}
+.searchBarInputOnDashboard {
+  width: 100%;
+  outline: none;
+  border: none;
+  margin: auto 5px;
+  font-family: 'Montserrat-Medium';
+  color: gray;
+}
+
+.vl {
+  border-left: 1px solid rgba(128, 128, 128, 0.3);
+  height: 25px;
+  width: 5px;
+}
+
+.expandedBar {
+  min-height: 300px !important;
+  align-items: start !important;
+}
+
+.mb-60 {
+  margin-bottom: 70px;
+}
+
+.barBtns {
+  position: relative;
+  top: 100px;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  margin-left: 20px;
+}
+
+.barBtns button {
+  margin: 7px 0px 7px 0px;
+  display: flex;
+  background-color: transparent;
+  border: transparent;
+  outline: none;
+  font-family: 'Montserrat-Medium';
+}
+
+.searchBarInputOnDashboard::placeholder {
+  color: rgba(128, 128, 128, 0.295);
+}
+
+.expandedBottom {
+  position: relative;
+  bottom: -160px;
+  width: 100%;
+}
+
+.verySmallSearchBarText {
+  color: rgba(128, 128, 128, 0.5);
+  font-family: 'Montserrat-Regular';
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.avatarAnimation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 10px;
+  margin: auto !important;
+  // bottom: 15%;
+  position: absolute;
+  animation: linear;
+  animation-name: run;
+  animation-duration: 0.2s;
+}
+
+.nameText {
+  font-family: 'Montserrat-Regular';
+  position: absolute;
+  animation: linear;
+  width: 400px;
+  left: 47px;
+  animation: showBlock 0s 0.3s forwards;
+  visibility: hidden;
+  animation-duration: 0.3s;
+}
+
+.crossIcon {
+  cursor: pointer;
+  display: flex;
+  position: absolute;
+  right: 0px;
+  padding: 10px 20px;
+  margin: 0px;
+}
+
+@media screen and (max-width: 855px) {
+  .searchInputContainer {
+    width: 90%;
+  }
+}
+@media screen and (max-width: 775px) {
+  .searchInputContainer {
+    width: 87%;
+  }
+}
+@media screen and (max-width: 543px) {
+  .searchInputContainer {
+    width: 79%;
+  }
+}
+@media screen and (max-width: 380px) {
+  .searchInputContainer {
+    width: 75%;
+  }
+}
+@media screen and (max-width: 315px) {
+  .searchInputContainer {
+    width: 72%;
+  }
+}
+
+@keyframes run {
+  0% {
+    left: 80%;
+  }
+  100% {
+    left: 0;
+  }
+}
+
+@keyframes showBlock {
+  to {
+    visibility: visible;
+  }
+}

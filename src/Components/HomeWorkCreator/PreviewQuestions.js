@@ -21,6 +21,9 @@ const PreviewQuestions = (props) => {
     setSelectedQuestionArrayToStore,
     history,
     testId,
+    setQuestionArrayToStore,
+    compressed,
+    updateQuestionArray,
   } = props;
   const [selectedQuestions, setSelectedQuestions] = useState([]);
 
@@ -29,10 +32,16 @@ const PreviewQuestions = (props) => {
   }, [selectedQuestionArray]);
 
   const updateSelectedQuestions = (question) => {
-    /* eslint-disable */
-    homeworkQuestions.find((e) => e.question_id === question.question_id)
-      ? (homeworkQuestions.find((e) => e.question_id === question.question_id).isSelected = false)
-      : null;
+    if (homeworkQuestions.find((e) => e.question_id === question.question_id)) {
+      homeworkQuestions.find((e) => e.question_id === question.question_id).isSelected = false;
+    } else {
+      const q = selectedQuestions.find((ele) => ele.question_id === question.question_id);
+      q.isSelected = false;
+      const newHWQestions = [...homeworkQuestions, q];
+      setQuestionArrayToStore(newHWQestions);
+      updateQuestionArray(newHWQestions);
+      console.log(q, 'popped');
+    }
     const newSelectedQuestions = JSON.parse(JSON.stringify(selectedQuestions));
     const updatedSelectedQuestions = selectedQuestions.filter((e) => {
       return e.question_id !== question.question_id;
@@ -63,7 +72,10 @@ const PreviewQuestions = (props) => {
   };
 
   return (
-    <Card className='Homework__selectCard mb-3 mobileMargin'>
+    <Card
+      style={compressed ? { minWidth: '45%' } : {}}
+      className={`Homework__selectCard mb-3 mobileMargin${compressed ? ' expanded' : ''}`}
+    >
       <div className='d-flex mt-3 mx-2'>
         <span className='text-left Homework__questionIndex my-auto'>
           {selectedQuestions.length} selected
@@ -104,6 +116,9 @@ const mapDispatchToProps = (dispatch) => {
     setCurrentSlide: (payload) => {
       dispatch(homeworkActions.setCurrentSlide(payload));
     },
+    setQuestionArrayToStore: (payload) => {
+      dispatch(homeworkActions.setQuestionArrayToStore(payload));
+    },
   };
 };
 
@@ -118,7 +133,11 @@ PreviewQuestions.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  setQuestionArrayToStore: PropTypes.func.isRequired,
+  compressed: PropTypes.bool,
+  updateQuestionArray: PropTypes.func.isRequired,
 };
 PreviewQuestions.defaultProps = {
   homeworkQuestions: [],
+  compressed: false,
 };

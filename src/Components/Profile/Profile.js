@@ -53,7 +53,7 @@ const Profile = (props) => {
         Swal.fire({
           icon: 'error',
           title: 'Oops!',
-          text: `Unable to logout. I have no idea why tho :(`,
+          text: `Unable to logout :(`,
           timer: 3000,
         });
       });

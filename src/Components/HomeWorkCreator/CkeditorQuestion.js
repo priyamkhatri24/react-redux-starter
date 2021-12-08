@@ -10,21 +10,26 @@ import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Swal from 'sweetalert2';
-import Select from 'react-select';
-import CreatableSelect from 'react-select/creatable';
+import Select from 'react-select/creatable';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import CancelIcon from '@material-ui/icons/Cancel';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-// NOTE: Use the editor from source (not a build)!
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
-import Mathematics from 'ckeditor5-math/src/math';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+// import { CKEditor } from '@ckeditor/ckeditor5-react';
+// // NOTE: Use the editor from source (not a build)!
+// import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+// import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
+// import Mathematics from 'ckeditor5-math/src/math';
+// import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+// import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+// import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+// import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { get, apiValidation, uploadImage, post } from '../../Utilities';
 import { homeworkActions } from '../../redux/actions/homework.action';
+import {
+  getSelectedCourse,
+  getSelectedSubject,
+  getSelectedChapter,
+  getSelectedType,
+} from '../../redux/reducers/homeworkCreator.reducer';
 import './HomeWorkCreator.scss';
 
 const CkeditorQuestion = (props) => {
@@ -43,8 +48,17 @@ const CkeditorQuestion = (props) => {
     updateType,
     setCurrentChapterArrayToStore,
     setCurrentSubjectArrayToStore,
+    setSelectedChapterToStore,
+    setSelectedCourseToStore,
+    setSelectedSubjectToStore,
+    setSelectedTypeToStore,
+    selectedCourseFromStore,
+    selectedSubjectFromStore,
+    selectedChapterFromStore,
+    selectedTypeFromStore,
     add,
     clientId,
+    compressed,
   } = props;
   const [classes, setClasses] = useState([]);
   const [subjects, setSubjects] = useState([]);
@@ -68,18 +82,61 @@ const CkeditorQuestion = (props) => {
   const subjectSelectRef = useRef(null);
   const chapterSelectRef = useRef(null);
   const [addButtonDisabledCheck, setAddButtonDisabledCheck] = useState(false);
+  const [disabledText, setDisabledText] = useState('');
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
-    console.log({
-      selectedClass,
-      selectedSubject,
-      selectedChapter,
-      type,
-      questionImage,
-      questionText,
-      answerArray,
-      answerText,
-    });
+    /* eslint-disable */
+    if (
+      classSelectRef &&
+      classSelectRef.current &&
+      subjectSelectRef &&
+      subjectSelectRef.current &&
+      chapterSelectRef &&
+      chapterSelectRef.current
+    ) {
+      setTimeout(() => {
+        if (selectedCourseFromStore) {
+          classSelectRef.current.value = selectedCourseFromStore?.class_id;
+          setCurrentClassId(selectedCourseFromStore?.class_id);
+          setSubjects(selectedCourseFromStore.subject_array);
+          setSelectedClass(selectedCourseFromStore);
+        }
+        setSelectedSubject(selectedSubjectFromStore);
+        setSelectedChapter(selectedChapterFromStore);
+        setType(selectedTypeFromStore);
+        setTimeout(() => {
+          if (selectedSubjectFromStore) {
+            subjectSelectRef.current.value = selectedSubjectFromStore?.subject_id;
+            get(
+              { class_subject_id: selectedSubjectFromStore.class_subject_id },
+              '/getChaptersOfClassSubject2',
+            ).then((respp) => {
+              /* eslint-disable */
+              const result = apiValidation(respp);
+              setChapters(result);
+              setTimeout(() => {
+                if (selectedChapterFromStore) {
+                  chapterSelectRef.current.value = selectedChapterFromStore?.chapter_id;
+                }
+              }, 200);
+            });
+          }
+        }, 200);
+      }, 200);
+    }
+  }, [
+    selectedCourseFromStore,
+    selectedSubjectFromStore,
+    selectedChapterFromStore,
+    classSelectRef,
+    subjectSelectRef,
+    chapterSelectRef,
+  ]);
+
+  useEffect(() => {
     if (!selectedClass || !selectedSubject || !selectedChapter || !type) {
       setAddButtonDisabledCheck(false);
     } else if (!questionImage && !questionText) {
@@ -148,10 +205,8 @@ const CkeditorQuestion = (props) => {
         e.value = e.class_id;
         return e;
       });
-      console.log(selectClasses, 'classess');
       // selectClasses.push({ label: 'Create new', value: 'createNew', color: '#2699FB' });
       setClasses(selectClasses);
-      console.log(result);
     });
   }, []);
 
@@ -160,7 +215,6 @@ const CkeditorQuestion = (props) => {
       client_id: clientId,
       class_name: newCourse,
     };
-    console.log(payload);
     const newClasses = [...classes];
     newClasses.push({
       value: newCourse,
@@ -172,7 +226,6 @@ const CkeditorQuestion = (props) => {
     setClasses(newClasses);
     classSelectRef.current.value = newCourse;
     setCreateNewClassModal(false);
-    console.log(newClasses, 'newClasses');
 
     post(payload, '/addClassToClient').then((res) => {
       Swal.fire({
@@ -191,6 +244,7 @@ const CkeditorQuestion = (props) => {
             setClasses(resultant);
             const newSelectedCourse = resultant.find((ele) => ele.class_name === newCourse);
             setSelectedClass(newSelectedCourse);
+            setSelectedCourseToStore(newSelectedCourse);
             setSubjects(newSelectedCourse.subject_array);
             setCurrentClassId(newSelectedCourse.class_id);
             setTimeout(() => {
@@ -207,7 +261,6 @@ const CkeditorQuestion = (props) => {
       class_id: selectedClass.class_id,
       subject_name: newSubject,
     };
-    console.log(payload);
     post(payload, '/addSubject2').then((res) => {
       Swal.fire({
         title: 'Success',
@@ -230,6 +283,7 @@ const CkeditorQuestion = (props) => {
           setTimeout(() => {
             subjectSelectRef.current.value = selectedSubObj.subject_id;
             setSelectedSubject(selectedSubObj);
+            setSelectedSubjectToStore(selectedSubObj);
             setCurrentSubjectArrayToStore([selectedSubObj.subject_id]);
           }, 200);
         });
@@ -242,7 +296,6 @@ const CkeditorQuestion = (props) => {
       class_subject_id: selectedSubject.class_subject_id,
       chapter_name: newChapter,
     };
-    console.log(payload);
     post(payload, '/addChapter2').then((res) => {
       Swal.fire({
         title: 'Success',
@@ -275,8 +328,8 @@ const CkeditorQuestion = (props) => {
                 const selectedChapObj = result.find((ele) => ele.chapter_name === newChapter);
                 chapterSelectRef.current.value = selectedChapObj.chapter_id;
                 setSelectedChapter(selectedChapObj);
+                setSelectedChapterToStore(selectedChapObj);
                 setCurrentChapterArrayToStore([selectedChapObj.chapter_id]);
-                console.log(result, 'MC');
               }, 200);
             });
           }, 200);
@@ -302,7 +355,6 @@ const CkeditorQuestion = (props) => {
   };
 
   const setCurrentChapters = (opt) => {
-    console.log(opt);
     if (opt.value === 'createNew') {
       setCreateNewSubjectModal(true);
     } else {
@@ -398,7 +450,9 @@ const CkeditorQuestion = (props) => {
 
   return (
     <>
-      <Card className='mobileMargin Homework__selectCard mb-3 prvm-0'>
+      <Card
+        className={`mobileMargin Homework__selectCard mb-3 prvm-0${compressed ? ' expanded' : ''}`}
+      >
         <Row className='m-0'>
           <Col xs={5} className='my-2 mx-auto p-0'>
             {/* <Select
@@ -418,13 +472,14 @@ const CkeditorQuestion = (props) => {
                 type='select'
                 step='1'
                 placeholder='Course'
-                value={selectedClass.class_id}
+                value={selectedClass?.class_id}
                 onChange={(e) => {
                   if (e.target.value === 'createNew') {
                     setCurrentSubjects({ value: e.target.value });
                   } else {
                     const selectedClassObj = classes.find((ele) => ele.class_id == e.target.value);
                     setSelectedClass(selectedClassObj);
+                    setSelectedCourseToStore(selectedClassObj);
                     setCurrentSubjects(selectedClassObj);
                   }
                 }}
@@ -455,13 +510,14 @@ const CkeditorQuestion = (props) => {
                 type='select'
                 step='1'
                 placeholder='Subject'
-                value={selectedSubject.subject_id}
+                value={selectedSubject?.subject_id}
                 onChange={(e) => {
                   if (e.target.value === 'createNew') {
                     setCurrentChapters({ value: e.target.value });
                   } else {
                     const selectedSubObj = subjects.find((ele) => ele.subject_id == e.target.value);
                     setSelectedSubject(selectedSubObj);
+                    setSelectedSubjectToStore(selectedSubObj);
                     setCurrentSubjectArrayToStore([selectedSubObj.subject_id]);
 
                     setCurrentChapters(selectedSubObj);
@@ -500,7 +556,7 @@ const CkeditorQuestion = (props) => {
                 type='select'
                 step='1'
                 placeholder='Chapter'
-                value={selectedChapter.chapter_id}
+                value={selectedChapter?.chapter_id}
                 onChange={(e) => {
                   if (e.target.value === 'createNew') {
                     setCreateNewChapterModal(true);
@@ -509,6 +565,7 @@ const CkeditorQuestion = (props) => {
                       (ele) => ele.chapter_id == e.target.value,
                     );
                     setSelectedChapter(selectedChapObj);
+                    setSelectedChapterToStore(selectedChapObj);
                     setCurrentChapterArrayToStore([selectedChapObj.chapter_id]);
                     // setCurrentChapters(selectedChapObj);
                   }
@@ -525,9 +582,15 @@ const CkeditorQuestion = (props) => {
           <Col xs={5} className='my-2 mx-auto p-0'>
             <Select
               options={typeOfQuestion}
+              defaultValue={
+                selectedTypeFromStore
+                  ? typeOfQuestion.find((opt) => opt.value === selectedTypeFromStore)
+                  : null
+              }
               placeholder='Type'
               onChange={(opt) => {
                 setType(opt.value);
+                setSelectedTypeToStore(opt.value);
                 updateType(opt.value);
               }}
             />
@@ -770,7 +833,12 @@ const CkeditorQuestion = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  return {};
+  return {
+    selectedCourseFromStore: getSelectedCourse(state),
+    selectedSubjectFromStore: getSelectedSubject(state),
+    selectedChapterFromStore: getSelectedChapter(state),
+    selectedTypeFromStore: getSelectedType(state),
+  };
 };
 
 const mapActionsToProps = (dispatch) => {
@@ -780,6 +848,18 @@ const mapActionsToProps = (dispatch) => {
     },
     setCurrentSubjectArrayToStore: (payload) => {
       dispatch(homeworkActions.setCurrentSubjectArrayToStore(payload));
+    },
+    setSelectedCourseToStore: (payload) => {
+      dispatch(homeworkActions.setSelectedCourseToStore(payload));
+    },
+    setSelectedSubjectToStore: (payload) => {
+      dispatch(homeworkActions.setSelectedSubjectToStore(payload));
+    },
+    setSelectedChapterToStore: (payload) => {
+      dispatch(homeworkActions.setSelectedChapterToStore(payload));
+    },
+    setSelectedTypeToStore: (payload) => {
+      dispatch(homeworkActions.setSelectedTypeToStore(payload));
     },
   };
 };
@@ -803,4 +883,18 @@ CkeditorQuestion.propTypes = {
   clientId: PropTypes.number.isRequired,
   setCurrentSubjectArrayToStore: PropTypes.func.isRequired,
   setCurrentChapterArrayToStore: PropTypes.func.isRequired,
+  setSelectedCourseToStore: PropTypes.func.isRequired,
+  setSelectedChapterToStore: PropTypes.func.isRequired,
+  setSelectedSubjectToStore: PropTypes.func.isRequired,
+  setSelectedTypeToStore: PropTypes.func.isRequired,
+  setSelectedTypeToStore: PropTypes.func.isRequired,
+  selectedCourseFromStore: PropTypes.instanceOf(Object).isRequired,
+  selectedChapterFromStore: PropTypes.instanceOf(Object).isRequired,
+  selectedSubjectFromStore: PropTypes.instanceOf(Object).isRequired,
+  selectedTypeFromStore: PropTypes.string.isRequired,
+  compressed: PropTypes.bool,
+};
+
+CkeditorQuestion.defaultProps = {
+  compressed: false,
 };

@@ -9,6 +9,7 @@ import MoreVert from '@material-ui/icons/MoreVert';
 import PropTypes from 'prop-types';
 import { get, apiValidation } from '../../Utilities';
 import { formatConversations } from './formatter';
+import GlobalSearchBar from '../Common/GlobalSearchBar/GlobalSearchBar';
 import { getConversations } from '../../redux/reducers/conversations.reducer';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { conversationsActions } from '../../redux/actions/conversations.action';
@@ -79,6 +80,7 @@ const ConversationsHeader = function ({
                 {title}
               </h5>
             </div>
+            {/* <GlobalSearchBar /> */}
             <MoreVert className='justify-self-end' />
           </div>
           {searchBar ? (
