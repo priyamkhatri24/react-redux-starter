@@ -19,7 +19,7 @@ const BottomNavigation = (props) => {
   useEffect(() => {
     const { feature, featureOrder } = dashboardData;
     /* eslint-disable */
-    const filtered = featureOrder.map((ele) => {
+    const filtered = featureOrder?.map((ele) => {
       if (Object.keys(feature).includes(ele)) {
         feature[ele].keyName = ele;
         return feature[ele];
