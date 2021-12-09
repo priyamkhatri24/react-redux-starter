@@ -1,0 +1,19 @@
+.container {
+  width: 100%;
+  margin: 2px;
+}
+.divContainer {
+  width: 100%;
+  /* background-color: blue; */
+  display: table;
+}
+.tabs {
+  margin-top: 65px;
+  align-items: center;
+  width: 1115px;
+  /* background-color: blueviolet; */
+}
+.tab {
+  /* background-color: blueviolet; */
+  /* margin: 10px 10px; */
+}

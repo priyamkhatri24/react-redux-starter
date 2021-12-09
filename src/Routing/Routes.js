@@ -462,6 +462,10 @@ const Post = Loadable({
   loading: Loading,
 });
 
+const viewAllAsignments = Loadable({
+  loader: () => import(/* webpackChunkName: 'Post' */ '../Components/Tests/OnlineAssignments'),
+  loading: Loading,
+});
 // eslint-disable-next-line
 function Loading({ error }) {
   if (error) {
@@ -487,6 +491,7 @@ export function Routes() {
       {/* <Route path='/videoplayerplyr/:id' component={VideoPlayer} /> */}
       <Route path='/videoplayer/:id?' component={PlyrVideoPlayer} />
 
+      <Route exact path='/viewAllAsignments' component={viewAllAsignments} />
       <AuthenticatedRoute exact path='/liveclasses' component={LiveClasses} />
       <AuthenticatedRoute exact path='/studybin' component={StudyBin} />
       <AuthenticatedRoute exact path='/studybin/categories/:id' component={Categories} />

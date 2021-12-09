@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -13,6 +14,7 @@ import { get, apiValidation, post } from '../../Utilities';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import LiveTestCounter from './LiveTestCounter';
 import './Tests.scss';
+import { OnlineAssignments } from './OnlineAssignments';
 
 const Tests = (props) => {
   const { clientUserId, startHomework, startLive } = props;
@@ -21,9 +23,12 @@ const Tests = (props) => {
   const [demoTests, setDemoTests] = useState([]);
   const [allowLiveTest, setAllowLiveTest] = useState([]);
 
+  const history = useHistory();
+
   useEffect(() => {
     get({ client_user_id: clientUserId }, '/getHomeworkOfStudent').then((res) => {
       const result = apiValidation(res);
+      // console.log(result);
       setHomework(result);
     });
 
@@ -36,7 +41,7 @@ const Tests = (props) => {
       setLiveTests(live);
       setDemoTests(demo);
 
-      console.log(live);
+      // console.log(live);
     });
   }, [clientUserId]);
 
@@ -254,8 +259,8 @@ const Tests = (props) => {
           <button
             className='Tests__viewAllButtonForCards mb-0'
             type='button'
-            style={{ opacity: '0.2' }}
-            // onClick={() => history.push('/liveclasses')}
+            style={{ opacity: '1' }}
+            onClick={() => history.push('/viewAllAsignments')}
           >
             View All <ChevronRightIcon />
           </button>
