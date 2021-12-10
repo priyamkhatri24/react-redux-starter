@@ -22,12 +22,22 @@
     min-width: 200px;
     height: 113px;
     border-radius: 10px;
+
+    @include media-breakpoint-up(md) {
+      min-width: 320px;
+      min-height: 181px;
+    }
   }
 
   &__aspectCardBig {
     min-width: 315px;
     height: 177px;
     // border-radius: 10px;
+
+    @include media-breakpoint-up(md) {
+      min-width: 504px;
+      min-height: 283px;
+    }
   }
 
   &__card::-webkit-scrollbar {
@@ -368,6 +378,18 @@
 .boldText {
   font-family: 'Montserrat-Medium';
   font-size: 12px;
+}
+
+.aspectCardsInnerContainer {
+  display: flex;
+  width: 95%;
+  margin: auto;
+}
+
+@media screen and (max-width: 600px) {
+  .aspectCardsInnerContainer {
+    width: 100%;
+  }
 }
 
 @media screen and (max-width: 770px) {

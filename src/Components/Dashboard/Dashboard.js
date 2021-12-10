@@ -527,7 +527,7 @@ const Dashboard = (props) => {
       case 'attendance':
         return (
           <div
-            className='Dashboard__attendance p-4'
+            className='Dashboard__attendance px-2 py-4'
             onClick={() => gotToAttendance()}
             onKeyDown={() => gotToAttendance()}
             tabIndex='-1'
@@ -554,11 +554,11 @@ const Dashboard = (props) => {
                 <div>
                   <hr />
                   <div>
-                    <p className='Dashboard__attendanceRecents ml-1'>Recent Attendance</p>
+                    <p className='Dashboard__attendanceRecents mx-3'>Recent Attendance</p>
                     <Row className='mx-2'>
                       {attendance.map((elem) => {
                         return (
-                          <div className='d-flex flex-column mx-1' key={elem.batch_id}>
+                          <div className='d-flex flex-column mx-2' key={elem.batch_id}>
                             <img
                               src={userAvatar}
                               alt='batch'
@@ -586,6 +586,7 @@ const Dashboard = (props) => {
             onClick={() => goToNoticeBoard()}
             role='button'
             tabIndex='-1'
+            style={{ backgroundColor: '#fffef4' }}
             onKeyDown={() => goToNoticeBoard()}
           >
             <span className='Dashboard__verticalDots'>
@@ -595,7 +596,7 @@ const Dashboard = (props) => {
               <Col xs={8} className='pl-4'>
                 <p className='Dashboard__todaysHitsText'>Notice Board</p>
                 {(roleArray.includes(3) || roleArray.includes(4)) && (
-                  <Button variant='noticeBoardPost'>
+                  <Button style={{ backgroundColor: 'white' }} variant='noticeBoardPost'>
                     <BorderColorIcon />
                     <span className='m-2'>Write a post</span>
                   </Button>
@@ -637,7 +638,9 @@ const Dashboard = (props) => {
                     </p>
                   </Col>
                 </Row>
-                <p className='p-2 Dashboard__noticeText'>{elem.notice_text}</p>
+                <p style={{ backgroundColor: '#fff4a4' }} className='p-2 Dashboard__noticeText'>
+                  {elem.notice_text}
+                </p>
               </div>
             ))}
           </div>
@@ -648,7 +651,7 @@ const Dashboard = (props) => {
             style={{
               background: `linear-gradient(90deg, ${param.end_colour}, ${param.start_colour})`,
             }}
-            className='Dashboard__innovation pt-4 pl-3 pr-0 pb-3 mx-2'
+            className='Dashboard__innovation pt-4 pl-3 pr-0 pb-3 mx-auto'
           >
             <h4 className='Dashboard_homeworkCreator'>Witness </h4>
             <h4 className='Dashboard_homeworkCreator'>
@@ -733,7 +736,7 @@ const Dashboard = (props) => {
         );
       case 'posters':
         return data.posters.length > 0 ? (
-          <div className='m-2 mt-4'>
+          <div className='my-2 mt-4'>
             <AspectCards
               data={data.posters}
               clickCard={() => {}}
@@ -749,12 +752,12 @@ const Dashboard = (props) => {
           <>
             <h6
               style={{
-                fontFamily: 'Montserrat-Medium',
+                fontFamily: 'Montserrat-Bold',
                 lineHeight: '20px',
                 textAlign: 'left',
-                fontSize: '14px',
+                fontSize: '16px',
               }}
-              className='mx-3 mt-4 mb-0'
+              className='mx-auto ml-3 mt-4 mb-0 scrollableCardHeading'
             >
               Our Star Performers
             </h6>
@@ -772,12 +775,12 @@ const Dashboard = (props) => {
           <>
             <h6
               style={{
-                fontFamily: 'Montserrat-Medium',
+                fontFamily: 'Montserrat-Bold',
                 lineHeight: '20px',
                 textAlign: 'left',
-                fontSize: '14px',
+                fontSize: '16px',
               }}
-              className='mx-3 mt-4 mb-0'
+              className='mx-auto ml-3 mt-4 mb-0 scrollableCardHeading'
             >
               Testimonials
             </h6>
@@ -792,11 +795,11 @@ const Dashboard = (props) => {
         ) : null;
       case 'aboutUs':
         return (
-          <div className='text-left m-3 mt-5'>
+          <div className='text-left my-3 mt-5 aboutConnectContainer'>
             <h5 className='Dummy__aboutus'>About us</h5>
             <p className='Dummy__aboutData'>{data.about_us}</p>
 
-            <h6 className='Dummy__connect'>Connect with us</h6>
+            <h5 className='Dummy__aboutus'>Connect with us</h5>
 
             <section className='Scrollable__card ' style={{ minHeight: '40px' }}>
               {[
@@ -836,14 +839,14 @@ const Dashboard = (props) => {
                 .filter((e) => e.link)
                 .map((elem) => {
                   return (
-                    <a href={elem.link} className='text-center m-3' key={elem.key}>
+                    <a href={elem.link} className='text-center mr-4 my-3 ml-0' key={elem.key}>
                       <img src={elem.image} alt={elem.link} className='Dummy__socialLinks' />
                     </a>
                   );
                 })}
               <a
                 href={data.other_link}
-                className='text-center m-3'
+                className='text-center mr-3 my-3 ml-0'
                 style={{
                   backgroundColor: 'rgba(112, 112, 112, 1)',
                   color: '#fff',
@@ -934,7 +937,11 @@ const Dashboard = (props) => {
         return (
           <Card
             className='DashboardCards'
-            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+            style={{
+              border: '1px solid rgba(112,112,112,0.5)',
+              margin: 'auto',
+              backgroundColor: '#F7FDFF',
+            }}
           >
             <Row className='mx-0 justify-content-center mt-2'>
               <Col xs={8} className='text-left p-3'>
@@ -1008,10 +1015,16 @@ const Dashboard = (props) => {
         return (
           <Card
             className='DashboardCards mt-3 mb-2'
-            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+            style={{
+              border: '0.5px solid rgba(112, 112, 112, 0.5)',
+              margin: 'auto',
+              backgroundColor: '#EDEDED',
+            }}
           >
             <Row className='mx-3 justify-content-left mt-2'>
-              <h6 className='Dummy__joinUs'>Contact us</h6>
+              <h6 style={{ fontSize: '16px' }} className='Dummy__joinUs'>
+                Contact us
+              </h6>
             </Row>
             {data.address.location && (
               <Row className='mx-0 justify-content-center mt-2'>
@@ -1019,8 +1032,8 @@ const Dashboard = (props) => {
                   <LocationOnIcon />
                 </Col>
                 <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
-                  <p className='mb-0 Dummy__joinDetails'>{data.address.location}</p>
-                  <p className='Dummy__joinSmall'>Address</p>
+                  <p className='mb-0 Dummy__contactDetails'>{data.address.location}</p>
+                  <p className='Dummy__contactSmall'>Address</p>
                 </Col>
               </Row>
             )}
@@ -1031,8 +1044,8 @@ const Dashboard = (props) => {
                   <PhoneIcon />
                 </Col>
                 <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
-                  <p className='mb-0 Dummy__joinDetails'>{data.address.client_contact}</p>
-                  <p className='Dummy__joinSmall'>Phone</p>
+                  <p className='mb-0 Dummy__contactDetails'>{data.address.client_contact}</p>
+                  <p className='Dummy__contactSmall'>Phone</p>
                 </Col>
               </Row>
             )}
@@ -1042,8 +1055,8 @@ const Dashboard = (props) => {
                   <AlternateEmailIcon />
                 </Col>
                 <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
-                  <p className='mb-0 Dummy__joinDetails'>{data.address.client_email}</p>
-                  <p className='Dummy__joinSmall'>Email</p>
+                  <p className='mb-0 Dummy__contactDetails'>{data.address.client_email}</p>
+                  <p className='Dummy__contactSmall'>Email</p>
                 </Col>
               </Row>
             )}
@@ -1073,7 +1086,7 @@ const Dashboard = (props) => {
                   goToAddBatch={goToAddBatch}
                   goToAdmissions={goToAdmissions}
                   openOptionsModal={openOptionsModal}
-                  heroImage={branding.branding.client_logo}
+                  heroImage={param.feature_icon}
                 />
               ) || <Skeleton count={20} />}
             </>

@@ -37,6 +37,12 @@ const DashBoardAdmissions = (props) => {
       enabled: false,
     },
     xaxis: {
+      labels: {
+        show: false,
+      },
+    },
+
+    xaxis: {
       categories: ['Active', 'Inactive'],
     },
   };
@@ -47,34 +53,38 @@ const DashBoardAdmissions = (props) => {
   return (
     <div className='mx-auto d-flex justify-content-center'>
       <div
+        style={{ backgroundColor: '#F5F7FF' }}
         className='Dashboard__noticeBoard admission_cards m-3 p-3 mt-3'
         onKeyDown={() => handleClick()}
         onClick={() => handleClick()}
         role='button'
         tabIndex={0}
       >
-        <span className='Dashboard__verticalDots'>
+        {/* <span className='Dashboard__verticalDots'>
           <MoreVertIcon />
-        </span>
-        <Row className='m-2'>
-          <p className='Dashboard__todaysHitsText p-0'>Admissions</p>
+        </span> */}
+        <Row className='my-2 mx-3'>
+          <p className='Dashboard__todaysHitsText p-0 mb-0'>Admissions</p>
         </Row>
         <div
           onClick={() => goToAdmissions()}
           role='button'
-          tabIndex='-1'
+          tabIndex={-1}
           onKeyDown={() => goToAdmissions()}
-          className='admission_heroImage'
+          className='mx-3 d-flex w-100'
         >
+          <p className='admissionsSubHeading mb-0'>
+            Manage all of your institute users here: Students, Teachers and Admins
+          </p>
           <img
             src={heroImage}
             className='img-fluid'
-            style={{ maxWidth: '200px' }}
-            alt='yourcoaching'
+            style={{ maxWidth: '55px', position: 'relative', top: '-29px' }}
+            alt='admissions'
           />
         </div>
-        <Row className='justify-content-center m-2 mb-4 p-2'>
-          <Col className='text-center mt-3 p-0'>
+        <div className='addUserBatchContainer mx-2 mb-4 px-2 pb-2'>
+          <div className='text-center mt-3 mr-3 p-0'>
             <Button
               variant='noticeBoardPost'
               className='admission_button'
@@ -86,8 +96,8 @@ const DashBoardAdmissions = (props) => {
               <PersonAddIcon />
               <span>Add User</span>
             </Button>
-          </Col>
-          <Col className='text-center mt-3 p-0'>
+          </div>
+          <div className='text-center mt-3 p-0'>
             <Button
               variant='noticeBoardPost'
               className='admission_button'
@@ -99,8 +109,8 @@ const DashBoardAdmissions = (props) => {
               <PersonAddIcon />
               <span>Add Batch</span>
             </Button>
-          </Col>
-        </Row>
+          </div>
+        </div>
         <div
           onClick={() => goToAdmissions()}
           role='button'
@@ -131,9 +141,9 @@ const DashBoardAdmissions = (props) => {
               },
             ];
             return (
-              <Card key={elem.title} className='my-3 mx-2'>
-                <Row className='p-2 react_chart'>
-                  <Col xs={4} className='text-center p-2 my-auto'>
+              <Card key={elem.title} className='my-3 mx-2 chartContainer'>
+                <div className='px-2 react_chart'>
+                  <div className='text-center NumberOfUserContainer p-2 my-auto'>
                     <p
                       className='Dashboard__attendanceSubHeading'
                       style={{ fontFamily: 'Montserrat-SemiBold' }}
@@ -143,11 +153,11 @@ const DashBoardAdmissions = (props) => {
                     <p className='Dashboard__admissionsBlueText my-auto'>
                       {elem.pending + elem.active}
                     </p>
-                  </Col>
-                  <Col xs={8}>
+                  </div>
+                  <div style={{ width: '60%' }}>
                     <ReactApexCharts options={options} series={series} type='bar' />
-                  </Col>
-                </Row>
+                  </div>
+                </div>
               </Card>
             );
           })}

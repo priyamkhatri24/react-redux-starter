@@ -248,7 +248,7 @@ const Tests = (props) => {
 
   return (
     <div>
-      <div className='Tests__headingContainer'>
+      <div className='Tests__headingContainer OnlineTestHeadingContainer'>
         <div className='d-flex justify-content-between w-100'>
           <h5 className='Tests__initialHeading mb-1'>Online assignments</h5>
           <button

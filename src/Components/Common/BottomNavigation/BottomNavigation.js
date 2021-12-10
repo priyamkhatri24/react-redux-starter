@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import HomeIcon from '@material-ui/icons/Home';
+import HomeIcon from '@material-ui/icons/HomeOutlined';
+import HomeIconFilled from '@material-ui/icons/Home';
 import ChatIcon from '@material-ui/icons/ChatBubbleOutline';
+import ChatIconFilled from '@material-ui/icons/ChatBubble';
 import LibraryIcon from '@material-ui/icons/LocalLibraryOutlined';
+import LibraryIconFilled from '@material-ui/icons/LocalLibrary';
 import CoursesIcon from '@material-ui/icons/BookOutlined';
+import CoursesIconFilled from '@material-ui/icons/Book';
 import MoreIcon from '@material-ui/icons/MoreHorizOutlined';
 import { getCurrentDashboardData } from '../../../redux/reducers/dashboard.reducer';
 import { getRoleArray } from '../../../redux/reducers/clientUserId.reducer';
@@ -15,6 +19,8 @@ const BottomNavigation = (props) => {
   const [scrolledUp, setScrolledUp] = useState(false);
   const [filteredFeatures, setFilteredFeatures] = useState([]);
   const [active, setActive] = useState(activeNav);
+
+  const draggerRef = useRef(null);
 
   useEffect(() => {
     const { feature, featureOrder } = dashboardData;
@@ -156,7 +162,14 @@ const BottomNavigation = (props) => {
     <>
       {scrolledUp ? <div onClick={backDropClicked} className='backDrop' /> : null}
       <div className={`bottomScrollBar${scrolledUp ? ' scrolledUp' : ''}`}>
-        <div onClick={backDropClicked} className='horizontalLine' />
+        <div className='horizontalLineContainer'>
+          <div
+            ref={draggerRef}
+            onTouchMove={backDropClicked}
+            onClick={backDropClicked}
+            className='horizontalLine'
+          />
+        </div>
         <div className='squaresC'>
           {filteredFeatures?.map((ele) => {
             if (ele.keyName === 'share') return null;
@@ -182,28 +195,28 @@ const BottomNavigation = (props) => {
           onClick={goToHome}
           className={`bottomNavItems${active === 'home' ? ' activeNav' : ''}`}
         >
-          <HomeIcon />
+          {active === 'home' ? <HomeIconFilled /> : <HomeIcon />}
           <p className='bottomNavSmallText'>Home</p>
         </div>
         <div
           onClick={goToChats}
           className={`bottomNavItems${active === 'chats' ? ' activeNav' : ''}`}
         >
-          <ChatIcon />
+          {active === 'chats' ? <ChatIconFilled /> : <ChatIcon />}
           <p className='bottomNavSmallText'>Chats</p>
         </div>
         <div
           onClick={goToStudyBin}
           className={`bottomNavItems${active === 'studyBin' ? ' activeNav' : ''}`}
         >
-          <LibraryIcon />
+          {active === 'studyBin' ? <LibraryIconFilled /> : <LibraryIcon />}
           <p className='bottomNavSmallText'>Library</p>
         </div>
         <div
           onClick={goToCoursesForTeacher}
           className={`bottomNavItems${active === 'courses' ? ' activeNav' : ''}`}
         >
-          <CoursesIcon />
+          {active === 'courses' ? <CoursesIconFilled /> : <CoursesIcon />}
           <p className='bottomNavSmallText'>Courses</p>
         </div>
         <div
