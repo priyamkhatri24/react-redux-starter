@@ -15,39 +15,18 @@ import './styles.css';
 
 export const OnlineAssignments = (props) => {
   const { clientUserId } = props;
-  // console.log(clientUserId);
 
-  const [key, setKey] = useState('0');
-  const [homework, setHomework] = useState([]);
-  const [liveTests, setLiveTests] = useState([]);
-  const [demoTests, setDemoTests] = useState([]);
   const [searchString, setSearchString] = useState('');
+  const [key, setKey] = useState(0);
 
   const history = useHistory();
 
   useEffect(() => {
-    get({ client_user_id: clientUserId }, '/getHomeworkOfStudent').then((res) => {
-      const result = apiValidation(res);
-      setHomework(result);
-    });
+    searchAssignments('');
+    console.log('Rendered');
+  }, [key]);
 
-    get({ client_user_id: clientUserId }, '/getAllTestOfStudent').then((res) => {
-      const result = apiValidation(res);
-      const [live, demo] = result.reduce(
-        ([p, f], e) => (e.test_type === 'live test' ? [[...p, e], f] : [p, [...f, e]]),
-        [[], []],
-      );
-      setLiveTests(live);
-      setDemoTests(demo);
-
-      // console.log(live);
-    });
-    // console.log(homework);
-    // console.log(liveTests);
-    // console.log(demoTests);
-  }, []);
-
-  const searchCRM = (search) => {
+  const searchAssignments = (search) => {
     setSearchString(search);
     // console.log(searchString);
   };
@@ -62,7 +41,7 @@ export const OnlineAssignments = (props) => {
         title='Online Assignments'
         search
         filter
-        searchFilter={searchCRM}
+        searchFilter={searchAssignments}
         // triggerFilters={() => setOpenFilterModal(true)}
         customBack
         handleBack={goToDashboard}
@@ -71,18 +50,24 @@ export const OnlineAssignments = (props) => {
         id='controlled-tab-example'
         activeKey={key}
         onSelect={(k) => setKey(k)}
-        className='mb-3 tab tabs Profile__Tabs'
+        className='mb-3 tabs Profile__Tabs tab1'
+        onClick={() => searchAssignments('')}
       >
-        <Tab eventKey='0' title='HomeWork' className='tab Profile__Tabs'>
-          <Homework clientUserId={clientUserId} homework={homework} searchString={searchString} />
+        <Tab
+          eventKey='0'
+          title='HomeWork'
+          className='tab1 Profile__Tabs'
+          // onClick={() => searchAssignments('')}
+        >
+          <Homework clientUserId={clientUserId} searchString={searchString} />
         </Tab>
-        <Tab eventKey='1' title='Tests' className='tab Profile__Tabs'>
-          <Test
-            clientUserId={clientUserId}
-            liveTests={liveTests}
-            demoTests={demoTests}
-            searchString={searchString}
-          />
+        <Tab
+          eventKey='1'
+          title='Tests'
+          className='tab2 Profile__Tabs'
+          // onClick={() => searchAssignments('')}
+        >
+          <Test clientUserId={clientUserId} searchString={searchString} />
         </Tab>
       </Tabs>
     </div>
