@@ -24,7 +24,6 @@ const Tests = (props) => {
   const [allowLiveTest, setAllowLiveTest] = useState([]);
 
   const history = useHistory();
-
   useEffect(() => {
     get({ client_user_id: clientUserId }, '/getHomeworkOfStudent').then((res) => {
       const result = apiValidation(res);
@@ -68,6 +67,7 @@ const Tests = (props) => {
     };
 
     get(payload, '/getTestQuestionsForStudentWithLanguageLatest').then((res) => {
+      console.log(res);
       Swal.fire({
         title: 'Your Homework is Loaded',
         text: 'hello',
@@ -116,7 +116,7 @@ const Tests = (props) => {
         test_id: elem.test_id,
         language_type: elem.language_type,
       };
-
+      console.log(liveCheck);
       get(payload, '/getTestQuestionsForStudentWithLanguageLatest').then((res) => {
         Swal.fire({
           title: 'Your Live Test is Loaded',

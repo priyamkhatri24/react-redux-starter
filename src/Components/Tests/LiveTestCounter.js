@@ -37,7 +37,7 @@ const LiveTestCounter = (props) => {
         );
       }
     });
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     const clear = setInterval(() => {

@@ -1,23 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import fromUnixTime from 'date-fns/fromUnixTime';
-import compareAsc from 'date-fns/compareAsc';
 import format from 'date-fns/format';
 import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
+import compareAsc from 'date-fns/compareAsc';
 import dashboardAssignmentImage from '../../assets/images/Dashboard/dashboardAssignment.svg';
+import { testsActions } from '../../redux/actions/tests.action';
+import LiveTestCounter from './LiveTestCounter';
 
 import { get, apiValidation, post } from '../../Utilities';
 import './Tests.scss';
 
 const Test = (props) => {
-  const { clientUserId, searchString } = props;
+  const {
+    clientUserId,
+    searchString,
+    setTestResultArrayToStore,
+    setTestEndTimeToStore,
+    setTestStartTimeToStore,
+    setTestTypeToStore,
+    setTestIdToStore,
+    setTestLanguageToStore,
+  } = props;
   const [liveTests, setLiveTests] = useState([]);
   const [demoTests, setDemoTests] = useState([]);
+  const [allowLiveTest, setAllowLiveTest] = useState([]);
+
+  const history = useHistory();
 
   useEffect(() => {
     let timer;
@@ -50,10 +64,211 @@ const Test = (props) => {
         setDemoTests(demo);
       });
     }
+    // console.log(liveTests);
     return () => {
       clearTimeout(timer);
     };
   }, [clientUserId, searchString]);
+
+  useEffect(() => {
+    if (liveTests.length) {
+      const falseArray = liveTests.map((e) => {
+        const payload = {
+          id: e.test_id,
+          isAllowed: false,
+          startTime: 0,
+          endTime: 0,
+        };
+        return payload;
+      });
+      setAllowLiveTest(falseArray);
+    }
+  }, [liveTests]);
+
+  const startLive = (
+    responseArray,
+    startTime = 0,
+    endTime = 0,
+    testType,
+    testId,
+    languageType = 'english',
+  ) => {
+    const { push } = history;
+    setTestResultArrayToStore(responseArray);
+    setTestEndTimeToStore(endTime);
+    // setTestStartTimeToStore(startTime);
+    setTestStartTimeToStore(Math.round(new Date().getTime() / 1000));
+    setTestTypeToStore(testType);
+    setTestIdToStore(testId);
+    setTestLanguageToStore(languageType);
+    push('/questiontaker');
+  };
+
+  const isAllowed = useCallback(
+    (bool, id, startTime, endTime) => {
+      console.log(bool, startTime, endTime, id, allowLiveTest, 'sara kuchhh');
+      if (allowLiveTest.length) {
+        const newCheckLiveExpiryArray = allowLiveTest.map((elem) => {
+          if (elem.id === id) {
+            elem.isAllowed = bool;
+            elem.startTime = startTime;
+            elem.endTime = endTime;
+          }
+          return elem;
+        });
+        setAllowLiveTest(newCheckLiveExpiryArray);
+      }
+    },
+    [allowLiveTest],
+  );
+
+  const startLiveTest = (elem) => {
+    console.log(elem, allowLiveTest);
+
+    const liveCheck = allowLiveTest.filter((e) => {
+      return e.id === elem.test_id;
+    });
+
+    if (liveCheck.length > 0 && liveCheck[0].isAllowed) {
+      const payload = {
+        client_user_id: clientUserId,
+        test_id: elem.test_id,
+        language_type: elem.language_type,
+      };
+
+      get(payload, '/getTestQuestionsForStudentWithLanguageLatest').then((res) => {
+        Swal.fire({
+          title: 'Your Live Test is Loaded',
+          text: 'hello',
+          icon: 'success',
+          showCloseButton: true,
+          showCancelButton: true,
+          confirmButtonText: `Attempt`,
+          denyButtonText: `Later`,
+          customClass: 'Assignments__SweetAlert',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const response = apiValidation(res);
+            startLive(
+              response,
+              parseInt(liveCheck[0].startTime, 10),
+              liveCheck[0].endTime,
+              'livetest',
+              elem.test_id,
+              elem.language_type,
+            );
+            console.log(response);
+          }
+        });
+        console.log(res, 'live test');
+      });
+    }
+  };
+
+  const startDemoTest = (elem) => {
+    const demoPayload = {
+      test_id: elem.test_id,
+      client_user_id: clientUserId,
+    };
+    console.log(elem);
+    get(demoPayload, '/getDemoTestEndTime').then((res) => {
+      const result = apiValidation(res);
+      console.log(result, 'endTime');
+      if (result.status === 'Not started') {
+        Swal.fire({
+          text: 'Do you wish to attempt the test?',
+          icon: 'question',
+          showCloseButton: true,
+          showCancelButton: true,
+          confirmButtonText: `Attempt`,
+          denyButtonText: `Later`,
+          customClass: 'Assignments__SweetAlert',
+        }).then((response) => {
+          if (response.isConfirmed) {
+            const testPayload = {
+              client_user_id: clientUserId,
+              test_id: elem.test_id,
+              test_status: 'started',
+            };
+
+            post(testPayload, '/submitTest').then((testres) => {
+              if (testres.success) {
+                const demoTestPayload = {
+                  client_user_id: clientUserId,
+                  test_id: elem.test_id,
+                  language_type: elem.language_type,
+                };
+                get(demoTestPayload, '/getTestQuestionsForStudentWithLanguageLatest').then((r) => {
+                  console.log(r, 'r');
+                  const studentQuestions = apiValidation(r);
+                  console.log(
+                    +new Date(),
+                    +new Date() + parseInt(result.duration, 10) / 1000,
+                    'wtfffff',
+                  );
+                  startLive(
+                    studentQuestions,
+                    Math.round(+new Date() / 1000),
+                    Math.round((+new Date() + parseInt(result.duration, 10)) / 1000),
+                    'demotest',
+                    elem.test_id,
+                  );
+                });
+              }
+            });
+          } else if (response.isDenied) {
+            console.log('oh no');
+          }
+        });
+      } else if (result.status === 'started') {
+        const currentTime = fromUnixTime(result.current_time);
+        const testStartTime = fromUnixTime(result.test_end_time);
+        const dateResult = compareAsc(currentTime, testStartTime);
+        console.log(dateResult);
+
+        if (dateResult < 0) {
+          const demoTestPayload = {
+            client_user_id: clientUserId,
+            test_id: elem.test_id,
+            language_type: elem.language_type,
+          };
+          get(demoTestPayload, '/getTestQuestionsForStudentWithLanguageLatest').then((response) => {
+            console.log(response);
+            const studentQuestions = apiValidation(response);
+            startLive(
+              studentQuestions,
+              result.current_time,
+              result.test_end_time,
+              'demotest',
+              elem.test_id,
+              elem.language_type,
+            );
+          });
+        } else if (dateResult > 0) {
+          const testPayload = {
+            client_user_id: clientUserId,
+            test_id: elem.test_id,
+            test_status: 'expired',
+          };
+          post(testPayload, '/submitTest').then((responseSubmit) => {
+            if (responseSubmit.success) {
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'The test has expired',
+              });
+            }
+          });
+        }
+      } else if (result.status === 'expired') {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'The test has expired',
+        });
+      }
+    });
+  };
 
   if (!liveTests.length && !demoTests.length) {
     console.log(liveTests.length);
@@ -66,15 +281,15 @@ const Test = (props) => {
 
   return (
     <div>
-      {liveTests.length > 0 && (
+      {liveTests.length > 0 && allowLiveTest.length > 0 && (
         <section className='Tests__scrollableCard divContainer'>
           {liveTests.map((elem) => {
             return (
               <div
                 key={elem.test_id}
                 className='ml-2'
-                // onClick={() => startLiveTest(elem)}
-                // onKeyDown={() => startLiveTest(elem)}
+                onClick={() => startLiveTest(elem)}
+                onKeyDown={() => startLiveTest(elem)}
                 tabIndex='-1'
                 role='button'
               >
@@ -85,7 +300,7 @@ const Test = (props) => {
                       <span style={{ color: 'rgba(0, 0, 0, 0.87)' }}>Test</span>
                     </p>
                     <p className='Tests__scrollableCardText pl-3 mt-1'>{elem.test_name}</p>
-                    {/* <LiveTestCounter id={elem.test_id} isAllowed={isAllowed} /> */}
+                    <LiveTestCounter id={elem.test_id} isAllowed={isAllowed} />
                   </Col>
                   <Col xs={3} className='pt-3 px-0 livetestImg'>
                     <img
@@ -112,8 +327,8 @@ const Test = (props) => {
               <div
                 key={elem.test_id}
                 className='ml-2'
-                // onClick={() => startDemoTest(elem)}
-                // onKeyDown={() => startDemoTest(elem)}
+                onClick={() => startDemoTest(elem)}
+                onKeyDown={() => startDemoTest(elem)}
                 tabIndex='-1'
                 role='button'
               >
@@ -152,8 +367,36 @@ const Test = (props) => {
     </div>
   );
 };
-export default Test;
+
+const mapDispatchToProps = (dispatch) => ({
+  setTestIdToStore: (payload) => {
+    dispatch(testsActions.setTestIdToStore(payload));
+  },
+  setTestTypeToStore: (payload) => {
+    dispatch(testsActions.setTestTypeToStore(payload));
+  },
+  setTestStartTimeToStore: (payload) => {
+    dispatch(testsActions.setTestStartTimeToStore(payload));
+  },
+  setTestEndTimeToStore: (payload) => {
+    dispatch(testsActions.setTestEndTimeToStore(payload));
+  },
+  setTestResultArrayToStore: (payload) => {
+    dispatch(testsActions.setTestResultArrayToStore(payload));
+  },
+  setTestLanguageToStore: (payload) => {
+    dispatch(testsActions.setTestLanguageToStore(payload));
+  },
+});
+export default connect(null, mapDispatchToProps)(Test);
+
 Test.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   searchString: PropTypes.string.isRequired,
+  setTestIdToStore: PropTypes.func.isRequired,
+  setTestTypeToStore: PropTypes.func.isRequired,
+  setTestStartTimeToStore: PropTypes.func.isRequired,
+  setTestEndTimeToStore: PropTypes.func.isRequired,
+  setTestResultArrayToStore: PropTypes.func.isRequired,
+  setTestLanguageToStore: PropTypes.func.isRequired,
 };
