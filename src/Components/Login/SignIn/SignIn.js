@@ -302,8 +302,8 @@ const SignIn = (props) => {
           <img
             src={image}
             alt='coachingLogo'
-            className='Signin__jumbo img-fluid rounded mx-auto d-block'
-            style={{ marginTop: '125px' }}
+            className='Signin__jumbo img-fluid rounded mx-auto d-block marginForSelectUserImgLogo'
+            style={{ marginTop: '125px', maxWidth: '160px' }}
           />
 
           <SelectUser userInfo={userInfo} getUserName={getUserName} />

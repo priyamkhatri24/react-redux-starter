@@ -54,28 +54,38 @@
     background: #fff4ec;
     border-radius: 10px;
     width: 93%;
+    display: flex;
 
     @include media-breakpoint-down(sm) {
       width: 100%;
+      display: block;
     }
     // background: linear-gradient(90deg, #fcf9f8, #fff4ec);
   }
 
-  &__innovation > h4 {
+  &__innovationh4 {
     font-family: 'Montserrat-Bold';
     line-height: $spacer * 1.8125;
     // color: var(--primary-blue);
     color: #fe979c;
   }
 
-  &__innovation > h4 > span {
+  &__innovationh4span {
     color: #3e3b6fde;
   }
 
-  &__innovation > p {
+  &__innovationp {
     font-size: $spacer;
     color: #575381;
     line-height: $spacer * 1.8;
+    width: 60%;
+    letter-spacing: 0.49px;
+    font-family: 'Montserrat-SemiBold';
+  }
+
+  &__innovationpBlack {
+    font-size: $spacer * 0.85;
+    color: #000;
     letter-spacing: 0.49px;
     font-family: 'Montserrat-SemiBold';
   }
@@ -243,10 +253,18 @@
   background: linear-gradient(103deg, #ffefeb, #feae96) !important;
   border: 0px !important;
   margin-left: 0px !important;
+  min-height: 85px;
 }
 .HWscrollableCard2 {
   background: linear-gradient(103deg, #f9efff, #705a7e) !important;
   border: 0px !important;
+  min-height: 85px;
+}
+
+@media screen and (min-width: 600px) {
+  .HWscrollableCard2 {
+    margin-left: 0px !important;
+  }
 }
 
 .react_chart {
@@ -326,6 +344,11 @@
   display: none;
 }
 
+.savedSentCardImage {
+  width: 50px;
+  height: auto;
+}
+
 @media screen and (max-width: 700px) {
   .floatingChatButtonDashboard {
     right: 14px;
@@ -384,7 +407,7 @@
 .nameAndProfilePic {
   margin-left: 0px;
   margin-right: 0px;
-  width: 100%;
+  width: 95%;
   transition-duration: 0.5s;
   transition-property: opacity;
 }
@@ -425,9 +448,22 @@
   min-width: 260px !important;
 }
 
+.HWCdisplay {
+  display: flex;
+  flex-direction: column !important;
+  margin: 14px 0px !important;
+}
+
 @media screen and (max-width: 600px) {
   .fillAdmissionFormButton {
     width: 53%;
+  }
+  .savedSentCardImage {
+    width: 40px;
+  }
+  .HWCdisplay {
+    flex-direction: row !important;
+    margin: 5px 0px !important;
   }
   .chartContainer {
     width: 95% !important;

@@ -39,7 +39,13 @@ import { firstTimeLoginActions } from '../../redux/actions/firsttimeLogin.action
 import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { testsActions } from '../../redux/actions/tests.action';
 import { courseActions } from '../../redux/actions/course.action';
-import { AspectCards, CoursesCards, DashboardCards, LiveClassesCards } from '../Common';
+import {
+  AspectCards,
+  CoursesCards,
+  DashboardCards,
+  LiveClassesCards,
+  DynamicCards,
+} from '../Common';
 import offlineAssignment from '../../assets/images/Dashboard/offline.svg';
 import Tests from '../Tests/Tests';
 import './Dashboard.scss';
@@ -520,9 +526,59 @@ const Dashboard = (props) => {
 
   const goToCRM = () => history.push('/crm');
 
+  const goToVideos = () => history.push('/videos');
+
   const goToConversations = () => history.push('/conversations');
 
+  const dynamicCardClicked = (param) => {
+    if (param.in_app_redirect === 'true') {
+      const page = param.redirct_feature;
+      if (page === 'displayPage') {
+        goToDisplayPage();
+      } else if (page === 'courses') {
+        role === 3 || role === 4 ? goToCoursesForTeacher() : goToCourses();
+      } else if (page === 'chats') {
+        goToChats();
+      } else if (page === 'crm') {
+        goToCRM();
+      } else if (page === 'fees') {
+        role === 3 || role === 4 ? goToTeacherFees() : goToFees();
+      } else if (page === 'liveClasses') {
+        goToLiveClasses();
+      } else if (page === 'studyBin') {
+        goToStudyBin();
+      } else if (page === 'admission') {
+        goToAdmissions();
+      } else if (page === 'videos') {
+        goToVideos();
+      } else if (page === 'homeworkCreator') {
+        goToHomeWorkCreator();
+      } else if (page === 'analysis') {
+        role === 3 || role === 4 ? goToTeacherAnalysis() : goToStudentAnalysis();
+      } else if (page === 'attendance') {
+        gotToAttendance();
+      } else if (page === 'noticeBoard') {
+        goToNoticeBoard();
+      } else {
+        console.log(page);
+      }
+    } else {
+      window.open(param.redirect_url, '_blank');
+    }
+  };
+
   const renderComponents = (param) => {
+    if (param.switcher.includes('dynamicCard')) {
+      return (
+        <DynamicCards
+          boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+          dynamicCardClicked={dynamicCardClicked}
+          data={data.dynamicCard}
+          noAddCard
+          isDynamic
+        />
+      );
+    }
     switch (param.switcher) {
       case 'attendance':
         return (
@@ -653,25 +709,31 @@ const Dashboard = (props) => {
             }}
             className='Dashboard__innovation pt-4 pl-3 pr-0 pb-3 mx-auto'
           >
-            <h4 className='Dashboard_homeworkCreator'>Witness </h4>
-            <h4 className='Dashboard_homeworkCreator'>
-              The <span>innovation</span>
-            </h4>
-            <p className='mr-5 Dashboard_homeworkCreator'>
-              Create tests &amp; home-works in 4 simple steps
-            </p>
-            <Button
-              className='Dashboard_homeworkCreator'
-              variant='dashboardHWletsGo'
-              onClick={() => goToHomeWorkCreator()}
-            >
-              Let&apos;s go
-              <span>
+            <div>
+              <p className='Dashboard__innovationpBlack ml-2'>
+                Assignment Creator
                 <ChevronRightIcon />
-              </span>
-            </Button>
-            <div className='Dashboard__assignment my-4 Dashboard_homeworkCreator'>
-              <section className='Dashboard__scrollableCard'>
+              </p>
+              <h4 className='Dashboard__innovationh4 ml-2'>Witness </h4>
+              <h4 className='Dashboard__innovationh4 ml-2'>
+                The <span className='Dashboard__innovationh4span'>innovation</span>
+              </h4>
+              <p className='mr-5 Dashboard__innovationp ml-2'>
+                Create tests &amp; home-works in 4 simple steps
+              </p>
+              <Button
+                className='Dashboard_homeworkCreator ml-2'
+                variant='dashboardHWletsGo'
+                onClick={() => goToHomeWorkCreator()}
+              >
+                Let&apos;s go
+                <span>
+                  <ChevronRightIcon />
+                </span>
+              </Button>
+            </div>
+            <div className='Dashboard__assignment my-4 mr-2 Dashboard_homeworkCreator'>
+              <section className='Dashboard__scrollableCard HWCdisplay'>
                 <div className='HWscrollableCard'>
                   <Row>
                     <Col xs={8} className='pr-0' onClick={() => goToSentTests('sent')}>
@@ -683,7 +745,11 @@ const Dashboard = (props) => {
                       </p>
                     </Col>
                     <Col xs={4} className='pt-3'>
-                      <img src={param.feature_icon} alt='assignment' height='40px' width='40px' />
+                      <img
+                        src={param.feature_icon}
+                        alt='assignment'
+                        className='savedSentCardImage'
+                      />
                     </Col>
                   </Row>
                 </div>
@@ -698,7 +764,11 @@ const Dashboard = (props) => {
                       </p>
                     </Col>
                     <Col xs={4} className='pt-3'>
-                      <img src={param.feature_icon} alt='assignment' height='40px' width='40px' />
+                      <img
+                        src={param.feature_icon}
+                        alt='assignment'
+                        className='savedSentCardImage'
+                      />
                     </Col>
                   </Row>
                 </div>
@@ -1144,9 +1214,18 @@ const Dashboard = (props) => {
         <Row className='pt-4 pr-4'>
           <span className='ml-auto p-3'>{/* <MoreVertIcon /> */}</span>
         </Row>
-        {hasLoaded && <h3 className='Dummy__coachingName text-center'>{data.client_name}</h3>}
         {hasLoaded && (
-          <p className='Dummy__tagline mb-4 text-center mb-5'>{data.client_tag_line}</p>
+          <h3 style={{ color: data.app_name_color }} className='Dummy__coachingName text-center'>
+            {data.client_name}
+          </h3>
+        )}
+        {hasLoaded && (
+          <p
+            style={{ color: data.app_name_color }}
+            className='Dummy__tagline mb-4 text-center mb-5'
+          >
+            {data.client_tag_line}
+          </p>
         )}
 
         <GlobalSearchBar

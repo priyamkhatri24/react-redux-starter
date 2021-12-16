@@ -65,7 +65,7 @@ const SignupForm = (props) => {
   };
 
   return (
-    <>
+    <div className='deskWidthFORM mx-auto'>
       <Row className='mx-2 mt-4'>
         <Col xs={7} className='align-self-end Login__signupHeading'>
           Help us know you better :)
@@ -193,7 +193,7 @@ const SignupForm = (props) => {
         aspectTop={1}
         aspectBottom={1}
       />
-    </>
+    </div>
   );
 };
 

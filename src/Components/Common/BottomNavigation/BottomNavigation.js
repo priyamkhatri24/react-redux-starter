@@ -165,7 +165,7 @@ const BottomNavigation = (props) => {
         <div className='horizontalLineContainer'>
           <div
             ref={draggerRef}
-            onTouchMove={backDropClicked}
+            onTouchEnd={backDropClicked}
             onClick={backDropClicked}
             className='horizontalLine'
           />
@@ -173,6 +173,10 @@ const BottomNavigation = (props) => {
         <div className='squaresC'>
           {filteredFeatures?.map((ele) => {
             if (ele.keyName === 'share') return null;
+            if (ele.keyName.includes('dynamicCard')) return null;
+            if (ele.keyName === 'chats') return null;
+            if (ele.keyName === 'courses') return null;
+            if (ele.keyName === 'studyBin') return null;
             return (
               <div
                 onClick={() => goToClickedPage(ele.keyName)}
@@ -221,7 +225,9 @@ const BottomNavigation = (props) => {
         </div>
         <div
           onClick={moreClicked}
-          className={`bottomNavItems${active === 'more' ? ' activeNav' : ''}`}
+          className={`bottomNavItems${
+            !['home', 'studyBin', 'courses', 'chats'].includes(active) ? ' activeNav' : ''
+          }`}
         >
           <MoreIcon />
           <p className='bottomNavSmallText'>More</p>

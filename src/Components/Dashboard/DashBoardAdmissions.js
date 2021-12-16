@@ -83,7 +83,7 @@ const DashBoardAdmissions = (props) => {
             alt='admissions'
           />
         </div>
-        <div className='addUserBatchContainer mx-2 mb-4 px-2 pb-2'>
+        <div className='addUserBatchContainer mx-2 mb-4 px-0 pb-2'>
           <div className='text-center mt-3 mr-3 p-0'>
             <Button
               variant='noticeBoardPost'

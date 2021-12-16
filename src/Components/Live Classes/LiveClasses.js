@@ -1372,7 +1372,7 @@ class LiveClasses extends Component {
             className='Profile__Tabs'
             justify
           >
-            <Tab id='liveTab' eventKey='Live' title='Live' style={{ marginBottom: '3.5rem' }}>
+            <Tab id='liveTab' eventKey='Live' title='Live' style={{ marginBottom: '4rem' }}>
               {!triggerJitsi && role === 'teacher' && (
                 <>
                   {/* {liveArray.map((existing) => {
@@ -2145,7 +2145,7 @@ class LiveClasses extends Component {
                 id='scheduleTab'
                 eventKey='Schedule'
                 title='Schedule'
-                style={{ marginBottom: '3.5rem' }}
+                style={{ marginBottom: '4rem' }}
               >
                 {myScheduled.length > 0 ? (
                   myScheduled.map((elem) => {
@@ -2229,8 +2229,8 @@ class LiveClasses extends Component {
                 )}
               </Tab>
             )}
-            {liveArray.length <= 0 && roleArray.includes(4) && (
-              <Tab eventKey='Others' title='Others' style={{ marginBottom: '3.5rem' }}>
+            {liveArray.length <= 0 && (
+              <Tab eventKey='Others' title='Others' style={{ marginBottom: '4rem' }}>
                 {allLiveClasses.length > 0 ? (
                   allLiveClasses.map((elem) => {
                     const startTimeText = new Date(+elem.stream_start_time * 1000).toString();
