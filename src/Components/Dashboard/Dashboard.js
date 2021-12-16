@@ -692,6 +692,7 @@ const Dashboard = (props) => {
             backGround={param.start_colour}
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             buttonClick={role === 1 || role === 2 ? goToStudentAnalysis : goToTeacherAnalysis}
+            textColor={data.text_color}
           />
         );
       case 'fees':
@@ -706,6 +707,7 @@ const Dashboard = (props) => {
             backGround={param.start_colour}
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             buttonClick={role === 1 || role === 2 ? goToFees : goToTeacherFees}
+            textColor={data.text_color}
           />
         );
       case 'posters':
@@ -857,6 +859,7 @@ const Dashboard = (props) => {
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             backGround={param.start_colour}
             buttonClick={goToCoursesForTeacher}
+            textColor={data.text_color}
           />
         );
       case 'liveClasses':
@@ -876,6 +879,7 @@ const Dashboard = (props) => {
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             buttonText={roleArray.includes(3) || roleArray.includes(4) ? 'Go live now' : ''}
             buttonClick={goToLiveClasses}
+            textColor={data.text_color}
           />
         ) : (
           <>
@@ -905,6 +909,7 @@ const Dashboard = (props) => {
             subHeading='Access content uploaded by institute here.'
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             buttonClick={goToStudyBin}
+            textColor={data.text_color}
           />
         );
       case 'admissionForm':
@@ -1037,6 +1042,7 @@ const Dashboard = (props) => {
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             backGround={param.start_colour}
+            textColor={data.text_color}
             buttonClick={goToCRM}
           />
         );
@@ -1068,6 +1074,7 @@ const Dashboard = (props) => {
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             buttonClick={goToDisplayPage}
+            textColor={data.text_color}
           />
         );
       case 'chats':
@@ -1080,6 +1087,7 @@ const Dashboard = (props) => {
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             backGround={param.start_colour}
             buttonClick={goToChats}
+            textColor={data.text_color}
           />
         ) : (
           <>
@@ -1103,9 +1111,18 @@ const Dashboard = (props) => {
         <Row className='pt-4 pr-4'>
           <span className='ml-auto p-3'>{/* <MoreVertIcon /> */}</span>
         </Row>
-        {hasLoaded && <h3 className='Dummy__coachingName text-center'>{data.client_name}</h3>}
         {hasLoaded && (
-          <p className='Dummy__tagline mb-4 text-center mb-5'>{data.client_tag_line}</p>
+          <h3 style={{ color: data.app_name_color }} className='Dummy__coachingName text-center'>
+            {data.client_name}
+          </h3>
+        )}
+        {hasLoaded && (
+          <p
+            style={{ color: data.app_name_color }}
+            className='Dummy__tagline mb-4 text-center mb-5'
+          >
+            {data.client_tag_line}
+          </p>
         )}
 
         <Row
