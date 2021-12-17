@@ -903,7 +903,7 @@ const Dashboard = (props) => {
             image={param.feature_icon} // student
             width={56}
             height={86}
-            coloredHeading='Library'
+            heading='Library'
             color='rgba(0, 102, 255, 0.87)'
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             subHeading='Access content uploaded by institute here.'
@@ -1161,10 +1161,10 @@ const Dashboard = (props) => {
           <Col className='mx-auto'>
             <img
               src={branding.branding.client_logo}
-              className='img-fluid'
               alt='profile'
               width='80px'
               height='80px'
+              style={{ width: '80px', height: '80px' }}
             />
           </Col>
         </Row>

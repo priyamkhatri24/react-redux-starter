@@ -71,7 +71,7 @@ const WelcomeCarousel = (props) => {
           return (
             <SwiperSlide key={elem.key}>
               <div className='d-flex justify-content-center'>
-                <img src={elem.image} alt='Carousel' className='img-fluid' />
+                <img src={elem.image} alt='Carousel' />
               </div>
               <p className='mt-4 text-center Welcome__carouselText'>{elem.text}</p>
             </SwiperSlide>
