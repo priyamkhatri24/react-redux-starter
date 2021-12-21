@@ -111,3 +111,15 @@
     height: auto !important;
   }
 }
+
+/// For very large screens ///
+
+@media screen and (min-width: 1440px) {
+  .Dummy__coachingName {
+    font-size: 84px !important;
+    font-family: 'Montserrat-Bold';
+  }
+  .Dummy__tagline {
+    font-size: 54px;
+  }
+}
