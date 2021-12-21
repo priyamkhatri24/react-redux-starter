@@ -107,7 +107,10 @@ export const LiveClassesCards = (props) => {
             </div>
             <p className='smallTextUnderHeading'>Attend all your live classes here.</p>
           </div>
-          <div style={{ display: 'flex', marginTop: '70px', marginBottom: '15px' }}>
+          <div
+            className='d-flex mx-auto deskDisplayLC'
+            style={{ marginTop: '70px', marginBottom: '15px' }}
+          >
             {liveClasses.map((elem) => {
               let startTimeText = '';
               let date = '';

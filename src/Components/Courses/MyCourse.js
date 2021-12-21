@@ -83,11 +83,13 @@ const Mycourse = (props) => {
       branding: { client_logo: image },
     },
   } = props;
-  const options = {
-    autoplay: true,
-  };
+  // const [options, setOptions] = useState({
+  //   autoplay: true,
+  // });
+  const options = { autoplay: true };
   const [course, setCourse] = useState({});
   const [isDesktop, setIsDesktop] = useState(true);
+  const [quality, setQuality] = useState(480);
   const [analysis, setAnalysis] = useState({});
   const [sectionArray, setSectionArray] = useState([]);
   const [showAnalysisModal, setShowAnalysisModal] = useState(false);
@@ -108,6 +110,7 @@ const Mycourse = (props) => {
   const [addedReview, setAddedReview] = useState('');
   const [reviews, setReviews] = useState([]);
   const [userHasCommented, setUserHasCommented] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
   const [videoIsPlaying, setVideoIsPlaying] = useState(true);
   const [previewText, setPreviewText] = useState(true);
   const [lapseTime, setLapseTime] = useState(0);
@@ -154,40 +157,37 @@ const Mycourse = (props) => {
   }, []);
 
   useEffect(() => {
+    if (nowPlayingVideoRef && nowPlayingVideoRef.current) {
+      console.log(nowPlayingVideoRef.current.plyr);
+      /* eslint-disable */
+      nowPlayingVideoRef.current.plyr.config.quality = {
+        default: 480,
+        forced: true,
+        selected: 480,
+        onChange: function (e) {
+          this.selected = e;
+          // console.log(e);
+          setQuality(e);
+        },
+        options: [480, 360, 240],
+      };
+    }
+  }, [nowPlayingVideo, nowPlayingVideoRef]);
+
+  useEffect(() => {
     let timer;
     let time;
     if (nowPlayingVideo) {
       // nowPlayingVideoRef.current.plyr.elements.settings.buttons.quality.hidden = false;
-      nowPlayingVideoRef.current.plyr.config.quality = {
-        default: 576,
-        forced: true,
-        selected: 576,
-        onChange: function (e) {
-          // nowPlayingVideoRef.current.plyr.quality = e;
-          this.selected = e;
-        },
-        options: [4320, 2880, 2160, 1440, 1080, 720, 576, 480, 360, 240, 'default'],
-      };
-      // nowPlayingVideoRef.current.plyr.options.quality = [
-      //   4320,
-      //   2880,
-      //   2160,
-      //   1440,
-      //   1080,
-      //   720,
-      //   576,
-      //   480,
-      //   360,
-      //   240,
-      // ];
+
       nowPlayingVideoRef.current.plyr.once('play', () => {
         nowPlayingVideoRef.current.plyr.currentTime = +nowPlayingVideo.finishedTime;
         console.log('seeking....', nowPlayingVideo);
         timer = setInterval(() => {
-          console.log(nowPlayingVideoRef.current.plyr.quality, 'qualityy');
-          console.log(nowPlayingVideoRef.current.plyr);
+          // console.log(nowPlayingVideoRef.current.plyr.quality, 'qualityy');
+          // console.log(nowPlayingVideoRef.current.plyr);
           time = nowPlayingVideoRef.current.plyr.currentTime;
-          console.log(time);
+          // console.log(time);
           if (isNaN(time)) return;
           const payload = {
             section_has_file_id: nowPlayingVideo.sectionFileId,
@@ -195,7 +195,7 @@ const Mycourse = (props) => {
             finished_time: time,
             total_time: nowPlayingVideoRef.current.plyr.duration || nowPlayingVideo.duration,
           };
-          console.log(payload);
+          // console.log(payload);
           post(payload, '/updateCourseContentViewStatus').then((resp) => {
             console.log(resp);
           });
@@ -220,9 +220,9 @@ const Mycourse = (props) => {
           finished_time: isNaN(time) ? 0 : time,
           total_time: nowPlayingVideoRef.current.plyr.duration || nowPlayingVideo.duration,
         };
-        console.log(payload);
+        // console.log(payload);
         post(payload, '/updateCourseContentViewStatus').then((resp) => {
-          console.log(resp);
+          // console.log(resp);
         });
         setContentArray(newContentArray);
         // setLapseTime(0);
@@ -230,10 +230,43 @@ const Mycourse = (props) => {
     };
   }, [nowPlayingVideo]);
 
+  // useEffect(() => {
+  //   if (!nowPlayingVideo) return;
+  //   const arr = nowPlayingVideo.linkArray;
+  //   let timer;
+  //   if (!arr) return;
+  //   if (quality === 360) {
+  //     const playingVid = {
+  //       src: nowPlayingVideo.linkArray[1] || nowPlayingVideo.linkArray[0],
+  //       ...nowPlayingVideo,
+  //     };
+  //     setNowPlayingVideo(playingVid);
+  //     setCourseNowPlayingVideoToStore(playingVid);
+  //   } else if (quality === 240) {
+  //     const playingVid = {
+  //       src: nowPlayingVideo.linkArray[2] || nowPlayingVideo.linkArray[0],
+  //       ...nowPlayingVideo,
+  //     };
+  //     setNowPlayingVideo(playingVid);
+  //     setCourseNowPlayingVideoToStore(playingVid);
+  //   } else {
+  //     const playingVid = {
+  //       src: nowPlayingVideo.linkArray[0],
+  //       ...nowPlayingVideo,
+  //     };
+  //     setNowPlayingVideo(playingVid);
+  //     setCourseNowPlayingVideoToStore(playingVid);
+  //   }
+  //   nowPlayingVideoRef.current.plyr.currentTime = +nowPlayingVideo.finishedTime;
+  //   return () => {
+  //     setCurrentTime(nowPlayingVideoRef.current.plyr.currentTime);
+  //   };
+  // }, [quality]);
+
   useEffect(() => {
     if (currentTab === 'reviews') return;
     // setscrolledToBottom(true);
-    console.log('changinggg');
+    // console.log('changinggg');
     const tabHeightFromTop = document.getElementById('idForScroll2')?.offsetTop;
     const tabH = document.body.clientHeight - tabHeightFromTop;
     setTabHeight(tabH - 50);
@@ -467,7 +500,8 @@ const Mycourse = (props) => {
         }
         // startVidTimer();
         const playingVid = {
-          src: elem.file_link,
+          src: elem.file_link_array[0],
+          linkArray: elem.file_link_array,
           id: elem.id,
           name: elem.name,
           finishedTime: elem.finished_time || 0,
@@ -850,6 +884,8 @@ const Mycourse = (props) => {
 
   const formatDurationFromSeconds = (duration) => {
     if (!duration) return null;
+    if (duration < 0) return null;
+    // console.log(duration, 'asdadasdasdas');
     let returnValue;
     if (+duration < 3600) {
       returnValue = new Date(+duration * 1000).toISOString().substr(14, 5);
@@ -897,19 +933,11 @@ const Mycourse = (props) => {
             type: 'video',
             sources: [nowPlayingVideo],
           }}
-          options={{
-            autoplay: false,
-            settings: ['quality', 'speed'],
-            hideControls: false,
-            quality: {
-              default: 576,
-              options: [4320, 2880, 2160, 1440, 1080, 720, 576, 480, 360, 240, 'default'],
-            },
-          }}
+          options={options}
         />
       </div>
     );
-  }, [nowPlayingVideo]);
+  }, [nowPlayingVideo, nowPlayingVideoRef?.current]);
 
   useEffect(() => {
     if (nowPlayingVideo) {

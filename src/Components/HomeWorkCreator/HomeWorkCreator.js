@@ -11,6 +11,7 @@ import CreateQuestion from './CreateQuestion';
 import SelectQuestions from './SelectQuestions';
 import CkeditorQuestion from './CkeditorQuestion';
 import PreviewCkeditor from './PreviewCkeditor';
+import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get, post } from '../../Utilities';
 import {
@@ -370,7 +371,10 @@ const HomeWorkCreator = (props) => {
           )}
         </Carousel>
       </div>
-      <div style={{ marginTop: '-3rem' }} className='Homework__desktopViewContainer hideOnMobileHW'>
+      <div
+        style={{ marginTop: '-3rem', marginBottom: '4rem' }}
+        className='Homework__desktopViewContainer hideOnMobileHW'
+      >
         <SelectQuestions
           setFilterType={setFilterType}
           desktop
@@ -422,6 +426,7 @@ const HomeWorkCreator = (props) => {
           />
         )}
       </div>
+      <BottomNavigation history={history} activeNav='homeworkCreator' />
     </div>
   );
 };

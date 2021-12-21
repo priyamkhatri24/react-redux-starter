@@ -35,7 +35,7 @@ export const CoursesCards = (props) => {
               Top quality digital courses in your hands. Get them NOW!
             </p>
           </div>
-          <div style={{ display: 'flex', marginTop: '100px' }}>
+          <div style={{ display: 'flex', marginTop: '100px' }} className='desktopDisplayforCards'>
             {allCourses.map((elem) => {
               const numberOfStars = Math.round(parseInt(elem.course_rating, 10));
               const starArray = [...Array(numberOfStars)].map((e, i) => (
@@ -56,7 +56,7 @@ export const CoursesCards = (props) => {
 
               return (
                 <div
-                  className='course-card col-sm-6 col-md-4 col-lg-2'
+                  className='course-card'
                   style={{ paddingLeft: 0, paddingRight: 0 }}
                   key={`elem+${elem.course_id}`}
                 >
@@ -142,8 +142,8 @@ export const CoursesCards = (props) => {
           </div>
           <div className='conatiner'>
             <section
-              className='row flex-nowrap Scrollable__card my-3'
-              style={{ marginLeft: 0, marginRight: 0 }}
+              className='d-flex Scrollable__card my-3 desktopDisplayforCards'
+              style={{ minWidth: '95%' }}
             >
               {myCourses.map((elem) => {
                 const numberOfStars = Math.round(parseInt(elem.course_rating, 10));
@@ -165,7 +165,7 @@ export const CoursesCards = (props) => {
 
                 return (
                   <div
-                    className='course-card col-sm-6 col-md-4 col-lg-2'
+                    className='course-card'
                     style={{
                       paddingLeft: 0,
                       paddingRight: 0,
@@ -208,7 +208,10 @@ export const CoursesCards = (props) => {
                       <p className='Scrollable__courseCardHeading mt-3 mb-0 mx-2'>
                         {elem.course_title}
                       </p>
-                      <div style={{ width: '90%' }} className='d-flex align-items-center'>
+                      <div
+                        style={{ width: '90%', position: 'absolute', bottom: '10px' }}
+                        className='d-flex align-items-center'
+                      >
                         <ProgressBar
                           width={`${elem.completed_percentage || 0}%`}
                           height='2px'

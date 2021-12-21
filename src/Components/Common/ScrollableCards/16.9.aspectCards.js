@@ -100,7 +100,7 @@ export const AspectCards = (props) => {
           </Card>
         )}
 
-        <div style={{ display: 'flex' }}>
+        <div className='aspectCardsInnerContainer'>
           {data.length > 0 &&
             data.map((elem) => {
               return (
@@ -120,8 +120,8 @@ export const AspectCards = (props) => {
                   {elem.file_type === 'video' ? (
                     /* eslint-disable */
                     <video
-                      height={bigAspectCard ? '177px' : '113px'}
-                      width={bigAspectCard ? '315px' : '200px'}
+                      // height={bigAspectCard ? '177px' : '113px'}
+                      // width={bigAspectCard ? '315px' : '200px'}
                       style={{ borderRadius: '5px' }}
                       muted
                       autoplay='autoplay'

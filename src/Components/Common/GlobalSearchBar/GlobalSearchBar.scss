@@ -64,6 +64,11 @@
   color: gray;
 }
 
+.searchBarImg {
+  width: 27px;
+  height: 27px;
+}
+
 .vl {
   border-left: 1px solid rgba(128, 128, 128, 0.3);
   height: 25px;
@@ -148,6 +153,11 @@
   margin: 0px;
 }
 
+.searchIconGS {
+  width: 20px;
+  margin-left: 5px;
+}
+
 @media screen and (max-width: 855px) {
   .searchInputContainer {
     width: 90%;
@@ -186,5 +196,29 @@
 @keyframes showBlock {
   to {
     visibility: visible;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .GlobalSearch__upperC {
+    height: 70px !important;
+  }
+  .GlobalSearch__searchContainer {
+    height: 70px !important;
+  }
+  .searchBarImg {
+    width: 40px;
+    height: 40px;
+  }
+  .searchIconGS {
+    width: 35px !important;
+    height: 35px !important;
+    margin-left: 15px;
+  }
+  .searchBarInputOnDashboard::placeholder {
+    font-size: 30px !important;
+  }
+  .searchBarInputOnDashboard {
+    font-size: 30px !important;
   }
 }

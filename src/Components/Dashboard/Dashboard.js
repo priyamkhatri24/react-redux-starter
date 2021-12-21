@@ -39,7 +39,13 @@ import { firstTimeLoginActions } from '../../redux/actions/firsttimeLogin.action
 import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { testsActions } from '../../redux/actions/tests.action';
 import { courseActions } from '../../redux/actions/course.action';
-import { AspectCards, CoursesCards, DashboardCards, LiveClassesCards } from '../Common';
+import {
+  AspectCards,
+  CoursesCards,
+  DashboardCards,
+  LiveClassesCards,
+  DynamicCards,
+} from '../Common';
 import offlineAssignment from '../../assets/images/Dashboard/offline.svg';
 import Tests from '../Tests/Tests';
 import './Dashboard.scss';
@@ -520,14 +526,64 @@ const Dashboard = (props) => {
 
   const goToCRM = () => history.push('/crm');
 
+  const goToVideos = () => history.push('/videos');
+
   const goToConversations = () => history.push('/conversations');
 
+  const dynamicCardClicked = (param) => {
+    if (param.in_app_redirect === 'true') {
+      const page = param.redirct_feature;
+      if (page === 'displayPage') {
+        goToDisplayPage();
+      } else if (page === 'courses') {
+        role === 3 || role === 4 ? goToCoursesForTeacher() : goToCourses();
+      } else if (page === 'chats') {
+        goToChats();
+      } else if (page === 'crm') {
+        goToCRM();
+      } else if (page === 'fees') {
+        role === 3 || role === 4 ? goToTeacherFees() : goToFees();
+      } else if (page === 'liveClasses') {
+        goToLiveClasses();
+      } else if (page === 'studyBin') {
+        goToStudyBin();
+      } else if (page === 'admission') {
+        goToAdmissions();
+      } else if (page === 'videos') {
+        goToVideos();
+      } else if (page === 'homeworkCreator') {
+        goToHomeWorkCreator();
+      } else if (page === 'analysis') {
+        role === 3 || role === 4 ? goToTeacherAnalysis() : goToStudentAnalysis();
+      } else if (page === 'attendance') {
+        gotToAttendance();
+      } else if (page === 'noticeBoard') {
+        goToNoticeBoard();
+      } else {
+        console.log(page);
+      }
+    } else {
+      window.open(param.redirect_url, '_blank');
+    }
+  };
+
   const renderComponents = (param) => {
+    if (param.switcher.includes('dynamicCard')) {
+      return (
+        <DynamicCards
+          boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+          dynamicCardClicked={dynamicCardClicked}
+          data={data.dynamicCard}
+          noAddCard
+          isDynamic
+        />
+      );
+    }
     switch (param.switcher) {
       case 'attendance':
         return (
           <div
-            className='Dashboard__attendance p-4'
+            className='Dashboard__attendance px-2 py-4'
             onClick={() => gotToAttendance()}
             onKeyDown={() => gotToAttendance()}
             tabIndex='-1'
@@ -554,11 +610,11 @@ const Dashboard = (props) => {
                 <div>
                   <hr />
                   <div>
-                    <p className='Dashboard__attendanceRecents ml-1'>Recent Attendance</p>
+                    <p className='Dashboard__attendanceRecents mx-3'>Recent Attendance</p>
                     <Row className='mx-2'>
                       {attendance.map((elem) => {
                         return (
-                          <div className='d-flex flex-column mx-1' key={elem.batch_id}>
+                          <div className='d-flex flex-column mx-2' key={elem.batch_id}>
                             <img
                               src={userAvatar}
                               alt='batch'
@@ -586,6 +642,7 @@ const Dashboard = (props) => {
             onClick={() => goToNoticeBoard()}
             role='button'
             tabIndex='-1'
+            style={{ backgroundColor: '#fffef4' }}
             onKeyDown={() => goToNoticeBoard()}
           >
             <span className='Dashboard__verticalDots'>
@@ -595,7 +652,7 @@ const Dashboard = (props) => {
               <Col xs={8} className='pl-4'>
                 <p className='Dashboard__todaysHitsText'>Notice Board</p>
                 {(roleArray.includes(3) || roleArray.includes(4)) && (
-                  <Button variant='noticeBoardPost'>
+                  <Button style={{ backgroundColor: 'white' }} variant='noticeBoardPost'>
                     <BorderColorIcon />
                     <span className='m-2'>Write a post</span>
                   </Button>
@@ -637,7 +694,9 @@ const Dashboard = (props) => {
                     </p>
                   </Col>
                 </Row>
-                <p className='p-2 Dashboard__noticeText'>{elem.notice_text}</p>
+                <p style={{ backgroundColor: '#fff4a4' }} className='p-2 Dashboard__noticeText'>
+                  {elem.notice_text}
+                </p>
               </div>
             ))}
           </div>
@@ -648,27 +707,33 @@ const Dashboard = (props) => {
             style={{
               background: `linear-gradient(90deg, ${param.end_colour}, ${param.start_colour})`,
             }}
-            className='Dashboard__innovation pt-4 pl-3 pr-0 pb-3 mx-2'
+            className='Dashboard__innovation pt-4 pl-3 pr-0 pb-3 mx-auto'
           >
-            <h4 className='Dashboard_homeworkCreator'>Witness </h4>
-            <h4 className='Dashboard_homeworkCreator'>
-              The <span>innovation</span>
-            </h4>
-            <p className='mr-5 Dashboard_homeworkCreator'>
-              Create tests &amp; home-works in 4 simple steps
-            </p>
-            <Button
-              className='Dashboard_homeworkCreator'
-              variant='dashboardHWletsGo'
-              onClick={() => goToHomeWorkCreator()}
-            >
-              Let&apos;s go
-              <span>
+            <div>
+              <p className='Dashboard__innovationpBlack ml-2'>
+                Assignment Creator
                 <ChevronRightIcon />
-              </span>
-            </Button>
-            <div className='Dashboard__assignment my-4 Dashboard_homeworkCreator'>
-              <section className='Dashboard__scrollableCard'>
+              </p>
+              <h4 className='Dashboard__innovationh4 ml-2'>Witness </h4>
+              <h4 className='Dashboard__innovationh4 ml-2'>
+                The <span className='Dashboard__innovationh4span'>innovation</span>
+              </h4>
+              <p className='mr-5 Dashboard__innovationp ml-2'>
+                Create tests &amp; home-works in 4 simple steps
+              </p>
+              <Button
+                className='Dashboard_homeworkCreator ml-2'
+                variant='dashboardHWletsGo'
+                onClick={() => goToHomeWorkCreator()}
+              >
+                Let&apos;s go
+                <span>
+                  <ChevronRightIcon />
+                </span>
+              </Button>
+            </div>
+            <div className='Dashboard__assignment my-4 mr-2 Dashboard_homeworkCreator'>
+              <section className='Dashboard__scrollableCard HWCdisplay'>
                 <div className='HWscrollableCard'>
                   <Row>
                     <Col xs={8} className='pr-0' onClick={() => goToSentTests('sent')}>
@@ -680,7 +745,11 @@ const Dashboard = (props) => {
                       </p>
                     </Col>
                     <Col xs={4} className='pt-3'>
-                      <img src={param.feature_icon} alt='assignment' height='40px' width='40px' />
+                      <img
+                        src={param.feature_icon}
+                        alt='assignment'
+                        className='savedSentCardImage'
+                      />
                     </Col>
                   </Row>
                 </div>
@@ -695,7 +764,11 @@ const Dashboard = (props) => {
                       </p>
                     </Col>
                     <Col xs={4} className='pt-3'>
-                      <img src={param.feature_icon} alt='assignment' height='40px' width='40px' />
+                      <img
+                        src={param.feature_icon}
+                        alt='assignment'
+                        className='savedSentCardImage'
+                      />
                     </Col>
                   </Row>
                 </div>
@@ -735,7 +808,7 @@ const Dashboard = (props) => {
         );
       case 'posters':
         return data.posters.length > 0 ? (
-          <div className='m-2 mt-4'>
+          <div className='my-2 mt-4'>
             <AspectCards
               data={data.posters}
               clickCard={() => {}}
@@ -751,12 +824,12 @@ const Dashboard = (props) => {
           <>
             <h6
               style={{
-                fontFamily: 'Montserrat-Medium',
+                fontFamily: 'Montserrat-Bold',
                 lineHeight: '20px',
                 textAlign: 'left',
-                fontSize: '14px',
+                fontSize: '16px',
               }}
-              className='mx-3 mt-4 mb-0'
+              className='mx-auto ml-3 mt-4 mb-0 scrollableCardHeading'
             >
               Our Star Performers
             </h6>
@@ -774,12 +847,12 @@ const Dashboard = (props) => {
           <>
             <h6
               style={{
-                fontFamily: 'Montserrat-Medium',
+                fontFamily: 'Montserrat-Bold',
                 lineHeight: '20px',
                 textAlign: 'left',
-                fontSize: '14px',
+                fontSize: '16px',
               }}
-              className='mx-3 mt-4 mb-0'
+              className='mx-auto ml-3 mt-4 mb-0 scrollableCardHeading'
             >
               Testimonials
             </h6>
@@ -794,11 +867,11 @@ const Dashboard = (props) => {
         ) : null;
       case 'aboutUs':
         return (
-          <div className='text-left m-3 mt-5'>
+          <div className='text-left my-3 mt-5 aboutConnectContainer'>
             <h5 className='Dummy__aboutus'>About us</h5>
             <p className='Dummy__aboutData'>{data.about_us}</p>
 
-            <h6 className='Dummy__connect'>Connect with us</h6>
+            <h5 className='Dummy__aboutus'>Connect with us</h5>
 
             <section className='Scrollable__card ' style={{ minHeight: '40px' }}>
               {[
@@ -838,14 +911,14 @@ const Dashboard = (props) => {
                 .filter((e) => e.link)
                 .map((elem) => {
                   return (
-                    <a href={elem.link} className='text-center m-3' key={elem.key}>
+                    <a href={elem.link} className='text-center mr-4 my-3 ml-0' key={elem.key}>
                       <img src={elem.image} alt={elem.link} className='Dummy__socialLinks' />
                     </a>
                   );
                 })}
               <a
                 href={data.other_link}
-                className='text-center m-3'
+                className='text-center mr-3 my-3 ml-0'
                 style={{
                   backgroundColor: 'rgba(112, 112, 112, 1)',
                   color: '#fff',
@@ -939,7 +1012,11 @@ const Dashboard = (props) => {
         return (
           <Card
             className='DashboardCards'
-            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+            style={{
+              border: '1px solid rgba(112,112,112,0.5)',
+              margin: 'auto',
+              backgroundColor: '#F7FDFF',
+            }}
           >
             <Row className='mx-0 justify-content-center mt-2'>
               <Col xs={8} className='text-left p-3'>
@@ -1013,10 +1090,16 @@ const Dashboard = (props) => {
         return (
           <Card
             className='DashboardCards mt-3 mb-2'
-            style={{ border: '1px solid rgba(112, 112, 112, 0.5)', margin: 'auto' }}
+            style={{
+              border: '0.5px solid rgba(112, 112, 112, 0.5)',
+              margin: 'auto',
+              backgroundColor: '#EDEDED',
+            }}
           >
             <Row className='mx-3 justify-content-left mt-2'>
-              <h6 className='Dummy__joinUs'>Contact us</h6>
+              <h6 style={{ fontSize: '16px' }} className='Dummy__joinUs'>
+                Contact us
+              </h6>
             </Row>
             {data.address.location && (
               <Row className='mx-0 justify-content-center mt-2'>
@@ -1024,8 +1107,8 @@ const Dashboard = (props) => {
                   <LocationOnIcon />
                 </Col>
                 <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
-                  <p className='mb-0 Dummy__joinDetails'>{data.address.location}</p>
-                  <p className='Dummy__joinSmall'>Address</p>
+                  <p className='mb-0 Dummy__contactDetails'>{data.address.location}</p>
+                  <p className='Dummy__contactSmall'>Address</p>
                 </Col>
               </Row>
             )}
@@ -1036,8 +1119,8 @@ const Dashboard = (props) => {
                   <PhoneIcon />
                 </Col>
                 <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
-                  <p className='mb-0 Dummy__joinDetails'>{data.address.client_contact}</p>
-                  <p className='Dummy__joinSmall'>Phone</p>
+                  <p className='mb-0 Dummy__contactDetails'>{data.address.client_contact}</p>
+                  <p className='Dummy__contactSmall'>Phone</p>
                 </Col>
               </Row>
             )}
@@ -1047,8 +1130,8 @@ const Dashboard = (props) => {
                   <AlternateEmailIcon />
                 </Col>
                 <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
-                  <p className='mb-0 Dummy__joinDetails'>{data.address.client_email}</p>
-                  <p className='Dummy__joinSmall'>Email</p>
+                  <p className='mb-0 Dummy__contactDetails'>{data.address.client_email}</p>
+                  <p className='Dummy__contactSmall'>Email</p>
                 </Col>
               </Row>
             )}
@@ -1079,7 +1162,7 @@ const Dashboard = (props) => {
                   goToAddBatch={goToAddBatch}
                   goToAdmissions={goToAdmissions}
                   openOptionsModal={openOptionsModal}
-                  heroImage={branding.branding.client_logo}
+                  heroImage={param.feature_icon}
                 />
               ) || <Skeleton count={20} />}
             </>

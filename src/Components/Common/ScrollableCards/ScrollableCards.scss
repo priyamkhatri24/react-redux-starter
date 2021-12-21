@@ -22,12 +22,40 @@
     min-width: 200px;
     height: 113px;
     border-radius: 10px;
+
+    @include media-breakpoint-up(md) {
+      min-width: 320px;
+      min-height: 181px;
+    }
   }
 
   &__aspectCardBig {
     min-width: 315px;
     height: 177px;
     // border-radius: 10px;
+
+    @include media-breakpoint-up(md) {
+      min-width: 504px;
+      min-height: 283px;
+    }
+  }
+
+  &__dynamicCard {
+    min-width: 80%;
+    height: 177px;
+    overflow: hidden;
+    border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+
+    @include media-breakpoint-up(md) {
+      min-width: 60%;
+      min-height: 283px;
+    }
   }
 
   &__card::-webkit-scrollbar {
@@ -72,12 +100,13 @@
   /****************************Course Cards**********/
 
   &__courseCardContent {
-    min-width: 220px;
+    width: 220px;
     margin: 5px;
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
     border-radius: 10px;
-    min-height: 232px;
-    margin: 20px 10px;
+    min-height: fit-content;
+    height: 258px;
+    margin: 20px 5px;
   }
 
   &__courseCard {
@@ -135,11 +164,16 @@
 
   &__subHeadTextUnderHeading {
     position: absolute !important;
-    left: 20px !important;
+    left: 38px !important;
     display: flex;
-    width: 94%;
+    width: 93%;
     justify-content: space-between;
     align-items: flex-start;
+
+    @include media-breakpoint-down(sm) {
+      left: 15px !important;
+      width: 95%;
+    }
   }
 
   &__smallText {
@@ -263,6 +297,22 @@
   &__liveClassesCard::-webkit-scrollbar {
     display: none;
   }
+
+  /////////////dynamic Cards///////////////
+  &__heading {
+    font-size: x-large;
+    font-weight: 200;
+    @include media-breakpoint-down(md) {
+      font-size: $spacer * 0.875;
+      font-family: $semiBold;
+      line-height: 20px;
+    }
+  }
+
+  &__cardImage {
+    text-align: left;
+    padding-right: 40px;
+  }
 }
 .smallTextUnderHeading {
   font-size: 12px;
@@ -271,9 +321,9 @@
   margin-bottom: 18px;
 }
 @media screen and (min-width: 800px) {
-  .course-card {
-    margin-right: 40px;
-  }
+  // .course-card {
+  //   margin-right: 40px;
+  // }
 }
 @media screen and (max-width: 335px) {
   .smallTextUnderHeading {
@@ -368,6 +418,34 @@
 .boldText {
   font-family: 'Montserrat-Medium';
   font-size: 12px;
+}
+
+.aspectCardsInnerContainer {
+  display: flex;
+  width: 95%;
+  margin: auto;
+}
+
+.desktopDisplayforCards {
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.deskDisplayLC {
+  width: 93%;
+}
+
+@media screen and (max-width: 600px) {
+  .aspectCardsInnerContainer {
+    width: 100%;
+  }
+  .deskDisplayLC {
+    width: 95%;
+  }
+  .desktopDisplayforCards {
+    width: 97%;
+  }
 }
 
 @media screen and (max-width: 770px) {

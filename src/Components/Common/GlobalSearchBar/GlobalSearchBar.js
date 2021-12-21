@@ -101,12 +101,10 @@ const GlobarSearchBar = (props) => {
             src={`${
               process.env.NODE_ENV === 'development' ? YCIcon : branding.branding.client_logo
             }`}
-            className='img-fluid mx-1 mr-1'
+            className='searchBarImg mx-1 mr-1'
             alt='profile'
-            width='27px'
-            height='27px'
           />
-          <SearchIcon style={{ width: '20px', marginLeft: '5px' }} />
+          <SearchIcon className='searchIconGS' />
         </div>
         <div className='searchInputContainer'>
           <input className='searchBarInputOnDashboard' type='text' placeholder='Search' />
@@ -114,22 +112,18 @@ const GlobarSearchBar = (props) => {
           {/* eslint-disable */}
           <img
             src={profileImage || userAvatar}
-            width='27px'
-            height='27px'
             alt='profile'
             onClick={() => expandSearchBar()}
-            className='ml-1 mx-1'
+            className='searchBarImg ml-1 mx-1'
           />
         </div>
       </div>
       <div style={!expandSearch ? { display: 'none' } : {}} className='avatarAnimation'>
         <img
           src={profileImage || userAvatar}
-          width='27px'
-          height='27px'
           alt='profile'
           onClick={() => goToProfile()}
-          className='ml-1 mx-1'
+          className='searchBarImg ml-1 mx-1'
         />
         <p className='mb-0 ml-2 nameText'>
           {firstName} {lastName}
@@ -141,7 +135,7 @@ const GlobarSearchBar = (props) => {
         style={!expandSearch ? { display: 'none' } : {}}
         className='crossIcon'
       >
-        <CancelIcon stylle={{ color: 'rgba(128,128,128,0.5' }} />
+        <CancelIcon className='searchBarImg' style={{ color: 'rgba(128,128,128,0.5' }} />
       </div>
 
       <div className='barBtns'>

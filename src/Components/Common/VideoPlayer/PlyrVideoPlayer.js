@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import PlyrComponent from 'plyr-react';
 import 'plyr-react/dist/plyr.css';
@@ -12,6 +12,9 @@ const PlyrVideoPlayer = (props) => {
     autoplay: true,
     youtube: { noCookie: false, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
   };
+  const [quality, setQuality] = useState(480);
+  const [linkArray, setLinkArray] = useState('');
+  const [currentTime, setCurrentTime] = useState(0);
   const [source, setSource] = useState({
     type: 'video',
     sources: [
@@ -21,6 +24,57 @@ const PlyrVideoPlayer = (props) => {
     ],
   });
   const [videoId, setVideoId] = useState('');
+  const playerRef = useRef(null);
+
+  useEffect(() => {
+    let timer;
+    const arr = history.location.state.videoLinkArray;
+    if (!arr) return;
+    if (playerRef && playerRef.current && arr) {
+      console.log(playerRef.current.plyr);
+      /* eslint-disable */
+      playerRef.current.plyr.config.quality = {
+        default: 480,
+        forced: true,
+        selected: 480,
+        onChange: function (e) {
+          this.selected = e;
+          console.log(e);
+          setQuality(e);
+        },
+        options: [480, 360, 240],
+      };
+    }
+  }, [playerRef]);
+
+  useEffect(() => {
+    const arr = history.location.state.videoLinkArray;
+    let timer;
+    if (!arr) return;
+    if (quality === 360) {
+      const newSource = JSON.parse(JSON.stringify(source));
+      newSource.sources = [{ src: arr[1] || arr[0] }];
+      setSource(newSource);
+    } else if (quality === 240) {
+      const newSource = JSON.parse(JSON.stringify(source));
+      newSource.sources = [{ src: arr[2] || arr[0] }];
+      setSource(newSource);
+    } else {
+      const newSource = JSON.parse(JSON.stringify(source));
+      newSource.sources = [{ src: arr[0] }];
+      setSource(newSource);
+    }
+    playerRef.current.plyr.once('play', () => {
+      playerRef.current.plyr.currentTime = currentTime;
+      timer = setInterval(() => {
+        setCurrentTime(playerRef.current.plyr.currentTime);
+      }, 1000);
+    });
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [quality]);
 
   useEffect(() => {
     if (history.location.state && history.location.state.link) {
@@ -32,6 +86,8 @@ const PlyrVideoPlayer = (props) => {
       newSource.sources = [{ src: history.location.state.videoLink }];
       console.log(newSource);
       setSource(newSource);
+      setLinkArray(history.location.state.videoLinkArray);
+      console.log(history.location.state);
     } else {
       const { id } = match.params;
       console.log(id);
@@ -55,11 +111,19 @@ const PlyrVideoPlayer = (props) => {
     });
   });
 
+  const renderVideoPlayer = useMemo(() => {
+    return (
+      <div className='mx-auto plyrComponent'>
+        <PlyrComponent ref={playerRef} source={source} options={options} />
+      </div>
+    );
+  }, [source, playerRef]);
+
   return (
     <>
       <PageHeader transparent />
       <div className='plyrComponent__overall'>
-        <PlyrComponent source={source} options={options} />
+        {renderVideoPlayer}
         {videoId && <Comments videoId={videoId} />}
       </div>
     </>
