@@ -49,7 +49,7 @@ const DummyDashboard = (props) => {
   const [modalHeading, setModalHeading] = useState(null);
 
   useEffect(() => {
-    get({ client_id: clientId }, '/getRecentDataLatest').then((res) => {
+    get({ client_id: clientId, is_skip: true }, '/getLoginPageInformation').then((res) => {
       console.log(res);
       const result = apiValidation(res);
       setDummyData(result);
@@ -88,24 +88,24 @@ const DummyDashboard = (props) => {
     Object.keys(dummyData).length > 0 && (
       <div className='text-center'>
         <div className='Dashboard__headerCard pt-5 mb-5'>
-          <h3 className='Dummy__coachingName'>{dummyData.client_name}</h3>
-          <p className='Dummy__tagline mb-4'>{dummyData.client_tag_line}</p>
+          <h3 style={{ color: dummyData.app_name_color }} className='Dummy__coachingName'>
+            {dummyData.client_name}
+          </h3>
+          <p style={{ color: dummyData.app_name_color }} className='Dummy__tagline mb-4'>
+            {dummyData.client_tag_line}
+          </p>
 
-          <img
-            src={imgUrl || YCIcon}
-            className='img-fluid'
-            alt='profile'
-            width='100px'
-            height='100px'
-          />
+          <img src={imgUrl || YCIcon} alt='profile' style={{ width: '100px', height: '100px' }} />
         </div>
         <Button
           variant='customPrimarySmol'
+          className='colorForBack'
           style={{
             letterSpacing: '0.09px',
             lineHeight: '18px',
             paddingLeft: '30px',
             paddingRight: '30px',
+            backgroundColor: dummyData.client_color,
           }}
           onClick={
             history.location.pathname === '/displaypage/preview'
@@ -300,7 +300,7 @@ const DummyDashboard = (props) => {
               <p className='Dummy__joinSmall'>Fill admission form to join us.</p>
             </Col>
             <Col xs={4} className='p-2'>
-              <img src={form} alt='form' className='img-fluid' />
+              <img src={form} alt='form' className='Dashboard_image' />
             </Col>
             <Button variant='customPrimarySmol' className='mb-3'>
               Fill admission form
@@ -324,7 +324,7 @@ const DummyDashboard = (props) => {
               </Button>
             </Col>
             <Col xs={5} className='p-2 mt-3 text-center'>
-              <img src={share} alt='form' className='img-fluid' />
+              <img src={share} alt='form' className='Dashboard_image' />
             </Col>
           </Row>
         </Card>

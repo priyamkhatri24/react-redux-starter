@@ -21,6 +21,7 @@ export const DashboardCards = (props) => {
     buttonClick,
     height,
     width,
+    textColor,
   } = props;
 
   const style = {
@@ -45,9 +46,13 @@ export const DashboardCards = (props) => {
         <Col xs={8}>
           <p className='Dashboard__todaysHitsText'>
             {coloredHeading && <span style={{ color }}>{coloredHeading}</span>}{' '}
-            <span className='DashboardCards__heading'>{heading}</span>
+            <span style={{ color: textColor }} className='DashboardCards__heading'>
+              {heading}
+            </span>
           </p>
-          <p className='Dashboard__attendanceSubHeading'>{subHeading}</p>
+          <p style={{ color: textColor }} className='Dashboard__attendanceSubHeading'>
+            {subHeading}
+          </p>
 
           {buttonText && (
             <Button variant='liveClasses'>
@@ -79,6 +84,7 @@ DashboardCards.propTypes = {
   buttonClick: PropTypes.func,
   height: PropTypes.number,
   width: PropTypes.number,
+  textColor: PropTypes.string,
 };
 
 DashboardCards.defaultProps = {
@@ -93,4 +99,5 @@ DashboardCards.defaultProps = {
   buttonClick: () => {},
   height: 76,
   width: 78,
+  textColor: '#000',
 };
