@@ -190,14 +190,14 @@ const TeacherCourses = (props) => {
           <Tab
             eventKey='My Courses'
             title='My Courses'
-            style={{ marginTop: '7rem', marginBottom: '4rem' }}
+            style={{ marginTop: '7rem', marginBottom: '1rem' }}
             onclick={() => handleSelect('My Courses')}
           >
             <Button
               variant='customPrimaryWithShadow'
               style={{
                 position: 'fixed',
-                bottom: 70,
+                bottom: 20,
                 zIndex: '10',
                 left: '50%',
                 transform: 'translate(-50%, 0)',

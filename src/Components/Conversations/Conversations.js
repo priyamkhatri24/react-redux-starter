@@ -103,7 +103,7 @@ const Conversations = function ({
       <Row className='d-block'>
         <ConversationsHeader searchBar goToHome />
         <div className='d-flex'>
-          <Col style={{ overflowY: 'scroll', height: '90vh' }} md={12}>
+          <Col style={{ overflowY: 'scroll', height: '98vh' }} md={12}>
             <div className='conversations-container mt-3'>
               {conversations.length > 0 && (
                 <ul className='list-unstyled'>

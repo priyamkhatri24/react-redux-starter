@@ -174,7 +174,7 @@ const TeacherAnalysis = (props) => {
               <GetAppIcon />
             </span>
           </Row>
-          <div style={{ height: '65vh', overflow: 'scroll', paddingBottom: '3rem' }}>
+          <div style={{ height: '65vh', overflow: 'scroll', paddingBottom: '0rem' }}>
             {tab === 'Assignments' ? (
               assignments.map((elem) => {
                 return (

@@ -103,7 +103,7 @@ const CRM = (props) => {
         <Tab
           eventKey='Enquiries'
           title='Enquiries'
-          style={{ marginTop: '2rem', marginBottom: '3.5rem' }}
+          style={{ marginTop: '2rem', marginBottom: '1rem' }}
         >
           <div css={AdmissionStyle.UserCards}>
             {inquiryArray.map((inquiry) => {
@@ -148,7 +148,7 @@ const CRM = (props) => {
         <Tab
           eventKey='Admission Form'
           title='Admission Form'
-          style={{ marginTop: '2rem', marginBottom: '3.5rem' }}
+          style={{ marginTop: '2rem', marginBottom: '1rem' }}
         >
           <div css={AdmissionStyle.UserCards}>
             {admissionFormArray.map((e) => {

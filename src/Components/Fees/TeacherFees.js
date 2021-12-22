@@ -87,13 +87,13 @@ const TeacherFees = (props) => {
           <Tab
             eventKey='Notifications'
             title='Notifications'
-            style={{ marginBottom: '3.5rem' }}
+            style={{ marginBottom: '0.5rem' }}
             onClick={() => handleSelect('Notifications')}
           >
             <FeesTimeline clientId={clientId} />
           </Tab>
           <Tab
-            style={{ marginBottom: '3.5rem' }}
+            style={{ marginBottom: '0.5rem' }}
             eventKey='Batches'
             title='Batches'
             onClick={() => handleSelect('Batches')}
@@ -106,7 +106,7 @@ const TeacherFees = (props) => {
             />
           </Tab>
           <Tab
-            style={{ marginBottom: '3.5rem' }}
+            style={{ marginBottom: '0.5rem' }}
             eventKey='Summary'
             title='Summary'
             onClick={() => handleSelect('Summary')}

@@ -131,7 +131,7 @@ const DisplayPage = (props) => {
   return (
     <>
       <PageHeader title='Display Page' />
-      <div className='Display' style={{ marginTop: '4rem', marginBottom: '3rem' }}>
+      <div className='Display' style={{ marginTop: '4rem', marginBottom: '1rem' }}>
         <div>
           <Button
             variant='courseBlueOnWhite'

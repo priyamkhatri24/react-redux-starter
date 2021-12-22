@@ -207,7 +207,7 @@ const Admissions = (props) => {
               <GetAppIcon />
             </span>
           </Row>
-          <div css={AdmissionStyle.UserCards} style={{ marginBottom: '9rem' }}>
+          <div css={AdmissionStyle.UserCards} style={{ marginBottom: '6rem' }}>
             {tab === 'Users' ? (
               users.map((elem) => {
                 return <UserDataCard elem={elem} history={history} key={elem.user_id} />;

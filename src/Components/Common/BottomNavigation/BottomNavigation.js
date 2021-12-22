@@ -157,7 +157,7 @@ const BottomNavigation = (props) => {
     setScrolledUp(false);
   };
 
-  return roleArray.includes(3) || roleArray.includes(4) ? (
+  return false ? (
     /* eslint-disable */
     <>
       {scrolledUp ? <div onClick={backDropClicked} className='backDrop' /> : null}

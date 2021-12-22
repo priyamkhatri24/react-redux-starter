@@ -325,7 +325,7 @@ const NoticeBoard = (props) => {
   }, [clientId, clientUserId, roleArray, getNotices]);
 
   return (
-    <div style={{ marginBottom: '4rem' }}>
+    <div style={{ marginBottom: '1rem' }}>
       <PageHeader
         title='Notice Board'
         search

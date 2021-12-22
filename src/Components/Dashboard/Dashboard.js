@@ -1212,7 +1212,7 @@ const Dashboard = (props) => {
   };
 
   return (
-    <div style={{ marginBottom: '4rem' }}>
+    <div style={{ marginBottom: '1rem' }}>
       <div
         className='Dashboard__headerCard pb-3'
         // className={`Dashboard__headerCard pb-3 ${
@@ -1236,43 +1236,41 @@ const Dashboard = (props) => {
           </p>
         )}
 
-        <GlobalSearchBar
+        {/* <GlobalSearchBar
           style={{
             height: `${nameDisplay ? '100%' : '0px'}`,
             opacity: `${nameDisplay ? 1 : 0}`,
             // display: `${nameDisplay ? 'flex' : 'none'}`,
           }}
-        />
+        /> */}
 
-        {roleArray.includes(2) || roleArray.includes(1) ? (
-          <Row
-            style={{
-              height: `${nameDisplay ? '100%' : '0px'}`,
-              opacity: `${nameDisplay ? 1 : 0}`,
-              // display: `${nameDisplay ? 'flex' : 'none'}`,
-            }}
-            className=''
-            className='nameAndProfilePic mx-auto px-2 mt-4'
+        <Row
+          style={{
+            height: `${nameDisplay ? '100%' : '0px'}`,
+            opacity: `${nameDisplay ? 1 : 0}`,
+            // display: `${nameDisplay ? 'flex' : 'none'}`,
+          }}
+          className=''
+          className='nameAndProfilePic mx-auto px-2 mt-4'
+        >
+          <Col
+            xs={4}
+            md={roleArray.includes(1) || roleArray.includes(2) ? 1 : 2}
+            onClick={() => goToProfile()}
           >
-            <Col
-              xs={4}
-              md={roleArray.includes(1) || roleArray.includes(2) ? 1 : 2}
-              onClick={() => goToProfile()}
-            >
-              <img
-                src={profileImage || userAvatar}
-                className='Dashboard__profileImage float-right img-responsive'
-                alt='profile'
-              />
-            </Col>
-            <Col xs={8} md={roleArray.includes(1) || roleArray.includes(2) ? 11 : 10}>
-              <h4 className='Dashboard__headingText'>
-                {time} {firstName}
-              </h4>
-              {/* <h4 className='Dashboard__headingText'></h4> */}
-            </Col>
-          </Row>
-        ) : null}
+            <img
+              src={profileImage || userAvatar}
+              className='Dashboard__profileImage float-right img-responsive'
+              alt='profile'
+            />
+          </Col>
+          <Col xs={8} md={roleArray.includes(1) || roleArray.includes(2) ? 11 : 10}>
+            <h4 className='Dashboard__headingText'>
+              {time} {firstName}
+            </h4>
+            {/* <h4 className='Dashboard__headingText'></h4> */}
+          </Col>
+        </Row>
         <Row
           style={{
             display: `${nameDisplay ? 'none' : 'block'}`,

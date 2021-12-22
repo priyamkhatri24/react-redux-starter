@@ -80,7 +80,7 @@ const HomeWorkCreator = (props) => {
 
     return () => {
       window.removeEventListener('beforeunload', onUnload);
-      history.push('/');
+      // history.push('/');
     };
   }, []);
 
@@ -372,7 +372,7 @@ const HomeWorkCreator = (props) => {
         </Carousel>
       </div>
       <div
-        style={{ marginTop: '-3rem', marginBottom: '4rem' }}
+        style={{ marginTop: '-3rem', marginBottom: '0.5rem' }}
         className='Homework__desktopViewContainer hideOnMobileHW'
       >
         <SelectQuestions

@@ -42,7 +42,7 @@ const Attendance = (props) => {
   return (
     <>
       <PageHeader title='Attendance' search searchFilter={searchUsers} />
-      <div style={{ marginTop: '5rem', marginBottom: '3.5rem' }}>
+      <div style={{ marginTop: '5rem', marginBottom: '0.5rem' }}>
         {batches.length > 0 ? (
           batches.map((elem) => {
             return (
