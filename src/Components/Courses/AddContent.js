@@ -55,6 +55,8 @@ const AddContent = (props) => {
     courseSectionPriorityOrder,
     courseAddContentTestId,
     setCourseAddContentTestIdToStore,
+    setQuestionArrayToStore,
+    setTestNameToStore,
   } = props;
   const [showModal, setShowModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
@@ -301,12 +303,21 @@ const AddContent = (props) => {
         console.log(res);
         const result = apiValidation(res);
         setSelectedQuestionArrayToStore(result);
-        history.push({ pathname: '/homework/preview', state: { goTo: 'addContent' } });
+        setQuestionArrayToStore(result);
+        setTestNameToStore(elem.name);
+        console.log(elem);
+        history.push({
+          pathname: '/homework/viewonly',
+          state: { goTo: 'addContent', testIdd: elem.id, noButton: true },
+        });
       });
     } else if (type === 'youtube') {
       history.push(`/videoplayer/${elem.file_link}`);
     } else if (type === 'video') {
-      history.push({ pathname: `/videoplayer`, state: { videoLink: elem.file_link } });
+      history.push({
+        pathname: `/videoplayer`,
+        state: { videoLink: elem.file_link, videoLinkArray: elem.file_link_array },
+      });
     } else if (type === 'image') {
       setImgLink(elem.file_link);
       handleImageOpen();
@@ -551,6 +562,12 @@ const mapDispatchToProps = (dispatch) => {
     setSelectedQuestionArrayToStore: (payload) => {
       dispatch(homeworkActions.setSelectedQuestionArrayToStore(payload));
     },
+    setTestNameToStore: (payload) => {
+      dispatch(homeworkActions.setTestNameToStore(payload));
+    },
+    setQuestionArrayToStore: (payload) => {
+      dispatch(homeworkActions.setQuestionArrayToStore(payload));
+    },
     setCourseSectionPriorityOrderToStore: (payload) => {
       dispatch(courseActions.setCourseSectionPriorityOrderToStore(payload));
     },
@@ -583,5 +600,7 @@ AddContent.propTypes = {
   setCourseSectionPriorityOrderToStore: PropTypes.func.isRequired,
   courseSectionPriorityOrder: PropTypes.number.isRequired,
   setCourseAddContentTestIdToStore: PropTypes.func.isRequired,
+  setQuestionArrayToStore: PropTypes.func.isRequired,
+  setTestNameToStore: PropTypes.func.isRequired,
   courseAddContentTestId: PropTypes.number.isRequired,
 };

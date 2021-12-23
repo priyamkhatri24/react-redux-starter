@@ -333,8 +333,8 @@ const HomeWorkAssigner = (props) => {
 
     post(payload, '/addTestToCourse').then((res) => {
       console.log(res);
-      history.push({ pathname: '/courses/createcourse/addcontent', state: { draft } });
       setCourseAddContentTestIdToStore(testIdd);
+      history.push({ pathname: '/courses/createcourse/addcontent', state: { draft } });
       setHomeworkLanguageTypeToStore('');
     });
   };

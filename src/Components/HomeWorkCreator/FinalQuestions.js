@@ -68,50 +68,60 @@ const PreviewQuestions = (props) => {
 
   useEffect(() => {
     console.log(selectedQuestionArray, 'selectedQuestionArrayyyyy');
+    let tempTestId;
+    if (!testId) {
+      tempTestId = history.location.state.testIdd;
+    }
     if (activeSection === 'Subject Wise') {
-      get({ test_id: testId }, '/getTestQuestionsSubjectWiseForHomeWorkCreator').then((res) => {
-        const result = apiValidation(res);
-        const values = Object.values(result).map((e) => {
-          e.map((elem) => {
-            elem.question_positive_marks = 1;
-            elem.question_negative_marks = 0;
-            elem.question_unanswered_marks = 0;
-            return elem;
+      get({ test_id: testId || tempTestId }, '/getTestQuestionsSubjectWiseForHomeWorkCreator').then(
+        (res) => {
+          const result = apiValidation(res);
+          const values = Object.values(result).map((e) => {
+            e.map((elem) => {
+              elem.question_positive_marks = 1;
+              elem.question_negative_marks = 0;
+              elem.question_unanswered_marks = 0;
+              return elem;
+            });
+            return e;
           });
-          return e;
-        });
 
-        const resultArray = Object.keys(result).map((e, i) => {
-          const obj = {};
-          obj.name = e;
-          obj.questions = values[i];
-          return obj;
-        });
-        setSectionedQuestions(resultArray);
+          const resultArray = Object.keys(result).map((e, i) => {
+            const obj = {};
+            obj.name = e;
+            obj.questions = values[i];
+            return obj;
+          });
+          setSectionedQuestions(resultArray);
 
-        const tempSectionMarks = resultArray.map((elem) => {
-          if (!oldTestId) {
-            setOldTestId(elem.testIdOld);
-          }
-          const obj = {};
-          obj.sectionName = elem.name;
-          obj.marksArray = [
+          const tempSectionMarks = resultArray.map((elem) => {
+            if (!oldTestId) {
+              setOldTestId(elem.testIdOld);
+            }
+            const obj = {};
+            obj.sectionName = elem.name;
+            obj.marksArray = [
+              { id: 1, name: 'Correct', value: 1, color: 'rgba(0, 151, 0, 1)' },
+              { id: 2, name: 'Incorrect', value: 0, color: 'rgba(255, 0, 0, 1)' },
+              { id: 3, name: 'Unanswered', value: 0, color: 'rgba(86, 66, 61, 1)' },
+            ];
+            return obj;
+          });
+          setSectionMarks(tempSectionMarks);
+          setFullPaperMarks([
             { id: 1, name: 'Correct', value: 1, color: 'rgba(0, 151, 0, 1)' },
             { id: 2, name: 'Incorrect', value: 0, color: 'rgba(255, 0, 0, 1)' },
             { id: 3, name: 'Unanswered', value: 0, color: 'rgba(86, 66, 61, 1)' },
-          ];
-          return obj;
-        });
-        setSectionMarks(tempSectionMarks);
-        setFullPaperMarks([
-          { id: 1, name: 'Correct', value: 1, color: 'rgba(0, 151, 0, 1)' },
-          { id: 2, name: 'Incorrect', value: 0, color: 'rgba(255, 0, 0, 1)' },
-          { id: 3, name: 'Unanswered', value: 0, color: 'rgba(86, 66, 61, 1)' },
-        ]);
-      });
+          ]);
+        },
+      );
     } else {
       console.log(testId, 'hahahahahah');
-      get({ test_id: testId }, '/getTestQuestionsForHomeWorkCreator').then((res) => {
+      let tempTestId2;
+      if (!testId) {
+        tempTestId2 = history.location.state.testIdd;
+      }
+      get({ test_id: testId || tempTestId2 }, '/getTestQuestionsForHomeWorkCreator').then((res) => {
         console.log(res, 'selectedResultArayyyy');
         setTestClassSubjectToStore(res.class_subject);
         const result = apiValidation(res);
@@ -462,6 +472,7 @@ PreviewQuestions.propTypes = {
     location: PropTypes.shape({
       state: PropTypes.shape({
         goTo: PropTypes.string.isRequired,
+        testIdd: PropTypes.number.isRequired,
       }),
     }),
   }).isRequired,

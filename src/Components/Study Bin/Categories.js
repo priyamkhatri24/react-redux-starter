@@ -100,7 +100,11 @@ const Categories = (props) => {
     else if (type === 'video')
       history.push({
         pathname: `/videoplayer`,
-        state: { videoLink: elem.file_link, videoId: elem.file_id },
+        state: {
+          videoLink: elem.file_link,
+          videoId: elem.file_id,
+          videoLinkArray: elem.file_link_array,
+        },
       });
   };
 

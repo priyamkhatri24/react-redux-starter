@@ -29,11 +29,11 @@ function authHeaderGet() {
   return {};
 }
 
-// const testUrl =
-//   process.env.NODE_ENV === 'development'
-//     ? 'https://portal.ingeniumedu.com'
-//     : 'https://class.ingeniumedu.com';
-const testUrl = 'https://portal.ingeniumedu.com';
+const testUrl =
+  process.env.NODE_ENV === 'development'
+    ? 'https://portal.ingeniumedu.com'
+    : 'https://class.ingeniumedu.com';
+// const testUrl = 'https://portal.ingeniumedu.com';
 
 const transformRequest = (jsonData = {}) =>
   Object.entries(jsonData)

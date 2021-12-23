@@ -171,17 +171,31 @@ const SavedSentTests = (props) => {
   };
 
   const goToAddContent = (test, draft, testsType) => {
-    if (testsType === 'sent') {
-      setTestIsDraftToStore(0);
-    } else if (testsType === 'saved') {
-      setTestIsDraftToStore(1);
-    }
-    console.log(test);
-    setHomeworkLanguageTypeToStore(test.language_type);
-    history.push({
-      pathname: '/homework/viewonly',
-      state: { draft, onlyNext: true, testIdd: test.test_id, courseId, sectionId, testsType },
+    get({ test_id: test.test_id }, '/getTestQuestions').then((res) => {
+      console.log(res);
+      const result = apiValidation(res);
+      clearTests();
+      console.log(result, 'resultttttttttt');
+      setCurrentSubjectArrayToStore(res.class_subject.class_subject_array);
+      setHomeworkLanguageTypeToStore(test.language_type);
+      setCurrentChapterArrayToStore(res.chapter_array);
+      if (testsType === 'sent') {
+        setTestIsDraftToStore(0);
+        // getQuestionsSent(test.test_id, test);
+      } else if (testsType === 'saved') {
+        setTestIsDraftToStore(1);
+        // getQuestions(test.test_id, test);
+      }
+      // setTestIdToStore(testId);
+      setQuestionArrayToStore(result);
+      setIsLoading(false);
+      // history.push('/homework');
+      history.push({
+        pathname: '/homework/viewonly',
+        state: { draft, onlyNext: true, testIdd: test.test_id, courseId, sectionId, testsType },
+      });
     });
+
     // setCourseAddContentTestIdToStore(testId);
   };
 
