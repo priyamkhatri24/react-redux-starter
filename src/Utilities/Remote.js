@@ -52,7 +52,8 @@ export const post = (requestBody, endpoint) => {
 
 export const get = (requestBody = null, endpoint) => {
   // requestBody must be an object
-  return axios.get(testUrl + endpoint, { params: requestBody, headers: authHeaderGet() })
+  return axios
+    .get(testUrl + endpoint, { params: requestBody, headers: authHeaderGet() })
     .then((result) => result.data)
     .catch((err) => {
       history.push('/error');
