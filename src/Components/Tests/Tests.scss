@@ -83,3 +83,55 @@
     font-size: $spacer * 0.875;
   }
 }
+
+.container {
+  width: 100%;
+  /* margin: 2px; */
+}
+.divContainer {
+  width: 100% !important;
+  /* background-color: blue; */
+  display: block;
+  margin: auto;
+}
+.tabs {
+  margin-top: 70px;
+  // position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* border: 2px solid red; */
+}
+.nav-item {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.noMatch {
+  margin: 10px 5px;
+}
+.tab {
+  overflow: auto;
+}
+.tab::-webkit-scrollbar {
+  display: none;
+}
+
+.livetestImg {
+  text-align: center;
+}
+
+.secContainer {
+  width: 75% !important;
+  margin: 7px auto !important;
+}
+
+@media screen and (max-width: 600px) {
+  .livetestImg {
+    text-align: left;
+  }
+  .secContainer {
+    width: 95% !important;
+  }
+}

@@ -1,23 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 
-// import axios from 'axios';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { get, apiValidation, post } from '../../Utilities';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { PageHeader } from '../Common/PageHeader/PageHeader';
-import Homework from './Homework';
-import Test from './Test';
-import './styles.css';
+import Homework from './HomeworkTab';
+import Test from './TestTab';
+import './Tests.scss';
 
 export const OnlineAssignments = (props) => {
   const { clientUserId } = props;
+  const tabRef = useRef(null);
 
   const [searchString, setSearchString] = useState('');
   const [key, setKey] = useState(0);
+  const [tabHeight, setTabHeight] = useState(400);
 
   const history = useHistory();
 
@@ -25,6 +26,22 @@ export const OnlineAssignments = (props) => {
     searchAssignments('');
     console.log('Rendered');
   }, [key]);
+
+  useEffect(() => {
+    if (!tabRef && !tabRef?.current) return;
+    const tabHeightFromTop = document.querySelector('.t1')?.offsetTop;
+    console.log(tabHeightFromTop, 'thft');
+    const tabH = document.body.clientHeight - 130;
+    setTabHeight(tabH);
+    console.log(tabH);
+  });
+
+  const handleTabHeight = () => {
+    if (!tabRef && !tabRef?.current) return;
+    const tabHeightFromTop = document.querySelector('.t1')?.offsetTop;
+    const tabH = document.body.clientHeight - 130;
+    setTabHeight(tabH);
+  };
 
   const searchAssignments = (search) => {
     setSearchString(search);
@@ -36,7 +53,7 @@ export const OnlineAssignments = (props) => {
   };
 
   return (
-    <div className='container'>
+    <div style={{ height: '89vh' }} className='testContainer'>
       <PageHeader
         title='Online Assignments'
         search
@@ -55,16 +72,23 @@ export const OnlineAssignments = (props) => {
       >
         <Tab
           eventKey='0'
-          title='HomeWork'
-          className='tab1 Profile__Tabs'
+          className='tab t1 Profile__Tabs'
+          id='idForONT1'
+          ref={tabRef}
+          style={{ height: `${tabHeight}px` }}
+          onScroll={handleTabHeight}
+          title='Homework'
           // onClick={() => searchAssignments('')}
         >
           <Homework clientUserId={clientUserId} searchString={searchString} />
         </Tab>
         <Tab
           eventKey='1'
+          id='idForONT2'
+          style={{ height: `${tabHeight}px` }}
+          onScroll={handleTabHeight}
           title='Tests'
-          className='tab2 Profile__Tabs'
+          className='tab Profile__Tabs'
           // onClick={() => searchAssignments('')}
         >
           <Test clientUserId={clientUserId} searchString={searchString} />

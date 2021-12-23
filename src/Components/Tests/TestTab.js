@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
-
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import fromUnixTime from 'date-fns/fromUnixTime';
@@ -12,7 +11,6 @@ import compareAsc from 'date-fns/compareAsc';
 import dashboardAssignmentImage from '../../assets/images/Dashboard/dashboardAssignment.svg';
 import { testsActions } from '../../redux/actions/tests.action';
 import LiveTestCounter from './LiveTestCounter';
-
 import { get, apiValidation, post } from '../../Utilities';
 import './Tests.scss';
 
@@ -287,7 +285,7 @@ const Test = (props) => {
             return (
               <div
                 key={elem.test_id}
-                className='ml-2'
+                className='ml-2 secContainer'
                 onClick={() => startLiveTest(elem)}
                 onKeyDown={() => startLiveTest(elem)}
                 tabIndex='-1'
@@ -326,7 +324,7 @@ const Test = (props) => {
             return (
               <div
                 key={elem.test_id}
-                className='ml-2'
+                className='ml-2 secContainer'
                 onClick={() => startDemoTest(elem)}
                 onKeyDown={() => startDemoTest(elem)}
                 tabIndex='-1'
@@ -346,7 +344,7 @@ const Test = (props) => {
                       </span>
                     </p>
                   </Col>
-                  <Col xs={3} className='pt-3 px-0'>
+                  <Col xs={3} className='pt-3 px-0 livetestImg'>
                     <img
                       src={dashboardAssignmentImage}
                       alt='assignment'
@@ -388,6 +386,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(testsActions.setTestLanguageToStore(payload));
   },
 });
+
 export default connect(null, mapDispatchToProps)(Test);
 
 Test.propTypes = {

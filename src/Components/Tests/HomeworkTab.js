@@ -100,7 +100,7 @@ const Homework = (props) => {
         return (
           <div
             key={elem.test_id}
-            className='ml-2 divContainer'
+            className='ml-2 secContainer'
             onClick={() => startHomeworkTest(elem)}
             onKeyDown={() => startHomeworkTest(elem)}
             tabIndex='-1'
@@ -117,7 +117,7 @@ const Homework = (props) => {
                   </span>
                 </p>
               </Col>
-              <Col xs={3} className='pt-3 px-0'>
+              <Col xs={3} className='pt-3 px-0 livetestImg'>
                 <img
                   src={dashboardAssignmentImage}
                   alt='assignment'
