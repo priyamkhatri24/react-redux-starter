@@ -1264,7 +1264,11 @@ const Dashboard = (props) => {
               alt='profile'
             />
           </Col>
-          <Col xs={8} md={roleArray.includes(1) || roleArray.includes(2) ? 11 : 10}>
+          <Col
+            className='zeroPaddingOnMobile'
+            xs={8}
+            md={roleArray.includes(1) || roleArray.includes(2) ? 11 : 10}
+          >
             <h4 className='Dashboard__headingText'>
               {time} {firstName}
             </h4>

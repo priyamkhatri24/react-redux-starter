@@ -491,7 +491,7 @@ export function Routes() {
       {/* <Route path='/videoplayerplyr/:id' component={VideoPlayer} /> */}
       <Route path='/videoplayer/:id?' component={PlyrVideoPlayer} />
 
-      <Route exact path='/viewAllAsignments' component={viewAllAsignments} />
+      <AuthenticatedRoute exact path='/allassignments' component={viewAllAsignments} />
       <AuthenticatedRoute exact path='/liveclasses' component={LiveClasses} />
       <AuthenticatedRoute exact path='/studybin' component={StudyBin} />
       <AuthenticatedRoute exact path='/studybin/categories/:id' component={Categories} />

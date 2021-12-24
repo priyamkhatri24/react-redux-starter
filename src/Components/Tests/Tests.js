@@ -260,7 +260,7 @@ const Tests = (props) => {
             className='Tests__viewAllButtonForCards mb-0'
             type='button'
             style={{ opacity: '1' }}
-            onClick={() => history.push('/viewAllAsignments')}
+            onClick={() => history.push('/allassignments')}
           >
             View All <ChevronRightIcon />
           </button>

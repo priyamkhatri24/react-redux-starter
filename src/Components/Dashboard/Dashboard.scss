@@ -481,8 +481,12 @@
     padding-right: 0px;
     width: 73px;
   }
-  .Dashboard__headerCard {
-    margin-bottom: 60px;
+  // .Dashboard__headerCard {
+  //   margin-bottom: 60px;
+  // }
+  .zeroPaddingOnMobile {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
   }
   .admission_charts {
     flex-direction: column;

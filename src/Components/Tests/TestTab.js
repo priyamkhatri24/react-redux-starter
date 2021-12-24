@@ -271,8 +271,8 @@ const Test = (props) => {
   if (!liveTests.length && !demoTests.length) {
     console.log(liveTests.length);
     return (
-      <div>
-        <bold>no match found</bold>
+      <div className='noMatch'>
+        <bold>No test found</bold>
       </div>
     );
   }

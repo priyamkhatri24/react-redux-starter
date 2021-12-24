@@ -89,7 +89,7 @@ const Homework = (props) => {
   if (!homeworkToDisplay.length) {
     return (
       <div className='noMatch'>
-        <bold>No match found :(</bold>
+        <bold>No Homework found</bold>
       </div>
     );
   }
