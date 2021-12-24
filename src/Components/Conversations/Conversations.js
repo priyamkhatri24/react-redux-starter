@@ -6,6 +6,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { get, apiValidation } from '../../Utilities';
 import ConversationCard from './desktop/ConversationCard';
+import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import MobileConversationCard from './mobile/MobileConversationCard';
 import FocusedConversation from './desktop/FocusedConversation';
 import ConversationsHeader from './ConversationsHeader';
@@ -102,7 +103,7 @@ const Conversations = function ({
       <Row className='d-block'>
         <ConversationsHeader searchBar goToHome />
         <div className='d-flex'>
-          <Col style={{ overflowY: 'scroll' }} md={12}>
+          <Col style={{ overflowY: 'scroll', height: '98vh' }} md={12}>
             <div className='conversations-container mt-3'>
               {conversations.length > 0 && (
                 <ul className='list-unstyled'>
@@ -125,6 +126,8 @@ const Conversations = function ({
           </Col>
         </div>
       </Row>
+
+      <BottomNavigation history={history} activeNav='chats' />
     </Container>
   );
 };

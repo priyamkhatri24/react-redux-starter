@@ -7,6 +7,10 @@
     // background: rgba(38, 153, 251, 0.7);
     background: var(--primary-blue);
     background: linear-gradient(180deg, var(--primary-blue) 0%, rgba(249, 253, 255, 0.7) 100%);
+
+    @include media-breakpoint-up(sm) {
+      height: 260px;
+    }
   }
 
   &__profileImage {
@@ -49,25 +53,39 @@
   &__innovation {
     background: #fff4ec;
     border-radius: 10px;
+    width: 93%;
+    display: flex;
 
+    @include media-breakpoint-down(sm) {
+      width: 100%;
+      display: block;
+    }
     // background: linear-gradient(90deg, #fcf9f8, #fff4ec);
   }
 
-  &__innovation > h4 {
+  &__innovationh4 {
     font-family: 'Montserrat-Bold';
     line-height: $spacer * 1.8125;
     // color: var(--primary-blue);
     color: #fe979c;
   }
 
-  &__innovation > h4 > span {
+  &__innovationh4span {
     color: #3e3b6fde;
   }
 
-  &__innovation > p {
+  &__innovationp {
     font-size: $spacer;
     color: #575381;
     line-height: $spacer * 1.8;
+    width: 60%;
+    letter-spacing: 0.49px;
+    font-family: 'Montserrat-SemiBold';
+  }
+
+  &__innovationpBlack {
+    font-size: $spacer * 0.85;
+    color: #000;
     letter-spacing: 0.49px;
     font-family: 'Montserrat-SemiBold';
   }
@@ -121,12 +139,12 @@
     border-radius: 10px;
     border-left: 30px solid var(--lighter-blue);
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
-    width: 87%;
+    width: 95%;
   }
 
   &__attendanceSubHeading {
     font-family: 'Montserrat-Regular';
-    line-height: 15px;
+    line-height: 12px;
     color: $dashboardBlack;
   }
 
@@ -135,11 +153,12 @@
     font-family: $semiBold;
     color: $dashboardBlack;
     line-height: 13px;
+    width: 95%;
   }
 
   &__noticeBoard {
     position: relative;
-    width: 85%;
+    width: 93%;
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
     border-radius: 10px;
 
@@ -190,6 +209,7 @@
   }
 
   &__noticeText {
+    // background-color: #fff4a4;
     background-color: var(--primary-blue);
     font-family: 'Montserrat-Medium';
     font-size: $spacer * 0.75;
@@ -203,10 +223,11 @@
     color: var(--primary-blue);
     font-size: $spacer * 1.5;
     font-family: $bold;
+    opacity: 0.5;
   }
   &_homeworkCreator {
     @include media-breakpoint-up(sm) {
-      margin-left: 6%;
+      margin-left: 1%;
     }
   }
 
@@ -217,6 +238,12 @@
     }
   }
 
+  &__admissionButtonContainer {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
   &__NoticeIcon {
     width: 82px;
     height: 76px;
@@ -225,15 +252,24 @@
 .HWscrollableCard {
   background: linear-gradient(103deg, #ffefeb, #feae96) !important;
   border: 0px !important;
+  margin-left: 0px !important;
+  min-height: 85px;
 }
 .HWscrollableCard2 {
   background: linear-gradient(103deg, #f9efff, #705a7e) !important;
   border: 0px !important;
+  min-height: 85px;
+}
+
+@media screen and (min-width: 600px) {
+  .HWscrollableCard2 {
+    margin-left: 0px !important;
+  }
 }
 
 .react_chart {
-  width: 50%;
-  margin: auto;
+  display: flex;
+  width: 100%;
 }
 .noticeboard_img {
   text-align: right;
@@ -250,16 +286,18 @@
 }
 
 .admission_cards {
-  width: 85%;
+  width: 93%;
 }
 
 .admission_button {
   padding-right: 15px;
   padding-left: 15px;
+  background-color: white;
+  border: 1px solid #7070708a;
 }
 
 .Dashboard__attendanceSubHeading {
-  font-size: 15px;
+  font-size: 12px;
 }
 
 .floatingChatButtonDashboard {
@@ -269,7 +307,7 @@
   background-color: var(--primary-blue);
   border-radius: 100px;
   color: white;
-  bottom: 18px;
+  bottom: 15px;
   right: 20px;
   padding: 12px 50px;
   border: transparent;
@@ -294,6 +332,21 @@
   font-family: 'Montserrat-Regular';
   font-size: 12px;
   padding: 3px;
+}
+
+.admission_charts {
+  display: flex;
+  flex-direction: row;
+  overflow: auto;
+}
+
+.admission_charts::-webkit-scrollbar {
+  display: none;
+}
+
+.savedSentCardImage {
+  width: 50px;
+  height: auto;
 }
 
 @media screen and (max-width: 700px) {
@@ -343,10 +396,108 @@
   justify-content: center;
   text-align: center;
 }
+
+.admissionsSubHeading {
+  font-size: 12px;
+  font-family: 'Montserrat-Regular';
+  width: 88%;
+  margin-bottom: '18px';
+}
+
 .nameAndProfilePic {
   margin-left: 0px;
   margin-right: 0px;
-  width: 100%;
+  width: 95%;
   transition-duration: 0.5s;
   transition-property: opacity;
+}
+
+.fillAdmissionFormButton {
+  width: 30%;
+  height: 40px !important;
+  font-size: 15px !important;
+  font-family: 'Montserrat-Regular';
+}
+
+.Dashboard_image {
+  width: 92px;
+  padding-right: 20px;
+}
+
+.scrollableCardHeading {
+  width: 93%;
+}
+
+.aboutConnectContainer {
+  width: 93%;
+  margin: auto;
+}
+
+.addUserBatchContainer {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.NumberOfUserContainer {
+  width: 45%;
+}
+
+.chartContainer {
+  width: 100% !important;
+  border-radius: 10px !important;
+  min-width: 260px !important;
+}
+
+.HWCdisplay {
+  display: flex;
+  flex-direction: column !important;
+  margin: 14px 0px !important;
+}
+
+@media screen and (max-width: 600px) {
+  .fillAdmissionFormButton {
+    width: 53%;
+  }
+  .savedSentCardImage {
+    width: 40px;
+  }
+  .HWCdisplay {
+    flex-direction: row !important;
+    margin: 5px 0px !important;
+  }
+  .chartContainer {
+    width: 95% !important;
+  }
+  .addUserBatchContainer {
+    justify-content: center;
+  }
+  .aboutConnectContainer {
+    width: 95%;
+  }
+  .scrollableCardHeading {
+    width: 95%;
+  }
+  .Dashboard_image {
+    padding-right: 0px;
+    width: 73px;
+  }
+  .Dashboard__headerCard {
+    margin-bottom: 60px;
+  }
+  .admission_charts {
+    flex-direction: column;
+  }
+  .Dashboard__attendanceCard {
+    width: 85%;
+  }
+  .admissionsSubHeading {
+    width: 70%;
+  }
+}
+
+// =============== very large screen
+@media screen and (min-width: 1440px) {
+  .Dashboard__headerCard {
+    height: 315px;
+  }
 }

@@ -3,9 +3,11 @@
 
   &__skip {
     position: absolute;
-    top: 5px;
-    right: 2px;
+    top: 15px;
+    right: 15px;
     z-index: 10;
+    background-color: #0000001f;
+    color: black;
   }
 
   &__carouselPosition {

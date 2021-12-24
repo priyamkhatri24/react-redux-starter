@@ -21,6 +21,9 @@
     @include media-breakpoint-up(sm) {
       font-size: $spacer * 1.25;
     }
+    @include media-breakpoint-up(md) {
+      margin-top: 25px;
+    }
   }
 
   &__aboutus {
@@ -61,6 +64,29 @@
     font-size: $spacer * 0.75;
   }
 
+  &__contactDetails {
+    font-family: $medium;
+    line-height: 15px;
+    color: $dashboardBlack;
+    font-size: $spacer * 0.75;
+
+    @include media-breakpoint-up(md) {
+      font-size: 16px;
+    }
+  }
+
+  &__contactSmall {
+    font-family: $regular;
+    line-height: 13px;
+    color: $dashboardBlack;
+    font-size: $spacer * 0.625;
+
+    @include media-breakpoint-up(md) {
+      font-size: 12px;
+      margin-top: 5px;
+    }
+  }
+
   &__joinSmall {
     font-family: $regular;
     line-height: 13px;
@@ -71,6 +97,9 @@
 .testimonialVideoTag {
   width: 450px !important;
   height: auto !important;
+}
+.colorForBack {
+  background-color: var(--primary-blue);
 }
 @media screen and (max-width: 800px) {
   .testimonialVideoTag {
@@ -83,5 +112,29 @@
   .testimonialVideoTag {
     width: 220px !important;
     height: auto !important;
+  }
+}
+
+.Dashboard_image {
+  width: 92px;
+  padding-right: 20px;
+}
+
+@media screen and (max-width: 600px) {
+  .Dashboard_image {
+    padding-right: 0px;
+    width: 73px;
+  }
+}
+
+/// For very large screens ///
+@media screen and (min-width: 1440px) {
+  .Dummy__coachingName {
+    font-size: 84px !important;
+    font-family: 'Montserrat-Bold';
+  }
+  .Dummy__tagline {
+    font-size: 54px;
+    margin-top: 75px;
   }
 }

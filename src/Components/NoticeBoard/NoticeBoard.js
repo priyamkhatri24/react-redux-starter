@@ -10,6 +10,7 @@ import Button from 'react-bootstrap/Button';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import format from 'date-fns/format';
 import { PageHeader, BatchesSelector } from '../Common';
+import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { get, apiValidation, post, prodOrDev } from '../../Utilities';
 import {
   getClientId,
@@ -23,7 +24,7 @@ import './NoticeBoard.scss';
 import '../Dashboard/Dashboard.scss';
 
 const NoticeBoard = (props) => {
-  const { clientUserId, clientId, roleArray, currentbranding, userProfile } = props;
+  const { history, clientUserId, clientId, roleArray, currentbranding, userProfile } = props;
   const [notices, setNotices] = useState([]);
   const [filteredNotices, setFilteredNotices] = useState([]);
   const [newNotice, setNewNotice] = useState('');
@@ -324,7 +325,7 @@ const NoticeBoard = (props) => {
   }, [clientId, clientUserId, roleArray, getNotices]);
 
   return (
-    <div>
+    <div style={{ marginBottom: '1rem' }}>
       <PageHeader
         title='Notice Board'
         search
@@ -488,6 +489,8 @@ const NoticeBoard = (props) => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <BottomNavigation history={history} activeNav='noticeBoard' />
     </div>
   );
 };
@@ -504,6 +507,7 @@ export default connect(mapStateToProps)(NoticeBoard);
 
 NoticeBoard.propTypes = {
   clientUserId: PropTypes.number.isRequired,
+  history: PropTypes.instanceOf(Object).isRequired,
   clientId: PropTypes.number.isRequired,
   roleArray: PropTypes.instanceOf(Array).isRequired,
   currentbranding: PropTypes.shape({

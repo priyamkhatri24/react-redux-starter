@@ -14,6 +14,7 @@ export * from './LoginDetailsSkeleton/LoginDetailsSkeleton';
 export * from './ScrollableCards/CoursesCards';
 export * from './ScrollableCards/FeeScrollableCards';
 export * from './ScrollableCards/LiveClassesCards';
+export * from './ScrollableCards/DynamicCards';
 // export * from './FileViewer/FileViewer';
 export * from './Loader/Loading';
 export * from './Readmore';

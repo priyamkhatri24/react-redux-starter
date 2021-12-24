@@ -132,6 +132,21 @@
     text-align: left;
   }
   .secContainer {
-    width: 95% !important;
+    width: 95% !important;}
+.OnlineTestHeadingContainer {
+  width: 95%;
+  margin: auto;
+}}
+
+.Tests__scrollableCard {
+  padding-left: 3% !important;
+}
+
+@media screen and (max-width: 600px) {
+  .OnlineTestHeadingContainer {
+    width: 100%;
+  }
+  .Tests__scrollableCard {
+    padding-left: 0px !important;
   }
 }

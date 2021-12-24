@@ -53,3 +53,13 @@
     }
   }
 }
+
+.marginForSelectUserImgLogo {
+  margin-top: 15px !important;
+}
+
+@media screen and (max-width: 600px) {
+  .marginForSelectUserImgLogo {
+    margin-top: 120px !important;
+  }
+}

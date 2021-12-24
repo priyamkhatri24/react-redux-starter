@@ -23,7 +23,7 @@ const HomeWorkViewOnly = (props) => {
     history,
     history: {
       location: {
-        state: { draft, onlyNext, testsType, testIdd, courseId, sectionId },
+        state: { draft, onlyNext, testsType, testIdd, courseId, sectionId, noButton },
       },
     },
     setCurrentSlide,
@@ -57,7 +57,7 @@ const HomeWorkViewOnly = (props) => {
 
   return (
     <>
-      <PageHeader title={testName} />
+      <PageHeader title={testName} shadow />
       <Card style={{ marginTop: '4rem' }} className='Homework__selectCard mb-3 mx-2'>
         {questionArray.map((question, index) => {
           return (
@@ -73,11 +73,13 @@ const HomeWorkViewOnly = (props) => {
         })}
       </Card>
       <div className='viewOnlyBtnContainer m-3'>
-        <Button variant='customPrimary' onClick={() => goToAssigner()}>
-          Next
-        </Button>
+        {!noButton && (
+          <Button variant='customPrimary' onClick={() => goToAssigner()}>
+            Next
+          </Button>
+        )}
 
-        {!onlyNext ? (
+        {!onlyNext && !noButton ? (
           <Button variant='customPrimary ml-3' onClick={() => modifyQuestions()}>
             Add/Remove
           </Button>
@@ -126,6 +128,7 @@ HomeWorkViewOnly.propTypes = {
     location: PropTypes.shape({
       state: PropTypes.shape({
         onlyNext: PropTypes.bool,
+        noButton: PropTypes.bool,
         testsType: PropTypes.string,
         draft: PropTypes.bool,
         testIdd: PropTypes.number,

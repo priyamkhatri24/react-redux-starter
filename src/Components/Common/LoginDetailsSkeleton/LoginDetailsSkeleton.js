@@ -10,6 +10,7 @@ import '../../Login/PhoneNo/PhoneNo.scss';
 import '../../Login/Login.scss';
 import 'intl-tel-input/build/css/intlTelInput.css';
 import Button from 'react-bootstrap/Button';
+import footerIngenium from '../../../assets/images/ingiLOGO.png';
 
 export const LoginDetailsSkeleton = (props) => {
   const {
@@ -132,7 +133,11 @@ export const LoginDetailsSkeleton = (props) => {
         )}
       </div>
       <div className='d-flex justify-content-center LoginDetailsSkeleton__phoneNoInput'>
-        <Button variant='loginPrimary' className='my-5 mx-4' onClick={() => setClick()}>
+        <Button
+          variant='loginPrimary'
+          className='mt-5 mb-3 mx-4 mx-lg-0'
+          onClick={() => setClick()}
+        >
           {isVerify ? 'Verifying..' : 'Next'}
         </Button>
       </div>
@@ -161,6 +166,10 @@ export const LoginDetailsSkeleton = (props) => {
           </span>
         </Row>
       )}
+      <footer className='py-4 Login__footer d-none d-sm-block'>
+        <h6 className='Login__footerText'>Powered By</h6>
+        <img src={footerIngenium} alt='footerLogo' className='deskWidth' />
+      </footer>
     </>
   );
 };

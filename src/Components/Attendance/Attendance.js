@@ -8,12 +8,14 @@ import userAvatar from '../../assets/images/user.svg';
 import { PageHeader } from '../Common';
 import '../Profile/Profile.scss';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
+import { history } from '../../Routing';
 import { apiValidation, get } from '../../Utilities';
+import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { attendanceActions } from '../../redux/actions/attendance.action';
 import './Attendance.scss';
 
 const Attendance = (props) => {
-  const { clientUserId, setAttendanceBatchToStore, history } = props;
+  const { clientUserId, setAttendanceBatchToStore } = props;
   const [searchString, setSearchString] = useState('');
   const [batches, setBatches] = useState([]);
 
@@ -40,7 +42,7 @@ const Attendance = (props) => {
   return (
     <>
       <PageHeader title='Attendance' search searchFilter={searchUsers} />
-      <div style={{ marginTop: '5rem' }}>
+      <div style={{ marginTop: '5rem', marginBottom: '0.5rem' }}>
         {batches.length > 0 ? (
           batches.map((elem) => {
             return (
@@ -75,6 +77,8 @@ const Attendance = (props) => {
           <p>There Are No batches Added Currently</p>
         )}
       </div>
+
+      <BottomNavigation history={history} activeNav='attendance' />
     </>
   );
 };
@@ -96,5 +100,5 @@ export default connect(mapStateToProps, mapDispatchToProps)(Attendance);
 Attendance.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   setAttendanceBatchToStore: PropTypes.func.isRequired,
-  history: PropTypes.instanceOf(Object).isRequired,
+  // history: PropTypes.instanceOf(Object).isRequired,
 };

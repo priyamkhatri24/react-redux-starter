@@ -14,6 +14,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TuneIcon from '@material-ui/icons/Tune';
 import avatarImage from '../../assets/images/user.svg';
 import { PageHeader } from '../Common/PageHeader/PageHeader';
+import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import AdmissionStyle from '../Admissions/Admissions.style';
 import { apiValidation, get } from '../../Utilities';
@@ -99,7 +100,11 @@ const CRM = (props) => {
         justify
         style={{ marginTop: '4rem' }}
       >
-        <Tab eventKey='Enquiries' title='Enquiries' style={{ marginTop: '2rem' }}>
+        <Tab
+          eventKey='Enquiries'
+          title='Enquiries'
+          style={{ marginTop: '2rem', marginBottom: '1rem' }}
+        >
           <div css={AdmissionStyle.UserCards}>
             {inquiryArray.map((inquiry) => {
               return (
@@ -140,7 +145,11 @@ const CRM = (props) => {
             })}
           </div>
         </Tab>
-        <Tab eventKey='Admission Form' title='Admission Form' style={{ marginTop: '2rem' }}>
+        <Tab
+          eventKey='Admission Form'
+          title='Admission Form'
+          style={{ marginTop: '2rem', marginBottom: '1rem' }}
+        >
           <div css={AdmissionStyle.UserCards}>
             {admissionFormArray.map((e) => {
               return (
@@ -237,6 +246,8 @@ const CRM = (props) => {
           </p>
         </Modal.Body>
       </Modal>
+
+      <BottomNavigation activeNav='crm' history={history} />
     </div>
   );
 };

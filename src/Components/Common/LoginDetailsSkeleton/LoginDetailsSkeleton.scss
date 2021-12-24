@@ -57,3 +57,13 @@
   line-height: 24px;
   width: 100%;
 }
+
+.deskWidth {
+  width: 20%;
+}
+
+@media screen and (max-width: 600px) {
+  .deskWidth {
+    width: 25%;
+  }
+}

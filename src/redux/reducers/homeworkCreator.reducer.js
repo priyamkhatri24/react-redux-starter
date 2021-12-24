@@ -11,6 +11,10 @@ const initialState = {
   testIsDraft: 0,
   testClassSubject: {},
   homeworkLanguageType: '',
+  selectedCourse: '',
+  selectedChapter: '',
+  selectedSubject: '',
+  selectedType: '',
 };
 
 export function homework(state = initialState, action) {
@@ -71,6 +75,30 @@ export function homework(state = initialState, action) {
         homeworkLanguageType: action.payload,
       };
 
+    case homeworkConstants.SELECTEDCOURSE:
+      return {
+        ...state,
+        selectedCourse: action.payload,
+      };
+
+    case homeworkConstants.SELECTEDSUBJECT:
+      return {
+        ...state,
+        selectedSubject: action.payload,
+      };
+
+    case homeworkConstants.SELECTEDCHAPTER:
+      return {
+        ...state,
+        selectedChapter: action.payload,
+      };
+
+    case homeworkConstants.SELECTEDTYPE:
+      return {
+        ...state,
+        selectedType: action.payload,
+      };
+
     case homeworkConstants.CLEARTESTS:
       return {
         ...state,
@@ -100,3 +128,7 @@ export const getCurrentSubjectArray = (state) => state.homework.currentSubjectAr
 export const getTestIsDraft = (state) => state.homework.testIsDraft;
 export const getTestClassSubject = (state) => state.homework.testClassSubject;
 export const getHomeworkLanguageType = (state) => state.homework.homeworkLanguageType;
+export const getSelectedCourse = (state) => state.homework.selectedCourse;
+export const getSelectedSubject = (state) => state.homework.selectedSubject;
+export const getSelectedChapter = (state) => state.homework.selectedChapter;
+export const getSelectedType = (state) => state.homework.selectedType;

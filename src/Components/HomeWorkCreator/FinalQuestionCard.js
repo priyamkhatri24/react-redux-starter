@@ -53,7 +53,7 @@ const FinalQuestionCard = (props) => {
 
           <div className='Homework__questionHeading text-left m-2'>
             <span>
-              {(language === 'english' || language === 'both') && (
+              {(language === 'english' || language === 'both' || !language) && (
                 <MathJax math={String.raw`${question.question_text}`} />
               )}
             </span>
@@ -78,7 +78,7 @@ const FinalQuestionCard = (props) => {
           )}
 
           {question.question_type !== 'subjective' &&
-            (language === 'english' || language === 'both') &&
+            (language === 'english' || language === 'both' || !language) &&
             question.option_array.map((e, i) => {
               return (
                 <Row className='d-flex mx-3 mb-2 Homework__multipleOptions' key={e.order}>

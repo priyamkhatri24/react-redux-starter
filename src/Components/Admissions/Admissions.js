@@ -11,6 +11,7 @@ import Button from 'react-bootstrap/Button';
 import BatchesDataCard from './BatchesDataCard';
 import UserDataCard from './UsersDataCard';
 import { PageHeader } from '../Common';
+import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import AddButton from '../Common/AddButton/AddButton';
 import FilterAccordion from '../Common/FilterAccordion/FilterAccordion';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
@@ -206,7 +207,7 @@ const Admissions = (props) => {
               <GetAppIcon />
             </span>
           </Row>
-          <div css={AdmissionStyle.UserCards}>
+          <div css={AdmissionStyle.UserCards} style={{ marginBottom: '6rem' }}>
             {tab === 'Users' ? (
               users.map((elem) => {
                 return <UserDataCard elem={elem} history={history} key={elem.user_id} />;
@@ -277,6 +278,8 @@ const Admissions = (props) => {
           </Modal.Body>
         </Modal>
       </div>
+
+      <BottomNavigation activeNav='admission' history={history} />
     </>
   );
 };

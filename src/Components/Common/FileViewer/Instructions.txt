@@ -1,0 +1,4 @@
+To run the pdf viewer, go to node modules folder and find a folder called @pdftron.
+Under the @pdftron folder, you will find a public folder. 
+Copy that public folder and paste it inside the public folder of this react project where index.html file lies. 
+pdf viewer will then start working.

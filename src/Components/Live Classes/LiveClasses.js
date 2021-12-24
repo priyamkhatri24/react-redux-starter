@@ -38,6 +38,7 @@ import Jitsi from './Jitsi';
 import { createBigBlueButtonStream, rejoinBigBlueButtonStream } from './bbb';
 import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
 import { history } from '../../Routing';
+import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import img from '../../assets/images/Dashboard/student.svg';
 import teacherImg from '../../assets/images/LiveClasses/teacher.png';
 import TimerWatch from './TimerWatch';
@@ -1371,7 +1372,7 @@ class LiveClasses extends Component {
             className='Profile__Tabs'
             justify
           >
-            <Tab id='liveTab' eventKey='Live' title='Live'>
+            <Tab id='liveTab' eventKey='Live' title='Live' style={{ marginBottom: '1rem' }}>
               {!triggerJitsi && role === 'teacher' && (
                 <>
                   {/* {liveArray.map((existing) => {
@@ -2140,7 +2141,12 @@ class LiveClasses extends Component {
               )}
             </Tab>
             {liveArray.length <= 0 && (
-              <Tab id='scheduleTab' eventKey='Schedule' title='Schedule'>
+              <Tab
+                id='scheduleTab'
+                eventKey='Schedule'
+                title='Schedule'
+                style={{ marginBottom: '1rem' }}
+              >
                 {myScheduled.length > 0 ? (
                   myScheduled.map((elem) => {
                     toBeLive.forEach((ele) => {
@@ -2223,8 +2229,8 @@ class LiveClasses extends Component {
                 )}
               </Tab>
             )}
-            {liveArray.length <= 0 && roleArray.includes(4) && (
-              <Tab eventKey='Others' title='Others'>
+            {liveArray.length <= 0 && (
+              <Tab eventKey='Others' title='Others' style={{ marginBottom: '1rem' }}>
                 {allLiveClasses.length > 0 ? (
                   allLiveClasses.map((elem) => {
                     const startTimeText = new Date(+elem.stream_start_time * 1000).toString();
@@ -2381,6 +2387,8 @@ class LiveClasses extends Component {
           </Tab> */}
           </Tabs>
         )}
+
+        <BottomNavigation activeNav='liveClasses' history={history} />
       </div>
     );
   }

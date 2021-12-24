@@ -32,6 +32,7 @@ import './StudyBin.scss';
 import { studyBinActions } from '../../redux/actions/studybin.actions';
 import { getStudyBinFolderIDArray } from '../../redux/reducers/studybin.reducer';
 import StudyBinMenu from './StudyBinMenu';
+import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { loadingActions } from '../../redux/actions/loading.action';
 
 const StudyBin = (props) => {
@@ -358,7 +359,11 @@ const StudyBin = (props) => {
     else if (type === 'video')
       history.push({
         pathname: `/videoplayer`,
-        state: { videoLink: elem.file_link, videoId: elem.file_id },
+        state: {
+          videoLink: elem.file_link,
+          videoId: elem.file_id,
+          videoLinkArray: elem.file_link_array,
+        },
       });
   };
 
@@ -799,6 +804,7 @@ const StudyBin = (props) => {
       {(roleArray.includes(3) || roleArray.includes(4)) && (
         <AddButton addButtonArray={addButtonArray} />
       )}
+      <BottomNavigation activeNav='studyBin' history={history} />
 
       <Modal show={showModal} onHide={handleClose} centered>
         <Modal.Header closeButton>
