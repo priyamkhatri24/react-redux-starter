@@ -824,7 +824,9 @@ const Dashboard = (props) => {
               backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
               buttonClick={goToVideos}
               textColor={data.text_color}
-              uploadVideoText='Upload a video'
+              uploadVideoText={`${
+                roleArray.includes(3) || roleArray.includes(4) ? 'Upload a video' : ''
+              }`}
               uploadVideoClicked={(e) => {
                 e.stopPropagation();
                 history.push({ pathname: '/addyoutubevideo', state: { addVideo: true } });
