@@ -3,23 +3,35 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
+import Modal from 'react-bootstrap/Modal';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import axios from 'axios';
 import { PageHeader } from '../PageHeader/PageHeader';
 import { get, post } from '../../../Utilities/Remote';
 import { apiValidation } from '../../../Utilities';
+import { BatchesSelector } from '..';
 import './AddYoutube.scss';
 import { getStudyBinFolderIDArray } from '../../../redux/reducers/studybin.reducer';
-import { getClientUserId } from '../../../redux/reducers/clientUserId.reducer';
+import {
+  getClientUserId,
+  getRoleArray,
+  getClientId,
+} from '../../../redux/reducers/clientUserId.reducer';
 
 const AddYoutube = (props) => {
-  const { studyBinFolderIdArray, clientUserId } = props;
+  const { studyBinFolderIdArray, clientUserId, clientId, roleArray } = props;
   const [videoId, setVideoId] = useState('');
   const [videoDuration, setVideoDuration] = useState(0);
   const [key, setKey] = useState('');
   const [youtubeVideo, setYoutubeVideo] = useState({});
   const [isValid, setValid] = useState(false);
+  const [batches, setBatches] = useState([]);
+  const [selectedBatches, setSelectedBatches] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [redAlert, setRedAlert] = useState(false);
+  const [batchInputValue, setBatchInputValue] = useState('');
 
   useEffect(() => {
     get(null, '/getGCPCredentials').then((res) => {
@@ -27,6 +39,20 @@ const AddYoutube = (props) => {
       setKey(result.key);
     });
   }, []);
+
+  useEffect(() => {
+    if (roleArray.includes(4)) {
+      get({ client_id: clientId }, '/getAllBatchesOfCoaching').then((res) => {
+        const result = apiValidation(res);
+        setBatches(result);
+      });
+    } else {
+      get({ client_user_id: clientUserId }, '/getBatchesOfTeacher').then((res) => {
+        const result = apiValidation(res);
+        setBatches(result);
+      });
+    }
+  }, [clientId, roleArray, clientUserId]);
 
   const getIdFromUrl = (url) => {
     let vidId = url.split('v=')[1];
@@ -127,6 +153,45 @@ const AddYoutube = (props) => {
     }
   };
 
+  const getSelectedBatches = (payload) => {
+    // const { selectedBatches } = this.state;
+    setSelectedBatches(payload);
+    const extraBatchesString = payload.length > 1 ? ` +${(payload.length - 2).toString()}` : '';
+    if (payload.length) {
+      const inputString = payload.reduce((acc, elem, index) => {
+        if (index < 1) {
+          return `${acc + elem.batch_name},`;
+        }
+        if (index === 1) {
+          return acc + elem.batch_name;
+        }
+        return acc;
+      }, '');
+      if (selectedBatches.length > 0) setBatchInputValue(inputString + extraBatchesString);
+      else setBatchInputValue('');
+    }
+  };
+
+  const addVideo = () => {
+    console.log(youtubeVideo);
+    if (!selectedBatches.length) {
+      setRedAlert(true);
+      return;
+    }
+    const payload = {
+      client_user_id: clientUserId,
+      video_name: youtubeVideo.snippet.title,
+      video_thumbnail: youtubeVideo.snippet.thumbnails.high.url,
+      video_link: videoId,
+      batch_array: JSON.stringify(selectedBatches.map((ele) => ele.client_batch_id)),
+    };
+    console.log(payload);
+    post(payload, '/addVideo').then((res) => {
+      console.log(res);
+      props.history.push('/videos');
+    });
+  };
+
   return (
     <div className='AddYoutube'>
       <PageHeader title='Post Video' />
@@ -136,11 +201,11 @@ const AddYoutube = (props) => {
           1.Get the link of any Youtube video you want to post as shown in point 2 below.
         </p>
         <p className='m-3 AddYoutube__instructions'>
-          2.https://www.youtube.com/watch?v=<span>w9uWPBDHEKE</span>.
+          2.https://www.youtube.com/watch?v=<span>9VHL9ztZUDo</span>.
         </p>
         <p className='m-3 AddYoutube__instructions'>
           3.Now get the video id from that link as shown above - highlighted in yellow color -{' '}
-          <span>w9uWPBDHEKE</span>.
+          <span>9VHL9ztZUDo</span>.
         </p>
         <p className='m-3 AddYoutube__instructions'>4. Paste that video id in the box below.</p>
         <Card className='LiveClasses__Card mx-auto mt-5 p-3'>
@@ -184,24 +249,66 @@ const AddYoutube = (props) => {
                   Remove
                 </Button>
               </small>
+              {props.history.location.state?.addVideo && (
+                <>
+                  <label htmlFor='Select Batch' className='w-100 has-float-label my-auto'>
+                    <input
+                      className='form-control'
+                      name='Select Batch'
+                      type='text'
+                      placeholder='Select Batch'
+                      onClick={() => setShowModal(true)}
+                      readOnly
+                      value={batchInputValue}
+                    />
+                    <span>Select Batch</span>
+                  </label>
+                  {redAlert && !selectedBatches.length ? (
+                    <p className='redAlertADDVIDEO'>*Please select batches</p>
+                  ) : null}
+                </>
+              )}
             </>
           )}
         </Card>
         {Object.keys(youtubeVideo).length !== 0 && (
           <Row className='justify-content-center mt-3'>
-            <Button variant='customPrimary' onClick={() => sendYoutubeData()}>
+            <Button
+              variant='customPrimary'
+              onClick={() =>
+                props.history.location.state?.addVideo ? addVideo() : sendYoutubeData()
+              }
+            >
               Post!
             </Button>
           </Row>
         )}
       </div>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Select Batches</Modal.Title>
+        </Modal.Header>
+        <BatchesSelector
+          batches={batches}
+          selectBatches={selectedBatches}
+          getSelectedBatches={getSelectedBatches}
+          title='Batches'
+        />
+        <Modal.Footer>
+          <Button variant='dashboardBlueOnWhite' onClick={() => setShowModal(false)}>
+            Next
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
 
 const mapStateToProps = (state) => ({
   clientUserId: getClientUserId(state),
+  clientId: getClientId(state),
   studyBinFolderIdArray: getStudyBinFolderIDArray(state),
+  roleArray: getRoleArray(state),
 });
 
 export default connect(mapStateToProps)(AddYoutube);
@@ -212,9 +319,12 @@ AddYoutube.propTypes = {
     location: PropTypes.shape({
       state: PropTypes.shape({
         goTo: PropTypes.string.isRequired,
+        addVideo: PropTypes.bool.isRequired,
       }),
     }),
   }).isRequired,
   clientUserId: PropTypes.number.isRequired,
+  clientId: PropTypes.number.isRequired,
   studyBinFolderIdArray: PropTypes.instanceOf(Array).isRequired,
+  roleArray: PropTypes.instanceOf(Array).isRequired,
 };

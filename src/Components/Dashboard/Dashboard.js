@@ -806,6 +806,32 @@ const Dashboard = (props) => {
             textColor={data.text_color}
           />
         );
+      case 'videos':
+        return (
+          <>
+            <DashboardCards
+              image={param.feature_icon}
+              width={53}
+              height={78}
+              heading='Videos'
+              subHeading={`${
+                roleArray.includes(3) || roleArray.includes(4)
+                  ? 'Upload any YouTube video that you want to share with your students.'
+                  : 'All the videos shared by the teacher are available here.'
+              }`}
+              boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+              backGround={param.start_colour}
+              backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
+              buttonClick={goToVideos}
+              textColor={data.text_color}
+              uploadVideoText='Upload a video'
+              uploadVideoClicked={(e) => {
+                e.stopPropagation();
+                history.push({ pathname: '/addyoutubevideo', state: { addVideo: true } });
+              }}
+            />
+          </>
+        );
       case 'posters':
         return data.posters.length > 0 ? (
           <div className='my-2 mt-4'>

@@ -63,11 +63,10 @@ export const BatchesSelector = (props) => {
   const selectAll = (val) => {
     console.log(val);
     if (val) {
-      setSelectedBatches((prev) => [...prev, ...batches]);
+      setSelectedBatches(() => [...batches]);
       setAllBatches([]);
     } else {
-      const batchess = [...selectedBatches];
-      setAllBatches(batchess);
+      setAllBatches(() => [...batches]);
       setSelectedBatches([]);
     }
     setSelectAllStudents(val);

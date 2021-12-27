@@ -19,9 +19,11 @@ export const DashboardCards = (props) => {
     color,
     buttonText,
     buttonClick,
+    uploadVideoClicked,
     height,
     width,
     textColor,
+    uploadVideoText,
   } = props;
 
   const style = {
@@ -62,9 +64,17 @@ export const DashboardCards = (props) => {
               </span>
             </Button>
           )}
+          {uploadVideoText && (
+            <Button onClick={(e) => uploadVideoClicked(e)} variant='uploadVideoButton'>
+              {uploadVideoText}{' '}
+              <span>
+                <ChevronRightIcon />
+              </span>
+            </Button>
+          )}
         </Col>
         <Col xs={4} className='DashboardCard_Image'>
-          <img src={image} alt='notebook' height={`${height}`} width={`${width}`} />
+          {image && <img src={image} alt='notebook' height={`${height}`} width={`${width}`} />}
         </Col>
       </Row>
     </div>
@@ -82,9 +92,11 @@ DashboardCards.propTypes = {
   color: PropTypes.string,
   buttonText: PropTypes.string,
   buttonClick: PropTypes.func,
+  uploadVideoClicked: PropTypes.func,
   height: PropTypes.number,
   width: PropTypes.number,
   textColor: PropTypes.string,
+  uploadVideoText: PropTypes.string,
 };
 
 DashboardCards.defaultProps = {
@@ -96,7 +108,9 @@ DashboardCards.defaultProps = {
   coloredHeading: '',
   color: '',
   buttonText: null,
+  uploadVideoText: null,
   buttonClick: () => {},
+  uploadVideoClicked: () => {},
   height: 76,
   width: 78,
   textColor: '#000',

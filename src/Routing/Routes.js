@@ -88,6 +88,12 @@ const StudyBin = Loadable({
 });
 // import StudyBin from '../Components/Study Bin/StudyBin';
 
+const Videos = Loadable({
+  loader: () => import(/* webpackChunkName: 'StudyBin' */ '../Components/Videos/Videos'),
+  loading: Loading,
+});
+// import StudyBin from '../Components/Videos/Videos';
+
 const Categories = Loadable({
   loader: () => import(/* webpackChunkName: 'Categories' */ '../Components/Study Bin/Categories'),
   loading: Loading,
@@ -556,6 +562,7 @@ export function Routes() {
       <AuthenticatedRoute exact path='/displaypage/editprofile' component={DisplayPageEdit} />
       <AuthenticatedRoute exact path='/displaypage/preview' component={DummyDashboard} />
       <AuthenticatedRoute exact path='/crm' component={CRM} />
+      <AuthenticatedRoute exact path='/videos' component={Videos} />
 
       <Route path='/fileviewer' component={FileView} />
       <Route path='/otherfileviewer' component={TempViewFile} />
