@@ -8,7 +8,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import Modal from 'react-bootstrap/Modal';
 import Swal from 'sweetalert2';
 import './DisplayPage.scss';
-import { PageHeader, AspectCards } from '../Common';
+import { PageHeader, AspectCards, DraggableAspectCards } from '../Common';
 import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import {
@@ -85,12 +85,14 @@ const DisplayPage = (props) => {
       file_type: type,
       file_link: file,
       section_id: currentSection.homepage_section_id,
+      priority_order: (currentSection.file_array.length + 1).toString(),
     };
 
     post(payload, '/addFileToHomePageSection').then((res) => {
       console.log(res);
       getHomepageContent();
     });
+    // console.log(payload);
   };
 
   const onSelectFile = (e) => {
@@ -128,9 +130,18 @@ const DisplayPage = (props) => {
     }
   };
 
+  const handleDrag = (result) => {
+    console.log(result, 'hp');
+    // console.log(data);
+    // // let temp1;
+    // const temp = data[result.source.index];
+    // data[result.source.index] = data[result.destination.index];
+    // data[result.destination.index] = temp;
+  };
+
   return (
     <>
-      <PageHeader title='Display Page' />
+      <PageHeader shadow title='Display Page' />
       <div className='Display' style={{ marginTop: '4rem', marginBottom: '1rem' }}>
         <div>
           <Button
@@ -178,11 +189,12 @@ const DisplayPage = (props) => {
                 {elem.section_name}
               </h5>
 
-              <AspectCards
+              <DraggableAspectCards
                 data={elem.file_array}
                 clickCard={openDeleteModal}
                 clickAddCard={addCard}
                 section={elem}
+                // handleDrag={handleDrag}
               />
 
               <Cropper

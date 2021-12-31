@@ -64,6 +64,7 @@ import insta from '../../assets/images/dummyDashboard/instagram.svg';
 import whatsapp from '../../assets/images/dummyDashboard/whatsapp.svg';
 import youtube from '../../assets/images/dummyDashboard/youtube.png';
 import telegram from '../../assets/images/dummyDashboard/telegram.svg';
+import footerIngenium from '../../assets/images/ingiLOGO.png';
 import '../Login/DummyDashboard.scss';
 import { dashboardActions } from '../../redux/actions/dashboard.action';
 import { analysisActions } from '../../redux/actions/analysis.action';
@@ -569,7 +570,7 @@ const Dashboard = (props) => {
 
   const renderComponents = (param) => {
     if (param.switcher.includes('dynamicCard')) {
-      return (
+      return roleArray.includes(3) || roleArray.includes(4) ? (
         <DynamicCards
           boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
           dynamicCardClicked={dynamicCardClicked}
@@ -577,7 +578,7 @@ const Dashboard = (props) => {
           noAddCard
           isDynamic
         />
-      );
+      ) : null;
     }
     switch (param.switcher) {
       case 'attendance':
@@ -722,7 +723,7 @@ const Dashboard = (props) => {
                 Create tests &amp; home-works in 4 simple steps
               </p>
               <Button
-                className='Dashboard_homeworkCreator ml-2'
+                className='Dashboard_homeworkCreator btnLetsGo ml-2'
                 variant='dashboardHWletsGo'
                 onClick={() => goToHomeWorkCreator()}
               >
@@ -1058,7 +1059,7 @@ const Dashboard = (props) => {
                   src={param.feature_icon}
                   alt='form'
                   // style={{ width: '100px' }}
-                  className='Dashboard_image'
+                  className='Dashboard_image shareImage'
                 />
               </Col>
             </Row>
@@ -1090,12 +1091,12 @@ const Dashboard = (props) => {
           >
             <Row className='mx-0 justify-content-center mt-2'>
               <Col xs={7} className='text-left p-3'>
-                <h6 className='Dummy__connect'>Share app with friends</h6>
+                <h6 className='Dummy__joinUs'>Share app with friends</h6>
                 <p className='mb-0 Dummy__joinDetails'>Enjoying the application?</p>
                 <p className='Dummy__joinSmall mt-1'>Share with your friends</p>
                 <Button
                   variant='customPrimarySmol'
-                  className='mb-3'
+                  className='mb-3 shareBtn'
                   style={{ padding: '10px 20px' }}
                   onClick={() => shareThis()}
                 >
@@ -1108,7 +1109,7 @@ const Dashboard = (props) => {
                   src={param.feature_icon}
                   alt='form'
                   style={{ width: '100px' }}
-                  className='Dashboard_image'
+                  className='Dashboard_image shareImage'
                 />
               </Col>
             </Row>
@@ -1132,7 +1133,7 @@ const Dashboard = (props) => {
             {data.address.location && (
               <Row className='mx-0 justify-content-center mt-2'>
                 <Col xs={2} sm={1} className='pr-0'>
-                  <LocationOnIcon />
+                  <LocationOnIcon className='contactIcons' />
                 </Col>
                 <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
                   <p className='mb-0 Dummy__contactDetails'>{data.address.location}</p>
@@ -1144,7 +1145,7 @@ const Dashboard = (props) => {
             {data.address.client_contact && (
               <Row className='mx-0 justify-content-center mt-2'>
                 <Col xs={2} sm={1} className='pr-0'>
-                  <PhoneIcon />
+                  <PhoneIcon className='contactIcons' />
                 </Col>
                 <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
                   <p className='mb-0 Dummy__contactDetails'>{data.address.client_contact}</p>
@@ -1155,7 +1156,7 @@ const Dashboard = (props) => {
             {data.address.client_email && (
               <Row className='mx-0 justify-content-center mt-2'>
                 <Col xs={2} sm={1} className='pr-0'>
-                  <AlternateEmailIcon />
+                  <AlternateEmailIcon className='contactIcons' />
                 </Col>
                 <Col xs={10} sm={11} className='text-left p-0 my-auto pr-4'>
                   <p className='mb-0 Dummy__contactDetails'>{data.address.client_email}</p>
@@ -1297,7 +1298,7 @@ const Dashboard = (props) => {
             xs={8}
             md={roleArray.includes(1) || roleArray.includes(2) ? 11 : 10}
           >
-            <h4 className='Dashboard__headingText'>
+            <h4 className='Dashboard__headingText '>
               {time} {firstName}
             </h4>
             {/* <h4 className='Dashboard__headingText'></h4> */}
@@ -1313,9 +1314,8 @@ const Dashboard = (props) => {
             <img
               src={branding.branding.client_logo}
               alt='profile'
-              width='80px'
-              height='80px'
-              style={{ width: '80px', height: '80px' }}
+              className='clientLogoDashboard'
+              // style={{ width: '80px', height: '80px' }}
             />
           </Col>
         </Row>
@@ -1419,7 +1419,26 @@ const Dashboard = (props) => {
           Please allow notifications to receive prompt updates and important notifications
         </Toast.Body>
       </Toast>
-
+      {hasLoaded && (roleArray.includes(3) || roleArray.includes(4)) ? (
+        <p className='connectWithUsText'>
+          Have an issue?{' '}
+          <a className='connectText' href='tel:+918826286002'>
+            Connect
+          </a>{' '}
+          with us!
+        </p>
+      ) : null}
+      {hasLoaded && (
+        <footer style={{ paddingBottom: '1rem' }} className='py-2 Dashboard__footer mb-3'>
+          <h6 className='Dashboard__footerText'>Powered By</h6>
+          <img
+            // style={{ minWidth: '33%' }}
+            src={footerIngenium}
+            alt='footerLogo'
+            className='deskWidth'
+          />
+        </footer>
+      )}
       <BottomNavigation history={history} activeNav='home' />
     </div>
   );

@@ -37,6 +37,9 @@ const TeacherCourses = (props) => {
     roleArray,
   } = props;
   const [courses, setCourses] = useState([]);
+  const [sortBy, setSortBy] = useState('date');
+  const [page, setPage] = useState(1);
+  const [filterModal, setFilterModal] = useState(false);
   const [statistics, setStatistics] = useState([]);
   const [courseModal, setCourseModal] = useState(false);
   const [courseTitle, setCourseTitle] = useState('');
@@ -46,6 +49,21 @@ const TeacherCourses = (props) => {
   const [searchString, setSearchString] = useState('');
   const [activeTab, setActiveTab] = useState('My Courses');
 
+  const infiniteScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop ===
+      document.documentElement.offsetHeight
+    ) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', infiniteScroll);
+
+    return () => window.removeEventListener('scroll', infiniteScroll);
+  }, []);
+
   const NoPreview =
     'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1625835287424.jpg';
 
@@ -54,20 +72,29 @@ const TeacherCourses = (props) => {
       client_id: clientId,
       client_user_id: clientUserId,
       is_admin: roleArray.includes(4),
+      sort_by: sortBy,
+      page,
     };
-    get(payload, '/getCoursesOfCoachingLatest').then((res) => {
+    get(payload, '/getCoursesOfCoachingLatest3').then((res) => {
       const result = apiValidation(res);
-      const searchedArray = result.filter(
+      const searchedArray = [...courses, ...result].filter(
         (e) => e.course_title.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
       );
       setCourses(searchedArray);
       console.log(result);
     });
     console.log(history, 'hiatory');
-    get({ client_id: clientId }, '/getPublishedCoursesOfCoaching').then((res) => {
+    const publishedPayload = {
+      client_id: clientId,
+      client_user_id: clientUserId,
+      is_admin: roleArray.includes(4),
+      sort_by: sortBy,
+      page,
+    };
+    get(publishedPayload, '/getPublishedCoursesOfCoaching3').then((res) => {
       const result = apiValidation(res);
-      // console.log(result, 'getPubkishedoursesOfCoaching')
-      const searchedArray = result.filter(
+      console.log(result, 'getPubkishedoursesOfCoaching3');
+      const searchedArray = [...statistics, ...result].filter(
         (e) => e.course_title.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
       );
       setStatistics(searchedArray);
@@ -76,7 +103,7 @@ const TeacherCourses = (props) => {
     get({ client_id: clientId, course_id: 9 }, '/getCourseDetails').then((res) => {
       console.log(res, 'jaishritest');
     });
-  }, [clientId, clientUserId, history, roleArray, searchString]);
+  }, [clientId, clientUserId, history, roleArray, searchString, sortBy, page]);
 
   useEffect(() => {
     console.log(history.location.state);
@@ -169,12 +196,31 @@ const TeacherCourses = (props) => {
     setActiveTab(tab);
   };
 
+  const triggerFilters = () => setFilterModal(!filterModal);
+
+  const filterResult = (how) => {
+    if (how === 'alphabetically') {
+      setPage(1);
+      setCourses([]);
+      setStatistics([]);
+      setSortBy('name');
+    } else {
+      setPage(1);
+      setStatistics([]);
+      setCourses([]);
+      setSortBy('date');
+    }
+    setFilterModal(false);
+  };
+
   return (
     <>
       <PageHeader
         title='Courses'
         handleBack={goToDashboard}
         customBack
+        filter
+        triggerFilters={triggerFilters}
         search
         searchFilter={searchCourses}
       />
@@ -336,6 +382,24 @@ const TeacherCourses = (props) => {
             })}
           </Tab>
         </Tabs>
+
+        <Modal centered show={filterModal} onHide={() => setFilterModal(false)}>
+          <Modal.Body>
+            {/* eslint-disable */}
+            <p
+              style={{ fontFamily: 'Montserrat-Bold', cursor: 'pointer' }}
+              onClick={() => filterResult('datewise')}
+            >
+              Date wise
+            </p>
+            <p
+              style={{ fontFamily: 'Montserrat-Bold', cursor: 'pointer' }}
+              onClick={() => filterResult('alphabetically')}
+            >
+              Alphabetically
+            </p>
+          </Modal.Body>
+        </Modal>
 
         <Modal show={courseModal} centered onHide={closeCourseModal}>
           <Modal.Body>

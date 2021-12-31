@@ -219,6 +219,8 @@ const StudyBin = (props) => {
           ? '.mp4'
           : extension === 'flv'
           ? '.mp4'
+          : extension === 'm4v'
+          ? '.mp4'
           : extension === 'avi'
           ? '.mp4'
           : extension === 'jpg'

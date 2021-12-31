@@ -181,7 +181,7 @@ class Login extends Component {
     } = this.props;
 
     return (
-      <>
+      <div style={{ minHeight: '100%' }}>
         {currentComponent === 'Preloader' && (
           <div className='text-center Login'>
             <img src={image} alt='coachingLogo' className='Login__jumbo' />
@@ -218,7 +218,7 @@ class Login extends Component {
             changeComponent={this.handleComponent}
           />
         )}
-      </>
+      </div>
     );
   }
 }

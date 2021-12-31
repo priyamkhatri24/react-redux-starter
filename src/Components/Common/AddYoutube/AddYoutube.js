@@ -198,16 +198,17 @@ const AddYoutube = (props) => {
       <div style={{ marginTop: '5rem' }}>
         <h6 className='text-center mb-3 AddYoutube__heading'>Instructions for posting a video</h6>
         <p className='m-3 AddYoutube__instructions'>
-          1.Get the link of any Youtube video you want to post as shown in point 2 below.
+          1. Get the link of any Youtube video you want to post as shown in example below.
         </p>
         <p className='m-3 AddYoutube__instructions'>
-          2.https://www.youtube.com/watch?v=<span>9VHL9ztZUDo</span>.
+          {' '}
+          <span>https://www.youtube.com/watch?v=9VHL9ztZUDo</span>
         </p>
-        <p className='m-3 AddYoutube__instructions'>
-          3.Now get the video id from that link as shown above - highlighted in yellow color -{' '}
+        {/* <p className='m-3 AddYoutube__instructions'>
+          3. Now get the video id from that link as shown above - highlighted in yellow color -{' '}
           <span>9VHL9ztZUDo</span>.
-        </p>
-        <p className='m-3 AddYoutube__instructions'>4. Paste that video id in the box below.</p>
+        </p> */}
+        <p className='m-3 AddYoutube__instructions'>2. Paste that video link in the box below.</p>
         <Card className='LiveClasses__Card mx-auto mt-5 p-3'>
           {!Object.keys(youtubeVideo).length && (
             <>

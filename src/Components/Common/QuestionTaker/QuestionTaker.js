@@ -22,6 +22,7 @@ import {
 import './QuestionTaker.scss';
 import { firstTimeLoginActions } from '../../../redux/actions/firsttimeLogin.action';
 import { getComeBackFromTests } from '../../../redux/reducers/firstTimeLogin.reducer';
+// import ques from './sampleQuestions';
 
 class QuestionTaker extends Component {
   constructor(props) {
@@ -496,6 +497,7 @@ class QuestionTaker extends Component {
             />
             <QuestionCard
               currentQuestion={currentQuestion}
+              // currentQuestion={ques[0]}
               onUnmount={this.questionCardUnmount}
               onSaveAndNext={this.onSaveAndNext}
               language={currentLanguage}

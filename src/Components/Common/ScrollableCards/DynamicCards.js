@@ -75,48 +75,45 @@ export const DynamicCards = (props) => {
           {data.length > 0 &&
             data.map((elem) => {
               return [
+                // <Card
+                //   className={'text-center m-2 Scrollable__dynamicCard'}
+                //   key={`elem+${elem.homepage_section_file_id}`}
+                //   // style={{
+                //   //   backgroundImage:
+                //   //     'url("https://ingenium-userfiles.s3.ap-south-1.amazonaws.com/ingenium_edu_20211215_21639589471347.png")',
+                //   // }}
+                //   onClick={() => {
+                //     dynamicCardClicked(elem);
+                //   }}
+                // >
+                //   <img
+                //     style={{ width: '100%' }}
+                //     src='https://ingenium-userfiles.s3.ap-south-1.amazonaws.com/ingenium_edu_20211215_21639589471347.png'
+                //   />
+                //   {/* <Row className='mt-2 p-4'>
+                //     <Col xs={8}>
+                //       <p className='Dashboard__todaysHitsText'>
+                //         <span className='Scrollable__heading'>{elem.client_feature_name}</span>
+                //       </p>
+                //       <p className='Dashboard__attendanceSubHeading'>{elem.description}</p>
+                //     </Col>
+                //     <Col xs={4} className='Scrollable__cardImage'>
+                //       <img src={elem.file_url} alt='ad' height={78} width={62} />
+                //     </Col>
+                //   </Row> */}
+                // </Card>,
                 <Card
                   className={'text-center m-2 Scrollable__dynamicCard'}
                   key={`elem+${elem.homepage_section_file_id}`}
-                  style={{
-                    backgroundImage:
-                      'url("https://ingenium-userfiles.s3.ap-south-1.amazonaws.com/ingenium_edu_20211215_21639589471347.png")',
-                  }}
+                  // style={{
+                  //   backgroundImage: `url(${elem.file_url})`,
+                  // }}
                   onClick={() => {
                     dynamicCardClicked(elem);
                   }}
                 >
-                  {/* <img
-                    style={{ width: '100%' }}
-                    src='https://ingenium-userfiles.s3.ap-south-1.amazonaws.com/ingenium_edu_20211215_21639589471347.png'
-                  /> */}
-                  {/* <Row className='mt-2 p-4'>
-                    <Col xs={8}>
-                      <p className='Dashboard__todaysHitsText'>
-                        <span className='Scrollable__heading'>{elem.client_feature_name}</span>
-                      </p>
-                      <p className='Dashboard__attendanceSubHeading'>{elem.description}</p>
-                    </Col>
-                    <Col xs={4} className='Scrollable__cardImage'>
-                      <img src={elem.file_url} alt='ad' height={78} width={62} />
-                    </Col>
-                  </Row> */}
-                </Card>,
-                <Card
-                  className={'text-center m-2 Scrollable__dynamicCard'}
-                  key={`elem+${elem.homepage_section_file_id}`}
-                  style={{
-                    backgroundImage: `url(${elem.file_url})`,
-                  }}
-                  onClick={() => {
-                    dynamicCardClicked(elem);
-                  }}
-                >
-                  {/* <img
-                  style={{ width: '100%' }}
-                  src='https://ingenium-userfiles.s3.ap-south-1.amazonaws.com/ingenium_edu_20211215_21639589471347.png'
-                /> */}
-                  <div className='mt-2 p-4 m-auto w-100'>
+                  <img className='Scrollable__imageAd' src={elem.file_url} />
+                  {/* <div className='mt-2 p-4 m-auto w-100'>
                     <p className='Dashboard__todaysHitsText'>
                       <span
                         style={{ color: 'white', fontSize: '28px' }}
@@ -131,10 +128,7 @@ export const DynamicCards = (props) => {
                     >
                       {elem.description}
                     </p>
-                    {/* <Col xs={4} className='Scrollable__cardImage'>
-                      <img src={elem.file_url} alt='ad' height={78} width={62} />
-                    </Col> */}
-                  </div>
+                  </div> */}
                 </Card>,
               ];
             })}

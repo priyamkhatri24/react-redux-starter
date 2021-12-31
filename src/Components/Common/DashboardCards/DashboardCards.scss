@@ -29,3 +29,12 @@
   text-align: right;
   padding-right: 40px;
 }
+
+@media screen and (min-width: 1440px) {
+  .DashboardCards__heading {
+    font-size: 28px;
+  }
+  .uploadVideoText {
+    font-size: 19px !important;
+  }
+}

@@ -249,7 +249,7 @@ class QuestionCard extends Component {
             id={`testRadio${elem.order}`}
           />
           <div className='radioControl'>
-            <MathJax math={String.raw`${elem.option_text_array[0]}`} />
+            <MathJax math={String.raw`${elem.text}`} />
           </div>
         </label>
         {elem.image && (
@@ -283,7 +283,8 @@ class QuestionCard extends Component {
           tabIndex='-1'
         >
           <div className='radioControl'>
-            <MathJax math={String.raw`${elem.option_text_array[0]}`} />
+            <MathJax math={String.raw`${elem.text}`} />
+            {/* {elem.text} */}
           </div>
           {/* <input
                         onChange={() => this.handleChecked(elem.order)}
@@ -414,7 +415,7 @@ class QuestionCard extends Component {
                       tabIndex='-1'
                     >
                       <div className='radioControl'>
-                        <MathJax math={String.raw`${elem.option_text_array[0]}`} />
+                        <MathJax math={String.raw`${elem.text}`} />
                       </div>
                       {/* <input
                         onChange={() => this.handleChecked(elem.order)}

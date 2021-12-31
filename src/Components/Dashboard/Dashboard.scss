@@ -248,6 +248,26 @@
     width: 82px;
     height: 76px;
   }
+
+  &__footer {
+    // position: absolute;
+    // bottom: 10px;
+    width: 100%;
+    padding-bottom: 30px;
+
+    @include media-breakpoint-down(md) {
+      height: 40px;
+      // bottom: 70px;
+    }
+    text-align: center;
+  }
+
+  &__footerText {
+    font-family: 'Montserrat-Regular';
+    font-size: $spacer * 0.75;
+    color: rgba($color: $black, $alpha: 0.6);
+    line-height: 15px;
+  }
 }
 .HWscrollableCard {
   background: linear-gradient(103deg, #ffefeb, #feae96) !important;
@@ -265,6 +285,16 @@
   .HWscrollableCard2 {
     margin-left: 0px !important;
   }
+}
+
+.connectText {
+  color: var(--primary-blue);
+  text-decoration: none;
+}
+
+.connectWithUsText {
+  font-family: 'Montserrat-Medium';
+  font-size: 14px;
 }
 
 .react_chart {
@@ -344,9 +374,20 @@
   display: none;
 }
 
+.clientLogoDashboard {
+  width: 80px;
+  height: 80px;
+}
+
 .savedSentCardImage {
   width: 50px;
   height: auto;
+}
+
+.connectWithUsText {
+  width: 100%;
+  margin-top: 23px;
+  text-align: center;
 }
 
 @media screen and (max-width: 700px) {
@@ -454,6 +495,12 @@
   margin: 14px 0px !important;
 }
 
+.admissionImage {
+  max-width: 55px;
+  position: relative;
+  top: -29px;
+}
+
 @media screen and (max-width: 600px) {
   .fillAdmissionFormButton {
     width: 53%;
@@ -499,9 +546,114 @@
   }
 }
 
+.shareBtn {
+  cursor: pointer;
+}
+
 // =============== very large screen
 @media screen and (min-width: 1440px) {
   .Dashboard__headerCard {
-    height: 315px;
+    height: 388px;
+  }
+  .Dashboard__headingText {
+    font-size: 38px !important;
+  }
+  .scrollableCardHeading {
+    font-size: 28px !important;
+    margin-bottom: 10px !important;
+  }
+  .Dashboard__attendanceSubHeading {
+    font-size: 18px;
+    line-height: 23px;
+  }
+  .DashboardCard_Image {
+    padding-right: 80px;
+  }
+  .Dashboard__todaysHitsText {
+    margin-bottom: 1.4rem;
+    font-size: 28px;
+  }
+  .admissionsSubHeading {
+    font-size: 18px;
+    line-height: 23px;
+  }
+  .admission_button {
+    font-size: 19px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    margin-right: 15px;
+  }
+  .admissionImage {
+    min-width: 90px;
+    top: -45px;
+  }
+  .Dashboard__innovationpBlack,
+  .Dashboard__innovationp {
+    font-size: 19px;
+  }
+  .Dashboard__innovationp {
+    margin-bottom: 35px;
+  }
+  .Dashbaord__innovationh4 {
+    font-size: 38px;
+  }
+  .btnLetsGo {
+    font-size: 24px;
+  }
+  .Dashboard__scrollableCardHeading {
+    font-size: 19px;
+  }
+  .Dashboard__scrollableCardText {
+    font-size: 14px;
+  }
+  .savedSentCardImage {
+    width: 64px;
+  }
+  .Dashboard__attendanceRecents {
+    font-size: 18px;
+    line-height: 20px;
+  }
+  .Dashboard__attendanceLogo {
+    width: 120px;
+  }
+  .personAddIcon {
+    width: 35px;
+    height: 35px;
+  }
+  .shareBtn {
+    padding: 15px 30px !important;
+    font-size: 19px !important;
+  }
+  .clientLogoDashboard {
+    width: 6.5rem;
+    height: 6.5rem;
+  }
+  .shareImage {
+    width: 165px !important;
+  }
+  .fillAdmissionFormButton {
+    font-size: 24px !important;
+    height: 60px !important;
+    font-family: 'Montserrat-Regular' !important;
+  }
+  .Dashboard__admissionButtonContainer button {
+    font-size: 19px;
+    height: 50px;
+  }
+  .Dashboard__noticeText {
+    font-size: 18px !important;
+  }
+  .Dashboard__NoticeIcon {
+    width: 120px;
+    height: 120px;
+  }
+  .contactIcons {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  .connectWithUsText {
+    font-size: 22px !important;
   }
 }

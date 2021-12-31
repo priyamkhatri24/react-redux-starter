@@ -19,7 +19,7 @@ const PlyrVideoPlayer = (props) => {
     type: 'video',
     sources: [
       {
-        src: 'PVt1MNXss-Y',
+        src: 'https://ingenium-userfiles.s3.ap-south-1.amazonaws.com/sample_960x540.m4v',
       },
     ],
   });
@@ -28,7 +28,7 @@ const PlyrVideoPlayer = (props) => {
 
   useEffect(() => {
     let timer;
-    const arr = history.location.state.videoLinkArray;
+    const arr = history.location.state?.videoLinkArray;
     if (!arr) return;
     if (playerRef && playerRef.current && arr) {
       console.log(playerRef.current.plyr);
@@ -48,7 +48,7 @@ const PlyrVideoPlayer = (props) => {
   }, [playerRef]);
 
   useEffect(() => {
-    const arr = history.location.state.videoLinkArray;
+    const arr = history.location.state?.videoLinkArray;
     let timer;
     if (!arr) return;
     if (quality === 360) {

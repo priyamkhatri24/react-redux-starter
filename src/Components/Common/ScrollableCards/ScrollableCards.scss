@@ -40,24 +40,6 @@
     }
   }
 
-  &__dynamicCard {
-    min-width: 80%;
-    height: 177px;
-    overflow: hidden;
-    border-radius: 10px;
-    background-size: cover;
-    background-position: center;
-    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
-    background-size: cover;
-    background-position: center;
-    cursor: pointer;
-
-    @include media-breakpoint-up(md) {
-      min-width: 60%;
-      min-height: 283px;
-    }
-  }
-
   &__card::-webkit-scrollbar {
     display: none;
   }
@@ -299,6 +281,37 @@
   }
 
   /////////////dynamic Cards///////////////
+
+  &__dynamicCard {
+    min-width: 50%;
+    width: 50%;
+    height: fit-content;
+    // min-width: 585px;
+    overflow: hidden;
+    border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+
+    // @include media-breakpoint-down(sm) {
+    //   width: 288px;
+    //   height: 162px;
+    // }
+  }
+
+  &__imageAd {
+    width: 100%;
+    // width: 587px;
+    height: auto;
+    // @include media-breakpoint-down(sm) {
+    //   width: 290px;
+    //   height: 163px;
+    // }
+  }
+
   &__heading {
     font-size: x-large;
     font-weight: 200;
@@ -422,8 +435,13 @@
 
 .aspectCardsInnerContainer {
   display: flex;
-  width: 95%;
+  overflow: scroll !important;
+  width: 100%;
   margin: auto;
+}
+
+.aspectCardsInnerContainer::-webkit-scrollbar {
+  display: none !important;
 }
 
 .desktopDisplayforCards {
@@ -446,6 +464,14 @@
   .desktopDisplayforCards {
     width: 97%;
   }
+  .Scrollable__imageAd {
+    width: 290px;
+    height: 163px;
+  }
+  .Scrollable__dynamicCard {
+    min-width: 288px;
+    height: 162px;
+  }
 }
 
 @media screen and (max-width: 770px) {
@@ -454,5 +480,20 @@
   }
   .w-85 {
     width: 95%;
+  }
+}
+
+////////////// very large screens
+@media screen and (min-width: 1440px) {
+  .Scrollable__aspectCardBig {
+    min-width: 670px;
+    min-height: 378px;
+  }
+  .aspectCardsInnerContainer {
+    margin-bottom: 14px !important;
+  }
+  .Scrollable__aspectCardContent {
+    min-width: 485px;
+    min-height: 274px;
   }
 }

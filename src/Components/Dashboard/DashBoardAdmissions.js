@@ -64,7 +64,7 @@ const DashBoardAdmissions = (props) => {
           <MoreVertIcon />
         </span> */}
         <Row className='my-2 mx-3'>
-          <p className='Dashboard__todaysHitsText p-0 mb-0'>Admissions</p>
+          <p className='Dashboard__todaysHitsText p-0 mb-3'>Admissions</p>
         </Row>
         <div
           onClick={() => goToAdmissions()}
@@ -78,8 +78,8 @@ const DashBoardAdmissions = (props) => {
           </p>
           <img
             src={heroImage}
-            className='img-fluid'
-            style={{ maxWidth: '55px', position: 'relative', top: '-29px' }}
+            className='admissionImage'
+            // style={{ maxWidth: '55px', position: 'relative', top: '-29px' }}
             alt='admissions'
           />
         </div>
@@ -93,8 +93,8 @@ const DashBoardAdmissions = (props) => {
                 openOptionsModal();
               }}
             >
-              <PersonAddIcon />
-              <span>Add User</span>
+              <PersonAddIcon className='personAddIcon' />
+              <span className='ml-2'>Add User</span>
             </Button>
           </div>
           <div className='text-center mt-3 p-0'>
@@ -106,8 +106,8 @@ const DashBoardAdmissions = (props) => {
                 goToAddBatch();
               }}
             >
-              <PersonAddIcon />
-              <span>Add Batch</span>
+              <PersonAddIcon className='personAddIcon' />
+              <span className='ml-2'>Add Batch</span>
             </Button>
           </div>
         </div>

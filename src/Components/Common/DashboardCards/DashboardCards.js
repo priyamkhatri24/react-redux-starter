@@ -65,7 +65,11 @@ export const DashboardCards = (props) => {
             </Button>
           )}
           {uploadVideoText && (
-            <Button onClick={(e) => uploadVideoClicked(e)} variant='uploadVideoButton'>
+            <Button
+              onClick={(e) => uploadVideoClicked(e)}
+              className='uploadVideoText'
+              variant='uploadVideoButton'
+            >
               {uploadVideoText}{' '}
               <span>
                 <ChevronRightIcon />
