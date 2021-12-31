@@ -69,39 +69,17 @@ export const DynamicCards = (props) => {
           )}
         </Modal.Body>
       </Modal>
-
+      <div className='Scrollable__subHeadTextUnderHeadingDyn'>
+        <div className='d-flex justify-content-between w-100'>
+          <h5 className='Scrollable__coursesInitialHeading mb-1'>{data[0].client_feature_name}</h5>
+        </div>
+        <p className='smallTextUnderHeading mb-0'>{data[0].description}</p>
+      </div>
       <section className='Scrollable__card' style={{ minHeight: '113px' }}>
         <div className='aspectCardsInnerContainer'>
           {data.length > 0 &&
             data.map((elem) => {
               return [
-                // <Card
-                //   className={'text-center m-2 Scrollable__dynamicCard'}
-                //   key={`elem+${elem.homepage_section_file_id}`}
-                //   // style={{
-                //   //   backgroundImage:
-                //   //     'url("https://ingenium-userfiles.s3.ap-south-1.amazonaws.com/ingenium_edu_20211215_21639589471347.png")',
-                //   // }}
-                //   onClick={() => {
-                //     dynamicCardClicked(elem);
-                //   }}
-                // >
-                //   <img
-                //     style={{ width: '100%' }}
-                //     src='https://ingenium-userfiles.s3.ap-south-1.amazonaws.com/ingenium_edu_20211215_21639589471347.png'
-                //   />
-                //   {/* <Row className='mt-2 p-4'>
-                //     <Col xs={8}>
-                //       <p className='Dashboard__todaysHitsText'>
-                //         <span className='Scrollable__heading'>{elem.client_feature_name}</span>
-                //       </p>
-                //       <p className='Dashboard__attendanceSubHeading'>{elem.description}</p>
-                //     </Col>
-                //     <Col xs={4} className='Scrollable__cardImage'>
-                //       <img src={elem.file_url} alt='ad' height={78} width={62} />
-                //     </Col>
-                //   </Row> */}
-                // </Card>,
                 <Card
                   className={'text-center m-2 Scrollable__dynamicCard'}
                   key={`elem+${elem.homepage_section_file_id}`}
@@ -113,22 +91,6 @@ export const DynamicCards = (props) => {
                   }}
                 >
                   <img className='Scrollable__imageAd' src={elem.file_url} />
-                  {/* <div className='mt-2 p-4 m-auto w-100'>
-                    <p className='Dashboard__todaysHitsText'>
-                      <span
-                        style={{ color: 'white', fontSize: '28px' }}
-                        className='Scrollable__heading'
-                      >
-                        {elem.client_feature_name}
-                      </span>
-                    </p>
-                    <p
-                      style={{ color: 'white', fontSize: '18px' }}
-                      className='Dashboard__attendanceSubHeading'
-                    >
-                      {elem.description}
-                    </p>
-                  </div> */}
                 </Card>,
               ];
             })}

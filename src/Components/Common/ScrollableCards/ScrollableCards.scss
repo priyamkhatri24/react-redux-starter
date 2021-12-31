@@ -119,6 +119,19 @@
     flex-direction: column;
   }
 
+  &__subHeadTextUnderHeadingDyn {
+    font-family: $medium;
+    color: black;
+    display: 'flex';
+    flex-direction: column;
+    width: 98%;
+    margin: auto;
+
+    @include media-breakpoint-down(sm) {
+      width: 95%;
+    }
+  }
+
   &__coursesInitialHeading {
     position: relative;
     top: 50%;
@@ -495,5 +508,11 @@
   .Scrollable__aspectCardContent {
     min-width: 485px;
     min-height: 274px;
+  }
+  .Scrollable__coursesInitialHeading {
+    font-size: 28px;
+  }
+  .smallTextUnderHeading {
+    font-size: 18px;
   }
 }

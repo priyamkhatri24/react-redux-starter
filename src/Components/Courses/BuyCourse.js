@@ -948,7 +948,7 @@ const BuyCourse = (props) => {
         <Modal.Body>
           <Card style={{ borderRadius: '10px' }}>
             <Row className='p-2 m-0'>
-              <span className='my-auto Courses__couponHeading'>Registration</span>
+              <span className='my-auto Courses__couponHeading'>{course.course_title}</span>
               <span
                 className='ml-auto my-auto'
                 style={{
@@ -961,31 +961,35 @@ const BuyCourse = (props) => {
               </span>
             </Row>
           </Card>
-          <p className='Scrollable__courseCardHeading mt-3' style={{ fontSize: '14px' }}>
-            Coupon:
-          </p>
-          <Row className='m-0'>
-            <Col xs={8} className='my-auto'>
-              <label className='has-float-label my-auto'>
-                <input
-                  className='form-control'
-                  name='Enter Code'
-                  type='text'
-                  placeholder='Enter Code'
-                  onChange={(e) => setCoupon(e.target.value)}
-                />
-                <span>Enter Code</span>
-              </label>
-            </Col>
-            <Col xs={4}>
-              <Button variant='dashboardBlueOnWhite' onClick={() => applyCoupon()}>
-                Apply
-              </Button>
-            </Col>
-          </Row>
-          <p className='m-2'>
-            <small className='text-center text-danger'>{couponMessage}</small>
-          </p>
+          {course.is_coupon_available === 'true' ? (
+            <>
+              <p className='Scrollable__courseCardHeading mt-3' style={{ fontSize: '14px' }}>
+                Coupon:
+              </p>
+              <Row className='m-0'>
+                <Col xs={8} className='my-auto'>
+                  <label className='has-float-label my-auto'>
+                    <input
+                      className='form-control'
+                      name='Enter Code'
+                      type='text'
+                      placeholder='Enter Code'
+                      onChange={(e) => setCoupon(e.target.value)}
+                    />
+                    <span>Enter Code</span>
+                  </label>
+                </Col>
+                <Col xs={4}>
+                  <Button variant='dashboardBlueOnWhite' onClick={() => applyCoupon()}>
+                    Apply
+                  </Button>
+                </Col>
+              </Row>
+              <p className='m-2'>
+                <small className='text-center text-danger'>{couponMessage}</small>
+              </p>
+            </>
+          ) : null}
         </Modal.Body>
         <Modal.Footer>
           <Button variant='boldTextSecondary' onClick={() => closeCouponModal()}>

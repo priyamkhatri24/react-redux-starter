@@ -5,6 +5,7 @@ import { getParams } from '../../../Utilities';
 
 const FileView = (props) => {
   const { history } = props;
+  console.log(window.location.origin);
   const viewer = useRef(null);
   //   const [url, setUrl] = useState('');
   //   useEffect(() => {
@@ -32,12 +33,19 @@ const FileView = (props) => {
       //    setFileType(params.fileType);
       url = params.filePath;
     }
+    let key = '';
+    if (process.env.NODE_ENV === 'development') {
+      key = 'q1oxn6WyDRc572siUU5z';
+    } else if (process.env.NODE_ENV === 'production' && window.location.origin.includes('askilc')) {
+      key = 'BcBf29XSXBiPpBpG66JY';
+    } else {
+      key = 'gouud4ANiuGZf2TRV8jO';
+    }
+
     WebViewer(
       {
         path: './public',
-        licenseKey: `${
-          process.env.NODE_ENV === 'development' ? 'q1oxn6WyDRc572siUU5z' : 'gouud4ANiuGZf2TRV8jO'
-        }`,
+        licenseKey: key,
         initialDoc: `${url}`,
       },
       viewer.current,

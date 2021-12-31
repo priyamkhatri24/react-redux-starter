@@ -61,6 +61,20 @@ const SavedSentTestsUsingFilters = (props) => {
     });
   }, [clientId]);
 
+  const rerenderTests = () => {
+    get(
+      filterPayload,
+      testsType === 'saved' ? '/getSavedHomeworksUsingFilters' : '/getSentAssignmentsUsingFilter',
+    ).then((res) => {
+      console.log(res);
+      const result = apiValidation(res);
+      const searchedArray = result.filter(
+        (e) => e.test_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+      );
+      setTests(searchedArray);
+    });
+  };
+
   useEffect(() => {
     get(
       filterPayload,
@@ -181,7 +195,7 @@ const SavedSentTestsUsingFilters = (props) => {
                   tabIndex='-1'
                   key={elem.test_id}
                 >
-                  <SavedSentCard elem={elem} testsType={testsType} />
+                  <SavedSentCard elem={elem} testsType={testsType} updateTests={rerenderTests} />
                 </div>
               );
             })}
