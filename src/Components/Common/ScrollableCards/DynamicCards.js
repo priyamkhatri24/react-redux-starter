@@ -9,7 +9,7 @@ import './ScrollableCards.scss';
 import useWindowDimensions from '../../../Utilities/utilities';
 
 export const DynamicCards = (props) => {
-  const { data, dynamicCardClicked } = props;
+  const { data, dynamicCardClicked, titleData } = props;
 
   const windowDimensions = useWindowDimensions();
   const [showImageModal, setShowImageModal] = useState(false);
@@ -31,13 +31,7 @@ export const DynamicCards = (props) => {
   const showCardOnModal = (card) => {
     setModalImage(card);
     setShowImageModal(true);
-    if (card.homepage_section_homepage_section_id === 3) {
-      setModalHeading('Testimonials');
-    } else if (card.homepage_section_homepage_section_id === 2) {
-      setModalHeading('Our Star Performers');
-    } else if (card.homepage_section_homepage_section_id === 1) {
-      setModalHeading('Poster');
-    }
+    setModalHeading(titleData.client_feature_name);
   };
 
   const closeImageModal = () => {
@@ -61,19 +55,21 @@ export const DynamicCards = (props) => {
               controls='controls'
               autoplay='autoplay'
             >
-              <source src={modalImage.file_link} type='video/mp4' />
+              <source src={modalImage.file_url} type='video/mp4' />
               <track src='' kind='subtitles' srcLang='en' label='English' />
             </video>
           ) : (
-            <img src={modalImage.file_link} alt='img' className='img-fluid' />
+            <img src={modalImage.file_url} alt='img' className='img-fluid' />
           )}
         </Modal.Body>
       </Modal>
       <div className='Scrollable__subHeadTextUnderHeadingDyn'>
         <div className='d-flex justify-content-between w-100'>
-          <h5 className='Scrollable__coursesInitialHeading mb-1'>{data[0].client_feature_name}</h5>
+          <h5 className='Scrollable__coursesInitialHeading mb-1'>
+            {titleData.client_feature_name}
+          </h5>
         </div>
-        <p className='smallTextUnderHeading mb-0'>{data[0].description}</p>
+        <p className='smallTextUnderHeading mb-0'>{titleData.description}</p>
       </div>
       <section className='Scrollable__card' style={{ minHeight: '113px' }}>
         <div className='aspectCardsInnerContainer'>
@@ -88,9 +84,24 @@ export const DynamicCards = (props) => {
                   // }}
                   onClick={() => {
                     dynamicCardClicked(elem);
+                    showCardOnModal(elem);
                   }}
                 >
-                  <img className='Scrollable__imageAd' src={elem.file_url} />
+                  {/* <img className='Scrollable__imageAd' src={elem.file_url} /> */}
+                  {elem.file_type === 'video' ? (
+                    /* eslint-disable */
+                    <video
+                      className='Scrollable__imageAd'
+                      style={{ borderRadius: '5px' }}
+                      muted
+                      autoplay='autoplay'
+                    >
+                      <source src={elem.file_url} type='video/mp4' />
+                      <track src='' kind='subtitles' srcLang='en' label='English' />
+                    </video>
+                  ) : (
+                    <img src={elem.file_url} alt='student' className='Scrollable__imageAd' />
+                  )}
                 </Card>,
               ];
             })}
@@ -103,4 +114,5 @@ export const DynamicCards = (props) => {
 DynamicCards.propTypes = {
   data: PropTypes.instanceOf(Array).isRequired,
   dynamicCardClicked: PropTypes.func.isRequired,
+  titleData: PropTypes.instanceOf(Object).isRequired,
 };

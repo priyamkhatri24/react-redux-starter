@@ -130,13 +130,15 @@
 /// For very large screens ///
 @media screen and (min-width: 1440px) {
   .Dummy__coachingName {
-    font-size: 74px !important;
+    font-size: 64px !important;
     font-family: 'Montserrat-Bold';
+    line-height: 70px;
   }
   .Dummy__tagline {
-    font-size: 44px;
-    margin-top: 75px;
-    margin-bottom: 100px !important;
+    font-size: 40px;
+    line-height: 44px;
+    margin-top: 48px;
+    margin-bottom: 50px !important;
   }
   .Dummy__socialLinks {
     width: 50px;

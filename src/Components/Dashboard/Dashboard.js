@@ -575,6 +575,7 @@ const Dashboard = (props) => {
           boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
           dynamicCardClicked={dynamicCardClicked}
           data={data[param.switcher]}
+          titleData={data.feature[param.switcher]}
           noAddCard
           isDynamic
         />
