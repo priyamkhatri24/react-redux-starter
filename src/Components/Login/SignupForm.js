@@ -33,6 +33,7 @@ const SignupForm = (props) => {
   const [upImg, setUpImg] = useState();
   const [imageModal, setImageModal] = useState(false);
   const [profileImage, setProfileImage] = useState('');
+  const [displayAlertText, setDisplayAlertText] = useState(false);
 
   const handleClose = () => setImageModal(false);
   const handleOpen = () => setImageModal(true);
@@ -47,11 +48,17 @@ const SignupForm = (props) => {
   };
 
   const goToOtp = () => {
+    if (!details.first_name || !details.email) {
+      setDisplayAlertText(true);
+      return;
+    }
     const payload = {
       contact: userProfile.contact,
       client_id: clientId,
       country_code: userProfile.countryCode,
+      email: details.email,
     };
+    console.log(payload);
     post(payload, '/enterNumberAndSendOTPForCRM').then((res) => {
       console.log(res);
       if (res.success) {
@@ -166,9 +173,9 @@ const SignupForm = (props) => {
         <label className='has-float-label my-auto'>
           <input
             className='form-control mt-3'
-            name='Email address(optional)'
+            name='Email address'
             type='text'
-            placeholder='Email address(optional)'
+            placeholder='Email address'
             value={details.email}
             onChange={(e) => {
               const newObject = {
@@ -178,8 +185,16 @@ const SignupForm = (props) => {
               setDetails(newObject);
             }}
           />
-          <span>Email address(optional)</span>
+          <span>Email address</span>
         </label>
+        {displayAlertText && (
+          <p
+            className='mb-0 mt-2'
+            style={{ fontFamily: 'Montserrat-Regular', color: 'red', fontSize: '14px' }}
+          >
+            *First name and Email address are mandatory fields
+          </p>
+        )}
         <Button variant='loginPrimary' className='mt-5' onClick={() => goToOtp()}>
           Send OTP
         </Button>

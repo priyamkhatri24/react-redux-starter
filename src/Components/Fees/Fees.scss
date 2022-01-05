@@ -384,6 +384,41 @@
   text-align: center;
 }
 
+.dueText {
+  color: red;
+  min-width: 80px;
+  opacity: 0.26;
+}
+
+.paidText {
+  color: green;
+  min-width: 80px;
+  opacity: 0.26;
+}
+
+.noPlanText {
+  color: gray;
+  min-width: 80px;
+  opacity: 0.26;
+}
+
+.notifyButton {
+  width: fit-content;
+  background-color: transparent;
+  outline: none;
+  border: 1px solid var(--primary-blue);
+  color: var(--primary-blue);
+  cursor: pointer;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.statusContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 /*
 Selects the label following the radio checkbox that
 was checked

@@ -120,6 +120,8 @@ const Mycourse = (props) => {
   const [isBrowserCompatible, setIsBrowserCompatible] = useState(true);
   const vidRef = useRef(null);
   const nowPlayingVideoRef = useRef(null);
+  const [testToOpen, setTestToOpen] = useState(null);
+  const [testOpener, setTestOpener] = useState(false);
   const handleImageOpen = () => setShowImageModal(true);
   const handleImageClose = () => setShowImageModal(false);
 
@@ -452,22 +454,28 @@ const Mycourse = (props) => {
         setSource(false);
         window.scrollTo({ top: 0, behavior: 'smooth' });
         setNowPlayingVideo(false);
+        setTestToOpen(null);
         setDocumentOpener(true);
+        setTestOpener(false);
         setDocumentToOpen(elem);
         setCourseDocumentToOpenToStore(elem);
         setCourseNowPlayingVideoToStore(null);
       } else if (elem.file_type === '.pdf') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         setNowPlayingVideo(false);
+        setTestToOpen(null);
         setSource(false);
         setDocumentOpener(true);
+        setTestOpener(false);
         setDocumentToOpen(elem);
         setCourseDocumentToOpenToStore(elem);
         setCourseNowPlayingVideoToStore(null);
       } else if (elem.file_type === 'video' && elem.isYoutube) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         setDocumentToOpen({});
+        setTestToOpen(null);
         setDocumentOpener(false);
+        setTestOpener(false);
         setSource(false);
         if (navigator.userAgent.includes('VivoBrowser')) {
           console.log('browserIncompatible');
@@ -489,6 +497,8 @@ const Mycourse = (props) => {
       } else if (elem.file_type === 'video' && !elem.isYoutube) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         setDocumentOpener(false);
+        setTestToOpen(null);
+        setTestOpener(false);
         setSource(false);
         console.log(elem, 'videoooooele');
         console.log(navigator.userAgent);
@@ -518,6 +528,13 @@ const Mycourse = (props) => {
         });
       }
     } else if (type === 'test') {
+      setSource(false);
+      setNowPlayingVideo(null);
+      setDocumentOpener(false);
+      setDocumentToOpen(null);
+      console.log('test start horaa');
+      console.log(elem);
+      // setTestOpener(true);
       const payload = {
         client_user_id: clientUserId,
         test_id: elem.id,
@@ -526,35 +543,37 @@ const Mycourse = (props) => {
 
       get(payload, '/getTestStatusForStudent').then((res) => {
         const resp = apiValidation(res);
-        console.log(resp);
+        console.log(resp, 'getteststatus');
+        elem.is_attempt = resp.is_attempt;
+        setTestToOpen(elem);
         if (resp.is_attempt === 1) {
-          Swal.fire({
-            icon: 'info',
-            title: 'Welcome back',
-            text: 'You have already attempted this test. Would you like to see your results?',
-            showCloseButton: true,
-            showCancelButton: true,
-            customClass: 'Assignments__SweetAlert',
-          }).then((result) => {
-            if (result.isConfirmed) {
-              const testPayload = {
-                client_user_id: clientUserId,
-                test_id: elem.id,
-                test_type: elem.test_type,
-              };
-              get(testPayload, '/getTestAnalysisForStudent').then((response) => {
-                console.log(response);
-                const analysisResult = apiValidation(response, 'analysis');
-                setAnalysis(analysisResult);
-                openAnalysisModal();
-              });
-            }
+          const testPayload = {
+            client_user_id: clientUserId,
+            test_id: elem.id,
+            test_type: elem.test_type,
+          };
+
+          get(testPayload, '/getTestAnalysisForStudent').then((response) => {
+            console.log(response);
+            const analysisResult = apiValidation(response, 'analysis');
+            setAnalysis(analysisResult);
+            // openAnalysisModal();
+            setTestOpener(true);
           });
-        } else if (elem.test_type === 'homework') {
-          startHomeworkTest(elem);
-        } else if (elem.test_type === 'demo test') startDemoTest(elem);
-        else if (elem.test_type === 'live test') startLiveTest(elem);
+        } else {
+          setTestOpener(true);
+        }
       });
+    }
+  };
+
+  const testIgniter = () => {
+    if (testToOpen.test_type === 'homework') {
+      startHomeworkTest(testToOpen);
+    } else if (testToOpen.test_type === 'demo test') {
+      startDemoTest(testToOpen);
+    } else if (testToOpen.test_type === 'live test') {
+      startLiveTest(testToOpen);
     }
   };
 
@@ -1019,7 +1038,7 @@ const Mycourse = (props) => {
               Preview video
             </p>
           ) : null}
-          {!source && !nowPlayingVideo && !documentOpener && (
+          {!source && !nowPlayingVideo && !documentOpener && !testOpener && (
             <div className='mx-auto Courses__mycoursethumbnail mb-2'>
               <img
                 src={course.course_display_image ? course.course_display_image : image}
@@ -1028,13 +1047,39 @@ const Mycourse = (props) => {
               />
             </div>
           )}
-          {!source && !nowPlayingVideo && documentOpener && (
+          {!source && !nowPlayingVideo && !testOpener && documentOpener && (
             <div className='mx-auto Courses__docOpener mb-2'>
               <div className='TextOnImage'>
                 <p>{documentToOpen.name}</p>
                 <button className='openDocumentBtn' onClick={openDocument}>
                   Open file
                 </button>
+              </div>
+              <img
+                src={course.course_display_image ? course.course_display_image : image}
+                alt='course'
+                className='mx-auto courseDocumentOpenerImg'
+              />
+            </div>
+          )}
+          {!source && !nowPlayingVideo && !documentOpener && testOpener && (
+            <div className='mx-auto Courses__docOpener mb-2'>
+              <div className='TextOnImage'>
+                <p>{testToOpen.name}</p>
+                {testToOpen.is_attempt ? (
+                  <>
+                    <button className='openDocumentBtn' onClick={openAnalysisModal}>
+                      View Analysis
+                    </button>
+                    <button className='reattempBtn' onClick={testIgniter}>
+                      RE-ATTEMPT
+                    </button>
+                  </>
+                ) : (
+                  <button className='openDocumentBtn' onClick={testIgniter}>
+                    Attempt
+                  </button>
+                )}
               </div>
               <img
                 src={course.course_display_image ? course.course_display_image : image}
@@ -1052,8 +1097,12 @@ const Mycourse = (props) => {
                 style={{ fontFamily: 'Montserrat-Regular' }}
                 className='Courses__courseCardHeading mx-auto mb-0 mt-3 w-90'
               >
-                {nowPlayingVideo ? 'NOW PLAYING: ' : documentToOpen ? 'NOW SHOWING: ' : ''}
-                {nowPlayingVideo?.name || documentToOpen?.name || ''}
+                {nowPlayingVideo
+                  ? 'NOW PLAYING: '
+                  : documentToOpen || testToOpen
+                  ? 'NOW SHOWING: '
+                  : ''}
+                {nowPlayingVideo?.name || documentToOpen?.name || testToOpen?.name || ''}
               </p>
             </>
           ) : null}

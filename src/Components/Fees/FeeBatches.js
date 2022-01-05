@@ -15,9 +15,26 @@ const FeeBatches = (props) => {
   const { clientId, clientUserId, history, searchString } = props;
 
   const [filters, setFilters] = useState([]);
+  const [page, setPage] = useState(1);
+
   // const [currentClass, setCurrentClass] = useState({});
   // const [currentSubject, setCurrentSubject] = useState({});
   const [batches, setBatches] = useState([]);
+
+  const infiniteScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop ===
+      document.documentElement.offsetHeight
+    ) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', infiniteScroll);
+
+    return () => window.removeEventListener('scroll', infiniteScroll);
+  }, []);
 
   useEffect(() => {
     get({ client_id: clientId }, '/getFilters').then((res) => {
@@ -31,18 +48,20 @@ const FeeBatches = (props) => {
     const payload = {
       // class_id: Object.keys(currentClass).length === 0 ? null : currentClass.class_id,
       // subject_id: Object.keys(currentSubject).length === 0 ? null : currentSubject.subject_id,
-      client_user_id: clientUserId,
+      client_id: clientId,
+      limit: 20,
+      page,
     };
 
-    get(payload, '/getFeeDataForBatchesUsingFilter').then((res) => {
+    get(payload, '/getFeeDataOfClientBatchWise').then((res) => {
       const result = apiValidation(res);
-      console.log(result);
-      const searchedArray = result.filter(
+      console.log(result, 'getfeedataofclientbatchwise');
+      const searchedArray = [...batches, ...result].filter(
         (e) => e.batch_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
       );
       setBatches(searchedArray);
     });
-  }, [clientUserId, searchString]);
+  }, [clientUserId, searchString, page]);
 
   // const select = (type, e) => {
   //   switch (type) {
@@ -211,7 +230,7 @@ const FeeBatches = (props) => {
               onClick={() =>
                 history.push({
                   pathname: '/fees/users',
-                  state: { batchId: elem.client_batch_client_batch_id, batchName: elem.batch_name },
+                  state: { batchId: elem.client_batch_id, batchName: elem.batch_name },
                 })
               } // eslint-disable-line
             >
@@ -239,11 +258,10 @@ const FeeBatches = (props) => {
                 now={
                   elem.total_students === '0'
                     ? 0
-                    : (1 -
-                        parseInt(elem.total_due_students, 10) / parseInt(elem.total_students, 10)) *
+                    : (parseInt(elem.total_paid_students, 10) / parseInt(elem.total_students, 10)) *
                       100
                 }
-                label={`${parseInt(elem.total_due_students, 10)}/${parseInt(
+                label={`${parseInt(elem.total_paid_students, 10)}/${parseInt(
                   elem.total_students,
                   10,
                 )}`}

@@ -40,9 +40,10 @@ const SavedSentCard = (props) => {
           {testsType === 'sent' && (
             <p className='Homework__dueDate mb-0'>
               To:{' '}
-              {elem.batch_array.map((e, i) => (
+              {elem.batch_array.slice(0, 15).map((e, i) => (
                 <span key={i}>{e}, </span> // eslint-disable-line
               ))}
+              {elem.batch_array.length > 15 ? <span>...</span> : null}
             </p>
           )}
         </Col>

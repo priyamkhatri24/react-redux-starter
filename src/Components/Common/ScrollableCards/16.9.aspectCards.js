@@ -135,7 +135,11 @@ export const AspectCards = (props) => {
                       alt='student'
                       // height={bigAspectCard ? '177px' : '113px'}
                       // width={bigAspectCard ? '315px' : '200px'}
-                      style={{ borderRadius: '5px' }}
+                      style={{
+                        borderRadius: '5px',
+                        width: '100%',
+                        height: 'auto',
+                      }}
                     />
                   )}
                 </Card>

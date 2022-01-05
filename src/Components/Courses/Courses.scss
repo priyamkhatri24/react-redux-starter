@@ -742,13 +742,22 @@
   font-size: 18px;
 }
 .openDocumentBtn {
-  background-color: transparent;
-  border: 1px solid white;
+  background-color: var(--primary-blue);
+  border: 1px solid var(--primary-blue);
   outline: none;
   border-radius: 15px;
   color: white;
+  font-family: 'Montserrat-Medium';
   cursor: pointer;
   padding: 6px 12px;
+}
+.reattempBtn {
+  background-color: transparent;
+  border: transparent;
+  color: white;
+  font-family: 'Montserrat-Bold';
+  margin: 20px auto;
+  outline: none;
 }
 
 @media screen and (min-width: 575px) {

@@ -2,6 +2,7 @@ import { brandingActions } from '../../redux/actions/branding.action';
 import { colorActions } from '../../redux/actions/color.actions';
 import { clientUserIdActions } from '../../redux/actions/clientUserId.action';
 import { get } from '../../Utilities/Remote';
+import { history } from '../../Routing';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
 
 export function getBranding(param) {
@@ -10,6 +11,11 @@ export function getBranding(param) {
 
     get(param, '/getClientbyDomain')
       .then((res) => {
+        // console.log(res, 'getclientbydomain======');
+        if (res.result === 'invaid_domain') {
+          history.push('/invalidurl');
+          return;
+        }
         dispatch(clientUserIdActions.setClientIdToStore(res.result[0].client_id));
         dispatch(brandingActions.success(res.result[0]));
       })

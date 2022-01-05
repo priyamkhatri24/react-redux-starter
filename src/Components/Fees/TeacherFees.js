@@ -11,6 +11,8 @@ import FeeCarousel from './FeeCarousel';
 import FeesTimeline from './FeesTimeline';
 import FeeBatches from './FeeBatches';
 import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
+import AllStudentsForFee from './AllStudentsForFee';
+import FeeUserDetails from './FeeUserDetails';
 import { PageHeader } from '../Common';
 import { feeActions } from '../../redux/actions/fees.actions';
 import './Fees.scss';
@@ -45,7 +47,7 @@ const TeacherFees = (props) => {
       )}
 
       <div style={{ marginTop: '4rem' }}>
-        {activeTab !== 'Batches' && (
+        {activeTab === 'Notifications' && (
           <>
             <FeeCarousel carouselObject={carouselDetails} />
             <Row className=' mx-2 Fees__TwobuttonsRow'>
@@ -107,16 +109,17 @@ const TeacherFees = (props) => {
           </Tab>
           <Tab
             style={{ marginBottom: '0.5rem' }}
-            eventKey='Summary'
-            title='Summary'
-            onClick={() => handleSelect('Summary')}
+            eventKey='Students'
+            title='Students'
+            onClick={() => handleSelect('Students')}
           >
-            <div
-              className='Scrollable__viewAll justify-content-center align-items-center d-flex'
-              style={{ height: '50vh' }}
-            >
-              Coming Soon
-            </div>
+            <AllStudentsForFee
+              clientUserId={clientUserId}
+              clientId={clientId}
+              history={history}
+              searchString={searchString}
+            />
+            {/* <FeeUserDetails clientId={clientId} history={history} searchString={searchString} /> */}
           </Tab>
         </Tabs>
       </div>

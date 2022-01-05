@@ -366,6 +366,12 @@ const FourZeroFour = Loadable({
   loading: Loading,
 });
 
+const InvalidURL = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'FourZeroFour' */ '../Components/ErrorPages/InvalidURL'),
+  loading: Loading,
+});
+
 const ErrorCode = Loadable({
   loader: () => import(/* webpackChunkName: 'ErrorCode' */ '../Components/ErrorPages/ErrorCode'),
   loading: Loading,
@@ -573,6 +579,7 @@ export function Routes() {
 
       {/* redirect user to FourZeroFour page if route does not exist */}
 
+      <Route exact path='/invalidurl' component={InvalidURL} />
       <Route component={FourZeroFour} />
       {/* <Route component={Dashboard} /> */}
     </Switch>

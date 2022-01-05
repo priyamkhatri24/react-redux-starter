@@ -12,13 +12,16 @@ const FeeUserDetails = (props) => {
 
   const [users, setUsers] = useState([]);
   const [title, setTitle] = useState('');
+  const [recordText, setRecordsText] = useState('Loading records');
 
   useEffect(() => {
     setTitle(history.location.state.batchName);
+    console.log(history.location.state);
     get({ client_batch_id: history.location.state.batchId }, '/getFeeDataForBatch').then((res) => {
       console.log(res);
       const result = apiValidation(res);
       setUsers(result);
+      setRecordsText('No records yet');
     });
   }, [history]);
 
@@ -56,7 +59,7 @@ const FeeUserDetails = (props) => {
 
   return (
     <>
-      <PageHeader title={title} />
+      <PageHeader title={title} shadow />
       <div className='Fees__userDetails'>
         {users.length > 0 &&
           users.map((elem) => {
@@ -71,6 +74,11 @@ const FeeUserDetails = (props) => {
               />
             );
           })}
+        {users.length === 0 ? (
+          <p className='mt-4 text-center' style={{ fontFamily: 'Montserrat-Medium' }}>
+            {recordText}
+          </p>
+        ) : null}
       </div>
     </>
   );

@@ -685,10 +685,12 @@ class LiveClasses extends Component {
       batch_array: batchIdArray,
       duration: milliseconds,
     };
+    console.log(payload);
 
-    if (!(youtubeModalType === 'scheduled')) {
+    if (youtubeModalType !== 'scheduled') {
       post(payload, '/addGoogleMeeting').then((res) => {
-        if (res.success) {
+        console.log(res);
+        if (res?.success) {
           this.rerenderArrays();
           this.handleCloseGoLive();
           Swal.fire({

@@ -102,6 +102,7 @@ const SignUp = (props) => {
     const requestBody = {
       client_id: clientId,
       contact: userProfile.contact,
+      email: userProfile.email,
     };
     post(requestBody, '/resendOTPForCRM')
       .then((res) => {
