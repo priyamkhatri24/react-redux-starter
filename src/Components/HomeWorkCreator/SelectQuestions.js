@@ -20,6 +20,8 @@ const SelectQuestions = (props) => {
   const {
     history,
     fetch,
+    clientUserId,
+    clientId,
     setCurrentSubjectArrayToStore,
     setCurrentChapterArrayToStore,
     desktop,
@@ -40,7 +42,10 @@ const SelectQuestions = (props) => {
   const [compressed, setCompressed] = useState(false);
 
   useEffect(() => {
-    get('', '/getClassesForHomeworkCreator').then((res) => {
+    get(
+      { client_user_id: clientUserId, client_id: clientId },
+      '/getClassesForHomeworkCreator',
+    ).then((res) => {
       const result = apiValidation(res);
       setClasses(result);
     });
@@ -459,6 +464,8 @@ SelectQuestions.propTypes = {
   setFilterType: PropTypes.func.isRequired,
   setCurrentSlide: PropTypes.func.isRequired,
   updateCompressed: PropTypes.func.isRequired,
+  clientUserId: PropTypes.number.isRequired,
+  clientId: PropTypes.number.isRequired,
 };
 
 // {subjects.length>0 && chapters.length === 0 ?

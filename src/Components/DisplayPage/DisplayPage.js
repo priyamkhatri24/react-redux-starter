@@ -48,13 +48,17 @@ const DisplayPage = (props) => {
   const handleCropperOpen = () => setCropperImageModal(true);
 
   const getHomepageContent = useCallback(() => {
-    get({ client_id: clientId }, '/getHomepageContent').then((res) => {
+    const apipayload = {
+      client_id: clientId,
+      client_user_id: clientUserId,
+    };
+    get(apipayload, '/getHomepageContent').then((res) => {
       console.log(res);
       const result = apiValidation(res);
       setBanners(result);
       setFormDetails(res.client_info_array);
     });
-  }, [clientId]);
+  }, [clientId, clientUserId]);
 
   useEffect(() => {
     getHomepageContent();

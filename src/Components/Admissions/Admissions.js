@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
@@ -14,14 +14,14 @@ import { PageHeader } from '../Common';
 import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import AddButton from '../Common/AddButton/AddButton';
 import FilterAccordion from '../Common/FilterAccordion/FilterAccordion';
-import { getClientId } from '../../redux/reducers/clientUserId.reducer';
+import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get } from '../../Utilities';
 import { admissionActions } from '../../redux/actions/admissions.action';
 import AdmissionStyle from './Admissions.style';
 import './Admissions.scss';
 
 const Admissions = (props) => {
-  const { clientId, history, setAdmissionRoleArrayToStore } = props;
+  const { clientId, clientUserId, history, setAdmissionRoleArrayToStore } = props;
   const [searchString, setSearchString] = useState('');
   const [filters, setFilters] = useState({});
   const [batches, setBatches] = useState([]);
@@ -32,15 +32,18 @@ const Admissions = (props) => {
   const handleOpen = () => setBatchModal(true);
   const handleClose = () => setBatchModal(false);
   const [optionsModal, setOptionsModal] = useState(false);
+  const overlayRef = useRef(null);
   const openOptionsModal = () => {
     handleClose();
     setOptionsModal(true);
   };
   const closeOptionsModal = () => setOptionsModal(false);
+  const [page, setPage] = useState(1);
 
   const [filterPayload, setFilterPayload] = useState({
     class_id: null,
     client_id: clientId,
+    client_user_id: clientUserId,
     status: null,
     client_batch_id: null,
     role_id: null,
@@ -49,8 +52,36 @@ const Admissions = (props) => {
   const [batchesPayload, setBatchesPayload] = useState({
     class_id: null,
     client_id: clientId,
+    client_user_id: clientUserId,
     subject_id: null,
   });
+
+  // const infiniteScroll = () => {
+  //   console.log(filterPayload);
+  //   if (
+  //     overlayRef?.current?.clientHeight + overlayRef?.current?.scrollTop ===
+  //     overlayRef?.current?.scrollHeight
+  //   ) {
+  //     setPage((prev) => prev + 1);
+  //     if (tab === 'Users') {
+  //       const newFilterPayload = { ...filterPayload };
+  //       newFilterPayload.page += 1;
+  //       setFilterPayload(newFilterPayload);
+  //       console.log(filterPayload, 'newFilterPaylaod');
+  //     } else if (tab === 'Batches') {
+  //       // const { page } = filterPayload;
+  //       setBatchesPayload({ ...batchesPayload, page: page + 1 });
+  //     }
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (overlayRef && overlayRef?.current) {
+  //     overlayRef.current.addEventListener('scroll', infiniteScroll);
+  //   }
+
+  //   return () => overlayRef?.current?.removeEventListener('scroll', infiniteScroll);
+  // }, []);
 
   useEffect(() => {
     get({ client_id: clientId }, '/getFilters').then((res) => {
@@ -63,25 +94,25 @@ const Admissions = (props) => {
   useEffect(() => {
     get(batchesPayload, '/getBatchesUsingFilter').then((res) => {
       const result = apiValidation(res);
-      const searchedArray = result.filter(
+      const searchedArray = [...batches, ...result].filter(
         (e) => e.batch_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
       );
       setBatches(searchedArray);
     });
-  }, [batchesPayload, searchString]);
+  }, [batchesPayload, searchString, page]);
 
   useEffect(() => {
     get(filterPayload, '/getUsersUsingFilter').then((res) => {
       console.log(res);
       const result = apiValidation(res);
-      const searchedArray = result.filter(
+      const searchedArray = [...users, ...result].filter(
         (e) =>
           e.first_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1 ||
           e.last_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
       );
       setUsers(searchedArray);
     });
-  }, [filterPayload, searchString]);
+  }, [filterPayload, searchString, page]);
 
   const addFilter = (type, id) => {
     const updatedPayload =
@@ -199,7 +230,7 @@ const Admissions = (props) => {
           addBatchFilter={addBatchFilter}
           removeBatchFilter={removeBatchFilter}
         />
-        <div css={AdmissionStyle.overlay} style={{ marginTop: '1rem' }}>
+        <div ref={overlayRef} css={AdmissionStyle.overlay} style={{ marginTop: '1rem' }}>
           <hr css={AdmissionStyle.horizonatalLine} />
           <Row css={AdmissionStyle.amount}>
             <span className='mr-1'>{tab === 'Users' ? users.length : batches.length} </span> Results
@@ -286,6 +317,7 @@ const Admissions = (props) => {
 
 const mapStateToProps = (state) => ({
   clientId: getClientId(state),
+  clientUserId: getClientUserId(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -300,6 +332,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Admissions);
 
 Admissions.propTypes = {
   clientId: PropTypes.number.isRequired,
+  clientUserId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   setAdmissionRoleArrayToStore: PropTypes.func.isRequired,
 };

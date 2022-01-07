@@ -113,6 +113,8 @@ const Dashboard = (props) => {
     setSelectedTypeToStore,
   } = props;
   const [time, setTime] = useState('');
+  const [clientStatus, setClientStatus] = useState('');
+  const [restrictionModal, setRestrictionModal] = useState(false);
   const [notices, setNotices] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [role, setRole] = useState(1);
@@ -125,7 +127,13 @@ const Dashboard = (props) => {
   const [globalMessageCountState, setGlobalMessageCountState] = useState(0);
   const [showToast, setShowToast] = useState(false);
   const [optionsModal, setOptionsModal] = useState(false);
-  const openOptionsModal = () => setOptionsModal(true);
+  const openOptionsModal = () => {
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
+    setOptionsModal(true);
+  };
   const closeOptionsModal = () => setOptionsModal(false);
   const [features, setFeatures] = useState([]);
   const [isToken, setIsToken] = useState(true);
@@ -257,6 +265,10 @@ const Dashboard = (props) => {
   };
 
   useEffect(() => {
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     if (comeBackFromTests) history.push('/questiontaker');
   }, [comeBackFromTests, history]);
 
@@ -327,6 +339,7 @@ const Dashboard = (props) => {
       console.log(res, 'sadad');
       const result = apiValidation(res);
       setNotices(result.notice);
+      setClientStatus(result.client_status);
       setAdmissions(result.admission || {});
       setAttendance(result.attendance);
       setData(result);
@@ -384,58 +397,101 @@ const Dashboard = (props) => {
 
   const goToLiveClasses = () => {
     const { push } = history;
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     push({ pathname: '/liveclasses' });
   };
 
   const goToNoticeBoard = () => {
     const { push } = history;
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     push({ pathname: '/noticeboard' });
   };
 
   const goToAdmissions = () => {
     const { push } = history;
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     push({ pathname: '/admissions' });
   };
 
   const goToStudyBin = () => {
     const { push } = history;
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     setFolderIdArrayToStore([]);
     push({ pathname: '/studybin' });
   };
 
   const goToProfile = () => {
     const { push } = history;
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     push({ pathname: '/profile' });
   };
 
   const goToFees = () => {
     const { push } = history;
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     push('fees');
   };
 
   const goToTeacherFees = () => {
     const { push } = history;
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     push('teacherfees');
   };
 
   const goToHomeWorkCreator = () => {
     const { push } = history;
-
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     push({ pathname: '/homework', state: { letsGo: true } });
   };
 
   const goToSentTests = (type) => {
     const { push } = history;
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     push({ pathname: '/homework/savedsent', state: { testsType: type } });
   };
 
   const goToChats = () => {
     const { push } = history;
+    // if (clientStatus === 'deleted') {
+    //   setRestrictionModal(true);
+    //   return;
+    // }
     push({ pathname: '/conversations' });
   };
 
   const startHomework = (responseArray, testId, languageType = 'english') => {
     const { push } = history;
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     setTestResultArrayToStore(responseArray);
     setTestIdToStore(testId);
     setTestLanguageToStore(languageType);
@@ -452,6 +508,10 @@ const Dashboard = (props) => {
     languageType = 'english',
   ) => {
     const { push } = history;
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     setTestResultArrayToStore(responseArray);
     setTestEndTimeToStore(endTime);
     // setTestStartTimeToStore(startTime);
@@ -464,32 +524,55 @@ const Dashboard = (props) => {
 
   const goToCoursesForTeacher = () => {
     const { push } = history;
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     push({ pathname: '/courses/teachercourse' });
   };
 
   const goToCourses = (type) => {
     const { push } = history;
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     push({ pathname: '/courses', state: { type } });
   };
 
   const goToBuyCourse = (id) => {
     const { push } = history;
-
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     push(`/courses/buyCourse/${clientId}/${id}`);
   };
 
   const goToMyCourse = (id) => {
     const { push } = history;
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     setCourseIdToStore(id);
     push('/courses/mycourse');
   };
 
   const goToAddBatch = () => {
     const { push } = history;
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     push('/admissions/add/batch');
   };
 
   const addDetails = (type) => {
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     type === 'student'
       ? setAdmissionRoleArrayToStore(['1'])
       : type === 'teacher'
@@ -499,6 +582,10 @@ const Dashboard = (props) => {
   };
 
   const goToTeacherAnalysis = () => {
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     const { push } = history;
     push('/analysis/teacher');
   };
@@ -517,21 +604,51 @@ const Dashboard = (props) => {
 
   const gotToAttendance = () => {
     const { push } = history;
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     push('/attendance');
   };
 
   const goToDisplayPage = () => {
     const { push } = history;
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     push('/displaypage');
   };
 
-  const goToCRM = () => history.push('/crm');
+  const goToCRM = () => {
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
+    history.push('/crm');
+  };
 
-  const goToVideos = () => history.push('/videos');
+  const goToVideos = () => {
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
+    history.push('/videos');
+  };
 
-  const goToConversations = () => history.push('/conversations');
+  const goToConversations = () => {
+    // if (clientStatus === 'deleted') {
+    //   setRestrictionModal(true);
+    //   return;
+    // }
+    history.push('/conversations');
+  };
 
   const dynamicCardClicked = (param) => {
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
     if (param.in_app_redirect === 'true') {
       const page = param.redirct_feature;
       if (page === 'displayPage') {
@@ -831,6 +948,10 @@ const Dashboard = (props) => {
               }`}
               uploadVideoClicked={(e) => {
                 e.stopPropagation();
+                if (clientStatus === 'deleted') {
+                  setRestrictionModal(true);
+                  return;
+                }
                 history.push({ pathname: '/addyoutubevideo', state: { addVideo: true } });
               }}
             />
@@ -1020,7 +1141,9 @@ const Dashboard = (props) => {
       case 'onlineAssignment':
         return (
           <div>
-            <Tests startHomework={startHomework} startLive={startLiveTest} />
+            {clientStatus !== 'deleted' ? (
+              <Tests startHomework={startHomework} startLive={startLiveTest} />
+            ) : null}
           </div>
         );
       case 'studyBin':
@@ -1069,7 +1192,13 @@ const Dashboard = (props) => {
                 <Button
                   variant='customPrimarySmol'
                   className='mb-3 fillAdmissionFormButton'
-                  onClick={() => history.push('/admissionform')}
+                  onClick={() => {
+                    if (clientStatus === 'deleted') {
+                      setRestrictionModal(true);
+                      return;
+                    }
+                    history.push('/admissionform');
+                  }}
                 >
                   Fill admission form
                 </Button>
@@ -1365,7 +1494,9 @@ const Dashboard = (props) => {
             <Button
               variant='noticeBoardPost'
               style={{ paddingRight: '10px', paddingLeft: '10px' }}
-              onClick={() => addDetails('teacher')}
+              onClick={() => {
+                addDetails('teacher');
+              }}
             >
               <PersonAddIcon />
               <span className=''>Teacher</span>
@@ -1374,13 +1505,31 @@ const Dashboard = (props) => {
             <Button
               style={{ paddingRight: '10px', paddingLeft: '10px' }}
               variant='noticeBoardPost'
-              onClick={() => addDetails('admin')}
+              onClick={() => {
+                addDetails('admin');
+              }}
             >
               <PersonAddIcon />
               <span className=''>Admin</span>
             </Button>
           </Row>
         </Modal.Body>
+      </Modal>
+      <Modal show={restrictionModal} onHide={() => setRestrictionModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Features Inaccessible?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p className='connectWithUsText'>
+            Services may be suspended due to non-renewal of subscription. Please contact your
+            institute for uninterrupted services on your web app.
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={goToChats} variant='boldText'>
+            Meanwhile, interact with your friends!
+          </Button>
+        </Modal.Footer>
       </Modal>
       <Toast
         style={{

@@ -106,9 +106,18 @@ const StudyBin = (props) => {
         .catch((err) => console.log(err));
     } else {
       const currentFolderId = folderIdStack[folderIdStack.length - 1];
+      const roleId = roleArray.includes(4)
+        ? 4
+        : roleArray.includes(3)
+        ? 3
+        : roleArray.includes(2)
+        ? 2
+        : 1;
       const newPayload = {
         folder_id: currentFolderId,
         client_id: clientId,
+        client_user_id: clientUserId,
+        role_id: roleId,
       };
       get(newPayload, '/getFoldersAndFilesOfFolder')
         .then((res) => {
@@ -314,9 +323,18 @@ const StudyBin = (props) => {
       }
     } else if (folderIdStack.length >= 1) {
       const currentFolderId = folderIdStack[folderIdStack.length - 1];
+      const roleId = roleArray.includes(4)
+        ? 4
+        : roleArray.includes(3)
+        ? 3
+        : roleArray.includes(2)
+        ? 2
+        : 1;
       const newPayload = {
         folder_id: currentFolderId,
         client_id: clientId,
+        client_user_id: clientUserId,
+        role_id: roleId,
       };
       get(newPayload, '/getFoldersAndFilesOfFolder')
         .then((res) => {

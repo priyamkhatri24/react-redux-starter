@@ -684,6 +684,7 @@ class LiveClasses extends Component {
       client_user_id: clientUserId,
       batch_array: batchIdArray,
       duration: milliseconds,
+      client_id: clientId,
     };
     console.log(payload);
 

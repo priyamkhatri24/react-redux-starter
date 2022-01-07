@@ -51,6 +51,7 @@ const FeeBatches = (props) => {
       client_id: clientId,
       limit: 20,
       page,
+      client_user_id: clientUserId,
     };
 
     get(payload, '/getFeeDataOfClientBatchWise').then((res) => {

@@ -330,7 +330,13 @@ const HomeWorkCreator = (props) => {
             );
           }}
         >
-          <SelectQuestions setFilterType={setFilterType} history={history} fetch={fetchQuestions} />
+          <SelectQuestions
+            clientUserId={clientUserId}
+            clientId={clientId}
+            setFilterType={setFilterType}
+            history={history}
+            fetch={fetchQuestions}
+          />
           {filterType === 'fetched' ? (
             <QuestionList homeworkQuestions={homeworkQuestionsArray} />
           ) : (
@@ -378,9 +384,11 @@ const HomeWorkCreator = (props) => {
         <SelectQuestions
           setFilterType={setFilterType}
           desktop
+          clientId={clientId}
           history={history}
           fetch={fetchQuestions}
           updateCompressed={setCompressed}
+          clientUserId={clientUserId}
         />
 
         {filterType === 'fetched' ? (
