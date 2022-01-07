@@ -63,8 +63,12 @@ const CreateQuestion = (props) => {
     borderRadius: '5px',
   };
 
+  const updateOptionsL = () => {
+    console.log('new length');
+  };
+
   const addQuestion = (payload) => {
-    console.log('hi!', payload);
+    console.log('hi!!!!', payload);
 
     const initialAnswer = [];
 
@@ -72,19 +76,21 @@ const CreateQuestion = (props) => {
       if (elem.isSelected === true) initialAnswer.push(elem.value);
     });
 
-    const answer = JSON.stringify(
-      initialAnswer.map((e) => {
-        let elem;
-        e === '1'
-          ? (elem = 'A')
-          : e === '2'
-          ? (elem = 'B')
-          : e === '3'
-          ? (elem = 'C')
-          : (elem = 'D');
-        return elem;
-      }),
-    );
+    const answer = initialAnswer.map((e) => {
+      let elem;
+      e === '1'
+        ? (elem = '[A]')
+        : e === '2'
+        ? (elem = '[B]')
+        : e === '3'
+        ? (elem = '[C]')
+        : e === '4'
+        ? (elem = '[D]')
+        : e === '5'
+        ? (elem = '[E]')
+        : (elem = '[F]');
+      return elem;
+    });
 
     const optionsArr = ckAnswerArray.map((e) => e.text);
     const options = optionsArr.join('').length ? optionsArr.join('~') : '';
@@ -227,6 +233,7 @@ const CreateQuestion = (props) => {
             questionImage={questionImage}
             solutionImage={solutionImage}
             answerArray={ckAnswerArray}
+            updateOptionsLength={updateOptionsL}
             clientId={clientId}
             add={addQuestion}
           />

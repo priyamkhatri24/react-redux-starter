@@ -488,3 +488,28 @@
   min-width: 48% !important;
   transition-duration: 0.3s;
 }
+
+.addMoreOptionsBtn {
+  border: 1px solid rgba(169, 169, 169, 0.445);
+  background-color: transparent;
+  border-radius: 5px;
+  color: var(--primary-blue);
+  outline: none;
+  cursor: pointer;
+  // padding-left: 15px;
+  // padding: 8px;
+  font-family: 'Montserrat-Regular';
+  margin-left: 23px;
+  font-size: 15px;
+}
+
+.removeOptionBtn {
+  padding: 0px 7px;
+  background-color: var(--primary-blue);
+  border-radius: 100%;
+  cursor: pointer;
+  color: #fff;
+  font-size: 12px;
+  font-family: 'Montserrat-Bold';
+  // border: 1px solid rgba(169, 169, 169, 0.445);
+}

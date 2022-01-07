@@ -160,7 +160,11 @@ class QuestionCard extends Component {
                 ? '[B]'
                 : correctQuestion.option_array[0].order === 3
                 ? '[C]'
-                : '[D]'
+                : correctQuestion.option_array[0].order === 4
+                ? '[D]'
+                : correctQuestion.option_array[0].order === 5
+                ? '[E]'
+                : '[F]'
               : null,
           uuid: correctQuestion.uuid,
           time: timer,
@@ -184,6 +188,8 @@ class QuestionCard extends Component {
             if (index === 1 && elem === true) return 'B';
             if (index === 2 && elem === true) return 'C';
             if (index === 3 && elem === true) return 'D';
+            if (index === 4 && elem === true) return 'E';
+            if (index === 5 && elem === true) return 'F';
             return null;
           })
           .filter((elem) => {
@@ -222,6 +228,8 @@ class QuestionCard extends Component {
       if (elem.option_array[0].order === 2 && elem.question_answer === '[B]') return true;
       if (elem.option_array[0].order === 3 && elem.question_answer === '[C]') return true;
       if (elem.option_array[0].order === 4 && elem.question_answer === '[D]') return true;
+      if (elem.option_array[0].order === 5 && elem.question_answer === '[E]') return true;
+      if (elem.option_array[0].order === 6 && elem.question_answer === '[F]') return true;
 
       return false;
     }
@@ -232,7 +240,17 @@ class QuestionCard extends Component {
     return (
       <div key={elem.order} className='QuestionTaker__questionOptions m-2 d-flex'>
         <span className='my-auto mr-1'>
-          {i === 0 ? 'A.' : i === 1 ? 'B.' : i === 2 ? 'C.' : 'D.'}
+          {i === 0
+            ? 'A.'
+            : i === 1
+            ? 'B.'
+            : i === 2
+            ? 'C.'
+            : i === 3
+            ? 'D.'
+            : i === 4
+            ? 'E.'
+            : 'F.'}
         </span>
         <label
           className={`QuestionTaker__customRadio p-2 w-100 ${
@@ -269,7 +287,17 @@ class QuestionCard extends Component {
     return (
       <div key={elem.order} className='QuestionTaker__questionOptions d-flex m-2'>
         <span className='my-auto mr-1'>
-          {i === 0 ? 'A.' : i === 1 ? 'B.' : i === 2 ? 'C.' : 'D.'}
+          {i === 0
+            ? 'A.'
+            : i === 1
+            ? 'B.'
+            : i === 2
+            ? 'C.'
+            : i === 3
+            ? 'D.'
+            : i === 4
+            ? 'E.'
+            : 'F.'}
         </span>
 
         <div
@@ -401,7 +429,17 @@ class QuestionCard extends Component {
                 return (
                   <div key={elem.order} className='QuestionTaker__questionOptions d-flex m-2'>
                     <span className='my-auto mr-1'>
-                      {i === 0 ? 'A.' : i === 1 ? 'B.' : i === 2 ? 'C.' : 'D.'}
+                      {i === 0
+                        ? 'A.'
+                        : i === 1
+                        ? 'B.'
+                        : i === 2
+                        ? 'C.'
+                        : i === 3
+                        ? 'D.'
+                        : i === 4
+                        ? 'E.'
+                        : 'F.'}
                     </span>
 
                     <div

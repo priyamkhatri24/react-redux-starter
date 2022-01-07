@@ -101,7 +101,11 @@ const HomeWorkCreator = (props) => {
         ? (elem = '[B]')
         : e === '3'
         ? (elem = '[C]')
-        : (elem = '[D]');
+        : e === '4'
+        ? (elem = '[D]')
+        : e === '5'
+        ? (elem = '[E]')
+        : (elem = '[F]');
       return elem;
     });
 

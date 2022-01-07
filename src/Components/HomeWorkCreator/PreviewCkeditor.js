@@ -55,7 +55,11 @@ const PreviewCkeditor = (props) => {
                       ? 'C'
                       : e.value === '4'
                       ? 'D'
-                      : null}
+                      : e.value === '5'
+                      ? 'E'
+                      : e.value === '6'
+                      ? 'F'
+                      : '.'}
                     .
                   </p>
                 </Col>

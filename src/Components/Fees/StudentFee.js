@@ -56,7 +56,6 @@ const StudentFee = (props) => {
       setFeeOneTimePlanArrayToStore(result.one_time_plan_array);
       if (result.plan_type === 'custom') {
         setFeeCustomPlanArrayToStore(result.plan_array);
-        console.log('bhsodike kuch bhi!');
       } else {
         setFeeMonthlyPlanArrayToStore(result.plan_array);
         console.log('ghia');

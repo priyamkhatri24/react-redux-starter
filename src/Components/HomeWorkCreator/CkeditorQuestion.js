@@ -448,6 +448,26 @@ const CkeditorQuestion = (props) => {
     add(payload);
   };
 
+  const increaseOptionLength = () => {
+    // console.log(answerArray);
+    if (answerArray.length === 6) return;
+    const newAnswerArray = [...answerArray];
+    const newoption = {
+      value: (answerArray.length + 1).toString(),
+      image: '',
+      isSelected: false,
+      text: '',
+    };
+    newAnswerArray.push(newoption);
+    console.log(newAnswerArray);
+    updateOptionArray(newAnswerArray);
+  };
+
+  const removeOption = (ele) => {
+    const newAnswerArray = answerArray.filter((elem) => elem.value !== ele.value);
+    updateOptionArray(newAnswerArray);
+  };
+
   return (
     <>
       <Card
@@ -632,10 +652,15 @@ const CkeditorQuestion = (props) => {
         <div className='mx-2'>
           <div>
             {type !== 'subjective' &&
-              answerArray.map((e) => {
+              answerArray.map((e, i) => {
                 return (
                   <Row key={e.value}>
-                    <Col xs={10}>
+                    {/* <Col className='d-flex align-items-center justify-content-center' xs={1}>
+                      <div onClick={() => removeOption(e)}>
+                        {i === answerArray.length - 1 && i > 1 ? '-' : null}
+                      </div>
+                    </Col> */}
+                    <Col xs={9}>
                       <div className='Homework__inlineEditor optionUpperC m-2'>
                         <input
                           className='optionsInput'
@@ -680,9 +705,25 @@ const CkeditorQuestion = (props) => {
                         name='option'
                       />
                     </Col>
+                    <Col className='d-flex align-items-center justify-content-center' xs={1}>
+                      <div className='removeOptionBtn' onClick={() => removeOption(e)}>
+                        {i === answerArray.length - 1 && i > 1 ? '-' : null}
+                      </div>
+                    </Col>
                   </Row>
                 );
               })}
+            {answerArray.length < 6 && (
+              <Row className='mb-3'>
+                <button
+                  className='addMoreOptionsBtn'
+                  type='button'
+                  onClick={() => increaseOptionLength()}
+                >
+                  + <span style={{ fontSize: '14px', marginLeft: '10px' }}>Add more options</span>
+                </button>
+              </Row>
+            )}
           </div>
         </div>
         {type === 'subjective' ? (
