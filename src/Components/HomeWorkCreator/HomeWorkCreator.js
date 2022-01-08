@@ -150,7 +150,7 @@ const HomeWorkCreator = (props) => {
       const isDraft = testId === null ? 0 : 1;
       if (!isDraft) {
         addQuestionPayload = {
-          language_type: 'english',
+          language_type: 'english', // from create qustion
           client_id: clientId,
           questions_array: JSON.stringify(ques),
           is_draft: isDraft,

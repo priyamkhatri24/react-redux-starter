@@ -248,9 +248,10 @@ const SavedSentTests = (props) => {
                     </p>
                     <p className='Homework__dueDate mb-0'>
                       To:{' '}
-                      {elem.batch_array.map((e) => (
+                      {elem.batch_array.slice(0, 15).map((e) => (
                         <span>{e},</span>
                       ))}
+                      {elem.batch_array.length > 15 ? <span>...</span> : null}
                     </p>
                   </Col>
                 </Row>

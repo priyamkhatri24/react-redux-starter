@@ -117,7 +117,7 @@ const QuestionList = (props) => {
     let payload;
     if (!isDraft) {
       payload = {
-        language_type: 'english',
+        language_type: language || 'english',
         client_id: clientId,
         questions_array: JSON.stringify(questionArray.map((e) => e.question_id)),
         is_draft: isDraft,
@@ -145,7 +145,7 @@ const QuestionList = (props) => {
           setTestIdToStore(res.test_id);
           setTestNameToStore(res.test_name);
           setTestIsDraftToStore(1);
-          setHomeworkLanguageTypeToStore('english');
+          setHomeworkLanguageTypeToStore(language || 'english');
           setCurrentSlide(2);
         }
         newSelectedQuestions.push(...questionArray);
