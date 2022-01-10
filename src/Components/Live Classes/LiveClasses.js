@@ -51,17 +51,21 @@ import './LiveClasses.scss';
 
 const getYoutubeIdFromLink = (link) => {
   let viId = '';
-  if (link.includes('.be')) {
-    viId = link.split('/').pop();
-  } else {
-    /* eslint-disable */
-    viId = link.split('v=')[1];
-    const ampersandPosition = viId?.indexOf('&');
-    if (ampersandPosition != -1) {
-      viId = viId?.substring(0, ampersandPosition);
+  if (link.includes('https')) {
+    if (link.includes('.be')) {
+      viId = link.split('/').pop();
+    } else {
+      /* eslint-disable */
+      viId = link.split('v=')[1];
+      const ampersandPosition = viId?.indexOf('&');
+      if (ampersandPosition != -1) {
+        viId = viId?.substring(0, ampersandPosition);
+      }
     }
+  } else {
+    viId = link;
   }
-
+  console.log(viId, 'youtubeIdToPlay');
   return viId;
 };
 
