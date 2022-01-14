@@ -59,7 +59,7 @@ const Admissions = (props) => {
   // const infiniteScroll = () => {
   //   console.log(filterPayload);
   //   if (
-  //     overlayRef?.current?.clientHeight + overlayRef?.current?.scrollTop ===
+  //     overlayRef?.current?.clientHeight + overlayRef?.current?.scrollTop >=
   //     overlayRef?.current?.scrollHeight
   //   ) {
   //     setPage((prev) => prev + 1);
