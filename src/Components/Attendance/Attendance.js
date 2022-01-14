@@ -18,6 +18,7 @@ const Attendance = (props) => {
   const { clientUserId, setAttendanceBatchToStore } = props;
   const [searchString, setSearchString] = useState('');
   const [batches, setBatches] = useState([]);
+  // const [page, setPage] = useState(1);
 
   useEffect(() => {
     get({ client_user_id: clientUserId }, '/getBatchesOfTeacher').then((res) => {
@@ -29,6 +30,54 @@ const Attendance = (props) => {
       setBatches(filteredBatches);
     });
   }, [clientUserId, searchString]);
+
+  // const infiniteScroll = () => {
+  //   if (
+  //     window.innerHeight + document.documentElement.scrollTop >=
+  //     document.documentElement.offsetHeight
+  //   ) {
+  //     setPage((prev) => prev + 1);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   window.addEventListener('scroll', infiniteScroll);
+
+  //   return () => window.removeEventListener('scroll', infiniteScroll);
+  // }, []);
+
+  // pagination code...
+
+  // useEffect(() => {
+  //   let timer;
+  //   if (searchString.length === 0) {
+  //     const payload = {
+  //       client_user_id: clientUserId,
+  //       page,
+  //     };
+  //     get(payload, '/getBatchesOfTeacher2').then((res) => {
+  //       const result = apiValidation(res);
+  //       console.log(result);
+  //       const filteredBatches = [...batches, ...result];
+  //       setBatches(filteredBatches);
+  //     });
+  //   } else {
+  //     timer = setTimeout(() => {
+  //       const payload = {
+  //         client_user_id: clientUserId,
+  //         page,
+  //         keyword: searchString,
+  //       };
+  //       get(payload, '/getAllLiveStreamsForAttendance2').then((res) => {
+  //         const result = apiValidation(res);
+  //         console.log(result);
+  //       }, 500);
+  //     });
+  //   }
+  //   return () => {
+  //     clearTimeout(timer);
+  //   };
+  // }, [clientUserId, page, searchString]);
 
   const searchUsers = (search) => {
     setSearchString(search);
