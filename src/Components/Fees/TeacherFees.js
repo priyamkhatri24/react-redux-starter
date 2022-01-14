@@ -37,14 +37,14 @@ const TeacherFees = (props) => {
   const searchBatches = (search) => {
     setSearchString(search);
   };
-
+  
   return (
-    <>
-      {activeTab === 'Batches' ? (
+    <> 
+      {/* {activeTab === 'Batches' || activeTab === 'Notifications' || activeTab === 'Students' ? (
         <PageHeader title='Fees' search searchFilter={searchBatches} />
       ) : (
         <PageHeader title='Fees' />
-      )}
+      )} */}
 
       <div style={{ marginTop: '4rem' }}>
         {activeTab === 'Notifications' && (

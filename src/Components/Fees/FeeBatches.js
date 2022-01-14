@@ -10,20 +10,22 @@ import userAvatar from '../../assets/images/user.svg';
 import '../Dashboard/Dashboard.scss';
 import './Fees.scss';
 import { apiValidation, get } from '../../Utilities';
+import { PageHeader } from '../Common';
 
 const FeeBatches = (props) => {
-  const { clientId, clientUserId, history, searchString } = props;
+  const { clientId, clientUserId, history } = props;
 
   const [filters, setFilters] = useState([]);
-  const [page, setPage] = useState(1);
 
   // const [currentClass, setCurrentClass] = useState({});
   // const [currentSubject, setCurrentSubject] = useState({});
   const [batches, setBatches] = useState([]);
+  const [page, setPage] = useState(1);
+  const [searchString, setSearchString] = useState('');
 
   const infiniteScroll = () => {
     if (
-      window.innerHeight + document.documentElement.scrollTop ===
+      window.innerHeight + document.documentElement.scrollTop >=
       document.documentElement.offsetHeight
     ) {
       setPage((prev) => prev + 1);
@@ -50,19 +52,58 @@ const FeeBatches = (props) => {
       // subject_id: Object.keys(currentSubject).length === 0 ? null : currentSubject.subject_id,
       client_id: clientId,
       limit: 20,
-      page,
       client_user_id: clientUserId,
+      page,
     };
 
     get(payload, '/getFeeDataOfClientBatchWise').then((res) => {
       const result = apiValidation(res);
       console.log(result, 'getfeedataofclientbatchwise');
-      const searchedArray = [...batches, ...result].filter(
-        (e) => e.batch_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
-      );
+      const searchedArray = [...batches, ...result];
+      //   .filter(
+      //   (e) => e.batch_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+      // );
       setBatches(searchedArray);
     });
-  }, [clientUserId, searchString, page]);
+  }, [clientUserId, clientId, page]);
+
+  useEffect(() => {
+    let timer;
+    if (searchString) {
+      timer = setTimeout(() => {
+        const payload = {
+          client_id: clientId,
+          limit: 20,
+          client_user_id: clientUserId,
+          keyword: searchString,
+          page,
+        };
+        get(payload, '/searchBatchesInFee').then((res) => {
+          const result = apiValidation(res);
+          console.log(result);
+          setBatches(result);
+        });
+      }, 500);
+    } else {
+      const payload = {
+        // class_id: Object.keys(currentClass).length === 0 ? null : currentClass.class_id,
+        // subject_id: Object.keys(currentSubject).length === 0 ? null : currentSubject.subject_id,
+        client_id: clientId,
+        limit: 20,
+        client_user_id: clientUserId,
+        page: 1,
+      };
+
+      get(payload, '/getFeeDataOfClientBatchWise').then((res) => {
+        const result = apiValidation(res);
+        console.log(result, 'getfeedataofclientbatchwise');
+        setBatches(result);
+      });
+    } 
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [searchString, clientId, clientUserId]);
 
   // const select = (type, e) => {
   //   switch (type) {
@@ -89,6 +130,9 @@ const FeeBatches = (props) => {
   //       console.log('hello');
   //   }
   // };
+  const searchBatches = (search) => {
+    setSearchString(search);
+  };
 
   return (
     <div>
@@ -221,6 +265,8 @@ const FeeBatches = (props) => {
         </Card.Body>
       )} */}
 
+      <PageHeader title='Fees' search searchFilter={searchBatches} />
+
       <div className='mt-4'>
         {batches.map((elem) => {
           return (
@@ -287,9 +333,9 @@ FeeBatches.propTypes = {
   clientId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
-  searchString: PropTypes.string,
+  // searchString: PropTypes.string,
 };
 
-FeeBatches.defaultProps = {
-  searchString: '',
-};
+// FeeBatches.defaultProps = {
+//   searchString: '',
+// };

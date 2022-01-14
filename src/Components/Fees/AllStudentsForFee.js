@@ -13,12 +13,14 @@ import './Fees.scss';
 import UserDataCard from '../Admissions/UsersDataCard';
 import { apiValidation, get, post } from '../../Utilities';
 import AdmissionStyle from '../Admissions/Admissions.style';
+import { PageHeader } from '../Common';
 
 const AllStudentsForFee = (props) => {
-  const { clientUserId, clientId, history, searchString } = props;
+  const { clientUserId, clientId, history } = props;
 
   const [filters, setFilters] = useState([]);
   const [page, setPage] = useState(1);
+  const [searchString, setSearchString] = useState('');
 
   // const [currentClass, setCurrentClass] = useState({});
   // const [currentSubject, setCurrentSubject] = useState({});
@@ -26,7 +28,7 @@ const AllStudentsForFee = (props) => {
 
   const infiniteScroll = () => {
     if (
-      window.innerHeight + document.documentElement.scrollTop ===
+      window.innerHeight + document.documentElement.scrollTop >=
       document.documentElement.offsetHeight
     ) {
       setPage((prev) => prev + 1);
@@ -58,10 +60,43 @@ const AllStudentsForFee = (props) => {
       const result = apiValidation(res);
       console.log(result);
       const final = [...students, ...result];
-      console.log(result, final, 'getuserfeedata');
+      // console.log(result, final, 'getuserfeedata');
       setStudents(final);
     });
-  }, [searchString, page]);
+  }, [clientId, page]);
+
+  useEffect(() => {
+    let timer;
+    if (searchString) {
+      timer = setTimeout(() => {
+        const payload = {
+          client_id: clientId,
+          limit: 20,
+          page,
+          keyword: searchString,
+        };
+        get(payload, '/searchUsersInFee2').then((res) => {
+          const result = apiValidation(res);
+          console.log(result);
+          setStudents(result);
+        });
+      }, 500);
+    } else {
+      const payload = {
+        client_id: clientId,
+        limit: 20,
+        page,
+      };
+      get(payload, '/getUsersFeeDataOfClient2').then((res) => {
+        const result = apiValidation(res);
+        console.log(result);
+        setStudents(result);
+      });
+    }
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [clientId, searchString]);
 
   const notifyFeeUser = (userId, receiverId) => {
     const payload = {
@@ -102,8 +137,13 @@ const AllStudentsForFee = (props) => {
     });
   };
 
+  const searchBatches = (search) => {
+    setSearchString(search);
+  };
+
   return (
     <div>
+      <PageHeader title='Fees' search searchFilter={searchBatches} />
       <div className='mt-4'>
         {students.map((student) => {
           return (
@@ -175,9 +215,9 @@ AllStudentsForFee.propTypes = {
   clientId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
-  searchString: PropTypes.string,
+  // searchString: PropTypes.string,
 };
 
-AllStudentsForFee.defaultProps = {
-  searchString: '',
-};
+// AllStudentsForFee.defaultProps = {
+//   searchString: '',
+// };

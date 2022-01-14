@@ -49,7 +49,7 @@ const TeacherCourses = (props) => {
   const [searchString, setSearchString] = useState('');
   const [activeTab, setActiveTab] = useState('My Courses');
 
-  const infiniteScroll = () => {
+  const infiniteScroll = () => { 
     if (
       window.innerHeight + document.documentElement.scrollTop ===
       document.documentElement.offsetHeight
@@ -74,7 +74,7 @@ const TeacherCourses = (props) => {
       is_admin: roleArray.includes(4),
       sort_by: sortBy,
       page,
-    };
+    }; 
     get(payload, '/getCoursesOfCoachingLatest3').then((res) => {
       const result = apiValidation(res);
       const searchedArray = [...courses, ...result].filter(
@@ -90,7 +90,7 @@ const TeacherCourses = (props) => {
       is_admin: roleArray.includes(4),
       sort_by: sortBy,
       page,
-    };
+    }; 
     get(publishedPayload, '/getPublishedCoursesOfCoaching3').then((res) => {
       const result = apiValidation(res);
       console.log(result, 'getPubkishedoursesOfCoaching3');
@@ -98,7 +98,7 @@ const TeacherCourses = (props) => {
         (e) => e.course_title.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
       );
       setStatistics(searchedArray);
-    });
+    }); 
 
     get({ client_id: clientId, course_id: 9 }, '/getCourseDetails').then((res) => {
       console.log(res, 'jaishritest');

@@ -18,26 +18,59 @@ import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import AdmissionStyle from '../Admissions/Admissions.style';
 import { apiValidation, get } from '../../Utilities';
+import Enquiry from '../Login/AdmissionChat/Enquiry/Enquiry';
 
 const CRM = (props) => {
   const { clientId, history } = props;
-  const [inquiryObject, setInquiryObject] = useState({});
-  const [admissionObject, setAdmissionObject] = useState({});
   const [inquiryArray, setInquiryArray] = useState([]);
   const [admissionFormArray, setAdmissionFormArray] = useState([]);
   const [searchString, setSearchString] = useState('');
   const [openFilterModal, setOpenFilterModal] = useState(false);
+  const [page, setPage] = useState(1);
+  const [sortBy, setSortBy] = useState('date');
+
+  const infiniteScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop >=
+      document.documentElement.offsetHeight
+    ) {
+      setPage((prev) => prev + 1);
+    }
+  };
 
   useEffect(() => {
-    get({ client_id: clientId }, '/getInquiryAndAdmissionDetailsOfClient').then((res) => {
+    window.addEventListener('scroll', infiniteScroll);
+
+    return () => window.removeEventListener('scroll', infiniteScroll);
+  }, []);
+
+  useEffect(() => {
+    const payload = {
+      client_id: clientId,
+      page,
+      sort_by: sortBy,
+    };
+    get(payload, '/getInquiriesOfClient').then((res) => {
       const result = apiValidation(res);
+      const result2 = [...inquiryArray, ...result];
       console.log(result);
-      setInquiryObject(result.inquiry_object);
-      setAdmissionObject(result.admission_object);
-      setInquiryArray(result.inquiry_object['Date wise']);
-      setAdmissionFormArray(result.admission_object['Date wise']);
+      setInquiryArray(result2);
     });
-  }, [clientId]);
+  }, [clientId, page, sortBy]);
+
+  useEffect(() => {
+    const payload = {
+      client_id: clientId,
+      page,
+      sort_by: sortBy,
+    };
+    get(payload, '/getAdmissionsOfClient').then((res) => {
+      const result = apiValidation(res);
+      const result2 = [...admissionFormArray, ...result];
+      console.log(result);
+      setAdmissionFormArray(result2);
+    });
+  }, [clientId, page, sortBy]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -60,13 +93,83 @@ const CRM = (props) => {
     };
   }, [searchString, clientId]);
 
+  // SEARCH API INQUIRY 
+  // useEffect(() => {
+  //   let timer;
+  //   if (searchString) {
+  //     timer = setTimeout(() => {
+  //       const payload = {
+  //         client_id: clientId,
+  //         page,
+  //         keyword: searchString,
+  //       };
+  //       get(payload, '/searchInquiriesOfClient').then((res) => {
+  //         const result = apiValidation(res);
+  //         console.log(result);
+  //         setInquiryArray(result);
+  //       });
+  //     }, 500);
+  //   } else {
+  //     const payload = {
+  //       client_id: clientId,
+  //       page,
+  //       sort_by: sortBy,
+  //     };
+  //     get(payload, '/getInquiriesOfClient').then((res) => {
+  //       const result = apiValidation(res);
+  //       console.log(result);
+  //       setInquiryArray(result);
+  //     });
+  //   }
+  //   return () => {
+  //     clearTimeout(timer);
+  //   };
+  // }, [searchString, clientId]);
+
+  // SEARCH API ADDMISSION
+  // useEffect(() => {
+  //   let timer;
+  //   if (searchString) {
+  //     timer = setTimeout(() => {
+  //       const payload = {
+  //         client_id: clientId,
+  //         page,
+  //         keyword: searchString,
+  //       };
+  //       get(payload, '/searchAdmissionsOfClient').then((res) => {
+  //         const result = apiValidation(res);
+  //         console.log(result);
+  //         setAdmissionFormArray(result);
+  //       });
+  //     }, 500);
+  //   } else {
+  //     const payload = {
+  //       client_id: clientId,
+  //       page,
+  //       sort_by: sortBy, 
+  //     };
+  //     get(payload, '/getAdmissionsOfClient').then((res) => {
+  //       const result = apiValidation(res);
+  //       console.log(result);
+  //       setAdmissionFormArray(result);
+  //     });
+  //   }
+  //   return () => {
+  //     clearTimeout(timer);
+  //   };
+  // }, [searchString, clientId]);
+
   const filterResult = (how) => {
     if (how === 'alphabetically') {
-      setInquiryArray(inquiryObject.Alphabetical);
-      setAdmissionFormArray(admissionObject.Alphabetical);
+      setPage(1);
+      setInquiryArray([]);
+      setAdmissionFormArray([]);
+      setSortBy('name');
     } else {
-      setInquiryArray(inquiryObject['Date wise']);
-      setAdmissionFormArray(admissionObject['Date wise']);
+      setPage(1);
+      setInquiryArray([]);
+      setAdmissionFormArray([]);
+      setSortBy('date');
     }
     setOpenFilterModal(false);
   };
@@ -107,41 +210,41 @@ const CRM = (props) => {
         >
           <div css={AdmissionStyle.UserCards}>
             {inquiryArray.map((inquiry) => {
-              return (
-                <Card
-                  css={AdmissionStyle.card}
-                  key={inquiry.user_id + inquiry.first_name}
-                  className=''
-                >
-                  <Row className=' m-0 px-2 my-auto'>
-                    <Col xs={2} sm={1} style={{ paddingTop: '15px' }}>
-                      <img
-                        src={avatarImage}
-                        alt='avatar'
-                        height='38'
-                        width='38'
-                        css={AdmissionStyle.avatar}
-                      />
-                    </Col>
-                    <Col xs={10} sm={11} style={{ paddingTop: '10px' }}>
-                      <p css={AdmissionStyle.avatarHeading} className='mb-0 mt-2 ml-2'>
-                        {`${inquiry.first_name} ${inquiry.last_name}`}
-                      </p>
-                      <p className='mb-0' css={AdmissionStyle.avatarStatus}>
-                        <PhoneIcon css={AdmissionStyle.onlineIcon} />
-                        +91-{inquiry.contact}
-                      </p>
-                      <p
-                        css={AdmissionStyle.avatarStatus}
-                        className='mb-2 ml-2'
-                        style={{ fontFamily: 'Montserrat-Regular' }}
-                      >
-                        Signup time: {getReadableDate(inquiry.signup_time)}
-                      </p>
-                    </Col>
-                  </Row>
-                </Card>
-              );
+                return (
+                  <Card
+                    css={AdmissionStyle.card}
+                    key={inquiry.user_id + inquiry.first_name}
+                    className=''
+                  >
+                    <Row className=' m-0 px-2 my-auto'>
+                      <Col xs={2} sm={1} style={{ paddingTop: '15px' }}>
+                        <img
+                          src={avatarImage}
+                          alt='avatar'
+                          height='38'
+                          width='38'
+                          css={AdmissionStyle.avatar}
+                        />
+                      </Col>
+                      <Col xs={10} sm={11} style={{ paddingTop: '10px' }}>
+                        <p css={AdmissionStyle.avatarHeading} className='mb-0 mt-2 ml-2'>
+                          {`${inquiry.first_name} ${inquiry.last_name}`}
+                        </p>
+                        <p className='mb-0' css={AdmissionStyle.avatarStatus}>
+                          <PhoneIcon css={AdmissionStyle.onlineIcon} />
+                          +91-{inquiry.contact}
+                        </p>
+                        <p
+                          css={AdmissionStyle.avatarStatus}
+                          className='mb-2 ml-2'
+                          style={{ fontFamily: 'Montserrat-Regular' }}
+                        >
+                          Signup time: {getReadableDate(inquiry.signup_time)}
+                        </p>
+                      </Col>
+                    </Row>
+                  </Card>
+                );
             })}
           </div>
         </Tab>

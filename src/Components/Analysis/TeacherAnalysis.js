@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Row from 'react-bootstrap/Row';
@@ -28,6 +28,34 @@ const TeacherAnalysis = (props) => {
   const [students, setStudents] = useState([]);
   const [isToggle, setToggle] = useState(0);
   const [tab, setTab] = useState('Assignments');
+  const [page, setPage] = useState(1);
+  // const overlayRef = useRef(null);
+
+  // const infiniteScroll = () => {
+  //   // console.log(filterPayload);
+  //   if (
+  //     overlayRef?.current?.clientHeight + overlayRef?.current?.scrollTop >=
+  //     overlayRef?.current?.scrollHeight
+  //   ) {
+  //     setPage((prev) => prev + 1);
+  //     if (tab === 'Students') {
+  //       setFilterPayload({ ...filterPayload, page: page + 1 });
+  //       console.log(filterPayload, 'newFilterPaylaod');
+  //     } else if (tab === 'Assignments') {
+  //       setFilterPayload({ ...filterPayload, page: page + 1 });
+  //       console.log(filterPayload, 'newFilterPaylaod');
+  //     }
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (overlayRef && overlayRef?.current) {
+  //     overlayRef.current.addEventListener('scroll', infiniteScroll);
+  //   }
+
+  //   return () => overlayRef?.current?.removeEventListener('scroll', infiniteScroll);
+  // }, []);
+
   const [filterPayload, setFilterPayload] = useState({
     // class_id: null,
     client_id: clientId,
@@ -65,6 +93,90 @@ const TeacherAnalysis = (props) => {
       setStudents(searchedArray);
     });
   }, [filterPayload, searchString]);
+
+  // ASSIGNMENT GET API
+  // getAssignmentAnalysisUsingFilter2
+  // useEffect(() => {
+  //   get(filterPayload, '/getAssignmentAnalysisUsingFilterLatest').then((res) => {
+  //     console.log(res);
+  //     const result = apiValidation(res);
+  //     const searchedArray = [...assignments, ...result];
+  //     setAssignments(searchedArray);
+  //   });
+  // }, [filterPayload,page]);
+
+  // STUDENT GET API
+  // useEffect(() => {
+  //   get(filterPayload, '/getOverallAnalysisUsingFilter2').then((res) => {
+  //     console.log(res);
+  //     const result = apiValidation(res);
+  //     const searchedArray = [...students, ...result];
+  //     setStudents(searchedArray);
+  //   });
+  // }, [filterPayload,page]);
+
+  // SEARCH ASSIGNMENTS
+  // useEffect(() => {
+  //   let timer;
+  //   if (searchString) {
+  //     const payload = {
+  //       client_id: clientId,
+  //       status: null,
+  //       client_batch_id: null,
+  //       role_id: null,
+  //       page,
+  //       keyword: searchString,
+  //     };
+  //     timer = setTimeout(() => {
+  //       get(payload, '/searchAssignmentInAnalysis2').then((res) => {
+  //         const result = apiValidation(res);
+  //         console.log(result);
+  //         setAssignments(result);
+  //       });
+  //     }, 500);
+  //   } else {
+  //     get(filterPayload, '/getAssignmentAnalysisUsingFilterLatest').then((res) => {
+  //       // getAssignmentAnalysisUsingFilter2
+  //       console.log(res);
+  //       const result = apiValidation(res);
+  //       setAssignments(result);
+  //     });
+  //   }
+  //   return () => {
+  //     clearTimeout(timer);
+  //   };
+  // }, [clientId,page, searchString]);
+
+  // SEARCH STUDENTS
+  // useEffect(() => {
+  //   let timer;
+  //   if (searchString) {
+  //     const payload = {
+  //       client_id: clientId,
+  //       status: null,
+  //       client_batch_id: null,
+  //       role_id: null,
+  //       page,
+  //       keyword: searchString,
+  //     };
+  //     timer = setTimeout(() => {
+  //       get(payload, '/searchUserInAnalysis2').then((res) => {
+  //         const result = apiValidation(res);
+  //         console.log(result);
+  //         setStudents(result);
+  //       });
+  //     }, 500);
+  //   } else {
+  //     get(filterPayload, '/getOverallAnalysisUsingFilter2').then((res) => {
+  //       console.log(res);
+  //       const result = apiValidation(res);
+  //       setStudents(result);
+  //     });
+  //   }
+  //   return () => {
+  //     clearTimeout(timer);
+  //   };
+  // }, [clientId, page, searchString]);
 
   const isFilterTriggered = () => {
     setToggle((e) => e + 1);
@@ -174,7 +286,10 @@ const TeacherAnalysis = (props) => {
               <GetAppIcon />
             </span>
           </Row>
-          <div style={{ height: '65vh', overflow: 'scroll', paddingBottom: '0rem' }}>
+          <div
+            // ref={overlayRef}
+            style={{ height: '65vh', overflow: 'scroll', paddingBottom: '0rem' }}
+          >
             {tab === 'Assignments' ? (
               assignments.map((elem) => {
                 return (
