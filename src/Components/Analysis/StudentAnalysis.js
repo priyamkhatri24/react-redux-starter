@@ -60,7 +60,7 @@ const StudentAnalysis = (props) => {
           className='text-center mx-3 Analysis__studentSubHeading'
           style={
             analysisTestObject.analysis.test_type === 'demo test'
-              ? { color: '#ffff00' }
+              ? { color: '#eeee00' }
               : analysisTestObject.analysis.test_type === 'live test'
               ? { color: 'rgba(255, 0, 0, 0.87)' }
               : { color: 'rgba(58, 255, 0, 0.87)' }

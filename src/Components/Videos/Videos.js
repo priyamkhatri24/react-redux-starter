@@ -114,7 +114,7 @@ const Videos = (props) => {
   const triggerFilter = () => {
     if (!roleArray.includes(3) || !roleArray.includes(4)) return;
     if (bottomCss === 0) {
-      setBottom(0 - 80);
+      setBottom(0 - 100);
     } else {
       setBottom(0);
     }
@@ -192,6 +192,7 @@ const Videos = (props) => {
                 </button>
               ) : null}
             </div>
+            <hr className='h_line1' />
           </div>
         )}
         <div style={{ bottom: bottomCss }} className='overlay'>

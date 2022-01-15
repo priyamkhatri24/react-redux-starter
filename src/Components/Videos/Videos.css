@@ -23,7 +23,7 @@
 .batchesText {
   font-family: 'Montserrat-Regular';
   margin-left: 15px;
-  color: #161616;
+  color: #707070;
   font-size: 14px;
   margin-bottom: 0px;
 }
@@ -71,6 +71,7 @@
   min-width: fit-content;
   padding: 2px 7px;
 }
+
 .selectedBtns {
   background-color: white;
   outline: none;
@@ -84,9 +85,11 @@
   min-width: fit-content;
   padding: 2px 7px;
 }
+
 .scroller {
   margin-left: 10px;
 }
+
 .scroller::-webkit-scrollbar {
   display: none;
 }

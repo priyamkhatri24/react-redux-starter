@@ -414,6 +414,36 @@ const DummyDashboard = Loadable({
   loading: Loading,
 });
 
+const OfflineAssignments = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'OfflineAssignments' */ '../Components/OfflineAssignments/OfflineAssignments'
+    ),
+  loading: Loading,
+});
+
+const AssignmentForm = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'AssignmentForm' */ '../Components/OfflineAssignments/AssignmentForm'
+    ),
+  loading: Loading,
+});
+
+const StudEdit = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'StudEdit' */ '../Components/OfflineAssignments/StudEdit'),
+  loading: Loading,
+});
+
+const StudOfflineMarks = Loadable({
+  loader: () =>
+    import(
+      /* webpackChunkName: 'StudOfflineMarks' */ '../Components/OfflineAssignments/StudOfflineMarks'
+    ),
+  loading: Loading,
+});
+
 const CRM = Loadable({
   loader: () => import(/* webpackChunkName: 'CRMPage' */ '../Components/CRM/Crm'),
   loading: Loading,
@@ -567,6 +597,22 @@ export function Routes() {
       <AuthenticatedRoute exact path='/displaypage' component={DisplayPage} />
       <AuthenticatedRoute exact path='/displaypage/editprofile' component={DisplayPageEdit} />
       <AuthenticatedRoute exact path='/displaypage/preview' component={DummyDashboard} />
+      <AuthenticatedRoute exact path='/offlineassignments' component={OfflineAssignments} />
+      <AuthenticatedRoute
+        exact
+        path='/offlineassignments/addassignment'
+        component={AssignmentForm}
+      />
+      <AuthenticatedRoute
+        exact
+        path='/offlineassignments/studentmarks'
+        component={StudOfflineMarks}
+      />
+      <AuthenticatedRoute
+        exact
+        path='/offlineassignments/studentmarks/editmarks'
+        component={StudEdit}
+      />
       <AuthenticatedRoute exact path='/crm' component={CRM} />
       <AuthenticatedRoute exact path='/videos' component={Videos} />
 

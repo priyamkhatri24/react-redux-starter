@@ -15,6 +15,7 @@ import { apiValidation, get } from '../../Utilities';
 import AdmissionStyle from '../Admissions/Admissions.style';
 import AnalysisCalendar from './AnalysisCalendar';
 import AnalysisTestsCard from './AnalysisTestsCard';
+import AssignmentCards from '../OfflineAssignments/AssignmentCards';
 
 const StudentList = (props) => {
   const { analysisStudentObject, history, roleArray } = props;
@@ -27,6 +28,7 @@ const StudentList = (props) => {
   const [chapters, setChapters] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [tests, setTests] = useState([]);
+  const [offlineAssignments, setOfflineAssignments] = useState([]);
   const [homework, setHomework] = useState([]);
   const [topButtons, setTopButtons] = useState([
     {
@@ -63,6 +65,14 @@ const StudentList = (props) => {
       heading: 'Attendance',
       numerator: analysisStudentObject.attendance_percentage,
       isPercent: true,
+      isSelected: false,
+    },
+    {
+      id: 5,
+      heading: 'Offline assignments',
+      numerator: analysisStudentObject.completed_offline_test,
+      denominator: analysisStudentObject.total_offline_test,
+      isPercent: false,
       isSelected: false,
     },
   ]);
@@ -120,9 +130,17 @@ const StudentList = (props) => {
         { client_user_id: analysisStudentObject.client_user_id },
         '/getAllSubmittedTestAnalysisOfStudent',
       ).then((res) => {
-        console.log(res);
+        console.log(res, 'hahaaa');
         const result = apiValidation(res);
         setTests(result);
+      });
+      get(
+        { client_user_id: analysisStudentObject.client_user_id },
+        '/getAllOfflineTestAnalysisOfStudent',
+      ).then((res) => {
+        console.log(res, 'offline assignments');
+        const result = apiValidation(res);
+        setOfflineAssignments(result);
       });
 
       get(
@@ -187,10 +205,10 @@ const StudentList = (props) => {
         title={`${analysisStudentObject.first_name} ${analysisStudentObject.last_name}`}
       />
       <div style={{ marginTop: '4rem' }}>
-        <Row className='m-0'>
+        <div className='m-0 rowMargin d-flex justify-content-between'>
           {topButtons.map((elem) => {
             return (
-              <Col xs={3} key={elem.id} className='text-center'>
+              <div key={elem.id} className='text-center'>
                 <div
                   style={
                     elem.isSelected
@@ -220,19 +238,18 @@ const StudentList = (props) => {
                         : { color: 'rgba(0,0,0,0.54)', fontSize: '16px' }
                     }
                   >
-                    {elem.isPercent || analysisStudentObject.isStudent ? (
+                    {elem.isPercent ||
+                    (analysisStudentObject.isStudent && elem.heading !== 'Offline assignments') ? (
                       <span>
                         {elem.numerator === 'Student has not attempted any questions yet' ||
                         elem.numerator === 'Student has not completed any homework yet' ||
                         elem.numerator === 'Student has not completed any test yet' ||
                         elem.numerator === 'There are no attendance records yet'
-                          ? '0 %'
-                          : elem.numerator}
+                          ? '0%'
+                          : `${elem.numerator}%`}
                       </span>
                     ) : (
-                      <span>
-                        {elem.numerator} / {elem.denominator}
-                      </span>
+                      <span>{`${elem.numerator}/${elem.denominator}`}</span>
                     )}
                   </p>
                   <p
@@ -244,10 +261,10 @@ const StudentList = (props) => {
                     {elem.heading}
                   </p>
                 </div>
-              </Col>
+              </div>
             );
           })}
-        </Row>
+        </div>
         <Row className='Analysis__filterRow '>
           <section css={AdmissionStyle.scrollable}>
             {studentBatches.map((e) => {
@@ -364,6 +381,43 @@ const StudentList = (props) => {
             <AnalysisCalendar attendance={attendance} />
           </div>
         )}
+        <div style={{ width: '95%', margin: 'auto' }}>
+          {topButtons[4].isSelected &&
+            (offlineAssignments.length > 0 ? (
+              offlineAssignments.map((elem) => {
+                console.log(elem, 'offlineee');
+                return (
+                  // <AnalysisTestsCard
+                  //   key={elem.offline_test_id}
+                  //   name={elem.test_name}
+                  //   date={elem.test_date}
+                  //   maxMarks={elem.total_marks}
+                  //   marksObtained={elem.marks}
+                  //   history={history}
+                  //   testId={elem.offline_test_id}
+                  //   clientUserId={analysisStudentObject.client_user_id}
+                  //   language={elem.language_type}
+                  // />
+                  <AssignmentCards
+                    testName={elem.test_name}
+                    firstName={elem.first_name}
+                    lastName={elem.last_name}
+                    createdAt={elem.created_at}
+                    testDetails={elem.test_details}
+                    totalMarks={elem.total_marks}
+                    batchArray={elem.batch_array}
+                    testId={elem.offline_test_id}
+                    marks={elem.marks}
+                    subjectMarks={elem.subject_array}
+                  />
+                );
+              })
+            ) : (
+              <div className='Analysis__PlaceholderText'>
+                <span>No Offline assignments to show</span>
+              </div>
+            ))}
+        </div>
       </div>
     </>
   );

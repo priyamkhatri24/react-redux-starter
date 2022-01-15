@@ -636,6 +636,14 @@ const Dashboard = (props) => {
     history.push('/videos');
   };
 
+  const goToOfflineAssignments = () => {
+    if (clientStatus === 'deleted') {
+      setRestrictionModal(true);
+      return;
+    }
+    history.push('/offlineassignments');
+  };
+
   const goToConversations = () => {
     // if (clientStatus === 'deleted') {
     //   setRestrictionModal(true);
@@ -677,6 +685,8 @@ const Dashboard = (props) => {
         gotToAttendance();
       } else if (page === 'noticeBoard') {
         goToNoticeBoard();
+      } else if (page === 'offlineAssignment') {
+        goToOfflineAssignments();
       } else {
         console.log(page);
       }
@@ -715,15 +725,15 @@ const Dashboard = (props) => {
                 className='mx-auto d-block Dashboard__attendanceLogo'
               />
               <Row className='m-3'>
-                <span className='Dashboard__todaysHitsText my-auto'>Attendance</span>
+                <span className='Dashboard__todaysHitsText my-auto'>
+                  {param.client_feature_name}
+                </span>
                 <span className='ml-auto'>
                   <ChevronRightIcon />
                 </span>
               </Row>
 
-              <p className='Dashboard__attendanceSubHeading mx-3 pb-2'>
-                Record attendance of the students and notify parents via SMS daily.
-              </p>
+              <p className='Dashboard__attendanceSubHeading mx-3 pb-2'>{param.description}</p>
 
               {attendance.length > 0 && (
                 <div>
@@ -761,7 +771,7 @@ const Dashboard = (props) => {
             onClick={() => goToNoticeBoard()}
             role='button'
             tabIndex='-1'
-            style={{ backgroundColor: '#fffef4' }}
+            style={{ backgroundColor: '#fffef4' }} // hardcoded by Aakash sir
             onKeyDown={() => goToNoticeBoard()}
           >
             <span className='Dashboard__verticalDots'>
@@ -769,7 +779,7 @@ const Dashboard = (props) => {
             </span>
             <Row className='mt-2'>
               <Col xs={8} className='pl-4'>
-                <p className='Dashboard__todaysHitsText'>Notice Board</p>
+                <p className='Dashboard__todaysHitsText'>{param.client_feature_name}</p>
                 {(roleArray.includes(3) || roleArray.includes(4)) && (
                   <Button style={{ backgroundColor: 'white' }} variant='noticeBoardPost'>
                     <BorderColorIcon />
@@ -777,9 +787,7 @@ const Dashboard = (props) => {
                   </Button>
                 )}
                 {(roleArray.includes(1) || roleArray.includes(2)) && (
-                  <p className='Dashboard__attendanceSubHeading'>
-                    Get the latest details of everything going on in your institute.
-                  </p>
+                  <p className='Dashboard__attendanceSubHeading'>{param.description}</p>
                 )}
               </Col>
               <Col xs={4} className='noticeboard_img'>
@@ -901,12 +909,27 @@ const Dashboard = (props) => {
             image={param.feature_icon} // analysisHands
             width={62}
             height={78}
-            heading='Analysis'
-            subHeading='See detailed reports of every student and assignments.'
+            heading={param.client_feature_name}
+            subHeading={param.description}
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             backGround={param.start_colour}
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             buttonClick={role === 1 || role === 2 ? goToStudentAnalysis : goToTeacherAnalysis}
+            textColor={data.text_color}
+          />
+        );
+      case 'offlineAssignment':
+        return (
+          <DashboardCards
+            image={param.feature_icon} // analysisHands
+            width={62}
+            height={78}
+            heading={param.client_feature_name}
+            subHeading={param.description}
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround={param.start_colour}
+            backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
+            buttonClick={goToOfflineAssignments}
             textColor={data.text_color}
           />
         );
@@ -916,8 +939,8 @@ const Dashboard = (props) => {
             image={param.feature_icon}
             width={53}
             height={78}
-            heading='Fees'
-            subHeading='See fees history and amount to be paid for coming months.'
+            heading={param.client_feature_name}
+            subHeading={param.description}
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             backGround={param.start_colour}
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
@@ -932,12 +955,8 @@ const Dashboard = (props) => {
               image={param.feature_icon}
               width={53}
               height={78}
-              heading='Videos'
-              subHeading={`${
-                roleArray.includes(3) || roleArray.includes(4)
-                  ? 'Upload any YouTube video that you want to share with your students.'
-                  : 'All the videos shared by the teacher are available here.'
-              }`}
+              heading={param.client_feature_name}
+              subHeading={param.description}
               boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
               backGround={param.start_colour}
               backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
@@ -982,7 +1001,7 @@ const Dashboard = (props) => {
               }}
               className='mx-auto ml-3 mt-4 mb-0 scrollableCardHeading'
             >
-              Our Star Performers
+              {param.client_feature_name}
             </h6>
             <AspectCards
               data={data.star_performers}
@@ -1005,7 +1024,7 @@ const Dashboard = (props) => {
               }}
               className='mx-auto ml-3 mt-4 mb-0 scrollableCardHeading'
             >
-              Testimonials
+              {param.client_feature_name}
             </h6>
             <AspectCards
               data={data.testimonials}
@@ -1019,7 +1038,7 @@ const Dashboard = (props) => {
       case 'aboutUs':
         return (
           <div className='text-left my-3 mt-5 aboutConnectContainer'>
-            <h5 className='Dummy__aboutus'>About us</h5>
+            <h5 className='Dummy__aboutus'>{param.client_feature_name}</h5>
             <p className='Dummy__aboutData'>{data.about_us}</p>
 
             <h5 className='Dummy__aboutus'>Connect with us</h5>
@@ -1100,8 +1119,8 @@ const Dashboard = (props) => {
             image={param.feature_icon}
             width={51}
             height={78}
-            heading='Courses'
-            subHeading='Increase your profit by building and selling your courses here.'
+            heading={param.client_feature_name}
+            subHeading={param.description}
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             backGround={param.start_colour}
@@ -1115,12 +1134,8 @@ const Dashboard = (props) => {
             image={param.feature_icon}
             width={91}
             height={73}
-            heading='Live Classes'
-            subHeading={
-              roleArray.includes(3) || roleArray.includes(4)
-                ? 'Conduct all your live classes here effectively'
-                : 'Attend all of your live classes from here.'
-            }
+            heading={param.client_feature_name}
+            subHeading={param.description}
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             backGround={param.start_colour}
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
@@ -1152,10 +1167,10 @@ const Dashboard = (props) => {
             image={param.feature_icon} // student
             width={56}
             height={86}
-            heading='Library'
+            heading={param.client_feature_name}
             color='rgba(0, 102, 255, 0.87)'
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
-            subHeading='Access content uploaded by institute here.'
+            subHeading={param.description}
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             buttonClick={goToStudyBin}
             textColor={data.text_color}
@@ -1173,7 +1188,7 @@ const Dashboard = (props) => {
           >
             <Row className='mx-0 justify-content-center mt-2'>
               <Col xs={8} className='text-left p-3'>
-                <h6 className='Dummy__joinUs'>Join us NOW!</h6>
+                <h6 className='Dummy__joinUs'>{param.client_feature_name}</h6>
                 <p className='mb-0 mt-3 Dummy__joinDetails'>Your are not in any batch yet</p>
                 <p className='Dummy__joinSmall mt-1'>Fill admission form to join us.</p>
               </Col>
@@ -1221,7 +1236,7 @@ const Dashboard = (props) => {
           >
             <Row className='mx-0 justify-content-center mt-2'>
               <Col xs={7} className='text-left p-3'>
-                <h6 className='Dummy__joinUs'>Share app with friends</h6>
+                <h6 className='Dummy__joinUs'>{param.client_feature_name}</h6>
                 <p className='mb-0 Dummy__joinDetails'>Enjoying the application?</p>
                 <p className='Dummy__joinSmall mt-1'>Share with your friends</p>
                 <Button
@@ -1257,7 +1272,7 @@ const Dashboard = (props) => {
           >
             <Row className='mx-3 justify-content-left mt-2'>
               <h6 style={{ fontSize: '16px' }} className='Dummy__joinUs'>
-                Contact us
+                {param.client_feature_name}
               </h6>
             </Row>
             {data.address.location && (
@@ -1302,8 +1317,8 @@ const Dashboard = (props) => {
             image={param.feature_icon} // analysis
             width={76}
             height={84}
-            heading='CRM'
-            subHeading='Manage All your customer Relations Management Enquiries here.'
+            heading={param.client_feature_name}
+            subHeading={param.description}
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             backGround={param.start_colour}
@@ -1333,9 +1348,9 @@ const Dashboard = (props) => {
             image={param.feature_icon} // student
             width={78}
             height={76}
-            heading='My display page'
+            heading={param.client_feature_name}
             color='rgba(255, 236, 222, 1)'
-            subHeading='This is like your website. Choose what want to show your guests.'
+            subHeading={param.description}
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             buttonClick={goToDisplayPage}
@@ -1346,9 +1361,9 @@ const Dashboard = (props) => {
         return role === 3 || role === 4 ? (
           <DashboardCards
             image={param.feature_icon}
-            heading='Chats'
+            heading={param.client_feature_name}
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-            subHeading='Chat with your peers or teachers.'
+            subHeading={param.description}
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             backGround={param.start_colour}
             buttonClick={goToChats}
@@ -1569,7 +1584,7 @@ const Dashboard = (props) => {
           Please allow notifications to receive prompt updates and important notifications
         </Toast.Body>
       </Toast>
-      {hasLoaded && (roleArray.includes(3) || roleArray.includes(4)) ? (
+      {hasLoaded && roleArray.includes(4) ? (
         <p className='connectWithUsText'>
           Have an issue?{' '}
           <a className='connectText' href='tel:+918826286002'>

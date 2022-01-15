@@ -1,3 +1,6 @@
+* {
+  font-family: 'Montserrat-Regular';
+}
 .Analysis {
   @import '../../scss/bootstrap';
 
@@ -12,6 +15,7 @@
 
   &__card {
     width: 75%;
+    text-align: center;
     margin: auto;
     margin-top: 1rem;
     @include media-breakpoint-down(sm) {
@@ -135,7 +139,8 @@
     }
 
     @include media-breakpoint-down(sm) {
-      width: 70px;
+      width: 100px;
+      margin: 0px 5px !important;
     }
   }
 
@@ -162,22 +167,25 @@
   }
   &__Logo {
     width: 264px;
-    margin-left: 33%;
-    @include media-breakpoint-down(md) {
-      margin-left: 25%;
-    }
-    @include media-breakpoint-down(sm) {
-      margin-left: 0;
-    }
+    margin: auto;
+    // @include media-breakpoint-down(md) {
+    //   margin-left: 25%;
+    // }
+    // @include media-breakpoint-down(sm) {
+    //   margin-left: 0;
+    // }
   }
   &__Marks {
     position: absolute;
     top: 15%;
-    right: 45%;
+    right: 40%;
 
     @include media-breakpoint-up(sm) {
-      right: 50%;
+      right: 45%;
     }
+    // @include media-breakpoint-up(xxl) {
+    //   right: 48%;
+    // }
   }
 
   &__PlaceholderText {
@@ -185,5 +193,34 @@
     color: $lightGrey;
     text-align: center;
     margin-top: 200px;
+  }
+}
+
+.rowMargin {
+  margin: 0px 10px !important;
+  overflow: auto;
+}
+
+.rowMargin::-webkit-scrollbar {
+  display: none;
+}
+
+@media screen and (max-width: 375px) {
+  .Analysis__Buttons {
+    width: 72px !important;
+    margin: 0px 5px !important;
+  }
+  .rowMargin {
+    margin: 0px !important;
+  }
+}
+@media screen and (max-width: 1226px) and (min-width: 1000px) {
+  .Analysis__Buttons {
+    width: 190px !important;
+  }
+}
+@media screen and (min-width: 1440px) {
+  .Analysis__Marks {
+    right: 47.5%;
   }
 }

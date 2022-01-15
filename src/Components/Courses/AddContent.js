@@ -209,7 +209,7 @@ const AddContent = (props) => {
     video.src = URL.createObjectURL(fileObj.file);
     video.onloadedmetadata = function () {
       window.URL.revokeObjectURL(video.src);
-      fileObj.duration = video.duration;
+      fileObj.duration = video.duration || '1000';
     };
   };
 
@@ -264,7 +264,7 @@ const AddContent = (props) => {
           title: 'Invalid File Type!',
           text: `The supported file types are ${
             type === 'image'
-              ? 'gif, jpeg, jpg, tiff, png, webp, bmp'
+              ? 'gif, jpeg, jpg, m4v, tiff, png, webp, bmp'
               : type === 'video'
               ? 'mov,mp3, mp4 , mpg, avi, wmv, flv, 3gp'
               : 'doc, docx, xls, xlsx, ppt, pptx, txt, pdf'
