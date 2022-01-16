@@ -10,31 +10,40 @@ import userAvatar from '../../assets/images/user.svg';
 import '../Dashboard/Dashboard.scss';
 import './Fees.scss';
 import { apiValidation, get } from '../../Utilities';
+import { PageHeader } from '../Common';
 
 const FeeBatches = (props) => {
-  const { clientId, clientUserId, history, searchString } = props;
+  const { clientId, clientUserId, history, activeTab } = props;
 
   const [filters, setFilters] = useState([]);
-  const [page, setPage] = useState(1);
 
   // const [currentClass, setCurrentClass] = useState({});
   // const [currentSubject, setCurrentSubject] = useState({});
   const [batches, setBatches] = useState([]);
+  const [searchedBatches, setSearchedBatches] = useState([]);
+  const [page, setPage] = useState(1);
+  const [searchPage, setSearchPage] = useState(1);
+  const [searchString, setSearchString] = useState('');
+  const [limit, setLimit] = useState(5);
 
   const infiniteScroll = () => {
+    console.log(activeTab, 'batches');
     if (
-      window.innerHeight + document.documentElement.scrollTop ===
-      document.documentElement.offsetHeight
+      window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight ||
+      window.innerHeight + document.body.scrollTop >= document.body.offsetHeight
     ) {
+      setSearchPage((prev) => prev + 1);
       setPage((prev) => prev + 1);
     }
   };
 
   useEffect(() => {
-    window.addEventListener('scroll', infiniteScroll);
-
+    if (activeTab) {
+      window.addEventListener('scroll', infiniteScroll);
+    }
     return () => window.removeEventListener('scroll', infiniteScroll);
-  }, []);
+  }, [activeTab]);
 
   useEffect(() => {
     get({ client_id: clientId }, '/getFilters').then((res) => {
@@ -49,20 +58,59 @@ const FeeBatches = (props) => {
       // class_id: Object.keys(currentClass).length === 0 ? null : currentClass.class_id,
       // subject_id: Object.keys(currentSubject).length === 0 ? null : currentSubject.subject_id,
       client_id: clientId,
-      limit: 20,
-      page,
+      limit,
       client_user_id: clientUserId,
+      page,
     };
 
     get(payload, '/getFeeDataOfClientBatchWise').then((res) => {
       const result = apiValidation(res);
       console.log(result, 'getfeedataofclientbatchwise');
-      const searchedArray = [...batches, ...result].filter(
-        (e) => e.batch_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
-      );
+      const searchedArray = [...batches, ...result];
+
       setBatches(searchedArray);
     });
-  }, [clientUserId, searchString, page]);
+  }, []);
+
+  useEffect(() => {
+    let timer;
+    if (searchString.length > 0 && activeTab) {
+      timer = setTimeout(() => {
+        const payload = {
+          client_id: clientId,
+          limit,
+          client_user_id: clientUserId,
+          keyword: searchString,
+          page: searchPage,
+        };
+        get(payload, '/searchBatchesInFee').then((res) => {
+          const result = apiValidation(res);
+          console.log(result, 'searchBatchesInFee', searchPage);
+          const resultant = [...searchedBatches, ...result];
+          setSearchedBatches(resultant);
+        });
+      }, 500);
+    } else if (searchString.length === 0 && activeTab) {
+      const payload = {
+        // class_id: Object.keys(currentClass).length === 0 ? null : currentClass.class_id,
+        // subject_id: Object.keys(currentSubject).length === 0 ? null : currentSubject.subject_id,
+        client_id: clientId,
+        limit,
+        client_user_id: clientUserId,
+        page,
+      };
+
+      get(payload, '/getFeeDataOfClientBatchWise').then((res) => {
+        const result = apiValidation(res);
+        console.log(result, 'getfeedataofclientbatchwise', page);
+        const resultant = [...batches, ...result];
+        setBatches(resultant);
+      });
+    }
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [searchString, page]);
 
   // const select = (type, e) => {
   //   switch (type) {
@@ -89,6 +137,16 @@ const FeeBatches = (props) => {
   //       console.log('hello');
   //   }
   // };
+  const searchBatches = (search) => {
+    setSearchString(search);
+    if (!search) window.scrollTo(0, 0);
+    if (activeTab) {
+      setPage(1);
+      setSearchPage(1);
+      setBatches([]);
+      setSearchedBatches([]);
+    }
+  };
 
   return (
     <div>
@@ -221,61 +279,65 @@ const FeeBatches = (props) => {
         </Card.Body>
       )} */}
 
+      <PageHeader title='Fees' search searchFilter={searchBatches} />
+
       <div className='mt-4'>
-        {batches.map((elem) => {
-          return (
-            <Card
-              className='p-2 Fees__batchesTeacher'
-              key={elem.user_batch_id}
-              style={{ borderRadius: '5px', border: '1px solid rgba(112, 112, 112, 0.1)' }}
-              onClick={() =>
-                history.push({
-                  pathname: '/fees/users',
-                  state: { batchId: elem.client_batch_id, batchName: elem.batch_name },
-                })
-              } // eslint-disable-line
-            >
-              <Row style={{ marginTop: '0.5rem' }}>
-                <Col xs={4} className='Fees__receivedAmount text-center my-auto'>
-                  &#8377; {elem.total_paid_amount}
-                </Col>
-                <Col xs={4} className='text-center'>
-                  <img
-                    src={userAvatar}
-                    className='Dashboard__profileImage img-responsive'
-                    alt='profile'
-                  />
-                </Col>
-                <Col
-                  xs={4}
-                  className='Fees__receivedAmount text-center my-auto'
-                  style={{ color: 'rgba(255, 0, 0, 0.6)' }}
-                >
-                  &#8377; {elem.total_due_amount}
-                </Col>
-              </Row>
-              <Row className='mx-auto m-2 Fees__orderSummary'>{elem.batch_name}</Row>
-              <ProgressBar
-                now={
-                  elem.total_students === '0'
-                    ? 0
-                    : (parseInt(elem.total_paid_students, 10) / parseInt(elem.total_students, 10)) *
-                      100
-                }
-                label={`${parseInt(elem.total_paid_students, 10)}/${parseInt(
-                  elem.total_students,
-                  10,
-                )}`}
-                style={{ borderRadius: '50px', height: '20px', color: 'rgba(127, 196, 253, 1)' }}
-                className='Fees__progressBar'
-              />
-              <p className='Fees__studentsPay mx-auto'>
-                {`${parseInt(elem.total_due_students, 10)}/${parseInt(elem.total_students, 10)}`}{' '}
-                Students Yet to Pay
-              </p>
-            </Card>
-          );
-        })}
+        {(batches.length > 0 || searchedBatches.length > 0) &&
+          (searchedBatches.length > 0 ? searchedBatches : batches).map((elem) => {
+            return (
+              <Card
+                className='p-2 Fees__batchesTeacher'
+                key={elem.client_batch_id}
+                style={{ borderRadius: '5px', border: '1px solid rgba(112, 112, 112, 0.1)' }}
+                onClick={() =>
+                  history.push({
+                    pathname: '/fees/users',
+                    state: { batchId: elem.client_batch_id, batchName: elem.batch_name },
+                  })
+                } // eslint-disable-line
+              >
+                <Row style={{ marginTop: '0.5rem' }}>
+                  <Col xs={4} className='Fees__receivedAmount text-center my-auto'>
+                    &#8377; {elem.total_paid_amount}
+                  </Col>
+                  <Col xs={4} className='text-center'>
+                    <img
+                      src={userAvatar}
+                      className='Dashboard__profileImage img-responsive'
+                      alt='profile'
+                    />
+                  </Col>
+                  <Col
+                    xs={4}
+                    className='Fees__receivedAmount text-center my-auto'
+                    style={{ color: 'rgba(255, 0, 0, 0.6)' }}
+                  >
+                    &#8377; {elem.total_due_amount}
+                  </Col>
+                </Row>
+                <Row className='mx-auto m-2 Fees__orderSummary'>{elem.batch_name}</Row>
+                <ProgressBar
+                  now={
+                    elem.total_students === '0'
+                      ? 0
+                      : (parseInt(elem.total_paid_students, 10) /
+                          parseInt(elem.total_students, 10)) *
+                        100
+                  }
+                  label={`${parseInt(elem.total_paid_students, 10)}/${parseInt(
+                    elem.total_students,
+                    10,
+                  )}`}
+                  style={{ borderRadius: '50px', height: '20px', color: 'rgba(127, 196, 253, 1)' }}
+                  className='Fees__progressBar'
+                />
+                <p className='Fees__studentsPay mx-auto'>
+                  {`${parseInt(elem.total_due_students, 10)}/${parseInt(elem.total_students, 10)}`}{' '}
+                  Students Yet to Pay
+                </p>
+              </Card>
+            );
+          })}
       </div>
     </div>
   );
@@ -287,9 +349,5 @@ FeeBatches.propTypes = {
   clientId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
-  searchString: PropTypes.string,
-};
-
-FeeBatches.defaultProps = {
-  searchString: '',
+  activeTab: PropTypes.bool.isRequired,
 };

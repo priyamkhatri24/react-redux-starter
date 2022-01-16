@@ -224,7 +224,7 @@ const StudentList = (props) => {
                           borderRadius: '10px',
                         }
                   }
-                  className='mx-auto Analysis__Buttons'
+                  className='mx-auto Analysis__Buttons pb-1'
                   onClick={() => selectThisButton(elem.id)}
                   onKeyDown={() => selectThisButton(elem.id)}
                   role='button'
@@ -253,7 +253,7 @@ const StudentList = (props) => {
                     )}
                   </p>
                   <p
-                    className='Analysis__cardLabel mb-0'
+                    className='Analysis__cardLabel pb-1'
                     style={
                       elem.isSelected === true ? { color: '#fff' } : { color: 'rgba(0,0,0,0.54)' }
                     }

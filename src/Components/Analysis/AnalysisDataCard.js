@@ -22,7 +22,7 @@ const AnalysisDataCard = (props) => {
       <Row className='m-0'>
         <Col xs={3} className='text-center'>
           <p className='Analysis__bigNumbers mb-0'>
-            {elem.average}/{elem.total_questions}
+            {elem.average.toFixed(2)}/{elem.total_questions}
           </p>
           <p className='Analysis__cardLabel'>Average</p>
         </Col>

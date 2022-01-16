@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Row from 'react-bootstrap/Row';
@@ -38,6 +38,8 @@ const SavedSentTestsUsingFilters = (props) => {
   const [isToggle, setToggle] = useState(0);
   const [filters, setFilters] = useState({});
   const [searchString, setSearchString] = useState('');
+  const [caller, setCaller] = useState(1);
+  const [nextPage, setNextPage] = useState(1);
   const [filterPayload, setFilterPayload] = useState({
     class_id: null,
     client_id: clientId,
@@ -45,8 +47,27 @@ const SavedSentTestsUsingFilters = (props) => {
     is_admin: !!roleArray.includes(4),
     client_batch_id: null,
     assignment_type: null,
+    page: 1,
   });
   const [tests, setTests] = useState([]);
+  const savedSentOverlayRef = useRef(null);
+
+  const infiniteScroll = () => {
+    if (
+      savedSentOverlayRef?.current?.clientHeight + savedSentOverlayRef?.current?.scrollTop >=
+      savedSentOverlayRef?.current?.scrollHeight
+    ) {
+      setCaller((prev) => prev + 1);
+    }
+  };
+
+  useEffect(() => {
+    if (savedSentOverlayRef && savedSentOverlayRef?.current) {
+      savedSentOverlayRef.current.addEventListener('scroll', infiniteScroll);
+    }
+
+    return () => savedSentOverlayRef?.current?.removeEventListener('scroll', infiniteScroll);
+  }, []);
 
   useEffect(() => {
     get({ client_id: clientId }, '/getFilters').then((res) => {
@@ -61,36 +82,68 @@ const SavedSentTestsUsingFilters = (props) => {
     });
   }, [clientId]);
 
-  const rerenderTests = () => {
-    get(
-      filterPayload,
-      testsType === 'saved' ? '/getSavedHomeworksUsingFilters' : '/getSentAssignmentsUsingFilter',
-    ).then((res) => {
-      console.log(res);
-      const result = apiValidation(res);
-      const searchedArray = result.filter(
-        (e) => e.test_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
-      );
-      setTests(searchedArray);
-    });
+  const rerenderTests = (id) => {
+    const filteredTests = tests.filter((ele) => ele.test_id !== id);
+    setTests(filteredTests);
   };
 
   useEffect(() => {
-    get(
-      filterPayload,
-      testsType === 'saved' ? '/getSavedHomeworksUsingFilters' : '/getSentAssignmentsUsingFilter',
-    ).then((res) => {
-      console.log(res);
-      const result = apiValidation(res);
-      const searchedArray = result.filter(
-        (e) => e.test_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
-      );
-      setTests(searchedArray);
-    });
-  }, [filterPayload, searchString, testsType]);
+    const payload = { ...filterPayload };
+    payload.page = nextPage;
+    console.log(payload);
+    let timer;
+    if (searchString.length > 0 && nextPage) {
+      timer = setTimeout(() => {
+        payload.keyword = searchString;
+        get(
+          payload,
+          testsType === 'saved' ? '/searchInSavedHomeWorks' : '/searchInSentAssignments',
+        ).then((res) => {
+          console.log(
+            res,
+            testsType === 'saved' ? 'searchInSavedHomeWorks' : 'searchInSentHomeworks',
+          );
+          const result = apiValidation(res);
+          // const searchedArray = result.filter(
+          //   (e) => e.test_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+          // );
+          const searchedArray = [...tests, ...result];
+          setNextPage(res?.next?.page);
+          setTests(searchedArray);
+        });
+      }, 500);
+    }
+    if (searchString.length === 0 && nextPage) {
+      get(
+        payload,
+        testsType === 'saved'
+          ? '/getSavedHomeworksUsingFilters2'
+          : '/getSentAssignmentsUsingFilter2',
+      ).then((res) => {
+        console.log(
+          res,
+          testsType === 'saved'
+            ? 'getSavedHomeworksUsingFilters2'
+            : 'getSentAssignmentsUsingFilter2',
+        );
+        const result = apiValidation(res);
+        // const searchedArray = result.filter(
+        //   (e) => e.test_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+        // );
+        const searchedArray = [...tests, ...result];
+        setNextPage(res?.next?.page);
+        setTests(searchedArray);
+      });
+    }
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [filterPayload, searchString, caller, testsType]);
 
   const searchTests = (search) => {
     setSearchString(search);
+    setTests([]);
+    setNextPage(1);
   };
 
   const isFilterTriggered = () => {
@@ -100,6 +153,8 @@ const SavedSentTestsUsingFilters = (props) => {
   const handleBack = () => history.push('/');
 
   const addFilter = (type, id) => {
+    setTests([]);
+    setNextPage(1);
     const updatedPayload =
       type === 'role'
         ? { ...filterPayload, role_id: id }
@@ -109,12 +164,16 @@ const SavedSentTestsUsingFilters = (props) => {
         ? { ...filterPayload, client_batch_id: id }
         : type === 'assignment'
         ? { ...filterPayload, assignment_type: id.type }
-        : { ...filterPayload, class_id: id };
+        : type === 'page'
+        ? { ...filterPayload, assignment_type: id.type }
+        : { ...filterPayload, page: id };
 
     setFilterPayload(updatedPayload);
   };
 
   const removeFilter = (type) => {
+    setTests([]);
+    setNextPage(1);
     const updatedPayload =
       type === 'role'
         ? { ...filterPayload, role_id: null }
@@ -177,7 +236,7 @@ const SavedSentTestsUsingFilters = (props) => {
           addFilter={addFilter}
           removeFilter={removeFilter}
         />
-        <div css={AdmissionStyle.overlay} style={{ marginTop: '1rem' }}>
+        <div css={AdmissionStyle.overlay} style={{ marginTop: '1rem', overflow: 'hidden' }}>
           <hr className='w-25' style={{ borderTop: '5px solid rgba(0, 0, 0, 0.1)' }} />
           <Row css={AdmissionStyle.amount} className='m-4'>
             <span className='mr-1'>{tests.length} </span> Results
@@ -185,17 +244,21 @@ const SavedSentTestsUsingFilters = (props) => {
               <GetAppIcon />
             </span>
           </Row>
-          <div style={{ height: '75vh', overflow: 'scroll' }}>
-            {tests.map((elem) => {
+          <div ref={savedSentOverlayRef} style={{ height: '75vh', overflow: 'scroll' }}>
+            {tests.map((elem, i) => {
               return (
                 <div
                   onClick={() => getQuestions(elem.test_id, elem.test_name, elem.language_type)}
                   onKeyDown={() => getQuestions(elem.test_id, elem.test_name, elem.language_type)}
                   role='button'
                   tabIndex='-1'
-                  key={elem.test_id}
+                  key={(elem.test_id * i).toString() + elem.test_name}
                 >
-                  <SavedSentCard elem={elem} testsType={testsType} updateTests={rerenderTests} />
+                  <SavedSentCard
+                    elem={elem}
+                    testsType={testsType}
+                    updateTests={() => rerenderTests(elem.test_id)}
+                  />
                 </div>
               );
             })}

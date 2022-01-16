@@ -45,14 +45,14 @@ const AssignmentCards = (props) => {
             <Card.Subtitle className='mb-2 text-muted createdByTextOFA'>
               Created by: {firstName + lastName}
             </Card.Subtitle>
-            {batchArray.length > 0 && (
+            {batchArray && batchArray.length > 0 && (
               <Card.Subtitle
                 className='my-3 batchesOFA d-flex'
                 style={{ fontFamily: 'Montserrat-SemiBold' }}
               >
                 To:{' '}
-                {batchArray.length > 0 &&
-                  batchArray.map((i) => {
+                {batchArray?.length > 0 &&
+                  batchArray?.map((i) => {
                     return <div className='batchesOFA ml-1'>{i} </div>;
                   })}
               </Card.Subtitle>

@@ -18,61 +18,192 @@ import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import AdmissionStyle from '../Admissions/Admissions.style';
 import { apiValidation, get } from '../../Utilities';
+import Enquiry from '../Login/AdmissionChat/Enquiry/Enquiry';
 
 const CRM = (props) => {
   const { clientId, history } = props;
-  const [inquiryObject, setInquiryObject] = useState({});
-  const [admissionObject, setAdmissionObject] = useState({});
   const [inquiryArray, setInquiryArray] = useState([]);
+  const [searchedInquiryArray, setSearchedInquiryArray] = useState([]);
   const [admissionFormArray, setAdmissionFormArray] = useState([]);
+  const [searchedAdmissionFormArray, setSearchedAdmissionFormArray] = useState([]);
   const [searchString, setSearchString] = useState('');
   const [openFilterModal, setOpenFilterModal] = useState(false);
+  const [enquiryPage, setEnquiryPage] = useState(1);
+  const [admissionPage, setAdmissionPage] = useState(1);
+  // const [searchEnquiryPage, setSearchEnquiryPage] = useState(1);
+  const [sortBy, setSortBy] = useState('date');
+  const [currentTab, setCurrentTab] = useState('Enquiries');
+
+  const infiniteScroll = () => {
+    console.log(currentTab);
+    if (
+      window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight ||
+      window.innerHeight + document.body.scrollTop >= document.body.offsetHeight
+    ) {
+      if (currentTab === 'Enquiries') setEnquiryPage((prev) => prev + 1);
+      if (currentTab === 'Admission') setAdmissionPage((prev) => prev + 1);
+    }
+  };
 
   useEffect(() => {
-    get({ client_id: clientId }, '/getInquiryAndAdmissionDetailsOfClient').then((res) => {
+    window.addEventListener('scroll', infiniteScroll);
+
+    return () => window.removeEventListener('scroll', infiniteScroll);
+  }, [currentTab]);
+
+  useEffect(() => {
+    const payload = {
+      client_id: clientId,
+      page: enquiryPage,
+      sort_by: sortBy,
+    };
+    get(payload, '/getInquiriesOfClient').then((res) => {
       const result = apiValidation(res);
-      console.log(result);
-      setInquiryObject(result.inquiry_object);
-      setAdmissionObject(result.admission_object);
-      setInquiryArray(result.inquiry_object['Date wise']);
-      setAdmissionFormArray(result.admission_object['Date wise']);
+      const resultant = [...inquiryArray, ...result];
+      console.log(result, 'getInquiryOfClient');
+      setInquiryArray(result);
     });
-  }, [clientId]);
+  }, [sortBy]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      get({ client_id: clientId }, '/getInquiryAndAdmissionDetailsOfClient').then((res) => {
-        const result = apiValidation(res);
-        console.log(result);
-        const searchedArrayInquiry = result.inquiry_object['Date wise'].filter(
-          (e) => e.first_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
-        );
-        const searchedArrayAdmission = result.admission_object['Date wise'].filter(
-          (e) => e.first_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
-        );
-        setInquiryArray(searchedArrayInquiry);
-        setAdmissionFormArray(searchedArrayAdmission);
-      });
-    }, 500);
+    const payload = {
+      client_id: clientId,
+      page: admissionPage,
+      sort_by: sortBy,
+    };
+    get(payload, '/getAdmissionsOfClient').then((res) => {
+      const result = apiValidation(res);
+      const resultant = [...admissionFormArray, ...result];
+      console.log(result);
+      setAdmissionFormArray(result);
+    });
+  }, [sortBy]);
 
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     get({ client_id: clientId }, '/getInquiryAndAdmissionDetailsOfClient').then((res) => {
+  //       const result = apiValidation(res);
+  //       console.log(result);
+  //       const searchedArrayInquiry = result.inquiry_object['Date wise'].filter(
+  //         (e) => e.first_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+  //       );
+  //       const searchedArrayAdmission = result.admission_object['Date wise'].filter(
+  //         (e) => e.first_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+  //       );
+  //       setInquiryArray(searchedArrayInquiry);
+  //       setAdmissionFormArray(searchedArrayAdmission);
+  //     });
+  //   }, 500);
+
+  //   return () => {
+  //     clearTimeout(timer);
+  //   };
+  // }, [searchString, clientId]);
+
+  // SEARCH API INQUIRY
+  useEffect(() => {
+    let timer;
+    if (searchString.length > 0 && currentTab === 'Enquiries') {
+      timer = setTimeout(() => {
+        const payload = {
+          client_id: clientId,
+          sort_by: sortBy,
+          page: enquiryPage,
+          keyword: searchString,
+        };
+        get(payload, '/searchInquiriesOfClient').then((res) => {
+          const result = apiValidation(res);
+          console.log(result, 'searchInquiriesOfClient');
+          const resultant = [...searchedInquiryArray, ...result];
+          setInquiryArray(resultant);
+        });
+      }, 500);
+    }
+    if (searchString.length === 0 && currentTab === 'Enquiries') {
+      const payload = {
+        client_id: clientId,
+        page: enquiryPage,
+        sort_by: sortBy,
+      };
+      get(payload, '/getInquiriesOfClient').then((res) => {
+        const result = apiValidation(res);
+        console.log(result, 'getInquiriesOfClient');
+        const resultant = [...inquiryArray, ...result];
+        setInquiryArray(resultant);
+      });
+    }
     return () => {
       clearTimeout(timer);
     };
-  }, [searchString, clientId]);
+  }, [searchString, enquiryPage]);
+
+  // SEARCH API ADDMISSION
+  useEffect(() => {
+    let timer;
+    if (searchString.length > 0 && currentTab === 'Admission') {
+      timer = setTimeout(() => {
+        const payload = {
+          client_id: clientId,
+          page: admissionPage,
+          keyword: searchString,
+          sort_by: sortBy,
+        };
+        get(payload, '/searchAdmissionsOfClient').then((res) => {
+          const result = apiValidation(res);
+          console.log(result, 'searchAdmissionsOfClient');
+          const resultant = [...searchedAdmissionFormArray, ...result];
+          setAdmissionFormArray(resultant);
+        });
+      }, 500);
+    }
+    if (searchString.length === 0 && currentTab === 'Admission') {
+      const payload = {
+        client_id: clientId,
+        page: admissionPage,
+        sort_by: sortBy,
+      };
+      get(payload, '/getAdmissionsOfClient').then((res) => {
+        const result = apiValidation(res);
+        console.log(result, 'getAdmissionOfClient');
+        const resultant = [...admissionFormArray, ...result];
+        setAdmissionFormArray(resultant);
+      });
+    }
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [searchString, admissionPage]);
 
   const filterResult = (how) => {
     if (how === 'alphabetically') {
-      setInquiryArray(inquiryObject.Alphabetical);
-      setAdmissionFormArray(admissionObject.Alphabetical);
+      setEnquiryPage(1);
+      setAdmissionPage(1);
+      setInquiryArray([]);
+      setAdmissionFormArray([]);
+      setSortBy('name');
     } else {
-      setInquiryArray(inquiryObject['Date wise']);
-      setAdmissionFormArray(admissionObject['Date wise']);
+      setEnquiryPage(1);
+      setAdmissionPage(1);
+      setInquiryArray([]);
+      setAdmissionFormArray([]);
+      setSortBy('date');
     }
     setOpenFilterModal(false);
   };
 
   const searchCRM = (search) => {
     setSearchString(search);
+    if (!search) window.scrollTo(0, 0);
+    if (currentTab === 'Admission') {
+      setAdmissionPage(1);
+      setAdmissionFormArray([]);
+      setSearchedAdmissionFormArray([]);
+    } else if (currentTab === 'Enquiry') {
+      setEnquiryPage(1);
+      setInquiryArray([]);
+      setSearchedInquiryArray([]);
+    }
   };
 
   const goToDashboard = () => {
@@ -81,6 +212,11 @@ const CRM = (props) => {
 
   const getReadableDate = (stamp) => {
     return new Date(stamp * 1000).toString().split(' ').slice(1, 5).join(' ');
+  };
+
+  const handleSelect = (tab) => {
+    setCurrentTab(tab);
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -99,10 +235,13 @@ const CRM = (props) => {
         className='Profile__Tabs'
         justify
         style={{ marginTop: '4rem' }}
+        activeKey={currentTab}
+        onSelect={handleSelect}
       >
         <Tab
           eventKey='Enquiries'
-          title='Enquiries'
+          onClick={() => handleSelect('Enquiries')}
+          title='Inquiries'
           style={{ marginTop: '2rem', marginBottom: '1rem' }}
         >
           <div css={AdmissionStyle.UserCards}>
@@ -146,7 +285,8 @@ const CRM = (props) => {
           </div>
         </Tab>
         <Tab
-          eventKey='Admission Form'
+          eventKey='Admission'
+          onClick={() => handleSelect('Admission')}
           title='Admission Form'
           style={{ marginTop: '2rem', marginBottom: '1rem' }}
         >

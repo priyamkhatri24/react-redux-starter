@@ -32,6 +32,7 @@ const TeacherFees = (props) => {
 
   const handleSelect = (tab) => {
     setActiveTab(tab);
+    window.scrollTo(0, 0);
   };
 
   const searchBatches = (search) => {
@@ -40,11 +41,11 @@ const TeacherFees = (props) => {
 
   return (
     <>
-      {activeTab === 'Batches' ? (
+      {/* {activeTab === 'Batches' || activeTab === 'Notifications' || activeTab === 'Students' ? (
         <PageHeader title='Fees' search searchFilter={searchBatches} />
       ) : (
         <PageHeader title='Fees' />
-      )}
+      )} */}
 
       <div style={{ marginTop: '4rem' }}>
         {activeTab === 'Notifications' && (
@@ -92,7 +93,7 @@ const TeacherFees = (props) => {
             style={{ marginBottom: '0.5rem' }}
             onClick={() => handleSelect('Notifications')}
           >
-            <FeesTimeline clientId={clientId} />
+            <FeesTimeline clientId={clientId} activeTab={activeTab === 'Notifications'} />
           </Tab>
           <Tab
             style={{ marginBottom: '0.5rem' }}
@@ -103,6 +104,7 @@ const TeacherFees = (props) => {
             <FeeBatches
               clientId={clientId}
               clientUserId={clientUserId}
+              activeTab={activeTab === 'Batches'}
               history={history}
               searchString={searchString}
             />
@@ -115,6 +117,7 @@ const TeacherFees = (props) => {
           >
             <AllStudentsForFee
               clientUserId={clientUserId}
+              activeTab={activeTab === 'Students'}
               clientId={clientId}
               history={history}
               searchString={searchString}

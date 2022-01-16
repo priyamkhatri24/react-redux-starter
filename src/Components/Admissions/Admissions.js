@@ -29,6 +29,10 @@ const Admissions = (props) => {
   const [tab, setTab] = useState('Users');
   const [users, setUsers] = useState([]);
   const [batchModal, setBatchModal] = useState(false);
+  const [userNextPage, setUserNextPage] = useState(1);
+  const [userCaller, setUserCaller] = useState(1);
+  const [batchesCaller, setBatchesCaller] = useState(1);
+  const [batchNextPage, setBatchNextPage] = useState(1);
   const handleOpen = () => setBatchModal(true);
   const handleClose = () => setBatchModal(false);
   const [optionsModal, setOptionsModal] = useState(false);
@@ -38,7 +42,6 @@ const Admissions = (props) => {
     setOptionsModal(true);
   };
   const closeOptionsModal = () => setOptionsModal(false);
-  const [page, setPage] = useState(1);
 
   const [filterPayload, setFilterPayload] = useState({
     class_id: null,
@@ -47,6 +50,7 @@ const Admissions = (props) => {
     status: null,
     client_batch_id: null,
     role_id: null,
+    page: 1,
   });
 
   const [batchesPayload, setBatchesPayload] = useState({
@@ -54,34 +58,30 @@ const Admissions = (props) => {
     client_id: clientId,
     client_user_id: clientUserId,
     subject_id: null,
+    page: 1,
   });
 
-  // const infiniteScroll = () => {
-  //   console.log(filterPayload);
-  //   if (
-  //     overlayRef?.current?.clientHeight + overlayRef?.current?.scrollTop ===
-  //     overlayRef?.current?.scrollHeight
-  //   ) {
-  //     setPage((prev) => prev + 1);
-  //     if (tab === 'Users') {
-  //       const newFilterPayload = { ...filterPayload };
-  //       newFilterPayload.page += 1;
-  //       setFilterPayload(newFilterPayload);
-  //       console.log(filterPayload, 'newFilterPaylaod');
-  //     } else if (tab === 'Batches') {
-  //       // const { page } = filterPayload;
-  //       setBatchesPayload({ ...batchesPayload, page: page + 1 });
-  //     }
-  //   }
-  // };
+  const infiniteScroll = () => {
+    if (
+      overlayRef?.current?.clientHeight + overlayRef?.current?.scrollTop >=
+      overlayRef?.current?.scrollHeight
+    ) {
+      if (tab === 'Users') {
+        setUserCaller((prev) => prev + 1);
+      }
+      if (tab === 'Batches') {
+        setBatchesCaller((prev) => prev + 1);
+      }
+    }
+  };
 
-  // useEffect(() => {
-  //   if (overlayRef && overlayRef?.current) {
-  //     overlayRef.current.addEventListener('scroll', infiniteScroll);
-  //   }
+  useEffect(() => {
+    if (overlayRef && overlayRef?.current) {
+      overlayRef.current.addEventListener('scroll', infiniteScroll);
+    }
 
-  //   return () => overlayRef?.current?.removeEventListener('scroll', infiniteScroll);
-  // }, []);
+    return () => overlayRef?.current?.removeEventListener('scroll', infiniteScroll);
+  }, [tab]);
 
   useEffect(() => {
     get({ client_id: clientId }, '/getFilters').then((res) => {
@@ -92,29 +92,88 @@ const Admissions = (props) => {
   }, [clientId]);
 
   useEffect(() => {
-    get(batchesPayload, '/getBatchesUsingFilter').then((res) => {
-      const result = apiValidation(res);
-      const searchedArray = [...batches, ...result].filter(
-        (e) => e.batch_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
-      );
-      setBatches(searchedArray);
-    });
-  }, [batchesPayload, searchString, page]);
+    const payload = { ...batchesPayload };
+    payload.page = batchNextPage;
+    console.log(payload, 'payload');
+    let timer;
+    if (searchString.length > 0 && batchNextPage) {
+      timer = setTimeout(() => {
+        payload.keyword = searchString;
+        get(payload, '/searchBatchesInAdmission').then((res) => {
+          console.log(res, 'searchBatchesInAdmission');
+          const result = apiValidation(res);
+          // const searchedArray = [...batches, ...result].filter(
+          //   (e) => e.batch_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+          // );
+          const searchedArray = [...batches, ...result];
+
+          setBatchNextPage(res?.next?.page);
+          setBatches(searchedArray);
+        });
+      }, 500);
+    }
+    if (searchString.length === 0 && batchNextPage) {
+      get(payload, '/getBatchesUsingFilter2').then((res) => {
+        console.log(res, 'getBatchesUsingFilter2');
+        const result = apiValidation(res);
+        // const searchedArray = [...batches, ...result].filter(
+        //   (e) => e.batch_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+        // );
+        const searchedArray = [...batches, ...result];
+        setBatchNextPage(res?.next?.page);
+        setBatches(searchedArray);
+      });
+    }
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [batchesPayload, batchesCaller, searchString]);
 
   useEffect(() => {
-    get(filterPayload, '/getUsersUsingFilter').then((res) => {
-      console.log(res);
-      const result = apiValidation(res);
-      const searchedArray = [...users, ...result].filter(
-        (e) =>
-          e.first_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1 ||
-          e.last_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
-      );
-      setUsers(searchedArray);
-    });
-  }, [filterPayload, searchString, page]);
+    const payload = { ...filterPayload };
+    payload.page = userNextPage;
+    console.log(payload, 'payload');
+    let timer;
+    if (searchString.length > 0 && userNextPage) {
+      timer = setTimeout(() => {
+        payload.keyword = searchString;
+        get(payload, '/searchUserInAdmission').then((res) => {
+          console.log(res, 'searchUserInAdmission');
+          const result = apiValidation(res);
+          // const searchedArray = [...users, ...result].filter(
+          //   (e) =>
+          //     e.first_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1 ||
+          //     e.last_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+          // );
+          const searchedArray = [...users, ...result];
+          setUserNextPage(res?.next?.page);
+          setUsers(searchedArray);
+        });
+      }, 500);
+    }
+    if (searchString.length === 0 && userNextPage) {
+      get(payload, '/getUsersUsingFilter2').then((res) => {
+        console.log(res, 'getUsersUsingFilter2');
+        const result = apiValidation(res);
+        // const searchedArray = [...users, ...result].filter(
+        //   (e) =>
+        //     e.first_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1 ||
+        //     e.last_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+        // );
+        const searchedArray = [...users, ...result];
+        setUserNextPage(res?.next?.page);
+        setUsers(searchedArray);
+      });
+    }
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [filterPayload, userCaller, searchString]);
 
   const addFilter = (type, id) => {
+    setUserNextPage(1);
+    setUsers([]);
     const updatedPayload =
       type === 'role'
         ? { ...filterPayload, role_id: id }
@@ -128,6 +187,8 @@ const Admissions = (props) => {
   };
 
   const removeFilter = (type) => {
+    setUserNextPage(1);
+    setUsers([]);
     const updatedPayload =
       type === 'role'
         ? { ...filterPayload, role_id: null }
@@ -141,6 +202,8 @@ const Admissions = (props) => {
   };
 
   const addBatchFilter = (type, id) => {
+    setBatchNextPage(1);
+    setBatches([]);
     const updatedPayload =
       type === 'subject'
         ? { ...batchesPayload, subject_id: id }
@@ -150,6 +213,8 @@ const Admissions = (props) => {
   };
 
   const removeBatchFilter = (type) => {
+    setBatchNextPage(1);
+    setBatches([]);
     const updatedPayload =
       type === 'subject'
         ? { ...batchesPayload, subject_id: null }
@@ -160,6 +225,13 @@ const Admissions = (props) => {
 
   const searchUsers = (search) => {
     setSearchString(search);
+    if (!search) {
+      overlayRef.current.scrollTop = 0;
+    }
+    setBatchNextPage(1);
+    setUserNextPage(1);
+    setBatches([]);
+    setUsers([]);
   };
 
   const isFilterTriggered = () => {
@@ -168,6 +240,7 @@ const Admissions = (props) => {
 
   const changeTab = (option) => {
     setTab(option);
+    overlayRef.current.scrollTop = 0;
   };
 
   const addDetails = (type) => {
@@ -241,12 +314,16 @@ const Admissions = (props) => {
           <div css={AdmissionStyle.UserCards} style={{ marginBottom: '6rem' }}>
             {tab === 'Users' ? (
               users.map((elem) => {
-                return <UserDataCard elem={elem} history={history} key={elem.user_id} />;
+                return (
+                  <UserDataCard elem={elem} history={history} key={elem.user_id * Math.random()} />
+                );
               })
             ) : (
               <Row className='justify-content-center mx-1'>
                 {batches.map((elem) => {
-                  return <BatchesDataCard elem={elem} history={history} />;
+                  return (
+                    <BatchesDataCard elem={elem} history={history} key={elem.client_batch_id} />
+                  );
                 })}
               </Row>
             )}

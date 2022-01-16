@@ -38,7 +38,6 @@ const TeacherCourses = (props) => {
   } = props;
   const [courses, setCourses] = useState([]);
   const [sortBy, setSortBy] = useState('date');
-  const [page, setPage] = useState(1);
   const [filterModal, setFilterModal] = useState(false);
   const [statistics, setStatistics] = useState([]);
   const [courseModal, setCourseModal] = useState(false);
@@ -48,13 +47,28 @@ const TeacherCourses = (props) => {
   const [showToast, setShowToast] = useState(false);
   const [searchString, setSearchString] = useState('');
   const [activeTab, setActiveTab] = useState('My Courses');
+  const [searchedCourses, setSearchedCourses] = useState([]);
+  const [searchedStatistics, setSearchedStatistics] = useState([]);
+  // const [page, setPage] = useState(1);
+  const [coursePage, setCoursePage] = useState(1);
+  const [searchedCoursePage, setSearchedCoursePage] = useState(1);
+  const [statisticsPage, setStatisticsPage] = useState(1);
+  const [searchedStatisticsPage, setSearchedStatisticsPage] = useState(1);
 
   const infiniteScroll = () => {
     if (
-      window.innerHeight + document.documentElement.scrollTop ===
-      document.documentElement.offsetHeight
+      window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight ||
+      window.innerHeight + document.body.scrollTop >= document.body.offsetHeight
     ) {
-      setPage((prev) => prev + 1);
+      if (activeTab === 'My Courses') {
+        setSearchedCoursePage((prev) => prev + 1);
+        setCoursePage((prev) => prev + 1);
+      } else if (activeTab === 'Statistics') {
+        setSearchedStatisticsPage((prev) => prev + 1);
+        setStatisticsPage((prev) => prev + 1);
+      }
+      console.log(activeTab);
     }
   };
 
@@ -62,48 +76,138 @@ const TeacherCourses = (props) => {
     window.addEventListener('scroll', infiniteScroll);
 
     return () => window.removeEventListener('scroll', infiniteScroll);
-  }, []);
+  }, [activeTab]);
 
   const NoPreview =
     'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1625835287424.jpg';
 
   useEffect(() => {
-    const payload = {
-      client_id: clientId,
-      client_user_id: clientUserId,
-      is_admin: roleArray.includes(4),
-      sort_by: sortBy,
-      page,
-    };
-    get(payload, '/getCoursesOfCoachingLatest3').then((res) => {
-      const result = apiValidation(res);
-      const searchedArray = [...courses, ...result].filter(
-        (e) => e.course_title.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
-      );
-      setCourses(searchedArray);
-      console.log(result);
-    });
-    console.log(history, 'hiatory');
-    const publishedPayload = {
-      client_id: clientId,
-      client_user_id: clientUserId,
-      is_admin: roleArray.includes(4),
-      sort_by: sortBy,
-      page,
-    };
-    get(publishedPayload, '/getPublishedCoursesOfCoaching3').then((res) => {
-      const result = apiValidation(res);
-      console.log(result, 'getPubkishedoursesOfCoaching3');
-      const searchedArray = [...statistics, ...result].filter(
-        (e) => e.course_title.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
-      );
-      setStatistics(searchedArray);
-    });
+    //   const payload = {
+    //     client_id: clientId,
+    //     client_user_id: clientUserId,
+    //     is_admin: roleArray.includes(4),
+    //     sort_by: sortBy,
+    //     page: coursePage,
+    //   };
+    //   // get(payload, '/getCoursesOfCoachingLatest3').then((res) => {
+    //   //   const result = apiValidation(res);
+    //   //   const searchedArray = [...courses, ...result].filter(
+    //   //     (e) => e.course_title.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+    //   //   );
+    //   //   setCourses(searchedArray);
+    //   //   console.log(result, 'getCoursesOfCoachingLatest3');
+    //   // });
+    //   // console.log(history, 'hiatory');
+
+    //   const publishedPayload = {
+    //     client_id: clientId,
+    //     client_user_id: clientUserId,
+    //     is_admin: roleArray.includes(4),
+    //     sort_by: sortBy,
+    //     page: 1,
+    //   };
+    //   // get(publishedPayload, '/getPublishedCoursesOfCoaching3').then((res) => {
+    //   //   const result = apiValidation(res);
+    //   //   console.log(result, 'getPublishedCoursesOfCoaching3');
+    //   //   const searchedArray = [...statistics, ...result].filter(
+    //   //     (e) => e.course_title.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
+    //   //   );
+    //   //   setStatistics(searchedArray);
+    //   // });
 
     get({ client_id: clientId, course_id: 9 }, '/getCourseDetails').then((res) => {
       console.log(res, 'jaishritest');
     });
-  }, [clientId, clientUserId, history, roleArray, searchString, sortBy, page]);
+  }, [clientId, clientUserId, history, roleArray, sortBy]);
+
+  useEffect(() => {
+    let timer;
+    if (searchString.length > 0 && activeTab === 'My Courses') {
+      console.log(searchedCourses, 'searchedCourses');
+      timer = setTimeout(() => {
+        const searchPayload = {
+          client_id: clientId,
+          client_user_id: clientUserId,
+          is_admin: roleArray.includes(4),
+          sort_by: sortBy,
+          page: searchedCoursePage,
+          keyword: searchString,
+        };
+
+        get(searchPayload, '/searchInCourses2').then((res) => {
+          const result = apiValidation(res);
+          const searchedArray = [...searchedCourses, ...result];
+          setSearchedCourses(searchedArray);
+          console.log(result, 'searchInCourses', searchedCoursePage);
+        });
+      }, 500);
+    }
+    if (searchString.length === 0 && activeTab === 'My Courses') {
+      const payload = {
+        client_id: clientId,
+        client_user_id: clientUserId,
+        is_admin: roleArray.includes(4),
+        sort_by: sortBy,
+        page: coursePage,
+      };
+
+      get(payload, '/getCoursesOfCoachingLatest3').then((res) => {
+        const result = apiValidation(res);
+        const resultArray = [...courses, ...result];
+        setCourses(resultArray);
+        console.log(result, 'getCoursesOfCoachingLatest3', coursePage);
+      });
+    }
+    return () => {
+      clearTimeout(timer);
+      // setCourses([]);
+      //     // setCoursePage(1);
+      // setSearchedCoursePage(1);
+    };
+  }, [coursePage, searchString]);
+
+  useEffect(() => {
+    let timer;
+    if (searchString.length > 0 && activeTab === 'Statistics') {
+      timer = setTimeout(() => {
+        const publishedPayload = {
+          client_id: clientId,
+          client_user_id: clientUserId,
+          is_admin: roleArray.includes(4),
+          sort_by: sortBy,
+          page: searchedStatisticsPage,
+          keyword: searchString,
+        };
+        get(publishedPayload, '/searchInPublishedCourses2').then((res) => {
+          const result = apiValidation(res);
+          const searchedArray = [...searchedStatistics, ...result];
+          console.log(result);
+          setSearchedStatistics(searchedArray);
+        });
+      }, 500);
+    }
+    if (searchString.length === 0 && activeTab === 'Statistics') {
+      const publishedPayload = {
+        client_id: clientId,
+        client_user_id: clientUserId,
+        is_admin: roleArray.includes(4),
+        sort_by: sortBy,
+        page: statisticsPage,
+      };
+
+      get(publishedPayload, '/getPublishedCoursesOfCoaching3').then((res) => {
+        const result = apiValidation(res);
+        console.log(result, 'getPublishedCoursesOfCoaching3', statisticsPage);
+        const resultArray = [...statistics, ...result];
+        setStatistics(resultArray);
+      });
+    }
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [statisticsPage, searchString]);
+
+  useEffect(() => {}, [searchString]);
 
   useEffect(() => {
     console.log(history.location.state);
@@ -190,22 +294,45 @@ const TeacherCourses = (props) => {
 
   const searchCourses = (search) => {
     setSearchString(search);
+    if (!search) window.scrollTo(0, 0);
+    if (activeTab === 'My Courses') {
+      setSearchedCourses([]);
+      setCourses([]);
+      setCoursePage(1);
+      setSearchedCoursePage(1);
+    }
+    if (activeTab === 'Statistics') {
+      setSearchedStatistics([]);
+      setStatistics([]);
+      setStatisticsPage(1);
+      setSearchedStatisticsPage(1);
+    }
   };
 
   const handleSelect = (tab) => {
+    console.log(tab);
+    setCoursePage(1);
+    setStatisticsPage(1);
+    setSearchedCoursePage(1);
+    setSearchedStatisticsPage(1);
     setActiveTab(tab);
+    window.scrollTo(0, 0);
   };
 
   const triggerFilters = () => setFilterModal(!filterModal);
 
   const filterResult = (how) => {
     if (how === 'alphabetically') {
-      setPage(1);
+      // setSearchString('');
+      setCoursePage(1);
+      setStatisticsPage(1);
       setCourses([]);
       setStatistics([]);
       setSortBy('name');
     } else {
-      setPage(1);
+      // setSearchString('');
+      setCoursePage(1);
+      setStatisticsPage(1);
       setStatistics([]);
       setCourses([]);
       setSortBy('date');
@@ -252,7 +379,8 @@ const TeacherCourses = (props) => {
             >
               Create Course
             </Button>
-            {courses.map((course) => {
+            {/* {(searchString.length > 0 && activeTab == 'My Courses' ? searchedCourses : courses).map( */}
+            {(searchedCourses.length > 0 ? searchedCourses : courses).map((course) => {
               return (
                 <Row
                   className='Courses__teacherCourse p-1'
@@ -295,7 +423,10 @@ const TeacherCourses = (props) => {
                           course.course_status === 'published'
                             ? { background: 'var(--primary-blue)', color: '#fff' }
                             : course.course_status === 'incomplete'
-                            ? { background: 'rgba(255, 0, 0, 0.87)', color: 'rgba(0, 0, 0, 0.87)' }
+                            ? {
+                                background: 'rgba(255, 0, 0, 0.87)',
+                                color: 'rgba(0, 0, 0, 0.87)',
+                              }
                             : { background: ' rgba(0, 0, 0, 0.54)', color: 'rgba(0, 0, 0, 0.87)' }
                         }
                         onClick={
@@ -337,7 +468,11 @@ const TeacherCourses = (props) => {
             style={{ marginTop: '7rem' }}
             onclick={() => handleSelect('Statistics')}
           >
-            {statistics.map((course) => {
+            {/* {(searchString.length > 0 && activeTab == 'Statistics'
+              ? searchedStatistics
+              : statistics
+            ) */}
+            {(searchedStatistics.length > 0 ? searchedStatistics : statistics).map((course) => {
               return (
                 <Row
                   className='Courses__teacherCourse'
