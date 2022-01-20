@@ -12242,6 +12242,11 @@ react-input-autosize@^2.2.2:
   dependencies:
     prop-types "^15.5.8"
 
+react-insta-stories@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/react-insta-stories/-/react-insta-stories-2.3.0.tgz#f2d0aeca7eca8f1f7a13486e573758a460de20da"
+  integrity sha512-1609XYXFPKvaoEGoHSJqdqd75pGhBv9iaX3vY2vJRaVFWVBYb8D2ax1S7iBTvqadEM34o7bbrp0g6hN4hDK44w==
+
 react-interactable@^0.6.4:
   version "0.6.4"
   resolved "https://registry.yarnpkg.com/react-interactable/-/react-interactable-0.6.4.tgz#808377b387b9f0b4b30232336135e8d5c555d8d0"

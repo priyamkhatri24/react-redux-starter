@@ -508,6 +508,11 @@ const viewAllAsignments = Loadable({
   loader: () => import(/* webpackChunkName: 'Post' */ '../Components/Tests/OnlineAssignments'),
   loading: Loading,
 });
+
+const stories = Loadable({
+  loader: () => import(/* webpackChunkName: 'Post' */ '../Components/Stories/AppStories'),
+  loading: Loading,
+});
 // eslint-disable-next-line
 function Loading({ error }) {
   if (error) {
@@ -520,6 +525,7 @@ function Loading({ error }) {
 export function Routes() {
   return (
     <Switch>
+      <Route path='/stories' component={stories} />
       <AuthenticatedRoute exact path='/' component={Dashboard} />
 
       <Route path='/signin' component={SignIn} />
