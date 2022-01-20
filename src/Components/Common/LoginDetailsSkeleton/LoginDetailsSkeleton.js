@@ -169,7 +169,7 @@ export const LoginDetailsSkeleton = (props) => {
         )}
       </div>
 
-      <footer className='py-4 Login__footer d-none d-lg-block'>
+      <footer className='py-4 Login__footer d-block'>
         <h6 className='Login__footerText'>Powered By</h6>
         <img src={footerIngenium} alt='footerLogo' className='deskWidth' />
       </footer>

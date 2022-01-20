@@ -81,6 +81,7 @@ export function changeFaviconAndDocumentTitle(favicon, documentTitle) {
     document.head.appendChild(link);
   });
   if (documentTitle) document.title = documentTitle;
+
   // const link = document.createElement('link');
   // const oldLink = document.getElementById('dynamic-favicon');
   // link.id = 'dynamic-favicon';

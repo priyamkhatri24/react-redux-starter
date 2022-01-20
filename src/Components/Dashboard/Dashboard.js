@@ -918,21 +918,21 @@ const Dashboard = (props) => {
             textColor={data.text_color}
           />
         );
-      case 'offlineAssignment':
-        return (
-          <DashboardCards
-            image={param.feature_icon} // analysisHands
-            width={62}
-            height={78}
-            heading={param.client_feature_name}
-            subHeading={param.description}
-            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-            backGround={param.start_colour}
-            backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
-            buttonClick={goToOfflineAssignments}
-            textColor={data.text_color}
-          />
-        );
+      // case 'offlineAssignment':
+      //   return (
+      //     <DashboardCards
+      //       image={param.feature_icon} // analysisHands
+      //       width={62}
+      //       height={78}
+      //       heading={param.client_feature_name}
+      //       subHeading={param.description}
+      //       boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+      //       backGround={param.start_colour}
+      //       backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
+      //       buttonClick={goToOfflineAssignments}
+      //       textColor={data.text_color}
+      //     />
+      //   );
       case 'fees':
         return (
           <DashboardCards
@@ -1386,7 +1386,7 @@ const Dashboard = (props) => {
   };
 
   return (
-    <div style={{ marginBottom: '1rem' }}>
+    <div className='Dashboard__mainContainerDiv'>
       <div
         className='Dashboard__headerCard pb-3'
         // className={`Dashboard__headerCard pb-3 ${

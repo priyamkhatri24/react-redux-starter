@@ -26,6 +26,7 @@ const AssignmentForm = (props) => {
   const [totalMarks, setTotalMarks] = useState();
   const [description, setDescription] = useState('');
   const [activeButton, setActiveButton] = useState('no');
+  const [showValidationErrors, setShowValidationErrors] = useState(false);
   const [formdata, setFormData] = useState({
     assignmentName: '',
     assignmentDate: '',
@@ -73,14 +74,33 @@ const AssignmentForm = (props) => {
     setBatchVal(temp.toString());
   }, [selectedBatches]);
 
+  const formValidator = () => {
+    if (activeButton === 'no') {
+      if (!assignmentName || !assignmentDate || !totalMarks || !selectedBatches.length) {
+        return false;
+      }
+    } else if (activeButton === 'yes') {
+      if (
+        !assignmentName ||
+        !assignmentDate ||
+        !totalMarks ||
+        !selectedBatches.length ||
+        !selectedSubjects.length ||
+        selectedSubjects.find((ele) => ele.marks.length === 0)
+      ) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // setAssignmentDate((prevState) => ({
-    //   ...prevState.assignmentDate,
-    //   assignmentDate: assignmentDate.split('-').reverse().join('-'),
-    // }));
-
+    const isFormValid = formValidator();
+    if (!isFormValid) {
+      setShowValidationErrors(true);
+      return;
+    }
     setFormData({
       assignmentName,
       assignmentDate,
@@ -111,7 +131,7 @@ const AssignmentForm = (props) => {
     history.push('/offlineassignments');
   };
 
-  const handleClick = (name, id) => {
+  const handleSelectedSubjects = (name, id) => {
     const newSubjectArray = [...selectedSubjects];
     const isPresent = newSubjectArray.find((i) => {
       return i.subject_name === name;
@@ -198,11 +218,11 @@ const AssignmentForm = (props) => {
     <div className='mainFormPage'>
       <PageHeader
         title='Add Offline Assignment'
-        transparent
+        shadow
         customBack
         handleBack={goToOfflineAssignments}
       />
-      <div fluid='md' className='OFAFormContainer'>
+      <div className='OFAFormContainer'>
         <div className='OFAForm__formContainerOffline'>
           <Row>
             <form className='OFAForm__form'>
@@ -216,6 +236,9 @@ const AssignmentForm = (props) => {
                   onChange={(event) => setAssignmentName(event.target.value)}
                 />
                 <span>Assignment name</span>
+                {showValidationErrors && !assignmentName && (
+                  <p className='validationErrorOFAForm'>*This field is required</p>
+                )}
               </label>
 
               <div className='d-flex'>
@@ -235,6 +258,9 @@ const AssignmentForm = (props) => {
                     value={batchVal}
                   />
                   <span>Select Batch</span>
+                  {showValidationErrors && !selectedBatches.length && (
+                    <p className='validationErrorOFAForm'>*This field is required</p>
+                  )}
                 </label>
               </div>
 
@@ -260,6 +286,9 @@ const AssignmentForm = (props) => {
                   onChange={(event) => handleDate(event)}
                 />
                 <span>Assignment date</span>
+                {showValidationErrors && !assignmentDate && (
+                  <p className='validationErrorOFAForm'>*This field is required</p>
+                )}
               </label>
               {!selectSubject ? (
                 <label className='has-float-label my-3'>
@@ -272,6 +301,9 @@ const AssignmentForm = (props) => {
                     onChange={(event) => setTotalMarks(event.target.value)}
                   />
                   <span>Total marks</span>
+                  {showValidationErrors && !totalMarks && (
+                    <p className='validationErrorOFAForm'>*This field is required</p>
+                  )}
                 </label>
               ) : (
                 <Form.Group>Total marks: {totalMarks}</Form.Group>
@@ -307,31 +339,42 @@ const AssignmentForm = (props) => {
                   <div className='OFAForm__scrollable'>
                     {subjects.map((i) => (
                       <button
+                        type='button'
                         className={`OFAForm__button mx-2${
                           findThisId(i.subject_id) ? ' activeButtonOFA' : ''
                         }`}
-                        onClick={() => handleClick(i.subject_name, i.subject_id)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSelectedSubjects(i.subject_name, i.subject_id);
+                        }}
                       >
                         {i.subject_name}
                       </button>
                     ))}
                   </div>
+                  {showValidationErrors && !selectedSubjects.length && (
+                    <p className='validationErrorOFAForm'>*This field is required</p>
+                  )}
                 </div>
               )}
               {selectedSubjects.length > 0 &&
                 selectSubject &&
                 selectedSubjects.map((i) => {
                   return (
-                    <Form.Group>
-                      <Form.Control
-                        type='input'
-                        // value={i.subject_name}
-                        placeholder={i.subject_name.concat(' total marks')}
-                        className='formInput'
-                        onChange={(event) => handleMarks(event, i.subject_id)}
-                        required
-                      />
-                    </Form.Group>
+                    <>
+                      <Form.Group>
+                        <Form.Control
+                          type='input'
+                          // value={i.subject_name}
+                          placeholder={i.subject_name.concat(' total marks')}
+                          className='formInput'
+                          onChange={(event) => handleMarks(event, i.subject_id)}
+                        />
+                        {showValidationErrors && !i.marks.length && (
+                          <p className='validationErrorOFAForm'>*This field is required</p>
+                        )}
+                      </Form.Group>
+                    </>
                   );
                 })}
             </form>

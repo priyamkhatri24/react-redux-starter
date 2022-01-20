@@ -13,6 +13,14 @@
     }
   }
 
+  &__mainContainerDiv{
+    margin-bottom: 1rem;
+
+    @include media-breakpoint-down(md) {
+      margin-bottom:3rem
+    }
+  }
+
   &__profileImage {
     height: $spacer * 5;
     width: $spacer * 5;

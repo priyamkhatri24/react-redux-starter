@@ -67,14 +67,14 @@ const StudentList = (props) => {
       isPercent: true,
       isSelected: false,
     },
-    {
-      id: 5,
-      heading: 'Offline assignments',
-      numerator: analysisStudentObject.completed_offline_test,
-      denominator: analysisStudentObject.total_offline_test,
-      isPercent: false,
-      isSelected: false,
-    },
+    // {
+    //   id: 5,
+    //   heading: 'Offline assignments',
+    //   numerator: analysisStudentObject.completed_offline_test,
+    //   denominator: analysisStudentObject.total_offline_test,
+    //   isPercent: false,
+    //   isSelected: false,
+    // },
   ]);
 
   useEffect(() => {
@@ -382,22 +382,11 @@ const StudentList = (props) => {
           </div>
         )}
         <div style={{ width: '95%', margin: 'auto' }}>
-          {topButtons[4].isSelected &&
+          {topButtons[4]?.isSelected &&
             (offlineAssignments.length > 0 ? (
               offlineAssignments.map((elem) => {
                 console.log(elem, 'offlineee');
                 return (
-                  // <AnalysisTestsCard
-                  //   key={elem.offline_test_id}
-                  //   name={elem.test_name}
-                  //   date={elem.test_date}
-                  //   maxMarks={elem.total_marks}
-                  //   marksObtained={elem.marks}
-                  //   history={history}
-                  //   testId={elem.offline_test_id}
-                  //   clientUserId={analysisStudentObject.client_user_id}
-                  //   language={elem.language_type}
-                  // />
                   <AssignmentCards
                     testName={elem.test_name}
                     firstName={elem.first_name}

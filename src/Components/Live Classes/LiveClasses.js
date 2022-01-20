@@ -9,7 +9,6 @@ import Form from 'react-bootstrap/Form';
 import { connect } from 'react-redux';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DeleteIcon from '@material-ui/icons/Delete';
-import DurationPicker from 'react-duration-picker';
 import DatePicker from 'react-datepicker';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';

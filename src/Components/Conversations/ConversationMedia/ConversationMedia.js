@@ -7,7 +7,6 @@ import Spinner from 'react-bootstrap/Spinner';
 import Modal from 'react-bootstrap/Modal';
 import { useParams, useHistory } from 'react-router-dom';
 import InfiniteScrollComponent from 'react-infinite-scroll-component';
-import InfiniteScroll from 'react-infinite-scroller';
 import ReactPlayer from 'react-player';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import GetAppIcon from '@material-ui/icons/GetApp';

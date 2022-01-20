@@ -83,7 +83,7 @@ const AssignmentCards = (props) => {
           </Card.Body>
         </div>
         {subjectMarks && (
-          <div className='w-100 px-3'>
+          <div className='marginOnDesk w-100 pl-3 pr-3 pl-sm-2'>
             {subjectMarks?.map((e) => {
               return (
                 <div className='SubjectMarksContainer m-0'>

@@ -87,7 +87,7 @@ const DummyDashboard = (props) => {
   return (
     Object.keys(dummyData).length > 0 && (
       <div className='text-center'>
-        <div className='Dashboard__headerCard pt-5 mb-5'>
+        <div className='Dashboard__headerCard pt-5 mb-2'>
           <h3 style={{ color: dummyData.app_name_color }} className='Dummy__coachingName'>
             {dummyData.client_name}
           </h3>

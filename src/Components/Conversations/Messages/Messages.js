@@ -2,7 +2,6 @@ import React, { useRef, useEffect, forwardRef, useState, useImperativeHandle } f
 import PropTypes from 'prop-types';
 import Spinner from 'react-bootstrap/Spinner';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
-import InfiniteScroll from 'react-infinite-scroller';
 import InfiniteScrollComponent from 'react-infinite-scroll-component';
 import Message from '../Message/Message';
 import './Messages.scss';

@@ -6,7 +6,6 @@ import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import DatePicker from 'react-datepicker';
-import DurationPicker from 'react-duration-picker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
