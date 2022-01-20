@@ -13,11 +13,11 @@
     }
   }
 
-  &__mainContainerDiv{
+  &__mainContainerDiv {
     margin-bottom: 1rem;
 
     @include media-breakpoint-down(md) {
-      margin-bottom:3rem
+      margin-bottom: 3rem;
     }
   }
 
