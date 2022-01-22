@@ -2422,12 +2422,3 @@ CustomInput.propTypes = {
   value: PropTypes.node.isRequired,
   onClick: PropTypes.func.isRequired,
 };
-
-// {elem.batch_array.map((e, i) => {
-//   return (
-//     <span css={LiveClassesStyle.adminBatchesSpan} key={`elem${e}`}>
-//       {e}
-//       {i < elem.batch_array.length - 1 ? ',' : ''}
-//     </span>
-//   );
-// })}

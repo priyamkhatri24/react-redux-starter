@@ -1,5 +1,5 @@
 .conversations-container {
-  height: 100vh;
+  height: calc(100vh - 155px);
 }
 .conversations-container::-webkit-scrollbar {
   display: none;
@@ -7,6 +7,15 @@
 
 .dropdown-toggle::after {
   display: none !important;
+}
+
+.scollerForConversations {
+  overflow-y: auto;
+  height: calc(100vh - 165px);
+}
+
+.scollerForConversations::-webkit-scrollbar {
+  display: none;
 }
 
 .card-subtitle {

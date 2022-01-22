@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import { get, apiValidation } from '../../Utilities';
 import { formatConversations } from './formatter';
 import GlobalSearchBar from '../Common/GlobalSearchBar/GlobalSearchBar';
+import AppStories from '../Stories/AppStories';
 import { getConversations } from '../../redux/reducers/conversations.reducer';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { conversationsActions } from '../../redux/actions/conversations.action';
@@ -83,8 +84,9 @@ const ConversationsHeader = function ({
             {/* <GlobalSearchBar /> */}
             <MoreVert className='justify-self-end' />
           </div>
+          <AppStories />
           {searchBar ? (
-            <div className='d-flex align-items-center mt-4'>
+            <div className='d-flex justify-content-between align-items-center mt-2'>
               <input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}

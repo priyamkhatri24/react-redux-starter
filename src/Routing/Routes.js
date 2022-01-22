@@ -504,8 +504,13 @@ const Post = Loadable({
   loading: Loading,
 });
 
-const viewAllAsignments = Loadable({
+const ViewAllAsignments = Loadable({
   loader: () => import(/* webpackChunkName: 'Post' */ '../Components/Tests/OnlineAssignments'),
+  loading: Loading,
+});
+
+const Stories = Loadable({
+  loader: () => import(/* webpackChunkName: 'Post' */ '../Components/Stories/AppStories'),
   loading: Loading,
 });
 // eslint-disable-next-line
@@ -533,7 +538,7 @@ export function Routes() {
       {/* <Route path='/videoplayerplyr/:id' component={VideoPlayer} /> */}
       <Route path='/videoplayer/:id?' component={PlyrVideoPlayer} />
 
-      <AuthenticatedRoute exact path='/allassignments' component={viewAllAsignments} />
+      <AuthenticatedRoute exact path='/allassignments' component={ViewAllAsignments} />
       <AuthenticatedRoute exact path='/liveclasses' component={LiveClasses} />
       <AuthenticatedRoute exact path='/studybin' component={StudyBin} />
       <AuthenticatedRoute exact path='/studybin/categories/:id' component={Categories} />
@@ -586,6 +591,7 @@ export function Routes() {
       <AuthenticatedRoute exact path='/conversations/:id/:type' component={ConversationFiles} />
       <AuthenticatedRoute exact path='/create-post' component={CreatePost} />
       <AuthenticatedRoute exact path='/posts/:id' component={Post} />
+      <AuthenticatedRoute exact path='/stories' component={Stories} />
 
       <AuthenticatedRoute exact path='/analysis/teacher' component={TeacherAnalysis} />
       <AuthenticatedRoute exact path='/analysis/assignment' component={AssignmentList} />

@@ -1,0 +1,225 @@
+.NextAndPrevArrows {
+  position: fixed;
+  z-index: 1550;
+  justify-content: space-between;
+  margin: auto;
+  top: 50%;
+  width: 98%;
+  /* background-color: darkgray; */
+}
+
+.NextAndPrevArrows .arrow {
+  cursor: pointer;
+  color: white;
+}
+
+.addStatusButton {
+  background-color: white;
+  border: transparent;
+  outline: none;
+  border-radius: 100%;
+  padding: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--primary-blue);
+}
+
+.modalDivStories > div > div {
+  justify-content: center;
+}
+
+.modalDivStories {
+  height: 95vh;
+  padding: 0px !important;
+  width: 70vw;
+}
+
+.modalImageContainer {
+  background-color: gray;
+  border-radius: 30px;
+  height: 100%;
+}
+
+.addMorePhoto {
+  color: var(--primary-blue);
+}
+
+.modalImageStories {
+  width: 100%;
+  height: auto;
+  background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 100% !important;
+  transition-duration: 0.3s;
+  overflow: hidden;
+}
+
+.modalSelectedImages {
+  width: inherit;
+  height: max-content;
+}
+
+.selectedImagesMapContainer {
+  width: 100%;
+  display: flex;
+}
+
+.buttonNone {
+  outline: none;
+  border: transparent;
+  background-color: rgba(22, 22, 22, 0.9);
+  display: flex;
+  justify-content: center;
+  z-index: 99;
+  color: white;
+  transition-duration: 0.3s;
+  border-radius: 100px;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.buttonNone:hover {
+  background-color: black;
+}
+
+.modalNextPrev {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin: auto;
+  position: absolute;
+  top: 50%;
+  left: 0;
+}
+
+.imageModalFiles {
+  height: calc(100vh - 60px - 60px);
+  display: flex;
+  padding: 0px !important;
+  justify-content: center;
+}
+
+.modalHeader {
+  background-color: black;
+  border: transparent;
+  color: white;
+}
+.modalHeader > button {
+  color: white;
+}
+
+.widthControl > .modal-dialog {
+  max-width: 100vw !important;
+}
+
+.filesModal > div {
+  margin: 0px;
+}
+
+.filesModal > div > div {
+  overflow: hidden;
+  width: 70vw;
+}
+
+.statusUserName {
+  color: gray;
+  text-align: center;
+  font-family: 'Montserrat-Medium';
+  font-size: 10px;
+  margin: 1px 0px 0px 0px;
+}
+
+.statusCircle {
+  border-radius: 100px;
+  width: 50px;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  margin: 0px auto;
+  border: 2px solid var(--primary-blue);
+}
+
+.scrollableStatuses {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  overflow: auto;
+}
+
+.scrollableStatuses::-webkit-scrollbar {
+  display: none;
+}
+
+.statusProfileImage {
+  margin: auto;
+  border-radius: 100px;
+  width: 40px;
+  height: 40px;
+}
+
+.addCaptionContainer {
+  border: 1px solid gray;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  width: 90%;
+  background-color: white;
+  padding: 5px;
+}
+
+.addCaptionContainerInput {
+  outline: none;
+  border: transparent;
+  font-family: 'Montserrat-Medium';
+}
+
+.addCaptionContainerInput::placeholder {
+  font-family: 'Montserrat-Regular';
+}
+
+.SelectedPhotosModalFooter {
+  background-color: black;
+  border: transparent;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  padding-top: 3px !important;
+}
+
+.btnAddMorePhoto {
+  background-color: transparent;
+  border: transparent;
+  outline: none;
+}
+
+.plusMarkStories {
+  position: absolute;
+  z-index: 5;
+  top: 80px;
+  left: 45px;
+  margin: 0px;
+  background-color: var(--primary-blue);
+  border-radius: 100px;
+  width: 18px;
+  height: 18px;
+  color: whitesmoke;
+  padding-bottom: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media screen and (max-width: 600px) {
+  .modalDivStories {
+    width: 95vw;
+  }
+  .filesModal > div > div {
+    width: 100vw;
+  }
+}
