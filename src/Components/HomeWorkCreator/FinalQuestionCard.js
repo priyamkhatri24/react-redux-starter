@@ -37,7 +37,11 @@ const FinalQuestionCard = (props) => {
         <>
           <Row className=' ml-2 mr-0 mt-2'>
             <span className='Homework__questionIndex'>
-              Q {index + 1 < 10 ? `0${index + 1}` : index + 1}
+              Question .{index + 1 < 10 ? `0${index + 1}` : index + 1} ({' '}
+              <span style={{ color: 'lightGreen' }}>
+                +{question.question_positive_marks.toFixed(1)}
+              </span>
+              ,<span style={{ color: 'red' }}>-{question.question_negative_marks.toFixed(1)}</span>)
             </span>
             <div className='ml-auto d-flex'>
               <span className='Homework__questionType my-auto mr-2'>

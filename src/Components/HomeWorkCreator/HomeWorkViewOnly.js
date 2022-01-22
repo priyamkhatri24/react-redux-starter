@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import ReactToPrint from 'react-to-print';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
@@ -31,6 +32,8 @@ const HomeWorkViewOnly = (props) => {
     homeworkLanguageType,
   } = props;
 
+  const componentRef = useRef();
+
   const modifyQuestions = () => {
     if (testsType === 'saved') {
       setSelectedQuestionArrayToStore(questionArray);
@@ -54,11 +57,14 @@ const HomeWorkViewOnly = (props) => {
       state: { draft, onlyNext, testIdd, courseId, sectionId },
     });
   };
-
   return (
     <>
       <PageHeader title={testName} shadow />
-      <Card style={{ marginTop: '4rem' }} className='Homework__selectCard mb-3 mx-2'>
+      <Card
+        style={{ marginTop: '4rem' }}
+        className='Homework__selectCard mb-3 mx-2'
+        ref={componentRef}
+      >
         {questionArray.map((question, index) => {
           return (
             <FinalQuestionCard
@@ -84,6 +90,15 @@ const HomeWorkViewOnly = (props) => {
             Add/Remove
           </Button>
         ) : null}
+
+        <ReactToPrint
+          content={() => componentRef.current}
+          trigger={() => (
+            <Button variant='customPrimary' style={{ marginLeft: '10px' }}>
+              Download
+            </Button>
+          )}
+        />
       </div>
     </>
   );
