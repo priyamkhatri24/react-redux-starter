@@ -96,7 +96,7 @@ const StudyBin = (props) => {
       client_id: clientId,
     };
     if (folderIdStack.length < 1) {
-      get(temp, '/getPrimaryFoldersAndFiles') // instead of temp should be [payload]
+      get(temp, '/getPrimaryFoldersAndFiles2') // instead of temp should be [payload]
         .then((res) => {
           const result = apiValidation(res);
           setFileArray(result.files);
@@ -119,7 +119,7 @@ const StudyBin = (props) => {
         client_user_id: clientUserId,
         role_id: roleId,
       };
-      get(newPayload, '/getFoldersAndFilesOfFolder')
+      get(newPayload, '/getFoldersAndFilesOfFolder2')
         .then((res) => {
           const result = apiValidation(res);
           setFileArray(result.files);
@@ -292,7 +292,7 @@ const StudyBin = (props) => {
           client_user_id: clientUserId,
           client_id: clientId,
         };
-        get(temp, '/getPrimaryFoldersAndFiles') // instead of temp should be [payload]
+        get(temp, '/getPrimaryFoldersAndFiles2') // instead of temp should be [payload]
           .then((res) => {
             setSpinnerStatusToStore(false);
             setLoadingSuccessToStore();
@@ -336,14 +336,14 @@ const StudyBin = (props) => {
         client_user_id: clientUserId,
         role_id: roleId,
       };
-      get(newPayload, '/getFoldersAndFilesOfFolder')
+      get(newPayload, '/getFoldersAndFilesOfFolder2')
         .then((res) => {
           setSpinnerStatusToStore(false);
           setLoadingSuccessToStore();
           const result = apiValidation(res);
           setFileArray(result.files);
           setFolderArray(result.folders);
-          console.log(result);
+          console.log(result, 'getFoldersAndFilesOfFoleder');
         })
         .catch((err) => {
           console.log(err);
@@ -418,17 +418,27 @@ const StudyBin = (props) => {
 
   const openContextMenu = (elem, type) => {
     console.log(elem, 'elememememm');
-    setMenuOptions({
-      ...menuOptions,
-      type,
-      status: elem.status,
-      id: type === 'folder' ? elem.folder_id : elem.file_id,
-      finalBatches: elem.final_batch,
-      currentBatches: elem.current_batch,
-      currentFolderName: elem.folder_name,
-      createdAt: elem.created_at,
-    });
-    handleMenuShow();
+    const getBatchesPayload =
+      type === 'folder'
+        ? { folder_id: elem.folder_id, client_id: clientId }
+        : { file_id: elem.file_id, client_id: clientId };
+    get(getBatchesPayload, type === 'folder' ? '/getBatchesOfFolder' : '/getBatchesOfFile').then(
+      (res) => {
+        console.log(res, 'getBatchesOfFolder');
+        const batches = apiValidation(res);
+        setMenuOptions({
+          ...menuOptions,
+          type,
+          status: elem.status,
+          id: type === 'folder' ? elem.folder_id : elem.file_id,
+          finalBatches: batches.final_batch,
+          currentBatches: batches.current_batch,
+          currentFolderName: elem.folder_name,
+          createdAt: elem.created_at,
+        });
+        handleMenuShow();
+      },
+    );
   };
 
   const enterCategory = (id) => {

@@ -14,11 +14,20 @@ import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import AllStudentsForFee from './AllStudentsForFee';
 import FeeUserDetails from './FeeUserDetails';
 import { PageHeader } from '../Common';
+import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import { feeActions } from '../../redux/actions/fees.actions';
 import './Fees.scss';
 
 const TeacherFees = (props) => {
-  const { clientId, clientUserId, history, setFeePlanTypeToStore } = props;
+  const {
+    clientId,
+    clientUserId,
+    history,
+    setFeePlanTypeToStore,
+    currentbranding: {
+      branding: { currency_code: currencyCode, currency_symbol: currencySymbol },
+    },
+  } = props;
   const [carouselDetails, setCarouselDetails] = useState({});
   const [activeTab, setActiveTab] = useState('Notifications');
   const [searchString, setSearchString] = useState('');
@@ -50,7 +59,7 @@ const TeacherFees = (props) => {
       <div style={{ marginTop: '4rem' }}>
         {activeTab === 'Notifications' && (
           <>
-            <FeeCarousel carouselObject={carouselDetails} />
+            <FeeCarousel currencySymbol={currencySymbol} carouselObject={carouselDetails} />
             <Row className=' mx-2 Fees__TwobuttonsRow'>
               <Button
                 variant='courseBlueOnWhite'
@@ -93,7 +102,11 @@ const TeacherFees = (props) => {
             style={{ marginBottom: '0.5rem' }}
             onClick={() => handleSelect('Notifications')}
           >
-            <FeesTimeline clientId={clientId} activeTab={activeTab === 'Notifications'} />
+            <FeesTimeline
+              currencySymbol={currencySymbol}
+              clientId={clientId}
+              activeTab={activeTab === 'Notifications'}
+            />
           </Tab>
           <Tab
             style={{ marginBottom: '0.5rem' }}
@@ -103,6 +116,7 @@ const TeacherFees = (props) => {
           >
             <FeeBatches
               clientId={clientId}
+              currencySymbol={currencySymbol}
               clientUserId={clientUserId}
               activeTab={activeTab === 'Batches'}
               history={history}
@@ -117,6 +131,7 @@ const TeacherFees = (props) => {
           >
             <AllStudentsForFee
               clientUserId={clientUserId}
+              currencySymbol={currencySymbol}
               activeTab={activeTab === 'Students'}
               clientId={clientId}
               history={history}
@@ -134,6 +149,7 @@ const TeacherFees = (props) => {
 const mapStateToProps = (state) => ({
   clientId: getClientId(state),
   clientUserId: getClientUserId(state),
+  currentbranding: getCurrentBranding(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -151,4 +167,10 @@ TeacherFees.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   setFeePlanTypeToStore: PropTypes.func.isRequired,
+  currentbranding: PropTypes.shape({
+    branding: PropTypes.shape({
+      currency_code: PropTypes.string,
+      currency_symbol: PropTypes.string,
+    }),
+  }).isRequired,
 };

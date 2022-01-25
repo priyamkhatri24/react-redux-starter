@@ -333,7 +333,7 @@ const Dashboard = (props) => {
       ? 2
       : 1;
     get(
-      { client_id: clientId, role_id: roleId, client_user_id: clientUserId },
+      { client_id: clientId, role_id: roleId, client_user_id: clientUserId, is_new: true },
       '/getLoginPageInformation',
     ).then((res) => {
       console.log(res, 'sadad');
@@ -918,21 +918,21 @@ const Dashboard = (props) => {
             textColor={data.text_color}
           />
         );
-      // case 'offlineAssignment':
-      //   return (
-      //     <DashboardCards
-      //       image={param.feature_icon} // analysisHands
-      //       width={62}
-      //       height={78}
-      //       heading={param.client_feature_name}
-      //       subHeading={param.description}
-      //       boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
-      //       backGround={param.start_colour}
-      //       backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
-      //       buttonClick={goToOfflineAssignments}
-      //       textColor={data.text_color}
-      //     />
-      //   );
+      case 'offlineAssignment':
+        return (
+          <DashboardCards
+            image={param.feature_icon} // analysisHands
+            width={62}
+            height={78}
+            heading={param.client_feature_name}
+            subHeading={param.description}
+            boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
+            backGround={param.start_colour}
+            backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
+            buttonClick={goToOfflineAssignments}
+            textColor={data.text_color}
+          />
+        );
       case 'fees':
         return (
           <DashboardCards

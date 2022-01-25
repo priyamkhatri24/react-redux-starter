@@ -23,6 +23,7 @@ const Price = (props) => {
     clientId,
     courseId,
     clientUserId,
+    currencySymbol,
   } = props;
   const [currentCoursePrice, setCurrentPrice] = useState(0);
   const [discountCoursePrice, setDiscountPrice] = useState(0);
@@ -270,7 +271,7 @@ const Price = (props) => {
                     onClick={() => getCouponInfo(elem.coupon_id, elem.status)}
                   >
                     <p className='m-2'>
-                      <span className='Courses__rupeeAmount'> &#8377; {elem.price}</span>
+                      <span className='Courses__rupeeAmount'>{`${currencySymbol} ${elem.price}`}</span>
                       <span className='Courses__tinySubHeading'> OFF</span>
                     </p>
                     <Row className='justify-content-center m-2'>
@@ -334,7 +335,7 @@ const Price = (props) => {
                     className='form-control'
                     name='Discount Type'
                     type='text'
-                    value='₹Rupees'
+                    value={currencySymbol}
                     placeholder='Discount Type'
                     readOnly
                   />
@@ -464,7 +465,7 @@ const Price = (props) => {
             <p className='m-2'>
               <span className='Courses__rupeeAmount' style={{ fontSize: '18px' }}>
                 {' '}
-                &#8377; {couponInfo.price}
+                {`${currencySymbol} ${couponInfo.price}`}
               </span>
               <span style={{ fontSize: '12px' }} className='Courses__tinySubHeading'>
                 {' '}
@@ -561,6 +562,7 @@ Price.propTypes = {
   coupons: PropTypes.instanceOf(Array).isRequired,
   clientId: PropTypes.number.isRequired,
   courseId: PropTypes.number.isRequired,
+  currencySymbol: PropTypes.string.isRequired,
   clientUserId: PropTypes.number.isRequired,
 };
 

@@ -11,6 +11,7 @@ import isBefore from 'date-fns/isBefore';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { BatchesSelector, FeeScrollableCards, PageHeader, StudentSelector } from '../Common';
 import { apiValidation, get, post } from '../../Utilities';
+import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import { getfeePlanType } from '../../redux/reducers/fees.reducer';
 import '../Common/ScrollableCards/ScrollableCards.scss';
 import './Fees.scss';
@@ -18,7 +19,15 @@ import MonthlyCustomPlan from './MonthlyCustomPlan';
 import OneTimeCharge from './OneTimeCharge';
 
 const FeePlans = (props) => {
-  const { history, clientId, clientUserId, feePlanType } = props;
+  const {
+    history,
+    clientId,
+    clientUserId,
+    feePlanType,
+    currentbranding: {
+      branding: { currency_code: currencyCode, currency_symbol: currencySymbol },
+    },
+  } = props;
   const [recentPlans, setRecentPlans] = useState([]);
   const [batchSearchString, setBatchSearchString] = useState('');
   const [studentSearchString, setStudentSearchString] = useState('');
@@ -234,12 +243,14 @@ const FeePlans = (props) => {
       >
         <FeeScrollableCards
           data={recentPlans}
+          currencySymbol={currencySymbol}
           planType={feePlanType}
           getPlanValue={feePlanType === 'onetimecharge' ? getPlanValue : getMonthlyOrCustom}
         />
         {feePlanType === 'onetimecharge' && (
           <OneTimeCharge
             tagAmount={tagAmount}
+            currencySymbol={currencySymbol}
             tagName={tagName}
             tags={feeTags}
             setTagAmount={setTagAmount}
@@ -250,6 +261,7 @@ const FeePlans = (props) => {
         {feePlanType === 'feePlans' && (
           <MonthlyCustomPlan
             monthlyFeeAmount={monthlyFeeAmount}
+            currencySymbol={currencySymbol}
             setMonthlyFeeAmount={setMonthlyFeeAmount}
             monthlyFeeDate={monthlyFeeDate}
             setMonthlyFeeDate={setMonthlyFeeDate}
@@ -399,6 +411,7 @@ const FeePlans = (props) => {
 const mapStateToProps = (state) => ({
   clientId: getClientId(state),
   clientUserId: getClientUserId(state),
+  currentbranding: getCurrentBranding(state),
   feePlanType: getfeePlanType(state),
 });
 
@@ -409,4 +422,10 @@ FeePlans.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   feePlanType: PropTypes.string.isRequired,
+  currentbranding: PropTypes.shape({
+    branding: PropTypes.shape({
+      currency_code: PropTypes.string,
+      currency_symbol: PropTypes.string,
+    }),
+  }).isRequired,
 };

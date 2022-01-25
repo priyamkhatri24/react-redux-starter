@@ -7,6 +7,7 @@ import {
   getCourseCurrentSlide,
   getCourseId,
 } from '../../redux/reducers/course.reducer';
+import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import { apiValidation, get, post } from '../../Utilities';
 import { courseActions } from '../../redux/actions/course.action';
 import { PageHeader } from '../Common';
@@ -26,6 +27,9 @@ const CreateCourse = (props) => {
     setCourseObjectToStore,
     courseObject,
     courseCurrentSlide,
+    currentbranding: {
+      branding: { currency_code: currencyCode, currency_symbol: currencySymbol },
+    },
   } = props;
 
   const [course, setCourse] = useState({});
@@ -139,6 +143,7 @@ const CreateCourse = (props) => {
             {currentSlide === 4 && (
               <Price
                 coursePrice={course.course_price}
+                currencySymbol={currencySymbol}
                 discountPrice={course.discount_price}
                 coupons={coupons}
                 clientId={clientId}
@@ -166,6 +171,7 @@ const mapStateToProps = (state) => ({
   clientId: getClientId(state),
   courseId: getCourseId(state),
   courseObject: getCourseObject(state),
+  currentbranding: getCurrentBranding(state),
   courseCurrentSlide: getCourseCurrentSlide(state),
 });
 
@@ -192,4 +198,10 @@ CreateCourse.propTypes = {
   setCourseCurrentSlideToStore: PropTypes.func.isRequired,
   courseObject: PropTypes.instanceOf(Object).isRequired,
   courseCurrentSlide: PropTypes.number.isRequired,
+  currentbranding: PropTypes.shape({
+    branding: PropTypes.shape({
+      currency_code: PropTypes.string,
+      currency_symbol: PropTypes.string,
+    }),
+  }).isRequired,
 };

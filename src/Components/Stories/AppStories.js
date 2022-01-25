@@ -79,7 +79,8 @@ const AppStories = (props) => {
   }, []);
 
   const openClickedStory = (ele) => {
-    const newStory = statusArray.find((elem) => elem[0].client_user_id === ele[0].client_user_id);
+    /* eslint-disable */
+    const newStory = statusArray.find((elem) => elem[0]?.client_user_id === ele[0]?.client_user_id);
     const formattedStory = newStory.map((stry, index) => {
       stry.url = stry.file_url;
       stry.duration = 3000;
@@ -261,12 +262,12 @@ const AppStories = (props) => {
             <div className='mx-1'>
               <div
                 onClick={() => openClickedStory(ele)}
-                key={ele[0].client_user_id}
+                key={ele[0]?.client_user_id}
                 className='statusCircle'
               >
-                <img className='statusProfileImage' src={ele[0].profile_image || userImage} />
+                <img className='statusProfileImage' src={ele[0]?.profile_image || userImage} />
               </div>
-              <p className='statusUserName'>{`${ele[0].first_name}`}</p>
+              <p className='statusUserName'>{`${ele[0]?.first_name}`}</p>
             </div>
           );
         })}

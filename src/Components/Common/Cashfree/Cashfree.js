@@ -23,6 +23,7 @@ const Cashfree = (props) => {
     cfType,
     testId,
     getCfRef,
+    currentbranding,
   } = props;
   const cfRef = useRef(null);
 
@@ -34,7 +35,7 @@ const Cashfree = (props) => {
   //   process.env.NODE_ENV === 'development'
   //     ? '7986308f47083d2e4e125efed36897'
   //     : '122277951965233ea251da7c4f772221';
-  const [orderCurrency, setOrderCurrency] = useState('INR');
+  const [orderCurrency, setOrderCurrency] = useState(currentbranding.branding.currency_code);
   // const [orderAmount, setOrderAmount] = useState(currentPayment.amount);
   const [orderNote, setOrderNote] = useState('test');
   const [customerName, setCustomerName] = useState(
@@ -130,6 +131,7 @@ Cashfree.propTypes = {
     contact: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
   }),
+  currentbranding: PropTypes.instanceOf(Object).isRequired,
 };
 
 Cashfree.defaultProps = {

@@ -591,7 +591,6 @@ export function Routes() {
       <AuthenticatedRoute exact path='/conversations/:id/:type' component={ConversationFiles} />
       <AuthenticatedRoute exact path='/create-post' component={CreatePost} />
       <AuthenticatedRoute exact path='/posts/:id' component={Post} />
-      <AuthenticatedRoute exact path='/stories' component={Stories} />
 
       <AuthenticatedRoute exact path='/analysis/teacher' component={TeacherAnalysis} />
       <AuthenticatedRoute exact path='/analysis/assignment' component={AssignmentList} />

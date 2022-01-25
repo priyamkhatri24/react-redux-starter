@@ -5,6 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
+import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get } from '../../Utilities';
 import { PageHeader } from '../Common';
@@ -15,7 +16,7 @@ import { courseActions } from '../../redux/actions/course.action';
 import './Courses.scss';
 
 const ViewCourses = (props) => {
-  const { clientUserId, history, setCourseIdToStore, clientId } = props;
+  const { clientUserId, history, setCourseIdToStore, clientId, currentbranding } = props;
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
@@ -121,10 +122,10 @@ const ViewCourses = (props) => {
                     <Row className='Scrollable__courseCardSubHeading text-left mx-2'>
                       {/* <img src={rupee} alt='rupee' height='10' width='10' className='my-auto' /> */}
                       <span className='mx-1 Scrollable__courseCardHeading my-auto'>
-                        ₹ {course.discount_price}
+                        {`${currentbranding.branding.currency_symbol} ${course.discount_price}`}
                       </span>
                       <span className='my-auto'>
-                        <del>₹ {course.course_price}</del>
+                        <del>{`${currentbranding.branding.currency_symbol} ${course.course_price}`}</del>
                       </span>
                       {course.bestseller_tag && (
                         <div
@@ -172,6 +173,7 @@ const ViewCourses = (props) => {
 const mapStateToProps = (state) => ({
   clientUserId: getClientUserId(state),
   clientId: getClientId(state),
+  currentbranding: getCurrentBranding(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -189,4 +191,5 @@ ViewCourses.propTypes = {
   clientId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   setCourseIdToStore: PropTypes.func.isRequired,
+  currentbranding: PropTypes.instanceOf(Object).isRequired,
 };

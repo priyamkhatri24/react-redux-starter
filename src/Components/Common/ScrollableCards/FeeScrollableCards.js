@@ -4,7 +4,7 @@ import Card from 'react-bootstrap/Card';
 import './ScrollableCards.scss';
 
 export const FeeScrollableCards = (props) => {
-  const { data, planType, getPlanValue } = props;
+  const { data, planType, getPlanValue, currencySymbol } = props;
 
   return (
     <Card
@@ -38,7 +38,7 @@ export const FeeScrollableCards = (props) => {
                 className='Scrollable__feecardHeading m-2'
                 style={{ color: 'var(--primary-blue)' }}
               >
-                &#8377; {elem.plan_array[0].amount}
+                {`${currencySymbol} ${elem.plan_array[0].amount}`}
               </p>
             </Card>
           );
@@ -51,5 +51,6 @@ export const FeeScrollableCards = (props) => {
 FeeScrollableCards.propTypes = {
   data: PropTypes.instanceOf(Array).isRequired,
   planType: PropTypes.string.isRequired,
+  currencySymbol: PropTypes.string.isRequired,
   getPlanValue: PropTypes.func.isRequired,
 };

@@ -10,6 +10,7 @@ import Modal from 'react-bootstrap/Modal';
 import Card from 'react-bootstrap/Card';
 import Accordion from 'react-bootstrap/Accordion';
 import PhoneIcon from '@material-ui/icons/Phone';
+import DownloadIcon from '@material-ui/icons/GetApp';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TuneIcon from '@material-ui/icons/Tune';
 import avatarImage from '../../assets/images/user.svg';
@@ -17,7 +18,7 @@ import { PageHeader } from '../Common/PageHeader/PageHeader';
 import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import AdmissionStyle from '../Admissions/Admissions.style';
-import { apiValidation, get } from '../../Utilities';
+import { apiValidation, get, json2xlsDownload } from '../../Utilities';
 import Enquiry from '../Login/AdmissionChat/Enquiry/Enquiry';
 
 const CRM = (props) => {
@@ -219,12 +220,54 @@ const CRM = (props) => {
     window.scrollTo(0, 0);
   };
 
+  const downloadXlsFile = () => {
+    if (currentTab === 'Enquiries') {
+      console.log('download inq');
+      const jsonDataToDownload = inquiryArray.map((ele, index) => {
+        return {
+          SNo: index + 1,
+          First_name: ele.first_name,
+          Last_name: ele.last_name,
+          Contact: ele.contact,
+          Email: ele.email,
+          Address: ele.address,
+          Parent_contact: ele.parent_contact,
+          Parent_name: ele.parent_name,
+        };
+      });
+      console.log(jsonDataToDownload);
+      json2xlsDownload(JSON.stringify(jsonDataToDownload), 'GuestUserFormData', true);
+    } else {
+      console.log('download adm');
+      const jsonDataToDownload = admissionFormArray.map((ele, index) => {
+        const questionsArray = ele.question_array.map((ques) => {
+          return `Q. ${ques.question}\nA. ${ques.response}\n`;
+        });
+        return {
+          SNo: index + 1,
+          First_name: ele.first_name,
+          Last_name: ele.last_name,
+          Contact: ele.contact,
+          Email: ele.email,
+          Address: ele.address,
+          Parent_contact: ele.parent_contact,
+          Parent_name: ele.parent_name,
+          questions: questionsArray.join(''),
+        };
+      });
+      console.log(jsonDataToDownload);
+      json2xlsDownload(JSON.stringify(jsonDataToDownload), 'AdmissionFormData', true);
+    }
+  };
+
   return (
     <div>
       <PageHeader
         title='CRM'
         search
         filter
+        customIcon={<DownloadIcon />}
+        handleCustomIcon={downloadXlsFile}
         searchFilter={searchCRM}
         triggerFilters={() => setOpenFilterModal(true)}
         customBack
@@ -241,7 +284,7 @@ const CRM = (props) => {
         <Tab
           eventKey='Enquiries'
           onClick={() => handleSelect('Enquiries')}
-          title='Inquiries'
+          title='Guest Users'
           style={{ marginTop: '2rem', marginBottom: '1rem' }}
         >
           <div css={AdmissionStyle.UserCards}>

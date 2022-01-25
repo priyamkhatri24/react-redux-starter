@@ -36,6 +36,8 @@ const Fees = (props) => {
         client_address: clientAddress,
         client_contact: clientContact,
         client_email: clientEmail,
+        currency_code: currencyCode,
+        currency_symbol: currencySymbol,
       },
     },
     history,
@@ -72,7 +74,7 @@ const Fees = (props) => {
   const razorSuccess = (payload) => {
     get(payload, '/fetchOrderById').then((res) => {
       const result = apiValidation(res);
-      history.push({ pathname: '/order', state: { order: result } });
+      history.push({ pathname: '/order', state: { order: result, currencySymbol } });
     });
   };
 
@@ -95,7 +97,7 @@ const Fees = (props) => {
         displayRazorpay(
           currentPayment.order_id,
           currentPayment.amount * 100,
-          'INR',
+          currencyCode,
           clientLogo,
           clientColor,
           clientName,
@@ -129,7 +131,7 @@ const Fees = (props) => {
         client_id: clientId,
         user_fee_id: currentPayment.user_fee_id,
         orderAmount: currentPayment.amount,
-        orderCurrency: 'INR',
+        orderCurrency: currencyCode,
         type: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
       };
       post(cashfreePayload, '/genrateTokenForFeeOrder').then((res) => {
@@ -146,7 +148,7 @@ const Fees = (props) => {
   };
 
   const goToOrderDetails = (order) => {
-    history.push({ pathname: '/order', state: { order } });
+    history.push({ pathname: '/order', state: { order, currencySymbol } });
   };
 
   return (
@@ -166,8 +168,8 @@ const Fees = (props) => {
           <div className='p-0'>
             <p className='Fees__avatarHeading mb-0 mt-2 ml-2'>{`${userProfile.firstName} ${userProfile.lastName}`}</p>
             <p className='Fees__avatarStatus'>
-              <PhoneIcon className='Fees__onlineIcon' />
-              +91-{userProfile.contact}
+              <PhoneIcon className='Fees__onlineIcon' />+{userProfile.countryCode}-
+              {userProfile.contact}
             </p>
           </div>
           <div className='ml-auto'>
@@ -195,6 +197,7 @@ const Fees = (props) => {
                   key={elem.user_fee_id}
                   clientId={clientId}
                   goToOrderDetails={goToOrderDetails}
+                  currencySymbol={currencySymbol}
                 />
               );
             })}
@@ -260,7 +263,7 @@ const Fees = (props) => {
                         {format(fromUnixTime(parseInt(elem.due_date, 10)), 'dd-MMM-yyyy')}
                       </Col>
                       <Col className='Fees__planInfoDetails p-0 text-center'>
-                        &#x20b9; {elem.amount}
+                        {`${currencySymbol} ${elem.amount}`}
                       </Col>
                       <Col
                         className='Fees__planInfoDetails p-0 text-center'
@@ -278,7 +281,7 @@ const Fees = (props) => {
             </Row>
             <Row className='justify-content-end p-3 mx-0' style={{ background: '#F3F3F3' }}>
               <span className='Fees__planInfoTotal mr-2'>Total</span>
-              <span className='Fees__planInfoTotalFees'>&#x20b9; {fees.due_amount}</span>
+              <span className='Fees__planInfoTotalFees'>{`${currencySymbol} ${fees.due_amount}`}</span>
             </Row>
 
             <p className='Fees__planInfoHeading mt-4 ml-4'>Add-on:</p>
@@ -290,7 +293,7 @@ const Fees = (props) => {
                       <Col className='Fees__planInfoDetails p-0 text-center'>{i + 1}</Col>
                       <Col className='Fees__planInfoDetails p-0 text-center'>{elem.fee_tag}</Col>
                       <Col className='Fees__planInfoDetails p-0 text-center'>
-                        &#x20b9; {elem.amount}
+                        {`${currencySymbol} ${elem.amount}`}
                       </Col>
                       <Col
                         className='Fees__planInfoDetails p-0 text-center'
@@ -317,7 +320,7 @@ const Fees = (props) => {
         <Modal.Body>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <p className='cashfreeModalOrderName'>{currentPayment.name}</p>
-            <p className='cashfreeModalOrderAmount'>₹ {currentPayment.amount}</p>
+            <p className='cashfreeModalOrderAmount'>{`${currencySymbol} ${currentPayment.amount}`}</p>
           </div>
         </Modal.Body>
 
@@ -369,6 +372,8 @@ Fees.propTypes = {
       client_address: PropTypes.string,
       client_contact: PropTypes.string,
       client_email: PropTypes.string,
+      currency_code: PropTypes.string,
+      currency_symbol: PropTypes.string,
     }),
   }).isRequired,
   userProfile: PropTypes.shape({
@@ -376,6 +381,7 @@ Fees.propTypes = {
     lastName: PropTypes.string,
     contact: PropTypes.string.isRequired,
     profileImage: PropTypes.string,
+    countryCode: PropTypes.string,
   }),
 };
 
@@ -383,5 +389,6 @@ Fees.defaultProps = {
   userProfile: PropTypes.shape({
     lastName: '',
     profileImage: '',
+    countryCode: '91',
   }),
 };

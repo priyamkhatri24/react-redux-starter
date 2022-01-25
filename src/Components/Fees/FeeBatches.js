@@ -13,7 +13,7 @@ import { apiValidation, get } from '../../Utilities';
 import { PageHeader } from '../Common';
 
 const FeeBatches = (props) => {
-  const { clientId, clientUserId, history, activeTab } = props;
+  const { clientId, clientUserId, history, activeTab, currencySymbol } = props;
 
   const [filters, setFilters] = useState([]);
 
@@ -298,7 +298,7 @@ const FeeBatches = (props) => {
               >
                 <Row style={{ marginTop: '0.5rem' }}>
                   <Col xs={4} className='Fees__receivedAmount text-center my-auto'>
-                    &#8377; {elem.total_paid_amount}
+                    {`${currencySymbol} ${elem.total_paid_amount}`}
                   </Col>
                   <Col xs={4} className='text-center'>
                     <img
@@ -312,7 +312,7 @@ const FeeBatches = (props) => {
                     className='Fees__receivedAmount text-center my-auto'
                     style={{ color: 'rgba(255, 0, 0, 0.6)' }}
                   >
-                    &#8377; {elem.total_due_amount}
+                    {`${currencySymbol} ${elem.total_due_amount}`}
                   </Col>
                 </Row>
                 <Row className='mx-auto m-2 Fees__orderSummary'>{elem.batch_name}</Row>
@@ -349,5 +349,10 @@ FeeBatches.propTypes = {
   clientId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
+  currencySymbol: PropTypes.string.isRequired,
   activeTab: PropTypes.bool.isRequired,
 };
+
+// &#x20B9;
+// &#8377;
+// ₹

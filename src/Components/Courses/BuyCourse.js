@@ -62,6 +62,8 @@ const BuyCourse = (props) => {
         client_logo: clientLogo,
         client_address: clientAddress,
         client_contact: clientContact,
+        currency_code: currencyCode,
+        currency_symbol: currencySymbol,
       },
     },
     setRedirectPathToStore,
@@ -231,7 +233,7 @@ const BuyCourse = (props) => {
         client_id: clientId,
         course_id: match.params.courseId,
         orderAmount: coursePrice,
-        orderCurrency: 'INR',
+        orderCurrency: currencyCode,
         coupon_id: couponId,
         type: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
       };
@@ -326,7 +328,7 @@ const BuyCourse = (props) => {
       displayRazorpay(
         orderDetails.order_id,
         coursePrice * 100,
-        'INR',
+        currencyCode,
         clientLogo,
         clientColor,
         clientName,
@@ -600,9 +602,12 @@ const BuyCourse = (props) => {
               </div>
               <div className='d-flex align-items-center justify-content-between'>
                 <div>
-                  <span className='mx-1 Courses__Price my-auto'>₹ {coursePrice}</span>
+                  <span className='mx-1 Courses__Price my-auto'>{`${currencySymbol} ${coursePrice}`}</span>
                   <span className='my-auto'>
-                    <del className='verySmallText'>₹ {course.course_price}</del>
+                    <del className='verySmallText'>
+                      {' '}
+                      {`${currencySymbol} ${course.course_price}`}
+                    </del>
                   </span>
                 </div>
                 <div>
@@ -725,7 +730,11 @@ const BuyCourse = (props) => {
               </Button> */}
               <p className='Courses__heading mt-4'>People also viewed</p>
 
-              <ViewCoursesList clientId={clientId} clicked={goToCourse} />
+              <ViewCoursesList
+                currencySymbol={currencySymbol}
+                clientId={clientId}
+                clicked={goToCourse}
+              />
               <Button
                 onClick={
                   localStorage.getItem('state') &&
@@ -957,7 +966,7 @@ const BuyCourse = (props) => {
                   fontFamily: 'MontSerrat-Medium',
                 }}
               >
-                &#8377; {coursePrice}
+                {`${currencySymbol} ${coursePrice}`}
               </span>
             </Row>
           </Card>
@@ -1030,7 +1039,7 @@ const BuyCourse = (props) => {
               alt='caution'
               className='img-fluid'
             />
-            <h1 className='Fees__orderAmount mt-3'>&#x20B9; {order.amount}</h1>
+            <h1 className='Fees__orderAmount mt-3'>{`${currencySymbol} ${order.amount}`}</h1>
             <p className='Fees__orderDescription'>{order.description}</p>
             <h3 className={statusClass}>
               {order.status === 'due'
@@ -1123,6 +1132,8 @@ BuyCourse.propTypes = {
       client_name: PropTypes.string,
       client_address: PropTypes.string,
       client_contact: PropTypes.string,
+      currency_symbol: PropTypes.string,
+      currency_code: PropTypes.string,
     }),
   }).isRequired,
   match: PropTypes.instanceOf(Object).isRequired,

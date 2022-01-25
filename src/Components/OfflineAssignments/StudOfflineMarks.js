@@ -58,7 +58,7 @@ const StudOfflineMarks = (props) => {
       <div style={{ marginTop: '70px' }}>
         {/* <PageHeader title='' /> */}
         <Card className='card-main'>
-          <div className='cardContainer '>
+          <div className='cardContainer d-flex '>
             <span className='icon grow1'>
               <AssignmentIcon />
             </span>
@@ -138,6 +138,8 @@ const StudOfflineMarks = (props) => {
                       <p className='markdata'>
                         {ele.attempt_status === 'attempted' && !isNaN(ele.marks)
                           ? `${ele.marks}/${test.total_marks}`
+                          : ele.attempt_status === 'not attempted'
+                          ? ''
                           : 'marks not filled'}
                       </p>
                     </div>

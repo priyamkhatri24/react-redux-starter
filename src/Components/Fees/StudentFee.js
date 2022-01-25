@@ -18,6 +18,7 @@ import avatarImage from '../../assets/images/avatarImage.jpg';
 import FeesCard from './FeesCard';
 import './Fees.scss';
 import '../Common/ScrollableCards/ScrollableCards.scss';
+import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import { getClientUserId, getClientId } from '../../redux/reducers/clientUserId.reducer';
 import { feeActions } from '../../redux/actions/fees.actions';
 
@@ -31,12 +32,15 @@ const StudentFee = (props) => {
     setFeeMonthlyPlanArrayToStore,
     setFeeCustomPlanArrayToStore,
     setFeeOneTimePlanArrayToStore,
+    currentbranding: {
+      branding: { currency_code: currencyCode, currency_symbol: currencySymbol },
+    },
   } = props;
   const [fees, setFees] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
-
+  console.log(currencySymbol, 'studentFee');
   const [showRecordPaymentModal, setShowRecordPaymentModal] = useState(false);
   const [replaceOptions, setOptions] = useState('');
   const [paymentsummary, setPaymentSummary] = useState({});
@@ -76,7 +80,7 @@ const StudentFee = (props) => {
   }, [getFeeData]);
 
   const goToOrderDetails = (order) => {
-    history.push({ pathname: '/order', state: { order } });
+    history.push({ pathname: '/order', state: { order, currencySymbol } });
   };
 
   const recordPayment = () => {
@@ -161,6 +165,7 @@ const StudentFee = (props) => {
               return (
                 <FeesCard
                   data={elem}
+                  currencySymbol={currencySymbol}
                   key={elem.user_fee_id}
                   clientId={clientId}
                   goToOrderDetails={goToOrderDetails}
@@ -217,7 +222,7 @@ const StudentFee = (props) => {
                         {format(fromUnixTime(parseInt(elem.due_date, 10)), 'dd-MMM-yyyy')}
                       </Col>
                       <Col className='Fees__planInfoDetails p-0 text-center'>
-                        &#x20b9; {elem.amount}
+                        {`${currencySymbol} ${elem.amount}`}
                       </Col>
                       <Col
                         className='Fees__planInfoDetails p-0 text-center'
@@ -235,7 +240,7 @@ const StudentFee = (props) => {
             </Row>
             <Row className='justify-content-end p-3 mx-0' style={{ background: '#F3F3F3' }}>
               <span className='Fees__planInfoTotal mr-2'>Total</span>
-              <span className='Fees__planInfoTotalFees'>&#x20b9; {fees.due_amount}</span>
+              <span className='Fees__planInfoTotalFees'>{`${currencySymbol} ${fees.due_amount}`}</span>
             </Row>
 
             <p className='Fees__planInfoHeading mt-4 ml-4'>Add-on:</p>
@@ -247,7 +252,7 @@ const StudentFee = (props) => {
                       <Col className='Fees__planInfoDetails p-0 text-center'>{i + 1}</Col>
                       <Col className='Fees__planInfoDetails p-0 text-center'>{elem.fee_tag}</Col>
                       <Col className='Fees__planInfoDetails p-0 text-center'>
-                        &#x20b9; {elem.amount}
+                        {`${currencySymbol} ${elem.amount}`}
                       </Col>
                       <Col
                         className='Fees__planInfoDetails p-0 text-center'
@@ -277,7 +282,7 @@ const StudentFee = (props) => {
                 className='ml-auto Scrollable__feecardHeading mx-2 mt-2 mb-0 '
                 style={{ color: 'var(--primary-blue)' }}
               >
-                &#8377; {paymentsummary.amount}
+                {`${currencySymbol} ${paymentsummary.amount}`}
               </span>
             </Row>
           </Card>
@@ -321,6 +326,7 @@ const StudentFee = (props) => {
 const mapStateToProps = (state) => ({
   clientId: getClientId(state),
   clientUserId: getClientUserId(state),
+  currentbranding: getCurrentBranding(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -354,4 +360,10 @@ StudentFee.propTypes = {
   setFeeMonthlyPlanArrayToStore: PropTypes.func.isRequired,
   setFeePlanTypeToStore: PropTypes.func.isRequired,
   setFeeStudentClientUserIdToStore: PropTypes.func.isRequired,
+  currentbranding: PropTypes.shape({
+    branding: PropTypes.shape({
+      currency_code: PropTypes.string,
+      currency_symbol: PropTypes.string,
+    }),
+  }).isRequired,
 };

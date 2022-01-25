@@ -49,12 +49,14 @@ const DummyDashboard = (props) => {
   const [modalHeading, setModalHeading] = useState(null);
 
   useEffect(() => {
-    get({ client_id: clientId, is_skip: true }, '/getLoginPageInformation').then((res) => {
-      console.log(res);
-      const result = apiValidation(res);
-      setDummyData(result);
-      setNotices(result.notice);
-    });
+    get({ client_id: clientId, is_skip: true, is_new: true }, '/getLoginPageInformation').then(
+      (res) => {
+        console.log(res);
+        const result = apiValidation(res);
+        setDummyData(result);
+        setNotices(result.notice);
+      },
+    );
   }, [clientId]);
 
   const shareThis = () => {

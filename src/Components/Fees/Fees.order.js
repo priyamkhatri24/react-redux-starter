@@ -12,7 +12,7 @@ const FeesOrder = (props) => {
   const {
     history: {
       location: {
-        state: { order },
+        state: { order, currencySymbol },
       },
     },
   } = props;
@@ -35,7 +35,7 @@ const FeesOrder = (props) => {
               alt='caution'
               className='img-fluid'
             />
-            <h1 className='Fees__orderAmount mt-3'>&#x20B9; {order.amount}</h1>
+            <h1 className='Fees__orderAmount mt-3'>{`${currencySymbol} ${order.amount}`}</h1>
             <p className='Fees__orderDescription'>{order.description}</p>
             <h3 className={statusClass}>
               {order.status === 'due'
@@ -112,6 +112,7 @@ FeesOrder.propTypes = {
     location: PropTypes.shape({
       state: PropTypes.shape({
         order: PropTypes.instanceOf(Object).isRequired,
+        currencySymbol: PropTypes.string.isRequired,
       }),
     }),
   }).isRequired,

@@ -21,6 +21,7 @@ const FeesCard = (props) => {
     clientId,
     goToOrderDetails,
     studentFeeCard,
+    currencySymbol,
   } = props;
   const feesClass = cx({
     Fees__feeCard: true,
@@ -71,7 +72,7 @@ const FeesCard = (props) => {
       {(status === 'waived' || status === 'marked') && (
         <h6 className='Fees__teacher px-3'>(by - {TeacherName})</h6>
       )}
-      <p className='Fees__amount px-3'> &#x20B9; {amount}</p>
+      <p className='Fees__amount px-3'>{`${currencySymbol} ${amount}`}</p>
       <p className='Fees__paidAt px-3'>
         {paidAt !== null &&
           `${status}: ${format(fromUnixTime(parseInt(paidAt, 10)), 'HH:mm MMM dd, yyyy')}`}
@@ -93,6 +94,7 @@ FeesCard.propTypes = {
   clientId: PropTypes.number.isRequired,
   goToOrderDetails: PropTypes.func.isRequired,
   studentFeeCard: PropTypes.bool,
+  currencySymbol: PropTypes.string.isRequired,
 };
 
 FeesCard.defaultProps = {

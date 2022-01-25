@@ -16,6 +16,7 @@ import {
   getfeePlanType,
   getFeeClientUserId,
 } from '../../redux/reducers/fees.reducer';
+import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { PageHeader } from '../Common';
 import MonthlyCustomPlan from './MonthlyCustomPlan';
@@ -37,6 +38,9 @@ const EditFeePlan = (props) => {
     clientUserID,
     feeStudentCLientUserID,
     history,
+    currentbranding: {
+      branding: { currency_code: currencyCode, currency_symbol: currencySymbol },
+    },
   } = props;
   const [noOfInstallments, setNoOfInstallments] = useState(feeCustomPlanArray.length);
   const [oneTimePlanArray, setOneTimePlanArray] = useState([...feeOneTimePlanArray]);
@@ -206,6 +210,7 @@ const EditFeePlan = (props) => {
         {customFeePlanArray.length > 0 || parseInt(monthlyFeeAmount, 10) > 0 ? (
           <MonthlyCustomPlan
             monthlyFeeAmount={monthlyFeeAmount}
+            currencySymbol={currencySymbol}
             setMonthlyFeeAmount={setMonthlyFeeAmount}
             monthlyFeeDate={monthlyFeeDate}
             setMonthlyFeeDate={setMonthlyFeeDate}
@@ -309,7 +314,7 @@ const EditFeePlan = (props) => {
                         {format(fromUnixTime(parseInt(elem.due_date, 10)), 'dd-MMM-yyyy')}
                       </Col>
                       <Col className='Fees__planInfoDetails p-0 text-center'>
-                        &#x20b9; {elem.amount}
+                        {`${currencySymbol} ${elem.amount}`}
                       </Col>
                       <Col
                         className='Fees__planInfoDetails p-0 text-center'
@@ -331,7 +336,7 @@ const EditFeePlan = (props) => {
                     {format(monthlyFeeDate, 'dd-MMM-yyyy')}
                   </Col>
                   <Col className='Fees__planInfoDetails p-0 text-center'>
-                    &#x20b9; {monthlyFeeAmount}
+                    {`${currencySymbol} ${monthlyFeeAmount}`}
                   </Col>
                   <Col
                     className='Fees__planInfoDetails p-0 text-center'
@@ -345,7 +350,7 @@ const EditFeePlan = (props) => {
             <Row className='justify-content-end p-3 mx-0' style={{ background: '#F3F3F3' }}>
               <span className='Fees__planInfoTotal mr-2'>Total</span>
               <span className='Fees__planInfoTotalFees'>
-                &#x20b9;{' '}
+                {`${currencySymbol} `}
                 {monthlyOrCustom === 'Custom'
                   ? customFeePlanArray.reduce((acc, val) => {
                       return acc + parseInt(val.amount, 10);
@@ -362,7 +367,7 @@ const EditFeePlan = (props) => {
                     <Col className='Fees__planInfoDetails p-0 text-center'>{i + 1}</Col>
                     <Col className='Fees__planInfoDetails p-0 text-center'>{elem.fee_tag}</Col>
                     <Col className='Fees__planInfoDetails p-0 text-center'>
-                      &#x20b9; {elem.amount}
+                      {`${currencySymbol} ${elem.amount}`}
                     </Col>
                     <Col
                       className='Fees__planInfoDetails p-0 text-center'
@@ -395,6 +400,7 @@ const mapStateToProps = (state) => ({
   feeMonthlyPlanArray: getfeeMonthlyPlanArray(state),
   feeCustomPlanArray: getfeeCustomPlanArray(state),
   feeOneTimePlanArray: getfeeOneTimePlanArray(state),
+  currentbranding: getCurrentBranding(state),
   clientUserID: getClientUserId(state),
   feeStudentCLientUserID: getFeeClientUserId(state),
 });
@@ -433,4 +439,10 @@ EditFeePlan.propTypes = {
   clientUserID: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   feeStudentCLientUserID: PropTypes.number.isRequired,
+  currentbranding: PropTypes.shape({
+    branding: PropTypes.shape({
+      currency_code: PropTypes.string,
+      currency_symbol: PropTypes.string,
+    }),
+  }).isRequired,
 };

@@ -1,5 +1,6 @@
 .conversations-container {
-  height: calc(100vh - 155px);
+  height: calc(100vh - 100px);
+  // height: calc(100vh - 155px); // after stories added
 }
 .conversations-container::-webkit-scrollbar {
   display: none;
@@ -11,7 +12,8 @@
 
 .scollerForConversations {
   overflow-y: auto;
-  height: calc(100vh - 165px);
+  height: calc(100vh - 100px);
+  // height: calc(100vh - 165px); // after stories added
 }
 
 .scollerForConversations::-webkit-scrollbar {

@@ -6,7 +6,7 @@ import '../Login/Welcome/Welcome.scss';
 import './Fees.scss';
 
 const FeeCarousel = (props) => {
-  const { carouselObject } = props;
+  const { carouselObject, currencySymbol } = props;
   const [carouselDetails, setCarouseletails] = useState([]);
 
   useEffect(() => {
@@ -55,12 +55,12 @@ const FeeCarousel = (props) => {
 
   return (
     <Carousel
-      autoPlay={false}
-      showThumbs={false}
-      showArrows={false}
-      showIndicators={false}
-      transitionTime={200}
-      dynamicHeight={false}
+      autoPlay
+      showThumbs
+      showArrows
+      showIndicators
+      transitionTime={400}
+      dynamicHeight
       infiniteLoop
       className='pb-2 mb-2'
     >
@@ -86,7 +86,7 @@ const FeeCarousel = (props) => {
                   opacity: '0.2',
                 }}
               >
-                &#8377;
+                {currencySymbol}
               </span>
               <div className='ml-auto m-4 Fees__carouselText'>
                 <p
@@ -122,4 +122,5 @@ export default FeeCarousel;
 
 FeeCarousel.propTypes = {
   carouselObject: PropTypes.instanceOf(Object).isRequired,
+  currencySymbol: PropTypes.string.isRequired,
 };

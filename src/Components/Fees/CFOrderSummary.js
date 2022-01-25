@@ -6,11 +6,12 @@ import cx from 'classnames';
 import { get, apiValidation } from '../../Utilities';
 import { PageHeader } from '../Common';
 import checkmark from '../../assets/images/order/icons8-checked.svg';
+import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import caution from '../../assets/images/order/icons8-medium-risk-50.png';
 import './Fees.scss';
 
 const FeesOrder = (props) => {
-  const { history, orderId } = props;
+  const { history, orderId, currentbranding } = props;
   const [order, setOrder] = useState({});
   const [idType, setIdType] = useState({});
   useEffect(() => {
@@ -92,7 +93,7 @@ const FeesOrder = (props) => {
               alt='caution'
               className='img-fluid'
             />
-            <h1 className='Fees__orderAmount mt-3'>&#x20B9; {order.amount}</h1>
+            <h1 className='Fees__orderAmount mt-3'>{`${currentbranding.branding.currency_symbol} ${order.amount}`}</h1>
             <p className='Fees__orderDescription'>{order.description}</p>
             <h3 className={statusClass}>
               {order.status === 'due'
@@ -170,9 +171,16 @@ const FeesOrder = (props) => {
   );
 };
 
+const mapStateToProps = (state) => {
+  return {
+    currentbranding: getCurrentBranding(state),
+  };
+};
+
 export default FeesOrder;
 
 FeesOrder.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   orderId: PropTypes.number,
+  currentbranding: PropTypes.instanceOf(Object).isRequired,
 };

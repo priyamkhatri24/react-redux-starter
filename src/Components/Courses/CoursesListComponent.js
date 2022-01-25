@@ -11,7 +11,7 @@ import placeholder from '../../assets/images/ycIcon.png';
 import './Courses.scss';
 
 const ViewCoursesList = (props) => {
-  const { clientId, clicked } = props;
+  const { clientId, clicked, currencySymbol } = props;
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
@@ -98,10 +98,10 @@ const ViewCoursesList = (props) => {
                 <div className='Scrollable__courseCardSubHeading text-left mx-1'>
                   {/* <img src={rupee} alt='rupee' height='10' width='10' className='my-auto' /> */}
                   <span className='Scrollable__courseCardHeading my-auto'>
-                    ₹ {course.discount_price}
+                    {`${currencySymbol} ${course.discount_price}`}
                   </span>
                   <span className='my-auto ml-1'>
-                    <del>₹ {course.course_price}</del>
+                    <del>{`${currencySymbol} ${course.course_price}`}</del>
                   </span>
 
                   <div
@@ -126,4 +126,5 @@ ViewCoursesList.propTypes = {
   clientId: PropTypes.number.isRequired,
   //   history: PropTypes.instanceOf(Object).isRequired,
   clicked: PropTypes.func.isRequired,
+  currencySymbol: PropTypes.string.isRequired,
 };

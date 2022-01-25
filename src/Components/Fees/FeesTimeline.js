@@ -10,7 +10,7 @@ import { PageHeader } from '../Common';
 import './Fees.scss';
 
 const FeesTimeline = (props) => {
-  const { clientId, activeTab } = props;
+  const { clientId, activeTab, currencySymbol } = props;
   const [notifications, setNotifications] = useState([]);
   const [searchedNotifications, setSearchedNotifications] = useState([]);
   const [pageNotif, setPageNotif] = useState(1);
@@ -151,7 +151,7 @@ const FeesTimeline = (props) => {
                     fontFamily: 'Montserrat-Regular',
                   }}
                 >
-                  &#8377; {elem.amount}
+                  {`${currencySymbol} ${elem.amount}`}
                 </h6>
                 <p
                   style={{
@@ -176,5 +176,6 @@ export default FeesTimeline;
 
 FeesTimeline.propTypes = {
   clientId: PropTypes.number.isRequired,
+  currencySymbol: PropTypes.string.isRequired,
   activeTab: PropTypes.bool.isRequired,
 };

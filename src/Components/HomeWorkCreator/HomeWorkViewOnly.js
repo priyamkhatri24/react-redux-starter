@@ -78,7 +78,7 @@ const HomeWorkViewOnly = (props) => {
           );
         })}
       </Card>
-      <div className='viewOnlyBtnContainer m-3'>
+      <div className='viewOnlyBtnContainer m-auto'>
         {!noButton && (
           <Button variant='customPrimary' onClick={() => goToAssigner()}>
             Next

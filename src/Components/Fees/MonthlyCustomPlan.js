@@ -48,6 +48,7 @@ const MonthlyCustomPlan = (props) => {
     changeTab,
     EditFeePlan,
     minNoOfInstallments,
+    currencySymbol,
     planDeleted,
   } = props;
 
@@ -227,7 +228,7 @@ const MonthlyCustomPlan = (props) => {
             }}
           >
             <span className='ml-auto'>
-              Total &#8377;{' '}
+              {`Total ${currencySymbol} `}
               <span style={{ color: 'var(--primary-blue)' }}>
                 {customFeePlanArray.reduce((acc, val) => {
                   return acc + parseInt(val.amount, 10);
@@ -276,6 +277,7 @@ MonthlyCustomPlan.propTypes = {
   changeTab: PropTypes.func.isRequired,
   EditFeePlan: PropTypes.bool,
   minNoOfInstallments: PropTypes.number,
+  currencySymbol: PropTypes.string.isRequired,
   planDeleted: PropTypes.func,
 };
 
