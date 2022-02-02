@@ -169,7 +169,7 @@ const AttendanceBatch = (props) => {
           setSwiper(s);
         }}
         initialSlide={1}
-      >
+      > 
         <SwiperSlide>
           <PreviousAttendance changeSlide={changeSlide} />
         </SwiperSlide>

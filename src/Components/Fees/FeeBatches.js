@@ -16,7 +16,7 @@ const FeeBatches = (props) => {
   const { clientId, clientUserId, history, activeTab, currencySymbol } = props;
 
   const [filters, setFilters] = useState([]);
-  
+
   // const [currentClass, setCurrentClass] = useState({});
   // const [currentSubject, setCurrentSubject] = useState({});
   const [batches, setBatches] = useState([]);
@@ -333,7 +333,7 @@ const FeeBatches = (props) => {
                 />
                 <p className='Fees__studentsPay mx-auto'>
                   {`${parseInt(elem.total_due_students, 10)}/${parseInt(elem.total_students, 10)}`}{' '}
-                  Students Yet to Pay
+                  Students Yet to Pay 
                 </p>
               </Card>
             );

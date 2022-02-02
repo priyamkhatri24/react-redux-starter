@@ -92,8 +92,8 @@ const StudentFee = (props) => {
   const makePayment = () => {
     const payload = {
       user_fee_id: paymentsummary.user_fee_id,
-      fee_order_id: paymentsummary.fee_order_id,
       client_user_id: clientUserId,
+      fee_order_id: paymentsummary.fee_order_id,
       status: replaceOptions,
     };
 
@@ -151,13 +151,17 @@ const StudentFee = (props) => {
         <div className='Fees_navStatusContainer'>
           <Row className='mx-2 px-4 Fees__navStatus'>
             Status:
-            <span className='ml-1'>{fees.fee_status}</span>
+            <span className='ml-1' style={{ color: 'black' }}>
+              {fees.fee_status}
+            </span>
             <Button variant='customSecondary' className='ml-auto' onClick={() => handleShow()}>
               Plan Info
             </Button>
           </Row>
           <p className='Fees__navStatus mx-2 px-4'>
-            <span>Due Amount: {fees.due_amount}</span>
+            <span>
+              Due Amount:{currencySymbol} {fees.due_amount}
+            </span>
           </p>
         </div>
         <div className='Fees__overlay'>
@@ -282,7 +286,7 @@ const StudentFee = (props) => {
                 className='ml-auto Scrollable__feecardHeading mx-2 mt-2 mb-0 '
                 style={{ color: 'var(--primary-blue)' }}
               >
-                {`${currencySymbol} ${paymentsummary.amount}`}
+                {`${paymentsummary.amount}`}
               </span>
             </Row>
           </Card>

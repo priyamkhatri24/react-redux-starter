@@ -14,7 +14,7 @@ import { apiValidation, get, post } from '../../Utilities';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import { getfeePlanType } from '../../redux/reducers/fees.reducer';
 import '../Common/ScrollableCards/ScrollableCards.scss';
-import './Fees.scss'; 
+import './Fees.scss';
 import MonthlyCustomPlan from './MonthlyCustomPlan';
 import OneTimeCharge from './OneTimeCharge';
 
@@ -162,16 +162,16 @@ const FeePlans = (props) => {
     };
 
     console.log(customPlanForPost, 'aCustomPlanForPost');
-    post(payload, '/addFeeToMultipleUsers').then((res) => {
-      console.log(res);
-      // if (res.success) {
-      //   Swal.fire({
-      //     icon: 'success',
-      //     title: 'Success!',
-      //     text: `Users have been added.`,
-      //   });
-      history.push('/teacherfees');
-      // }
+    post(payload, '/addFeeToMultipleUsers').then((responce) => {
+      console.log(responce);
+      if (responce.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: `Users have been added.`,
+        });
+        history.push('/teacherfees');
+      }
     });
   };
 
