@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Spinner from 'react-bootstrap/Spinner';
 import userAvatar from '../../assets/images/user.svg';
 import { PageHeader } from '../Common';
 import '../Profile/Profile.scss';
@@ -13,11 +16,13 @@ import { apiValidation, get } from '../../Utilities';
 import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { attendanceActions } from '../../redux/actions/attendance.action';
 import './Attendance.scss';
+import LiveClasses from './LiveClasses';
 
 const Attendance = (props) => {
   const { clientUserId, setAttendanceBatchToStore } = props;
   const [searchString, setSearchString] = useState('');
   const [batches, setBatches] = useState([]);
+  const [tabKey, setTabKey] = useState('0');
   // const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -84,6 +89,7 @@ const Attendance = (props) => {
   };
 
   const goToBatch = (elem) => {
+    // console.log(elem);
     setAttendanceBatchToStore(elem);
     history.push('/attendance/batch');
   };
@@ -91,42 +97,60 @@ const Attendance = (props) => {
   return (
     <>
       <PageHeader title='Attendance' search searchFilter={searchUsers} />
-      <div style={{ marginTop: '5rem', marginBottom: '0.5rem' }}>
-        {batches.length > 0 ? (
-          batches.map((elem) => {
-            return (
-              <Card
-                className='Attendance__Card mb-2'
-                style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)', borderRadius: '10px' }}
-                key={elem.client_batch_id}
-                onClick={() => goToBatch(elem)}
-              >
-                <Row className='p-2 align-items-center'>
-                  <Col xs={3} className='text-center'>
-                    <img
-                      src={userAvatar}
-                      className='img-fluid'
-                      alt='profile'
-                      width='40'
-                      height='40'
-                    />
-                  </Col>
-                  <Col xs={6}>
-                    <p className='Attendance__batchName m-0'>{elem.batch_name}</p>
-                  </Col>
-                  <Col xs={3} className='text-center'>
-                    <p className='m-0 Attendance__batchCount'>{elem.count}</p>
-                    <p className='m-0 Attendance__batchStudents'>Students</p>
-                  </Col>
-                </Row>
-              </Card>
-            );
-          })
-        ) : (
-          <p>There Are No batches Added Currently</p>
-        )}
-      </div>
-
+      <Tabs className='tabs' activeKey={tabKey} onSelect={(k) => setTabKey(k)}>
+        <Tab id='tab1' eventKey='0' title='Batches' style={{ backgroundColor: 'rgb(241,249,255)' }}>
+          <div style={{ paddingTop: '2rem', marginBottom: '0.5rem' }}>
+            {batches.length > 0 ? (
+              batches.map((elem) => {
+                return (
+                  <Card
+                    className='Attendance__Card mb-2'
+                    style={{
+                      boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)',
+                      borderRadius: '10px',
+                    }}
+                    key={elem.client_batch_id}
+                    onClick={() => goToBatch(elem)}
+                  >
+                    <Row className='p-2 align-items-center'>
+                      <Col xs={3} className='text-center'>
+                        <img
+                          src={userAvatar}
+                          className='img-fluid'
+                          alt='profile'
+                          width='40'
+                          height='40'
+                        />
+                      </Col>
+                      <Col xs={6}>
+                        <p className='Attendance__batchName m-0'>{elem.batch_name}</p>
+                      </Col>
+                      <Col xs={3} className='text-center'>
+                        <p className='m-0 Attendance__batchCount'>{elem.count}</p>
+                        <p className='m-0 Attendance__batchStudents'>Students</p>
+                      </Col>
+                    </Row>
+                  </Card>
+                );
+              })
+            ) : (
+              <div className='noItemText'>
+                <Spinner animation='border' />
+              </div>
+            )}
+          </div>
+        </Tab>
+        <Tab
+          id='tab2'
+          eventKey='1'
+          title='Live Classes'
+          style={{ backgroundColor: 'rgb(241,249,255)' }}
+        >
+          <div style={{ paddingTop: '2rem', marginBottom: '0.2rem' }}>
+            <LiveClasses searchString={searchString} />
+          </div>
+        </Tab>
+      </Tabs>
       <BottomNavigation history={history} activeNav='attendance' />
     </>
   );
