@@ -73,6 +73,25 @@
     }
   }
 }
+.tabs {
+  margin-top: 70px;
+  // position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* border: 2px solid red; */
+}
+.nav-item {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.noItemText {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 ::-webkit-scrollbar {
   width: 0; /* Remove scrollbar space */

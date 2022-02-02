@@ -1,0 +1,49 @@
+* {
+  font-family: 'Montserrat-Regular';
+}
+.cardContainer {
+  width: 80%;
+  margin: auto;
+  border-radius: 10px;
+}
+.cardBody {
+  width: 90%;
+}
+.cardTitle {
+  font-family: 'Montserrat-semiBold';
+}
+.streamedIn {
+  font-size: 15px;
+  font-family: 'Montserrat-SemiBold';
+  margin-top: 15px;
+}
+.type {
+  font-size: 15px;
+  font-family: 'Montserrat-SemiBold';
+}
+.body1 {
+  display: flex;
+  flex-direction: column;
+}
+.alpha {
+  color: rgb(59, 133, 178);
+  font-family: 'Montserrat-Bold';
+}
+
+// analysis
+
+.img {
+  height: 3rem;
+  width: 3rem;
+  border-radius: 50%;
+  background-color: white;
+}
+.main {
+  margin-top: 70px;
+}
+.analysisMain {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
