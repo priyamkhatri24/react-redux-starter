@@ -16,7 +16,7 @@ const FeeBatches = (props) => {
   const { clientId, clientUserId, history, activeTab, currencySymbol } = props;
 
   const [filters, setFilters] = useState([]);
-
+  
   // const [currentClass, setCurrentClass] = useState({});
   // const [currentSubject, setCurrentSubject] = useState({});
   const [batches, setBatches] = useState([]);
@@ -70,7 +70,7 @@ const FeeBatches = (props) => {
 
       setBatches(searchedArray);
     });
-  }, []);
+  }, [clientId, clientUserId, page]);
 
   useEffect(() => {
     let timer;

@@ -14,7 +14,7 @@ import { apiValidation, get, post } from '../../Utilities';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import { getfeePlanType } from '../../redux/reducers/fees.reducer';
 import '../Common/ScrollableCards/ScrollableCards.scss';
-import './Fees.scss';
+import './Fees.scss'; 
 import MonthlyCustomPlan from './MonthlyCustomPlan';
 import OneTimeCharge from './OneTimeCharge';
 
@@ -138,14 +138,9 @@ const FeePlans = (props) => {
 
     const payload = {
       client_user_id: clientUserId,
-      is_replace: feePlanType === 'onetimecharge' ? replaceOptions === 'replace' : true,
       user_array: JSON.stringify(selectedStudents),
-      plan_type:
-        feePlanType === 'onetimecharge'
-          ? 'oneTime'
-          : monthlyOrCustom === 'Monthly'
-          ? 'monthly'
-          : 'custom',
+      admin_id: clientUserId,
+      is_replace: feePlanType === 'onetimecharge' ? replaceOptions === 'replace' : true,
       plan_array: JSON.stringify(
         feePlanType === 'onetimecharge'
           ? [{ amount: tagAmount, name: tagName }]
@@ -158,19 +153,25 @@ const FeePlans = (props) => {
             ]
           : customPlanForPost,
       ),
+      plan_type:
+        feePlanType === 'onetimecharge'
+          ? 'oneTime'
+          : monthlyOrCustom === 'Monthly'
+          ? 'monthly'
+          : 'custom',
     };
 
     console.log(customPlanForPost, 'aCustomPlanForPost');
     post(payload, '/addFeeToMultipleUsers').then((res) => {
       console.log(res);
-      if (res.success) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: `Users have been added.`,
-        });
-        history.push('/teacherfees');
-      }
+      // if (res.success) {
+      //   Swal.fire({
+      //     icon: 'success',
+      //     title: 'Success!',
+      //     text: `Users have been added.`,
+      //   });
+      history.push('/teacherfees');
+      // }
     });
   };
 

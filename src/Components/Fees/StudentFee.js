@@ -85,7 +85,7 @@ const StudentFee = (props) => {
 
   const recordPayment = () => {
     const result = fees.fee_data.find((e) => e.status === 'due');
-    setPaymentSummary(result);
+    setPaymentSummary(result || {});
     handleRecordPaymentOpen();
   };
 
@@ -98,6 +98,7 @@ const StudentFee = (props) => {
     };
 
     post(payload, '/waiveFeeOfStudent').then((res) => {
+      console.log(res);
       if (res.success) {
         getFeeData();
         handleRecordPaymentClose();
@@ -271,7 +272,6 @@ const StudentFee = (props) => {
           </Card>
         </Modal.Body>
       </Modal>
-
       <Modal show={showRecordPaymentModal} onHide={handleRecordPaymentClose} centered>
         <Modal.Body>
           <p className='Scrollable__recentlyUsed m-2'>Payment Summary:</p>

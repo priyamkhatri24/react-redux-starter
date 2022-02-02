@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import FilterAccordion from '../Common/FilterAccordion/FilterAccordion';
 import { get, apiValidation } from '../../Utilities';
-import {
+import {  
   getClientUserId,
   getRoleArray,
   getClientId,
@@ -80,9 +80,9 @@ const Videos = (props) => {
         const data = apiValidation(res);
         setVideos(data);
       });
-    }
+    } 
     return () => {
-      clearTimeout(timer);
+      clearTimeout(timer); 
     };
   }, [searchString]);
 

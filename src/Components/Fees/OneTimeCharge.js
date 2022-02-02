@@ -11,7 +11,7 @@ const OneTimeCharge = (props) => {
   const [showModal, setShowModal] = useState(false);
   const [showOtherTagName, setOtherTagName] = useState(false);
   const handleClose = () => setShowModal(false);
-
+  
   return (
     <Card
       key={id}
@@ -59,7 +59,7 @@ const OneTimeCharge = (props) => {
           </i>
         </label>
       </Row>
-      <label className='has-float-label mx-2 my-3'>
+      <label className='has-float-label mx-2 my-3'> 
         <input
           className='form-control'
           name='Enter amount'

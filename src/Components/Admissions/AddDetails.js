@@ -529,15 +529,15 @@ const AddDetails = (props) => {
           selectBatches={selectedBatches}
           getSelectedBatches={getSelectedBatches}
           title='Batches'
-        />
+        /> 
         <Modal.Footer>
           <Button variant='dashboardBlueOnWhite' onClick={() => addUserToWhiteList()}>
             Next
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
-  );
+    </> 
+  ); 
 };
 
 const mapStateToProps = (state) => ({

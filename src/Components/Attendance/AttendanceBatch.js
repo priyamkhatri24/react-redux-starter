@@ -158,7 +158,7 @@ const AttendanceBatch = (props) => {
       <PageHeader
         title={attendanceBatch.batch_name}
         customIcon={<DateRangeIcon />}
-        handleCustomIcon={changeDate}
+        handleCustomIcon={changeDate} 
       />
       <Swiper
         spaceBetween={50}
@@ -233,4 +233,4 @@ AttendanceBatch.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   clientId: PropTypes.number.isRequired,
   currentbranding: PropTypes.instanceOf(Object).isRequired,
-};
+}; 

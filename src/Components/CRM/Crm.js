@@ -219,7 +219,7 @@ const CRM = (props) => {
     setCurrentTab(tab);
     window.scrollTo(0, 0);
   };
-
+  
   const downloadXlsFile = () => {
     if (currentTab === 'Enquiries') {
       console.log('download inq');

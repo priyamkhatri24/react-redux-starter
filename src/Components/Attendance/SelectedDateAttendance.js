@@ -18,7 +18,7 @@ const SelectedDateAttendance = (props) => {
 
   useEffect(() => {
     console.log(attendanceSelectedDate);
-    const formattedDate = format(parseISO(attendanceSelectedDate), 'yyyy-MM-dd');
+    const formattedDate = format(attendanceSelectedDate, 'yyyy-MM-dd');
     setDate(formattedDate);
     get(
       { client_batch_id: attendanceBatch.client_batch_id, date: formattedDate },
