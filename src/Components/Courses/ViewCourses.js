@@ -41,7 +41,7 @@ const ViewCourses = (props) => {
 
   const goToBuyCourse = (id) => {
     const { push } = history;
-    push(`/courses/buyCourse/${clientId}/${id}`);
+    push(`/courses/buyCourse/${window.btoa(clientId)}/${window.btoa(id)}`);
   };
 
   const goToMyCourse = (id) => {

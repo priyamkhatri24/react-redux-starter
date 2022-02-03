@@ -59,6 +59,5 @@ export const startCashfree = (
   }
   const signature = crypto.createHmac('sha256', secretKey).update(signatureData).digest('base64');
   postData.signature = signature;
-  console.log(postData, 'postttdataa');
   return postData;
 };

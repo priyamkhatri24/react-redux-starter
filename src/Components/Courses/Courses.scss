@@ -57,6 +57,18 @@
     }
   }
 
+  &__userProfileStats {
+    max-width: 100%;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 100px;
+    @include media-breakpoint-down(sm) {
+      width: 60px;
+      height: 60px;
+    }
+  }
+
   // &__playerWrapper {
   //   position: relative;
   //   padding-top: 56.25%; /* 720 / 1280 = 0.5625 */
@@ -340,11 +352,8 @@
   }
   &__statisticsImg {
     text-align: center;
-
-    @include media-breakpoint-down(sm) {
-      text-align: left;
-    }
   }
+
   &__Profile__Tabs {
     position: fixed;
     // box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.29) !important;

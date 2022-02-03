@@ -218,7 +218,8 @@ const AssignmentForm = (props) => {
     <div className='mainFormPage'>
       <PageHeader
         title='Add Offline Assignment'
-        shadow
+        // shadow
+        transparentBlue
         customBack
         handleBack={goToOfflineAssignments}
       />

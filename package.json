@@ -102,7 +102,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "node ./updateBuild.js && react-scripts build && node ./addPreloadLinks.js",
+    "build": "node ./updateBuild.js && GENERATE_SOURCEMAP=false react-scripts build && node ./addPreloadLinks.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
@@ -158,5 +158,5 @@
       "git push sid-origin auto"
     ]
   },
-  "buildDate": 1643105338784
+  "buildDate": 1643707445207
 }
