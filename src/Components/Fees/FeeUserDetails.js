@@ -33,12 +33,14 @@ const FeeUserDetails = (props) => {
   const updateButton1 = () => {
     setChange(setDate);
   };
-
+  
   const goToTheDate = () => {
     // setUserdate(date);
     // history.push('/fees/users');
+    // setChange(onChange());
     // handleClose1();
-    
+    console.log('hiii');
+    handleClose1();
   };
 
   useEffect(() => {
@@ -127,7 +129,7 @@ const FeeUserDetails = (props) => {
                 style={{ border: 'none', backgroundColor: 'white' }}
               >
                 <h6>
-                  Start Date
+                  Start Date{change}
                   {/* <DateRangeIcon
                     onClick={() => {
                       changeDate();

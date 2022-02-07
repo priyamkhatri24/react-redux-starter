@@ -526,12 +526,11 @@ function Loading({ error }) {
   }
   return <Skeleton count={50} />;
 }
-
-export function Routes() {
+  
+export function Routes() { 
   return (
     <Switch>
       <AuthenticatedRoute exact path='/' component={Dashboard} />
-
       <Route path='/signin' component={SignIn} />
       <Route path='/signup' component={SignUp} />
       <Route exact path='/login' component={Login} />
