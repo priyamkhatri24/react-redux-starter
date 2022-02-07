@@ -70,7 +70,7 @@ const FeeBatches = (props) => {
 
       setBatches(searchedArray);
     });
-  }, []);
+  }, [clientId, clientUserId, page]);
 
   useEffect(() => {
     let timer;

@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import { get, apiValidation } from '../../Utilities';
 import { formatConversations } from './formatter';
 import GlobalSearchBar from '../Common/GlobalSearchBar/GlobalSearchBar';
-import AppStories from '../Stories/AppStories';
+import AppStories from '../Common/Stories/AppStories';
 import { getConversations } from '../../redux/reducers/conversations.reducer';
 import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { conversationsActions } from '../../redux/actions/conversations.action';

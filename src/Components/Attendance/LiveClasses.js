@@ -10,7 +10,6 @@ import {
   getRoleArray,
   getClientUserId,
 } from '../../redux/reducers/clientUserId.reducer';
-
 import './LiveClasses.scss';
 
 const LiveClasses = (props) => {
@@ -97,27 +96,29 @@ const LiveClasses = (props) => {
   };
 
   return (
-    <div className='cardBody mx-auto'>
+    <div className='AttendanceLiveClasses__cardBody mx-auto'>
       {classes.length > 0 &&
         classes.map((i) => {
           return (
             <Card
-              className='cardContainer'
-              style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)', marginTop: '20px' }}
+              className='AttendanceLiveClasses__cardContainer'
+              style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)' }}
               onClick={() => {
                 handleClick(i);
               }}
             >
               <div className='d-flex flex-row p-3 justify-content-between'>
-                <Card.Body className='body1'>
-                  <Card.Title className='cardTitle'>
+                <Card.Body className='AttendanceLiveClasses__body1'>
+                  <Card.Title className='AttendanceLiveClasses__cardTitle'>
                     Streamed on {moment(i.created_at * 1000).format('h:mm MMM Do, YYYY')} (by-
                     {i.first_name})
+                    {/* Streamed on {createdAt.split(' ').slice(1,5).join(' ')} (by-
+                    {i.first_name}) */}
                   </Card.Title>
-                  <Card.Subtitle className='type'>
-                    Type: <span className='alpha'>{i.stream_type}</span>
+                  <Card.Subtitle className='AttendanceLiveClasses__type'>
+                    Type: <span className='AttendanceLiveClasses__alpha'>{i.stream_type}</span>
                   </Card.Subtitle>
-                  <Card.Subtitle className='streamedIn'>
+                  <Card.Subtitle className='AttendanceLiveClasses__streamedIn'>
                     Streamed in:{' '}
                     {i.batch_array.slice(0, 15).map((e) => (
                       <span>{e}, </span> // eslint-disable-line

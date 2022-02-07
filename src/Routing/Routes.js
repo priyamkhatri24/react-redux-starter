@@ -514,10 +514,6 @@ const ViewAllAsignments = Loadable({
   loading: Loading,
 });
 
-const Stories = Loadable({
-  loader: () => import(/* webpackChunkName: 'Post' */ '../Components/Stories/AppStories'),
-  loading: Loading,
-});
 // eslint-disable-next-line
 function Loading({ error }) {
   if (error) {

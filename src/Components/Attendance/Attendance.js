@@ -97,9 +97,15 @@ const Attendance = (props) => {
   return (
     <>
       <PageHeader title='Attendance' search searchFilter={searchUsers} />
-      <Tabs className='tabs' activeKey={tabKey} onSelect={(k) => setTabKey(k)}>
-        <Tab id='tab1' eventKey='0' title='Batches' style={{ backgroundColor: 'rgb(241,249,255)' }}>
-          <div style={{ paddingTop: '2rem', marginBottom: '0.5rem' }}>
+      <Tabs className='Attendance__tabs' activeKey={tabKey} onSelect={(k) => setTabKey(k)}>
+        <Tab
+          id='tab1'
+          className='Attendance__tab'
+          eventKey='0'
+          title='Batches'
+          style={{ backgroundColor: 'rgb(241,249,255)', minHeight: '100vh' }}
+        >
+          <div style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
             {batches.length > 0 ? (
               batches.map((elem) => {
                 return (
@@ -108,6 +114,7 @@ const Attendance = (props) => {
                     style={{
                       boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)',
                       borderRadius: '10px',
+                      border: 'transparent',
                     }}
                     key={elem.client_batch_id}
                     onClick={() => goToBatch(elem)}
@@ -116,7 +123,7 @@ const Attendance = (props) => {
                       <Col xs={3} className='text-center'>
                         <img
                           src={userAvatar}
-                          className='img-fluid'
+                          className='AttendanceLiveClasses__image'
                           alt='profile'
                           width='40'
                           height='40'
@@ -134,7 +141,7 @@ const Attendance = (props) => {
                 );
               })
             ) : (
-              <div className='noItemText'>
+              <div className='Attendance__noItemText'>
                 <Spinner animation='border' />
               </div>
             )}
@@ -142,11 +149,12 @@ const Attendance = (props) => {
         </Tab>
         <Tab
           id='tab2'
+          className='Attendance__tab'
           eventKey='1'
           title='Live Classes'
           style={{ backgroundColor: 'rgb(241,249,255)' }}
         >
-          <div style={{ paddingTop: '2rem', marginBottom: '0.2rem' }}>
+          <div style={{ marginBottom: '0.2rem' }}>
             <LiveClasses searchString={searchString} />
           </div>
         </Tab>

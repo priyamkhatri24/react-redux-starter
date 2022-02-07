@@ -4,7 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { get, apiValidation } from '../../Utilities';
 import { PageHeader } from '../Common';
-import placeholder from '../../assets/images/ycIcon.png';
+import placeholder from '../../assets/images/user.svg';
 import './Courses.scss';
 import { history } from '../../Routing/History';
 
@@ -12,7 +12,7 @@ const CourseStatistics = (props) => {
   const {
     history: {
       location: {
-        state: { id },
+        state: { id, currencySymbol },
       },
     },
   } = props;
@@ -22,6 +22,7 @@ const CourseStatistics = (props) => {
       console.log(res);
       const result = apiValidation(res);
       setStats(result);
+      console.log(result, 'getStatisticsOfCourse');
     });
   }, [id]);
 
@@ -35,33 +36,46 @@ const CourseStatistics = (props) => {
       <PageHeader title='Details' customBack handleBack={goToCourseStatistics} />
       <div className='Courses__statisticsConatiner'>
         {stats.map((course) => {
+          const subscribedDate = new Date(Number(course.subscribed_at) * 1000);
           return (
             <Row key={course.course_id} style={{ marginBottom: '2rem' }}>
               <Col xs={4} className='Courses__statisticsImg'>
                 <img
                   src={course.profile_image ? course.profile_image : placeholder}
                   alt='course '
-                  className='mx-auto Courses__viewCourseImage'
+                  className='mx-auto Courses__userProfileStats'
                 />
               </Col>
               <Col xs={8} className='p-0'>
-                <p className='Scrollable__courseCardHeading mx-2 mb-1'>
+                <p className='Scrollable__courseCardHeading mx-0 mb-0'>
                   {course.first_name} {course.last_name}
                 </p>
-                <Row className='mx-2'>
-                  <div style={{ background: '#00ff00', borderRadius: '5px' }}>
+                <div className='mx-0'>
+                  <div>
                     <span
                       style={{
                         fontFamily: 'Montserrat-Medium',
-                        color: '#fff',
-                        fontSize: '10px',
+                        color: '#000',
+                        fontSize: '12px',
                       }}
-                      className='m-2 my-auto'
+                      className='mx-0 mb-0 my-auto'
                     >
-                      {course.paid}
+                      {`${currencySymbol} ${course.paid}`}
                     </span>
                   </div>
-                </Row>
+                  <div>
+                    <span
+                      style={{
+                        fontFamily: 'Montserrat-Regular',
+                        color: '#000',
+                        fontSize: '12px',
+                      }}
+                      className='m-0 my-auto'
+                    >
+                      {subscribedDate.toString().split(' ').slice(1, 5).join(' ')}
+                    </span>
+                  </div>
+                </div>
               </Col>
             </Row>
           );
@@ -78,6 +92,7 @@ CourseStatistics.propTypes = {
     location: PropTypes.shape({
       state: PropTypes.shape({
         id: PropTypes.number.isRequired,
+        currencySymbol: PropTypes.string.isRequired,
       }),
     }),
   }).isRequired,

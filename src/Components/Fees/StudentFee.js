@@ -54,7 +54,7 @@ const StudentFee = (props) => {
     ).then((res) => {
       const result = apiValidation(res);
       setFees(result);
-      console.log(result, 'feeresult');
+      console.log(result, 'getFeeDataForStudent');
       setFeePlanTypeToStore(result.plan_type === 'custom' ? 'Custom' : 'Monthly');
       console.log('wtf');
       setFeeOneTimePlanArrayToStore(result.one_time_plan_array);
@@ -85,19 +85,20 @@ const StudentFee = (props) => {
 
   const recordPayment = () => {
     const result = fees.fee_data.find((e) => e.status === 'due');
-    setPaymentSummary(result);
+    setPaymentSummary(result || {});
     handleRecordPaymentOpen();
   };
 
   const makePayment = () => {
     const payload = {
       user_fee_id: paymentsummary.user_fee_id,
-      fee_order_id: paymentsummary.fee_order_id,
       client_user_id: clientUserId,
+      fee_order_id: paymentsummary.fee_order_id,
       status: replaceOptions,
     };
 
     post(payload, '/waiveFeeOfStudent').then((res) => {
+      console.log(res);
       if (res.success) {
         getFeeData();
         handleRecordPaymentClose();
@@ -150,17 +151,21 @@ const StudentFee = (props) => {
         <div className='Fees_navStatusContainer'>
           <Row className='mx-2 px-4 Fees__navStatus'>
             Status:
-            <span className='ml-1'>{fees.fee_status}</span>
+            <span className='ml-1' style={{ color: 'black' }}>
+              {fees.fee_status}
+            </span>
             <Button variant='customSecondary' className='ml-auto' onClick={() => handleShow()}>
               Plan Info
             </Button>
           </Row>
           <p className='Fees__navStatus mx-2 px-4'>
-            <span>Due Amount: {fees.due_amount}</span>
+            <span>
+              Due Amount: {currencySymbol} {fees.due_amount}
+            </span>
           </p>
         </div>
         <div className='Fees__overlay'>
-          {Object.keys(fees).length > 0 &&
+          {Object.keys(fees).length > 0 && fees.fee_data.length > 0 ? (
             fees.fee_data.map((elem) => {
               return (
                 <FeesCard
@@ -172,19 +177,36 @@ const StudentFee = (props) => {
                   studentFeeCard
                 />
               );
-            })}
+            })
+          ) : (
+            <div className='w-50 h-100 d-flex flex-column justify-content-center m-auto'>
+              <Button
+                onClick={goToEditFeePlan}
+                variant='customPrimary'
+                className='my-2 mx-auto Fees__addFeePlanBtn'
+              >
+                Add Fee plan
+              </Button>
+              <p className='Fees__navStatus text-center'>
+                Either no plan exists for this student or the due date has not approached. You can
+                assign a new plan using add fee plan button above.
+              </p>
+            </div>
+          )}
         </div>
         <footer className='Fees__footer text-center'>
-          {fees.due_amount > 0 ? (
+          {fees.due_amount > 0 &&
+          fees.fee_data.length > 0 &&
+          fees.fee_data[fees.fee_data.length - 1].status === 'due' ? (
             <Button
               variant='customPrimary'
-              className='mt-4 Fees__PayButton'
+              className='Fees__PayButton'
               onClick={() => recordPayment()}
             >
               Record Payment
             </Button>
           ) : (
-            <p className='text-center'>No dues</p>
+            <p className='Fees__navStatus text-center'>No dues</p>
           )}
         </footer>
       </div>
@@ -271,7 +293,6 @@ const StudentFee = (props) => {
           </Card>
         </Modal.Body>
       </Modal>
-
       <Modal show={showRecordPaymentModal} onHide={handleRecordPaymentClose} centered>
         <Modal.Body>
           <p className='Scrollable__recentlyUsed m-2'>Payment Summary:</p>
@@ -282,7 +303,7 @@ const StudentFee = (props) => {
                 className='ml-auto Scrollable__feecardHeading mx-2 mt-2 mb-0 '
                 style={{ color: 'var(--primary-blue)' }}
               >
-                {`${currencySymbol} ${paymentsummary.amount}`}
+                {`${paymentsummary.amount}`}
               </span>
             </Row>
           </Card>

@@ -163,7 +163,9 @@ const PreviousAttendance = (props) => {
                                 color: 'rgba(112, 112, 112, 1)',
                               }
                         }
-                      />
+                      >
+                        {el.value === 'N' ? '' : el.value}
+                      </span>
                     </Col>
                   );
                 })}

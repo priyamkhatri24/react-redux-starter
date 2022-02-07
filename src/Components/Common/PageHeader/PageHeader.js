@@ -19,6 +19,7 @@ export const PageHeader = (props) => {
     customBack,
     handleBack,
     transparent,
+    transparentBlue,
     filter,
     triggerFilters,
     customIcon,
@@ -44,7 +45,11 @@ export const PageHeader = (props) => {
           : 'PageHeader p-3 d-flex align-items-center'
       }
       style={{
-        backgroundColor: transparent ? 'transparent' : 'white',
+        backgroundColor: transparent
+          ? 'transparent'
+          : transparentBlue
+          ? 'rgba(241, 249, 255, 1)'
+          : 'white',
         width,
         boxShadow: shadow ? '0px 2px 2px 0px rgba(0,0,0,0.29)' : 'transparent',
       }}
@@ -97,7 +102,7 @@ export const PageHeader = (props) => {
           <input
             autoFocus // eslint-disable-line
             placeholder={placeholder}
-            className='PageHeader__input mx-2'
+            className='PageHeader__input mx-2 p-2'
             onChange={(e) => searchFilter(e.target.value)}
           />
           <span
@@ -125,6 +130,7 @@ PageHeader.propTypes = {
   customBack: PropTypes.bool,
   handleBack: PropTypes.func,
   transparent: PropTypes.bool,
+  transparentBlue: PropTypes.bool,
   filter: PropTypes.bool,
   notFixed: PropTypes.bool,
   noBack: PropTypes.bool,
@@ -149,6 +155,7 @@ PageHeader.defaultProps = {
   handleBack: () => {},
   triggerFilters: () => {},
   transparent: false,
+  transparentBlue: false,
   filter: false,
   customIcon: null,
   handleCustomIcon: () => {},

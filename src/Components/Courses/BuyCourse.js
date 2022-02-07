@@ -139,9 +139,17 @@ const BuyCourse = (props) => {
   }, [setCurrentComponentToStore, setRedirectPathToStore]);
 
   useEffect(() => {
+    const cid = !isNaN(+match.params.clientId)
+      ? match.params.clientId
+      : +window.atob(match.params.clientId);
+
+    const coid = !isNaN(+match.params.courseId)
+      ? match.params.courseId
+      : +window.atob(match.params.courseId);
+
     const payload = {
-      client_id: match.params.clientId,
-      course_id: match.params.courseId,
+      client_id: cid,
+      course_id: coid,
     };
 
     get(payload, '/getCourseDetailsStudent').then((res) => {
@@ -484,7 +492,7 @@ const BuyCourse = (props) => {
     setCourseVideo(null);
     setIsTabScrollable(false);
     setSource(null);
-    push(`/courses/buyCourse/${clientId}/${courseId}`);
+    push(`/courses/buyCourse/${window.btoa(clientId)}/${window.btoa(courseId)}`);
   };
   const playVideo = () => {
     vidRef2.current.play();

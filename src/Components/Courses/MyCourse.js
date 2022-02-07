@@ -853,7 +853,9 @@ const Mycourse = (props) => {
 
   const shareCourse = () => {
     // eslint-disable-next-line
-    const url = `${window.location.protocol}//${window.location.host}/courses/buyCourse/${clientId}/${course.course_id}`;
+    const url = `${window.location.protocol}//${
+      window.location.host
+    }/courses/buyCourse/${window.btoa(clientId)}/${window.btoa(course.course_id)}`;
     console.log(url);
     const hasShared = shareThis(url, dashboardData.client_name);
     if (hasShared === 'clipboard') setShowToast(true);
@@ -898,7 +900,11 @@ const Mycourse = (props) => {
   };
 
   const playVideo = () => {
-    vidRef.current.play();
+    if (videoIsPlaying) {
+      vidRef.current.play();
+    } else {
+      vidRef.current.pause();
+    }
   };
 
   const formatDurationFromSeconds = (duration) => {

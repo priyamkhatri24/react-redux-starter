@@ -69,9 +69,14 @@
   }
 }
 
+.react-time-picker__wrapper {
+  border: transparent;
+}
+
 .typeCard {
   width: 90%;
   display: flex;
+  cursor: pointer;
   flex-direction: row;
   justify-content: space-between;
   border: transparent;

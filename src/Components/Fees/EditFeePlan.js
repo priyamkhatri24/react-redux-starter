@@ -192,14 +192,9 @@ const EditFeePlan = (props) => {
     console.log(oneTimePlanArray);
     console.log(customFeePlanArray, 'fkfgjk');
     console.log(payload, 'payload');
+    history.push('/teacherfees');
     post(payload, '/editFeeDataOfUser').then((res) => {
       console.log(res);
-      if (res.success) {
-        history.push('/teacherfees');
-        console.log('xyz');
-      } else {
-        console.log('error');
-      }
     });
   };
 

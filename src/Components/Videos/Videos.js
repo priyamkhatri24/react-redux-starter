@@ -43,7 +43,10 @@ const Videos = (props) => {
       is_admin: roleArray.includes(4),
     };
 
-    get(payload, '/getVideosUsingFilter/').then((res) => {
+    get(
+      payload,
+      roleArray.includes(4) || roleArray.includes(3) ? `/getVideosUsingFilter/` : '/getVideos/',
+    ).then((res) => {
       const data = apiValidation(res);
       console.log(data);
       setVideos(data);
@@ -62,7 +65,10 @@ const Videos = (props) => {
           client_id: clientId,
           is_admin: roleArray.includes(4),
         };
-        get(payload, `/getVideosUsingFilter/`).then((res) => {
+        get(
+          payload,
+          roleArray.includes(4) || roleArray.includes(3) ? `/getVideosUsingFilter/` : '/getVideos/',
+        ).then((res) => {
           const result = apiValidation(res);
           const data = result.filter((ele) => {
             return ele.video_name.toLowerCase().includes(searchString);
@@ -76,7 +82,10 @@ const Videos = (props) => {
         client_id: clientId,
         is_admin: roleArray.includes(4),
       };
-      get(payload, `/getVideosUsingFilter/`).then((res) => {
+      get(
+        payload,
+        roleArray.includes(4) || roleArray.includes(3) ? `/getVideosUsingFilter/` : '/getVideos/',
+      ).then((res) => {
         const data = apiValidation(res);
         setVideos(data);
       });
