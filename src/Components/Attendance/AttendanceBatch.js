@@ -55,9 +55,12 @@ const AttendanceBatch = (props) => {
 
   const changeDate = () => handleOpen();
 
-  const onChange = (nextValue) => setDate(nextValue);
+  const onChange = (nextValue) => {
+    setDate(nextValue);
+  };
 
   const goToTheDate = () => {
+    console.log(date);
     setAttendanceSelectedDateToStore(date);
     history.push('/attendance/date');
   };
@@ -193,8 +196,16 @@ const AttendanceBatch = (props) => {
         <Modal.Header closeButton>
           <Modal.Title>Select Date</Modal.Title>
         </Modal.Header>
-        <Modal.Body className='text-center'>
+        <Modal.Body className='d-flex justify-content-center'>
           <Calendar onChange={onChange} value={date} maxDate={new Date()} />
+          {/* <input
+            className='form-control'
+            name='date'
+            type='date'
+            placeholder='Assignment date'
+            value={date}
+            onChange={(e) => onChange(e.target.value)}
+          /> */}
         </Modal.Body>
         <Modal.Footer>
           <Button variant='boldTextSecondary' onClick={() => handleClose()}>

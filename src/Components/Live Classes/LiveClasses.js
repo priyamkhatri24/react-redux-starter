@@ -13,6 +13,7 @@ import DatePicker from 'react-datepicker';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import fromUnixTime from 'date-fns/fromUnixTime';
+import TimePicker from 'react-time-picker';
 import format from 'date-fns/format';
 import Modal from 'react-bootstrap/Modal';
 import Tabs from 'react-bootstrap/Tabs';
@@ -150,6 +151,11 @@ class LiveClasses extends Component {
       zoomMeetingLink: '',
     };
   }
+
+  setScheduledTime = (value) => {
+    this.setState({ scheduledTime: value });
+    console.log(value);
+  };
 
   componentDidMount() {
     const { clientUserId, roleArray, clientId, dashboardData } = this.props;
@@ -994,8 +1000,7 @@ class LiveClasses extends Component {
     const formattedScheduledFrequency = scheduledFrequency.split(' ').join('_').toLowerCase();
     const formattedDate = Date.parse(scheduledDate);
     const formattedTimeArray = scheduledTime.split(':');
-    const formattedTime =
-      +formattedTimeArray[0] * 60 * 60 + +formattedTimeArray[1] * 60 + +formattedTimeArray[2];
+    const formattedTime = +formattedTimeArray[0] * 60 * 60 + +formattedTimeArray[1] * 60;
     const startTime = formattedDate / 1000 + formattedTime;
     console.log(userProfile);
     const formattedBatchesArray = selectedBatches.map((ele) => ele.client_batch_id);
@@ -1009,7 +1014,8 @@ class LiveClasses extends Component {
       name: `${userProfile.firstName} ${userProfile.lastName}`,
     };
 
-    console.log(payload);
+    console.log(payload, 'payload for schedule');
+    console.log(scheduledTime, 'time');
     post(payload, '/scheduleLiveClass').then((res) => {
       console.log(res);
       this.rerenderArrays();
@@ -1871,7 +1877,7 @@ class LiveClasses extends Component {
                                 customInput={<CustomInput />}
                               />
                               <label className='has-float-label my-auto w-100 margin-8'>
-                                <input
+                                {/* <input
                                   className='form-control'
                                   name='Start Time'
                                   type='time'
@@ -1879,6 +1885,15 @@ class LiveClasses extends Component {
                                   placeholder='Start Time'
                                   value={scheduledTime}
                                   onChange={(e) => this.setState({ scheduledTime: e.target.value })}
+                                /> */}
+                                <TimePicker
+                                  className='form-control'
+                                  onChange={this.setScheduledTime}
+                                  value={scheduledTime}
+                                  format='h:m:s a'
+                                  hourPlaceholder='hh'
+                                  minutePlaceholder='mm'
+                                  secondPlaceholder='ss'
                                 />
                                 <span onClick={() => {}}>Start Time</span>
                               </label>

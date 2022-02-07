@@ -505,6 +505,8 @@
 
 .admissionImage {
   max-width: 55px;
+  width: 55px;
+  height: 84px;
   position: relative;
   top: -29px;
 }
@@ -595,6 +597,8 @@
   }
   .admissionImage {
     min-width: 90px;
+    width: 90px;
+    height: 137px;
     top: -45px;
   }
   .Dashboard__innovationpBlack,
@@ -665,3 +669,7 @@
     font-size: 22px !important;
   }
 }
+
+// we need media query for screens:
+//1. greater than 1440px (min-width: 1440px) large laptop screens
+//2. screens greater than 1700px (if necessary) (min-width: 1700px) 4k display and TV screens

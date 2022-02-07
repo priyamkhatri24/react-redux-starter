@@ -86,6 +86,9 @@ const MonthlyCustomPlan = (props) => {
       style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)', borderRadius: '10px' }}
       className='m-2 pt-4 px-2'
     >
+      <h4 style={{ fontFamily: 'Montserrat-Medium' }} className='w-100 text-center mb-3'>
+        Create a new plan
+      </h4>
       <Tabs
         defaultActiveKey={activeTab}
         activeKey={activeTab}

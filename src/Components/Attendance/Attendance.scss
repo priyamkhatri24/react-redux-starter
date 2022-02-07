@@ -55,6 +55,7 @@
     color: var(--primary-blue);
     line-height: 15px;
   }
+
   &__Card {
     width: 75%;
     margin: auto;
@@ -62,19 +63,50 @@
       width: 95%;
     }
   }
+
   &__3buttons {
     @include media-breakpoint-up(sm) {
       padding-right: 3rem;
     }
   }
+
   &__PrevNames {
     @include media-breakpoint-up(sm) {
       padding-left: 3rem;
     }
   }
+
+  &__tabs {
+    margin-top: 57px;
+    position: fixed;
+    width: 100%;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 2px solid red; */
+  }
+
+  &__tabs a {
+    background-color: white;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__noItemText {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__tab {
+    padding-top: 7rem;
+  }
 }
 
-::-webkit-scrollbar {
-  width: 0; /* Remove scrollbar space */
-  background: transparent; /* Optional: just make scrollbar invisible */
-}
+// ::-webkit-scrollbar {
+//   width: 0; /* Remove scrollbar space */
+//   background: transparent; /* Optional: just make scrollbar invisible */
+// }

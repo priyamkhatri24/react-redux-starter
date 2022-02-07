@@ -34,14 +34,19 @@ const OneTimeCharge = (props) => {
       </p>
 
       <Row className='m-2'>
-        <label htmlFor='Enter Type' className='w-100 has-float-label my-auto'>
+        {/* eslint-disable */}
+        <label
+          onClick={() => setShowModal(true)}
+          htmlFor='Enter Type'
+          className='w-100 has-float-label my-auto'
+        >
           <input
             className='form-control'
             name='Enter Type'
             type='text'
             placeholder='Enter Type (eg: Registration fee)'
-            onClick={() => setShowModal(true)}
             readOnly
+            required
             value={tagName || ''}
             id='noBackGroundColor'
           />

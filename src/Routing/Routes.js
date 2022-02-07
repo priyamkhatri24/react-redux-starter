@@ -388,6 +388,11 @@ const AttendanceBatch = Loadable({
   loading: Loading,
 });
 
+const Analysis = Loadable({
+  loader: () => import(/* webpackChunkName: 'Attendance' */ '../Components/Attendance/Analysis'),
+  loading: Loading,
+});
+
 const SelectedDateAttendance = Loadable({
   loader: () =>
     import(
@@ -593,6 +598,7 @@ export function Routes() {
       <AuthenticatedRoute exact path='/analysis/studentanalysis' component={StudentAnalysis} />
       <AuthenticatedRoute exact path='/analysis/studentlist' component={StudentList} />
       <AuthenticatedRoute exact path='/attendance' component={Attendance} />
+      <AuthenticatedRoute exact path='/analysis' component={Analysis} />
       <AuthenticatedRoute exact path='/attendance/batch' component={AttendanceBatch} />
       <AuthenticatedRoute exact path='/attendance/date' component={SelectedDateAttendance} />
       <AuthenticatedRoute exact path='/displaypage' component={DisplayPage} />
