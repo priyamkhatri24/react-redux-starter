@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import format from 'date-fns/format';
 import moment from 'moment';
-import parseISO from 'date-fns/parseISO';
 import { connect } from 'react-redux';
 import {
   getAttendanceBatch,
