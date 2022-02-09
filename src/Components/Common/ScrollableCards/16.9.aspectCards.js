@@ -20,7 +20,8 @@ export const AspectCards = (props) => {
     borderRadius: '10px',
     boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)',
   };
-
+  const NoPreview =
+    'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1625835287424.jpg';
   const { width } = windowDimensions;
 
   const isScreenBig = () => {
@@ -104,7 +105,7 @@ export const AspectCards = (props) => {
 
         <div className='aspectCardsInnerContainer'>
           {data.length > 0 &&
-            data.map((elem) => {
+            data.map((elem, index) => {
               return (
                 <Card
                   className={
@@ -132,17 +133,28 @@ export const AspectCards = (props) => {
                       <track src='' kind='subtitles' srcLang='en' label='English' />
                     </video>
                   ) : (
-                    <img
-                      src={elem.file_link}
-                      alt='student'
-                      // height={bigAspectCard ? '177px' : '113px'}
-                      // width={bigAspectCard ? '315px' : '200px'}
-                      style={{
-                        borderRadius: '5px',
-                        width: '100%',
-                        height: 'auto',
-                      }}
-                    />
+                    <>
+                      <img
+                        src={elem.file_link}
+                        alt='student'
+                        className='appearAfter1Second'
+                        // height={bigAspectCard ? '177px' : '113px'}
+                        // width={bigAspectCard ? '315px' : '200px'}
+                        style={{
+                          borderRadius: '5px',
+                        }}
+                      />
+                      <img
+                        src={NoPreview}
+                        alt='student'
+                        className='dissapearAfter1Second'
+                        // height={bigAspectCard ? '177px' : '113px'}
+                        // width={bigAspectCard ? '315px' : '200px'}
+                        style={{
+                          borderRadius: '5px',
+                        }}
+                      />
+                    </>
                   )}
                 </Card>
               );

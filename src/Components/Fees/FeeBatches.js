@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import userAvatar from '../../assets/images/user.svg';
 import '../Dashboard/Dashboard.scss';
@@ -26,24 +27,29 @@ const FeeBatches = (props) => {
   const [searchString, setSearchString] = useState('');
   const [limit, setLimit] = useState(5);
 
-  const infiniteScroll = () => {
-    console.log(activeTab, 'batches');
-    if (
-      window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight ||
-      window.innerHeight + document.body.scrollTop >= document.body.offsetHeight
-    ) {
-      setSearchPage((prev) => prev + 1);
-      setPage((prev) => prev + 1);
-    }
-  };
+  // const infiniteScroll = () => {
+  //   console.log(activeTab, 'batches');
+  //   if (
+  //     window.innerHeight + document.documentElement.scrollTop >=
+  //       document.documentElement.offsetHeight- 200 ||
+  //     window.innerHeight + document.body.scrollTop >= document.body.offsetHeight- 200
+  //   ) {
+  //     setSearchPage((prev) => prev + 1);
+  //     setPage((prev) => prev + 1);
+  //   }
+  // };
 
-  useEffect(() => {
-    if (activeTab) {
-      window.addEventListener('scroll', infiniteScroll);
-    }
-    return () => window.removeEventListener('scroll', infiniteScroll);
-  }, [activeTab]);
+  // useEffect(() => {
+  //   if (activeTab) {
+  //     window.addEventListener('scroll', infiniteScroll);
+  //   }
+  //   return () => window.removeEventListener('scroll', infiniteScroll);
+  // }, [activeTab]);
+
+  const infiniteScroll = () => {
+    setSearchPage((prev) => prev + 1);
+    setPage((prev) => prev + 1);
+  };
 
   useEffect(() => {
     get({ client_id: clientId }, '/getFilters').then((res) => {
@@ -281,63 +287,78 @@ const FeeBatches = (props) => {
 
       <PageHeader title='Fees' search searchFilter={searchBatches} />
 
-      <div className='mt-4'>
-        {(batches.length > 0 || searchedBatches.length > 0) &&
-          (searchedBatches.length > 0 ? searchedBatches : batches).map((elem) => {
-            return (
-              <Card
-                className='p-2 Fees__batchesTeacher'
-                key={elem.client_batch_id}
-                style={{ borderRadius: '5px', border: '1px solid rgba(112, 112, 112, 0.1)' }}
-                onClick={() =>
-                  history.push({
-                    pathname: '/fees/users',
-                    state: { batchId: elem.client_batch_id, batchName: elem.batch_name },
-                  })
-                } // eslint-disable-line
-              >
-                <Row style={{ marginTop: '0.5rem' }}>
-                  <Col xs={4} className='Fees__receivedAmount text-center my-auto'>
-                    {`${currencySymbol} ${elem.total_paid_amount}`}
-                  </Col>
-                  <Col xs={4} className='text-center'>
-                    <img
-                      src={userAvatar}
-                      className='Dashboard__profileImage img-responsive'
-                      alt='profile'
-                    />
-                  </Col>
-                  <Col
-                    xs={4}
-                    className='Fees__receivedAmount text-center my-auto'
-                    style={{ color: 'rgba(255, 0, 0, 0.6)' }}
-                  >
-                    {`${currencySymbol} ${elem.total_due_amount}`}
-                  </Col>
-                </Row>
-                <Row className='mx-auto m-2 Fees__orderSummary'>{elem.batch_name}</Row>
-                <ProgressBar
-                  now={
-                    elem.total_students === '0'
-                      ? 0
-                      : (parseInt(elem.total_paid_students, 10) /
-                          parseInt(elem.total_students, 10)) *
-                        100
-                  }
-                  label={`${parseInt(elem.total_paid_students, 10)}/${parseInt(
-                    elem.total_students,
-                    10,
-                  )}`}
-                  style={{ borderRadius: '50px', height: '20px', color: 'rgba(127, 196, 253, 1)' }}
-                  className='Fees__progressBar'
-                />
-                <p className='Fees__studentsPay mx-auto'>
-                  {`${parseInt(elem.total_due_students, 10)}/${parseInt(elem.total_students, 10)}`}{' '}
-                  Students Yet to Pay
-                </p>
-              </Card>
-            );
-          })}
+      <div className='mt-2'>
+        <InfiniteScroll
+          dataLength={(searchedBatches.length > 0 ? searchedBatches : batches).length}
+          next={infiniteScroll}
+          hasMore
+          height={document.documentElement.clientHeight - 130}
+          loader={<h4 />}
+        >
+          {(batches.length > 0 || searchedBatches.length > 0) &&
+            (searchedBatches.length > 0 ? searchedBatches : batches).map((elem) => {
+              return (
+                <Card
+                  className='p-2 Fees__batchesTeacher'
+                  key={elem.client_batch_id}
+                  style={{ borderRadius: '5px', border: '1px solid rgba(112, 112, 112, 0.1)' }}
+                  onClick={() =>
+                    history.push({
+                      pathname: '/fees/users',
+                      state: { batchId: elem.client_batch_id, batchName: elem.batch_name },
+                    })
+                  } // eslint-disable-line
+                >
+                  <Row style={{ marginTop: '0.5rem' }}>
+                    <Col xs={4} className='Fees__receivedAmount text-center my-auto'>
+                      {`${currencySymbol} ${elem.total_paid_amount}`}
+                    </Col>
+                    <Col xs={4} className='text-center'>
+                      <img
+                        src={userAvatar}
+                        className='Dashboard__profileImage img-responsive'
+                        alt='profile'
+                      />
+                    </Col>
+                    <Col
+                      xs={4}
+                      className='Fees__receivedAmount text-center my-auto'
+                      style={{ color: 'rgba(255, 0, 0, 0.6)' }}
+                    >
+                      {`${currencySymbol} ${elem.total_due_amount}`}
+                    </Col>
+                  </Row>
+                  <Row className='mx-auto m-2 Fees__orderSummary'>{elem.batch_name}</Row>
+                  <ProgressBar
+                    now={
+                      elem.total_students === '0'
+                        ? 0
+                        : (parseInt(elem.total_paid_students, 10) /
+                            parseInt(elem.total_students, 10)) *
+                          100
+                    }
+                    label={`${parseInt(elem.total_paid_students, 10)}/${parseInt(
+                      elem.total_students,
+                      10,
+                    )}`}
+                    style={{
+                      borderRadius: '50px',
+                      height: '20px',
+                      color: 'rgba(127, 196, 253, 1)',
+                    }}
+                    className='Fees__progressBar'
+                  />
+                  <p className='Fees__studentsPay mx-auto'>
+                    {`${parseInt(elem.total_due_students, 10)}/${parseInt(
+                      elem.total_students,
+                      10,
+                    )}`}{' '}
+                    Students Yet to Pay
+                  </p>
+                </Card>
+              );
+            })}
+        </InfiniteScroll>
       </div>
     </div>
   );

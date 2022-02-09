@@ -133,6 +133,19 @@ const AdmissionStyle = {
     padding-bottom: 20px;
   `,
 
+  overlayNonScroll: css`
+    position: fixed;
+    margin-top: ${spacer * 5}rem;
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    height: 95vh;
+    background-color: ${colors.white};
+    box-shadow: 0px -5px 6px 0px rgba(0, 0, 0, 0.16);
+    border-radius: 20px 20px 0 0;
+    padding-bottom: 20px;
+  `,
+
   amount: css`
     font-size: ${spacer}rem;
     line-height: 19px;

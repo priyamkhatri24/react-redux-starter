@@ -10,6 +10,7 @@ import Modal from 'react-bootstrap/Modal';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import Toast from 'react-bootstrap/Toast';
 import format from 'date-fns/format';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import {
   getClientId,
   getClientUserId,
@@ -59,29 +60,39 @@ const TeacherCourses = (props) => {
   const [statisticsPage, setStatisticsPage] = useState(1);
   const [searchedStatisticsPage, setSearchedStatisticsPage] = useState(1);
 
+  // const infiniteScroll = () => {
+  //   // console.log(currencySymbol)
+  //   if (
+  //     window.innerHeight + document.documentElement.scrollTop >=
+  //       document.documentElement.offsetHeight - 10 ||
+  //     window.innerHeight + document.body.scrollTop >= document.body.offsetHeight
+  //   ) {
+  //     if (activeTab === 'My Courses') {
+  //       setSearchedCoursePage((prev) => prev + 1);
+  //       setCoursePage((prev) => prev + 1);
+  //     } else if (activeTab === 'Statistics') {
+  //       setSearchedStatisticsPage((prev) => prev + 1);
+  //       setStatisticsPage((prev) => prev + 1);
+  //     }
+  //     console.log(activeTab);
+  //   }
+  // };
+
   const infiniteScroll = () => {
-    // console.log(currencySymbol)
-    if (
-      window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight ||
-      window.innerHeight + document.body.scrollTop >= document.body.offsetHeight
-    ) {
-      if (activeTab === 'My Courses') {
-        setSearchedCoursePage((prev) => prev + 1);
-        setCoursePage((prev) => prev + 1);
-      } else if (activeTab === 'Statistics') {
-        setSearchedStatisticsPage((prev) => prev + 1);
-        setStatisticsPage((prev) => prev + 1);
-      }
-      console.log(activeTab);
+    if (activeTab === 'My Courses') {
+      setSearchedCoursePage((prev) => prev + 1);
+      setCoursePage((prev) => prev + 1);
+    } else if (activeTab === 'Statistics') {
+      setSearchedStatisticsPage((prev) => prev + 1);
+      setStatisticsPage((prev) => prev + 1);
     }
   };
 
-  useEffect(() => {
-    window.addEventListener('scroll', infiniteScroll);
+  // useEffect(() => {
+  //   window.addEventListener('scroll', infiniteScroll);
 
-    return () => window.removeEventListener('scroll', infiniteScroll);
-  }, [activeTab]);
+  //   return () => window.removeEventListener('scroll', infiniteScroll);
+  // }, [activeTab]);
 
   const NoPreview =
     'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1625835287424.jpg';
@@ -387,87 +398,97 @@ const TeacherCourses = (props) => {
               Create Course
             </Button>
             {/* {(searchString.length > 0 && activeTab == 'My Courses' ? searchedCourses : courses).map( */}
-            {(searchedCourses.length > 0 ? searchedCourses : courses).map((course) => {
-              return (
-                <Row
-                  className='Courses__teacherCourse p-1'
-                  key={course.course_id}
-                  onClick={() => goToCreatedCourse(course.course_id)}
-                >
-                  <Col xs={4} className='Courses__iconImage'>
-                    <img
-                      src={course.course_display_image ? course.course_display_image : NoPreview}
-                      alt='course '
-                      className='mx-auto Courses__viewCourseImage'
-                    />
-                  </Col>
-                  <Col xs={8} className='p-0'>
-                    <p className='Scrollable__courseCardHeading mx-2 mb-1'>{course.course_title}</p>
-                    <Row className='mx-2'>
-                      <p
-                        className='LiveClasses__adminCardTime '
-                        style={{ fontSize: '12px', marginBottom: '5px' }}
-                      >
-                        Created: {format(fromUnixTime(course.created_at), 'HH:mm MMM dd, yyyy')}
+            <InfiniteScroll
+              dataLength={(searchedCourses.length > 0 ? searchedCourses : courses).length}
+              next={infiniteScroll}
+              height={document.documentElement.clientHeight - 130}
+              hasMore
+              loader={<h4 />}
+            >
+              {(searchedCourses.length > 0 ? searchedCourses : courses).map((course) => {
+                return (
+                  <Row
+                    className='Courses__teacherCourse p-1'
+                    key={course.course_id}
+                    onClick={() => goToCreatedCourse(course.course_id)}
+                  >
+                    <Col xs={4} className='Courses__iconImage'>
+                      <img
+                        src={course.course_display_image ? course.course_display_image : NoPreview}
+                        alt='course '
+                        className='mx-auto Courses__viewCourseImage'
+                      />
+                    </Col>
+                    <Col xs={8} className='p-0'>
+                      <p className='Scrollable__courseCardHeading mx-2 mb-1'>
+                        {course.course_title}
                       </p>
-                    </Row>
-                    <Row className='mx-2'>
-                      <p
-                        className='LiveClasses__adminCardTime '
-                        style={{ fontSize: '12px', color: 'rgba(22, 22, 22, 1)' }}
-                      >
-                        To:{' '}
-                        {course.current_batch.length > 0 && (
-                          <Readmore
-                            maxcharactercount={100}
-                            batchesArray={course.current_batch.map((e) => e.batch_name)}
-                          />
-                        )}
-                      </p>
-                      <div
-                        className='ml-auto rounded Courses__slimButton'
-                        style={
-                          course.course_status === 'published'
-                            ? { background: 'var(--primary-blue)', color: '#fff' }
-                            : course.course_status === 'incomplete'
-                            ? {
-                                background: 'rgba(255, 0, 0, 0.87)',
-                                color: 'rgba(0, 0, 0, 0.87)',
-                              }
-                            : { background: ' rgba(0, 0, 0, 0.54)', color: 'rgba(0, 0, 0, 0.87)' }
-                        }
-                        onClick={
-                          course.course_status === 'published'
-                            ? (evt) => shareCourse(evt, course)
-                            : () => {}
-                        }
-                        onKeyDown={
-                          course.course_status === 'published'
-                            ? (evt) => shareCourse(evt, course)
-                            : () => {}
-                        }
-                        tabIndex='-1'
-                        role='button'
-                      >
-                        <span
-                          style={{
-                            fontFamily: 'Montserrat-SemiBold',
-                            fontSize: '10px',
-                          }}
-                          className='m-1 d-block text-center'
+                      <Row className='mx-2'>
+                        <p
+                          className='LiveClasses__adminCardTime '
+                          style={{ fontSize: '12px', marginBottom: '5px' }}
                         >
-                          {course.course_status === 'published'
-                            ? 'Share'
-                            : course.course_status === 'completed'
-                            ? 'Unpublished'
-                            : 'Incomplete'}
-                        </span>
-                      </div>
-                    </Row>
-                  </Col>
-                </Row>
-              );
-            })}
+                          Created: {format(fromUnixTime(course.created_at), 'HH:mm MMM dd, yyyy')}
+                        </p>
+                      </Row>
+                      <Row className='mx-2'>
+                        <p
+                          className='LiveClasses__adminCardTime '
+                          style={{ fontSize: '12px', color: 'rgba(22, 22, 22, 1)' }}
+                        >
+                          To:{' '}
+                          {course.current_batch.length > 0 && (
+                            <Readmore
+                              maxcharactercount={100}
+                              batchesArray={course.current_batch.map((e) => e.batch_name)}
+                            />
+                          )}
+                        </p>
+                        <div
+                          className='ml-auto rounded Courses__slimButton'
+                          style={
+                            course.course_status === 'published'
+                              ? { background: 'var(--primary-blue)', color: '#fff' }
+                              : course.course_status === 'incomplete'
+                              ? {
+                                  background: '#D26163',
+                                  color: '#fff',
+                                }
+                              : { background: ' rgba(0, 0, 0, 0.54)', color: '#fff' }
+                          }
+                          onClick={
+                            course.course_status === 'published'
+                              ? (evt) => shareCourse(evt, course)
+                              : () => {}
+                          }
+                          onKeyDown={
+                            course.course_status === 'published'
+                              ? (evt) => shareCourse(evt, course)
+                              : () => {}
+                          }
+                          tabIndex='-1'
+                          role='button'
+                        >
+                          <span
+                            style={{
+                              fontFamily: 'Montserrat-SemiBold',
+                              fontSize: '10px',
+                            }}
+                            className='m-1 d-block text-center'
+                          >
+                            {course.course_status === 'published'
+                              ? 'Share'
+                              : course.course_status === 'completed'
+                              ? 'Unpublished'
+                              : 'Incomplete'}
+                          </span>
+                        </div>
+                      </Row>
+                    </Col>
+                  </Row>
+                );
+              })}
+            </InfiniteScroll>
           </Tab>
           <Tab
             eventKey='Statistics'
@@ -475,53 +496,59 @@ const TeacherCourses = (props) => {
             style={{ marginTop: '7rem' }}
             onclick={() => handleSelect('Statistics')}
           >
-            {/* {(searchString.length > 0 && activeTab == 'Statistics'
-              ? searchedStatistics
-              : statistics
-            ) */}
-            {(searchedStatistics.length > 0 ? searchedStatistics : statistics).map((course) => {
-              return (
-                <Row
-                  className='Courses__teacherCourse'
-                  key={course.course_id}
-                  onClick={() => getStatisticOfCourse(course.course_id)}
-                >
-                  <Col xs={4} className='Courses__iconImage'>
-                    <img
-                      src={course.course_display_image ? course.course_display_image : NoPreview}
-                      alt='course '
-                      className='mx-auto Courses__viewCourseImage'
-                    />
-                  </Col>
-                  <Col xs={8} className='p-0'>
-                    <p className='Scrollable__courseCardHeading mx-2 mb-1'>{course.course_title}</p>
-                    <Row className='mx-2'>
-                      <p className='LiveClasses__adminCardTime ' style={{ fontSize: '12px' }}>
-                        Created: {format(fromUnixTime(course.created_at), 'HH:mm MMM dd, yyyy')}
+            <InfiniteScroll
+              dataLength={(searchedStatistics.length > 0 ? searchedStatistics : statistics).length}
+              next={infiniteScroll}
+              hasMore
+              height={document.documentElement.clientHeight - 130}
+              loader={<h4 />}
+            >
+              {(searchedStatistics.length > 0 ? searchedStatistics : statistics).map((course) => {
+                return (
+                  <Row
+                    className='Courses__teacherCourse'
+                    key={course.course_id}
+                    onClick={() => getStatisticOfCourse(course.course_id)}
+                  >
+                    <Col xs={4} className='Courses__iconImage'>
+                      <img
+                        src={course.course_display_image ? course.course_display_image : NoPreview}
+                        alt='course '
+                        className='mx-auto Courses__viewCourseImage'
+                      />
+                    </Col>
+                    <Col xs={8} className='p-0'>
+                      <p className='Scrollable__courseCardHeading mx-2 mb-1'>
+                        {course.course_title}
                       </p>
-                    </Row>
-                    <Row className='mx-2'>
-                      <p
-                        className='LiveClasses__adminCardTime '
-                        style={{
-                          fontSize: '12px',
-                          color: 'rgba(22, 22, 22, 1)',
-                          overflowWrap: 'anywhere',
-                        }}
-                      >
-                        To:{' '}
-                        {course.current_batch.length > 0 && (
-                          <Readmore
-                            maxcharactercount={100}
-                            batchesArray={course.current_batch.map((e) => e.batch_name)}
-                          />
-                        )}
-                      </p>
-                    </Row>
-                  </Col>
-                </Row>
-              );
-            })}
+                      <Row className='mx-2'>
+                        <p className='LiveClasses__adminCardTime ' style={{ fontSize: '12px' }}>
+                          Created: {format(fromUnixTime(course.created_at), 'HH:mm MMM dd, yyyy')}
+                        </p>
+                      </Row>
+                      <Row className='mx-2'>
+                        <p
+                          className='LiveClasses__adminCardTime '
+                          style={{
+                            fontSize: '12px',
+                            color: 'rgba(22, 22, 22, 1)',
+                            overflowWrap: 'anywhere',
+                          }}
+                        >
+                          To:{' '}
+                          {course.current_batch.length > 0 && (
+                            <Readmore
+                              maxcharactercount={100}
+                              batchesArray={course.current_batch.map((e) => e.batch_name)}
+                            />
+                          )}
+                        </p>
+                      </Row>
+                    </Col>
+                  </Row>
+                );
+              })}
+            </InfiniteScroll>
           </Tab>
         </Tabs>
 

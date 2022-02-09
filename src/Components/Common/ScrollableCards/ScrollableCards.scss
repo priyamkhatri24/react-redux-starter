@@ -467,6 +467,62 @@
   width: 93%;
 }
 
+.appearAfter1Second {
+  animation: appear 0s 3s forwards;
+  -moz-animation: appear 0s 3s forwards;
+  -webkit-animation: appear 0s 3s forwards;
+  -o-animation: appear 0s 3s forwards;
+  visibility: hidden;
+  opacity: 0;
+  height: 0px;
+  width: 0px;
+  animation-duration: 0.5s;
+  transition-duration: 0.5s;
+}
+@keyframes appear {
+  to {
+    visibility: visible;
+    opacity: 1;
+    width: 100%;
+    height: auto;
+  }
+}
+@-webkit-keyframes appear {
+  to {
+    opacity: 1;
+    visibility: visible;
+    width: 100%;
+    height: auto;
+  }
+}
+
+.dissapearAfter1Second {
+  -moz-animation: dissapear 0s ease-in 3s forwards;
+  -webkit-animation: dissapear 0s ease-in 3s forwards;
+  -o-animation: dissapear 0s ease-in 3s forwards;
+  animation: dissapear 0s ease-in 3s forwards;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  width: 100%;
+  height: auto;
+}
+@keyframes dissapear {
+  to {
+    width: 0px !important;
+    height: 0px !important;
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+@-webkit-keyframes dissapear {
+  to {
+    width: 0px;
+    height: 0px;
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 @media screen and (max-width: 600px) {
   .aspectCardsInnerContainer {
     width: 100%;

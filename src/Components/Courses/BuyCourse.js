@@ -211,7 +211,9 @@ const BuyCourse = (props) => {
     if (+coursePrice === 0) {
       const payload = {
         client_user_id: clientUserId,
-        course_id: match.params.courseId,
+        course_id: !isNaN(+match.params.courseId)
+          ? match.params.courseId
+          : +window.atob(match.params.courseId),
       };
       post(payload, '/subscribeStudentToCourse').then((res) => {
         if (res.success === 1) {
@@ -239,7 +241,9 @@ const BuyCourse = (props) => {
       const cashfreePayload = {
         client_user_id: clientUserId,
         client_id: clientId,
-        course_id: match.params.courseId,
+        course_id: !isNaN(+match.params.courseId)
+          ? match.params.courseId
+          : +window.atob(match.params.courseId),
         orderAmount: coursePrice,
         orderCurrency: currencyCode,
         coupon_id: couponId,
@@ -284,7 +288,12 @@ const BuyCourse = (props) => {
     if (order.status === 'marked' || order.status === 'waived' || order.status === 'paid') {
       push({
         pathname: '/courses/mycourse',
-        state: { id: match.params.courseId, clientUserId },
+        state: {
+          id: !isNaN(+match.params.courseId)
+            ? match.params.courseId
+            : +window.atob(match.params.courseId),
+          clientUserId,
+        },
       });
     }
   };
@@ -292,11 +301,13 @@ const BuyCourse = (props) => {
   const applyCoupon = () => {
     const payload = {
       client_user_id: clientUserId,
-      course_id: match.params.courseId,
+      course_id: !isNaN(+match.params.courseId)
+        ? match.params.courseId
+        : +window.atob(match.params.courseId),
       client_id: clientId,
       coupon_code: coupon,
     };
-
+    console.log(payload, 'checkCouponCodePayload');
     get(payload, '/checkCouponCode').then((res) => {
       const result = apiValidation(res);
       if (result.coupon_status === 'true') {
@@ -315,7 +326,9 @@ const BuyCourse = (props) => {
   const payToRazorBaba = () => {
     const orderPayload = {
       client_user_id: clientUserId,
-      course_id: match.params.courseId,
+      course_id: !isNaN(+match.params.courseId)
+        ? match.params.courseId
+        : +window.atob(match.params.courseId),
       amount: coursePrice,
       coupon_id: couponId,
     };
@@ -369,7 +382,9 @@ const BuyCourse = (props) => {
   const basSubscribe = () => {
     const payload = {
       client_user_id: clientUserId,
-      course_id: match.params.courseId,
+      course_id: !isNaN(+match.params.courseId)
+        ? match.params.courseId
+        : +window.atob(match.params.courseId),
       coupon_id: couponId,
     };
     post(payload, '/subscribeStudentToCourse').then((res) => {

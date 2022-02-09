@@ -90,14 +90,40 @@ const StudyBin = (props) => {
     handleShow();
   };
 
+  const rerenderForLength2 = () => {
+    setSpinnerStatusToStore(true);
+    setLoadingPendingToStore();
+    const temp = {
+      client_user_id: clientUserId,
+      client_id: clientId,
+      is_admin: roleArray.includes(4),
+    };
+    console.log(temp, folderIdStack);
+    get(temp, '/getPrimaryFoldersAndFiles2') // instead of temp should be [payload]
+      .then((res) => {
+        setSpinnerStatusToStore(false);
+        setLoadingSuccessToStore();
+        console.log(res, 'getPrimaryFoldersAndFiles2');
+        const result = apiValidation(res);
+        setFileArray(result.files);
+        setFolderArray(result.folders);
+        // pushFolderIDToFolderIDArrayInStore(result.client_folder_id);
+      })
+      .catch((err) => console.log(err));
+  };
+
   const rerenderFilesAndFolders = () => {
     const temp = {
       client_user_id: clientUserId,
       client_id: clientId,
+      is_admin: roleArray.includes(4),
     };
-    if (folderIdStack.length < 1) {
+    console.log(temp, folderIdStack);
+    if (folderIdStack.length <= 1) {
+      console.log('rerendering.......................');
       get(temp, '/getPrimaryFoldersAndFiles2') // instead of temp should be [payload]
         .then((res) => {
+          console.log(res, 'getPrimaryFoldersAndFiles2');
           const result = apiValidation(res);
           setFileArray(result.files);
           setFolderArray(result.folders);
@@ -266,8 +292,11 @@ const StudyBin = (props) => {
   };
 
   const handleBack = () => {
-    if (folderIdStack.length > 1) {
+    if (folderIdStack.length >= 1) {
       popFolderIDFromFolderIDArrayInStore();
+      if (folderIdStack.length === 2) {
+        rerenderForLength2();
+      } else rerenderFilesAndFolders();
     } else {
       history.push('/');
       popFolderIDFromFolderIDArrayInStore();
@@ -279,21 +308,25 @@ const StudyBin = (props) => {
   }, [studyBinFolderIdArray]);
 
   useEffect(() => {
+    console.log('useeffecting........................................');
     const payload = {
       client_user_id: clientUserId,
       clientId,
     };
-    setSpinnerStatusToStore(true);
-    setLoadingPendingToStore();
 
     if (folderIdStack.length < 1) {
+      setSpinnerStatusToStore(true);
+      setLoadingPendingToStore();
       if (roleArray.includes(3) || roleArray.includes(4)) {
         const temp = {
           client_user_id: clientUserId,
+          is_admin: roleArray.includes(4),
           client_id: clientId,
         };
+        console.log(temp, 'getPrimaryFoldersAndFiles2Payload');
         get(temp, '/getPrimaryFoldersAndFiles2') // instead of temp should be [payload]
           .then((res) => {
+            console.log(res, 'getPrimaryFoldersAndFiles2');
             setSpinnerStatusToStore(false);
             setLoadingSuccessToStore();
             const result = apiValidation(res);
@@ -321,7 +354,9 @@ const StudyBin = (props) => {
             setLoadingSuccessToStore();
           });
       }
-    } else if (folderIdStack.length >= 1) {
+    } else if (folderIdStack.length > 1) {
+      setSpinnerStatusToStore(true);
+      setLoadingPendingToStore();
       const currentFolderId = folderIdStack[folderIdStack.length - 1];
       const roleId = roleArray.includes(4)
         ? 4
@@ -343,7 +378,7 @@ const StudyBin = (props) => {
           const result = apiValidation(res);
           setFileArray(result.files);
           setFolderArray(result.folders);
-          console.log(result, 'getFoldersAndFilesOfFoleder');
+          console.log(result, 'getFoldersAndFilesOfFoleder2');
         })
         .catch((err) => {
           console.log(err);
@@ -351,16 +386,7 @@ const StudyBin = (props) => {
           setLoadingSuccessToStore();
         });
     }
-  }, [
-    clientId,
-    clientUserId,
-    folderIdStack,
-    roleArray,
-    pushFolderIDToFolderIDArrayInStore,
-    setSpinnerStatusToStore,
-    setLoadingSuccessToStore,
-    setLoadingPendingToStore,
-  ]);
+  }, [folderIdStack]);
 
   useEffect(() => {
     get({ client_user_id: clientUserId }, '/getFileCategoriesForStudent').then((res) => {
@@ -408,6 +434,7 @@ const StudyBin = (props) => {
 
   const openFolder = (elem) => {
     pushFolderIDToFolderIDArrayInStore(elem.folder_id);
+    // rerenderFilesAndFolders();
   };
 
   const addButtonArray = [

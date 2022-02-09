@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import SavedSentCard from './SavedSentTestCard';
 import { PageHeader } from '../Common';
 import {
@@ -40,6 +41,7 @@ const SavedSentTestsUsingFilters = (props) => {
   const [searchString, setSearchString] = useState('');
   const [caller, setCaller] = useState(1);
   const [nextPage, setNextPage] = useState(1);
+  const [testsTotalCount, setTestsTotalCount] = useState(0);
   const [filterPayload, setFilterPayload] = useState({
     class_id: null,
     client_id: clientId,
@@ -52,22 +54,25 @@ const SavedSentTestsUsingFilters = (props) => {
   const [tests, setTests] = useState([]);
   const savedSentOverlayRef = useRef(null);
 
+  // const infiniteScroll = () => {
+  //   if (
+  //     savedSentOverlayRef?.current?.clientHeight + savedSentOverlayRef?.current?.scrollTop >=
+  //     savedSentOverlayRef?.current?.scrollHeight - 200
+  //   ) {
+  //     setCaller((prev) => prev + 1);
+  //   }
+  // };
   const infiniteScroll = () => {
-    if (
-      savedSentOverlayRef?.current?.clientHeight + savedSentOverlayRef?.current?.scrollTop >=
-      savedSentOverlayRef?.current?.scrollHeight
-    ) {
-      setCaller((prev) => prev + 1);
-    }
+    setCaller((prev) => prev + 1);
   };
 
-  useEffect(() => {
-    if (savedSentOverlayRef && savedSentOverlayRef?.current) {
-      savedSentOverlayRef.current.addEventListener('scroll', infiniteScroll);
-    }
+  // useEffect(() => {
+  //   if (savedSentOverlayRef && savedSentOverlayRef?.current) {
+  //     savedSentOverlayRef.current.addEventListener('scroll', infiniteScroll);
+  //   }
 
-    return () => savedSentOverlayRef?.current?.removeEventListener('scroll', infiniteScroll);
-  }, []);
+  //   return () => savedSentOverlayRef?.current?.removeEventListener('scroll', infiniteScroll);
+  // }, []);
 
   useEffect(() => {
     get({ client_id: clientId }, '/getFilters').then((res) => {
@@ -110,6 +115,7 @@ const SavedSentTestsUsingFilters = (props) => {
           const searchedArray = [...tests, ...result];
           setNextPage(res?.next?.page);
           setTests(searchedArray);
+          setTestsTotalCount(res?.count);
         });
       }, 500);
     }
@@ -132,6 +138,7 @@ const SavedSentTestsUsingFilters = (props) => {
         // );
         const searchedArray = [...tests, ...result];
         setNextPage(res?.next?.page);
+        setTestsTotalCount(res?.count);
         setTests(searchedArray);
       });
     }
@@ -239,29 +246,37 @@ const SavedSentTestsUsingFilters = (props) => {
         <div css={AdmissionStyle.overlay} style={{ marginTop: '1rem', overflow: 'hidden' }}>
           <hr className='w-25' style={{ borderTop: '5px solid rgba(0, 0, 0, 0.1)' }} />
           <Row css={AdmissionStyle.amount} className='m-4'>
-            <span className='mr-1'>{tests.length} </span> Results
+            <span className='mr-1'>{testsTotalCount} </span> Results
             <span className='ml-auto'>
               <GetAppIcon />
             </span>
           </Row>
-          <div ref={savedSentOverlayRef} style={{ height: '75vh', overflow: 'scroll' }}>
-            {tests.map((elem, i) => {
-              return (
-                <div
-                  onClick={() => getQuestions(elem.test_id, elem.test_name, elem.language_type)}
-                  onKeyDown={() => getQuestions(elem.test_id, elem.test_name, elem.language_type)}
-                  role='button'
-                  tabIndex='-1'
-                  key={(elem.test_id * i).toString() + elem.test_name}
-                >
-                  <SavedSentCard
-                    elem={elem}
-                    testsType={testsType}
-                    updateTests={() => rerenderTests(elem.test_id)}
-                  />
-                </div>
-              );
-            })}
+          <div ref={savedSentOverlayRef} style={{ height: '80vh' }}>
+            <InfiniteScroll
+              dataLength={tests.length}
+              next={infiniteScroll}
+              hasMore
+              height='calc(90vh - 125px)'
+              loader={<h4 />}
+            >
+              {tests.map((elem, i) => {
+                return (
+                  <div
+                    onClick={() => getQuestions(elem.test_id, elem.test_name, elem.language_type)}
+                    onKeyDown={() => getQuestions(elem.test_id, elem.test_name, elem.language_type)}
+                    role='button'
+                    tabIndex='-1'
+                    key={(elem.test_id * i).toString() + elem.test_name}
+                  >
+                    <SavedSentCard
+                      elem={elem}
+                      testsType={testsType}
+                      updateTests={() => rerenderTests(elem.test_id)}
+                    />
+                  </div>
+                );
+              })}
+            </InfiniteScroll>
           </div>
         </div>
       </div>

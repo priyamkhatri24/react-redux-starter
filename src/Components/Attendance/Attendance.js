@@ -36,54 +36,6 @@ const Attendance = (props) => {
     });
   }, [clientUserId, searchString]);
 
-  // const infiniteScroll = () => {
-  //   if (
-  //     window.innerHeight + document.documentElement.scrollTop >=
-  //     document.documentElement.offsetHeight
-  //   ) {
-  //     setPage((prev) => prev + 1);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   window.addEventListener('scroll', infiniteScroll);
-
-  //   return () => window.removeEventListener('scroll', infiniteScroll);
-  // }, []);
-
-  // pagination code...
-
-  // useEffect(() => {
-  //   let timer;
-  //   if (searchString.length === 0) {
-  //     const payload = {
-  //       client_user_id: clientUserId,
-  //       page,
-  //     };
-  //     get(payload, '/getBatchesOfTeacher2').then((res) => {
-  //       const result = apiValidation(res);
-  //       console.log(result);
-  //       const filteredBatches = [...batches, ...result];
-  //       setBatches(filteredBatches);
-  //     });
-  //   } else {
-  //     timer = setTimeout(() => {
-  //       const payload = {
-  //         client_user_id: clientUserId,
-  //         page,
-  //         keyword: searchString,
-  //       };
-  //       get(payload, '/getAllLiveStreamsForAttendance2').then((res) => {
-  //         const result = apiValidation(res);
-  //         console.log(result);
-  //       }, 500);
-  //     });
-  //   }
-  //   return () => {
-  //     clearTimeout(timer);
-  //   };
-  // }, [clientUserId, page, searchString]);
-
   const searchUsers = (search) => {
     setSearchString(search);
   };
@@ -154,7 +106,7 @@ const Attendance = (props) => {
           title='Live Classes'
           style={{ backgroundColor: 'rgb(241,249,255)' }}
         >
-          <div style={{ marginBottom: '0.2rem' }}>
+          <div style={{ marginBottom: '0.2rem', paddingBottom: '2rem' }}>
             <LiveClasses searchString={searchString} />
           </div>
         </Tab>

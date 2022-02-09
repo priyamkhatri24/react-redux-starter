@@ -513,3 +513,7 @@ Changes styles for the label following the radio checkbox that has focus
   color: gray;
   font-family: 'Montserrat-Regular';
 }
+
+.scrollbarHidden::-webkit-scrollbar {
+  display: none;
+}

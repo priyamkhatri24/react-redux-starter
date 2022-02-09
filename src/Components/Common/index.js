@@ -16,6 +16,7 @@ export * from './ScrollableCards/FeeScrollableCards';
 export * from './ScrollableCards/DraggableAspectCards';
 export * from './ScrollableCards/LiveClassesCards';
 export * from './ScrollableCards/DynamicCards';
+export * from './AlertSlideup/AlertSlideup';
 // export * from './FileViewer/FileViewer';
 export * from './Loader/Loading';
 export * from './Readmore';
