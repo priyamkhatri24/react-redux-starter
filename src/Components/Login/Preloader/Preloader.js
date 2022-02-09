@@ -16,6 +16,7 @@ const Preloader = (props) => {
   const { fetchColors, fetchBranding, currentBranding, history } = props;
   const [count, setCount] = useState(0);
   const [image, setImage] = useState(footerIngenium);
+  console.log(currentBranding);
   useInterval(() => {
     if (count >= 100) {
       return;
@@ -90,7 +91,9 @@ const Preloader = (props) => {
       />
 
       <div className='Preloader mx-auto '>
-        <h5 className='Preloader__hello mx-lg-3 mt-lg-3 mb-lg-0 m-5 p-lg-5'>HELLO!</h5>
+        <h1 className='Preloader__brand mx-lg-3 mt-lg-3 mb-lg-0 m-5 p-lg-5'>
+          {currentBranding.branding.client_name}
+        </h1>
         <h6 style={{ fontFamily: 'Montserrat-Regular' }} className='m-lg-4 m-5 text-center'>
           <TextLoop mask='true' interval={1000}>
             {hello}

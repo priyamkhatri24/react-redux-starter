@@ -101,7 +101,7 @@ const DummyDashboard = (props) => {
         </div>
         <Button
           variant='customPrimarySmol'
-          className='colorForBack'
+          className='colorForBack registerButton'
           style={{
             letterSpacing: '0.09px',
             lineHeight: '18px',
@@ -301,10 +301,10 @@ const DummyDashboard = (props) => {
               <p className='mb-0 Dummy__joinDetails'>Your are not in any batch yet</p>
               <p className='Dummy__joinSmall'>Fill admission form to join us.</p>
             </Col>
-            <Col xs={4} className='p-2'>
+            <Col xs={4} className='p-2' style={{ textAlign: 'right' }}>
               <img src={form} alt='form' className='Dashboard_image' />
             </Col>
-            <Button variant='customPrimarySmol' className='mb-3'>
+            <Button variant='customPrimarySmol' className='mb-3 addmissionButton'>
               Fill admission form
             </Button>
           </Row>
@@ -318,15 +318,15 @@ const DummyDashboard = (props) => {
               <p className='Dummy__joinSmall'>Share with your friends</p>
               <Button
                 variant='customPrimarySmol'
-                className='mb-3'
+                className='mb-3 shareButton'
                 style={{ padding: '10px 20px' }}
                 onClick={() => shareThis()}
               >
                 Share
               </Button>
             </Col>
-            <Col xs={5} className='p-2 mt-3 text-center'>
-              <img src={share} alt='form' className='Dashboard_image' />
+            <Col xs={5} className='p-3' style={{ textAlign: 'right' }}>
+              <img src={share} alt='form' className='shareImage' style={{ width: '100px' }} />
             </Col>
           </Row>
         </Card>

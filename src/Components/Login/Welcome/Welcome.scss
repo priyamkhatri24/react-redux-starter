@@ -234,6 +234,47 @@
   }
 }
 
+@media screen and (min-width: 1440px) {
+  .btn-JumboLogin {
+    margin-top: 20px !important;
+    margin-bottom: 40px !important;
+  }
+  .Welcome__carouselSubHeading {
+    margin-top: 60px !important;
+    font-size: 35px;
+    margin-bottom: 15px;
+  }
+  .Welcome__carouselHeading {
+    font-size: 45px;
+  }
+  .mySwiper {
+    margin-top: 50px;
+  }
+  .Welcome__imageCarousel {
+    width: 350px !important;
+  }
+}
+@media screen and (min-width: 1700px) {
+  .btn-JumboLogin {
+    margin-top: 20px !important;
+    margin-bottom: 40px !important;
+  }
+  .Welcome__carouselSubHeading {
+    margin-top: 60px !important;
+    font-size: 45px;
+    margin-bottom: 30px;
+  }
+  .Welcome__carouselHeading {
+    font-size: 55px;
+  }
+  .mySwiper {
+    margin-top: 80px;
+  }
+  .Welcome__imageCarousel {
+    width: 450px !important ;
+  }
+}
+
 @keyframes slidein {
   0% {
     width: 8px;

@@ -89,7 +89,7 @@ export const LoginDetailsSkeleton = (props) => {
             >
               <label className='has-float-label my-auto'>
                 <input
-                  className='form-control'
+                  className='form-control formInput'
                   name='Mobile Number'
                   type={
                     password
@@ -136,7 +136,7 @@ export const LoginDetailsSkeleton = (props) => {
         <div className='d-flex justify-content-center LoginDetailsSkeleton__phoneNoInput'>
           <Button
             variant='loginPrimary'
-            className='mt-5 mb-3 mx-4 mx-lg-0'
+            className='mt-5 mb-3 mx-4 mx-lg-0 verifyButton'
             onClick={() => setClick()}
           >
             {isVerify ? 'Verifying..' : 'Next'}
@@ -144,7 +144,7 @@ export const LoginDetailsSkeleton = (props) => {
         </div>
 
         {isValid && (
-          <small className='text-danger d-block text-center'>
+          <small className='text-danger d-block text-center errorTxt'>
             Please enter a valid {placeholder}
           </small>
         )}
@@ -152,7 +152,7 @@ export const LoginDetailsSkeleton = (props) => {
         {placeholder === 'Password' && heading === 'Enter Password' && (
           <Row className='mx-auto justify-content-center' style={{ width: '90%' }}>
             <span
-              className='PhoneNo__forgot p-1 text-center my-4'
+              className='PhoneNo__forgot p-1 text-center my-4 errorTxt'
               onClick={() => forgotPlaceholder()}
               onKeyDown={() => forgotPlaceholder()}
               role='button'

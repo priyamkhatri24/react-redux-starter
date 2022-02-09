@@ -20,7 +20,7 @@ const SelectUser = (props) => {
 
   return (
     <>
-      <h4 className='Signin__selectUserHeading my-4 text-center'>Select User</h4>
+      <h4 className='Signin__selectUserHeading text-center'>Select User</h4>
       {userInfo.length > 0 &&
         userInfo.map((elem) => {
           return (
@@ -31,7 +31,7 @@ const SelectUser = (props) => {
             >
               <Row className='ml-auto mx-2 pt-1' style={{ marginBottom: '-10px' }}>
                 <FaceIcon css={AdmissionStyle.onlineIcon} />
-                <span style={{ fontSize: '8px', fontFamily: 'Montserrat-Light', marginTop: '5px' }}>
+                <span className='Signin_UserRole' style={{ fontFamily: 'Montserrat-light' }}>
                   {elem.role}
                 </span>
               </Row>
@@ -42,14 +42,15 @@ const SelectUser = (props) => {
                     <img
                       src={elem.profile_image ? elem.profile_image : avatarImage}
                       alt='avatar'
-                      height='38'
-                      width='38'
+                      // height='38'
+                      // width='38'
                       css={AdmissionStyle.avatar}
-                      className='my-auto'
+                      className='image my-auto'
                     />
                   </div>
                   <div className='p-0 d-flex align-items-center'>
-                    <p css={AdmissionStyle.avatarHeading} className='mb-0 mt-2 ml-2'>
+                    {/* <p css={AdmissionStyle.avatarHeading} className='userName mb-0 mt-2 ml-2'> */}
+                    <p className='userName mb-0 mt-2 ml-2'>
                       {`${elem.first_name} ${elem.last_name}`}
                     </p>
                   </div>

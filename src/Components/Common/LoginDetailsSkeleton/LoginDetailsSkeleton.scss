@@ -72,3 +72,45 @@
     width: 25%;
   }
 }
+// new css
+@media screen and (min-width: 1500px) {
+  .Login__signupHeading {
+    font-size: 33px !important;
+    padding-left: 19%;
+  }
+  .deskWidthFORM {
+    width: 80%;
+  }
+  .verifyButton {
+    height: 50px !important;
+    font-size: 170%;
+  }
+  .formInput {
+    padding: 25px 25px;
+    font-size: 22px !important;
+  }
+  .LoginDetailsSkeleton__text {
+    font-size: 30px;
+    margin-top: 5% !important;
+  }
+  .LoginDetailsSkeleton__img {
+    width: 25%;
+  }
+  .btn-loginPrimary {
+    height: 50px !important;
+    font-size: 18px;
+  }
+  .iti > input::placeholder {
+    font-size: 18px !important;
+  }
+  .iti > input {
+    height: 50px !important;
+    font-size: 18px !important;
+  }
+  .PhoneNo__show {
+    padding: 0.7rem;
+  }
+  .errorTxt {
+    font-size: 18px !important;
+  }
+}
