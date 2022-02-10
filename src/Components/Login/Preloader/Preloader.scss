@@ -12,10 +12,15 @@
   }
 }
 .Login__jumbo {
-  width: 108px;
+  width: 214px;
   height: auto;
   border-radius: 10px;
-  margin: 20px auto;
+  margin: 0px auto;
+}
+
+.Preloader__brand {
+  color: rgb(0, 158, 206);
+  font-size: 65px;
 }
 @media screen and (min-width: 800px) {
   .Login {

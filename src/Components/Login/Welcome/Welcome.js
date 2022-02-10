@@ -40,7 +40,7 @@ const Welcome = (props) => {
             return (
               <div key={`elem + ${elem.client_gallery_id} `}>
                 <img
-                  className=' d-block w-100 Welcome__imageCarousel'
+                  className=' d-block w-100 Welcome__imageCarousel carouselImage'
                   src={elem.image}
                   alt={elem.image_type}
                   key={elem.client_gallery_id}
