@@ -75,15 +75,15 @@
 // new css
 @media screen and (min-width: 1440px) {
   .Login__signupHeading {
-    font-size: 33px !important;
+    font-size: 40px !important;
     padding-left: 19%;
   }
   .deskWidthFORM {
     width: 80%;
   }
   .verifyButton {
-    height: 50px !important;
-    font-size: 170%;
+    height: 60px !important;
+    font-size: 28px;
   }
   .formInput {
     padding: 25px 25px;
@@ -98,10 +98,11 @@
   }
   .LoginDetailsSkeleton__img {
     width: 25%;
+    min-width: 210px;
   }
   .btn-loginPrimary {
-    height: 50px !important;
-    font-size: 18px;
+    height: 60px !important;
+    font-size: 28px;
   }
   .iti > input::placeholder {
     font-size: 18px !important;

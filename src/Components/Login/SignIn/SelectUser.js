@@ -29,9 +29,15 @@ const SelectUser = (props) => {
               className='Signin__UserCard mx-auto m-1'
               onClick={() => getUserName(elem.username)}
             >
-              <Row className='ml-auto mx-2 pt-1' style={{ marginBottom: '-10px' }}>
+              <Row
+                className='ml-auto mx-2 pt-1'
+                style={{ marginBottom: '-10px', display: 'flex', alignItems: 'center' }}
+              >
                 <FaceIcon css={AdmissionStyle.onlineIcon} />
-                <span className='Signin_UserRole' style={{ fontFamily: 'Montserrat-light' }}>
+                <span
+                  className='Signin_UserRole'
+                  style={{ fontFamily: 'Montserrat-light', fontSize: '10px' }}
+                >
                   {elem.role}
                 </span>
               </Row>
@@ -45,7 +51,7 @@ const SelectUser = (props) => {
                       // height='38'
                       // width='38'
                       css={AdmissionStyle.avatar}
-                      className='image my-auto'
+                      className='Signin__userimage image my-auto'
                     />
                   </div>
                   <div className='p-0 d-flex align-items-center'>
