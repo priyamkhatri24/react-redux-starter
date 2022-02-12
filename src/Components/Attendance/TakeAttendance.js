@@ -19,6 +19,10 @@ const TakeAttendance = (props) => {
     updateStudents(newStudents);
   };
 
+  function getUrlExt(url) {
+    return url.split(/[#?]/)[0].split('.').pop().trim();
+  }
+
   return (
     <Card
       style={{
@@ -76,8 +80,9 @@ const TakeAttendance = (props) => {
                   src={elem.profile_image ? elem.profile_image : userAvatar}
                   className='img-fluid'
                   alt='profile'
-                  width='40'
-                  height='40'
+                  // width='40'
+                  // height='40'
+                  className='profileImageAttendance'
                   style={{ borderRadius: '50%' }}
                 />
               </Col>
