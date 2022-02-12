@@ -291,12 +291,12 @@
     font-family: 'Montserrat-Medium';
   }
   .Welcome__carouselSubHeading {
-    margin-top: 135px !important;
-    font-size: 46px;
+    margin-top: 8vh !important;
+    font-size: 42px;
     margin-bottom: 30px;
   }
   .Welcome__carouselHeading {
-    font-size: 58px;
+    font-size: 54px;
     margin-top: 70px !important;
   }
   .mySwiper {
@@ -304,6 +304,12 @@
   }
   .Welcome__imageCarousel {
     width: 420px !important ;
+  }
+}
+
+@media screen and (min-height: 1150px) {
+  .Welcome__carouselSubHeading {
+    margin-top: 12vh !important;
   }
 }
 

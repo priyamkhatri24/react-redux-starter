@@ -201,21 +201,25 @@ const NoticeBoard = (props) => {
               title: 'notice',
               type: 'batch_notification',
               topic_array: JSON.stringify(topicArray),
-              batch_array: JSON.stringify(BatchIdArray),
+              batch_array: JSON.stringify(JSON.stringify(BatchIdArray)),
               client_id: clientId,
               client_user_id: clientUserId,
             };
 
             const noticeMessagePayload = {
               message: newNotice,
-              batch_array: JSON.stringify(BatchIdArray),
+              batch_array: JSON.stringify(JSON.stringify(BatchIdArray)),
               client_id: clientId,
-              client_name: currentbranding.branding.client_name,
+              coaching_name: currentbranding.branding.client_name,
             };
 
-            const notificationPromise = post(newPayload, '/sendNotification');
+            const notificationPromise = post(newPayload, '/sendNotification').then((res) => {});
             let SMSPromise = null;
-            if (sendSMS) SMSPromise = post(noticeMessagePayload, '/sendNoticeMessageToStudents');
+            if (sendSMS)
+              SMSPromise = post(
+                noticeMessagePayload,
+                '/sendNoticeMessageToStudents',
+              ).then((res) => {});
 
             Promise.all([notificationPromise, SMSPromise])
               .then((resp) => {

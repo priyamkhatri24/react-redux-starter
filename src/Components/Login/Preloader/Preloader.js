@@ -94,7 +94,7 @@ const Preloader = (props) => {
         <h1 className='Preloader__brand mx-lg-3 mt-lg-3 mb-lg-0 m-5 p-lg-5'>
           {currentBranding.branding.client_name}
         </h1>
-        <h6 style={{ fontFamily: 'Montserrat-Regular' }} className='m-lg-4 m-5 text-center'>
+        <h6 style={{ fontFamily: 'Montserrat-Medium' }} className='m-lg-4 m-5 text-center'>
           <TextLoop mask='true' interval={1000}>
             {hello}
           </TextLoop>
@@ -103,7 +103,7 @@ const Preloader = (props) => {
         {/* <ProgressBar now={count} label={`${count}%`} max={100} /> */}
         <ProgressBar
           width={`${count}%`}
-          height={document.documentElement.clientWidth > 1439 ? '35px' : '15px'}
+          height={document.documentElement.clientWidth > 1439 ? '25px' : '15px'}
         />
       </div>
       <footer className='py-4 Login__footer '>

@@ -621,6 +621,8 @@ export function Routes() {
         component={StudEdit}
       />
       <AuthenticatedRoute exact path='/crm' component={CRM} />
+      <AuthenticatedRoute exact path='/crm/user' component={UserDetails} />
+      <AuthenticatedRoute exact path='/crm/editprofile' component={EditProfileHOC} />
       <AuthenticatedRoute exact path='/videos' component={Videos} />
 
       <Route path='/fileviewer' component={FileView} />

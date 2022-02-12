@@ -82,7 +82,7 @@ const WelcomeCarousel = (props) => {
       <Button
         variant='JumboLogin'
         onClick={() => changeComponent('PhoneNo')}
-        style={{ zIndex: '999', fontSize: `${buttonFont}px` }}
+        style={{ zIndex: '999', fontSize: `${buttonFont}px`, marginBottom: '8px' }}
       >
         Log In / Sign Up
       </Button>

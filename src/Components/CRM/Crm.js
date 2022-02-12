@@ -18,12 +18,13 @@ import avatarImage from '../../assets/images/user.svg';
 import { PageHeader } from '../Common/PageHeader/PageHeader';
 import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
+import { admissionActions } from '../../redux/actions/admissions.action';
 import AdmissionStyle from '../Admissions/Admissions.style';
 import { apiValidation, get, json2xlsDownload } from '../../Utilities';
 import Enquiry from '../Login/AdmissionChat/Enquiry/Enquiry';
 
 const CRM = (props) => {
-  const { clientId, history } = props;
+  const { clientId, history, setAdmissionUserProfileToStore } = props;
   const [inquiryArray, setInquiryArray] = useState([]);
   const [searchedInquiryArray, setSearchedInquiryArray] = useState([]);
   const [admissionFormArray, setAdmissionFormArray] = useState([]);
@@ -98,8 +99,9 @@ const CRM = (props) => {
           page: enquiryPage,
           keyword: searchString,
         };
-        get(payload, '/searchInquiriesOfClient').then((res) => {
+        get(payload, '/getInquiriesOfClient').then((res) => {
           const result = apiValidation(res);
+          if (!result) return;
           console.log(result, 'searchInquiriesOfClient');
           const resultant = [...searchedInquiryArray, ...result];
           setInquiryArray(resultant);
@@ -135,8 +137,9 @@ const CRM = (props) => {
           keyword: searchString,
           sort_by: sortBy,
         };
-        get(payload, '/searchAdmissionsOfClient').then((res) => {
+        get(payload, '/getAdmissionsOfClient').then((res) => {
           const result = apiValidation(res);
+          if (!result) return;
           console.log(result, 'searchAdmissionsOfClient');
           const resultant = [...searchedAdmissionFormArray, ...result];
           setAdmissionFormArray(resultant);
@@ -286,6 +289,10 @@ const CRM = (props) => {
                     css={AdmissionStyle.card}
                     key={inquiry.user_id + inquiry.first_name}
                     className=''
+                    onClick={() => {
+                      setAdmissionUserProfileToStore(inquiry);
+                      history.push('/crm/user');
+                    }}
                   >
                     <Row className=' m-0 px-2 my-auto'>
                       <Col xs={2} sm={1} style={{ paddingTop: '15px' }}>
@@ -337,7 +344,13 @@ const CRM = (props) => {
               {admissionFormArray.map((e) => {
                 return (
                   <Accordion key={e.user_id + e.first_name}>
-                    <Card css={AdmissionStyle.card}>
+                    <Card
+                      onClick={() => {
+                        setAdmissionUserProfileToStore(e);
+                        history.push('/crm/user');
+                      }}
+                      css={AdmissionStyle.card}
+                    >
                       <Accordion.Toggle as='div' eventKey='0'>
                         <Row className=' m-0 px-2 my-auto'>
                           <Col xs={2} sm={1} style={{ paddingTop: '15px' }}>
@@ -440,9 +453,18 @@ const mapStateToProps = (state) => ({
   clientId: getClientId(state),
 });
 
-export default connect(mapStateToProps)(CRM);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setAdmissionUserProfileToStore: (payload) => {
+      dispatch(admissionActions.setAdmissionUserProfileToStore(payload));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CRM);
 
 CRM.propTypes = {
   clientId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
+  setAdmissionUserProfileToStore: PropTypes.func.isRequired,
 };
