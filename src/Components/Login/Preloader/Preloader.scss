@@ -12,10 +12,17 @@
   }
 }
 .Login__jumbo {
-  width: 108px;
+  width: 214px;
   height: auto;
   border-radius: 10px;
-  margin: 20px auto;
+  margin: 0px auto;
+}
+
+.Preloader__brand {
+  color: var(--primary-blue);
+  font-size: 35px;
+  letter-spacing: 0px;
+  font-family: 'Montserrat-Medium';
 }
 @media screen and (min-width: 800px) {
   .Login {

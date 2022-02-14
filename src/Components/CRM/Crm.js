@@ -13,16 +13,18 @@ import PhoneIcon from '@material-ui/icons/Phone';
 import DownloadIcon from '@material-ui/icons/GetApp';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TuneIcon from '@material-ui/icons/Tune';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import avatarImage from '../../assets/images/user.svg';
 import { PageHeader } from '../Common/PageHeader/PageHeader';
 import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
+import { admissionActions } from '../../redux/actions/admissions.action';
 import AdmissionStyle from '../Admissions/Admissions.style';
 import { apiValidation, get, json2xlsDownload } from '../../Utilities';
 import Enquiry from '../Login/AdmissionChat/Enquiry/Enquiry';
 
 const CRM = (props) => {
-  const { clientId, history } = props;
+  const { clientId, history, setAdmissionUserProfileToStore } = props;
   const [inquiryArray, setInquiryArray] = useState([]);
   const [searchedInquiryArray, setSearchedInquiryArray] = useState([]);
   const [admissionFormArray, setAdmissionFormArray] = useState([]);
@@ -35,72 +37,56 @@ const CRM = (props) => {
   const [sortBy, setSortBy] = useState('date');
   const [currentTab, setCurrentTab] = useState('Enquiries');
 
-  const infiniteScroll = () => {
-    console.log(currentTab);
-    if (
-      window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight ||
-      window.innerHeight + document.body.scrollTop >= document.body.offsetHeight
-    ) {
-      if (currentTab === 'Enquiries') setEnquiryPage((prev) => prev + 1);
-      if (currentTab === 'Admission') setAdmissionPage((prev) => prev + 1);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener('scroll', infiniteScroll);
-
-    return () => window.removeEventListener('scroll', infiniteScroll);
-  }, [currentTab]);
-
-  useEffect(() => {
-    const payload = {
-      client_id: clientId,
-      page: enquiryPage,
-      sort_by: sortBy,
-    };
-    get(payload, '/getInquiriesOfClient').then((res) => {
-      const result = apiValidation(res);
-      const resultant = [...inquiryArray, ...result];
-      console.log(result, 'getInquiryOfClient');
-      setInquiryArray(result);
-    });
-  }, [sortBy]);
-
-  useEffect(() => {
-    const payload = {
-      client_id: clientId,
-      page: admissionPage,
-      sort_by: sortBy,
-    };
-    get(payload, '/getAdmissionsOfClient').then((res) => {
-      const result = apiValidation(res);
-      const resultant = [...admissionFormArray, ...result];
-      console.log(result);
-      setAdmissionFormArray(result);
-    });
-  }, [sortBy]);
+  // const infiniteScroll = () => {
+  //   console.log(currentTab);
+  //   if (
+  //     window.innerHeight + document.documentElement.scrollTop >=
+  //       document.documentElement.offsetHeight- 200 ||
+  //     window.innerHeight + document.body.scrollTop >= document.body.offsetHeight- 200
+  //   ) {
+  //     if (currentTab === 'Enquiries') setEnquiryPage((prev) => prev + 1);
+  //     if (currentTab === 'Admission') setAdmissionPage((prev) => prev + 1);
+  //   }
+  // };
 
   // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     get({ client_id: clientId }, '/getInquiryAndAdmissionDetailsOfClient').then((res) => {
-  //       const result = apiValidation(res);
-  //       console.log(result);
-  //       const searchedArrayInquiry = result.inquiry_object['Date wise'].filter(
-  //         (e) => e.first_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
-  //       );
-  //       const searchedArrayAdmission = result.admission_object['Date wise'].filter(
-  //         (e) => e.first_name.toLowerCase().indexOf(searchString.toLowerCase()) > -1,
-  //       );
-  //       setInquiryArray(searchedArrayInquiry);
-  //       setAdmissionFormArray(searchedArrayAdmission);
-  //     });
-  //   }, 500);
+  //   window.addEventListener('scroll', infiniteScroll);
 
-  //   return () => {
-  //     clearTimeout(timer);
+  //   return () => window.removeEventListener('scroll', infiniteScroll);
+  // }, [currentTab]);
+
+  const infiniteScroll = () => {
+    if (currentTab === 'Enquiries') setEnquiryPage((prev) => prev + 1);
+    if (currentTab === 'Admission') setAdmissionPage((prev) => prev + 1);
+  };
+
+  // useEffect(() => {
+  //   const payload = {
+  //     client_id: clientId,
+  //     page: enquiryPage,
+  //     sort_by: sortBy,
   //   };
-  // }, [searchString, clientId]);
+  //   get(payload, '/getInquiriesOfClient').then((res) => {
+  //     const result = apiValidation(res);
+  //     const resultant = [...inquiryArray, ...result];
+  //     console.log(result, 'getInquiryOfClient');
+  //     setInquiryArray(result);
+  //   });
+  // }, [sortBy]);
+
+  // useEffect(() => {
+  //   const payload = {
+  //     client_id: clientId,
+  //     page: admissionPage,
+  //     sort_by: sortBy,
+  //   };
+  //   get(payload, '/getAdmissionsOfClient').then((res) => {
+  //     const result = apiValidation(res);
+  //     const resultant = [...admissionFormArray, ...result];
+  //     console.log(result);
+  //     setAdmissionFormArray(result);
+  //   });
+  // }, [sortBy]);
 
   // SEARCH API INQUIRY
   useEffect(() => {
@@ -113,8 +99,9 @@ const CRM = (props) => {
           page: enquiryPage,
           keyword: searchString,
         };
-        get(payload, '/searchInquiriesOfClient').then((res) => {
+        get(payload, '/getInquiriesOfClient').then((res) => {
           const result = apiValidation(res);
+          if (!result) return;
           console.log(result, 'searchInquiriesOfClient');
           const resultant = [...searchedInquiryArray, ...result];
           setInquiryArray(resultant);
@@ -137,7 +124,7 @@ const CRM = (props) => {
     return () => {
       clearTimeout(timer);
     };
-  }, [searchString, enquiryPage]);
+  }, [searchString, sortBy, currentTab, enquiryPage, document.documentElement.clientHeight]);
 
   // SEARCH API ADDMISSION
   useEffect(() => {
@@ -150,8 +137,9 @@ const CRM = (props) => {
           keyword: searchString,
           sort_by: sortBy,
         };
-        get(payload, '/searchAdmissionsOfClient').then((res) => {
+        get(payload, '/getAdmissionsOfClient').then((res) => {
           const result = apiValidation(res);
+          if (!result) return;
           console.log(result, 'searchAdmissionsOfClient');
           const resultant = [...searchedAdmissionFormArray, ...result];
           setAdmissionFormArray(resultant);
@@ -174,7 +162,7 @@ const CRM = (props) => {
     return () => {
       clearTimeout(timer);
     };
-  }, [searchString, admissionPage]);
+  }, [searchString, sortBy, currentTab, admissionPage, document.documentElement.clientHeight]);
 
   const filterResult = (how) => {
     if (how === 'alphabetically') {
@@ -285,130 +273,156 @@ const CRM = (props) => {
           eventKey='Enquiries'
           onClick={() => handleSelect('Enquiries')}
           title='Guest Users'
-          style={{ marginTop: '2rem', marginBottom: '1rem' }}
+          style={{ marginTop: '0rem', marginBottom: '1rem' }}
         >
           <div css={AdmissionStyle.UserCards}>
-            {inquiryArray.map((inquiry) => {
-              return (
-                <Card
-                  css={AdmissionStyle.card}
-                  key={inquiry.user_id + inquiry.first_name}
-                  className=''
-                >
-                  <Row className=' m-0 px-2 my-auto'>
-                    <Col xs={2} sm={1} style={{ paddingTop: '15px' }}>
-                      <img
-                        src={avatarImage}
-                        alt='avatar'
-                        height='38'
-                        width='38'
-                        css={AdmissionStyle.avatar}
-                      />
-                    </Col>
-                    <Col xs={10} sm={11} style={{ paddingTop: '10px' }}>
-                      <p css={AdmissionStyle.avatarHeading} className='mb-0 mt-2 ml-2'>
-                        {`${inquiry.first_name} ${inquiry.last_name}`}
-                      </p>
-                      <p className='mb-0' css={AdmissionStyle.avatarStatus}>
-                        <PhoneIcon css={AdmissionStyle.onlineIcon} />
-                        +91-{inquiry.contact}
-                      </p>
-                      <p
-                        css={AdmissionStyle.avatarStatus}
-                        className='mb-2 ml-2'
-                        style={{ fontFamily: 'Montserrat-Regular' }}
-                      >
-                        Signup time: {getReadableDate(inquiry.signup_time)}
-                      </p>
-                    </Col>
-                  </Row>
-                </Card>
-              );
-            })}
+            <InfiniteScroll
+              dataLength={inquiryArray.length}
+              next={infiniteScroll}
+              hasMore
+              loader={<h4 />}
+              height={document.documentElement.clientHeight - 130}
+            >
+              {inquiryArray.map((inquiry) => {
+                return (
+                  <Card
+                    css={AdmissionStyle.card}
+                    key={inquiry.user_id + inquiry.first_name}
+                    className=''
+                    onClick={() => {
+                      setAdmissionUserProfileToStore(inquiry);
+                      history.push('/crm/user');
+                    }}
+                  >
+                    <Row className=' m-0 px-2 my-auto'>
+                      <Col xs={2} sm={1} style={{ paddingTop: '15px' }}>
+                        <img
+                          src={avatarImage}
+                          alt='avatar'
+                          height='38'
+                          width='38'
+                          css={AdmissionStyle.avatar}
+                        />
+                      </Col>
+                      <Col xs={10} sm={11} style={{ paddingTop: '10px' }}>
+                        <p css={AdmissionStyle.avatarHeading} className='mb-0 mt-2 ml-2'>
+                          {`${inquiry.first_name} ${inquiry.last_name}`}
+                        </p>
+                        <p className='mb-0' css={AdmissionStyle.avatarStatus}>
+                          <PhoneIcon css={AdmissionStyle.onlineIcon} />
+                          +91-{inquiry.contact}
+                        </p>
+                        <p
+                          css={AdmissionStyle.avatarStatus}
+                          className='mb-2 ml-2'
+                          style={{ fontFamily: 'Montserrat-Regular' }}
+                        >
+                          Signup time: {getReadableDate(inquiry.signup_time)}
+                        </p>
+                      </Col>
+                    </Row>
+                  </Card>
+                );
+              })}
+            </InfiniteScroll>
           </div>
         </Tab>
         <Tab
           eventKey='Admission'
           onClick={() => handleSelect('Admission')}
           title='Admission Form'
-          style={{ marginTop: '2rem', marginBottom: '1rem' }}
+          style={{ marginTop: '0rem', marginBottom: '1rem' }}
         >
           <div css={AdmissionStyle.UserCards}>
-            {admissionFormArray.map((e) => {
-              return (
-                <Accordion key={e.user_id + e.first_name}>
-                  <Card css={AdmissionStyle.card}>
-                    <Accordion.Toggle as='div' eventKey='0'>
-                      <Row className=' m-0 px-2 my-auto'>
-                        <Col xs={2} sm={1} style={{ paddingTop: '15px' }}>
-                          <img
-                            src={e.profile_image || avatarImage}
-                            alt='avatar'
-                            height='38'
-                            width='38'
-                            css={AdmissionStyle.avatar}
-                          />
-                        </Col>
-                        <Col xs={10} sm={11} style={{ paddingTop: '10px' }}>
-                          <p css={AdmissionStyle.avatarHeading} className='mb-0 mt-2 ml-2'>
-                            {`${e.first_name} ${e.last_name}`}
-                            <span className='mt-1' style={{ position: 'absolute', right: '2%' }}>
-                              <ExpandMoreIcon />
-                            </span>
-                          </p>
+            <InfiniteScroll
+              dataLength={admissionFormArray.length}
+              next={infiniteScroll}
+              hasMore
+              height={document.documentElement.clientHeight - 130}
+              loader={<h4 />}
+            >
+              {admissionFormArray.map((e) => {
+                return (
+                  <Accordion key={e.user_id + e.first_name}>
+                    <Card
+                      onClick={() => {
+                        setAdmissionUserProfileToStore(e);
+                        history.push('/crm/user');
+                      }}
+                      css={AdmissionStyle.card}
+                    >
+                      <Accordion.Toggle as='div' eventKey='0'>
+                        <Row className=' m-0 px-2 my-auto'>
+                          <Col xs={2} sm={1} style={{ paddingTop: '15px' }}>
+                            <img
+                              src={e.profile_image || avatarImage}
+                              alt='avatar'
+                              height='38'
+                              width='38'
+                              css={AdmissionStyle.avatar}
+                            />
+                          </Col>
+                          <Col xs={10} sm={11} style={{ paddingTop: '10px' }}>
+                            <p css={AdmissionStyle.avatarHeading} className='mb-0 mt-2 ml-2'>
+                              {`${e.first_name} ${e.last_name}`}
+                              <span className='mt-1' style={{ position: 'absolute', right: '2%' }}>
+                                <ExpandMoreIcon />
+                              </span>
+                            </p>
 
-                          <p className='mb-0' css={AdmissionStyle.avatarStatus}>
-                            <PhoneIcon css={AdmissionStyle.onlineIcon} />
-                            +91-{e.contact}
-                          </p>
-                          <p
-                            css={AdmissionStyle.avatarStatus}
-                            className='mb-2 ml-2'
-                            style={{ fontFamily: 'Montserrat-Regular' }}
-                          >
-                            Signup time: {getReadableDate(e.signup_time)}
-                          </p>
-                        </Col>
-                      </Row>
-                    </Accordion.Toggle>
-                    <Accordion.Collapse eventKey='0'>
-                      <div className='mt-0 mx-3'>
-                        {e.question_array.map((elem) => {
-                          return (
-                            <div style={{ marginLeft: '7%' }}>
-                              {elem.response.length > 0 && (
-                                <>
-                                  <p
-                                    style={{
-                                      fontSize: '12px',
-                                      marginBottom: '6px',
-                                      fontFamily: 'Montserrat-Bold',
-                                    }}
-                                  >
-                                    {' '}
-                                    {elem.question}{' '}
-                                  </p>
-                                  <p
-                                    style={{
-                                      fontSize: '12px',
-                                      marginBottom: '6px',
-                                      fontFamily: 'Montserrat-Regular',
-                                    }}
-                                  >
-                                    {' '}
-                                    {elem.response}{' '}
-                                  </p>
-                                </>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </Accordion.Collapse>
-                  </Card>
-                </Accordion>
-              );
-            })}
+                            <p className='mb-0' css={AdmissionStyle.avatarStatus}>
+                              <PhoneIcon css={AdmissionStyle.onlineIcon} />
+                              +91-{e.contact}
+                            </p>
+                            <p
+                              css={AdmissionStyle.avatarStatus}
+                              className='mb-2 ml-2'
+                              style={{ fontFamily: 'Montserrat-Regular' }}
+                            >
+                              Signup time: {getReadableDate(e.signup_time)}
+                            </p>
+                          </Col>
+                        </Row>
+                      </Accordion.Toggle>
+                      <Accordion.Collapse eventKey='0'>
+                        <div className='mt-0 mx-3'>
+                          {e.question_array.map((elem) => {
+                            return (
+                              <div style={{ marginLeft: '7%' }}>
+                                {elem.response.length > 0 && (
+                                  <>
+                                    <p
+                                      style={{
+                                        fontSize: '12px',
+                                        marginBottom: '6px',
+                                        fontFamily: 'Montserrat-Bold',
+                                      }}
+                                    >
+                                      {' '}
+                                      {elem.question}{' '}
+                                    </p>
+                                    <p
+                                      style={{
+                                        fontSize: '12px',
+                                        marginBottom: '6px',
+                                        fontFamily: 'Montserrat-Regular',
+                                      }}
+                                    >
+                                      {' '}
+                                      {elem.response}{' '}
+                                    </p>
+                                  </>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </Accordion.Collapse>
+                    </Card>
+                  </Accordion>
+                );
+              })}
+            </InfiniteScroll>
           </div>
         </Tab>
       </Tabs>
@@ -439,9 +453,18 @@ const mapStateToProps = (state) => ({
   clientId: getClientId(state),
 });
 
-export default connect(mapStateToProps)(CRM);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setAdmissionUserProfileToStore: (payload) => {
+      dispatch(admissionActions.setAdmissionUserProfileToStore(payload));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CRM);
 
 CRM.propTypes = {
   clientId: PropTypes.number.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
+  setAdmissionUserProfileToStore: PropTypes.func.isRequired,
 };

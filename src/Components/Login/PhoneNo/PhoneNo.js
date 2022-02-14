@@ -97,7 +97,7 @@ const PhoneNo = (props) => {
             {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
             <label className='has-float-label my-auto'>
               <input
-                className='form-control'
+                className='form-control formInput'
                 name='Mobile Number'
                 type={
                   password

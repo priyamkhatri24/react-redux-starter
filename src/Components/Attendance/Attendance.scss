@@ -38,8 +38,8 @@
     font-family: $regular;
     color: $lightGrey;
     font-size: $spacer * 0.75;
-    line-height: 15px;
-    padding: 5px;
+    line-height: 12px;
+    padding: 6px;
   }
 
   &__bulletNames {
@@ -103,6 +103,25 @@
 
   &__tab {
     padding-top: 7rem;
+  }
+}
+.smsCheck {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-family: 'Montserrat-regular';
+  font-size: 0.8rem;
+}
+.profileImageAttendance {
+  width: 40px !important;
+  height: 40px !important;
+
+  @media screen and (max-width: 500px) {
+    width: 25px !important;
+    height: 25px !important;
   }
 }
 

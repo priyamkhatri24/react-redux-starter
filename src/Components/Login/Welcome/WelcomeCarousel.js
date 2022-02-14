@@ -47,7 +47,7 @@ const WelcomeCarousel = (props) => {
       </Button>
 
       <h5 className='Welcome__carouselSubHeading text-center'>Welcome to</h5>
-      <h3 className='Welcome__carouselHeading text-center my-3'>
+      <h3 className='Welcome__carouselHeading text-center mb-3 mt-4'>
         {currentbranding.branding.client_name}
       </h3>
       <Swiper
@@ -71,7 +71,7 @@ const WelcomeCarousel = (props) => {
           return (
             <SwiperSlide key={elem.key}>
               <div className='d-flex justify-content-center'>
-                <img src={elem.image} alt='Carousel' />
+                <img src={elem.image} alt='Carousel' className='Welcome__imageCarousel' />
               </div>
               <p className='mt-4 text-center Welcome__carouselText'>{elem.text}</p>
             </SwiperSlide>
@@ -82,7 +82,7 @@ const WelcomeCarousel = (props) => {
       <Button
         variant='JumboLogin'
         onClick={() => changeComponent('PhoneNo')}
-        style={{ zIndex: '999', fontSize: `${buttonFont}px` }}
+        style={{ zIndex: '999', fontSize: `${buttonFont}px`, marginBottom: '8px' }}
       >
         Log In / Sign Up
       </Button>

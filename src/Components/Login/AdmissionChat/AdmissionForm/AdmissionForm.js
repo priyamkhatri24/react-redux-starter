@@ -106,25 +106,24 @@ const AdmissionForm = (props) => {
   const getFormData = (values) => {
     console.log(values);
 
-    const questionArray = Object.keys(values)
-      .map((key) => ({
-        crm_question_id: Number(key),
-        response: values[key],
-      }))
-      .filter((elem) => {
-        if (elem.crm_question_id === firstName.current.crm_question_id) {
-          firstName.current.value = elem.response;
-        } else if (elem.crm_question_id === lastName.current.crm_question_id) {
-          lastName.current.value = elem.response;
-        } else if (elem.crm_question_id === parentName.current.crm_question_id) {
-          parentName.current.value = elem.response;
-        } else if (elem.crm_question_id === parentContact.current.crm_question_id) {
-          parentContact.current.value = elem.response;
-        } else {
-          return elem;
-        }
-        return null;
-      });
+    const questionArray = Object.keys(values).map((key) => ({
+      crm_question_id: Number(key),
+      response: values[key],
+    }));
+    // .filter((elem) => {
+    //   if (elem.crm_question_id === firstName.current.crm_question_id) {
+    //     firstName.current.value = elem.response;
+    //   } else if (elem.crm_question_id === lastName.current.crm_question_id) {
+    //     lastName.current.value = elem.response;
+    //   } else if (elem.crm_question_id === parentName.current.crm_question_id) {
+    //     parentName.current.value = elem.response;
+    //   } else if (elem.crm_question_id === parentContact.current.crm_question_id) {
+    //     parentContact.current.value = elem.response;
+    //   } else {
+    //     return elem;
+    //   }
+    //   return null;
+    // });
     console.log(questionArray);
     console.log(firstName.current);
 
@@ -142,27 +141,15 @@ const AdmissionForm = (props) => {
       auto_approval: autoApproval.current,
     };
     console.log(payload);
-
+    console.log(questionArray);
     post(payload, '/submitAdmissonFormLatest').then((res) => {
       if (res.success) {
-        if (autoApproval.current === 'true') {
-          Swal.fire({
-            icon: 'success',
-            text:
-              'Thank you for filling the admission form. ' +
-              'You will receive your username on your registered number, use it to login',
-          }).then((response) => {
-            if (response.isConfirmed) history.push('/');
-          });
-        } else if (autoApproval.current === 'false') {
-          Swal.fire({
-            icon: 'Success',
-            text:
-              'Thank you for filling the admission form. Please wait while the institute approves your information',
-          }).then((response) => {
-            if (response.isConfirmed) history.push('/');
-          });
-        }
+        Swal.fire({
+          icon: 'Success',
+          text: 'Thank you for filling the admission form.',
+        }).then((response) => {
+          if (response.isConfirmed) history.push('/');
+        });
       } else {
         Swal.fire({
           icon: 'error',

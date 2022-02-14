@@ -4,7 +4,7 @@ import Loadable from 'react-loadable';
 import Skeleton from 'react-loading-skeleton';
 import { AuthenticatedRoute } from './AuthenticatedRoute';
 /* eslint import/no-cycle: [2, { maxDepth: 1 }] */
-import EditPayment from '../Components/Fees/EditPayment';
+// import EditPayment from '../Components/Fees/EditPayment';
 // import TeacherCourses from '../Components/Courses/TeacherCourses';
 
 // import EditProfileHOC from '../Components/Admissions/EditProfileHoC';
@@ -636,6 +636,8 @@ export function Routes() {
         component={StudEdit}
       />
       <AuthenticatedRoute exact path='/crm' component={CRM} />
+      <AuthenticatedRoute exact path='/crm/user' component={UserDetails} />
+      <AuthenticatedRoute exact path='/crm/editprofile' component={EditProfileHOC} />
       <AuthenticatedRoute exact path='/videos' component={Videos} />
 
       <Route path='/fileviewer' component={FileView} />

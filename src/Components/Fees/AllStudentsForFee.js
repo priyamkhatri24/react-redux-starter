@@ -7,6 +7,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import PhoneIcon from '@material-ui/icons/Phone';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import avatarImage from '../../assets/images/user.svg';
 import '../Dashboard/Dashboard.scss';
 import './Fees.scss';
@@ -25,25 +26,30 @@ const AllStudentsForFee = (props) => {
   const [students, setStudents] = useState([]);
   const [searchedStudents, setSearchedStudents] = useState([]);
 
+  // const infiniteScroll = () => {
+  //   console.log(activeTab, 'Students');
+  //   if (
+  //     window.innerHeight + document.documentElement.scrollTop >=
+  //       document.documentElement.offsetHeight- 200 ||
+  //     window.innerHeight + document.body.scrollTop >= document.body.offsetHeight- 200
+  //   ) {
+  //     setSearchPageStud((prev) => prev + 1);
+  //     setPageStudents((prev) => prev + 1);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (activeTab) {
+  //     window.addEventListener('scroll', infiniteScroll);
+  //   }
+
+  //   return () => window.removeEventListener('scroll', infiniteScroll);
+  // }, [activeTab]);
+
   const infiniteScroll = () => {
-    console.log(activeTab, 'Students');
-    if (
-      window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight ||
-      window.innerHeight + document.body.scrollTop >= document.body.offsetHeight
-    ) {
-      setSearchPageStud((prev) => prev + 1);
-      setPageStudents((prev) => prev + 1);
-    }
+    setSearchPageStud((prev) => prev + 1);
+    setPageStudents((prev) => prev + 1);
   };
-
-  useEffect(() => {
-    if (activeTab) {
-      window.addEventListener('scroll', infiniteScroll);
-    }
-
-    return () => window.removeEventListener('scroll', infiniteScroll);
-  }, [activeTab]);
 
   useEffect(() => {
     get({ client_id: clientId }, '/getFilters').then((res) => {
@@ -156,22 +162,30 @@ const AllStudentsForFee = (props) => {
   return (
     <div>
       <PageHeader title='Fees' search searchFilter={searchBatches} />
-      <div className='mt-4'>
-        {(students.length > 0 || searchedStudents.length > 0) &&
-          (searchedStudents.length > 0 ? searchedStudents : students).map((student) => {
-            return (
-              <div key={student.user_id}>
-                <UserDataCard
-                  elem={student}
-                  FeeUser
-                  history={history}
-                  key={student.user_id}
-                  notifyFeeUser={notifyFeeUser}
-                  goToFeePlan={goToFeePlan}
-                />
-              </div>
-            );
-          })}
+      <div className='mt-2'>
+        <InfiniteScroll
+          dataLength={(searchedStudents.length > 0 ? searchedStudents : students).length}
+          next={infiniteScroll}
+          hasMore
+          height={document.documentElement.clientHeight - 130}
+          loader={<h4 />}
+        >
+          {(students.length > 0 || searchedStudents.length > 0) &&
+            (searchedStudents.length > 0 ? searchedStudents : students).map((student) => {
+              return (
+                <div key={student.user_id}>
+                  <UserDataCard
+                    elem={student}
+                    FeeUser
+                    history={history}
+                    key={student.user_id}
+                    notifyFeeUser={notifyFeeUser}
+                    goToFeePlan={goToFeePlan}
+                  />
+                </div>
+              );
+            })}
+        </InfiniteScroll>
       </div>
     </div>
   );

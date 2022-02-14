@@ -42,7 +42,7 @@ const AttendanceBatch = (props) => {
   const [attendanceDate, setAttendanceDate] = useState('');
   const [submitStatus, setSubmitStatus] = useState(0);
   const [swiper, setSwiper] = useState(null);
-  const [check, setCheck] = useState(false);
+  const [checked, setChecked] = useState(false);
 
   const getInitialAttendanceData = useCallback(() => {
     get({ client_batch_id: attendanceBatch.client_batch_id }, '/getStudentsOfBatch').then((res) => {
@@ -70,6 +70,9 @@ const AttendanceBatch = (props) => {
   // const downloader = () => {
   //   handleClose1();
   // };
+  const onCheck = () => {
+    setChecked(!checked);
+  };
 
   const selectMonth = () => {
     handleOpen1();
@@ -149,10 +152,11 @@ const AttendanceBatch = (props) => {
         const presentStudents = students.filter((e) => e.value === 'P');
         const absentStudents = students.filter((e) => e.value === 'A');
         const lateStudents = students.filter((e) => e.value === 'L');
-        triggerSMSAndNotification(presentStudents, 'P');
-        triggerSMSAndNotification(absentStudents, 'A');
-        triggerSMSAndNotification(lateStudents, 'L');
-
+        if (checked) {
+          triggerSMSAndNotification(presentStudents, 'P');
+          triggerSMSAndNotification(absentStudents, 'A');
+          triggerSMSAndNotification(lateStudents, 'L');
+        }
         Swal.fire({
           icon: 'success',
           title: 'Updated!',
@@ -274,6 +278,15 @@ const AttendanceBatch = (props) => {
           />
         </SwiperSlide>
       </Swiper>
+      <div className='smsCheck'>
+        <input
+          type='checkbox'
+          style={{ width: '20px', height: '30px' }}
+          value={checked}
+          onChange={onCheck}
+        />
+        <span style={{ marginLeft: '10px' }}>Also send an SMS</span>
+      </div>
       <div className='d-flex justify-content-center my-2'>
         <Button variant='customPrimary' onClick={() => submitAttendance()}>
           {submitStatus ? 'Update' : 'Submit'}

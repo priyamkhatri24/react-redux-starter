@@ -9,6 +9,7 @@ import Button from 'react-bootstrap/Button';
 import loadable from '@loadable/component';
 import Signup from '../../assets/images/Login/ProfilePic.svg';
 import './Login.scss';
+import './signupForm.scss';
 import { post } from '../../Utilities';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
@@ -78,7 +79,7 @@ const SignupForm = (props) => {
           Help us know you better :)
         </Col>
         <Col xs={5}>
-          <img src={Signup} alt='login person' width='120px' height='125px' />
+          <img src={Signup} alt='login person' className='heading_image' />
         </Col>
       </Row>
       <input
@@ -91,18 +92,14 @@ const SignupForm = (props) => {
       />
       {profileImage ? (
         <div
-          style={{ position: 'relative', width: '70px', height: '70px', borderRadius: '70px' }}
-          className='ml-4 mt-4'
+          // style={{ position: 'relative', width: '70px', height: '70px', borderRadius: '70px' }}
+          className='ml-4 mt-4 profile_image'
           onClick={() => profileImageRef.current.click()}
           onKeyDown={() => profileImageRef.current.click()}
           tabIndex='-1'
           role='button'
         >
-          <img
-            src={profileImage}
-            alt='profile'
-            style={{ width: '70px', height: '70px', borderRadius: '70px' }}
-          />
+          <img src={profileImage} alt='profile' className='profile_image' />
           <span className='Login__camera'>
             <PhotoCameraIcon />
           </span>
@@ -136,7 +133,7 @@ const SignupForm = (props) => {
       <div className='mx-3 mt-5 pb-4'>
         <label className='has-float-label my-auto'>
           <input
-            className='form-control'
+            className='form-control formInput'
             name='First Name'
             type='text'
             placeholder='First Name'
@@ -149,12 +146,12 @@ const SignupForm = (props) => {
               setDetails(newObject);
             }}
           />
-          <span>First Name</span>
+          <span className='palceholder_text'>First Name</span>
         </label>
 
         <label className='has-float-label my-auto'>
           <input
-            className='form-control mt-3'
+            className='form-control mt-3 formInput'
             name='Last Name'
             type='text'
             placeholder='Last Name'
@@ -167,12 +164,12 @@ const SignupForm = (props) => {
               setDetails(newObject);
             }}
           />
-          <span>Last Name</span>
+          <span className='palceholder_text'>Last Name</span>
         </label>
 
         <label className='has-float-label my-auto'>
           <input
-            className='form-control mt-3'
+            className='form-control mt-3 formInput'
             name='Email address'
             type='text'
             placeholder='Email address'
@@ -185,7 +182,7 @@ const SignupForm = (props) => {
               setDetails(newObject);
             }}
           />
-          <span>Email address</span>
+          <span className='palceholder_text'>Email address</span>
         </label>
         {displayAlertText && (
           <p

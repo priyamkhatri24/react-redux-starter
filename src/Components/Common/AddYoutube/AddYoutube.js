@@ -54,13 +54,25 @@ const AddYoutube = (props) => {
     }
   }, [clientId, roleArray, clientUserId]);
 
-  const getIdFromUrl = (url) => {
-    let vidId = url.split('v=')[1];
-    const ampersandPosition = vidId.indexOf('&');
-    if (ampersandPosition != -1) {
-      vidId = vidId.substring(0, ampersandPosition);
+  const getIdFromUrl = (link) => {
+    let viId = '';
+    if (link.includes('https')) {
+      if (link.includes('.be')) {
+        viId = link.split('/').pop();
+        console.log('.be link');
+      } else {
+        /* eslint-disable */
+        viId = link.split('v=')[1];
+        const ampersandPosition = viId?.indexOf('&');
+        if (ampersandPosition != -1) {
+          viId = viId?.substring(0, ampersandPosition);
+        }
+      }
+    } else {
+      viId = link;
     }
-    return vidId;
+    console.log(viId, 'youtubeIdToPlay');
+    return viId;
   };
 
   const YTDurationToSeconds = (duration) => {
@@ -141,7 +153,7 @@ const AddYoutube = (props) => {
   };
 
   const extractVideoId = (e) => {
-    if (e.target.value.startsWith('https://www')) {
+    if (e.target.value.startsWith('https')) {
       setVideoId(getIdFromUrl(e.target.value));
     } else {
       let vid = e.target.value;

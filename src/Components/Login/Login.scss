@@ -74,6 +74,29 @@
     right: 0;
     bottom: 0;
   }
+  @media screen and (min-width: 1500px) {
+    &__photoPlaceHolder {
+      width: 100px;
+      height: 100px;
+      background-color: $disabledGrey;
+      color: $dashboardBlack;
+      font-size: $spacer * 0.75;
+      line-height: 15px;
+      font-family: $semiBold;
+      text-align: center;
+      border-radius: 70px;
+      padding: 30px;
+      position: relative;
+    }
+
+    &__Login__camera {
+      position: absolute;
+      font-size: $spacer;
+      color: $headingGrey;
+      right: 0;
+      bottom: 0;
+    }
+  }
 }
 
 .deskWidthFORM {
@@ -86,7 +109,7 @@
   }
 }
 
-@media screen and (max-height: 630px) {
+@media screen and (max-height: 750px) {
   .Login__footer {
     position: relative;
   }

@@ -511,6 +511,7 @@
   top: -29px;
 }
 
+// ========mobile screens
 @media screen and (max-width: 600px) {
   .fillAdmissionFormButton {
     width: 53%;
@@ -673,3 +674,4 @@
 // we need media query for screens:
 //1. greater than 1440px (min-width: 1440px) large laptop screens
 //2. screens greater than 1700px (if necessary) (min-width: 1700px) 4k display and TV screens
+//3. less than 600px (max-width: 600px) mobile phone devices

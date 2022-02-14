@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { PageHeader } from '../Common';
 import FilterAccordion from '../Common/FilterAccordion/FilterAccordion';
 import { apiValidation, get } from '../../Utilities';
@@ -34,27 +35,35 @@ const TeacherAnalysis = (props) => {
   const [assignmentsCaller, setAssignmentsCaller] = useState(1);
   const analysisOverlayRef = useRef(null);
 
+  // const infiniteScroll = () => {
+  //   // console.log(filterPayload);
+  //   if (
+  //     analysisOverlayRef?.current?.clientHeight + analysisOverlayRef?.current?.scrollTop >=
+  //     analysisOverlayRef?.current?.scrollHeight - 200
+  //   ) {
+  //     if (tab === 'Students') {
+  //       setStudentsCaller((prev) => prev + 1);
+  //     } else if (tab === 'Assignments') {
+  //       setAssignmentsCaller((prev) => prev + 1);
+  //     }
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (analysisOverlayRef && analysisOverlayRef?.current) {
+  //     analysisOverlayRef.current.addEventListener('scroll', infiniteScroll);
+  //   }
+
+  //   return () => analysisOverlayRef?.current?.removeEventListener('scroll', infiniteScroll);
+  // }, [tab]);
+
   const infiniteScroll = () => {
-    // console.log(filterPayload);
-    if (
-      analysisOverlayRef?.current?.clientHeight + analysisOverlayRef?.current?.scrollTop >=
-      analysisOverlayRef?.current?.scrollHeight
-    ) {
-      if (tab === 'Students') {
-        setStudentsCaller((prev) => prev + 1);
-      } else if (tab === 'Assignments') {
-        setAssignmentsCaller((prev) => prev + 1);
-      }
+    if (tab === 'Students') {
+      setStudentsCaller((prev) => prev + 1);
+    } else if (tab === 'Assignments') {
+      setAssignmentsCaller((prev) => prev + 1);
     }
   };
-
-  useEffect(() => {
-    if (analysisOverlayRef && analysisOverlayRef?.current) {
-      analysisOverlayRef.current.addEventListener('scroll', infiniteScroll);
-    }
-
-    return () => analysisOverlayRef?.current?.removeEventListener('scroll', infiniteScroll);
-  }, [tab]);
 
   const [filterPayload, setFilterPayload] = useState({
     // class_id: null,
@@ -275,34 +284,39 @@ const TeacherAnalysis = (props) => {
               <GetAppIcon />
             </span>
           </Row>
-          <div
-            ref={analysisOverlayRef}
-            style={{ height: '65vh', overflow: 'scroll', paddingBottom: '0rem' }}
-          >
-            {tab === 'Assignments' ? (
-              assignments.map((elem) => {
-                return (
-                  <AnalysisDataCard
-                    elem={elem}
-                    key={elem.test_id}
-                    buttonClick={goToDetailsOfAssignment}
-                  />
-                );
-              })
-            ) : (
-              <>
-                {students.map((elem) => {
+          <div ref={analysisOverlayRef} style={{ height: '65vh', paddingBottom: '0rem' }}>
+            <InfiniteScroll
+              dataLength={tab === 'Assignments' ? assignments.length : students.length}
+              next={infiniteScroll}
+              hasMore
+              height='calc(90vh - 155px)'
+              loader={<h4 />}
+            >
+              {tab === 'Assignments' ? (
+                assignments.map((elem) => {
                   return (
                     <AnalysisDataCard
                       elem={elem}
-                      key={elem.client_user_id}
-                      IsStudent
-                      buttonClick={goToStudentDetails}
+                      key={elem.test_id}
+                      buttonClick={goToDetailsOfAssignment}
                     />
                   );
-                })}
-              </>
-            )}
+                })
+              ) : (
+                <>
+                  {students.map((elem) => {
+                    return (
+                      <AnalysisDataCard
+                        elem={elem}
+                        key={elem.client_user_id}
+                        IsStudent
+                        buttonClick={goToStudentDetails}
+                      />
+                    );
+                  })}
+                </>
+              )}
+            </InfiniteScroll>
           </div>
         </div>
       </div>
