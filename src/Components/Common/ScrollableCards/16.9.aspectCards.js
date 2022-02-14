@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import AddIcon from '@material-ui/icons/Add';
@@ -8,7 +8,7 @@ import useWindowDimensions from '../../../Utilities/utilities';
 
 export const AspectCards = (props) => {
   const { data, clickCard, clickAddCard, section, noAddCard, bigAspectCard } = props;
-
+  const scrollableRef = useRef(null);
   const windowDimensions = useWindowDimensions();
   const [showImageModal, setShowImageModal] = useState(false);
   const [modalImage, setModalImage] = useState({});
@@ -76,6 +76,8 @@ export const AspectCards = (props) => {
       </Modal>
       <section
         className='Scrollable__card'
+        ref={scrollableRef}
+        id='hah'
         style={
           noAddCard
             ? { minHeight: '113px' }

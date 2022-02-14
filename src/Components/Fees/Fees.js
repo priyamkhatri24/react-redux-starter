@@ -216,7 +216,7 @@ const Fees = (props) => {
               {orderType === 'razorpay' ? (
                 <Button
                   variant='customPrimary'
-                  className='mt-4 Fees__PayButton'
+                  className='Fees__PayButton'
                   onClick={() => startPayment()}
                 >
                   Pay
@@ -224,7 +224,7 @@ const Fees = (props) => {
               ) : orderType === 'cashfree' ? (
                 <Button
                   variant='customPrimary'
-                  className='mt-4 Fees__PayButton'
+                  className='Fees__PayButton'
                   onClick={() => startCashfree()}
                 >
                   Pay

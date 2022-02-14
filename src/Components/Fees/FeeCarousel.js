@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Carousel } from 'react-responsive-carousel';
+import { history } from '../../Routing';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import '../Login/Welcome/Welcome.scss';
 import './Fees.scss';
@@ -36,7 +37,6 @@ const FeeCarousel = (props) => {
             .toString()
             .replace(/\B(?=(\d{3})+(?!\d))/g, ','),
         },
-
         {
           key: 3,
           style: {
@@ -53,68 +53,90 @@ const FeeCarousel = (props) => {
     }
   }, [carouselObject]);
 
+  const goToSettlementPage = () => {
+    history.push({ pathname: '/teacherfees/settlementaccout' });
+  };
+
   return (
-    <Carousel
-      autoPlay
-      showThumbs
-      showArrows
-      showIndicators
-      transitionTime={400}
-      dynamicHeight
-      infiniteLoop
-      className='pb-2 mb-2'
-    >
-      {carouselDetails.length &&
-        carouselDetails.map((elem) => {
-          return (
-            <div
-              key={elem.key}
-              style={{
-                boxShadow: elem.style.boxshadow,
-                background: elem.style.backGround,
-                borderRadius: '10px',
-                display: 'flex',
-              }}
-              className='mx-auto Fees__carouselCard'
-            >
-              <span
-                className='my-auto mx-3 Fees__carouselIcon'
+    <div>
+      <button
+        type='submit'
+        style={{
+          width: '100%',
+          backgroundColor: 'white',
+          border: ' 0.001px #f5f5dc solid',
+          marginBottom: '10px',
+          borderRadius: '2px',
+          color: '#00FF00',
+          fontFamily: 'Montserrat-Medium',
+          fontSize: '16px',
+        }}
+        onClick={goToSettlementPage}
+      >
+        View settlement account details
+      </button>
+      <Carousel
+        autoPlay
+        showThumbs
+        showArrows
+        showIndicators
+        transitionTime={400}
+        dynamicHeight
+        infiniteLoop
+        className='pb-2 mb-2'
+      >
+        {carouselDetails.length &&
+          carouselDetails.map((elem) => {
+            return (
+              <div
+                key={elem.key}
                 style={{
-                  fontSize: '104px',
-                  lineHeight: '127px',
-                  fontFamily: 'Montserrat-Bold',
-                  opacity: '0.2',
+                  boxShadow: elem.style.boxshadow,
+                  background: elem.style.backGround,
+                  borderRadius: '10px',
+                  display: 'flex',
                 }}
+                className='mx-auto Fees__carouselCard'
               >
-                {currencySymbol}
-              </span>
-              <div className='ml-auto m-4 Fees__carouselText'>
-                <p
+                <span
+                  className='my-auto mx-3 Fees__carouselIcon'
                   style={{
-                    fontFamily: 'Montserrat-Medium',
-                    fontSize: '14px',
-                    lineHeight: '10px',
-                    textAlign: 'right',
-                    paddingTop: '16px',
+                    fontSize: '104px',
+                    lineHeight: '127px',
+                    fontFamily: 'Montserrat-Bold',
+                    opacity: '0.2',
                   }}
                 >
-                  {elem.heading}
-                </p>
-                <p
-                  style={{
-                    textAlign: 'right',
-                    fontFamily: 'Montserrat-Light',
-                    fontSize: '38px',
-                    lineHeight: ' 47px',
-                  }}
-                >
-                  {elem.amount}
-                </p>
+                  {currencySymbol}
+                </span>
+                <div className='ml-auto m-4 Fees__carouselText'>
+                  <p
+                    style={{
+                      fontFamily: 'Montserrat-Medium',
+                      fontSize: '14px',
+                      lineHeight: '10px',
+                      textAlign: 'right',
+                      paddingTop: '16px',
+                    }}
+                  >
+                    {elem.heading}
+                  </p>
+                  <p
+                    style={{
+                      textAlign: 'right',
+                      fontFamily: 'Montserrat-Light',
+                      fontSize: '38px',
+                      lineHeight: ' 47px',
+                    }}
+                  >
+                    {elem.amount}
+                  </p>
+                </div>
               </div>
-            </div>
-          );
-        })}
-    </Carousel>
+            );
+          })}
+      </Carousel>
+    </div>
   );
 };
 

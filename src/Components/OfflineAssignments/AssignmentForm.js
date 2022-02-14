@@ -6,6 +6,7 @@ import { Row, Col, Container, Button, Form, Modal } from 'react-bootstrap';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { get, apiValidation, post } from '../../Utilities';
 import { getClientUserId, getClientId } from '../../redux/reducers/clientUserId.reducer';
+/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 import { BatchesSelector } from '../Common';
 import { PageHeader } from '../Common/PageHeader/PageHeader';
 import './OfflineAssignments.scss';
@@ -218,7 +219,8 @@ const AssignmentForm = (props) => {
     <div className='mainFormPage'>
       <PageHeader
         title='Add Offline Assignment'
-        shadow
+        // shadow
+        transparentBlue
         customBack
         handleBack={goToOfflineAssignments}
       />

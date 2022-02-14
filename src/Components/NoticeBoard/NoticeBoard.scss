@@ -11,6 +11,12 @@
     color: $lightGrey;
   }
 
+  &__modalText {
+    font-family: 'Montserrat-Medium';
+    cursor: pointer;
+    width: max-content;
+  }
+
   &__smsInfo {
     font-size: $spacer * 0.75;
     font-family: 'Montserrat-Medium';
@@ -28,6 +34,9 @@
 
   &__inputCard {
     width: 80%;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.16);
+    border-radius: 5px;
+    // margin-bottom: 10px;
 
     @include media-breakpoint-down(sm) {
       width: 95%;
@@ -35,6 +44,7 @@
   }
   &__notice {
     width: 80%;
+    background-color: white !important;
 
     @include media-breakpoint-down(sm) {
       width: 95%;

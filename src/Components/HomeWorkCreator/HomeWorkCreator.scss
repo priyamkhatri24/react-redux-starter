@@ -97,10 +97,12 @@
   &__selected {
     background-color: var(--lighter-blue);
     color: $white;
+    min-width: max-content;
   }
 
   &__unselected {
     color: $dashboardBlack;
+    min-width: max-content;
     background-color: $white;
     border: 1px solid $dashboardGrey;
   }

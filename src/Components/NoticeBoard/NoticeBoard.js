@@ -7,7 +7,11 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/Spinner';
 import fromUnixTime from 'date-fns/fromUnixTime';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import format from 'date-fns/format';
 import { PageHeader, BatchesSelector } from '../Common';
 import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
@@ -26,17 +30,22 @@ import '../Dashboard/Dashboard.scss';
 const NoticeBoard = (props) => {
   const { history, clientUserId, clientId, roleArray, currentbranding, userProfile } = props;
   const [notices, setNotices] = useState([]);
+  const [selectedNotice, setSelectedNotice] = useState(null);
   const [filteredNotices, setFilteredNotices] = useState([]);
   const [newNotice, setNewNotice] = useState('');
   const [sendSMS, setSendSMS] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showBatchModal, setBatchModal] = useState(false);
   const [showStudentModal, setStudentModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [editNoticeModal, setEditNoticeModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [batches, setBatches] = useState([]);
   const [students, setStudents] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [noticeType, setNoticeType] = useState('');
+  const [editedNotice, setEditedNotice] = useState('');
 
   const getTopicArray = (type = 'everyone') => {
     const env = prodOrDev();
@@ -89,6 +98,7 @@ const NoticeBoard = (props) => {
         const result = apiValidation(res);
         setNotices(result);
         setFilteredNotices(result);
+        setIsLoading(false);
       })
       .catch((err) => console.error(err));
   }, [clientId, clientUserId, roleArray]);
@@ -312,6 +322,39 @@ const NoticeBoard = (props) => {
     console.log(search);
   };
 
+  const openEditModal = (notice) => {
+    console.log(notice);
+    setEditModal(true);
+    setSelectedNotice(notice);
+    setEditedNotice(notice.notice_text);
+  };
+
+  const editNotice = () => {
+    setEditModal(false);
+    console.log('edit', selectedNotice);
+    const payload = {
+      client_id: clientId,
+      message: editedNotice,
+      // notice_text: editedNotice,
+      notice_id: selectedNotice.notice_id,
+    };
+    console.log(payload);
+    post(payload, '/editNotice').then((res) => {
+      console.log(res, 'notice edited');
+      setEditNoticeModal(false);
+      getNotices();
+    });
+  };
+
+  const deleteNotice = () => {
+    console.log('delete', selectedNotice);
+    post({ notice_id: selectedNotice.notice_id }, '/deleteNotice').then((res) => {
+      console.log(res, 'notice deleted');
+      getNotices();
+      setEditModal(false);
+    });
+  };
+
   useEffect(() => {
     getNotices();
     const coachingPayload = { client_id: clientId };
@@ -325,17 +368,25 @@ const NoticeBoard = (props) => {
   }, [clientId, clientUserId, roleArray, getNotices]);
 
   return (
-    <div style={{ marginBottom: '1rem' }}>
+    <div
+      style={{
+        backgroundColor: 'rgba(241, 249, 255, 1)',
+        marginBottom: '1rem',
+        paddingTop: '20px',
+        minHeight: '100vh',
+      }}
+    >
       <PageHeader
         title='Notice Board'
         search
+        transparentBlue
         placeholder='Search for Notices'
         searchFilter={searchNotices}
       />
 
       {(roleArray.includes(3) || roleArray.includes(4)) && (
         <Card
-          style={{ marginTop: '6rem' }}
+          style={{ marginTop: '55px' }}
           className='LiveClasses__Card NoticeBoard__inputCard mx-auto p-3'
         >
           <Row>
@@ -354,10 +405,10 @@ const NoticeBoard = (props) => {
                   className='form-control'
                   name='Your Post'
                   type='text'
-                  placeholder='Your Post'
+                  placeholder='Write a Post'
                   onChange={(e) => setNewNotice(e.target.value)}
                 />
-                <span>Your Post</span>
+                <span>Write a post</span>
               </label>
             </Col>
           </Row>
@@ -394,32 +445,42 @@ const NoticeBoard = (props) => {
           <ChevronRightIcon />
         </span> */}
       </Row>
-
-      {filteredNotices.map((elem) => (
-        <div
-          key={`elem${elem.notice_id}`}
-          className='Dashboard__notice NoticeBoard__notice mx-auto'
-        >
-          <Row className='NoticeBoard__NoticeHead'>
-            <Col xs={3} className='p-4'>
-              <img
-                src={elem.profile_image ? elem.profile_image : userImage}
-                alt='profile'
-                className='Dashboard__noticeImage d-block mx-auto'
-              />
-            </Col>
-            <Col xs={9} className='pt-4'>
-              <p className='Dashboard__scrollableCardHeading m-0'>
-                {`${elem.first_name} ${elem.last_name}`}
-              </p>
-              <p className='Dashboard__noticeSubHeading'>
-                {format(fromUnixTime(elem.time_of_notice), 'hh:m bbbb, do MMM yyy')}
-              </p>
-            </Col>
-          </Row>
-          <p className='p-2 Dashboard__noticeText notice-text'>{elem.notice_text}</p>
+      {isLoading ? (
+        <div className='w-100 d-flex justify-content-center'>
+          <Spinner animation='border' role='status'>
+            <span className='d-none'>Loading...</span>
+          </Spinner>
         </div>
-      ))}
+      ) : (
+        filteredNotices.map((elem) => (
+          <div
+            key={`elem${elem.notice_id}`}
+            className='Dashboard__notice NoticeBoard__notice mx-auto'
+          >
+            <Row className='NoticeBoard__NoticeHead'>
+              <Col xs={2} className='p-4'>
+                <img
+                  src={elem.profile_image ? elem.profile_image : userImage}
+                  alt='profile'
+                  className='Dashboard__noticeImage d-block mx-auto'
+                />
+              </Col>
+              <Col xs={8} className='pt-4'>
+                <p className='Dashboard__scrollableCardHeading m-0'>
+                  {`${elem.first_name} ${elem.last_name}`}
+                </p>
+                <p className='Dashboard__noticeSubHeading'>
+                  {format(fromUnixTime(elem.time_of_notice), 'hh:m bbbb, do MMM yyy')}
+                </p>
+              </Col>
+              <Col xs={2} className='p-4 text-center'>
+                <MoreVertIcon style={{ cursor: 'pointer' }} onClick={() => openEditModal(elem)} />
+              </Col>
+            </Row>
+            <p className='p-2 Dashboard__noticeText notice-text'>{elem.notice_text}</p>
+          </div>
+        ))
+      )}
 
       <Modal show={showModal} onHide={handleClose} centered keyboard={false}>
         <Modal.Header closeButton>
@@ -488,6 +549,84 @@ const NoticeBoard = (props) => {
             Next
           </Button>
         </Modal.Footer>
+      </Modal>
+
+      <Modal centered show={editModal} onHide={() => setEditModal(false)}>
+        <Modal.Body className='p-3'>
+          {/* eslint-disable */}
+          <p
+            onClick={() => setEditNoticeModal(true)}
+            className='NoticeBoard__modalText d-flex align-items-center'
+          >
+            <EditIcon className='mr-2' />
+            Edit
+          </p>
+          <p onClick={deleteNotice} className='NoticeBoard__modalText d-flex align-items-center'>
+            <DeleteIcon className='mr-2' />
+            Delete
+          </p>
+        </Modal.Body>
+      </Modal>
+
+      <Modal show={editNoticeModal} centered onHide={() => setEditNoticeModal(false)}>
+        <Modal.Header closeButton>Edit Notice</Modal.Header>
+        <Modal.Body>
+          <Card
+            style={{ border: 'transparent', width: '95%' }}
+            className='LiveClasses__Card NoticeBoard__inputCard mx-auto p-3'
+          >
+            <Row>
+              <Col xs={2} style={{ textAlign: 'center' }}>
+                <img
+                  src={userProfile.profileImage ? userProfile.profileImage : userImage}
+                  width='40'
+                  height='40'
+                  alt='profile'
+                  className='rounded-circle'
+                />
+              </Col>
+              <Col xs={10}>
+                <label className='has-float-label my-auto'>
+                  <textarea
+                    className='form-control'
+                    name='Your Post'
+                    type='text'
+                    placeholder='Edit Post'
+                    value={editedNotice}
+                    onChange={(e) => setEditedNotice(e.target.value)}
+                  />
+                  <span>Edit post</span>
+                </label>
+              </Col>
+            </Row>
+            <Row className='m-2'>
+              {sendSMS && (
+                <Col xs={6} className='p-0'>
+                  <p className='NoticeBoard__smsInfo m-0'>
+                    No. Of Characters: {editedNotice.length}
+                  </p>
+                  <p className='NoticeBoard__smsInfo m-0'>
+                    No. Of SMS: {Math.floor(editedNotice.length / 160 + 1)}
+                  </p>
+                </Col>
+              )}
+              <Col xs={6} className='ml-auto p-0'>
+                <Form.Check
+                  type='checkbox'
+                  label='Also Send An Sms'
+                  bsPrefix='NoticeBoard__input'
+                  value={sendSMS}
+                  onClick={() => setSendSMS(!sendSMS)}
+                />
+              </Col>
+            </Row>
+            {editedNotice && (
+              <Button variant='boldText' className='ml-auto mt-3' onClick={editNotice}>
+                Send
+              </Button>
+            )}
+          </Card>
+        </Modal.Body>
       </Modal>
 
       <BottomNavigation history={history} activeNav='noticeBoard' />

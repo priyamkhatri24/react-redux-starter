@@ -6,6 +6,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { BackButton } from '../BackButton/BackButton';
+/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 import GlobalSearchBar from '../GlobalSearchBar/GlobalSearchBar';
 
 import './PageHeader.scss';
@@ -19,10 +20,13 @@ export const PageHeader = (props) => {
     customBack,
     handleBack,
     transparent,
+    transparentBlue,
     filter,
     triggerFilters,
     customIcon,
     handleCustomIcon,
+    customIcon2,
+    handleCustomIcon2,
     notFixed,
     shadow,
     noBack,
@@ -44,7 +48,11 @@ export const PageHeader = (props) => {
           : 'PageHeader p-3 d-flex align-items-center'
       }
       style={{
-        backgroundColor: transparent ? 'transparent' : 'white',
+        backgroundColor: transparent
+          ? 'transparent'
+          : transparentBlue
+          ? 'rgba(241, 249, 255, 1)'
+          : 'white',
         width,
         boxShadow: shadow ? '0px 2px 2px 0px rgba(0,0,0,0.29)' : 'transparent',
       }}
@@ -86,6 +94,17 @@ export const PageHeader = (props) => {
                 {customIcon}
               </span>
             )}
+            {customIcon2 && (
+              <span
+                className='mr-3'
+                onClick={() => handleCustomIcon2()}
+                onKeyDown={() => handleCustomIcon2()}
+                tabIndex='-1'
+                role='button'
+              >
+                {customIcon2}
+              </span>
+            )}
             {/* <MoreVertIcon /> */}
           </div>
         </>
@@ -97,7 +116,7 @@ export const PageHeader = (props) => {
           <input
             autoFocus // eslint-disable-line
             placeholder={placeholder}
-            className='PageHeader__input mx-2'
+            className='PageHeader__input mx-2 p-2'
             onChange={(e) => searchFilter(e.target.value)}
           />
           <span
@@ -125,12 +144,15 @@ PageHeader.propTypes = {
   customBack: PropTypes.bool,
   handleBack: PropTypes.func,
   transparent: PropTypes.bool,
+  transparentBlue: PropTypes.bool,
   filter: PropTypes.bool,
   notFixed: PropTypes.bool,
   noBack: PropTypes.bool,
   iconColor: PropTypes.string,
   customIcon: PropTypes.element,
   handleCustomIcon: PropTypes.func,
+  customIcon2: PropTypes.element,
+  handleCustomIcon2: PropTypes.func,
   width: PropTypes.string,
   globalSearch: PropTypes.bool,
 };
@@ -149,8 +171,11 @@ PageHeader.defaultProps = {
   handleBack: () => {},
   triggerFilters: () => {},
   transparent: false,
+  transparentBlue: false,
   filter: false,
   customIcon: null,
   handleCustomIcon: () => {},
+  customIcon2: null,
+  handleCustomIcon2: () => {},
   globalSearch: false,
 };

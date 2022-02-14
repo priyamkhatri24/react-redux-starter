@@ -184,7 +184,9 @@ const AdmissionForm = (props) => {
           <img
             src={image}
             alt='upload your profile pic'
-            className='AdmissionForm__avatarImage my-5'
+            width='200'
+            height='200'
+            className='rounded-circle'
           />
           <input id='file-input' type='file' onChange={(e) => getImageInput(e)} accept='image/*' />
         </label>

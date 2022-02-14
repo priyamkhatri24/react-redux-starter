@@ -333,7 +333,7 @@ const FeeBatches = (props) => {
                 />
                 <p className='Fees__studentsPay mx-auto'>
                   {`${parseInt(elem.total_due_students, 10)}/${parseInt(elem.total_students, 10)}`}{' '}
-                  Students Yet to Pay 
+                  Students Yet to Pay
                 </p>
               </Card>
             );

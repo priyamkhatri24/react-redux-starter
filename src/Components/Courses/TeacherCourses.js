@@ -23,6 +23,7 @@ import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { courseActions } from '../../redux/actions/course.action';
 import './Courses.scss';
 import '../Profile/Profile.scss';
+import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
 
 const TeacherCourses = (props) => {
@@ -35,6 +36,9 @@ const TeacherCourses = (props) => {
     setCourseCurrentSlideToStore,
     dashboardData,
     roleArray,
+    currentbranding: {
+      branding: { currency_symbol: currencySymbol },
+    },
   } = props;
   const [courses, setCourses] = useState([]);
   const [sortBy, setSortBy] = useState('date');
@@ -56,6 +60,7 @@ const TeacherCourses = (props) => {
   const [searchedStatisticsPage, setSearchedStatisticsPage] = useState(1);
 
   const infiniteScroll = () => {
+    // console.log(currencySymbol)
     if (
       window.innerHeight + document.documentElement.scrollTop >=
         document.documentElement.offsetHeight ||
@@ -205,7 +210,7 @@ const TeacherCourses = (props) => {
     return () => {
       clearTimeout(timer);
     };
-  }, [statisticsPage, searchString]);
+  }, [statisticsPage, searchString, activeTab]);
 
   useEffect(() => {}, [searchString]);
 
@@ -218,7 +223,7 @@ const TeacherCourses = (props) => {
   }, [history.location.state]);
 
   const getStatisticOfCourse = (id) => {
-    history.push({ pathname: '/courses/teachercourse/statistics', state: { id } });
+    history.push({ pathname: '/courses/teachercourse/statistics', state: { id, currencySymbol } });
   };
 
   const showCourseModal = () => {
@@ -286,7 +291,9 @@ const TeacherCourses = (props) => {
   const shareCourse = (e, course) => {
     e.stopPropagation();
     // eslint-disable-next-line
-    const url = `${window.location.protocol}//${window.location.host}/courses/buyCourse/${clientId}/${course.course_id}`;
+    const url = `${window.location.protocol}//${
+      window.location.host
+    }/courses/buyCourse/${window.btoa(clientId)}/${window.btoa(course.course_id)}`;
     console.log(url);
     const hasShared = shareThis(url, dashboardData.client_name);
     if (hasShared === 'clipboard') setShowToast(true);
@@ -590,6 +597,7 @@ const mapStateToProps = (state) => ({
   clientUserId: getClientUserId(state),
   courseId: getCourseId(state),
   dashboardData: getCurrentDashboardData(state),
+  currentbranding: getCurrentBranding(state),
   roleArray: getRoleArray(state),
 });
 
@@ -618,4 +626,9 @@ TeacherCourses.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   dashboardData: PropTypes.instanceOf(Object).isRequired,
   roleArray: PropTypes.instanceOf(Array).isRequired,
+  currentbranding: PropTypes.shape({
+    branding: PropTypes.shape({
+      currency_symbol: PropTypes.string,
+    }),
+  }).isRequired,
 };

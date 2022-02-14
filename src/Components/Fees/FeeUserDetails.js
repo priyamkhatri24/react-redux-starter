@@ -39,8 +39,6 @@ const FeeUserDetails = (props) => {
     // history.push('/fees/users');
     // setChange(onChange());
     // handleClose1();
-    console.log('hiii');
-    handleClose1();
   };
 
   useEffect(() => {
@@ -233,4 +231,4 @@ FeeUserDetails.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   clientId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
-};
+}; 

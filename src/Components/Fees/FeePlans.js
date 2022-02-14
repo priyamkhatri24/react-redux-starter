@@ -248,6 +248,7 @@ const FeePlans = (props) => {
           planType={feePlanType}
           getPlanValue={feePlanType === 'onetimecharge' ? getPlanValue : getMonthlyOrCustom}
         />
+
         {feePlanType === 'onetimecharge' && (
           <OneTimeCharge
             tagAmount={tagAmount}

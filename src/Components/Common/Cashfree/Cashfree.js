@@ -55,8 +55,6 @@ const Cashfree = (props) => {
       : `${window.location.origin}`,
   );
 
-  console.log(userProfile, 'userProfileee');
-
   const postData = startCashfree(
     orderId,
     orderAmount,

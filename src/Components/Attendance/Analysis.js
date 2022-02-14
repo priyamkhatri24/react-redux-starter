@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Row, Col, Card, Spinner } from 'react-bootstrap';
 import { apiValidation, get } from '../../Utilities';
 import { PageHeader } from '../Common';
-import blankProfile from './blankProfile.png';
+import blankProfile from '../../assets/images/user.svg';
 import './LiveClasses.scss';
 import './Attendance.scss';
 
@@ -20,33 +20,14 @@ export const Analysis = (props) => {
     get(payload, '/getAttendanceOfStream').then((res) => {
       const result = apiValidation(res);
       setAttendence(result);
-      // console.log(attendence);
+      console.log(result, 'getAttendanceOfStream');
     });
   }, []);
   // console.log(streamId, streamType);
   return (
     <div>
       <PageHeader title='Analysis' />
-      <div className='main'>
-        {/* {attendence.map((i) => {
-          return (
-            <div>
-              <div className='analysisMain' style={{ width: '60%', margin: 'auto' }}>
-                <img
-                  src={i.profile_image == null ? blankProfile : i.profile_image}
-                  className='img'
-                />
-                <div style={{ width: '60%', marginLeft: '20px', fontFamily: 'Montserrat-Bold' }}>
-                  {i.first_name + i.last_name}
-                </div>
-                <div style={{ width: '10%', fontFamily: 'Montserrat-Bold' }}>
-                  {i.value === 'A' ? 'Absent' : 'Present'}
-                </div>
-              </div>
-              <hr style={{ width: '60%', color: 'black' }} />
-            </div>
-          );
-        })} */}
+      <div className='AttendanceLiveClasses__main'>
         {attendence.length > 0 ? (
           attendence.map((elem) => {
             return (
@@ -59,31 +40,40 @@ export const Analysis = (props) => {
                 key={elem.stream_id}
               >
                 <Row className='p-2 align-items-center'>
-                  <Col xs={3} className='text-center'>
+                  <Col xs={2} className='text-center'>
                     <img
                       src={elem.profile_image == null ? blankProfile : elem.profile_image}
-                      className='img'
+                      className='AttendanceLiveClasses__img'
                       borderRadius='50%'
                     />
                   </Col>
-                  <Col xs={6}>
+                  <Col xs={5}>
                     <p className='Attendance__batchName m-0'>{elem.first_name + elem.last_name}</p>
                   </Col>
-                  <Col xs={3} className='text-center'>
+                  <Col xs={5} className='text-center'>
                     {elem.value === 'A' ? (
                       <p className='m-0 Attendance__batchCount' style={{ color: 'red' }}>
                         Absent
                       </p>
-                    ) : (
-                      <p className='m-0 Attendance__batchCount'>Present</p>
-                    )}
+                    ) : elem.value === 'P' ? (
+                      <p style={{ color: 'green' }} className='m-0 Attendance__batchCount'>
+                        Present{' '}
+                        <span style={{ fontSize: '12px', color: 'green' }}>
+                          {`(joined ${elem.join_count} times)`}
+                        </span>
+                      </p>
+                    ) : elem.value === 'L' ? (
+                      <p style={{ color: 'orange' }} className='m-0 Attendance__batchCount'>
+                        Late
+                      </p>
+                    ) : null}
                   </Col>
                 </Row>
               </Card>
             );
           })
         ) : (
-          <div className='noItemText'>
+          <div className='AttendanceLiveClasses__noItemText'>
             <Spinner animation='border' />
           </div>
         )}

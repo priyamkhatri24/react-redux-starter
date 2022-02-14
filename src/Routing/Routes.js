@@ -3,6 +3,8 @@ import { Switch, Route } from 'react-router-dom';
 import Loadable from 'react-loadable';
 import Skeleton from 'react-loading-skeleton';
 import { AuthenticatedRoute } from './AuthenticatedRoute';
+/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
+import EditPayment from '../Components/Fees/EditPayment';
 // import TeacherCourses from '../Components/Courses/TeacherCourses';
 
 // import EditProfileHOC from '../Components/Admissions/EditProfileHoC';
@@ -514,10 +516,18 @@ const ViewAllAsignments = Loadable({
   loading: Loading,
 });
 
-const Stories = Loadable({
-  loader: () => import(/* webpackChunkName: 'Post' */ '../Components/Stories/AppStories'),
+// settlementPage
+const SettlementPage = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'settlementPage' */ '../Components/Fees/SettlementPage'),
   loading: Loading,
 });
+
+const EditPayments = Loadable({
+  loader: () => import(/* webpackChunkName: 'settlementPage' */ '../Components/Fees/EditPayment'),
+  loading: Loading,
+});
+
 // eslint-disable-next-line
 function Loading({ error }) {
   if (error) {
@@ -526,8 +536,8 @@ function Loading({ error }) {
   }
   return <Skeleton count={50} />;
 }
-  
-export function Routes() { 
+
+export function Routes() {
   return (
     <Switch>
       <AuthenticatedRoute exact path='/' component={Dashboard} />
@@ -608,6 +618,8 @@ export function Routes() {
       <AuthenticatedRoute exact path='/displaypage/editprofile' component={DisplayPageEdit} />
       <AuthenticatedRoute exact path='/displaypage/preview' component={DummyDashboard} />
       <AuthenticatedRoute exact path='/offlineassignments' component={OfflineAssignments} />
+      <AuthenticatedRoute exact path='/teacherfees/settlementaccout' component={SettlementPage} />
+      <AuthenticatedRoute exact path='/teacherfees/editpayment' component={EditPayments} />
       <AuthenticatedRoute
         exact
         path='/offlineassignments/addassignment'

@@ -18,11 +18,12 @@ const SelectedDateAttendance = (props) => {
   const { attendanceSelectedDate, attendanceBatch } = props;
   const [date, setDate] = useState(format(new Date(), 'yyyy-mm-dd'));
   const [students, setStudents] = useState([]);
-  
+
   useEffect(() => {
     console.log(attendanceSelectedDate);
     const milliseconds = Date.parse(attendanceSelectedDate);
     const formattedDate = moment(milliseconds).format('YYYY-MM-DD');
+    // const formattedDate = format(new Date(milliseconds), 'yyyy-mm-dd')
     // 2022-02-27
     setDate(formattedDate);
     get(
