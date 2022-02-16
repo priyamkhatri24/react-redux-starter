@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Form from 'react-bootstrap/Form';
 import { connect } from 'react-redux';
+import Swal from 'sweetalert2';
 import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -12,19 +13,23 @@ import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, post } from '../../Utilities';
 // eslint-disable-next-line
 import { PageHeader } from '../Common';
-import './settlementPages.css';
+import './Fees.scss';
 
 const EditPayment = (props) => {
   const { clientId, history } = props;
-  const [holderName, setholderName] = useState('');
-  const [phoneNum, setPhoneNum] = useState('');
-  const [emailID, setEmailID] = useState('');
-  const [accountNo, SetAccountNo] = useState('');
-  const [ifsc, SetIfsc] = useState('');
+  console.log(history.location.state);
+  const [holderName, setholderName] = useState(history.location.state.vendorDetails.name);
+  const [phoneNum, setPhoneNum] = useState(history.location.state.vendorDetails.phone);
+  const [emailID, setEmailID] = useState(history.location.state.vendorDetails.email);
+  const [accountNo, SetAccountNo] = useState(
+    history.location.state.vendorDetails.bank.accountNumber,
+  );
+  const [ifsc, SetIfsc] = useState(history.location.state.vendorDetails.bank.ifsc);
   const [radioSelect1, SetRadioSelect1] = useState('');
   const [radioSelect2, SetRadioSelect2] = useState('');
 
   const handleSubmit = (e) => {
+    e.preventDefault();
     const data = {
       account_holder_name: holderName,
       phone: phoneNum,
@@ -33,21 +38,36 @@ const EditPayment = (props) => {
       ifsc_code: ifsc,
       type: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
       client_id: clientId,
-      account_type: radioSelect1 ? 'cashFreeOne' : 'cashFree',
+      account_type: radioSelect1 ? 'cashfreeone' : 'cashfree',
     };
     post(data, '/editCashFreeAccountDetails').then((res) => {
       console.log(res);
+      if (res.success === 1) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: `Vendor payment details have been updated successfully`,
+        }).then((resp) => {
+          if (resp.isConfirmed) history.push('/teacherfees');
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops!',
+          text: `Unable to update vendor details`,
+        }).then((resp) => {
+          if (resp.isConfirmed) history.push('/teacherfees');
+        });
+      }
       console.log(data);
-      history.push('/teacherfees');
     });
-    e.preventDefault();
   };
   return (
     <div className='mainFormPage'>
       <div className='marginBottomHeader upperMargin'>
         <PageHeader transparentBlue title='Vendor Details' customIcon={<MoreVertIcon />} />
       </div>
-      <div className='OFAFormContainer cardMarginTop'>
+      <div className='OFAFormContainer' style={{ marginTop: '30px' }}>
         <div className='OFAForm__formContainerOffline'>
           <Row>
             <form className='OFAForm__form'>

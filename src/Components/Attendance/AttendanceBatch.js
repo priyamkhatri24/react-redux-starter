@@ -36,13 +36,14 @@ const AttendanceBatch = (props) => {
     currentbranding,
   } = props;
   const [showModal, setShowModal] = useState(false);
-  const [showModal1, setShowModal1] = useState(false);
+  const [showMonthsModal, setShowMonthsModal] = useState(false);
   const [date, setDate] = useState(new Date());
   const [students, setStudents] = useState([]);
   const [attendanceDate, setAttendanceDate] = useState('');
   const [submitStatus, setSubmitStatus] = useState(0);
   const [swiper, setSwiper] = useState(null);
   const [checked, setChecked] = useState(false);
+  const [pastMonths, setPastMonths] = useState([]);
 
   const getInitialAttendanceData = useCallback(() => {
     get({ client_batch_id: attendanceBatch.client_batch_id }, '/getStudentsOfBatch').then((res) => {
@@ -63,19 +64,15 @@ const AttendanceBatch = (props) => {
 
   const changeDate = () => handleOpen();
 
-  const handleOpen1 = () => setShowModal1(true);
-
-  const handleClose1 = () => setShowModal1(false);
-
-  // const downloader = () => {
-  //   handleClose1();
-  // };
-  const onCheck = () => {
-    setChecked(!checked);
+  const handleOpen1 = () => {
+    setShowMonthsModal(true);
+    getMonths();
   };
 
-  const selectMonth = () => {
-    handleOpen1();
+  const handleClose1 = () => setShowMonthsModal(false);
+
+  const onCheck = () => {
+    setChecked(!checked);
   };
 
   const onChange = (nextValue) => {
@@ -198,7 +195,7 @@ const AttendanceBatch = (props) => {
     json2xlsDownload(JSON.stringify(jsonDataToDownload), 'studentsAttendance', true);
   };
 
-  const theMonths = [
+  const monthsArray = [
     'Jan',
     'Feb',
     'Mar',
@@ -212,48 +209,27 @@ const AttendanceBatch = (props) => {
     'Nov',
     'Dec',
   ];
-  console.log(theMonths);
-  // const d = new Date();
-  // const monthCur = d.getMonth().toLocaleString('default', { month: 'long' });
-  // const currentMonth = d.toLocaleString('default', { month: 'long' });
-  // // console.log(currentMonth);
-  // const year = d.getFullYear();
-  // const yearBack = year - 1;
-  // console.log(yearBack);
-  // console.log(monthCur);
 
-  // const month1 = d.toLocaleString('default', { month: 'long' });
-  // d.setMonth(d.getMonth() - 1);
-  // const month2 = d.toLocaleString('default', { month: 'long' });
-  // d.setMonth(d.getMonth() - 1);
-  // const month3 = d.toLocaleString('default', { month: 'long' });
-  // d.setMonth(d.getMonth() - 1);
-  // const month4 = d.toLocaleString('default', { month: 'long' });
-  // d.setMonth(d.getMonth() - 1);
-  // const month5 = d.toLocaleString('default', { month: 'long' });
-  // d.setMonth(d.getMonth() - 1);
-  // const month6 = d.toLocaleString('default', { month: 'long' });
-  // d.setMonth(d.getMonth() - 1);
-  // const month7 = d.toLocaleString('default', { month: 'long' });
-  // d.setMonth(d.getMonth() - 1);
-  // const month8 = d.toLocaleString('default', { month: 'long' });
-  // d.setMonth(d.getMonth() - 1);
-  // const month9 = d.toLocaleString('default', { month: 'long' });
-  // d.setMonth(d.getMonth() - 1);
-  // const month10 = d.toLocaleString('default', { month: 'long' });
-  // d.setMonth(d.getMonth() - 1);
-  // const month11 = d.toLocaleString('default', { month: 'long' });
-  // d.setMonth(d.getMonth() - 1);
-  // const month12 = d.toLocaleString('default', { month: 'long' });
+  const getMonths = () => {
+    const tempPastMonths = [];
+    const d = new Date();
+    d.setDate(1);
+    for (let i = 0; i <= 11; i++) {
+      console.log(`${monthsArray[d.getMonth()]}-${d.getFullYear()}`);
+      tempPastMonths.push(tempPastMonths);
+      d.setMonth(d.getMonth() - 1);
+    }
+    setPastMonths(tempPastMonths);
+  };
 
   return (
     <>
       <PageHeader
         title={attendanceBatch.batch_name}
-        customIcon2={<DateRangeIcon />}
-        handleCustomIcon2={changeDate}
         customIcon={<DownloadIcon />}
-        handleCustomIcon={selectMonth}
+        customIcon2={<DateRangeIcon />}
+        handleCustomIcon={handleOpen1}
+        handleCustomIcon2={changeDate}
       />
       <Swiper
         spaceBetween={50}
@@ -316,86 +292,25 @@ const AttendanceBatch = (props) => {
           </Button>
         </Modal.Footer>
       </Modal>
-      <Modal show={showModal1} onHide={handleClose1} centered>
-        <Modal.Header closeButton1>
+      {/* <Modal show={false} onHide={handleClose1} centered> */}
+      <Modal show={showMonthsModal} onHide={handleClose1} centered>
+        <Modal.Header closeButton>
           <Modal.Title style={{ color: '#0BA8E6', marginBottom: '-18px' }}>
             Select The Duration
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Col>
-            {theMonths.map((e) => {
-              return (
-                <Row className='monthStyle'>
-                  <Col>
-                    {/* onClick={(el) => setCheck(!check, el.target.name)} */}
-                    {e}
-                  </Col>
-                  <Col>{/* <CheckIcon /> */}</Col>
-                </Row>
-              );
-            })}
-            {/* <Row className='buttonStyle'>
-              <h6>
-                {month1}-{year}
-              </h6>
-            </Row>
-            <Row className='buttonStyle'>
-              <h6>
-                {month2}-{year}
-              </h6>
-            </Row>
-            <Row className='buttonStyle'>
-              <h6>
-                {month3}-{month3 === 'December' ? year-1 : year}
-              </h6>
-            </Row>
-            <Row className='buttonStyle'>
-              <h6>
-                {month4}-{currentMonth === month4 || month4 > monthCur ? year : year - 1}
-              </h6>
-            </Row>
-            <Row className='buttonStyle'>
-              <h6>
-                {month5}-{currentMonth === month5 || month5 > monthCur ? year : year - 1}
-              </h6>
-            </Row>
-            <Row className='buttonStyle'>
-              <h6>
-                {month6}-{currentMonth === month6 || month6 > monthCur ? year : year - 1}
-              </h6>
-            </Row>
-            <Row className='buttonStyle'>
-              <h6>
-                {month7}-{currentMonth === month7 || month7 > monthCur ? year : year - 1}
-              </h6>
-            </Row>
-            <Row className='buttonStyle'>
-              <h6>
-                {month8}-{currentMonth === month8 || month8 > monthCur ? year : year - 1}
-              </h6>
-            </Row>
-            <Row className='buttonStyle'>
-              <h6>
-                {month9}-{currentMonth === month9 || month9 > monthCur ? year : year - 1}
-              </h6>
-            </Row>
-            <Row className='buttonStyle'>
-              <h6>
-                {month10}-{currentMonth === month10 || month10 > monthCur ? year : year - 1}
-              </h6>
-            </Row>
-            <Row className='buttonStyle'>
-              <h6>
-                {month11}-{currentMonth === month11 || month11 > monthCur ? year : year - 1}
-              </h6>
-            </Row>
-            <Row style={{ paddingLeft: '10px', paddingTop: '5px' }}>
-              <h6>
-                {month12}-{currentMonth === month12 || month12 > monthCur ? year : year - 1}
-              </h6>
-            </Row> */}
-          </Col>
+          {pastMonths.map((e) => {
+            return (
+              <Row key={e} className='monthStyle'>
+                <Col>
+                  {/* onClick={(el) => setCheck(!check, el.target.name)} */}
+                  {e}
+                </Col>
+                <Col>{/* <CheckIcon /> */}</Col>
+              </Row>
+            );
+          })}
         </Modal.Body>
         <Modal.Footer>
           <Button variant='boldText' onClick={() => handleClose1()}>

@@ -619,7 +619,7 @@ export function Routes() {
       <AuthenticatedRoute exact path='/displaypage/preview' component={DummyDashboard} />
       <AuthenticatedRoute exact path='/offlineassignments' component={OfflineAssignments} />
       <AuthenticatedRoute exact path='/teacherfees/settlementaccout' component={SettlementPage} />
-      <AuthenticatedRoute exact path='/teacherfees/editpayment' component={EditPayments} />
+      <AuthenticatedRoute exact path='/teacherfees/editpaymentdetails' component={EditPayments} />
       <AuthenticatedRoute
         exact
         path='/offlineassignments/addassignment'

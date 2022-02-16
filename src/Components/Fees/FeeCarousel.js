@@ -67,7 +67,7 @@ const FeeCarousel = (props) => {
           border: ' 0.001px #f5f5dc solid',
           marginBottom: '10px',
           borderRadius: '2px',
-          color: '#00FF00',
+          color: '#86c87b',
           fontFamily: 'Montserrat-Medium',
           fontSize: '16px',
         }}

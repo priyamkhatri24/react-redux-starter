@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
@@ -17,7 +18,7 @@ const FeesTimeline = (props) => {
   const [pageNotif, setPageNotif] = useState(1);
   const [searchPageNotif, setSearchPageNotif] = useState(1);
   const [searchString, setSearchString] = useState('');
-
+  const history = useHistory();
   // const infiniteScroll = () => {
   //   console.log(activeTab, 'notif');
   //   if (
@@ -98,9 +99,13 @@ const FeesTimeline = (props) => {
     }
   };
 
+  const goToDashboard = () => {
+    history.push('/');
+  };
+
   return (
     <>
-      <PageHeader title='Fees' search searchFilter={searchBatches} />
+      <PageHeader title='Fees' search handleBack={goToDashboard} searchFilter={searchBatches} />
       <InfiniteScroll
         dataLength={
           (searchedNotifications.length > 0 ? searchedNotifications : notifications).length

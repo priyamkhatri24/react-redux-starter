@@ -3,21 +3,19 @@ import { connect } from 'react-redux';
 import '../Profile/Profile.scss';
 import PropTypes from 'prop-types';
 import '../Live Classes/LiveClasses.scss';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import CreateIcon from '@material-ui/icons/Create';
 import { get, apiValidation } from '../../Utilities';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
-import './settlementPages.css';
-/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
+import './Fees.scss';
 import { PageHeader } from '../Common';
 
 const SettlementPage = (props) => {
   const { clientId, history } = props;
   const [data, setData] = useState({});
   const [vendorDetails, setVendorDetails] = useState({});
+
   const goToEditPayment = () => {
-    history.push('/teacherfees/editpayment');
+    history.push({ pathname: '/teacherfees/editpaymentdetails', state: { vendorDetails } });
   };
 
   useEffect(() => {
@@ -33,6 +31,7 @@ const SettlementPage = (props) => {
       setVendorDetails(result.vendorDetails);
     });
   }, [clientId]);
+
   return (
     <>
       <div className='' style={{ marginBottom: '60px' }}>
@@ -48,10 +47,8 @@ const SettlementPage = (props) => {
         >
           <CreateIcon />
         </div>
-        {/* {data.map((ele) => {
-          return <h1>{ele.vendorDetails}</h1>;
-        })} */}
-        <h5 style={{ paddingBottom: '15px' }}>Info</h5>
+
+        <h5 style={{ paddingBottom: '15px', fontFamily: 'Montserrat-Medium' }}>Info</h5>
         <h6 className='LiveClasses__adminHeading mb-0'>{vendorDetails.bank?.accountHolder}</h6>
         <p className='LiveClasses__adminDuration '>Account Holder Name</p>
         <h6 className='LiveClasses__adminHeading mb-0'>{vendorDetails.phone}</h6>

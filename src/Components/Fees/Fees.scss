@@ -517,3 +517,28 @@ Changes styles for the label following the radio checkbox that has focus
 .scrollbarHidden::-webkit-scrollbar {
   display: none;
 }
+
+.buttonSubmit {
+  border-radius: 10px !important;
+  margin-top: 10px;
+  padding: 5px 20px;
+  border: transparent;
+  background-color: var(--primary-blue);
+}
+
+.buttonSubmit:hover {
+  background-color: var(--primary-blue);
+}
+
+.marginBottomHeader {
+  margin-bottom: 35px;
+}
+
+@media only screen and (max-width: 767px) {
+  .upperMargin {
+    margin-bottom: 0px !important;
+  }
+  .paymentText {
+    font-size: small;
+  }
+}

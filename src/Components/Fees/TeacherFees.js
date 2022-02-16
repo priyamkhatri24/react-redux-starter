@@ -99,6 +99,7 @@ const TeacherFees = (props) => {
             <FeesTimeline
               currencySymbol={currencySymbol}
               clientId={clientId}
+              history={history}
               activeTab={activeTab === 'Notifications'}
             />
           </Tab>
