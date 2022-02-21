@@ -297,7 +297,7 @@ const CRM = (props) => {
                     <Row className=' m-0 px-2 my-auto'>
                       <Col xs={2} sm={1} style={{ paddingTop: '15px' }}>
                         <img
-                          src={avatarImage}
+                          src={inquiry.profile_image || avatarImage}
                           alt='avatar'
                           height='38'
                           width='38'

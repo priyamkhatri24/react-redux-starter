@@ -180,7 +180,7 @@ const TeacherCourses = (props) => {
       //     // setCoursePage(1);
       // setSearchedCoursePage(1);
     };
-  }, [coursePage, searchString]);
+  }, [coursePage, searchString, activeTab, sortBy]);
 
   useEffect(() => {
     let timer;
@@ -221,9 +221,7 @@ const TeacherCourses = (props) => {
     return () => {
       clearTimeout(timer);
     };
-  }, [statisticsPage, searchString, activeTab]);
-
-  useEffect(() => {}, [searchString]);
+  }, [statisticsPage, searchString, activeTab, sortBy]);
 
   useEffect(() => {
     console.log(history.location.state);
@@ -340,14 +338,14 @@ const TeacherCourses = (props) => {
   const triggerFilters = () => setFilterModal(!filterModal);
 
   const filterResult = (how) => {
-    if (how === 'alphabetically') {
+    if (how === 'alphabetically' && sortBy !== 'name') {
       // setSearchString('');
       setCoursePage(1);
       setStatisticsPage(1);
       setCourses([]);
       setStatistics([]);
       setSortBy('name');
-    } else {
+    } else if (how !== 'alphabetically' && sortBy !== 'date') {
       // setSearchString('');
       setCoursePage(1);
       setStatisticsPage(1);

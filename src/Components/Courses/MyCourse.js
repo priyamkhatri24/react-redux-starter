@@ -72,6 +72,7 @@ const Mycourse = (props) => {
     setTestIdToStore,
     setTestEndTimeToStore,
     setTestStartTimeToStore,
+    setTestLanguageToStore,
     clientUserId,
     dashboardData,
     clientId,
@@ -658,6 +659,7 @@ const Mycourse = (props) => {
                     Math.round((+new Date() + parseInt(result.duration, 10)) / 1000),
                     'demotest',
                     elem.id,
+                    elem.language_type,
                   );
                 });
               }
@@ -687,6 +689,7 @@ const Mycourse = (props) => {
               Math.round(testStartTime / 1000),
               'demotest',
               elem.id,
+              elem.language_type,
             );
           });
         } else if (dateResult > 0) {
@@ -767,6 +770,7 @@ const Mycourse = (props) => {
                 parseInt(result.test_end_time, 10),
                 'livetest',
                 elem.id,
+                elem.language_type,
               );
               console.log(response);
             }
@@ -784,12 +788,20 @@ const Mycourse = (props) => {
     // }
   };
 
-  const startLive = (responseArray, startTime = 0, endTime = 0, testType, id) => {
+  const startLive = (
+    responseArray,
+    startTime = 0,
+    endTime = 0,
+    testType,
+    id,
+    languageType = 'english',
+  ) => {
     const { push } = history;
     setTestResultArrayToStore(responseArray);
     setTestEndTimeToStore(endTime);
     setTestStartTimeToStore(startTime);
     setTestTypeToStore(testType);
+    setTestLanguageToStore(languageType);
     setTestIdToStore(id);
     push('/questiontaker');
   };
@@ -1563,6 +1575,9 @@ const mapDispatchToProps = (dispatch) => {
     setTestStartTimeToStore: (payload) => {
       dispatch(testsActions.setTestStartTimeToStore(payload));
     },
+    setTestLanguageToStore: (payload) => {
+      dispatch(testsActions.setTestLanguageToStore(payload));
+    },
     setTestEndTimeToStore: (payload) => {
       dispatch(testsActions.setTestEndTimeToStore(payload));
     },
@@ -1581,6 +1596,7 @@ Mycourse.propTypes = {
   setTestResultArrayToStore: PropTypes.func.isRequired,
   setTestEndTimeToStore: PropTypes.func.isRequired,
   setTestStartTimeToStore: PropTypes.func.isRequired,
+  setTestLanguageToStore: PropTypes.func.isRequired,
   setTestIdToStore: PropTypes.func.isRequired,
   setTestTypeToStore: PropTypes.func.isRequired,
   currentbranding: PropTypes.shape({

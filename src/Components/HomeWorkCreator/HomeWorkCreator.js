@@ -141,7 +141,7 @@ const HomeWorkCreator = (props) => {
 
     // console.log(currentChapterArray, currentSubjectArray, 'missing elements');
 
-    post(finalPayload, '/addQuestion').then((res) => {
+    post(finalPayload, '/addQuestion2').then((res) => {
       console.log(res);
       const result = apiValidation(res);
       let addQuestionPayload;

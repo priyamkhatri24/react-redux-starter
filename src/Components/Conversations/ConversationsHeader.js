@@ -84,7 +84,7 @@ const ConversationsHeader = function ({
             {/* <GlobalSearchBar /> */}
             <MoreVert className='justify-self-end' />
           </div>
-          <AppStories />
+          {/* <AppStories /> */}
           {searchBar ? (
             <div className='d-flex justify-content-between align-items-center mt-2'>
               <input

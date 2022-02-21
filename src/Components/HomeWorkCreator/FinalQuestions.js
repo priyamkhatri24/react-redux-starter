@@ -224,9 +224,9 @@ const PreviewQuestions = (props) => {
     if (activeSection === 'No Sections') {
       const updatedMarks = selectedQuestions.map((elem) => {
         if (elem.question_id === id) {
-          if (name === 'Correct') elem.question_positive_marks = value;
-          if (name === 'Incorrect') elem.question_negative_marks = value;
-          if (name === 'Unanswered') elem.question_unanswered_marks = value;
+          if (name === 'Correct') elem.question_positive_marks = +value;
+          if (name === 'Incorrect') elem.question_negative_marks = +value;
+          if (name === 'Unanswered') elem.question_unanswered_marks = +value;
         }
         return elem;
       });
@@ -237,9 +237,9 @@ const PreviewQuestions = (props) => {
         if (elem.name === sectionName) {
           elem.questions.map((e) => {
             if (e.question_id === id) {
-              if (name === 'Correct') e.question_positive_marks = value;
-              if (name === 'Incorrect') e.question_negative_marks = value;
-              if (name === 'Unanswered') e.question_unanswered_marks = value;
+              if (name === 'Correct') e.question_positive_marks = +value;
+              if (name === 'Incorrect') e.question_negative_marks = +value;
+              if (name === 'Unanswered') e.question_unanswered_marks = +value;
             }
             return e;
           });
@@ -254,9 +254,9 @@ const PreviewQuestions = (props) => {
     const updatedMarks = sectionedQuestion.map((elem) => {
       if (elem.name === name) {
         elem.questions.map((e) => {
-          if (id === 1) e.question_positive_marks = value;
-          if (id === 2) e.question_negative_marks = value;
-          if (id === 3) e.question_unanswered_marks = value;
+          if (id === 1) e.question_positive_marks = +value;
+          if (id === 2) e.question_negative_marks = +value;
+          if (id === 3) e.question_unanswered_marks = +value;
           return e;
         });
       }
@@ -266,7 +266,7 @@ const PreviewQuestions = (props) => {
     const updatedSectionMarks = sectionMarks.map((e) => {
       if (e.sectionName === name) {
         e.marksArray.map((elem) => {
-          if (elem.id === id) elem.value = value;
+          if (elem.id === id) elem.value = +value;
           return elem;
         });
       }

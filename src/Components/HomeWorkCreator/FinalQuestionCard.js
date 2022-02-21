@@ -30,7 +30,7 @@ const FinalQuestionCard = (props) => {
   //   }
   //   console.log(question);
   // }, [ques]);
-
+  console.log(question, 'questionCard ke under');
   return (
     <Card className='m-1' key={question.question_id}>
       {Object.keys(question).length > 0 && (
@@ -39,9 +39,13 @@ const FinalQuestionCard = (props) => {
             <span className='Homework__questionIndex'>
               Question .{index + 1 < 10 ? `0${index + 1}` : index + 1} ({' '}
               <span style={{ color: 'lightGreen' }}>
-                +{question.question_positive_marks.toFixed(1)}
+                +{Number(question.question_positive_marks).toFixed(1)}
               </span>
-              ,<span style={{ color: 'red' }}>-{question.question_negative_marks.toFixed(1)}</span>)
+              ,
+              <span style={{ color: 'red' }}>
+                -{Number(question.question_negative_marks).toFixed(1)}
+              </span>
+              )
             </span>
             <div className='ml-auto d-flex'>
               <span className='Homework__questionType my-auto mr-2'>

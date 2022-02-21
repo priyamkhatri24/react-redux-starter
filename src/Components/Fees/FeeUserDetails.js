@@ -33,7 +33,7 @@ const FeeUserDetails = (props) => {
   const updateButton1 = () => {
     setChange(setDate);
   };
-  
+
   const goToTheDate = () => {
     // setUserdate(date);
     // history.push('/fees/users');
@@ -231,4 +231,4 @@ FeeUserDetails.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   clientId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
-}; 
+};

@@ -193,6 +193,7 @@ const Tests = (props) => {
                     Math.round((+new Date() + parseInt(result.duration, 10)) / 1000),
                     'demotest',
                     elem.test_id,
+                    elem.language_type,
                   );
                 });
               }

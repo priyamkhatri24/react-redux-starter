@@ -141,6 +141,7 @@ const EditProfileHOC = (props) => {
       updateAdmissionProfile={getFormData}
       fromAdmissions
       profileImagePath={user.profile_image}
+      userAdmission={user}
     />
   );
 };

@@ -456,6 +456,7 @@ class QuestionTaker extends Component {
     } = this.state;
 
     const { testLanguage, testType } = this.props;
+    console.log(testLanguage, 'haha');
 
     return (
       <div className='QuestionTaker'>
@@ -476,7 +477,10 @@ class QuestionTaker extends Component {
                 this.changeLanguage(currentLanguage === 'english' ? 'hindi' : 'english')
               } //eslint-disable-line
             >
-              Change: <span style={{ textTransform: 'capitalize' }}>{currentLanguage}</span>
+              Change to{' '}
+              <span style={{ textTransform: 'capitalize' }}>
+                {currentLanguage === 'english' ? 'hindi' : 'english'}
+              </span>
             </Button>
           )}
           <div className='ml-auto'>

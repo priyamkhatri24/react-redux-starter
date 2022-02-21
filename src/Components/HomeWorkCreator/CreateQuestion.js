@@ -124,7 +124,7 @@ const CreateQuestion = (props) => {
 
     console.log(finalPayload, 'FINAL PAYLOAD');
 
-    post(finalPayload, '/addQuestion').then((res) => {
+    post(finalPayload, '/addQuestion2').then((res) => {
       console.log(res);
       const result = apiValidation(res);
       let addQuestionPayload;

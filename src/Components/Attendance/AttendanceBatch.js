@@ -13,11 +13,11 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Swal from 'sweetalert2';
 import Calendar from 'react-calendar';
 import { getAttendanceBatch } from '../../redux/reducers/attendance.reducer';
-import { PageHeader } from '../Common';
+import { PageHeader, AlertSlideup } from '../Common';
 import PreviousAttendance from './PreviousAttendance';
 import TakeAttendance from './TakeAttendance';
 import 'react-calendar/dist/Calendar.css';
-import './attendance.css';
+import './Attendance.scss';
 
 // Import Swiper styles
 import 'swiper/swiper.min.css';
@@ -44,6 +44,7 @@ const AttendanceBatch = (props) => {
   const [swiper, setSwiper] = useState(null);
   const [checked, setChecked] = useState(false);
   const [pastMonths, setPastMonths] = useState([]);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const getInitialAttendanceData = useCallback(() => {
     get({ client_batch_id: attendanceBatch.client_batch_id }, '/getStudentsOfBatch').then((res) => {
@@ -64,10 +65,7 @@ const AttendanceBatch = (props) => {
 
   const changeDate = () => handleOpen();
 
-  const handleOpen1 = () => {
-    setShowMonthsModal(true);
-    getMonths();
-  };
+  // const handleOpen1 = () => setShowMonthsModal(true);
 
   const handleClose1 = () => setShowMonthsModal(false);
 
@@ -211,24 +209,68 @@ const AttendanceBatch = (props) => {
   ];
 
   const getMonths = () => {
+    setShowMonthsModal(true);
     const tempPastMonths = [];
     const d = new Date();
     d.setDate(1);
     for (let i = 0; i <= 11; i++) {
       console.log(`${monthsArray[d.getMonth()]}-${d.getFullYear()}`);
-      tempPastMonths.push(tempPastMonths);
+      tempPastMonths.push({
+        value: `${monthsArray[d.getMonth()]}-${d.getFullYear()}`,
+        isChecked: false,
+      });
       d.setMonth(d.getMonth() - 1);
     }
     setPastMonths(tempPastMonths);
   };
 
+  const checkedAnotherMonth = (value) => {
+    const newPastMonthsArray = pastMonths.map((ele) => {
+      ele.isChecked = false;
+      if (ele.value === value) ele.isChecked = true;
+      return ele;
+    });
+
+    setPastMonths(newPastMonthsArray);
+  };
+
+  const downloadAttendanceDataMonthWise = () => {
+    setShowMonthsModal(false);
+    setIsDownloading(true);
+    const selectedMonthYearPair = pastMonths.find((ele) => ele.isChecked === true);
+    const selectedMonth = selectedMonthYearPair.value.split('-')[0];
+    const selectedYear = selectedMonthYearPair.value.split('-')[1];
+
+    const selectedMonthIndex = monthsArray.findIndex((ele) => ele === selectedMonth) + 1;
+    console.log(selectedMonthIndex, selectedYear);
+    const payload = {
+      client_batch_id: attendanceBatch.client_batch_id,
+      month: `${selectedYear}-${selectedMonthIndex}`,
+    };
+    console.log(payload);
+    get(payload, '/getAttendanceOfBatchMonthWise').then((data) => {
+      console.log(data, 'getAttendanceOfBatchMonthWise');
+      const result = apiValidation(data);
+      const dataToBeDownloaded = result.map((ele, index) => {
+        delete ele.client_user_id;
+        const resultant = { SNo: index + 1, ...ele };
+        return resultant;
+      });
+      console.log(dataToBeDownloaded, attendanceBatch);
+      const fileName = `${attendanceBatch.batch_name}-attendance-${selectedYear}-${selectedMonthIndex}`;
+      json2xlsDownload(JSON.stringify(dataToBeDownloaded), fileName, true);
+      setIsDownloading(false);
+    });
+  };
+
   return (
     <>
+      <AlertSlideup trigger={isDownloading} alertText='Preparing your download. Please wait...' />
       <PageHeader
         title={attendanceBatch.batch_name}
         customIcon={<DownloadIcon />}
         customIcon2={<DateRangeIcon />}
-        handleCustomIcon={handleOpen1}
+        handleCustomIcon={getMonths}
         handleCustomIcon2={changeDate}
       />
       <Swiper
@@ -295,28 +337,31 @@ const AttendanceBatch = (props) => {
       {/* <Modal show={false} onHide={handleClose1} centered> */}
       <Modal show={showMonthsModal} onHide={handleClose1} centered>
         <Modal.Header closeButton>
-          <Modal.Title style={{ color: '#0BA8E6', marginBottom: '-18px' }}>
-            Select The Duration
-          </Modal.Title>
+          <Modal.Title className='monthsTitle'>Select The Duration</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className='py-0'>
           {pastMonths.map((e) => {
+            console.log(e);
             return (
-              <Row key={e} className='monthStyle'>
-                <Col>
-                  {/* onClick={(el) => setCheck(!check, el.target.name)} */}
-                  {e}
+              <Row
+                style={{ backgroundColor: e.isChecked ? 'rgb(241,249,255)' : 'rgb(255,255,255)' }}
+                onClick={() => checkedAnotherMonth(e.value)}
+                key={e.value}
+                className='monthStyle'
+              >
+                <Col>{e.value}</Col>
+                <Col className='text-right'>
+                  {e.isChecked ? <CheckIcon style={{ width: '18px' }} /> : null}
                 </Col>
-                <Col>{/* <CheckIcon /> */}</Col>
               </Row>
             );
           })}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant='boldText' onClick={() => handleClose1()}>
+          <Button variant='boldText' onClick={handleClose1}>
             CANCEL
           </Button>
-          <Button variant='boldText' onClick={() => download()}>
+          <Button variant='boldText' onClick={downloadAttendanceDataMonthWise}>
             DOWNLOAD
           </Button>
         </Modal.Footer>

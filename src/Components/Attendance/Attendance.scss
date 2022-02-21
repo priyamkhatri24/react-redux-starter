@@ -105,6 +105,21 @@
     padding-top: 7rem;
   }
 }
+
+.monthStyle {
+  border-bottom: 1.9px #f5f5dc solid;
+  padding-left: 25px;
+  padding: 3px 25px;
+  cursor: pointer;
+  font-family: 'Montserrat-Regular';
+  min-height: 34px;
+}
+
+.monthsTitle {
+  font-family: 'Montserrat-Medium';
+  color: var(--primary-blue);
+}
+
 .smsCheck {
   display: flex;
   flex-direction: row;
@@ -115,6 +130,7 @@
   font-family: 'Montserrat-regular';
   font-size: 0.8rem;
 }
+
 .profileImageAttendance {
   width: 40px !important;
   height: 40px !important;

@@ -14,6 +14,7 @@ import '../Login/AdmissionChat/AdmissionForm/AdmissionForm.scss';
 import { getClientId, getUserId, getUserUserId } from '../../redux/reducers/clientUserId.reducer';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
+import { getAdmissionUserProfile } from '../../redux/reducers/admissions.reducer';
 
 const EditProfile = (props) => {
   const {
@@ -26,6 +27,7 @@ const EditProfile = (props) => {
     userUserId,
     userId,
     user,
+    userAdmission,
     setFirstNameToStore,
     setLastNameToStore,
     setProfileImageToStore,
@@ -104,8 +106,10 @@ const EditProfile = (props) => {
     console.log(file);
     const payload = {
       profile_image: file,
-      user_id: userId,
+      /* eslint-disable */
+      user_id: userAdmission?.user_id || userId,
     };
+    console.log(payload);
     post(payload, '/editProfilePicture').then((res) => {
       console.log(res, 'profilepic edit');
     });
@@ -195,6 +199,7 @@ const mapStateToProps = (state) => ({
   userId: getUserId(state),
   userUserId: getUserUserId(state),
   user: getUserProfile(state),
+  // admissionUserProfile: getAdmissionUserProfile(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -225,6 +230,7 @@ EditProfile.propTypes = {
   userId: PropTypes.number.isRequired,
   userUserId: PropTypes.number.isRequired,
   user: PropTypes.instanceOf(Object).isRequired,
+  userAdmission: PropTypes.instanceOf(Object).isRequired,
   setFirstNameToStore: PropTypes.func.isRequired,
   setLastNameToStore: PropTypes.func.isRequired,
   setEmailToStore: PropTypes.func.isRequired,
