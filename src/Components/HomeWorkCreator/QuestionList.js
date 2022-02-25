@@ -37,6 +37,8 @@ const QuestionList = (props) => {
     desktop,
     setHomeworkLanguageTypeToStore,
     compressed,
+    setFilterType,
+    updateCompressed,
   } = props;
   const [questions, setQuestions] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
@@ -198,6 +200,19 @@ const QuestionList = (props) => {
     }
   };
 
+  const goToCreateQuestion = () => {
+    setFilterType('create');
+    setCurrentSlide(1);
+  };
+
+  const compressOrExpand = () => {
+    // setCompressed((prev) => {
+    //   updateCompressed(!prev);
+    //   return !prev;
+    // });
+    updateCompressed(false);
+  };
+
   return (
     <Card className={`Homework__selectCard mb-3 mobileMargin${compressed ? ' expanded' : ''}`}>
       <div className='d-flex mb-1 mt-3 mx-2'>
@@ -209,11 +224,25 @@ const QuestionList = (props) => {
           }{' '}
           selected of {questions.length}
         </span>
+        <div className='ml-auto'>
+          <Button
+            variant='customPrimarySmol'
+            onClick={() => {
+              goToCreateQuestion();
+              compressOrExpand();
+            }}
+            onKeyDown={() => {
+              goToCreateQuestion();
+              compressOrExpand();
+            }}
+          >
+            Add More
+          </Button>
+        </div>
         <div className='ml-auto my-auto d-flex'>
           <Button variant='customPrimarySmol hideOnDesktopHW' onClick={() => goToNextSlide()}>
             Next
           </Button>
-
           <Form.Check
             type='checkbox'
             checked={selectAllQuestions}
@@ -294,6 +323,8 @@ QuestionList.propTypes = {
   desktop: PropTypes.bool.isRequired,
   setHomeworkLanguageTypeToStore: PropTypes.func.isRequired,
   compressed: PropTypes.bool,
+  setFilterType: PropTypes.func.isRequired,
+  updateCompressed: PropTypes.func.isRequired,
 };
 
 QuestionList.defaultProps = {
