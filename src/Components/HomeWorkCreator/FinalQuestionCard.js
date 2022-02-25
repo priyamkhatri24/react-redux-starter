@@ -39,11 +39,11 @@ const FinalQuestionCard = (props) => {
             <span className='Homework__questionIndex'>
               Question .{index + 1 < 10 ? `0${index + 1}` : index + 1} ({' '}
               <span style={{ color: 'lightGreen' }}>
-                +{Number(question.question_positive_marks).toFixed(1)}
+                +{Number(question.question_positive_marks).toFixed(2)}
               </span>
               ,
               <span style={{ color: 'red' }}>
-                -{Number(question.question_negative_marks).toFixed(1)}
+                -{Number(question.question_negative_marks).toFixed(2)}
               </span>
               )
             </span>

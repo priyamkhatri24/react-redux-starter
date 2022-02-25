@@ -7,6 +7,7 @@ import SwapHorizontalCircleIcon from '@material-ui/icons/SwapHorizontalCircle';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Calendar from 'react-calendar';
+// import Swal from 'sweetalert2';
 import 'react-calendar/dist/Calendar.css';
 import { apiValidation, get, post, json2xlsDownload } from '../../Utilities';
 import UserDataCard from '../Admissions/UsersDataCard';
@@ -22,24 +23,39 @@ const FeeUserDetails = (props) => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [showModal, setShowModal] = useState(false);
-  const [date, setDate] = useState(new Date());
   const [change, setChange] = useState();
-  const handleOpen1 = () => setShowModal(true);
-  const handleClose1 = () => setShowModal(false);
-  const changeDate = () => handleOpen1();
-  const onChange = (nextValue) => setDate(nextValue);
+  const [feeData, setFeeData] = useState([]);
 
-  const updateButton1 = () => {
-    setChange(setDate);
+  const [startDate, setStartDate] = useState(new Date());
+  const [showStartDateSelectorModal, setShowStartDateSelectorModal] = useState(false);
+  const handleOpen1 = () => setShowStartDateSelectorModal(true);
+  const handleClose1 = () => setShowStartDateSelectorModal(false);
+  const changeStartDate = () => handleOpen1();
+
+  const [endDate, setEndDate] = useState(new Date());
+  const [showEndDateSelectorModal, setShowEndDateSelectorModal] = useState(false);
+  const handleOpen2 = () => setShowEndDateSelectorModal(true);
+  const handleClose2 = () => setShowEndDateSelectorModal(false);
+  const changeEndDate = () => handleOpen2();
+
+  const changeStart = (nextValue) => {
+    setStartDate(nextValue);
   };
 
-  const goToTheDate = () => {
-    // setUserdate(date);
-    // history.push('/fees/users');
-    // setChange(onChange());
-    // handleClose1();
+  const changeEnd = (nextValue) => {
+    setEndDate(nextValue);
   };
+
+  // const updateButton1 = () => {
+  //   setChange(setDate);
+  // };
+
+  // const goToTheDate = () => {
+  // setUserdate(date);
+  // history.push('/fees/users');
+  // setChange(onChange());
+  // handleClose1();
+  // };
 
   useEffect(() => {
     setTitle(history.location.state.batchName);
@@ -90,17 +106,33 @@ const FeeUserDetails = (props) => {
   // console.log(toTimestamp(26 - 10 - 1999));
 
   const downloader = () => {
-    const jsonDataToDownload = users.map((ele, index) => {
+    const payload = {
+      client_batch_id: clientId,
+      start_date: startDate.getTime() / 1000,
+      end_date: endDate.getTime() / 1000,
+    };
+    get(payload, '/getFeeDataOfUsersOfBatch').then((res) => {
+      const result = apiValidation(res);
+      setFeeData(result);
+    });
+    console.log(feeData);
+    // if (feeData.length() == 0) {
+    //   swal.fire('No data found in selected duration');
+    //   return;
+    // }
+    const jsonDataToDownload = feeData.map((ele, index) => {
       return {
         SNo: index + 1,
         First_name: ele.first_name,
         Last_name: ele.last_name,
-        users_status: ele.fee_status,
+        users_status: ele.status,
         contact: ele.contact,
       };
     });
     console.log(jsonDataToDownload);
     json2xlsDownload(JSON.stringify(jsonDataToDownload), 'studentFeeData', true);
+    // setStartDate(new Date());
+    setEndDate(new Date());
   };
 
   return (
@@ -113,26 +145,36 @@ const FeeUserDetails = (props) => {
       />
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header>
-          <Modal.Title style={{ color: 'var(--primary-blue)' }}>Select The Duration</Modal.Title>
+          <Modal.Title style={{ color: 'var(--primary-blue)', fontFamily: 'Montserrat-SemiBold' }}>
+            Select The Duration
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div style={{ display: 'grid', gridTemplateColumns: '33% 33% 33%', textAlign: 'center' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '33% 33% 33%',
+              textAlign: 'center',
+              fontFamily: 'Montserrat-regular',
+            }}
+          >
             <div>
               <p>From</p>
               <button
                 onClick={() => {
-                  changeDate();
+                  changeStartDate();
                 }}
                 type='button'
                 style={{ border: 'none', backgroundColor: 'white' }}
               >
                 <h6>
                   Start Date{change}
-                  {/* <DateRangeIcon
+                  <DateRangeIcon
                     onClick={() => {
-                      changeDate();
+                      changeStartDate();
                     }}
-                  /> */}
+                    style={{ marginLeft: '6px' }}
+                  />
                 </h6>
               </button>
             </div>
@@ -145,10 +187,18 @@ const FeeUserDetails = (props) => {
                 type='button'
                 style={{ border: 'none', backgroundColor: 'white' }}
                 onClick={() => {
-                  changeDate();
+                  changeEndDate();
                 }}
               >
-                <h6>End Date</h6>
+                <h6>
+                  End Date{change}
+                  <DateRangeIcon
+                    onClick={() => {
+                      changeEndDate();
+                    }}
+                    style={{ marginLeft: '6px' }}
+                  />
+                </h6>
               </button>
             </div>
           </div>
@@ -161,6 +211,7 @@ const FeeUserDetails = (props) => {
                 border: 'none',
                 color: 'var(--primary-blue)',
                 fontSize: '2',
+                fontFamily: 'Montserrat-SemiBold',
               }}
               onClick={handleClose}
             >
@@ -172,6 +223,7 @@ const FeeUserDetails = (props) => {
                 border: 'none',
                 color: 'var(--primary-blue)',
                 fontSize: '2',
+                fontFamily: 'Montserrat-SemiBold',
               }}
               onClick={downloader}
             >
@@ -200,18 +252,35 @@ const FeeUserDetails = (props) => {
           </p>
         ) : null}
       </div>
-      <Modal show={showModal} onHide={handleClose} centered>
+      <Modal show={showStartDateSelectorModal} onHide={handleClose1} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Select Date</Modal.Title>
+          <Modal.Title>Select Start Date</Modal.Title>
         </Modal.Header>
         <Modal.Body className='text-center'>
-          <Calendar onChange={onChange} value={date} maxDate={new Date()} />
+          <Calendar onChange={changeStart} value={startDate} maxDate={endDate} />
         </Modal.Body>
         <Modal.Footer>
           <Button variant='boldTextSecondary' onClick={() => handleClose1()}>
             Cancel
           </Button>
-          <Button variant='boldText' onClick={goToTheDate}>
+          <Button variant='boldText' onClick={handleClose1}>
+            Ok
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showEndDateSelectorModal} onHide={handleClose2} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Select End Date</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className='text-center'>
+          <Calendar onChange={changeEnd} value={endDate} minDate={startDate} maxDate={new Date()} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='boldTextSecondary' onClick={() => handleClose2()}>
+            Cancel
+          </Button>
+          <Button variant='boldText' onClick={handleClose2}>
             Ok
           </Button>
         </Modal.Footer>
