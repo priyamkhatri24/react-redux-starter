@@ -145,10 +145,10 @@ const CkeditorQuestion = (props) => {
       setAddButtonDisabledCheck(false);
     } else if (type === 'multiple' && answerArray.every((ele) => !ele.text && !ele.image)) {
       setAddButtonDisabledCheck(false);
-    } else if (type === 'single' && !answerArray.find((ele) => ele.isSelected)) {
-      setAddButtonDisabledCheck(false);
-    } else if (type === 'multiple' && !answerArray.find((ele) => ele.isSelected)) {
-      setAddButtonDisabledCheck(false);
+      // } else if (type === 'single' && !answerArray.find((ele) => ele.isSelected)) {
+      //   setAddButtonDisabledCheck(false);
+      // } else if (type === 'multiple' && !answerArray.find((ele) => ele.isSelected)) {
+      //   setAddButtonDisabledCheck(false);
     } else if (type === 'sujective' && !answerText) {
       setAddButtonDisabledCheck(false);
     } else {
@@ -444,8 +444,16 @@ const CkeditorQuestion = (props) => {
       currentClass: currentClassId,
       subject: currentSubject,
     };
-
-    add(payload);
+    if (
+      (type === 'single' && answerArray.find((ele) => ele.isSelected)) ||
+      (type === 'multiple' && answerArray.find((ele) => ele.isSelected))
+    ) {
+      add(payload);
+    } else {
+      Swal.fire({
+        text: 'Please select one correct answer',
+      });
+    }
   };
 
   const increaseOptionLength = () => {
@@ -539,7 +547,6 @@ const CkeditorQuestion = (props) => {
                     setSelectedSubject(selectedSubObj);
                     setSelectedSubjectToStore(selectedSubObj);
                     setCurrentSubjectArrayToStore([selectedSubObj.subject_id]);
-
                     setCurrentChapters(selectedSubObj);
                   }
                 }}

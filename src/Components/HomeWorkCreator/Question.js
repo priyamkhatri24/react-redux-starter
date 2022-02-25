@@ -37,109 +37,111 @@ const Question = (props) => {
   // }, [question]);
 
   return (
-    <Card className='m-1'>
-      {Object.keys(question).length > 0 && (
-        <>
-          <Row className=' ml-2 mr-0 mt-2'>
-            <span className='Homework__questionIndex'>Q {index < 10 ? `0${index}` : index}</span>
-            <div className='ml-auto d-flex'>
-              <span className='Homework__questionType my-auto mr-2'>
-                Type:
-                {question.question_type === 'single'
-                  ? 'MCQ'
-                  : question.question_type === 'multiple'
-                  ? 'Multiple Choice'
-                  : 'Subjective'}
-              </span>
-              <div
-                className='Homework__edit text-center p-0'
-                onClick={() => {}}
-                role='button'
-                onKeyDown={() => {}}
-                tabIndex='-1'
-              >
-                <CreateIcon style={{ fontSize: '16px', color: 'rgba(0, 0, 0, 0.38)' }} />
+    <>
+      <Card className='m-1'>
+        {Object.keys(question).length > 0 && (
+          <>
+            <Row className=' ml-2 mr-0 mt-2'>
+              <span className='Homework__questionIndex'>Q {index < 10 ? `0${index}` : index}</span>
+              <div className='ml-auto d-flex'>
+                <span className='Homework__questionType my-auto mr-2'>
+                  Type:
+                  {question.question_type === 'single'
+                    ? 'MCQ'
+                    : question.question_type === 'multiple'
+                    ? 'Multiple Choice'
+                    : 'Subjective'}
+                </span>
+                <div
+                  className='Homework__edit text-center p-0'
+                  onClick={() => {}}
+                  role='button'
+                  onKeyDown={() => {}}
+                  tabIndex='-1'
+                >
+                  <CreateIcon style={{ fontSize: '16px', color: 'rgba(0, 0, 0, 0.38)' }} />
+                </div>
               </div>
+            </Row>
+
+            <div className='Homework__questionHeading text-left m-2'>
+              <MathJax
+                math={String.raw`${
+                  language === 'hindi' ? question.hindi_text : question.question_text
+                }`}
+              />
+              {question.question_image && (
+                <div className=' mt-2 Homework__questionImgContainer'>
+                  <img
+                    src={question.question_image}
+                    alt='question'
+                    className='img-fluid m-2 Homework__questionImg'
+                  />
+                </div>
+              )}
             </div>
-          </Row>
 
-          <div className='Homework__questionHeading text-left m-2'>
-            <MathJax
-              math={String.raw`${
-                language === 'hindi' ? question.hindi_text : question.question_text
-              }`}
-            />
-            {question.question_image && (
-              <div className=' mt-2 Homework__questionImgContainer'>
-                <img
-                  src={question.question_image}
-                  alt='question'
-                  className='img-fluid m-2 Homework__questionImg'
-                />
-              </div>
-            )}
-          </div>
-
-          {question.question_type !== 'subjective' && (
-            <p className='Homework__options text-left m-2'>Options</p>
-          )}
-
-          {question.question_type !== 'subjective' &&
-            (language === 'hindi' ? question.hindi_option_array : question.option_array).map(
-              (e, i) => {
-                return (
-                  <>
-                    <div className='d-flex mx-3 mb-2 Homework__multipleOptions' key={e.order}>
-                      <span className='mr-2 my-auto'>{String.fromCharCode(i + 65)}.</span>{' '}
-                      <MathJax math={String.raw`${e.text}`} />
-                    </div>
-                    {e.image && (
-                      <img
-                        src={e.image}
-                        alt='option'
-                        className='img-fluid m-2 Homework__questionImg'
-                      />
-                    )}
-                  </>
-                );
-              },
+            {question.question_type !== 'subjective' && (
+              <p className='Homework__options text-left m-2'>Options</p>
             )}
 
-          {question.question_answer && <p className='Homework__options text-left m-2'>Answer:</p>}
-          <div className='d-flex mx-3 mb-2 Homework__multipleOptions text-left'>
-            <MathJax math={String.raw`${question.question_answer}`} />
-          </div>
-          <hr />
-          <Row className='m-1 mb-3'>
-            <Button variant='reportProblem'>
-              <ReportIcon /> Report
-            </Button>
-            <div className='ml-auto'>
-              {question.isSelected ? (
-                <Button variant='homeworkAddred' onClick={() => addtoSelected()}>
-                  <RemoveIcon />
-                </Button>
-              ) : null}
-              {!question.isSelected ? (
-                <Button variant='homeworkAdd' onClick={() => addtoSelected()}>
-                  <AddIcon />
-                </Button>
-              ) : null}
-              {question.isSelected ? (
-                <Button variant='homeworkAddToPaperred' onClick={() => addtoSelected()}>
-                  Remove
-                </Button>
-              ) : null}
-              {!question.isSelected ? (
-                <Button variant='homeworkAddToPaper' onClick={() => addtoSelected()}>
-                  Add To Paper
-                </Button>
-              ) : null}
+            {question.question_type !== 'subjective' &&
+              (language === 'hindi' ? question.hindi_option_array : question.option_array).map(
+                (e, i) => {
+                  return (
+                    <>
+                      <div className='d-flex mx-3 mb-2 Homework__multipleOptions' key={e.order}>
+                        <span className='mr-2 my-auto'>{String.fromCharCode(i + 65)}.</span>{' '}
+                        <MathJax math={String.raw`${e.text}`} />
+                      </div>
+                      {e.image && (
+                        <img
+                          src={e.image}
+                          alt='option'
+                          className='img-fluid m-2 Homework__questionImg'
+                        />
+                      )}
+                    </>
+                  );
+                },
+              )}
+
+            {question.question_answer && <p className='Homework__options text-left m-2'>Answer:</p>}
+            <div className='d-flex mx-3 mb-2 Homework__multipleOptions text-left'>
+              <MathJax math={String.raw`${question.question_answer}`} />
             </div>
-          </Row>
-        </>
-      )}
-    </Card>
+            <hr />
+            <Row className='m-1 mb-3'>
+              <Button variant='reportProblem'>
+                <ReportIcon /> Report
+              </Button>
+              <div className='ml-auto'>
+                {question.isSelected ? (
+                  <Button variant='homeworkAddred' onClick={() => addtoSelected()}>
+                    <RemoveIcon />
+                  </Button>
+                ) : null}
+                {!question.isSelected ? (
+                  <Button variant='homeworkAdd' onClick={() => addtoSelected()}>
+                    <AddIcon />
+                  </Button>
+                ) : null}
+                {question.isSelected ? (
+                  <Button variant='homeworkAddToPaperred' onClick={() => addtoSelected()}>
+                    Remove
+                  </Button>
+                ) : null}
+                {!question.isSelected ? (
+                  <Button variant='homeworkAddToPaper' onClick={() => addtoSelected()}>
+                    Add To Paper
+                  </Button>
+                ) : null}
+              </div>
+            </Row>
+          </>
+        )}
+      </Card>
+    </>
   );
 };
 

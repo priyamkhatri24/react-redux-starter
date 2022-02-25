@@ -342,7 +342,11 @@ const HomeWorkCreator = (props) => {
             fetch={fetchQuestions}
           />
           {filterType === 'fetched' ? (
-            <QuestionList homeworkQuestions={homeworkQuestionsArray} />
+            <QuestionList
+              homeworkQuestions={homeworkQuestionsArray}
+              // setFilterType={setFilterType}
+              // updateCompressed={setCompressed}
+            />
           ) : (
             <CkeditorQuestion
               updateQuestion={setCkQuestion}
@@ -396,7 +400,12 @@ const HomeWorkCreator = (props) => {
         />
 
         {filterType === 'fetched' ? (
-          <QuestionList compressed={compressed} homeworkQuestions={homeworkQuestionsArray} />
+          <QuestionList
+            compressed={compressed}
+            homeworkQuestions={homeworkQuestionsArray}
+            setFilterType={setFilterType}
+            updateCompressed={setCompressed}
+          />
         ) : (
           <CkeditorQuestion
             updateQuestion={setCkQuestion}
