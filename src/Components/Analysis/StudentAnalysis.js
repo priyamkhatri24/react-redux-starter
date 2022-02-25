@@ -49,9 +49,18 @@ const StudentAnalysis = (props) => {
     setQuestions(questionData);
   }, [analysisTestObject]);
 
+  const handleBack = () => {
+    history.push('/');
+  };
+
   return (
     <>
-      <PageHeader title={analysisTestObject.name} />
+      {/* eslint-disable */}
+      <PageHeader
+        title={analysisTestObject.name}
+        customBack={history.location?.state?.fromTest ? true : false}
+        handleBack={history.location?.state?.fromTest ? handleBack : () => {}}
+      />
       <div style={{ marginTop: '4rem' }}>
         <h2 className='text-center mx-3 Analysis__studentHeading'>
           {history.location?.state?.name || analysisAssignmentObject.test_name}

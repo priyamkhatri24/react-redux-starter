@@ -33,6 +33,7 @@ import { apiValidation, get, post, shareThis } from '../../Utilities';
 import sampleReviews from './courseReviewsSample';
 import YCIcon from '../../assets/images/ycIcon.png';
 import { PageHeader } from '../Common/PageHeader/PageHeader';
+import { analysisActions } from '../../redux/actions/analysis.action';
 import { testsActions } from '../../redux/actions/tests.action';
 import { courseActions } from '../../redux/actions/course.action';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
@@ -80,6 +81,8 @@ const Mycourse = (props) => {
     setCourseNowPlayingVideoToStore,
     setCourseDocumentToOpenToStore,
     courseNowPlayingVideo,
+    setAnalysisSubjectArrayToStore,
+    setAnalysisTestObjectToStore,
     currentbranding: {
       branding: { client_logo: image },
     },
@@ -863,6 +866,29 @@ const Mycourse = (props) => {
   const openAnalysisModal = () => setShowAnalysisModal(true);
   const closeAnalysisModal = () => setShowAnalysisModal(false);
 
+  const goToStudentAnalysis = () => {
+    console.log(name);
+    const payload = {
+      test_id: testToOpen.id,
+      client_user_id: clientUserId,
+    };
+    const subjectAnalysis = get(payload, '/getSubjectAnalysisOfTestForStudentLatest');
+
+    const testAnalysis = get(payload, '/getTestAnalysisForStudentLatest');
+
+    Promise.all([subjectAnalysis, testAnalysis]).then((res) => {
+      const subjects = apiValidation(res[0]);
+      console.log(res, 'promiseArrayTestAnalysis');
+      setAnalysisSubjectArrayToStore(subjects);
+      setAnalysisTestObjectToStore({ ...res[1], name });
+      console.log(subjects, 'aaaaaa');
+      history.push({
+        pathname: '/analysis/studentanalysis',
+        state: { language: testToOpen.language_type, name: testToOpen.test_name },
+      });
+    });
+  };
+
   const shareCourse = () => {
     // eslint-disable-next-line
     const url = `${window.location.protocol}//${
@@ -1086,7 +1112,7 @@ const Mycourse = (props) => {
                 <p>{testToOpen.name}</p>
                 {testToOpen.is_attempt ? (
                   <>
-                    <button className='openDocumentBtn' onClick={openAnalysisModal}>
+                    <button className='openDocumentBtn' onClick={goToStudentAnalysis}>
                       View Analysis
                     </button>
                     <button className='reattempBtn' onClick={testIgniter}>
@@ -1584,6 +1610,12 @@ const mapDispatchToProps = (dispatch) => {
     setTestResultArrayToStore: (payload) => {
       dispatch(testsActions.setTestResultArrayToStore(payload));
     },
+    setAnalysisTestObjectToStore: (payload) => {
+      dispatch(analysisActions.setAnalysisTestObjectToStore(payload));
+    },
+    setAnalysisSubjectArrayToStore: (payload) => {
+      dispatch(analysisActions.setAnalysisSubjectArrayToStore(payload));
+    },
   };
 };
 
@@ -1610,4 +1642,6 @@ Mycourse.propTypes = {
   dashboardData: PropTypes.instanceOf(Object).isRequired,
   courseNowPlayingVideo: PropTypes.instanceOf(Object).isRequired,
   courseDocumentToOpen: PropTypes.instanceOf(Object).isRequired,
+  setAnalysisTestObjectToStore: PropTypes.func.isRequired,
+  setAnalysisSubjectArrayToStore: PropTypes.func.isRequired,
 };

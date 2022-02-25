@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import cx from 'classnames';
@@ -97,6 +97,13 @@ const BuyCourse = (props) => {
   const [previewText, setPreviewText] = useState(true);
   const [videoIsPlaying, setVideoIsPlaying] = useState(true);
   const [reference, setReference] = useState(null);
+  const [nowPlayingVideo, setNowPlayingVideo] = useState(null);
+  const [documentToOpen, setDocumentToOpen] = useState(null);
+  const [documentOpener, setDocumentOpener] = useState(false);
+  const [isBrowserCompatible, setIsBrowserCompatible] = useState(true);
+  const nowPlayingVideoRef = useRef(null);
+  const [showImageModal, setShowImageModal] = useState(false);
+
   const vidRef2 = useRef(null);
   const mainCRef = useRef(null);
   // const cfRef = useRef(null);
@@ -534,7 +541,104 @@ const BuyCourse = (props) => {
 
   const displayContent = (elem) => {
     if (elem.is_free === 'false') return;
+    const type = elem.content_type;
     console.log(elem);
+    if (type === 'file') {
+      if (elem.file_type === 'gallery' || elem.file_type === 'image') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setSource(false);
+        setNowPlayingVideo(false);
+        setDocumentOpener(true);
+        setDocumentToOpen(elem);
+      } else if (elem.file_type === '.pdf') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setNowPlayingVideo(false);
+        setSource(false);
+        setDocumentOpener(true);
+        setDocumentToOpen(elem);
+      } else if (elem.file_type === 'video' && elem.isYoutube) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setDocumentToOpen({});
+        setDocumentOpener(false);
+        setSource(false);
+        if (navigator.userAgent.includes('VivoBrowser')) {
+          console.log('browserIncompatible');
+          setIsBrowserCompatible(false);
+          return;
+        }
+        const playingVid = {
+          src: elem.file_link,
+          provider: 'youtube',
+          id: elem.id,
+          name: elem.name,
+          duration: elem.total_time,
+          finishedTime: elem.finished_time || 0,
+          sectionFileId: elem.section_has_file_id,
+        };
+        setNowPlayingVideo(playingVid);
+      } else if (elem.file_type === 'video' && !elem.isYoutube) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setDocumentOpener(false);
+        setSource(false);
+        setDocumentToOpen({});
+        if (navigator.userAgent.includes('VivoBrowser')) {
+          console.log('browserIncompatible');
+          setIsBrowserCompatible(false);
+          return;
+        }
+        const playingVid = {
+          src: elem.file_link_array[0],
+          linkArray: elem.file_link_array,
+          id: elem.id,
+          name: elem.name,
+          finishedTime: elem.finished_time || 0,
+          duration: elem.total_time,
+          sectionFileId: elem.section_has_file_id,
+        };
+        setNowPlayingVideo(playingVid);
+      } else {
+        push({
+          pathname: '/otherfileviewer',
+          state: { filePath: elem.file_link },
+        });
+      }
+    } else if (type === 'test') {
+      Swal.fire({
+        title: 'Good day!',
+        text: 'Free test content is coming soon.',
+        confirmButtonText: 'OK',
+      });
+    }
+  };
+
+  const renderVideoPlayer = useMemo(() => {
+    return (
+      <div className='mx-auto Courses__lecturevideoplayer'>
+        <PlyrComponent
+          ref={nowPlayingVideoRef}
+          source={{
+            type: 'video',
+            sources: [nowPlayingVideo],
+          }}
+          options={{ autoplay: true }}
+        />
+      </div>
+    );
+  }, [nowPlayingVideo, nowPlayingVideoRef?.current]);
+
+  const openImage = () => setShowImageModal(true);
+
+  const handleImageClose = () => setShowImageModal(false);
+
+  const openDocument = () => {
+    if (documentToOpen.file_type === '.pdf') {
+      push({
+        pathname: '/fileviewer',
+        state: { filePath: documentToOpen.file_link },
+      });
+    } else if (documentToOpen.file_type === 'image') {
+      openImage();
+    }
   };
 
   return (
@@ -544,12 +648,23 @@ const BuyCourse = (props) => {
       <button className='shareButtonForbuyCourse' type='button' onClick={() => shareCourse()}>
         <ShareIcon style={{ margin: '13px 16px', color: 'white' }} />
       </button>
-      {/* {courseVideo && (
-        <div className='mx-auto Courses__videoplayer'>
-          <PlyrComponent source={courseVideo} options={{ autoplay: true }} />
+      {nowPlayingVideo && renderVideoPlayer}
+      {!nowPlayingVideo && documentOpener && (
+        <div className='mx-auto Courses__docOpener mb-2'>
+          <div className='TextOnImage'>
+            <p>{documentToOpen.name}</p>
+            <button type='button' className='openDocumentBtn' onClick={openDocument}>
+              Open file
+            </button>
+          </div>
+          <img
+            src={course.course_display_image || clientLogo || YCIcon}
+            alt='course'
+            className='mx-auto courseDocumentOpenerImg'
+          />
         </div>
-      )} */}
-      {source && (
+      )}
+      {!nowPlayingVideo && !documentOpener && source && (
         <>
           <div className='mx-auto Courses__videoplayer'>
             {/* eslint-disable */}
@@ -575,12 +690,12 @@ const BuyCourse = (props) => {
           </div>
         </>
       )}
-      {!courseVideo && courseImage ? (
+      {!nowPlayingVideo && !documentOpener && !courseVideo && courseImage ? (
         <div className='mx-auto Courses__thumbnail'>
           <img src={courseImage} alt='course' className='mx-auto img-fluid courseThumbnailImg' />
         </div>
       ) : null}
-      {!courseVideo && !courseImage ? (
+      {!nowPlayingVideo && !documentOpener && !courseVideo && !courseImage ? (
         <div className='mx-auto Courses__thumbnail'>
           <img
             src={clientLogo ? clientLogo : YCIcon}
@@ -589,7 +704,7 @@ const BuyCourse = (props) => {
           />
         </div>
       ) : null}
-      {courseVideo ? (
+      {!nowPlayingVideo && !documentOpener && courseVideo ? (
         <p style={{ opacity: previewText ? '1' : '0' }} className='previewVideoTextClass'>
           Preview video
         </p>
@@ -704,9 +819,9 @@ const BuyCourse = (props) => {
                 })}
               <hr className='' />
               <p className='Courses__heading'>This course includes</p>
-              <p className='Courses__subHeading mb-2'>- Lifetime access</p>
-              <p className='Courses__subHeading mb-2'>- Course completion certificate</p>
-              <p className='Courses__subHeading mb-2'>- Access on mobile, laptop and TV</p>
+              {course.course_includes.map((ele) => {
+                return <p className='Courses__subHeading mb-2'>- {ele}</p>;
+              })}
               <hr className='' />
               <p className='Courses__heading'>Course content</p>
 
@@ -1117,6 +1232,17 @@ const BuyCourse = (props) => {
         testId={appId}
         cfType={paymentGateway}
       />
+
+      <Modal show={showImageModal} onHide={handleImageClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {documentToOpen ? documentToOpen.name?.slice(0, documentToOpen.name?.length - 4) : ''}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className='mx-auto'>
+          <img src={documentToOpen?.file_link} alt='img' className='img-fluid' />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

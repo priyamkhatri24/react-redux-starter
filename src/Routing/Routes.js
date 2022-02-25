@@ -528,6 +528,11 @@ const EditPayments = Loadable({
   loading: Loading,
 });
 
+const Temp = Loadable({
+  loader: () => import(/* webpackChunkName: 'settlementPage' */ '../Components/Common/Temp/temp'),
+  loading: Loading,
+});
+
 // eslint-disable-next-line
 function Loading({ error }) {
   if (error) {
@@ -541,6 +546,7 @@ export function Routes() {
   return (
     <Switch>
       <AuthenticatedRoute exact path='/' component={Dashboard} />
+      <AuthenticatedRoute exact path='/temp-route-for-testing' component={Temp} />
       <Route path='/signin' component={SignIn} />
       <Route path='/signup' component={SignUp} />
       <Route exact path='/login' component={Login} />
@@ -618,8 +624,8 @@ export function Routes() {
       <AuthenticatedRoute exact path='/displaypage/editprofile' component={DisplayPageEdit} />
       <AuthenticatedRoute exact path='/displaypage/preview' component={DummyDashboard} />
       <AuthenticatedRoute exact path='/offlineassignments' component={OfflineAssignments} />
-      <AuthenticatedRoute exact path='/teacherfees/settlementaccout' component={SettlementPage} />
-      <AuthenticatedRoute exact path='/teacherfees/editpaymentdetails' component={EditPayments} />
+      <AuthenticatedRoute exact path='/teacherfees/accountdetails' component={SettlementPage} />
+      <AuthenticatedRoute exact path='/teacherfees/editaccountdetails' component={EditPayments} />
       <AuthenticatedRoute
         exact
         path='/offlineassignments/addassignment'

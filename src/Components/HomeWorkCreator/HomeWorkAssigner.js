@@ -224,7 +224,16 @@ const HomeWorkAssigner = (props) => {
       },
       '',
     )}`;
-
+    const requiredQuestionArray = selectedQuestionArray.map((e) => {
+      return {
+        question_id: e.question_id,
+        question_positive_marks: e.question_positive_marks,
+        question_negative_marks: e.question_negative_marks,
+        question_unanswered_marks: e.question_unanswered_marks,
+        test_has_question_id: e.test_has_question_id,
+        section_id: e.section_id,
+      };
+    });
     /** ************************************************* */
     const payload = {
       is_public: postTo.filter((e) => e.isSelected === true)[0].id !== 1,
@@ -238,17 +247,17 @@ const HomeWorkAssigner = (props) => {
       client_id: clientId,
       name: `${userProfile.firstName} ${userProfile.lastName}`,
       batch_array: JSON.stringify(selectedBatches.map((e) => e.client_batch_id)),
-      questions_array: JSON.stringify(selectedQuestionArray.map((e) => e.question_id)),
+      questions_array: JSON.stringify(requiredQuestionArray),
       class_subject: JSON.stringify(testClassSubject), // class_subject_array
       chapter_array: JSON.stringify(currentChapterArray),
       test_duration: testType === 'homework' ? null : testDuration,
       start_time: testType !== 'live test' ? null : getUnixTime(startTimeDate),
       answer_key: answerKey,
     };
-    console.log(testClassSubject);
-    console.log(payload, 'kakakakskdasd');
+    console.log(requiredQuestionArray, 'requiredQuestionArray');
+    console.log(payload, 'addTestandMarksPayload');
 
-    post(payload, '/addTest').then((res) => {
+    post(payload, '/addTestandMarks').then((res) => {
       console.log(res);
       if (res.success) {
         setHomeworkLanguageTypeToStore('');
@@ -304,7 +313,16 @@ const HomeWorkAssigner = (props) => {
     }, 0);
     const startTimeDate = addSeconds(startDateMidnight, startTimeInSeconds);
     const answerKey = null;
-
+    const requiredQuestionArray = selectedQuestionArray.map((e) => {
+      return {
+        question_id: e.question_id,
+        question_positive_marks: e.question_positive_marks,
+        question_negative_marks: e.question_negative_marks,
+        question_unanswered_marks: e.question_unanswered_marks,
+        test_has_question_id: e.test_has_question_id,
+        section_id: e.section_id,
+      };
+    });
     /** ************************************************* */
     const payload = {
       is_public: postTo.filter((e) => e.isSelected === true)[0].id !== 1,
@@ -318,7 +336,7 @@ const HomeWorkAssigner = (props) => {
       client_id: clientId,
       name: `${userProfile.firstName} ${userProfile.lastName}`,
       batch_array: JSON.stringify(selectedBatches.map((e) => e.client_batch_id)),
-      questions_array: JSON.stringify(selectedQuestionArray.map((e) => e.question_id)),
+      questions_array: JSON.stringify(requiredQuestionArray),
       class_subject: JSON.stringify(testClassSubject), // class_subject_array
       chapter_array: JSON.stringify(currentChapterArray),
       test_duration: testType === 'homework' ? null : testDuration,
@@ -328,9 +346,9 @@ const HomeWorkAssigner = (props) => {
       section_id: sectionId,
     };
     console.log(testClassSubject);
-    console.log(payload, 'kakakakskdasd');
+    console.log(payload, 'addTestToCoursePayload');
 
-    post(payload, '/addTestToCourse').then((res) => {
+    post(payload, '/addTestToCourse2').then((res) => {
       console.log(res);
       setCourseAddContentTestIdToStore(testIdd);
       history.push({ pathname: '/courses/createcourse/addcontent', state: { draft } });

@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import Timer from './Timer';
 import Pallette from './Pallette';
 import QuestionCard from './QuestionCard';
-import { post } from '../../../Utilities';
+import { get, apiValidation, post } from '../../../Utilities';
 import { testsActions } from '../../../redux/actions/tests.action';
 import { getClientUserId } from '../../../redux/reducers/clientUserId.reducer';
 import {
@@ -20,6 +20,7 @@ import {
   getTestLanguage,
 } from '../../../redux/reducers/tests.reducer';
 import './QuestionTaker.scss';
+import { analysisActions } from '../../../redux/actions/analysis.action';
 import { firstTimeLoginActions } from '../../../redux/actions/firsttimeLogin.action';
 import { getComeBackFromTests } from '../../../redux/reducers/firstTimeLogin.reducer';
 // import ques from './sampleQuestions';
@@ -43,6 +44,7 @@ class QuestionTaker extends Component {
       modalOpen: false,
       startingResult: false,
       userWantsToLeave: false,
+      userClickedSubmit: false,
       currentLanguage: props.testLanguage === 'hindi' ? 'hindi' : 'english',
     };
   }
@@ -131,7 +133,7 @@ class QuestionTaker extends Component {
       setTestEndTimeToStore,
       testStartTime,
     } = this.props;
-    const { result, userWantsToLeave, timerCurrentTime } = this.state;
+    const { result, userWantsToLeave, userClickedSubmit, timerCurrentTime } = this.state;
     window.removeEventListener('beforeunload', this.onUnload);
     // clearTests();
     if (!userWantsToLeave) setComeBackFromTestsToStore(true);
@@ -140,7 +142,7 @@ class QuestionTaker extends Component {
 
     setTestEndTimeToStore(testStartTime + timerCurrentTime);
 
-    history.push('/');
+    if (!userClickedSubmit) history.push('/');
   }
 
   onUnload = (e) => {
@@ -308,6 +310,36 @@ class QuestionTaker extends Component {
     setTestStartTimeToStore(0);
   };
 
+  goToStudentAnalysis = () => {
+    const {
+      clientUserId,
+      testId,
+      history,
+      setAnalysisSubjectArrayToStore,
+      setAnalysisTestObjectToStore,
+    } = this.props;
+    const { currentLanguage } = this.state;
+    const payload = {
+      test_id: testId,
+      client_user_id: clientUserId,
+    };
+    const subjectAnalysis = get(payload, '/getSubjectAnalysisOfTestForStudentLatest');
+
+    const testAnalysis = get(payload, '/getTestAnalysisForStudentLatest');
+
+    Promise.all([subjectAnalysis, testAnalysis]).then((res) => {
+      const subjects = apiValidation(res[0]);
+      console.log(res, 'promiseArrayTestAnalysis');
+      setAnalysisSubjectArrayToStore(subjects);
+      setAnalysisTestObjectToStore({ ...res[1], name: 'Test Analysis' });
+      console.log(subjects, 'aaaaaa');
+      history.push({
+        pathname: '/analysis/studentanalysis',
+        state: { language: currentLanguage, name: 'Test Analysis', fromTest: true },
+      });
+    });
+  };
+
   testSubmissionAlert = () => {
     const { history } = this.props;
 
@@ -319,8 +351,8 @@ class QuestionTaker extends Component {
       customClass: 'Assignments__SweetAlert',
     }).then((res) => {
       if (res.isConfirmed) {
-        this.setState({ userWantsToLeave: true });
-        history.push('/');
+        this.setState({ userWantsToLeave: true, userClickedSubmit: true });
+        this.goToStudentAnalysis();
       }
     });
   };
@@ -581,6 +613,12 @@ const mapDispatchToProps = (dispatch) => {
     setComeBackFromTestsToStore: (payload) => {
       dispatch(firstTimeLoginActions.setComeBackFromTestsToStore(payload));
     },
+    setAnalysisTestObjectToStore: (payload) => {
+      dispatch(analysisActions.setAnalysisTestObjectToStore(payload));
+    },
+    setAnalysisSubjectArrayToStore: (payload) => {
+      dispatch(analysisActions.setAnalysisSubjectArrayToStore(payload));
+    },
   };
 };
 
@@ -604,4 +642,6 @@ QuestionTaker.propTypes = {
   setTestResultArrayToStore: PropTypes.func.isRequired,
   comeBackFromTests: PropTypes.bool.isRequired,
   clearTests: PropTypes.func.isRequired,
+  setAnalysisTestObjectToStore: PropTypes.func.isRequired,
+  setAnalysisSubjectArrayToStore: PropTypes.func.isRequired,
 };

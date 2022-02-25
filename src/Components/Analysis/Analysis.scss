@@ -178,11 +178,11 @@
   &__Marks {
     position: absolute;
     top: 15%;
-    right: 40%;
+    right: calc(50% - 37px);
 
-    @include media-breakpoint-up(sm) {
-      right: 45%;
-    }
+    // @include media-breakpoint-up(sm) {
+    //   right: 45%;
+    // }
     // @include media-breakpoint-up(xxl) {
     //   right: 48%;
     // }

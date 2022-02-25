@@ -54,7 +54,7 @@ const FeeCarousel = (props) => {
   }, [carouselObject]);
 
   const goToSettlementPage = () => {
-    history.push({ pathname: '/teacherfees/settlementaccout' });
+    history.push({ pathname: '/teacherfees/accountdetails' });
   };
 
   return (

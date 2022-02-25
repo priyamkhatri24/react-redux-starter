@@ -9,6 +9,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Row from 'react-bootstrap/Row';
 import { courseActions } from '../../redux/actions/course.action';
 import { post } from '../../Utilities';
+import './Courses.scss';
 
 const Content = (props) => {
   const {
@@ -127,7 +128,7 @@ const Content = (props) => {
         </Row>
         {section.map((elem, i) => {
           return (
-            <div className='LiveClasses__adminCard p-2 m-3' style={{ position: 'relative' }}>
+            <div className='Courses__adminCard p-2 m-3' style={{ position: 'relative' }}>
               <div className='Courses__twoButtons'>
                 <div
                   className={
@@ -146,7 +147,7 @@ const Content = (props) => {
                 </div>
                 {section.length > 1 && (
                   <div
-                    className='Profile__edit text-center py-1'
+                    className='Courses__edit2 text-center py-1'
                     onClick={() => deleteSection(elem.section_id)}
                     role='button'
                     onKeyDown={() => deleteSection(elem.section_id)}
@@ -156,7 +157,7 @@ const Content = (props) => {
                   </div>
                 )}
               </div>
-              <h6 className='LiveClasses__adminHeading mb-2 mx-2'>Section {i + 1}</h6>
+              <h6 className='Courses__adminHeading mb-2 mx-2'>Section {i + 1}</h6>
               {!elem.isUpdate && (
                 <p className='mt-2 mx-2 Courses__motiDetail'>{elem.section_name}</p>
               )}

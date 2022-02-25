@@ -67,6 +67,10 @@
       width: 60px;
       height: 60px;
     }
+
+    &__moreVertModalBodydiv {
+      font-family: 'Montserrat-Medium';
+    }
   }
 
   // &__playerWrapper {
@@ -137,6 +141,14 @@
     background-color: $lightestBlue;
   }
 
+  &__edit2 {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: $lightestBlue;
+    width: 42px;
+  }
+
   &__tinySubHeading {
     font-family: $regular;
     font-size: $spacer * 0.625;
@@ -177,10 +189,36 @@
     }
   }
 
+  &__adminCardTime {
+    font-size: $spacer * 0.875;
+    font-family: 'Montserrat-Regular';
+    color: $disabledGrey;
+  }
+
+  &__adminDuration {
+    font-size: $spacer * 0.75;
+    font-family: 'Montserrat-Medium';
+    color: $dashboardGrey;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  &__adminHeading {
+    font-family: 'Montserrat-SemiBold';
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
   &__image {
     @include media-breakpoint-down(sm) {
       padding-left: 0;
     }
+  }
+
+  &__adminCard {
+    border: 1px solid $disabledGrey;
+    border-radius: 5px;
   }
 
   &__displayImage {
@@ -201,6 +239,11 @@
       width: 100%;
     }
   }
+
+  &__adminDuration > span {
+    color: var(--primary-blue);
+  }
+
   &__mycoursesvideoplayer {
     height: auto;
     display: flex;
@@ -737,6 +780,9 @@
 }
 .scrollableTabsForCourses::-webkit-scrollbar {
   display: none;
+}
+.Courses__moreVertModalBodydiv {
+  font-family: 'Montserrat-Medium';
 }
 .TextOnImage {
   display: flex;

@@ -46,6 +46,7 @@ const PreviewQuestions = (props) => {
     clientUserId,
     setTestClassSubjectToStore,
     setTestNameToStore,
+    setSelectedQuestionArrayToStore,
   } = props;
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [assignmentName, setAssignmentName] = useState(testName);
@@ -132,6 +133,7 @@ const PreviewQuestions = (props) => {
           return e;
         });
         setSelectedQuestions(withMarks);
+        // setSelectedQuestionArrayToStore(withMarks);
         setFullPaperMarks([
           { id: 1, name: 'Correct', value: 1, color: 'rgba(0, 151, 0, 1)' },
           { id: 2, name: 'Incorrect', value: 0, color: 'rgba(255, 0, 0, 1)' },
@@ -231,6 +233,7 @@ const PreviewQuestions = (props) => {
         return elem;
       });
       setSelectedQuestions(updatedMarks);
+      // setSelectedQuestionArrayToStore(updatedMarks);
     } else {
       console.log(sectionedQuestion, id, name, value);
       const updatedMarks = sectionedQuestion.map((elem) => {
@@ -293,6 +296,7 @@ const PreviewQuestions = (props) => {
           obj.test_has_question_id = e.testHasQuestions_id;
           obj.question_positive_marks = e.question_positive_marks;
           obj.question_negative_marks = e.question_negative_marks;
+          obj.question_id = e.question_id;
           obj.question_unanswered_marks = e.question_unanswered_marks;
           return obj;
         });
@@ -310,13 +314,14 @@ const PreviewQuestions = (props) => {
               obj.question_positive_marks = e.question_positive_marks;
               obj.question_negative_marks = e.question_negative_marks;
               obj.question_unanswered_marks = e.question_unanswered_marks;
+              obj.question_id = e.question_id;
               return obj;
             });
             return objArray;
           })
           .flat();
       }
-
+      setSelectedQuestionArrayToStore(questionArray);
       post(
         { question_array: JSON.stringify(questionArray) },
         '/updateMarksAndSectionsOfQuestionsInTest',
@@ -456,7 +461,9 @@ const mapDispatchToProps = (dispatch) => {
     setTestClassSubjectToStore: (payload) => {
       dispatch(homeworkActions.setTestClassSubjectToStore(payload));
     },
-
+    setSelectedQuestionArrayToStore: (payload) => {
+      dispatch(homeworkActions.setSelectedQuestionArrayToStore(payload));
+    },
     setTestNameToStore: (payload) => {
       dispatch(homeworkActions.setTestNameToStore(payload));
     },
@@ -481,5 +488,6 @@ PreviewQuestions.propTypes = {
   testId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
   setTestClassSubjectToStore: PropTypes.func.isRequired,
+  setSelectedQuestionArrayToStore: PropTypes.func.isRequired,
   setTestNameToStore: PropTypes.func.isRequired,
 };

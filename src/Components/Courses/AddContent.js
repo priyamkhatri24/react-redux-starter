@@ -66,8 +66,6 @@ const AddContent = (props) => {
   const handleOpen = () => setShowModal(true);
   const handleImageOpen = () => setShowImageModal(true);
   const handleImageClose = () => setShowImageModal(false);
-  // const courseImage = useRef('');
-  // const courseVideo = useRef('');
   const courseVideoRef = useRef(null);
   const courseImageRef = useRef(null);
   const courseFileRef = useRef(null);
@@ -88,18 +86,6 @@ const AddContent = (props) => {
 
   useEffect(() => {
     if (courseAddContentTestId) {
-      // const newOrder = courseSectionPriorityOrder + 1;
-      // const payload = {
-      //   section_id: sectionId,
-      //   test_array: JSON.stringify([{ test_id: courseAddContentTestId, order: newOrder }]),
-      //   is_draft: draft,
-      //   client_user_id: clientUserId,
-      // };
-      // post(payload, '/addSectionContentLatest').then((res) => {
-      //   console.log(res, 'test id');
-      //   getSectionContent();
-      //   setCourseSectionPriorityOrderToStore(newOrder);
-      // });
       setCourseAddContentTestIdToStore(0);
     }
   }, [
@@ -287,7 +273,6 @@ const AddContent = (props) => {
         });
         console.log(res, 'uploadedResponse');
 
-        // postImageToSection(file.name, res.filename, type);
         postImageToSection(res, type);
       });
     }
@@ -401,6 +386,65 @@ const AddContent = (props) => {
     });
   };
 
+  const makeContentFree = (item, freeOrPaid) => {
+    console.log(item);
+    console.log(content);
+    const newContent = content.map((elem) => {
+      if (elem.id === item.id) {
+        elem.is_free = freeOrPaid;
+      }
+      return elem;
+    });
+    const newItems = newContent.map((e, i) => {
+      const elem = {
+        priority_order: i + 1,
+        id: e.id,
+        content_type: e.content_type,
+        is_free: e.is_free,
+      };
+      return elem;
+    });
+
+    const payload = {
+      section_id: sectionId,
+      content_array: JSON.stringify(newItems),
+    };
+    post(payload, '/rearrangeSectionContent').then((res) => {
+      if (res.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text:
+            freeOrPaid === 'true'
+              ? 'Selected content is made free. Users can now access this content without subscribing the course.'
+              : 'Content is paid. Users cannot access this content without subscribing to the course.',
+          confirmButtonText: `OK`,
+        });
+        setContent(newContent);
+      }
+    });
+  };
+
+  const renameContent = async (item, newName) => {
+    console.log(item);
+    const payload = {
+      sction_id: sectionId,
+      id: item.id,
+      content_type: item.content_type,
+      name: newName,
+    };
+    console.log(payload);
+    const newContent = content.map((elem) => {
+      if (elem.id === item.id) {
+        elem.name = newName;
+      }
+      return elem;
+    });
+    setContent(newContent);
+    const res = await post(payload, '/renameSectionContent');
+    return res;
+  };
+
   return (
     <div>
       <PageHeader title={sectionName} customBack handleBack={handleBackButton} />
@@ -408,77 +452,13 @@ const AddContent = (props) => {
       <div style={{ marginTop: '5rem' }}>
         <ContentRow
           removeSection={removeSection}
+          makeContentFree={makeContentFree}
+          renameContent={renameContent}
           openTheContent={openTheContent}
           handleDragEnd={handleDragEnd}
           content={content}
+          updateContent={setContent}
         />
-        {/* <DragDropContext>
-          {Object.keys(content).length > 0 &&
-            content.map((elem) => {
-              return (
-                <Row
-                  className='LiveClasses__adminCard p-2 m-2'
-                  key={elem.id}
-                  style={{ border: '1px solid rgba(112, 112, 112, 1)', borderRadius: '5px' }}
-                >
-                  <Col
-                    xs={2}
-                    onClick={() =>
-                      openTheContent(
-                        elem.content_type === 'file' ? elem.file_type : elem.content_type,
-                        elem,
-                      )
-                    } // eslint-disable-line
-                  >
-                    <AssignmentIcon />
-                  </Col>
-                  <Col xs={8}>
-                    <Button
-                      style={{
-                        backgroundColor: '#fff',
-                        borderColor: '#fff',
-                        padding: 0,
-                        textAlign: 'left',
-                        width: '100%',
-                      }}
-                      variant='light'
-                      onClick={() =>
-                        openTheContent(
-                          elem.content_type === 'file' ? elem.file_type : elem.content_type,
-                          elem,
-                        )
-                      } // eslint-disable-line
-                    >
-                      <h6 className='LiveClasses__adminHeading mb-0'>{elem.name}</h6>
-                      <p className='LiveClasses__adminCardTime mb-0' />
-
-                      <p className='LiveClasses__adminDuration mb-0'>
-                        Type:{' '}
-                        <span>
-                          {elem.content_type === 'file' ? elem.file_type : elem.content_type}
-                        </span>
-                      </p>
-                    </Button>
-                  </Col>
-                  <Col xs={2} className='d-flex justify-content-center align-items-center p-0'>
-                    <Button
-                      onClick={() => removeSection(elem)}
-                      style={{
-                        backgroundColor: '#fff',
-                        borderColor: '#fff',
-                        zIndex: '9',
-                        width: '100%',
-                        textAlign: 'center',
-                      }}
-                      variant='light'
-                    >
-                      <CloseIcon />
-                    </Button>
-                  </Col>
-                </Row>
-              );
-            })}
-        </DragDropContext> */}
       </div>
       <Modal show={showModal} onHide={handleClose} centered>
         <Modal.Header closeButton>
@@ -580,17 +560,6 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(mapStateToProps, mapDispatchToProps)(AddContent);
 
 AddContent.propTypes = {
-  // history: PropTypes.shape({
-  //   push: PropTypes.func.isRequired,
-  //   location: PropTypes.shape({
-  //     state: PropTypes.shape({
-  //       testId: PropTypes.number,
-  //       draft: PropTypes.bool,
-  //       videoId: PropTypes.string,
-  //       title: PropTypes.string,
-  //     }),
-  //   }),
-  // }).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   sectionId: PropTypes.number.isRequired,
   courseId: PropTypes.number.isRequired,

@@ -15,7 +15,7 @@ const SettlementPage = (props) => {
   const [vendorDetails, setVendorDetails] = useState({});
 
   const goToEditPayment = () => {
-    history.push({ pathname: '/teacherfees/editpaymentdetails', state: { vendorDetails } });
+    history.push({ pathname: '/teacherfees/editaccountdetails', state: { vendorDetails } });
   };
 
   useEffect(() => {
