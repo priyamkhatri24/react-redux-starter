@@ -25,8 +25,7 @@ const EditPayment = (props) => {
     history.location.state.vendorDetails.bank.accountNumber,
   );
   const [ifsc, SetIfsc] = useState(history.location.state.vendorDetails.bank.ifsc);
-  const [radioSelect1, SetRadioSelect1] = useState('');
-  const [radioSelect2, SetRadioSelect2] = useState('');
+  const [radioBtn, setRadioBtn] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -38,7 +37,7 @@ const EditPayment = (props) => {
       ifsc_code: ifsc,
       type: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
       client_id: clientId,
-      account_type: radioSelect1 ? 'cashfreeone' : 'cashfree',
+      account_type: radioBtn,
     };
     post(data, '/editCashFreeAccountDetails').then((res) => {
       console.log(res);
@@ -135,8 +134,8 @@ const EditPayment = (props) => {
               <Col xs='auto'>
                 <Form.Check
                   type='radio'
-                  value={radioSelect1}
-                  onChange={(event) => SetRadioSelect1(event.target.value)}
+                  value={radioBtn}
+                  onChange={(event) => setRadioBtn('cashfree')}
                   name='select'
                   id='autoSizingCheck'
                   className='mb-2'
@@ -149,9 +148,9 @@ const EditPayment = (props) => {
               <Col xs='auto'>
                 <Form.Check
                   type='radio'
-                  value={radioSelect2}
+                  value={radioBtn}
                   name='select'
-                  onChange={(event) => SetRadioSelect2(event.target.value)}
+                  onChange={(event) => setRadioBtn('cashfreeone')}
                   id='autoSizingCheck'
                   className='mb-2'
                   // defaultChecked=''

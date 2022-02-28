@@ -13,6 +13,7 @@ const PlyrVideoPlayer = (props) => {
     youtube: { noCookie: false, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
   };
   const [quality, setQuality] = useState(480);
+  const [expandedNote, setExpandedNote] = useState(false);
   const [linkArray, setLinkArray] = useState('');
   const [currentTime, setCurrentTime] = useState(0);
   const [source, setSource] = useState({
@@ -34,15 +35,15 @@ const PlyrVideoPlayer = (props) => {
       console.log(playerRef.current.plyr);
       /* eslint-disable */
       playerRef.current.plyr.config.quality = {
-        default: 480,
+        default: 'Normal',
         forced: true,
-        selected: 480,
+        selected: 'Normal',
         onChange: function (e) {
           this.selected = e;
           console.log(e);
           setQuality(e);
         },
-        options: [480, 360, 240],
+        options: [360, 480, 240],
       };
     }
   }, [playerRef]);
@@ -124,6 +125,23 @@ const PlyrVideoPlayer = (props) => {
       <PageHeader transparent />
       <div className='plyrComponent__overall'>
         {renderVideoPlayer}
+        {expandedNote ? (
+          <p
+            onClick={() => setExpandedNote(false)}
+            className='plyrComponent__noteBelowVideo mx-3 my-2'
+          >
+            <span className='boldNote'>NOTE :</span> If video does not appear, try to change the
+            video quality to 360p or 240p while we convert the current video quality in a supported
+            format, this process may take few minutes.
+          </p>
+        ) : (
+          <p
+            onClick={() => setExpandedNote(true)}
+            className='plyrComponent__noteBelowVideo mx-3 my-2'
+          >
+            <span className='boldNote'>NOTE:</span> If video does not appear...
+          </p>
+        )}
         {videoId && <Comments videoId={videoId} />}
       </div>
     </>

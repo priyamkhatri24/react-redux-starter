@@ -111,7 +111,9 @@ const Comments = (props) => {
           );
         })
       ) : (
-        <p style={{ fontFamily: 'Montserrat-SemiBold' }}>No comments to show</p>
+        <p className='mx-2' style={{ fontFamily: 'Montserrat-SemiBold' }}>
+          No comments to show
+        </p>
       )}
       <div ref={end} />
       <footer style={{ position: 'fixed', bottom: '20px', width: '100%' }}>

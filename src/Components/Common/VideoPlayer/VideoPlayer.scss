@@ -19,3 +19,16 @@
   height: 80vh !important;
   overflow: auto;
 }
+
+.plyrComponent__noteBelowVideo {
+  font-family: 'Montserrat-Regular';
+  font-size: 12px;
+  // width: 97%;
+  // margin: 2px auto;
+  cursor: pointer;
+}
+
+.boldNote {
+  font-family: 'Montserrat-Bold';
+  color: var(--primary-blue);
+}

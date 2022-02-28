@@ -253,6 +253,22 @@
   &__questionImgContainer {
     text-align: center;
   }
+
+  &__modalButton {
+    background-color: white;
+    border: transparent;
+    outline: none;
+    font-family: 'Montserrat-Regular';
+    margin: 7px 0px;
+    cursor: pointer;
+  }
+
+  &__modalDiv {
+    border: 1px solid rgb(172, 172, 172);
+    border-radius: 10px;
+    margin: 20px 0px;
+    // cursor: pointer;
+  }
 }
 
 .react-datepicker-wrapper {

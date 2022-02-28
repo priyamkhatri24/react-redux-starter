@@ -225,7 +225,7 @@ const QuestionList = (props) => {
           }{' '}
           selected of {questions.length}
         </span>
-        <div className='ml-auto'>
+        <div className='ml-auto hideOnMobileHW'>
           <Button
             variant='customPrimarySmol'
             onClick={() => {

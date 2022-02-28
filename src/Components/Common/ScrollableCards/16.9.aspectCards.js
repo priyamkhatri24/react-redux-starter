@@ -87,7 +87,7 @@ export const AspectCards = (props) => {
       >
         {!noAddCard && (
           <Card
-            className='Scrollable__aspectCardContent text-center m-2 justify-content-center align-items-center'
+            className='Scrollable__aspectCardContent text-center m-1 justify-content-center align-items-center'
             style={{
               boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)',
               fontSize: '17px',
@@ -110,8 +110,8 @@ export const AspectCards = (props) => {
                 <Card
                   className={
                     bigAspectCard
-                      ? 'text-center m-2 Scrollable__aspectCardBig'
-                      : 'Scrollable__aspectCardContent text-center m-2'
+                      ? 'text-center m-1 Scrollable__aspectCardBig'
+                      : 'Scrollable__aspectCardContent text-center m-1'
                   }
                   key={`elem+${elem.homepage_section_file_id}`}
                   style={cardStyle}

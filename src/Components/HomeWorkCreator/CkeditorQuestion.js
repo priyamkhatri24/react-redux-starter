@@ -740,31 +740,6 @@ const CkeditorQuestion = (props) => {
               onChange={(e) => updateAnswerText(e.target.value)}
               className='questionTextarea'
             />
-            {/* <span className='Homework__ckAttach mt-1'>
-            <label htmlFor='file-inputer'>
-              {solutionImage ? (
-                <CancelIcon
-                  style={{ width: '30px', marginTop: '8px' }}
-                  onClick={() => {
-                    setTimeout(() => {
-                      updateSolutionImage('');
-                    }, 100);
-                  }}
-                />
-              ) : (
-                <AttachFileIcon style={{ width: '19px', marginTop: '8px' }} />
-              )}
-              {!solutionImage && (
-                <input
-                  id='file-inputer'
-                  type='file'
-                  style={{ display: 'none' }}
-                  onChange={(e) => getAttachment(e, 'solution')}
-                  accept='*'
-                />
-              )}
-            </label>
-          </span> */}
           </div>
         ) : null}
         <div className='d-flex questionUpperC my-2 mx-3'>

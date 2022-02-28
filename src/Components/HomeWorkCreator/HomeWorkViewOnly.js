@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ReactToPrint from 'react-to-print';
 import Card from 'react-bootstrap/Card';
-import Row from 'react-bootstrap/Row';
+import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import {
   getHomeworkLanguageType,
@@ -33,8 +33,10 @@ const HomeWorkViewOnly = (props) => {
   } = props;
 
   const componentRef = useRef();
+  const [showMarkingModal, setShowMarkingModal] = useState(false);
 
   const modifyQuestions = () => {
+    setShowMarkingModal(false);
     if (testsType === 'saved') {
       setSelectedQuestionArrayToStore(questionArray);
       questionArray.forEach((ele) => {
@@ -56,6 +58,7 @@ const HomeWorkViewOnly = (props) => {
       pathname: '/homework/assign',
       state: { draft, onlyNext, testIdd, courseId, sectionId },
     });
+    setShowMarkingModal(false);
   };
   return (
     <>
@@ -80,7 +83,7 @@ const HomeWorkViewOnly = (props) => {
       </Card>
       <div className='viewOnlyBtnContainer m-auto'>
         {!noButton && (
-          <Button variant='customPrimary' onClick={() => goToAssigner()}>
+          <Button variant='customPrimary' onClick={() => setShowMarkingModal(true)}>
             Next
           </Button>
         )}
@@ -100,6 +103,28 @@ const HomeWorkViewOnly = (props) => {
           )}
         />
       </div>
+
+      <Modal show={showMarkingModal} centered onHide={() => setShowMarkingModal(false)}>
+        <Modal.Header closeButton>
+          <span style={{ fontFamily: 'Montserrat-Bold' }}>Edit the marking scheme</span>
+        </Modal.Header>
+        <Modal.Body>
+          <div className='Homework__modalDiv'>
+            <button type='button' className='Homework__modalButton' onClick={() => goToAssigner()}>
+              Continue with existing marking scheme
+            </button>
+          </div>
+          <div className='Homework__modalDiv'>
+            <button
+              type='button'
+              className='Homework__modalButton'
+              onClick={() => modifyQuestions()}
+            >
+              Edit the marking scheme
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
     </>
   );
 };
