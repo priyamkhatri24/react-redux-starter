@@ -2,8 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import AddIcon from '@material-ui/icons/Add';
+import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
+import ArrowForwardIosRoundedIcon from '@material-ui/icons/ArrowForwardIosRounded';
 import Modal from 'react-bootstrap/Modal';
 import './ScrollableCards.scss';
+import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu';
+import HorizontalScroll from 'react-scroll-horizontal';
 import useWindowDimensions from '../../../Utilities/utilities';
 
 export const AspectCards = (props) => {
@@ -52,6 +56,40 @@ export const AspectCards = (props) => {
 
   const bigScreen = isScreenBig();
 
+  // console.log(data);
+  // console.log(section);
+  function LeftArrow() {
+    const { isFirstItemVisible, scrollPrev } = React.useContext(VisibilityContext);
+    console.log(isFirstItemVisible);
+    return (
+      // <div
+      //   role='button'
+      //   style={{ display: 'flex', alignItems: 'center' }}
+      //   disabled={isFirstItemVisible}
+      //   onClick={() => scrollPrev()}
+      //   onKeyDown={() => scrollPrev()}
+      // >
+      //   Prev
+      // </div>
+      <ArrowBackIosRoundedIcon onClick={() => scrollPrev()} />
+    );
+  }
+
+  function RightArrow() {
+    const { isLastItemVisible, scrollNext } = React.useContext(VisibilityContext);
+
+    return (
+      <div
+        role='button'
+        style={{ display: 'flex', alignItems: 'center' }}
+        disabled={isLastItemVisible}
+        onClick={() => scrollNext()}
+        onKeyDown={() => scrollNext()}
+      >
+        Next
+      </div>
+    );
+  }
   return (
     <>
       <Modal show={showImageModal} onHide={closeImageModal} centered>
@@ -75,6 +113,7 @@ export const AspectCards = (props) => {
           )}
         </Modal.Body>
       </Modal>
+
       <section
         className='Scrollable__card'
         ref={scrollableRef}
@@ -104,61 +143,65 @@ export const AspectCards = (props) => {
         )}
 
         <div className='aspectCardsInnerContainer'>
-          {data.length > 0 &&
-            data.map((elem, index) => {
-              return (
-                <Card
-                  className={
-                    bigAspectCard
-                      ? 'text-center m-2 Scrollable__aspectCardBig'
-                      : 'Scrollable__aspectCardContent text-center m-2'
-                  }
-                  key={`elem+${elem.homepage_section_file_id}`}
-                  style={cardStyle}
-                  onClick={() => {
-                    clickCard(elem);
-                    showCardOnModal(elem);
-                  }}
-                >
-                  {elem.file_type === 'video' ? (
-                    /* eslint-disable */
-                    <video
-                      // height={bigAspectCard ? '177px' : '113px'}
-                      // width={bigAspectCard ? '315px' : '200px'}
-                      style={{ borderRadius: '5px' }}
-                      muted
-                      autoplay='autoplay'
-                    >
-                      <source src={elem.file_link} type='video/mp4' />
-                      <track src='' kind='subtitles' srcLang='en' label='English' />
-                    </video>
-                  ) : (
-                    <>
-                      <img
-                        src={elem.file_link}
-                        alt='student'
-                        className='appearAfter1Second'
+          <ScrollMenu LeftArrow={LeftArrow} RightArrow={RightArrow}>
+            {/* <HorizontalScroll> */}
+            {data.length > 0 &&
+              data.map((elem, index) => {
+                return (
+                  <Card
+                    className={
+                      bigAspectCard
+                        ? 'text-center m-2 Scrollable__aspectCardBig'
+                        : 'Scrollable__aspectCardContent text-center m-2'
+                    }
+                    key={`elem+${elem.homepage_section_file_id}`}
+                    style={cardStyle}
+                    onClick={() => {
+                      clickCard(elem);
+                      showCardOnModal(elem);
+                    }}
+                  >
+                    {elem.file_type === 'video' ? (
+                      /* eslint-disable */
+                      <video
                         // height={bigAspectCard ? '177px' : '113px'}
                         // width={bigAspectCard ? '315px' : '200px'}
-                        style={{
-                          borderRadius: '5px',
-                        }}
-                      />
-                      <img
-                        src={NoPreview}
-                        alt='student'
-                        className='dissapearAfter1Second'
-                        // height={bigAspectCard ? '177px' : '113px'}
-                        // width={bigAspectCard ? '315px' : '200px'}
-                        style={{
-                          borderRadius: '5px',
-                        }}
-                      />
-                    </>
-                  )}
-                </Card>
-              );
-            })}
+                        style={{ borderRadius: '5px' }}
+                        muted
+                        autoplay='autoplay'
+                      >
+                        <source src={elem.file_link} type='video/mp4' />
+                        <track src='' kind='subtitles' srcLang='en' label='English' />
+                      </video>
+                    ) : (
+                      <>
+                        <img
+                          src={elem.file_link}
+                          alt='student'
+                          className='appearAfter1Second'
+                          // height={bigAspectCard ? '177px' : '113px'}
+                          // width={bigAspectCard ? '315px' : '200px'}
+                          style={{
+                            borderRadius: '5px',
+                          }}
+                        />
+                        <img
+                          src={NoPreview}
+                          alt='student'
+                          className='dissapearAfter1Second'
+                          // height={bigAspectCard ? '177px' : '113px'}
+                          // width={bigAspectCard ? '315px' : '200px'}
+                          style={{
+                            borderRadius: '5px',
+                          }}
+                        />
+                      </>
+                    )}
+                  </Card>
+                );
+              })}
+            {/* </HorizontalScroll> */}
+          </ScrollMenu>
         </div>
       </section>
     </>

@@ -5,7 +5,6 @@ import './ScrollableCards.scss';
 
 export const ScrollableCards = (props) => {
   const { data } = props;
-
   return (
     <section className='Scrollable__card'>
       {data[0].student_result_information_id &&
