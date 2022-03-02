@@ -1,0 +1,2932 @@
+[33mcommit ea685b24d6110c4b701f78d5645cb2cc6fdbb0d4[m[33m ([m[1;36mHEAD -> [m[1;32mdevelopment[m[33m)[m
+Author: unknown <adityaraj201268@gmail.com>
+Date:   Wed Mar 2 13:30:02 2022 +0530
+
+    commit before new branch
+
+[33mcommit 141f8862794233b5495a6fef6df37aa76311a308[m[33m ([m[1;31morigin/development[m[33m)[m
+Merge: 2c24b69 2876157
+Author: unknown <adityaraj201268@gmail.com>
+Date:   Fri Feb 25 13:37:21 2022 +0530
+
+    Merge branch 'development' of https://gitlab.com/priyamkhatri24/ingenium-web-application into development
+
+[33mcommit 2c24b69e0864ea2b42eab67561b146c1312b7b19[m
+Author: unknown <adityaraj201268@gmail.com>
+Date:   Fri Feb 25 13:35:45 2022 +0530
+
+    bug fixed
+
+[33mcommit 287615703dc526e356322cdf066f2be61558a579[m
+Author: vijay25890 <vijaymore25890@gmail.com>
+Date:   Fri Feb 25 12:51:05 2022 +0530
+
+    comit before pull
+
+[33mcommit 0c5017a6b6a87990d88cc06e80bf7f11b2c11a16[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Feb 21 18:18:40 2022 +0530
+
+    user profile image error fixed
+
+[33mcommit b32b97dab30989137384b94360d60c0bb078994e[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Feb 16 14:42:54 2022 +0530
+
+    attendance monthwise download butotn
+
+[33mcommit da412816208a3433aa092e55c02ec20757ae9179[m
+Merge: 857cb93 5464336
+Author: vijay25890 <vijaymore25890@gmail.com>
+Date:   Mon Feb 14 12:48:30 2022 +0530
+
+    commit before pull
+
+[33mcommit 857cb93b021efbe68538b5bae65ad926aedaafa8[m
+Merge: 9595c66 5acb825
+Author: vijay25890 <vijaymore25890@gmail.com>
+Date:   Mon Feb 14 12:22:11 2022 +0530
+
+    commit before pull
+
+[33mcommit 5464336ca2e2b738551a40fa5dcc00f970d600df[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Feb 14 12:03:32 2022 +0530
+
+    admission form bug fixed
+
+[33mcommit 2b1e8b131134956765a61fdaad3182469c5329bf[m
+Author: unknown <adityaraj201268@gmail.com>
+Date:   Sat Feb 12 20:22:17 2022 +0530
+
+    commit before pull
+
+[33mcommit 161a800015c844f4d4292f31d48f927cd169a707[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Feb 12 14:16:32 2022 +0530
+
+    notice board msg corrected
+
+[33mcommit de4ea7988ce2680a6e0c6b33d2616d27ed63cf3b[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Feb 10 16:13:33 2022 +0530
+
+    media queries corrected
+
+[33mcommit 50b30a614641b86958bfcb979bfd6b28e28e08b1[m
+Merge: 622fdbe 34ae83e
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Feb 10 14:59:34 2022 +0530
+
+    media queries for login flow
+
+[33mcommit 622fdbe3248d39d293cd54369ba10539a34f23ec[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Feb 9 19:02:37 2022 +0530
+
+    alterslideup
+
+[33mcommit 88521a722602a7df7e9ebcbf190241b1ca20c0c2[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Feb 9 18:55:21 2022 +0530
+
+    infinite scroll component added everywhere and scrollable cards placeholder
+
+[33mcommit 34ae83ee11c4ab7e944fe9ee16d10444a8a114be[m[33m ([m[1;31morigin/aditya_new[m[33m, [m[1;32maditya_new[m[33m)[m
+Author: unknown <adityaraj201268@gmail.com>
+Date:   Wed Feb 9 17:18:35 2022 +0530
+
+    Login CSS updated
+
+[33mcommit 9595c66f5ff06d6516b08e81810fe661063c7d70[m
+Author: vijay25890 <vijaymore25890@gmail.com>
+Date:   Mon Feb 7 17:07:32 2022 +0530
+
+    commit before pull
+
+[33mcommit 20cbeff08267a4422373267ef3befc9a8ffda486[m
+Merge: 8585796 5acb825
+Author: unknown <adityaraj201268@gmail.com>
+Date:   Mon Feb 7 16:40:53 2022 +0530
+
+    Merge branch 'development' of https://gitlab.com/priyamkhatri24/ingenium-web-application into development
+
+[33mcommit 85857969dd686164289a4dad19aeae32168c7364[m
+Author: unknown <adityaraj201268@gmail.com>
+Date:   Mon Feb 7 16:40:15 2022 +0530
+
+    pull
+
+[33mcommit 5acb825d1240ce0b1188f5795dee53f0b6caf550[m
+Merge: 4482b36 d6340d4
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Feb 7 15:48:54 2022 +0530
+
+    attendance and fees feature updated
+
+[33mcommit 4482b36908fa37b93ad9f5e423a1095a8b7aa22e[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Feb 3 11:29:39 2022 +0530
+
+    commit before pull
+
+[33mcommit 74922e596725ae8263e533fd34d28e4632a1a16d[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Feb 3 11:26:18 2022 +0530
+
+    commit before pull
+
+[33mcommit d6340d439645b2486545e784d8fff1d45b0a4ff4[m
+Merge: 6b9be77 0c5ebd5
+Author: vijay25890 <vijaymore25890@gmail.com>
+Date:   Wed Feb 2 15:49:08 2022 +0530
+
+    fee page
+
+[33mcommit 6b9be77cc7478e6dc3a4e21f544d5a2e9708e129[m
+Author: vijay25890 <vijaymore25890@gmail.com>
+Date:   Wed Feb 2 13:17:09 2022 +0530
+
+    add
+
+[33mcommit c9608b8938e2d54f8834a9a0aa5733f4017cd466[m
+Author: vijay25890 <vijaymore25890@gmail.com>
+Date:   Wed Feb 2 12:15:21 2022 +0530
+
+    add
+
+[33mcommit 0c5ebd5b4c539b8d83b6b21e0576c1ff473a9089[m
+Author: unknown <adityaraj201268@gmail.com>
+Date:   Wed Feb 2 10:46:42 2022 +0530
+
+    attendance updated
+
+[33mcommit 1993dcbaff5e6fb45ff14a559e26799fd92d4732[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Jan 25 15:43:05 2022 +0530
+
+    app stories developing
+
+[33mcommit 5e3735800c8f2b2e017a9aae27594595133a0355[m
+Author: unknown <adityaraj201268@gmail.com>
+Date:   Sat Jan 22 16:24:24 2022 +0530
+
+    added downloader
+
+[33mcommit 6abecfd2cde09b07f42d72b70e0ae3dd9edd59fa[m
+Merge: 6a9e95a 815abea
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Jan 22 13:06:24 2022 +0530
+
+    status viewing feature added
+
+[33mcommit 6a9e95acb226d2a278425dfd2f1e2c3c1760e06d[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Jan 20 15:38:38 2022 +0530
+
+    20-1-22
+
+[33mcommit b4018ad7b8ef82b2eea0a5689ba7798e0b8605d9[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Jan 20 15:34:33 2022 +0530
+
+    20-1-22
+
+[33mcommit 815abea4e8c4417320c9c0288d58864f21cc90bc[m[33m ([m[1;31morigin/stories_branch[m[33m)[m
+Author: unknown <adityaraj201268@gmail.com>
+Date:   Thu Jan 20 14:54:50 2022 +0530
+
+    stories component added
+
+[33mcommit 385bd1d226c71772debfa5c26548aae05a36e403[m
+Merge: 3c98c98 e941b2e
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Jan 17 03:34:13 2022 +0530
+
+    pagination completed accept attendence plus offline assignments done
+
+[33mcommit 3c98c988b0ef44b94175d22b47b29c901b13c8af[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Jan 15 12:16:50 2022 +0530
+
+    commit before pull
+
+[33mcommit e941b2eeca7d5e87ee00f3f8c087f431859bb3f6[m
+Merge: 61d89b0 8eeaa39
+Author: vijay25890 <vijaymore25890@gmail.com>
+Date:   Fri Jan 14 18:31:13 2022 +0530
+
+    pagination added
+
+[33mcommit 61d89b0edf534f198cb828337974b117f0df520f[m
+Author: vijay25890 <vijaymore25890@gmail.com>
+Date:   Fri Jan 14 18:25:15 2022 +0530
+
+    pagination added
+
+[33mcommit 8eeaa390e6a1ce2fffbd355f2277c1f17df795d7[m
+Author: unknown <adityaraj201268@gmail.com>
+Date:   Fri Jan 14 17:39:53 2022 +0530
+
+    pagination updated
+
+[33mcommit 3d3db14a4fa034ce2fb4fa60515790fd154a5c6b[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Jan 10 16:57:02 2022 +0530
+
+    youtube vidId filter improved
+
+[33mcommit e2faa82c93a245cfcc2bcd65be8f24b82b06607f[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Jan 8 18:58:59 2022 +0530
+
+    hindi language test error fixed
+
+[33mcommit fec3e43e0bb575d576e8b2dd8152065e9efd91f3[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Jan 7 22:34:07 2022 +0530
+
+    multiple options HWcreator
+
+[33mcommit 6299f0ba1567409b6a1435630d185a836caada17[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Jan 7 12:48:42 2022 +0530
+
+    features inaccessible
+
+[33mcommit 107e5d27676d9e21a647cd8611235f012000998c[m[33m ([m[1;31morigin/p2[m[33m)[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Jan 5 22:42:33 2022 +0530
+
+    invalid url added plus fees apis corrected
+
+[33mcommit 57aabbbf546c824d7f6a656afa4871bcdfcaf560[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Jan 1 15:30:31 2022 +0530
+
+    dynamic cards changes
+
+[33mcommit 37159988057b329f087f33f669206721102f7014[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Dec 31 19:01:14 2021 +0530
+
+    test delete added
+
+[33mcommit 5ad1e1d15a1051807b3b6e223072430ec731ed6f[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Dec 31 10:17:07 2021 +0530
+
+    wide screen design made
+
+[33mcommit 745d207fd644e60bf37b29c2c70e78f7262ea025[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Dec 27 17:41:36 2021 +0530
+
+    video upload restriction added
+
+[33mcommit fb6790a1a249d88b1a1b373c8cf0a5d8305ee489[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Dec 27 15:46:11 2021 +0530
+
+    css fixed for videos
+
+[33mcommit b22762fba8d006f5636a06562df1bbc0de25bcf3[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Dec 27 15:30:51 2021 +0530
+
+    videos card completed
+
+[33mcommit a25a037f3d7520c520f0e7543c89ab422ceab210[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Dec 24 13:54:55 2021 +0530
+
+    online assignments page completed for prod
+
+[33mcommit 773d76892a0a661e55fc63b04c19a72f920a5f15[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Dec 24 12:04:24 2021 +0530
+
+    commit before checkout
+
+[33mcommit 778cb09cc23c72492b581354bbb44e0446462eb3[m
+Merge: 6d9235d 002c44e
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Dec 24 12:01:59 2021 +0530
+
+    online assignments page merged
+
+[33mcommit 6d9235d43e20636d70416c12b2afe27c6f5c3183[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Dec 23 18:05:52 2021 +0530
+
+    commit before merge
+
+[33mcommit 7520ad58e4f7faa197ecd2205dba879117879250[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Dec 23 18:02:54 2021 +0530
+
+    online assignments page css edited
+
+[33mcommit 002c44e196ec902e335f744e60e18c9f7b419fbf[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Dec 23 15:33:48 2021 +0530
+
+    courses test addition bug solved
+
+[33mcommit 4e74e4fcdedfabdb4afddd97689b78bcf783692c[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Dec 22 16:17:01 2021 +0530
+
+    bottom nav and search removed temporarily
+
+[33mcommit fe4909a2e4ce1e876395f47c26d7c19049d8e7d4[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Dec 21 20:51:49 2021 +0530
+
+    large screen media
+
+[33mcommit 7502bfcbede1aa5043a068ef3601af34d544bc4f[m
+Merge: 0a3b5c0 052c629
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Dec 21 20:39:53 2021 +0530
+
+    large screens media started
+
+[33mcommit 0a3b5c03c76b8117f9393514634918b373227efd[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Dec 21 19:43:12 2021 +0530
+
+    merged with production
+
+[33mcommit f30b78aacf69d39105341886524e8c0bd96f4a49[m
+Merge: d0ad12e 6373ba9
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Dec 21 19:38:09 2021 +0530
+
+    merged with production
+
+[33mcommit 052c629478935ecdb488e538922afda5c53f7a1e[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Dec 21 14:22:07 2021 +0530
+
+    before checkout
+
+[33mcommit 6c25376446287ec0e37d7795fac1059f177497a4[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Dec 21 14:16:39 2021 +0530
+
+    commit before checkout
+
+[33mcommit 6373ba9604c9ce421e44e68bbccdaf23e20392ed[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Dec 17 11:40:47 2021 +0530
+
+    dashboard img-fluid corrected plus app color and text color added
+
+[33mcommit 81b375fea387c8f3ce28a89c7865f4f13f5e6471[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Dec 16 13:20:03 2021 +0530
+
+    tagline and client name dynamic color
+
+[33mcommit 275ab772cea134eaae1043e4d71ffb8ff1b6c1da[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Dec 16 11:46:34 2021 +0530
+
+    video player quality added plus dynamic card new
+
+[33mcommit e1a15dcbb76e0fa97f027d863ec4f889f98877e8[m
+Author: unknown <adityaraj201268@gmail.com>
+Date:   Wed Dec 15 16:56:02 2021 +0530
+
+    fixed live tests bug
+
+[33mcommit 241571fd9396a78e7af69fe4382b3486af6b809e[m
+Author: unknown <adityaraj201268@gmail.com>
+Date:   Sat Dec 11 16:25:33 2021 +0530
+
+    implemented search bar
+
+[33mcommit 4c3f68627307d06c3b90b042c58d9cee535f93d0[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Dec 10 11:39:25 2021 +0530
+
+    aspect changes for desktop
+
+[33mcommit be83971ad9380784accb98ce3faddbd087aa3735[m
+Author: unknown <adityaraj201268@gmail.com>
+Date:   Thu Dec 9 18:13:12 2021 +0530
+
+    added Online Assignments page
+
+[33mcommit d0ad12e2539617dedc28b97fafec5de5c3e1a533[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Dec 8 23:39:13 2021 +0530
+
+    new prod
+
+[33mcommit 0d15b8ee164f6dc9be2b77019d31e68052f3d82e[m
+Merge: 69ed40c bf2d070
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Dec 8 23:35:01 2021 +0530
+
+    new production merged
+
+[33mcommit bf2d0703895dab52003225723d9307266b91a8af[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Dec 8 17:34:42 2021 +0530
+
+    bug fixed in bottom Nav
+
+[33mcommit 7b783101539c967f47ca9cd24476b8c37b928f01[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Dec 8 14:25:19 2021 +0530
+
+    HW creator changes and BMNav + search bar completed
+
+[33mcommit bcde3e494c72fc4003792d396e298aa6587e6f10[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Dec 6 11:50:43 2021 +0530
+
+    commit before checkout
+
+[33mcommit 8a98df7bfa66da842e66f33f761e83217f7071e8[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Dec 6 10:15:03 2021 +0530
+
+    Btm Nav desk change minor
+
+[33mcommit 3e3b11ea7d373b3f0f9d410fb78e592e9cbda5fe[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Dec 6 10:10:12 2021 +0530
+
+    bottom Nav added on all pages
+
+[33mcommit 69ed40caa12f25310e4e667913915bd3aab7d57f[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Dec 4 12:19:27 2021 +0530
+
+    admission form button visibility check corrected
+
+[33mcommit fd4ed2457323c9bcd2426bb02c2f5fa310c02cec[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Dec 4 11:10:22 2021 +0530
+
+    commit after adding scrollupbar in btm Nav
+
+[33mcommit 071b07c6d50243e3bf5a3287b5faeeb7711f872b[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Merge: 2862772 0470468
+Author: Priyam Khatri <priyam.k@ingeniumedu.com>
+Date:   Thu Dec 2 12:51:43 2021 +0000
+
+    Merge branch 'production' into 'main'
+    
+    Production
+    
+    See merge request priyamkhatri24/ingenium-web-application!1
+
+[33mcommit 0470468ad3287f251d209df37e4a32cf525193aa[m[33m ([m[1;31morigin/production[m[33m)[m
+Merge: a29db0e 2862772
+Author: Priyam Khatri <priyam.k@ingeniumedu.com>
+Date:   Thu Dec 2 12:49:54 2021 +0000
+
+    Merge branch 'main' into 'production'
+    
+    # Conflicts:
+    #   README.md
+
+[33mcommit a29db0e2db7acef4a345eb3e47eb7ba954d848dc[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Dec 2 18:01:05 2021 +0530
+
+    commiting before pushing to new repo
+
+[33mcommit 5b1e029fc32d215736a61138df0f94250a29cd3e[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Dec 2 17:46:23 2021 +0530
+
+    commit before creating new repo
+
+[33mcommit 286277280fab937ae00a489898db0d788b102db6[m
+Author: Priyam Khatri <priyam.k@ingeniumedu.com>
+Date:   Thu Dec 2 12:13:34 2021 +0000
+
+    Initial commit
+
+[33mcommit caa68cd39b63f6c2d560c146f9630c6a2ee3ca4a[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Dec 2 11:47:18 2021 +0530
+
+    some additional changes in HWcreator
+
+[33mcommit fabbb146fd701f77860af555949bb98717b5ab3c[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Dec 2 00:51:24 2021 +0530
+
+    HWcreator manual addition done
+
+[33mcommit c38905107159d1fccb814d243cd63957905e67d1[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Dec 1 13:41:52 2021 +0530
+
+    test analysis language parsing problem solved
+
+[33mcommit 1bd8939b0b0ae08d3a9dbcc405add41ddcd0bd24[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Dec 1 11:11:22 2021 +0530
+
+    HW creator manual addition design part done
+
+[33mcommit a4a6cf7afee200f0532a5cd47edf829cf79939d2[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Nov 24 16:28:51 2021 +0530
+
+    commit before checkout
+
+[33mcommit c5d4f2b39713f5be780acfa14d1443270920a36d[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Nov 24 14:18:53 2021 +0530
+
+    manual question addition started
+
+[33mcommit 472e88acafc64224c00d57f63ac4d3b05ba79b8a[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Nov 23 19:10:55 2021 +0530
+
+    live classes bugs resolved
+
+[33mcommit d415fdf8d61d8a3f2eeb48677add2da8047851ec[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sun Nov 21 01:11:52 2021 +0530
+
+    live classes schedule btn disabled added
+
+[33mcommit 5774809fcaa1ef1f1584aefbed469d597c95a26c[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sun Nov 21 00:04:00 2021 +0530
+
+    live classes schedule btn disabled added
+
+[33mcommit 77f60d884fac6fbc09e6eb5ed54127f2a177cc07[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Nov 20 13:45:07 2021 +0530
+
+    live test bug resolved
+
+[33mcommit d0bb1a5f5b13a04689639eb1a95ef59acc1c640c[m
+Merge: 0f9ddcf 820dab9
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Nov 18 19:45:34 2021 +0530
+
+    live classes update
+
+[33mcommit 820dab9b29ade788431d2c8fb5ea2a9488c40ac0[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Nov 18 17:40:03 2021 +0530
+
+    live classes completed
+
+[33mcommit 2983115cefefdccd7affaf10609b705d3d494d24[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Nov 13 12:53:50 2021 +0530
+
+    live classes student side comepleted
+
+[33mcommit 0f9ddcf850df4b256b9c6dd95b4ceb58df823774[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Nov 12 12:34:41 2021 +0530
+
+    cashfree coupon payments update
+
+[33mcommit 20aa00dea6957668749452106812e93330b6c802[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Nov 11 16:44:43 2021 +0530
+
+    live classes changes
+
+[33mcommit 82c4016e22caf667475454ff3bc452001e84a0a3[m
+Merge: 5085723 3d51df5
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Nov 1 11:31:04 2021 +0530
+
+    server variable made global
+
+[33mcommit 3d51df5ccadf3596fa85d774e51d3a71b0f1e19b[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Oct 28 14:00:16 2021 +0530
+
+    some addition in conv media
+
+[33mcommit cf2ed3e77f29f538660be347e81b96f3a88e5dea[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Oct 28 13:57:37 2021 +0530
+
+    commit again
+
+[33mcommit ece4b555056055db266073afa7f2d8684eb0b71f[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Oct 28 13:53:45 2021 +0530
+
+    conversations completed for production
+
+[33mcommit 50857231bf73e1b3bbb2b096efacd9546a717881[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Oct 26 14:19:18 2021 +0530
+
+    crm
+
+[33mcommit 6de3a5090d792e8d5c69ec3836637581b3c6f462[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Oct 26 13:12:52 2021 +0530
+
+    media corrections
+
+[33mcommit d671a4c7aad31cfbb11d36ff7594c949a821bc36[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Oct 25 16:14:59 2021 +0530
+
+    crm changes
+
+[33mcommit 160ef88667eee6077a5380b93ec3b6d9e59105c2[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Oct 25 12:51:26 2021 +0530
+
+    conversations completed almost
+
+[33mcommit 4a69cfa110d41a3f508a7a60d415e3e522d69fcf[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Oct 9 16:07:17 2021 +0530
+
+    total suration sending from video player
+
+[33mcommit f3a44961c80a7cdcce20e80952df0718a270aeb5[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Oct 9 14:54:35 2021 +0530
+
+    commit before checkout
+
+[33mcommit b20b237caef1627412d00126db5618c8f1d66f38[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Oct 9 13:09:29 2021 +0530
+
+    some changes in conversations
+
+[33mcommit 2c428a833adaba8e2bb24170836405cc51f6290d[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Oct 9 13:05:40 2021 +0530
+
+    some changes in conversations
+
+[33mcommit 2cf4ed624209dc017708f10baa0cdabd2f6c750f[m
+Merge: dc51963 79ff09f
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Oct 8 12:56:22 2021 +0530
+
+    merge into dev
+
+[33mcommit 79ff09f89c8edbac0b8a2e9f61f232f239329873[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Oct 8 12:52:20 2021 +0530
+
+    merge before checkout
+
+[33mcommit f121c078333957b667dd529ff726f5879e73ea1c[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Oct 8 12:41:26 2021 +0530
+
+    courses complete with percentages
+
+[33mcommit dc51963a30d0b50c88e91979090fca1042dd84b2[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Sep 30 15:36:13 2021 +0530
+
+    socket started
+
+[33mcommit e8b3bc87003f16523146b972ce4a0e6bde095647[m
+Merge: e250794 24bca9a
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Sep 30 13:11:12 2021 +0530
+
+    duration picker corrected
+
+[33mcommit 24bca9aa3a9e29e86c4935d7c7eea3d4163f1f20[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Sep 25 15:20:13 2021 +0530
+
+    homework created approved
+
+[33mcommit e2507942690bc8f9fae132566026ae9b36a6240d[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Sep 22 16:44:09 2021 +0530
+
+    course upload pdf resolved
+
+[33mcommit 10d0c44160eea4a8f725b5743b073906e2094a71[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Sep 22 16:22:15 2021 +0530
+
+    homework creator bugs
+
+[33mcommit dc9fee72a25e2a541a0df275a0c1c3d201cf4db5[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Sep 22 00:39:23 2021 +0530
+
+    download from recording solved
+
+[33mcommit bb39335173f09c1ccf89a02d1f6d4702d03c2b85[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Sep 21 19:38:20 2021 +0530
+
+    homework creator fixed
+
+[33mcommit 6480221d1a536674706b6adf45e5822c6907a8e3[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Sep 20 20:10:04 2021 +0530
+
+    socket commented out
+
+[33mcommit 932948f7ba77914d296b7e55c180c82d0abc18eb[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Sep 20 20:02:45 2021 +0530
+
+    homework creater changes
+
+[33mcommit b1e259fdb31715053952b1e9dbe177f5d9e25168[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Sep 18 20:09:50 2021 +0530
+
+    latest prod with course design
+
+[33mcommit ad5e1774b4a2167151cbc86cb873048a039eedf8[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Sep 17 17:26:59 2021 +0530
+
+    courses major design update
+
+[33mcommit 4705f37d172b3e4f7cddb25048b5d6a6a82a9097[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Sep 8 12:23:31 2021 +0530
+
+    chats desktop major update
+
+[33mcommit 0629406056402451fd24644eec99eb8a76439983[m
+Merge: 1636fe9 922d8d1
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Sep 6 00:43:54 2021 +0530
+
+    dev merged into prod
+
+[33mcommit 922d8d1a9480a0b41ebc54841a9c61a62195e8bd[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Sep 6 00:38:23 2021 +0530
+
+    courses design changed
+
+[33mcommit 1636fe986171e581cf2a85e5b654f4e7352ad001[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Sep 3 16:08:47 2021 +0530
+
+    aspect card long img croppable
+
+[33mcommit dc03498cb031d229d1d76346db2e34eb764a4971[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Sep 3 15:41:01 2021 +0530
+
+    commit before checkout
+
+[33mcommit 2eb7af94c91c8ff25ef9ddecfa566ea53942aec8[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Sep 3 15:36:58 2021 +0530
+
+    image cropper aspect setting
+
+[33mcommit d6863d4ad44a8980adc74872177e4116d8dcdc9b[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Sep 2 12:56:51 2021 +0530
+
+    youtube link feature added
+
+[33mcommit 0c39c0719a28d62ba44552c6ecb1cdb6dae70c13[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Sep 2 12:24:24 2021 +0530
+
+    commit before checkout
+
+[33mcommit 651f0e39666a1dc098e6e08418299d3714f36f1c[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Sep 2 12:20:50 2021 +0530
+
+    youtube link feature added
+
+[33mcommit 66ec37edc5a3a8c29874e8e93b22c92381c439e7[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Aug 31 13:16:25 2021 +0530
+
+    cf notifyUrl error
+
+[33mcommit e268355960542f0ddfae67d3689ee39fb01b57ce[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Aug 31 00:22:57 2021 +0530
+
+    cf customer details error fixed
+
+[33mcommit 54b50a9e498fbb1a2767171d47d1a38ff3e85e30[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Aug 30 16:50:53 2021 +0530
+
+    re-commit
+
+[33mcommit 7725d4c18e148bc04e26bd51dfa6efc57c77b284[m
+Merge: 49775af c24d623
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Aug 30 16:48:53 2021 +0530
+
+    conflicts resolved
+
+[33mcommit c24d62343adbbd768507e26744be50cf8026547c[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Aug 30 16:31:07 2021 +0530
+
+    cashfree for prod
+
+[33mcommit 49775af41cbf56f375428e506333b4060ed9a9f1[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Aug 27 13:03:44 2021 +0530
+
+    course preview video display check
+
+[33mcommit bf92dbe4fd46761b42a61b620c1f0fbea82428c0[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Aug 26 16:01:53 2021 +0530
+
+    scroll down to last fee
+
+[33mcommit 8e0e311ffd8b1baf4552c027c6ac3ef644fcd86f[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Aug 25 13:55:00 2021 +0530
+
+    jistsi rejoin error and client logo on dashboard
+
+[33mcommit 0605190a90d6940de55c02b295a275fe3194deb5[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Aug 25 11:08:20 2021 +0530
+
+    cashfree redirect page added
+
+[33mcommit d629e757d95e7572dc44afa3128b54180a666775[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Aug 24 16:50:50 2021 +0530
+
+    xls file downloading in analysis
+
+[33mcommit 195eff7f24ee7211a070ef6372883d0fb5cd03b4[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Aug 24 13:17:26 2021 +0530
+
+    again
+
+[33mcommit c61325ff50321cf818c1b707989c57fb51c27803[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Aug 24 13:13:57 2021 +0530
+
+    cashfree test hosted
+
+[33mcommit 727eba47f6e5637eb3051175f09dc59e20906fa2[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Aug 21 13:55:51 2021 +0530
+
+    mov 3gp flv also added in study bin
+
+[33mcommit b9534a7d6345c84ed0342b5a238c63d138ebd63b[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Aug 21 13:53:53 2021 +0530
+
+    mp3 and mkv file supported in studybin
+
+[33mcommit 85fd10a434640850ac58d65e5fe553d0850bf71e[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Aug 21 13:39:51 2021 +0530
+
+    recommit
+
+[33mcommit 6fe1df87fb8315b402bbd19875a5e326aaad8480[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Aug 21 13:36:15 2021 +0530
+
+    cashfree paymentSplits implemented
+
+[33mcommit b91acaf617f44f86763107ec54e02347cda81b97[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Aug 19 21:09:03 2021 +0530
+
+    build time modified
+
+[33mcommit d8038bc2d1c972749d400d54447551420a8cdafa[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Aug 19 21:06:04 2021 +0530
+
+    zoom in and out and video enabled in testimonials
+
+[33mcommit 2d1c07841ae9841b8044f4bda90abe6f5ee9f573[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Aug 19 18:11:55 2021 +0530
+
+    build made
+
+[33mcommit e4ab4a05f6913e793f598fb19b70a933c07ca321[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Aug 19 17:10:36 2021 +0530
+
+    testimonials click popup added
+
+[33mcommit bb9c2eb50fd76c71928c077d3b127e2a19e650c0[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Aug 19 15:34:07 2021 +0530
+
+    recommiting
+
+[33mcommit 4004c3b5af59de686d8a201645f08c1bd11ad39f[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Aug 19 15:25:38 2021 +0530
+
+    cashfree added on fees and preloader improved
+
+[33mcommit 7f179e7a4a3d128a7b0bd0fa487c4b3936ef4e86[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Aug 17 22:47:53 2021 +0530
+
+    cashfree added to fee for testing
+
+[33mcommit 1ff12d9afcd740eaa4374b47cf14f53d8f2e004a[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Aug 17 13:02:38 2021 +0530
+
+    live classes new design started
+
+[33mcommit afc94c4378e8bdbabef05d51b9ad3c6719c9d94f[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Aug 16 12:07:09 2021 +0530
+
+    commit before merge
+
+[33mcommit 9809ad4060dcfa0188625589302dc762b71d7e38[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Aug 16 11:58:56 2021 +0530
+
+    commit before merge
+
+[33mcommit b5df3138ade135837fb0d15e8ddc3c06a3134540[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sun Aug 15 16:12:44 2021 +0530
+
+    slider added for pdf zoom and comments api error resolved
+
+[33mcommit 27b392c5b6e2f861a6282a71d0fa7c8c5cf3925f[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Fri Aug 13 01:31:09 2021 +0530
+
+    css improved and video player 100vh problem solved
+
+[33mcommit eec5a99bb61388ef6d05c138e5fbf21e46e48877[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Aug 11 01:45:48 2021 +0530
+
+    logo icon made responsive
+
+[33mcommit 2054317ce69a1451f38080d6b8f745c992fede45[m
+Merge: 501938c 025a730
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Sat Aug 7 17:58:19 2021 +0530
+
+    contact detail showing in editprofile, editfee plan fixed
+
+[33mcommit 025a73038f850dea7db720510cb239f09b1dea97[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Aug 5 20:48:26 2021 +0530
+
+    alpha meet sdk method removed
+
+[33mcommit 83c2899f5a9bdab07e38899a011e5c5942caf8e2[m
+Merge: 35aa630 b2d276d
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Aug 5 19:52:17 2021 +0530
+
+    conflicts resolved
+
+[33mcommit 35aa630e23f06fdb052f7b0f5364311f441cb579[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Aug 5 19:43:38 2021 +0530
+
+    sdk method removed from Go alpha live
+
+[33mcommit b2d276d8749a612ad8c5b14a815d9c7d546dacf4[m
+Merge: 4db5219 e676f6d
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Tue Aug 3 11:03:11 2021 +0530
+
+    merged with latest dev changes
+
+[33mcommit 4db52192d5e4f1cb8682becbced96d96c27d66f5[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Tue Aug 3 10:54:32 2021 +0530
+
+    editfee plan partial complete
+
+[33mcommit e676f6ddcd8d4c2acbd368ea572f1e49e632a3ab[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Aug 2 20:32:25 2021 +0530
+
+    resend otp in login flow added
+
+[33mcommit b736bda9d0547ee4624b055037fd75c57b52f530[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Aug 2 18:30:50 2021 +0530
+
+    live classes platform  button check added
+
+[33mcommit 4334355f2b416158b3a337cb4410930ff88aa4b9[m
+Merge: 18e4741 1ca17dd
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Mon Aug 2 17:19:20 2021 +0530
+
+    otp feature added to login flow
+
+[33mcommit 501938c01bdbb308440dfde7da16acabfec54f17[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Mon Aug 2 16:42:13 2021 +0530
+
+    recording are playing correctly
+
+[33mcommit fc0f7afbd2748a3dd878f1c365a89217dd55b952[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Aug 2 10:21:04 2021 +0530
+
+    Create intl input for contact in admissions
+
+[33mcommit c4f4432b279a8ea6788222fa82fcb268891384b1[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sat Jul 31 21:36:01 2021 +0530
+
+    Coursestats on back redirects to stats in course
+
+[33mcommit 18e474118379b6bcfb92be1c4a558117855e86d0[m
+Merge: 093e96a e464b81
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Sat Jul 31 21:10:23 2021 +0530
+
+    Merge branch 'master' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into development
+
+[33mcommit 9c421070b51aef0d17ed1826a4e61c1cc432f861[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Sat Jul 31 19:05:28 2021 +0530
+
+    preloader image fixed
+
+[33mcommit 1ca17dd4b2a75f2b9dabaa882f0303ac0253e5c6[m
+Merge: 52c68d6 093e96a
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Sat Jul 31 18:49:47 2021 +0530
+
+    commit before push
+
+[33mcommit 52c68d6640f4328ab7b972d56a0779686b02b81f[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Sat Jul 31 18:37:08 2021 +0530
+
+     one time plans can be edited
+
+[33mcommit 5cef98fc1cb7bb0f5f9ba0aa618785f1ccfce14a[m
+Merge: 093e96a e464b81
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Jul 29 11:25:28 2021 +0530
+
+    Merge branch 'master' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into development
+
+[33mcommit 093e96a669fefdce3d7cca237e72d6a573dad957[m
+Merge: 1746861 8347023
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Jul 29 05:54:35 2021 +0000
+
+    Merge branch 'React-select-input' into 'development'
+    
+    React select input
+    
+    See merge request sidhant-ingenium/ingenium-web-react!11
+
+[33mcommit 8347023911f644fdabbc29652d45bf5c885813a0[m
+Merge: 197415e 1746861
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Jul 29 11:23:15 2021 +0530
+
+    Merge branch 'development' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into React-select-input
+
+[33mcommit 197415eb8d0ab68a79013e84f5de35e4841c6beb[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Thu Jul 29 10:40:28 2021 +0530
+
+    react select data populating
+
+[33mcommit e464b815ff0fbb7a993bcb8abc4a611f227f0076[m
+Merge: aa67792 1746861
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Jul 29 02:50:04 2021 +0000
+
+    Merge branch 'development' into 'master'
+    
+    Cleaning Project and creating a master branch that is up to date
+    
+    See merge request sidhant-ingenium/ingenium-web-react!10
+
+[33mcommit 42ec4604a32e804e526de1379d3e87f1ef457161[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Wed Jul 28 18:56:35 2021 +0530
+
+    commit before pull
+
+[33mcommit 7edb8731e9da5b95c3435da223884f06ea2e6e9a[m
+Merge: 7769780 9a7a161
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Wed Jul 28 15:45:42 2021 +0530
+
+    chats integrated and dashboardcrad created for chat
+
+[33mcommit 59efc8a70b470438c451a7e9fcac60c9578f6b38[m
+Merge: b4a9304 b470417
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Jul 28 14:38:14 2021 +0530
+
+    react select feature added
+
+[33mcommit 7769780380bba2edea2832d29127add17ac84bc8[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Wed Jul 28 12:55:19 2021 +0530
+
+    socket.io-client version downgraded to 2.2.0
+
+[33mcommit b4a93040ba7ff2d52d7781ca4ac3dae39ec40871[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Wed Jul 28 11:14:21 2021 +0530
+
+    refactoring
+
+[33mcommit b470417b0c0d4d9984d27a6b9cacf5bda43bc46c[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Tue Jul 27 21:50:31 2021 +0530
+
+    add todo for react select+formik
+
+[33mcommit 5ff67d8951d98cdb3556d62a31d5912b81d7e3e2[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Tue Jul 27 21:48:52 2021 +0530
+
+    partial fix for react select in formik
+
+[33mcommit 1746861dfc73a4a85a96282e7fa1db2b26d9837f[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Tue Jul 27 21:12:06 2021 +0530
+
+    Added chat blurb
+
+[33mcommit 770efa8d3a3c17acdc7fb7b1620ee880f54e587c[m
+Author: priyamkhatri24 <68660957+priyamkhatri24@users.noreply.github.com>
+Date:   Tue Jul 27 17:13:12 2021 +0530
+
+    react-select
+
+[33mcommit aa62768a86565ed044b5764f6843878139db4dd6[m
+Merge: 211bec7 9a7a161
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Jul 26 16:44:00 2021 +0530
+
+    merged Chats with current dev branch
+
+[33mcommit 211bec795e3a6aaca2132779e36ca5f3171b5439[m
+Merge: f65459e b748eb9
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Jul 26 16:36:10 2021 +0530
+
+    Merge before Chats
+
+[33mcommit 9a7a161a2c2694c409667018fa0406d444efe42d[m
+Author: Kaushik <aspkaushik@gmail.com>
+Date:   Mon Jul 26 08:39:35 2021 +0530
+
+    [fix] Does component imports
+
+[33mcommit f65459e125f24b0b294b0a67c763afc9eceec860[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri Jul 23 13:52:51 2021 +0530
+
+    Remove console logs
+
+[33mcommit ccf83c8836a5fcbdc7d8207dfe86002b40f7d14c[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jul 22 14:41:05 2021 +0530
+
+    delete button added to recordings
+
+[33mcommit f7bc7447deb1f007e45080514f1c469c7c4777ee[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Wed Jul 21 19:18:35 2021 +0530
+
+    reactIntTel needed in Add details
+
+[33mcommit ad29ecfaa9f46414f4fda72337a68b3c12a0de3d[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Wed Jul 21 15:55:32 2021 +0530
+
+    dasboard card icons fixed
+
+[33mcommit b748eb9f49413e6cfb26e26e1224700bb4b59525[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Tue Jul 20 21:01:29 2021 +0530
+
+    changed streaming in.. to streamed in.. in live classes recordings
+
+[33mcommit 7e6195bbf52b75e583a85d0b51f3b94675c3d7da[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Tue Jul 20 20:53:40 2021 +0530
+
+    commit before push
+
+[33mcommit 1e1425f0918e695c0d8cf6496abbe3828fb7bd82[m
+Merge: 6b51f60 dca4156
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Tue Jul 20 20:51:14 2021 +0530
+
+    recordings are now playing
+
+[33mcommit dca41560130ed1e95fc4f7fb276a1b11d6e01da1[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Jul 19 10:31:16 2021 +0530
+
+    added comments to videoplayer
+
+[33mcommit c396bc2f79b7db05aac64ae8276e22510018ed40[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri Jul 16 19:38:06 2021 +0530
+
+    perf improvements
+
+[33mcommit 6b51f60f25348c8fd295be20e86c09bec743e756[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Fri Jul 16 19:16:34 2021 +0530
+
+    eslint erros fixed and Dasboard cards Icon size fixed
+
+[33mcommit 097bc671a1967e0bbb6587f0eff09f786f9bd1df[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Fri Jul 16 16:43:03 2021 +0530
+
+    some es-lint errors no-unused-vars fixed
+
+[33mcommit 7ad8a5d9e1db5c287466b1abf272672f92859aec[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri Jul 16 15:23:05 2021 +0530
+
+    perf improvements
+
+[33mcommit d6119746f04c858ebb68a9200de0b6598efcd608[m
+Merge: 63c166d f832cee
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jul 15 17:52:06 2021 +0530
+
+    commit berfore mergeMerge branch 'development' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into production
+
+[33mcommit 63c166d2770d0c4a4a18caca3e874444cc902110[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jul 15 17:48:34 2021 +0530
+
+    pdf file viewer fixed
+
+[33mcommit f832cee5565d289b1d8a2380eacbabd5cd8d653f[m
+Merge: c026f17 91aa670
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Jul 15 17:47:05 2021 +0530
+
+    removed aws sdk
+
+[33mcommit c026f17619293126f4d17e250ffb2ca2008361c6[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Jul 15 16:03:18 2021 +0530
+
+    dynamic cards fixed dashboard
+
+[33mcommit 91aa670bd6edef40e1489f638f5764fadc2eaf5c[m
+Merge: 9bfd91e 9aad5fc
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jul 15 14:46:48 2021 +0530
+
+    Merge branch 'production' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into production
+    
+    i
+    taking pull berfore push
+
+[33mcommit 9bfd91ece23b8dfda767bdcc1aa30d1b529ec12c[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jul 15 14:42:31 2021 +0530
+
+    i
+    commit
+
+[33mcommit 650eeaf2110e5fc6617b2066902156cff45da98f[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jul 15 14:33:57 2021 +0530
+
+    Teacher cannot subscribe or pay now & Dashboardcards have now dynamic icons and colours
+
+[33mcommit 83dcda2e93f0b3c670fab0107452184e71ca0851[m
+Author: Kaushik <aspkaushik@gmail.com>
+Date:   Tue Jul 13 11:09:03 2021 +0530
+
+    [fix] Fixes socket versioning
+
+[33mcommit 01e3693e408143be92b8e90e46f54310defccfed[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Fri Jul 9 17:38:35 2021 +0530
+
+    Merge branch 'youtube' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into alpha
+
+[33mcommit 9aad5fc71f904d6be1425074c794880da9b30ff0[m
+Merge: c05a1f2 55097f9
+Author: Kanishk Malethiya <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jul 8 13:53:34 2021 +0000
+
+    Merge branch 'alpha' into 'production'
+    
+    Alpha merge into Prodcution
+    
+    See merge request sidhant-ingenium/ingenium-web-react!9
+
+[33mcommit db6f3df9d1bc59dc2302a740183d9ae379f8baca[m
+Merge: af6b96c e8d3f6b
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Jul 8 19:08:48 2021 +0530
+
+    merged with alpha
+
+[33mcommit af6b96c561adc2981bd397942e92400d64f4f2fb[m
+Merge: d4c598d 1da917c
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Jul 8 19:03:33 2021 +0530
+
+    integrated chats with dev
+
+[33mcommit e8d3f6bc56225c76ec28ea282d2e33d73ece31b6[m
+Merge: c05a1f2 55097f9
+Author: Kanishk Malethiya <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jul 8 13:05:30 2021 +0000
+
+    Merge branch 'alpha' into 'development'
+    
+    Alpha merge into developement
+    
+    See merge request sidhant-ingenium/ingenium-web-react!8
+
+[33mcommit 55097f91ecd41a2a766c4222504674233f0d55fb[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jul 8 18:24:43 2021 +0530
+
+    took a pull from development
+
+[33mcommit 2135fadb954007f76b339d4a2f591541af0b095b[m
+Merge: ea9122e c05a1f2
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jul 8 18:23:59 2021 +0530
+
+    Conflicts resolved
+
+[33mcommit ea9122e15fa7b17b39c380bcae1f387a39c8cb3c[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jul 8 18:19:12 2021 +0530
+
+    Attendance made responsive and UI changes in Login flow
+
+[33mcommit d4c598d5c5ada414f6b49e95575d5fc2b78309fe[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Jul 8 16:13:37 2021 +0530
+
+    before merge
+
+[33mcommit e31e1f413707096cdb5a23939b24b662f5541b1e[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Jul 8 16:08:25 2021 +0530
+
+    fixed recording issue in studybin
+
+[33mcommit 649e78195ba0398a81701894ed23623807e33969[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jul 8 14:59:34 2021 +0530
+
+    login/signup pages improved
+
+[33mcommit e19beec3315eaf5a835104f86df0c937d0ffa2ed[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Jul 8 14:14:08 2021 +0530
+
+    reset service worker changes fixed studybin bugs
+
+[33mcommit 1da917c15dae44c9da239d4c14353701060b6b35[m
+Author: Kaushik <aspkaushik@gmail.com>
+Date:   Wed Jul 7 20:07:57 2021 +0530
+
+    [fix] Fixes issues because of merge conflict
+
+[33mcommit 3554e30b49d49b93ed96e21bf02ee992c48a0c93[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Tue Jul 6 20:41:13 2021 +0530
+
+    course video/Course image issues solved
+
+[33mcommit 56f6a4379fe0c1ca04266693845a2295064d956f[m
+Merge: bd897cd c05a1f2
+Author: kaushik asp <aspkaushik@gmail.com>
+Date:   Tue Jul 6 11:13:36 2021 +0000
+
+    Merge branch 'development' into 'basic-chat'
+    
+    # Conflicts:
+    #   src/App/App.js
+
+[33mcommit bd897cda31f5baec1a3f11329626ad9cd4ef7439[m
+Merge: e351ad0 5e960c9
+Author: Kaushik <aspkaushik@gmail.com>
+Date:   Tue Jul 6 16:41:17 2021 +0530
+
+    [fix] Merge Conflicts
+
+[33mcommit e351ad009ef307901c365cfe89cf4d25f4b949ff[m
+Author: Kaushik <aspkaushik@gmail.com>
+Date:   Tue Jul 6 16:29:58 2021 +0530
+
+    [fix] Removes event listeners
+
+[33mcommit c05a1f2e570c9fb10cca0a8575bdf67d139efe2f[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Tue Jul 6 16:28:36 2021 +0530
+
+    recording fixed
+
+[33mcommit 8504469df37dd6cf48cccb258e631e9a06a5c15a[m
+Author: Kaushik <aspkaushik@gmail.com>
+Date:   Tue Jul 6 15:14:27 2021 +0530
+
+    [feat] Adds image cropper and fixes some issues with posts and comments
+
+[33mcommit 36db18db63206260ff7af73ac61a4d4780b5d059[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Tue Jul 6 12:53:08 2021 +0530
+
+    added OG tags to index.html
+
+[33mcommit 8fe1825743917045a36f7ea011a95fabfae44f8c[m
+Merge: 61a77aa 4822180
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Tue Jul 6 12:52:44 2021 +0530
+
+    Merge branch 'alpha' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into development
+
+[33mcommit 48221803488d09345fb409f1defd60d06158ba76[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Mon Jul 5 21:36:37 2021 +0530
+
+    spinner loader added to studybin
+
+[33mcommit 61a77aa99fac2dceefb1965cf63098be7d95a251[m
+Merge: 7b1b3c7 20860ad
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Jul 5 13:28:37 2021 +0530
+
+    Merge branch 'alpha' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into development
+
+[33mcommit 7b1b3c7c82037a93be1a2591a408b369478f9133[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Jul 5 13:28:14 2021 +0530
+
+    removed script for dynaimc manifest
+
+[33mcommit f7d3f48ee2c62193c03fdfe0e8e810f6ddf0c8df[m
+Merge: 20860ad 5e960c9
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Sat Jul 3 13:45:43 2021 +0530
+
+    Merge branch 'development' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into alpha
+    merge from development
+
+[33mcommit 44c2258f5721cfc4f8dc50e80bf10451c0f41c58[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sat Jul 3 12:39:41 2021 +0530
+
+    begin dynamic meta tags
+
+[33mcommit 5e960c9f1fb0019130407c6a7f3720dda29e6694[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri Jul 2 23:19:00 2021 +0530
+
+    select all fuctionality added
+
+[33mcommit 20860adb7500ba2eb287b86d3147a97a882eabf1[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Fri Jul 2 22:06:29 2021 +0530
+
+    cropper added to course display image and profile image bugs fixed
+
+[33mcommit 95a57198db42d1ceb5d8978e09f6b400acdab408[m
+Merge: 0d4ea55 5ebd93b
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri Jul 2 16:13:59 2021 +0530
+
+    Merge branch 'alpha' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into development
+
+[33mcommit 5ebd93bda89a8ef3738ed656fab7a5bed6561dcd[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jul 1 19:21:02 2021 +0530
+
+    whole dashboard card made clickable
+
+[33mcommit 8746b8b54e76fafed5d73fd7f6afad6020831eba[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jul 1 18:07:23 2021 +0530
+
+    Search functionality added for feesBatches
+
+[33mcommit 0d4ea55b2e215e9b15988bc33ecf1bfcfd2161b9[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Jul 1 17:47:41 2021 +0530
+
+    changed gitlab.yml
+
+[33mcommit 6d2a4764aef2dab8cfbd3df6a2798768f33af3be[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Jul 1 17:42:28 2021 +0530
+
+    created development branch
+
+[33mcommit 0f2b68f48d75bb34f330b805146f0f9447cedb68[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Jul 1 17:41:13 2021 +0530
+
+    fixed recording issue
+
+[33mcommit d89305c7b6ec1e0d9e53404ad28e98b686248695[m
+Merge: c0ec541 08ef07c
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jul 1 17:18:04 2021 +0530
+
+    added back to home button on error page
+
+[33mcommit c0ec5410b7bc014c13b6d7ab5c869a047dfa9507[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jul 1 16:36:17 2021 +0530
+
+    search functionality added in Teachercourses
+
+[33mcommit 08ef07cb2290bb8eda63d3f0c742ae2c0e1bfcfb[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Wed Jun 30 19:55:52 2021 +0530
+
+    completed notifications
+
+[33mcommit c7d7ebc6d2981e462927dde4e50782af23e43a9d[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Wed Jun 30 19:53:14 2021 +0530
+
+    completed notifications
+
+[33mcommit 936ce78a58824778dee70994869116d3e6a203b7[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Wed Jun 30 19:04:50 2021 +0530
+
+    courses UI bugs fixed
+
+[33mcommit 44dd4b47e8ea2b22bcdf83f4d217a88668ced4c9[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Tue Jun 29 17:31:53 2021 +0530
+
+    Solutions in homeworkcreator fixed and assigncourses API changed to assignCourseLatest & debugged
+
+[33mcommit ab499faeb5cb1f5a0d9c7cdbfd055da4ee4049d7[m
+Merge: 034d363 14444ef
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Mon Jun 28 12:34:55 2021 +0530
+
+    Merge branch 'youtube' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into alpha
+
+[33mcommit 034d363088a0e35b60934bb90513c4ece3d25ea1[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Mon Jun 28 12:34:06 2021 +0530
+
+    commit before pull
+
+[33mcommit 14444efff81be3149472d315677bc9af4021aef6[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Jun 28 12:26:59 2021 +0530
+
+    smoothed prettier formatting
+
+[33mcommit 2e62cafac64c7a215e7a2446b484915f63d4adc0[m
+Merge: f055252 2e5d12f
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Jun 28 12:26:19 2021 +0530
+
+    merged with alpha
+
+[33mcommit f05525224333f467e9e4ac285b39c1687906fbb4[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Jun 28 11:44:51 2021 +0530
+
+    fixed firebase no support issue
+
+[33mcommit 2e5d12f5b03c55ac4ee6f7ea503539ca364e1f69[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Sat Jun 26 19:12:18 2021 +0530
+
+    ananlysis made responsive
+
+[33mcommit f966049742ba41db271b19e99f949e76eedfbb32[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Fri Jun 25 22:54:47 2021 +0530
+
+    Class and Subject filter removed from Admissions, Fees, Analysis and Analysis buttons improved
+
+[33mcommit 18ca013685b6fb762f96022d20906b7c4d572cd1[m
+Merge: 15c3250 3250ee0
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri Jun 25 22:38:01 2021 +0530
+
+    added multiple lang support to tests
+
+[33mcommit 15c3250d3f663b51a9a12eb6e5ebc63503455303[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Wed Jun 23 20:08:43 2021 +0530
+
+    multiple languages in analysis added
+
+[33mcommit 3250ee09fb82ccbc4bd8eef2fc8562dcd81995db[m
+Merge: fa7acaf b33ebd0
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Wed Jun 23 19:51:02 2021 +0530
+
+    CRM completed and added popup when delete batch
+
+[33mcommit 06817aabcb2e0ae7ea06c66c18ee91cd2b8e2731[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Wed Jun 23 16:09:14 2021 +0530
+
+    courses test error fixed
+
+[33mcommit fa7acaf20ad994f2c382b279695041b79a85caa2[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Tue Jun 22 17:01:19 2021 +0530
+
+    dashboard headings improved and CRM.js created
+
+[33mcommit b33ebd0a6f23739e6086862e9230048dcfe7e714[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Tue Jun 22 16:46:46 2021 +0530
+
+    partial notification done
+
+[33mcommit 9b6704df7e698a71bc68d1b2a3fa43d52632fa74[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Tue Jun 22 12:38:18 2021 +0530
+
+    separated preloader and login
+
+[33mcommit 003e2e7f35e5411d05a52a6083cd995bf5b30a44[m
+Merge: f29107f 68d616c
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Mon Jun 21 17:47:51 2021 +0530
+
+    conatct-us card, HomeworkcreatorCard, heading and picture on dashboard improved
+
+[33mcommit f29107fca2a31233a8f46928011ba7cbc40d0321[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Mon Jun 21 12:40:53 2021 +0530
+
+    commit
+
+[33mcommit 68d616c85ae0941d7938b4ebed6039872c8d2f1b[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Jun 21 12:34:51 2021 +0530
+
+    created shareable buy course
+
+[33mcommit c6ca5a2f5e54b83c8d9ae7a5790d32c194ea00ee[m
+Merge: c6a323a ed90f9c
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Jun 21 12:26:59 2021 +0530
+
+    Merge branch 'alpha' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into youtube
+
+[33mcommit dc33930e71c32e0274d0bdde7ece11457daa3259[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Mon Jun 21 12:25:32 2021 +0530
+
+    question images fixed in homework and tests
+
+[33mcommit ed90f9c564847c130ff03fce65b36f6770453e4b[m
+Merge: b4f7d30 254b0f9
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Fri Jun 18 18:12:18 2021 +0530
+
+    Merge branch 'youtube' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into alpha
+
+[33mcommit c6a323a811570b2ad609110e7a075aee0ed35893[m
+Merge: 254b0f9 b4f7d30
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri Jun 18 18:05:01 2021 +0530
+
+    Merge branch 'alpha' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into youtube
+
+[33mcommit 254b0f9e76306df6bfc185b451b924e016474f04[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri Jun 18 17:54:48 2021 +0530
+
+    buycourse routes changed
+
+[33mcommit b4f7d3024a5223dcab2c3d85cbe42cdd1d5b28b9[m
+Merge: 88afad5 1faffd4
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Fri Jun 18 17:05:35 2021 +0530
+
+    homework creator flow fixed
+
+[33mcommit 1faffd4fe7da43e680c8cf73979f056e0d45d171[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Jun 17 15:24:48 2021 +0530
+
+    fixed tests student analysis completed
+
+[33mcommit 88afad58f9bc71cab85c7cc43d7c1e61ed1b5d7e[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Wed Jun 16 21:31:57 2021 +0530
+
+    Fees section made responsive
+
+[33mcommit e1ee46381be5b0ebba4d2ea12461fba8e568bf4b[m
+Author: Kaushik <aspkaushik@gmail.com>
+Date:   Tue Jun 15 17:21:11 2021 +0530
+
+    [fix] Latest issues fixed
+
+[33mcommit 17334760d439c19afeb73f5db5694f66b548ca29[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Mon Jun 14 20:41:22 2021 +0530
+
+    Create courses and student fees made responsive
+
+[33mcommit 4ac19e5b8bbae2e2aa21c811af02aa58679bd285[m
+Merge: 81adf92 4f912c3
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sat Jun 12 17:54:24 2021 +0530
+
+    merged with alpha
+
+[33mcommit 81adf927fc0336408815eb55b207b509c2c90983[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sat Jun 12 14:36:12 2021 +0530
+
+    finished live class recordings jitsi web sdk option given
+
+[33mcommit 4f912c341d8ad10f874ee72565d85b77dda8fe68[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Fri Jun 11 22:44:54 2021 +0530
+
+    courses made responsive
+
+[33mcommit dcee148ab663182086874a6a6200cfadc250082f[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jun 10 18:40:18 2021 +0530
+
+    Screens inside Admission page made responsive
+
+[33mcommit b02eb47403da1f762dd0a15c6d2bcd3f6f6798e5[m
+Merge: 057f74d 05fe9a8
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jun 10 12:14:10 2021 +0530
+
+    added custom hook usewindowDimensions
+
+[33mcommit 05fe9a88188d0a5c4ab35fb69e782a886c516155[m
+Merge: eccfe6f 32ac6f5
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Jun 10 11:02:11 2021 +0530
+
+    made admissions responsive
+
+[33mcommit 057f74ddde7658828f681de74ddfbfee4eeb4f89[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jun 10 01:01:31 2021 +0530
+
+    display page improved
+
+[33mcommit eccfe6f28e967ef7119753ee2b176dea6a4fdb91[m
+Merge: 2dd8cef 8313610
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Wed Jun 9 21:31:18 2021 +0530
+
+    fixed fees, live classes, profile, admissions, added userprofile fields in login flow
+
+[33mcommit 32ac6f5b01124cfd02a7a84aeba1dad44a48e493[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Tue Jun 8 20:48:59 2021 +0530
+
+    Admissions Page made responsive
+
+[33mcommit 2dd8cef137815b820b8bcd3f77008f19c7d8410a[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Jun 7 21:46:01 2021 +0530
+
+    fixed homeworkcreator
+
+[33mcommit 8313610f1a1bf61bf71d67e3e8939a47cf7fd06e[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Mon Jun 7 20:33:29 2021 +0530
+
+    fixed date input in editprofileHoc.js
+
+[33mcommit 7df82439e6965d92f0b494bb2d13933437af3a71[m
+Merge: 2ba9a43 9d1a6d9
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Jun 7 11:52:22 2021 +0530
+
+    Merge branch 'alpha' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into youtube
+
+[33mcommit 2ba9a43cad8407e928231d4bac16f8b64deffb93[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Jun 7 11:51:39 2021 +0530
+
+    fixed course preview video error
+
+[33mcommit 9d1a6d9dc301afbcf1dc94b9831b15c0c0ed0a3a[m
+Merge: 48d9bec 3dc2db5
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Mon Jun 7 11:30:16 2021 +0530
+
+    Merge branch 'youtube' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into alpha
+
+[33mcommit 48d9beca1e6dfe8513fa711572f242462fc091c8[m
+Merge: 5fb0b5a a49615d
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Mon Jun 7 11:29:41 2021 +0530
+
+    post fucntion added to questionslist.js
+
+[33mcommit 3dc2db505ff3ae8ae75514406b01249b01b98f28[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sat Jun 5 21:31:58 2021 +0530
+
+    fixed course coupon homework creater notice bugs
+
+[33mcommit ad351718bdf01b4e1d955b795e2eb8f46eaf0d9d[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sat Jun 5 13:52:00 2021 +0530
+
+    fixed button error on login carousel
+
+[33mcommit 5fb0b5a905826b6ddcf44d8454cac1e8996a1806[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Sat Jun 5 00:02:45 2021 +0530
+
+    commit
+
+[33mcommit a49615ddc8a44152973eccd701de0222d333b50a[m
+Merge: 22b0356 1356637
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri Jun 4 21:35:24 2021 +0530
+
+    added read more component
+
+[33mcommit 22b0356ce481b3015d6183d4615b04a90227879f[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri Jun 4 19:59:52 2021 +0530
+
+    dead commit
+
+[33mcommit 86bde7195bca714f4b938c38a1a52a90932846fe[m
+Merge: 8432d78 bc799c0
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri Jun 4 19:56:54 2021 +0530
+
+    changed recording flow live classes
+
+[33mcommit 1356637d64462f76fe1f57148a73dd54660b3b86[m
+Merge: bc799c0 8b2c712
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Fri Jun 4 17:57:46 2021 +0530
+
+    added read more functionality to live classes batch text
+
+[33mcommit 8432d7873a78f861c8df6ec313cc193c7d45af08[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri Jun 4 12:54:40 2021 +0530
+
+    gap commit
+
+[33mcommit bc799c0ee9db749af9f5a0053c6198a148aa49d7[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jun 3 22:03:02 2021 +0530
+
+    added checks on testimonials, posters on display page
+
+[33mcommit 8b2c712cbbaa4b47b8964bf725a2bd08f6a236a5[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Jun 3 21:05:39 2021 +0530
+
+    built custom loader for large files
+
+[33mcommit 8c570151dd35f39e3e2a33c0891aa61cfa7ad4e6[m
+Merge: 8096334 d6138a1
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu Jun 3 11:56:56 2021 +0530
+
+    added state to the loader
+
+[33mcommit 8096334133f9ffb999216104102baa3dc1913ba0[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Wed Jun 2 16:19:20 2021 +0530
+
+    added loader
+
+[33mcommit d6138a1844a0e0b45667e7b679a9fbb220d0d0dd[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Wed Jun 2 16:14:25 2021 +0530
+
+    helper functions for loader
+
+[33mcommit ab56350e6123f2fde5e02a97c3cd8db7cc5d10a5[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Wed Jun 2 16:01:49 2021 +0530
+
+    add aws sdk for multi image upload
+
+[33mcommit 927b0a76fe5d33381ff88239e20aa04ebbdf05bd[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Tue Jun 1 14:02:19 2021 +0530
+
+    fixed client logo and preloader image
+
+[33mcommit 8dabfbe997d11975aea5267445ca527bd38d475c[m
+Merge: c343478 2c74a2f
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Mon May 31 19:07:05 2021 +0530
+
+    Merge branch 'youtube' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into alpha
+
+[33mcommit c3434782947f9e2949f5ec23cf6fbae2477c8e11[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Mon May 31 19:06:34 2021 +0530
+
+    commit
+
+[33mcommit d3e813427cf721582afad439a9d0fcb55657c353[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Mon May 31 18:59:14 2021 +0530
+
+    Noticeboard and Studybin improved
+
+[33mcommit 2c74a2fe033978adcfd397a0f6701c7a5b118c7f[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon May 31 18:57:38 2021 +0530
+
+    fixed profile error
+
+[33mcommit 1ba2ee2af1e26c73d508c855078709e979a7098e[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sun May 30 16:22:17 2021 +0530
+
+    finished display page
+
+[33mcommit 32c9ae68c681ebc42b45ec2c589582ae4c5be1a6[m
+Merge: c3f4364 af537d7
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sun May 30 11:39:28 2021 +0530
+
+    Merge branch 'alpha' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into youtube
+
+[33mcommit c3f436455b2f74f6694f8c3e8e886063d181ee17[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sun May 30 11:39:13 2021 +0530
+
+    commit before mergin with alpha
+
+[33mcommit f49f0a1c842954f7c1c8819ba0749ae539c795c0[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sun May 30 00:41:18 2021 +0530
+
+    made responsive on mobile fixed display form focus on input add button focus and validation
+
+[33mcommit af537d7acb7d2daa370fa79c1f89d8db57f64bd6[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Sat May 29 22:58:42 2021 +0530
+
+    initial commit for dummydashboard
+
+[33mcommit d0eca406bc7906e82a015eaa40a7e12a4db8b6ab[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sat May 29 20:02:03 2021 +0530
+
+    fixed the login flow
+
+[33mcommit c25f8c1ed780579eed26758956da849d2feda000[m
+Merge: 1a3120c a2b5879
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sat May 29 16:25:25 2021 +0530
+
+    Merge branch 'alpha' of https://gitlab.com/sidhant-ingenium/ingenium-web-react into youtube
+
+[33mcommit 1a3120c593245f6a9b151a484e71b5d4b2742954[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sat May 29 16:25:03 2021 +0530
+
+    before mergin alpha commit
+
+[33mcommit a2b58790414457047b51933ce5c3e9a593f01d92[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Sat May 29 16:22:22 2021 +0530
+
+    login flow improved on big screens
+
+[33mcommit aae9a7f66cde409e790d0a3a7cb5d9963360f37b[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sat May 29 15:31:55 2021 +0530
+
+    completed display page
+
+[33mcommit 6c2d29f68c79860131ecfb6c29d8e8eaca0ea152[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Sat May 29 12:01:52 2021 +0530
+
+    font-size made responsive and new branch alpha created
+
+[33mcommit 1061165a981000593fcebffa49ec6dfc05491598[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri May 28 21:32:33 2021 +0530
+
+    add noticeboard changes
+
+[33mcommit 4d144f5f99822f0f7c3f1c9338383ba65d6b5d2f[m
+Merge: e09ab74 a990071
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri May 28 21:30:48 2021 +0530
+
+    merged homepage-flow and newbranch
+
+[33mcommit a990071333586f9beac820d90f5bab6accb8a6fe[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri May 28 21:10:17 2021 +0530
+
+    made display page banners
+
+[33mcommit e09ab741baa5e6a805360625a9eb60c6a7a41949[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Fri May 28 19:08:08 2021 +0530
+
+    noticeboard made responsive
+
+[33mcommit 92d77d9674b170b49602b53ac98b6c67128a74b2[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri May 28 17:33:21 2021 +0530
+
+    created dynamic form with validation displaypage
+
+[33mcommit dc8e46c079a5bc6538b12a06419567c2a27df6db[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Thu May 27 21:50:28 2021 +0530
+
+    study bin responsiveness improved
+
+[33mcommit 5c48166bfd92feffe177f9e9bb53daae2a256884[m
+Merge: 2e7e09f 64ebcc2
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu May 27 15:57:14 2021 +0530
+
+    merged with new branch made responsive
+
+[33mcommit 2e7e09f66e8b3a62f8443a394010a43c0f2b82a1[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu May 27 15:17:33 2021 +0530
+
+    fixed questiontaker bugs
+
+[33mcommit 64ebcc26a4d29ffcc697df9929c2d55d6fab2ab2[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Wed May 26 23:53:21 2021 +0530
+
+    responsiveness added to teacher-view
+
+[33mcommit a5d76331bdd4d209b124f5e480d55f9d6e4e5376[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Wed May 26 20:57:10 2021 +0530
+
+    new login flow completed
+
+[33mcommit 84304aa278480f35613c38c0e4cf49340366579d[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Tue May 25 23:21:46 2021 +0530
+
+    improved dasboard layout for student home screen
+
+[33mcommit 400860e983c483eaed7fc61bc81a493dae89924b[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Tue May 25 09:23:36 2021 +0530
+
+    partial login flow completed
+
+[33mcommit 4db8bbc663cbfdd0170cdfb25bf5d325544946fa[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Mon May 24 23:48:06 2021 +0530
+
+    Responsiveness added to Course cards
+
+[33mcommit b3de9a4e1d23b58ac9259a55c737efffb3c48a9b[m
+Author: Kanishk <kmalethiya@es.iitr.ac.in>
+Date:   Mon May 24 23:44:41 2021 +0530
+
+    Added scrollable responsiveness to coursecards
+
+[33mcommit 4abc6f1fc4118e9f9b8aab6340e55aaf24e7311a[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon May 24 10:03:54 2021 +0530
+
+    partial crop functionality completed
+
+[33mcommit b414fb5436a5c839f2db4b9ec059a34b495f5c93[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri May 21 21:23:20 2021 +0530
+
+    fixed attendance, batch errors
+
+[33mcommit a85afa9f6fd1bb3ca4d264e2cf6cafb1500ce8de[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri May 21 15:21:24 2021 +0530
+
+    partial welcome page
+
+[33mcommit cbb71aaf7b971aa74aeebac90aee52a76abb68e1[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu May 20 17:39:47 2021 +0530
+
+    added zoom meeting id autocomplete
+
+[33mcommit 1c749fc65be1d0f4321a2b658da954a97b57e10c[m
+Merge: e0b1f4d aa67792
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu May 20 11:12:36 2021 +0530
+
+    latest pull from master
+
+[33mcommit aa677923e04b77792f7b46e289f19a8741192069[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu May 20 11:10:19 2021 +0530
+
+    fixed test marks api before starting homepage
+
+[33mcommit e0b1f4dfea6e1bab9b8ea58dfb10f021b4dd14b7[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Wed May 19 18:16:42 2021 +0530
+
+    updated buildtime in package.json
+
+[33mcommit a4dd846f80077ef5855962474f4efa59a11d48f1[m
+Merge: 35fd525 10e947a
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Wed May 19 12:42:50 2021 +0000
+
+    Merge branch 'youtube' into 'master'
+    
+    merge into master before starting modified homepage
+    
+    See merge request sidhant-ingenium/ingenium-web-react!7
+
+[33mcommit 10e947aeb00cf9988050d4b06cac43a50aab8183[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Wed May 19 18:04:09 2021 +0530
+
+    attendance completed
+
+[33mcommit 129ee123c8e5799029a8613deae1a15b99aa8c24[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sat May 15 19:47:00 2021 +0530
+
+    busting cache like a boss
+
+[33mcommit 98dd8b0865f957607637638e71d9ff38203879e5[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu May 13 14:35:30 2021 +0530
+
+    added zoom copy to clipboard
+
+[33mcommit 339fbfbcb0f0f519eedea83920e9762bc2af5dc2[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Tue May 11 18:52:09 2021 +0530
+
+    fixed live classes courses-files and batch update
+
+[33mcommit 8b35de89eb795a9f667c271c3e0780570ca7dd37[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri May 7 22:35:38 2021 +0530
+
+    fixed testimonials added 404
+
+[33mcommit d3669f68e54f7e3bd125d44720ea6e793aa00e9e[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Apr 29 12:24:12 2021 +0530
+
+    add flags to mobile no field
+
+[33mcommit 0a431cb2f5375eb3375920c13f5c1012627f879f[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Apr 19 17:24:54 2021 +0530
+
+    homeworkcreator issue fixed
+
+[33mcommit 782bde451d0674f34b2eeb4b0d026a1e5b942646[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Apr 15 23:46:42 2021 +0530
+
+    change login flow to select user
+
+[33mcommit 3c78c1b2b8d562e0517aebca51dec7213c0d8f73[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Wed Apr 14 14:04:09 2021 +0530
+
+    begin integrating calendar
+
+[33mcommit e7cfe34073e0858ed0066b6fcfcbbdb23981e545[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Apr 12 12:35:56 2021 +0530
+
+    initial analysis completed
+
+[33mcommit 12c50b9a0f85c63007e0cbdeaaac5b6afd6987c0[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Wed Apr 7 18:09:44 2021 +0530
+
+    [fix] Fixes issues with drag handling and infinite scrolling
+
+[33mcommit 32db67630de536f5639057407009aa59dd70e79c[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Wed Apr 7 18:09:22 2021 +0530
+
+    [fix] Updates the deps
+
+[33mcommit 211d323a6c9b2a9a209d2530d438d80b434876cc[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Sat Apr 3 18:20:31 2021 +0530
+
+    [feat] Implements pagination for posts and chats
+
+[33mcommit 1dc1197335fc1774bdc9d562faccf2fc642f7883[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Sat Apr 3 18:19:43 2021 +0530
+
+    [feat] Adds infinite scroll
+
+[33mcommit 41a8b646832abd1be643b83fbd8dcdcb0e63b1b5[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Fri Apr 2 15:22:19 2021 +0530
+
+    [feat] Moves formatting to the new formatter file
+
+[33mcommit 2bc9e09a42295daedca0a5c30993df04d1d0272f[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Fri Apr 2 14:49:13 2021 +0530
+
+    [feat] Finishes reply to and comments and pagination
+
+[33mcommit f5bbae8cbb6b503371af5ddf9a8235e29294e06c[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Fri Apr 2 14:48:37 2021 +0530
+
+    [feat] Adds new deps
+
+[33mcommit 3de8e4603014ba0e12cd17ff7b559744e8912fc0[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Apr 1 16:22:52 2021 +0530
+
+    completed homework creator'
+
+[33mcommit 70e94d5e400ad7d8158517de320580ee0ad3f703[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Wed Mar 31 16:08:27 2021 +0530
+
+    completed homework preview section
+
+[33mcommit 91033af30958b07aecf49058bd8ea34e07b8224d[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri Mar 26 14:20:48 2021 +0530
+
+    completed saved sent assignments
+
+[33mcommit 83bfcd48eda5cb6c2da4aafb0b73da5fff1226b6[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Thu Mar 25 20:10:52 2021 +0530
+
+    [feat] Adds reaction for single post and carousel. Also fixes a bug with messages
+
+[33mcommit b6e242917515a02ce7ed7cbfc7b1f7e8b206e049[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Thu Mar 25 17:52:24 2021 +0530
+
+    [feat] Adds loaders for create post and reactions done
+
+[33mcommit 68e7e4f4bbe5cc32706b850511a318679ba01ae8[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Thu Mar 25 15:14:39 2021 +0530
+
+    [feat] Adds post page and reactions integration. Also includes timestamps for messages
+
+[33mcommit 0037ded4af2d3a6abf429b03bbd559bb97dc6222[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Wed Mar 24 17:59:04 2021 +0530
+
+    [fix] Minor fix for scrolling
+
+[33mcommit 91036062d221619dc855ca7a59e1d11d180870cf[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Wed Mar 24 17:48:33 2021 +0530
+
+    [feat] Working post creating with attachments
+
+[33mcommit f0053517898dc89cc53865d42d1a4ffde54b0155[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Wed Mar 24 15:41:41 2021 +0530
+
+    [feat] Makes camera and audio recording functions work
+
+[33mcommit 619855453672ddfb02f176c2604595cfd9665a50[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Wed Mar 24 13:05:52 2021 +0530
+
+    [feat] Adds bottom sheet for file type selection to create post page
+
+[33mcommit 5d205148c133a3ed255083bf5486a3149ba2c0ed[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Tue Mar 23 19:37:44 2021 +0530
+
+    [feat] Moves sockets to app init and adds styled add discussion page
+
+[33mcommit bbdf069cf95091d813d92680625415f3b0f46199[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Tue Mar 23 14:26:52 2021 +0530
+
+    [feat] Removes chat_ prefix from messages
+
+[33mcommit a5bd1aab712840890a9e19fe5ab343bc6f7f674c[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Tue Mar 23 14:25:34 2021 +0530
+
+    [feat] Adds create post page and moves socket initialization to app start
+
+[33mcommit 91dbc3453cf9185a330c921e377700d8725e03e2[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Mon Mar 22 20:02:43 2021 +0530
+
+    [feat] Major refactoring for socket connection management and upload of files
+
+[33mcommit 5f69d379e48c7c8e633704d2b64f2dca1920c6fa[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Mar 22 15:12:46 2021 +0530
+
+    Revert "pulled chat branch to youtube"
+    
+    This reverts commit 02e0d4f55f090f989e6fef4b2b02f8a208ba83a5, reversing
+    changes made to 14caa6b44624d4ececc60b44ba821ef08c6be513.
+
+[33mcommit 02e0d4f55f090f989e6fef4b2b02f8a208ba83a5[m
+Merge: 14caa6b e7f8188
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Mar 22 12:20:34 2021 +0530
+
+    pulled chat branch to youtube
+
+[33mcommit 14caa6b44624d4ececc60b44ba821ef08c6be513[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Mar 22 11:58:26 2021 +0530
+
+    partial fees module completed
+
+[33mcommit e7f8188e7557da6a8d34f51dc18a3d833ade4c0e[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Sun Mar 21 19:24:50 2021 +0530
+
+    [feat] Adds post and audio components
+
+[33mcommit 20f8d7d315e1f0c0731eab1e896afa920bb12f10[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Sun Mar 21 13:01:36 2021 +0530
+
+    [feat] Adds working component types with dummy data
+
+[33mcommit b79f1945ebb0fea147f33f08c39b83325c2b020e[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Sat Mar 20 21:12:42 2021 +0530
+
+    [feat] Chat working plus minor styling updates
+
+[33mcommit 5c5f2065112efa38db6e319a4b4d13e8ec95071a[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Fri Mar 19 13:15:13 2021 +0530
+
+    [feat] Integrates fetch conversations and messages APIs
+
+[33mcommit a0901157eff7906434794f4bf6b3b6afb951024d[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Fri Mar 19 03:06:17 2021 +0530
+
+    [chore] Removes unused imports
+
+[33mcommit 3b0e70ba601d40227753844f69b5a1f9200a3ec3[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Fri Mar 19 03:04:34 2021 +0530
+
+    [feat] Makes data flow dynamic
+
+[33mcommit b87d1ac08768dfb22cfb6428069c5f971b29a3fd[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Fri Mar 19 02:37:14 2021 +0530
+
+    [feat] Makes headers and input fixed
+
+[33mcommit dc3110c5ec0d1867b34eaa6c60773964f0e13bdb[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Fri Mar 19 02:17:19 2021 +0530
+
+    [feat] Adds customization for how message by author looks like
+
+[33mcommit 873a21431d121123b1b60c722499b8c8883907de[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Fri Mar 19 01:58:51 2021 +0530
+
+    [feat] Adds some more styling and more polished components for chats
+
+[33mcommit 806bb61e591cb9cd13c5b322280818d5daddcf7a[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Thu Mar 18 16:17:57 2021 +0530
+
+    [feat] Adds more components for chat list and focused chat separated based on the content viewport
+
+[33mcommit 267811498f4ae089baf84ecb5d6f43fa1fee17f7[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Tue Mar 16 13:04:22 2021 +0530
+
+    [feat] Makes small styling changes
+
+[33mcommit b140df0e14f5c3a1002cc22b43275ddb9ba9398e[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Sat Mar 13 14:09:00 2021 +0530
+
+    [feat] Small adjustments for badge
+
+[33mcommit a3add01becf34a57967d06ed0f1efe6188f652fe[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Sat Mar 13 14:03:48 2021 +0530
+
+    [feat] Adds notification badges
+
+[33mcommit 4553c48fff9ac92bbbb742cb3c98554d1e4d5dbf[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Sat Mar 13 13:54:15 2021 +0530
+
+    [feat] Adds basic styling for a list of conversations
+
+[33mcommit 6cbb4f632c159041990aedd99c2c39c6ce1b5bf8[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Sat Mar 13 13:15:09 2021 +0530
+
+    [feat] Adds socketio client
+
+[33mcommit 57d4b6eb0b6fefbf2ca5618250dea89d77209d4e[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Sat Mar 13 13:14:50 2021 +0530
+
+    [feat] Adds basic structure for chat
+
+[33mcommit 0d7a5f2a0572a2dca02d39ab66485729acbf2d9b[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Sat Mar 13 13:13:34 2021 +0530
+
+    [feat] Adds basic structure for chat
+
+[33mcommit b5671e3e84b5b24d045043ee50e504f363aa4e22[m
+Author: Kaushik Asp <kaushikasp@Kaushiks-MacBook-Air.local>
+Date:   Sat Mar 13 02:14:22 2021 +0530
+
+    [fix] Moves the function to fix the error on load
+
+[33mcommit 35fd525c26aa05bc7058cf424dfdc2c56bbce3d1[m
+Merge: f94c87d ff2b2ee
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Mar 11 08:06:37 2021 +0000
+
+    Merge branch 'youtube' into 'master'
+    
+    Youtube
+    
+    See merge request sidhant-ingenium/ingenium-web-react!4
+
+[33mcommit ff2b2ee26045301172fe1c536416169f0b4a3872[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Wed Mar 10 19:04:03 2021 +0530
+
+    fixed course preview video issue
+
+[33mcommit 35f4efecb370bfa1c19fac350aaf6825096977f2[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sat Mar 6 11:40:13 2021 +0530
+
+    studybin completed
+
+[33mcommit 753cea036d3d5ca3366add97511e05c5899d87ac[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Tue Mar 2 20:57:06 2021 +0530
+
+    added back button functionality to tests
+
+[33mcommit 6da974f77d57799455fc376f5441df9f7b921f25[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Tue Mar 2 12:38:51 2021 +0530
+
+    fixed test issues demo test timer
+
+[33mcommit f12e788165e0e81f2804704b979328282d1afe30[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sat Feb 27 16:27:03 2021 +0530
+
+    starting tests finished drag and drop
+
+[33mcommit bc457d74f8e636f01522b8bf44ca8a3e75942b11[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Wed Feb 24 20:05:54 2021 +0530
+
+    fixed minor UI issues
+
+[33mcommit 5457eb1b21c08f81105d9e59256baad31786a0f8[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri Feb 19 18:53:15 2021 +0530
+
+    added service worker functionalty
+
+[33mcommit 93807bb5da6ea69ed89e64035514dbb0a3fbd007[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Wed Feb 17 17:22:36 2021 +0530
+
+    commit before upgrading to react 17 fml
+
+[33mcommit d24fb7efc97bbe76d059dbd91879b24b74d4a4d8[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sat Feb 13 14:48:29 2021 +0530
+
+    added skeleton screens
+
+[33mcommit 937b2bf1e2e389c581fe6202c4d9b84c35d3f408[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri Feb 12 18:19:01 2021 +0530
+
+    code split into intitial bundles
+
+[33mcommit ae6552aad03412c3d6637cb14859c26497916cd1[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri Feb 12 13:05:51 2021 +0530
+
+    initial UI fixes
+
+[33mcommit 39021744512d5019398ad01d17f7690f4d5e2236[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Tue Feb 9 16:44:09 2021 +0530
+
+    admissions module completed
+
+[33mcommit 1a4c52fb01f44dee8ba4294b556d546719f45918[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Tue Feb 2 10:36:01 2021 +0530
+
+    partial admissions completed, fixed test module errors
+
+[33mcommit 20aec0cd03093aee59458f6ddd7ecdc2859dc41b[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Jan 25 15:34:23 2021 +0530
+
+    completed course module
+
+[33mcommit f76375befd2f4a449691d47a2fa25b5492912bcd[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Jan 18 20:47:34 2021 +0530
+
+    Partial Courses functionality completed
+
+[33mcommit b08888e09165061b78fc92b61e2b7acd63c4e5b3[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Sun Jan 10 19:25:48 2021 +0530
+
+    intial app for prod deployment student side
+
+[33mcommit e5445f44f8587efc8df6cf9ff0268a82386fa7ad[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Tue Jan 5 12:55:38 2021 +0530
+
+    partial commit before adding plyr
+
+[33mcommit 64d2c02a6bd37824df74e79b8604fe6658ac5f75[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Jan 4 20:49:32 2021 +0530
+
+    courses partially completed
+
+[33mcommit deb0b7b20708cb5023d1f11864e38eca010864a6[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Dec 24 22:22:53 2020 +0530
+
+    partially completed homework creator
+
+[33mcommit c40964b80b35fccfcd3f9a99b6bf7e9ea685bdee[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Thu Dec 24 22:22:27 2020 +0530
+
+    partially completed homework creator
+
+[33mcommit 59df846662c6e0c2f85f080a127abc77e510eec8[m
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Dec 21 15:23:43 2020 +0530
+
+    fixed linting errors
+
+[33mcommit f94c87dae128b0fde045ce16701954522c0716b6[m
+Merge: a05d0f4 f948963
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Wed Dec 16 17:31:26 2020 +0000
+
+    Merge branch 'youtube' into 'master'
+    
+    Youtube
+    
+    See merge request sidhant-ingenium/ingenium-web-react!3
+
+[33mcommit f948963dbf9d44662d8c7d5bb1fd60008d2a4f62[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Wed Dec 16 22:59:34 2020 +0530
+
+    save before upgrading to version 4 react scripts
+
+[33mcommit b75d1aae78afcc333c5259562849248e450bb3fb[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Tue Dec 15 16:51:00 2020 +0530
+
+    built initial homework creator
+
+[33mcommit adf4290e49c61b21414505a54de162253fc22e17[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Thu Dec 3 16:10:42 2020 +0530
+
+    login flow completed
+
+[33mcommit bd7d907894fbf77c4b6f1cb44647a1e8b05c8b84[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Thu Nov 26 13:22:36 2020 +0530
+
+    student flow completed no linting minor issues to be fixed
+
+[33mcommit 869c59c180c5790b069d5b71c2f4f64a384820e2[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Wed Nov 11 12:54:43 2020 +0530
+
+    question taking module initial implementation complete
+
+[33mcommit d729c4066ecb859674ab8d26ada4a75ed769dbcb[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Fri Nov 6 23:15:21 2020 +0530
+
+    partial question taker module completed
+
+[33mcommit fa56f3a0d888ce91a42f8749ec911aa439fc784d[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Thu Nov 5 12:53:07 2020 +0530
+
+    implemented Mathjax parsing
+
+[33mcommit d1afebf28a97599546880a5fa0778c3cea65aaf2[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Wed Nov 4 19:17:08 2020 +0530
+
+    mathjax problems to be resolved incomplete test module
+
+[33mcommit a5053e2fb1fd47603a661fc10bd2b04bd3bfc49f[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Tue Nov 3 23:01:05 2020 +0530
+
+    half of question taker
+
+[33mcommit 1e674017983ff5aae8c3aaf989e1f79221060685[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Mon Nov 2 12:44:26 2020 +0530
+
+    build profile section and noticeboard
+
+[33mcommit e79e363a932e7a16a3cfc73a8d61d2a9bce7602b[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Mon Oct 26 13:00:20 2020 +0530
+
+    incomplete study bin with upload not added
+
+[33mcommit 8d74cbd010e9088c4da670c660ad46518c7cce62[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Tue Oct 20 13:58:31 2020 +0530
+
+    initial videoplayer done
+
+[33mcommit a05d0f4fc2cf4c3c4e3eead0bef7664b19774776[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Mon Oct 19 13:53:43 2020 +0530
+
+    partially completed study bin and video
+
+[33mcommit df9d0525397fd86b0a69d6d0f6a7b239c983c9cf[m
+Merge: 46aa0d5 175116d
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Fri Oct 9 12:26:13 2020 +0000
+
+    Merge branch 'jitsi' into 'master'
+    
+    built liveclasses fuctionality
+    
+    See merge request sidhant-ingenium/ingenium-web-react!2
+
+[33mcommit 175116d5ecdbb91d462011dc18cd1a6970f598ee[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Fri Oct 9 17:24:34 2020 +0530
+
+    built liveclasses fuctionality
+
+[33mcommit 46aa0d5732253de51fe55f58df6209779cf7e04a[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Tue Oct 6 13:01:20 2020 +0530
+
+    built initial live classes functionality
+
+[33mcommit 652b7eb3faed08c13a0480851387058b62b2ba54[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Sat Oct 3 13:19:17 2020 +0530
+
+    fixed styling of input box in login flow
+
+[33mcommit ad418575f801bea0449ff1190393646d8224cd4d[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Thu Oct 1 19:22:10 2020 +0530
+
+    made color scheme dynamic
+
+[33mcommit f311e8e1b0bae8e3527574994fb5eee6133a7139[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Tue Sep 29 10:39:12 2020 +0530
+
+    added dynamic functionality to favicon and doc title
+
+[33mcommit be9d0ddb9322c6be527ba6eff2b4a4f649dd783d[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Fri Sep 25 21:33:42 2020 +0530
+
+    modified netlify.toml
+
+[33mcommit de707a52553663efa15489330ee86be7e1c5d251[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Fri Sep 25 19:39:29 2020 +0530
+
+    added netlify.toml
+
+[33mcommit b280c755ca1a0082d2b049d857b0c239b8062146[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Fri Sep 25 17:42:58 2020 +0530
+
+    fixed linting errors
+
+[33mcommit 9deeb929b55f8bae9756b2d4e19ac7f3fd358ad5[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Mon Sep 21 19:43:19 2020 +0530
+
+    added appspec.yml
+
+[33mcommit 1bdcf6a80823d4019577c73d47c0d886a46228ad[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Mon Sep 21 19:22:41 2020 +0530
+
+    fixed deploy pipeline errors
+
+[33mcommit 2799df6fd8d578efa8d7d5c6f7e1a262204780a6[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Mon Sep 21 19:13:06 2020 +0530
+
+    fixed basic linting errors
+
+[33mcommit 623eee57224c05224fed731fa6b9c3510d9ebd1e[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Mon Sep 21 16:52:14 2020 +0530
+
+    fixed CICD error
+
+[33mcommit 23ab35eb22dcb17c1e2dd4208d0565dc7ba6d3c0[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Mon Sep 21 15:44:00 2020 +0530
+
+    .gitlab-ci.yml changed
+
+[33mcommit 18088a40f0a0a019e766af93724dd31a9b1575ff[m
+Merge: bac3dc5 4b937a9
+Author: Sidhant D <sidhant.d@ingeniumedu.com>
+Date:   Mon Sep 21 10:03:57 2020 +0000
+
+    Merge branch 'react-router-fix' into 'master'
+    
+    React router fix
+    
+    See merge request sidhant-ingenium/ingenium-web-react!1
+
+[33mcommit 4b937a9ce93ffe1fc61c7c1ff284e486988fb2ce[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Mon Sep 21 12:38:47 2020 +0530
+
+    initial dashboard built
+
+[33mcommit 12632e2792560df3e2f4d3583a7043453082d66b[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Mon Sep 7 17:31:20 2020 +0530
+
+    persisted redux store
+
+[33mcommit 0299a2422eebced6394668ffee80e82109570a0c[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Fri Aug 28 12:28:02 2020 +0530
+
+    UI fixes to chat functionality in login
+
+[33mcommit 26a9e5912e31641314d6f47107baa60377209def[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Mon Aug 17 22:40:40 2020 +0530
+
+    initial login flow completed
+
+[33mcommit eadce65cf223f890b9ebd08ff55f8233d59b4ce4[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Fri Aug 7 22:37:54 2020 +0530
+
+    signin flow completed
+
+[33mcommit 274af4b6b79cfc73b8e799067ff837b206c0935a[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Tue Aug 4 18:44:02 2020 +0530
+
+    added redux connected react router
+
+[33mcommit 967a8641ff27573e757c50e6cedbb9a0cd31e583[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Wed Jul 29 18:08:47 2020 +0530
+
+    added basic routing
+
+[33mcommit bac3dc5017d598a4e5ca3faa2a6dd301d64788f6[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Tue Jul 28 02:34:29 2020 +0530
+
+    phoneNo input screen added
+
+[33mcommit da5d05e3be89d740eea9496e0f359a9487541a00[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Mon Jul 27 00:31:22 2020 +0530
+
+    built Preloader
+
+[33mcommit c7545a437d1cb8117d6231600e4d61d15bd3e98a[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Fri Jun 26 13:04:02 2020 +0530
+
+    fixed eslint modified prettier
+
+[33mcommit 49b71d78bb160721410b6a00bcd603dabb2b8042[m
+Merge: 6f29255 2c4a55f
+Author: sidhant-dhar <sdsd011235@gmail.com>
+Date:   Thu Jun 25 17:04:29 2020 +0000
+
+    Merge branch 'spaceX' into 'master'
+    
+    Integrating code
+    
+    See merge request sidhant-dhar/react-starting-template!1
+
+[33mcommit 2c4a55f7938f0563a4e3871d3e9eb6d141b97d78[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Thu Jun 25 19:23:51 2020 +0530
+
+    extended bootstrap functionality
+
+[33mcommit daa99daf305d6ed1ba0fd2723c798e32d0ce9be4[m
+Author: Sidhant <sdsd011235@gmail.com>
+Date:   Thu Jun 25 19:20:41 2020 +0530
+
+    added husky | prettier | react-bootstrap | node-sass to CRA
+
+[33mcommit 6f29255c31629893769fd7c1bbf5513d93a539c5[m
+Author: Krutika Thumma <57256637+krutikathumma@users.noreply.github.com>
+Date:   Tue Jun 23 20:48:26 2020 +0530
+
+    Initial commit
