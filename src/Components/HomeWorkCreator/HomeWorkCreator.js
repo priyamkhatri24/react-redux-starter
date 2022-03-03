@@ -189,6 +189,17 @@ const HomeWorkCreator = (props) => {
             setQuestionArray(newQuestion);
             setQuestionArrayToStore(newQuestion);
             setFilterType('fetched');
+            setCkQuestion('');
+            setCkAnswerArray([
+              { value: '1', image: '', isSelected: false, text: '' },
+              { value: '2', image: '', isSelected: false, text: '' },
+              { value: '3', image: '', isSelected: false, text: '' },
+              { value: '4', image: '', isSelected: false, text: '' },
+            ]);
+            setCkAnswerText('');
+            setCkSolution('');
+            setSolutionImage('');
+            setQuestionImage('');
             // history.push({ pathname: '/homework', state: { letsGo: false } });
           });
         } else {
