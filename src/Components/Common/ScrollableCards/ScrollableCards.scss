@@ -572,3 +572,22 @@
     font-size: 18px;
   }
 }
+
+// 16:9.aspectCards
+
+//disable scrollbar
+.react-horizontal-scrolling-menu--scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.react-horizontal-scrolling-menu--scroll-container {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+//icon css
+
+.arrowIcon {
+  display: flex;
+  align-items: center;
+}
