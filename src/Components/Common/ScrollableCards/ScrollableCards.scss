@@ -29,6 +29,74 @@
     }
   }
 
+  &__arrowIconLeft {
+    height: 113px;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    z-index: 200;
+    background-color: gray;
+    color: white;
+    opacity: 0;
+    transition-duration: 0.3s;
+    margin-top: 8px;
+
+    @include media-breakpoint-up(md) {
+      height: 181px;
+    }
+  }
+
+  &__arrowIconRight {
+    height: 113px;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    margin-top: 8px;
+    background-color: gray;
+    z-index: 200;
+    right: 0px;
+    color: white;
+    transition-duration: 0.3s;
+
+    @include media-breakpoint-up(md) {
+      height: 181px;
+    }
+  }
+
+  &__arrowIconLeftBig {
+    height: 177px;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    z-index: 200;
+    background-color: gray;
+    color: white;
+    opacity: 0;
+    transition-duration: 0.3s;
+    margin-top: 8px;
+
+    @include media-breakpoint-up(md) {
+      height: 283px;
+    }
+  }
+
+  &__arrowIconRightBig {
+    height: 177px;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    margin-top: 8px;
+    background-color: gray;
+    z-index: 200;
+    right: 0px;
+    color: white;
+    transition-duration: 0.3s;
+
+    @include media-breakpoint-up(md) {
+      height: 283px;
+    }
+  }
+
   &__aspectCardBig {
     min-width: 315px;
     height: 177px;
@@ -558,6 +626,10 @@
     min-width: 670px;
     min-height: 378px;
   }
+  .Scrollable__arrowIconLeftBig,
+  .Scrollable__arrowIconRightBig {
+    height: 378px;
+  }
   .aspectCardsInnerContainer {
     margin-bottom: 14px !important;
   }
@@ -565,10 +637,36 @@
     min-width: 485px;
     min-height: 274px;
   }
+  .Scrollable__arrowIconLeft,
+  .Scrollable__arrowIconRight {
+    height: 274px;
+  }
   .Scrollable__coursesInitialHeading {
     font-size: 28px;
   }
   .smallTextUnderHeading {
     font-size: 18px;
   }
+}
+
+// 16:9.aspectCards
+
+//disable scrollbar
+.react-horizontal-scrolling-menu--scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.react-horizontal-scrolling-menu--scroll-container {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+//icon css
+.hoverClass {
+  color: white;
+  border-radius: 100px;
+}
+
+.hoverClass:hover {
+  opacity: 0.7 !important;
 }

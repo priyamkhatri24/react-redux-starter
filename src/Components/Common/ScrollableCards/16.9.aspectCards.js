@@ -2,8 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import AddIcon from '@material-ui/icons/Add';
+import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded';
+import ArrowForwardIosRoundedIcon from '@material-ui/icons/ArrowForwardIosRounded';
 import Modal from 'react-bootstrap/Modal';
 import './ScrollableCards.scss';
+import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu';
 import useWindowDimensions from '../../../Utilities/utilities';
 
 export const AspectCards = (props) => {
@@ -13,6 +16,7 @@ export const AspectCards = (props) => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [modalImage, setModalImage] = useState({});
   const [modalHeading, setModalHeading] = useState(null);
+  const [opacity, setOpacity] = useState(0);
   const cardStyle = {
     height: bigAspectCard ? '177px' : '113px',
     width: bigAspectCard ? '315px' : '200px',
@@ -52,6 +56,46 @@ export const AspectCards = (props) => {
 
   const bigScreen = isScreenBig();
 
+  const LeftArrow = () => {
+    const { isFirstItemVisible, scrollPrev } = React.useContext(VisibilityContext);
+    console.log(isFirstItemVisible);
+    /* eslint-disable  */
+    return (
+      <div
+        style={{ opacity }}
+        role='button'
+        onClick={() => scrollPrev()}
+        className={
+          bigAspectCard
+            ? 'Scrollable__arrowIconLeftBig hoverClass'
+            : 'Scrollable__arrowIconLeft hoverClass'
+        }
+      >
+        <ArrowBackIosRoundedIcon />
+      </div>
+    );
+  };
+
+  const RightArrow = () => {
+    const { isLastItemVisible, scrollNext } = React.useContext(VisibilityContext);
+    /* eslint-disable */
+    return (
+      <div
+        style={{ opacity }}
+        role='button'
+        onClick={() => scrollNext()}
+        className='Scrollable__arrowIconRight'
+        className={
+          bigAspectCard
+            ? 'Scrollable__arrowIconRightBig hoverClass'
+            : 'Scrollable__arrowIconRight hoverClass'
+        }
+      >
+        <ArrowForwardIosRoundedIcon />
+      </div>
+    );
+  };
+
   return (
     <>
       <Modal show={showImageModal} onHide={closeImageModal} centered>
@@ -75,6 +119,7 @@ export const AspectCards = (props) => {
           )}
         </Modal.Body>
       </Modal>
+      {/* 
       <section
         className='Scrollable__card'
         ref={scrollableRef}
@@ -112,6 +157,28 @@ export const AspectCards = (props) => {
                     bigAspectCard
                       ? 'text-center m-1 Scrollable__aspectCardBig'
                       : 'Scrollable__aspectCardContent text-center m-1'
+                  }
+                  key={`elem+${elem.homepage_section_file_id}`}
+                  style={cardStyle}
+                  onClick={() => {
+                    clickCard(elem);
+                    showCardOnModal(elem);
+                  }}
+                >
+                  {elem.file_type === 'video' ? (
+                    <video
+      > */}
+      <div onMouseEnter={() => setOpacity(0.4)} onMouseLeave={() => setOpacity(0)}>
+        <ScrollMenu LeftArrow={LeftArrow} RightArrow={RightArrow}>
+          {data.length > 0 &&
+            data.map((elem, index) => {
+              return (
+                <Card
+                  itemId={`elem+${elem.homepage_section_file_id}`}
+                  className={
+                    bigAspectCard
+                      ? 'text-center m-2 Scrollable__aspectCardBig'
+                      : 'Scrollable__aspectCardContent text-center m-2'
                   }
                   key={`elem+${elem.homepage_section_file_id}`}
                   style={cardStyle}
@@ -159,8 +226,27 @@ export const AspectCards = (props) => {
                 </Card>
               );
             })}
-        </div>
-      </section>
+        </ScrollMenu>
+      </div>
+
+      {!noAddCard && (
+        <Card
+          className='Scrollable__aspectCardContent text-center m-2 justify-content-center align-items-center'
+          style={{
+            boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)',
+            fontSize: '17px',
+            lineHeight: '20px',
+            fontFamily: 'Montserrat-Medium',
+            color: 'var(--primary-blue)',
+          }}
+          onClick={() => clickAddCard(section)}
+        >
+          <span className='my-auto'>
+            <AddIcon /> ADD
+          </span>
+        </Card>
+      )}
+      {/* </section> */}
     </>
   );
 };
