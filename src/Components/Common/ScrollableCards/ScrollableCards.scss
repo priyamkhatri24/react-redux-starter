@@ -39,7 +39,7 @@
     color: white;
     opacity: 0;
     transition-duration: 0.3s;
-    margin-top: 8px;
+    margin-top: 4px;
 
     @include media-breakpoint-up(md) {
       height: 181px;
@@ -51,7 +51,7 @@
     display: flex;
     align-items: center;
     position: absolute;
-    margin-top: 8px;
+    margin-top: 4px;
     background-color: gray;
     z-index: 200;
     right: 0px;
@@ -73,7 +73,7 @@
     color: white;
     opacity: 0;
     transition-duration: 0.3s;
-    margin-top: 8px;
+    margin-top: 4px;
 
     @include media-breakpoint-up(md) {
       height: 283px;
@@ -85,7 +85,7 @@
     display: flex;
     align-items: center;
     position: absolute;
-    margin-top: 8px;
+    margin-top: 4px;
     background-color: gray;
     z-index: 200;
     right: 0px;

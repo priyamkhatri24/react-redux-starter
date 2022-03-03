@@ -177,8 +177,8 @@ export const AspectCards = (props) => {
                   itemId={`elem+${elem.homepage_section_file_id}`}
                   className={
                     bigAspectCard
-                      ? 'text-center m-2 Scrollable__aspectCardBig'
-                      : 'Scrollable__aspectCardContent text-center m-2'
+                      ? 'text-center m-1 Scrollable__aspectCardBig'
+                      : 'Scrollable__aspectCardContent text-center m-1'
                   }
                   key={`elem+${elem.homepage_section_file_id}`}
                   style={cardStyle}
