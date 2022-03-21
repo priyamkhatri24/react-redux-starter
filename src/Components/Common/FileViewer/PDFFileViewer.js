@@ -3,6 +3,17 @@ import PropTypes from 'prop-types';
 import WebViewer from '@pdftron/pdfjs-express-viewer';
 import { getParams } from '../../../Utilities';
 
+let key = '';
+if (process.env.NODE_ENV === 'development') {
+  key = 'q1oxn6WyDRc572siUU5z';
+} else if (process.env.NODE_ENV === 'production' && window.location.origin.includes('askilc')) {
+  key = 'BcBf29XSXBiPpBpG66JY';
+} else if (process.env.NODE_ENV === 'production' && window.location.origin.includes('rypmindia')) {
+  key = 'o1HgM8bBaqhaZtnK3ZIa';
+} else {
+  key = 'gouud4ANiuGZf2TRV8jO';
+}
+
 const FileView = (props) => {
   const { history } = props;
   console.log(window.location.origin);
@@ -33,14 +44,7 @@ const FileView = (props) => {
       //    setFileType(params.fileType);
       url = params.filePath;
     }
-    let key = '';
-    if (process.env.NODE_ENV === 'development') {
-      key = 'q1oxn6WyDRc572siUU5z';
-    } else if (process.env.NODE_ENV === 'production' && window.location.origin.includes('askilc')) {
-      key = 'BcBf29XSXBiPpBpG66JY';
-    } else {
-      key = 'gouud4ANiuGZf2TRV8jO';
-    }
+    // let key = '';
 
     WebViewer(
       {

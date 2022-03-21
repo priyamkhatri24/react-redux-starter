@@ -31,7 +31,7 @@ import ContentCopyIcon from '@material-ui/icons/FileCopy';
 import Modal from 'react-bootstrap/Modal';
 import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
-import { useLongPress, shareThis } from '../../../Utilities/utilities';
+import { shareThis } from '../../../Utilities/utilities';
 import FileIcon from '../../../assets/images/file.svg';
 import 'react-h5-audio-player/lib/styles.css';
 import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';

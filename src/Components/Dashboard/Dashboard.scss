@@ -58,6 +58,14 @@
     }
   }
 
+  &__attendanceScrollable {
+    overflow-x: auto;
+    display: flex;
+  }
+  &__attendanceScrollable::-webkit-scrollbar {
+    display: none;
+  }
+
   &__innovation {
     background: #fff4ec;
     border-radius: 10px;

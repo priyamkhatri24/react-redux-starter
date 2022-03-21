@@ -12,6 +12,7 @@ export const BatchesSelector = (props) => {
   const [selectAllStudents, setSelectAllStudents] = useState(false);
   const [allBatches, setAllBatches] = useState([...batches]);
   const [removedBatches, setRemovedBatches] = useState([]);
+  const [searchString, setSearchString] = useState('');
 
   const batchesLength = useRef(0);
 
@@ -87,24 +88,41 @@ export const BatchesSelector = (props) => {
         <Col xs={6} className='text-center'>
           <h6 className='mb-4'>{title}</h6>
           <div className='Batches__totalBatches'>
+            <label
+              style={{ width: '90%' }}
+              htmlFor='Batches'
+              className='d-flex has-float-label my-2 mx-3'
+            >
+              <input
+                className='form-control'
+                name='Batches'
+                type='text'
+                placeholder='Search batches'
+                onChange={(e) => setSearchString(e.target.value)}
+                value={searchString}
+              />
+              <span>Search batches</span>
+            </label>
             {allBatches.length > 0 &&
-              allBatches.map((elem) => {
-                return (
-                  <Row
-                    className='justify-content-start mb-1 mx-3'
-                    key={`elem${elem.client_batch_id}${elem.batch_name}`}
-                    style={
-                      Object.prototype.hasOwnProperty.call(elem, 'dontShow') && elem.dontShow
-                        ? { display: 'none' }
-                        : {}
-                    }
-                  >
-                    <Button variant='batchCustomNotSelected' onClick={() => selectBatch(elem)}>
-                      {elem.batch_name}
-                    </Button>
-                  </Row>
-                );
-              })}
+              allBatches
+                .filter((ele) => ele.batch_name.toLowerCase().includes(searchString.toLowerCase()))
+                .map((elem) => {
+                  return (
+                    <Row
+                      className='justify-content-start mb-1 mx-3'
+                      key={`elem${elem.client_batch_id}${elem.batch_name}`}
+                      style={
+                        Object.prototype.hasOwnProperty.call(elem, 'dontShow') && elem.dontShow
+                          ? { display: 'none' }
+                          : {}
+                      }
+                    >
+                      <Button variant='batchCustomNotSelected' onClick={() => selectBatch(elem)}>
+                        {elem.batch_name}
+                      </Button>
+                    </Row>
+                  );
+                })}
           </div>
         </Col>
         <Col xs={6} className='text-center'>

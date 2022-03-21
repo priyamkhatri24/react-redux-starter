@@ -26,6 +26,7 @@ import userImage from '../../assets/images/user.svg';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import './NoticeBoard.scss';
 import '../Dashboard/Dashboard.scss';
+import FinalQuestionCard from '../HomeWorkCreator/FinalQuestionCard';
 
 const NoticeBoard = (props) => {
   const { history, clientUserId, clientId, roleArray, currentbranding, userProfile } = props;
@@ -46,6 +47,8 @@ const NoticeBoard = (props) => {
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [noticeType, setNoticeType] = useState('');
   const [editedNotice, setEditedNotice] = useState('');
+  const [sendEveryoneType, setSendEveryoneType] = useState('');
+  const [typeModal, setTypeModal] = useState(false);
 
   const getTopicArray = (type = 'everyone') => {
     const env = prodOrDev();
@@ -110,12 +113,12 @@ const NoticeBoard = (props) => {
         message: newNotice,
         client_user_id: clientUserId,
         client_id: clientId,
-        type: 'client_notice',
+        type: sendEveryoneType,
       };
 
       if (option) {
         const topicArray = getTopicArray();
-        post(payload, '/sendNotice')
+        post(payload, '/sendNoticeToEveryone')
           .then((res) => {
             if (res.success) {
               const newPayload = {
@@ -157,6 +160,8 @@ const NoticeBoard = (props) => {
       setBatchModal(true);
     }
     setShowModal(false);
+    setTypeModal(false);
+    // setNewNotice('');
   };
   const handleShow = () => setShowModal(true);
 
@@ -492,11 +497,7 @@ const NoticeBoard = (props) => {
         </Modal.Header>
         <Modal.Body>
           <p>
-            <Button
-              variant='boldText'
-              className='ml-auto mt-3'
-              onClick={() => handleClose('everyone')}
-            >
+            <Button variant='boldText' className='ml-auto mt-3' onClick={() => setTypeModal(true)}>
               Everyone
             </Button>
           </p>
@@ -519,6 +520,58 @@ const NoticeBoard = (props) => {
             </Button>
           </p>
         </Modal.Body>
+      </Modal>
+
+      <Modal show={typeModal} onHide={() => setTypeModal(false)} centered keyboard={false}>
+        <Modal.Header closeButton>
+          <Modal.Title>Select the type of batch to which you want to send this notice:</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div
+            role='button'
+            tabIndex={-1}
+            className={
+              sendEveryoneType === 'active'
+                ? 'NoticeBoard__modalText NoticeBoard__blueBack'
+                : 'NoticeBoard__modalText'
+            }
+            onKeyDown={() => setSendEveryoneType('active')}
+            onClick={() => setSendEveryoneType('active')}
+          >
+            Active
+          </div>
+          <div
+            role='button'
+            tabIndex={-1}
+            className={
+              sendEveryoneType === 'inactive'
+                ? 'NoticeBoard__modalText NoticeBoard__blueBack'
+                : 'NoticeBoard__modalText'
+            }
+            onClick={() => setSendEveryoneType('inactive')}
+            onKeyDown={() => setSendEveryoneType('inactive')}
+          >
+            Inactive
+          </div>
+          <div
+            tabIndex={-1}
+            role='button'
+            className={
+              sendEveryoneType === 'both'
+                ? 'NoticeBoard__modalText NoticeBoard__blueBack'
+                : 'NoticeBoard__modalText'
+            }
+            onClick={() => setSendEveryoneType('both')}
+            onKeyDown={() => setSendEveryoneType('both')}
+          >
+            Both active and inactive
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='boldText' onClick={() => handleClose('everyone')}>
+            Send
+          </Button>
+        </Modal.Footer>
       </Modal>
 
       <Modal show={showBatchModal} onHide={closeBatchModal} centered>

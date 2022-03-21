@@ -345,45 +345,95 @@ const CRM = (props) => {
                 return (
                   <Accordion key={e.user_id + e.first_name}>
                     <Card
-                      onClick={() => {
-                        setAdmissionUserProfileToStore(e);
-                        history.push('/crm/user');
-                      }}
+                      // onClick={() => {
+                      //   setAdmissionUserProfileToStore(e);
+                      //   history.push('/crm/user');
+                      // }}
                       css={AdmissionStyle.card}
                     >
-                      <Accordion.Toggle as='div' eventKey='0'>
-                        <Row className=' m-0 px-2 my-auto'>
-                          <Col xs={2} sm={1} style={{ paddingTop: '15px' }}>
-                            <img
-                              src={e.profile_image || avatarImage}
-                              alt='avatar'
-                              height='38'
-                              width='38'
-                              css={AdmissionStyle.avatar}
-                            />
-                          </Col>
-                          <Col xs={10} sm={11} style={{ paddingTop: '10px' }}>
-                            <p css={AdmissionStyle.avatarHeading} className='mb-0 mt-2 ml-2'>
+                      <Row className=' m-0 px-2 my-auto'>
+                        <Col
+                          onKeyDown={() => {
+                            setAdmissionUserProfileToStore(e);
+                            history.push('/crm/user');
+                          }}
+                          onClick={() => {
+                            setAdmissionUserProfileToStore(e);
+                            history.push('/crm/user');
+                          }}
+                          role='button'
+                          tabIndex={-1}
+                          xs={2}
+                          sm={1}
+                          style={{ paddingTop: '15px' }}
+                        >
+                          <img
+                            src={e.profile_image || avatarImage}
+                            alt='avatar'
+                            height='38'
+                            width='38'
+                            css={AdmissionStyle.avatar}
+                          />
+                        </Col>
+                        <Col xs={10} sm={11} style={{ paddingTop: '10px' }}>
+                          <p css={AdmissionStyle.avatarHeading} className='mb-0 mt-2 ml-2'>
+                            <span
+                              role='button'
+                              tabIndex={-1}
+                              onKeyDown={() => {
+                                setAdmissionUserProfileToStore(e);
+                                history.push('/crm/user');
+                              }}
+                              onClick={() => {
+                                setAdmissionUserProfileToStore(e);
+                                history.push('/crm/user');
+                              }}
+                            >
                               {`${e.first_name} ${e.last_name}`}
+                            </span>
+                            <Accordion.Toggle as='div' eventKey='0'>
                               <span className='mt-1' style={{ position: 'absolute', right: '2%' }}>
                                 <ExpandMoreIcon />
                               </span>
-                            </p>
+                            </Accordion.Toggle>
+                          </p>
 
-                            <p className='mb-0' css={AdmissionStyle.avatarStatus}>
-                              <PhoneIcon css={AdmissionStyle.onlineIcon} />
-                              +91-{e.contact}
-                            </p>
-                            <p
-                              css={AdmissionStyle.avatarStatus}
-                              className='mb-2 ml-2'
-                              style={{ fontFamily: 'Montserrat-Regular' }}
-                            >
-                              Signup time: {getReadableDate(e.signup_time)}
-                            </p>
-                          </Col>
-                        </Row>
-                      </Accordion.Toggle>
+                          <div
+                            role='button'
+                            tabIndex={-1}
+                            onKeyDown={() => {
+                              setAdmissionUserProfileToStore(e);
+                              history.push('/crm/user');
+                            }}
+                            onClick={() => {
+                              setAdmissionUserProfileToStore(e);
+                              history.push('/crm/user');
+                            }}
+                            className='mb-0'
+                            css={AdmissionStyle.avatarStatus}
+                          >
+                            <PhoneIcon css={AdmissionStyle.onlineIcon} />
+                            +91-{e.contact}
+                          </div>
+                          <div
+                            role='button'
+                            tabIndex={-1}
+                            onKeyDown={() => {
+                              setAdmissionUserProfileToStore(e);
+                              history.push('/crm/user');
+                            }}
+                            onClick={() => {
+                              setAdmissionUserProfileToStore(e);
+                              history.push('/crm/user');
+                            }}
+                            css={AdmissionStyle.avatarStatus}
+                            className='mb-2 ml-2'
+                            style={{ fontFamily: 'Montserrat-Regular' }}
+                          >
+                            Signup time: {getReadableDate(e.signup_time)}
+                          </div>
+                        </Col>
+                      </Row>
                       <Accordion.Collapse eventKey='0'>
                         <div className='mt-0 mx-3'>
                           {e.question_array.map((elem) => {

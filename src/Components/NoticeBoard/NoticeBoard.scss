@@ -57,6 +57,22 @@
       height: 90px;
     }
   }
+
+  &__modalText {
+    font-family: 'Montserrat-Medium';
+    color: gray;
+    border: 1px solid gray;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 6px;
+    width: 90%;
+    margin: 15px auto;
+  }
+
+  &__blueBack {
+    background-color: var(--primary-blue);
+    color: white;
+  }
 }
 .notice-text {
   font-size: initial;

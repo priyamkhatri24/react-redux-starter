@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
@@ -16,13 +16,14 @@ import CreateIcon from '@material-ui/icons/Create';
 import format from 'date-fns/format';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import { apiValidation, get, post } from '../../Utilities';
+import AddButton from '../Common/AddButton/AddButton';
 import { PageHeader } from '../Common';
 import userImage from '../../assets/images/user.svg';
 import UserDataCard from './UsersDataCard';
 import AdmissionStyle from './Admissions.style';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
-import './Admissions.scss';
 import '../Dashboard/Dashboard.scss';
+import './Admissions.scss';
 
 const BatchDetails = (props) => {
   const {
@@ -38,6 +39,7 @@ const BatchDetails = (props) => {
   const [currentBatch, setCurrentBatch] = useState({});
   const [batchName, setBatchName] = useState('');
   const [batchNameModal, setBatchNameModal] = useState(false);
+  const [currentTab, setCurrentTab] = useState('Details');
 
   const openBatchNameModal = () => setBatchNameModal(true);
   const closeBatchNameModal = () => setBatchNameModal(false);
@@ -115,10 +117,15 @@ const BatchDetails = (props) => {
     });
   };
 
+  const handleOpen = () => {
+    history.push({ pathname: '/admissions/batch/addusers', state: { batch } });
+  };
+
   return (
     Object.keys(currentBatch).length > 0 && (
       <div className='Profile'>
-        <PageHeader title={currentBatch.batch.batch_name} />
+        <PageHeader shadow title={currentBatch.batch.batch_name} />
+        {currentTab === 'Students' ? <AddButton onlyUseButton triggerButton={handleOpen} /> : null}
         <div style={{ marginTop: '6rem' }}>
           <Col className='text-center mb-4'>
             <img
@@ -135,6 +142,7 @@ const BatchDetails = (props) => {
             className='Profile__Tabs'
             justify
             style={{ fontSize: '12px' }}
+            onSelect={setCurrentTab}
           >
             <Tab eventKey='Details' title='Details'>
               <div
@@ -143,7 +151,7 @@ const BatchDetails = (props) => {
                 style={{ position: 'relative', marginTop: '1rem' }}
               >
                 <div
-                  className='Courses__edit text-center py-1'
+                  className='Batch__edit-ed text-center py-1'
                   onClick={() => openBatchNameModal()}
                   role='button'
                   onKeyDown={() => openBatchNameModal()}
@@ -152,7 +160,7 @@ const BatchDetails = (props) => {
                   <CreateIcon />
                 </div>
                 <div
-                  className='Profile__edit text-center py-1'
+                  className='Batch__edit-del text-center py-1'
                   onClick={() => deleteBatch()}
                   role='button'
                   onKeyDown={() => {}}
@@ -163,8 +171,8 @@ const BatchDetails = (props) => {
 
                 {currentBatch.batch.batch_name && (
                   <>
-                    <h6 className='LiveClasses__adminHeading Batch__heading mb-0'>Batch Name</h6>
-                    <p className='LiveClasses__adminDuration Batch__details'>
+                    <h6 className='Admissions__adminHeading Batch__heading mb-0'>Batch Name</h6>
+                    <p className='Admissions__adminDuration Batch__details'>
                       {currentBatch.batch.batch_name}
                     </p>
                   </>
@@ -172,16 +180,16 @@ const BatchDetails = (props) => {
 
                 {currentBatch.batch.class && (
                   <>
-                    <h6 className='LiveClasses__adminHeading Batch__heading mb-0'>Class</h6>
-                    <p className='LiveClasses__adminDuration Batch__details '>
+                    <h6 className='Admissions__adminHeading Batch__heading mb-0'>Class</h6>
+                    <p className='Admissions__adminDuration Batch__details '>
                       {currentBatch.batch.class}
                     </p>
                   </>
                 )}
                 {currentBatch.batch.subject.length > 0 && (
                   <>
-                    <h6 className='LiveClasses__adminHeading Batch__heading mb-0'>Subject</h6>
-                    <p className='LiveClasses__adminDuration Batch__details '>
+                    <h6 className='Admissions__adminHeading Batch__heading mb-0'>Subject</h6>
+                    <p className='Admissions__adminDuration Batch__details '>
                       {currentBatch.batch.subject.map((e, i) => {
                         return (
                           <span key={e.subject_id}>
@@ -196,8 +204,8 @@ const BatchDetails = (props) => {
 
                 {currentBatch.batch.created_by && (
                   <>
-                    <h6 className='LiveClasses__adminHeading Batch__heading mb-0'>Created By</h6>
-                    <p className='LiveClasses__adminDuration Batch__details '>
+                    <h6 className='Admissions__adminHeading Batch__heading mb-0'>Created By</h6>
+                    <p className='Admissions__adminDuration Batch__details '>
                       {currentBatch.batch.created_by}
                     </p>
                   </>
@@ -205,8 +213,8 @@ const BatchDetails = (props) => {
 
                 {currentBatch.batch.created_at && (
                   <>
-                    <h6 className='LiveClasses__adminHeading Batch__heading mb-0'>Created On</h6>
-                    <p className='LiveClasses__adminDuration Batch__details '>
+                    <h6 className='Admissions__adminHeading Batch__heading mb-0'>Created On</h6>
+                    <p className='Admissions__adminDuration Batch__details '>
                       {format(
                         fromUnixTime(parseInt(currentBatch.batch.created_at, 10)),
                         'dd MMM yyyy',
@@ -217,10 +225,10 @@ const BatchDetails = (props) => {
 
                 {currentBatch.batch.session_end_date && (
                   <>
-                    <h6 className='LiveClasses__adminHeading Batch__heading mb-0'>
+                    <h6 className='Admissions__adminHeading Batch__heading mb-0'>
                       Session Ends On
                     </h6>
-                    <p className='LiveClasses__adminDuration Batch__details '>
+                    <p className='Admissions__adminDuration Batch__details '>
                       {format(
                         fromUnixTime(parseInt(currentBatch.batch.session_end_date, 10)),
                         'dd MMM yyyy',
@@ -230,8 +238,8 @@ const BatchDetails = (props) => {
                 )}
                 {currentBatch.batch.description && (
                   <>
-                    <h6 className='LiveClasses__adminHeading Batch__heading mb-0'>Description</h6>
-                    <p className='LiveClasses__adminDuration Batch__details '>
+                    <h6 className='Admissions__adminHeading Batch__heading mb-0'>Description</h6>
+                    <p className='Admissions__adminDuration Batch__details '>
                       {currentBatch.batch.description}
                     </p>
                   </>
@@ -261,7 +269,7 @@ const BatchDetails = (props) => {
                     },
                   ];
                   return (
-                    <Card key={elem.title} className='my-3 mx-2'>
+                    <Card key={elem.title} className='my-3'>
                       <Row className='p-2 react_chart'>
                         {/* react-chart is from dashboard.scss */}
                         <Col xs={4} className='text-center p-2 my-auto'>

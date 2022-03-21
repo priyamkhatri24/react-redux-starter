@@ -22,9 +22,9 @@
   }
 
   &__adminHeading {
-    font-family: 'Montserrat-SemiBold';
-    text-overflow: ellipsis;
-    overflow: hidden;
+    font-family: 'Montserrat-SemiBold' !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
   }
 
   &__adminCard {
@@ -39,16 +39,16 @@
   }
 
   &__adminDuration {
-    font-size: $spacer * 0.75;
-    font-family: 'Montserrat-Regular';
-    color: $dashboardGrey;
-    font-weight: 700;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    font-size: $spacer * 0.75 !important;
+    font-family: 'Montserrat-Regular' !important;
+    color: $dashboardGrey !important;
+    font-weight: 700 !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
   }
 
   &__adminDuration > span {
-    color: var(--primary-blue);
+    color: var(--primary-blue) !important;
   }
 
   &__adminBatches {

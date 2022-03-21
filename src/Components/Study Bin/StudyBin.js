@@ -82,7 +82,8 @@ const StudyBin = (props) => {
 
   const searchFolder = (search) => {
     console.log(search);
-    setSearchString(search);
+    const lowerCaseSearch = search.toLowerCase();
+    setSearchString(lowerCaseSearch);
   };
 
   const addNewFolder = () => {
@@ -632,7 +633,7 @@ const StudyBin = (props) => {
               <Row className='container_studybin'>
                 {folderArray
                   .filter((elem) => {
-                    return elem.folder_name.includes(searchString);
+                    return elem.folder_name.toLowerCase().includes(searchString);
                   })
                   .map((elem) => {
                     return (
@@ -694,7 +695,7 @@ const StudyBin = (props) => {
               <Row className='container_studybin'>
                 {fileArray
                   .filter((elem) => {
-                    return elem.file_name.includes(searchString);
+                    return elem.file_name.toLowerCase().includes(searchString);
                   })
                   .map((elem) => {
                     return (

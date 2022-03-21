@@ -36,6 +36,8 @@ const Question = (props) => {
   //   console.log(questionFinal);
   // }, [question]);
 
+  console.log(question, 'question testing for images');
+
   return (
     <>
       <Card className='m-1'>
@@ -86,25 +88,28 @@ const Question = (props) => {
             )}
 
             {question.question_type !== 'subjective' &&
-              (language === 'hindi' ? question.hindi_option_array : question.option_array).map(
-                (e, i) => {
-                  return (
-                    <>
-                      <div className='d-flex mx-3 mb-2 Homework__multipleOptions' key={e.order}>
-                        <span className='mr-2 my-auto'>{String.fromCharCode(i + 65)}.</span>{' '}
-                        <MathJax math={String.raw`${e.text}`} />
-                      </div>
-                      {e.image && (
-                        <img
-                          src={e.image}
-                          alt='option'
-                          className='img-fluid m-2 Homework__questionImg'
-                        />
-                      )}
-                    </>
-                  );
-                },
-              )}
+              (language === 'hindi'
+                ? question.hindi_option_array
+                : question.option_array
+                ? question.option_array
+                : []
+              ).map((e, i) => {
+                return (
+                  <>
+                    <div className='d-flex mx-3 mb-2 Homework__multipleOptions' key={e.order}>
+                      <span className='mr-2 my-auto'>{String.fromCharCode(i + 65)}.</span>{' '}
+                      <MathJax math={String.raw`${e.text}`} />
+                    </div>
+                    {e.image && (
+                      <img
+                        src={e.image}
+                        alt='option'
+                        className='img-fluid m-2 Homework__questionImg'
+                      />
+                    )}
+                  </>
+                );
+              })}
 
             {question.question_answer && <p className='Homework__options text-left m-2'>Answer:</p>}
             <div className='d-flex mx-3 mb-2 Homework__multipleOptions text-left'>

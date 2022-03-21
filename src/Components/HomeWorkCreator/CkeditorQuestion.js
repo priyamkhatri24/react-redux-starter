@@ -410,7 +410,6 @@ const CkeditorQuestion = (props) => {
 
   const selectDefaultOption = (value) => {
     const newAnswerArray = JSON.parse(JSON.stringify(answerArray));
-
     if (type === 'multiple') {
       newAnswerArray[value - 1].isSelected = !newAnswerArray[value - 1].isSelected;
     } else if (type === 'single') {
@@ -448,6 +447,8 @@ const CkeditorQuestion = (props) => {
       (type === 'single' && answerArray.find((ele) => ele.isSelected)) ||
       (type === 'multiple' && answerArray.find((ele) => ele.isSelected))
     ) {
+      add(payload);
+    } else if (type === 'subjective') {
       add(payload);
     } else {
       Swal.fire({
@@ -720,7 +721,7 @@ const CkeditorQuestion = (props) => {
                   </Row>
                 );
               })}
-            {answerArray.length < 6 && (
+            {type !== 'subjective' && answerArray.length < 6 && (
               <Row className='mb-3'>
                 <button
                   className='addMoreOptionsBtn'

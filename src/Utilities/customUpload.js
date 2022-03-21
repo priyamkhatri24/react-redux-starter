@@ -27,6 +27,7 @@ export const uploadingImage = (file) => {
         secretAccessKey: result.secret,
         region: result.region,
       });
+      console.log(bucket, 'bwahaha');
       const params = { Key: finalName, ContentType: file.type, Body: file };
       // console.log(params, 'file uploaaaaaaaaaaaaaaaaad');
       store.dispatch(loadingActions.pending());

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
@@ -10,8 +10,11 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
+import Accordion from 'react-bootstrap/Accordion';
 import Modal from 'react-bootstrap/Modal';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CreateIcon from '@material-ui/icons/Create';
 import Button from 'react-bootstrap/Button';
@@ -30,10 +33,25 @@ const UserDetails = (props) => {
   const { history, clientId, userId, user, clientUserId } = props;
   const [batches, setBatches] = useState([]);
   const [allBatches, setAllBatches] = useState([]);
+  const [admissionFormData, setAdmissionFormData] = useState([]);
+  const [toggleIndex, setToggleIndex] = useState(0);
   const [showBatchModal, setShowBatchModal] = useState(false);
-
+  const accordionRef = useRef(null);
   const openBatchModal = () => setShowBatchModal(true);
   const closeBatchModal = () => setShowBatchModal(false);
+
+  useEffect(() => {
+    const payload = {
+      client_id: clientId,
+      /* eslint-disable */
+      client_user_id: user?.client_user_id,
+    };
+    get(payload, '/getAdmissionFormResponseOfSingleUser').then((res) => {
+      const result = apiValidation(res);
+      setAdmissionFormData(result || []);
+      console.log(result, 'getAdmissionFormResponseOfSingleUser');
+    });
+  }, []);
 
   const submitBatchModal = () => {
     const batchPayload = {
@@ -122,6 +140,14 @@ const UserDetails = (props) => {
     });
   };
 
+  const toggleShowName = () => {
+    if (toggleIndex === 0) {
+      setToggleIndex(1);
+    } else {
+      setToggleIndex(0);
+    }
+  };
+
   return (
     <div className='Profile'>
       <PageHeader title='User Details' />
@@ -138,94 +164,121 @@ const UserDetails = (props) => {
         </Col>
         <Tabs defaultActiveKey='Details' className='Profile__Tabs' justify>
           <Tab eventKey='Details' title='Details'>
-            <div
-              css={AdmissionStyle.adminCard}
-              className='p-2'
-              style={{ position: 'relative', marginTop: '1.5rem' }}
-            >
+            <Accordion>
               <div
-                className='Courses__edit text-center py-1'
-                onClick={() =>
-                  history.push({ pathname: '/admissions/editprofile', state: { user } })
-                } //eslint-disable-line
-                role='button'
-                onKeyDown={() =>
-                  history.push({ pathname: '/admissions/editprofile', state: { user } })
-                } //eslint-disable-line
-                tabIndex='-1'
+                css={AdmissionStyle.adminCard}
+                className='p-2'
+                style={{ position: 'relative', marginTop: '1.5rem' }}
               >
-                <CreateIcon />
-              </div>
-              {user.user_id !== userId && (
                 <div
-                  className='Profile__edit text-center py-1'
-                  onClick={() => deleteUser(user.user_id)}
+                  className='Courses__edit text-center py-1'
+                  onClick={() =>
+                    history.push({ pathname: '/admissions/editprofile', state: { user } })
+                  } //eslint-disable-line
                   role='button'
-                  onKeyDown={() => deleteUser(user.user_id)}
+                  onKeyDown={() =>
+                    history.push({ pathname: '/admissions/editprofile', state: { user } })
+                  } //eslint-disable-line
                   tabIndex='-1'
                 >
-                  <DeleteIcon />
+                  <CreateIcon />
                 </div>
-              )}
-              <h6 className='Batch__heading mb-0'>First Name</h6>
-              <p className=' Batch__details '>{user.first_name}</p>
+                {user.user_id !== userId && (
+                  <div
+                    className='Profile__edit text-center py-1'
+                    onClick={() => deleteUser(user.user_id)}
+                    role='button'
+                    onKeyDown={() => deleteUser(user.user_id)}
+                    tabIndex='-1'
+                  >
+                    <DeleteIcon />
+                  </div>
+                )}
+                <h6 className='Batch__heading mb-0'>First Name</h6>
+                <p className=' Batch__details '>{user.first_name}</p>
 
-              {user.last_name && (
-                <>
-                  <h6 className=' Batch__heading mb-0'>Last Name</h6>
-                  <p className=' Batch__details '>{user.last_name}</p>
-                </>
-              )}
+                {user.last_name && (
+                  <>
+                    <h6 className=' Batch__heading mb-0'>Last Name</h6>
+                    <p className=' Batch__details '>{user.last_name}</p>
+                  </>
+                )}
 
-              <h6 className=' Batch__heading mb-0'>Mobile Number</h6>
-              <p className=' Batch__details '>{user.contact}</p>
+                <h6 className=' Batch__heading mb-0'>Mobile Number</h6>
+                <p className=' Batch__details '>{user.contact}</p>
 
-              {user.username && (
-                <>
-                  <h6 className=' Batch__heading mb-0'>Username</h6>
-                  <p className=' Batch__details '>{user.username}</p>
-                </>
-              )}
-              {user.parent_name && (
-                <>
-                  <h6 className=' Batch__heading mb-0'>Parent&apos;s Name</h6>
-                  <p className=' Batch__details '>{user.parent_name}</p>
-                </>
-              )}
-              {user.parent_contact && (
-                <>
-                  <h6 className='Batch__heading mb-0'>Parent&apos;s Mobile Number</h6>
-                  <p className=' Batch__details '>{user.parent_contact}</p>
-                </>
-              )}
-              {user.gender && (
-                <>
-                  <h6 className='Batch__heading mb-0'>Gender</h6>
-                  <p className='Batch__details '>{user.gender}</p>
-                </>
-              )}
+                {user.username && (
+                  <>
+                    <h6 className=' Batch__heading mb-0'>Username</h6>
+                    <p className=' Batch__details '>{user.username}</p>
+                  </>
+                )}
+                {user.parent_name && (
+                  <>
+                    <h6 className=' Batch__heading mb-0'>Parent&apos;s Name</h6>
+                    <p className=' Batch__details '>{user.parent_name}</p>
+                  </>
+                )}
+                {user.parent_contact && (
+                  <>
+                    <h6 className='Batch__heading mb-0'>Parent&apos;s Mobile Number</h6>
+                    <p className=' Batch__details '>{user.parent_contact}</p>
+                  </>
+                )}
+                {user.gender && (
+                  <>
+                    <h6 className='Batch__heading mb-0'>Gender</h6>
+                    <p className='Batch__details '>{user.gender}</p>
+                  </>
+                )}
 
-              {user.email && (
-                <>
-                  <h6 className='Batch__heading mb-0'>Email Address</h6>
-                  <p className='Batch__details '>{user.email}</p>
-                </>
-              )}
-              {user.address && (
-                <>
-                  <h6 className='Batch__heading mb-0'>Residential Address</h6>
-                  <p className='Batch__details '>{user.address}</p>
-                </>
-              )}
-              {user.birthday && user.birthday !== 'NaN' && (
-                <>
-                  <h6 className='Batch__heading mb-0'>Date Of Birth</h6>
-                  <p className='Batch__details '>
-                    {format(fromUnixTime(parseInt(user.birthday, 10)), 'dd-MMM-yyyy')}
-                  </p>
-                </>
-              )}
-            </div>
+                {user.email && (
+                  <>
+                    <h6 className='Batch__heading mb-0'>Email Address</h6>
+                    <p className='Batch__details '>{user.email}</p>
+                  </>
+                )}
+                {user.address && (
+                  <>
+                    <h6 className='Batch__heading mb-0'>Residential Address</h6>
+                    <p className='Batch__details '>{user.address}</p>
+                  </>
+                )}
+                {user.birthday && user.birthday !== 'NaN' && (
+                  <>
+                    <h6 className='Batch__heading mb-0'>Date Of Birth</h6>
+                    <p className='Batch__details '>
+                      {format(fromUnixTime(parseInt(user.birthday, 10)), 'dd-MMM-yyyy')}
+                    </p>
+                  </>
+                )}
+                <div>
+                  <Accordion.Collapse ref={accordionRef} eventKey='0'>
+                    <div className='m-0'>
+                      <p className='Batch__admissionFormDetailsText mb-0'>
+                        {admissionFormData.length
+                          ? 'Admission form filled:'
+                          : 'Admission Form not filled.'}
+                      </p>
+                      {admissionFormData?.map((elem) => {
+                        return (
+                          <div>
+                            <h6 className='Batch__heading mb-0'>{elem.english_text}</h6>
+                            <p className='Batch__details'>{elem.response}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </Accordion.Collapse>
+                  <Accordion.Toggle onClick={toggleShowName} as='div' eventKey='0'>
+                    <p className='Batch__showMoreText'>
+                      <strong>{toggleIndex === 0 ? 'show more' : 'show less'}</strong>
+                      {toggleIndex === 0 ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+                    </p>
+                  </Accordion.Toggle>
+                </div>
+              </div>
+            </Accordion>
           </Tab>
           <Tab eventKey='Batches' title='Batches'>
             <Row className='justify-content-end m-3'>

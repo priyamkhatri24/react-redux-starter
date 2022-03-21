@@ -282,6 +282,13 @@ const BatchDetails = Loadable({
 });
 // import BatchDetails from '../Components/Admissions/BatchesDetails';
 
+const AddUsersToBatch = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'BatchDetails' */ '../Components/Admissions/AddUserToBatch'),
+  loading: Loading,
+});
+// import BatchDetails from '../Components/Admissions/BatchesDetails';
+
 const AddDetails = Loadable({
   loader: () => import(/* webpackChunkName: 'AddDetails' */ '../Components/Admissions/AddDetails'),
   loading: Loading,
@@ -596,6 +603,7 @@ export function Routes() {
       <AuthenticatedRoute exact path='/admissions' component={Admissions} />
       <AuthenticatedRoute exact path='/admissions/user' component={UserDetails} />
       <AuthenticatedRoute exact path='/admissions/batch' component={BatchDetails} />
+      <AuthenticatedRoute exact path='/admissions/batch/addusers' component={AddUsersToBatch} />
       <AuthenticatedRoute exact path='/admissions/add/details' component={AddDetails} />
       <AuthenticatedRoute exact path='/admissions/add/class' component={SelectClass} />
       <AuthenticatedRoute exact path='/admissions/add/batch' component={AddBatch} />

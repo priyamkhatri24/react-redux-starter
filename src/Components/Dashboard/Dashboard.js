@@ -740,7 +740,7 @@ const Dashboard = (props) => {
                   <hr />
                   <div>
                     <p className='Dashboard__attendanceRecents mx-3'>Recent Attendance</p>
-                    <Row className='mx-2'>
+                    <div className='mx-2 Dashboard__attendanceScrollable'>
                       {attendance.map((elem) => {
                         return (
                           <div className='d-flex flex-column mx-2' key={elem.batch_id}>
@@ -757,7 +757,7 @@ const Dashboard = (props) => {
                           </div>
                         );
                       })}
-                    </Row>
+                    </div>
                   </div>
                 </div>
               )}

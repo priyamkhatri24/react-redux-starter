@@ -10,6 +10,7 @@ import PhoneIcon from '@material-ui/icons/Phone';
 import FaceIcon from '@material-ui/icons/Face';
 import TimelapseIcon from '@material-ui/icons/Timelapse';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
+import CheckIcon from '@material-ui/icons/Check';
 import { useInterval } from '../../Utilities';
 import avatarImage from '../../assets/images/user.svg';
 import { admissionActions } from '../../redux/actions/admissions.action';
@@ -64,15 +65,20 @@ const UserDataCard = (props) => {
     FeeUser,
     notifyFeeUser,
     goToFeePlan,
+    noRedirect,
+    selectedCard,
   } = props;
 
   return (
     <Card
       css={AdmissionStyle.card}
       key={elem.user_id}
+      style={selectedCard ? { backgroundColor: 'rgb(236, 245, 252)' } : {}}
       onClick={
         FeeUser
           ? () => goToFeePlan(elem)
+          : noRedirect
+          ? () => {}
           : () => {
               setAdmissionUserProfileToStore(elem);
               history.push('/admissions/user');
@@ -108,7 +114,9 @@ const UserDataCard = (props) => {
               height='38'
               width='38'
               css={AdmissionStyle.avatar}
+              className={selectedCard ? 'Batch__selectedProfileImage' : ''}
             />
+            {selectedCard ? <CheckIcon className='checkIcon' /> : null}
           </div>
           <div className='p-0'>
             <p css={AdmissionStyle.avatarHeading} className='mb-0 mt-2 ml-2'>
@@ -199,10 +207,14 @@ UserDataCard.propTypes = {
   FeeUser: PropTypes.bool,
   notifyFeeUser: PropTypes.func,
   goToFeePlan: PropTypes.func,
+  noRedirect: PropTypes.bool,
+  selectedCard: PropTypes.bool,
 };
 
 UserDataCard.defaultProps = {
   FeeUser: false,
+  noRedirect: false,
+  selectedCard: false,
   notifyFeeUser: () => {},
   goToFeePlan: () => {},
 };

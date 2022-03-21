@@ -178,7 +178,16 @@ const AdmissionForm = (props) => {
           <input id='file-input' type='file' onChange={(e) => getImageInput(e)} accept='image/*' />
         </label>
       </div>
-
+      <label htmlFor='Name' className='has-float-label mx-4 my-1'>
+        <input
+          className='form-control'
+          name='Name'
+          type='text'
+          placeholder='Your Name'
+          // onChange={() => {})
+        />
+        <span>Name</span>
+      </label>
       <DynamicForm fields={admissionFormData} getData={getFormData} />
     </div>
   );

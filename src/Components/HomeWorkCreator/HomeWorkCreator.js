@@ -180,7 +180,7 @@ const HomeWorkCreator = (props) => {
           }
 
           get({ question_id: result.question_id }, '/getQuestionDetails').then((resp) => {
-            console.log(resp);
+            console.log(resp, 'responseSeAyaaQuestion');
             const newQuestion = apiValidation(resp);
             newQuestion[0].isSelected = true;
             selectedQuestionArray.push(newQuestion[0]);

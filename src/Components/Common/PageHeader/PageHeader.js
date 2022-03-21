@@ -37,8 +37,8 @@ export const PageHeader = (props) => {
 
   const [searchBar, triggerSearchBar] = useState(false);
   const closeSearchBar = () => {
-    triggerSearchBar(false);
     searchFilter('');
+    triggerSearchBar(false);
   };
   return (
     <div

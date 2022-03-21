@@ -19,6 +19,7 @@ const store = createStore(rootReducer(history), persistedState, applyMiddleware(
 store.subscribe(() => {
   saveState({
     branding: store.getState().branding,
+    admission: store.getState().admission,
     clientUserIdUpdate: store.getState().clientUserIdUpdate,
     userProfile: store.getState().userProfile,
     color: store.getState().color,
