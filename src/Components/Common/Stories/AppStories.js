@@ -91,7 +91,7 @@ const AppStories = (props) => {
   //     currentIndex: 0,
   //   },
   //   {
-  //     url: 'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1642707442124.jpg',
+  //     url: 'https://s3.ap-south-1.amazonaws.com/question-images-ingenium/1642707442124.jpg',
   //     duration: 3000,
   //     currentIndex: 1,
   //   },

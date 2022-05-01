@@ -9,7 +9,7 @@ const Temp = () => {
     //   url={[
     //     {
     //       src:
-    //         'https://ingenium-userfiles.s3.ap-south-1.amazonaws.com/Development/3.01605.020210504_181456.mp4',
+    //         'https://userfiles-ingenium.s3.ap-south-1.amazonaws.com/Development/3.01605.020210504_181456.mp4',
     //       type: 'video/mp4',
     //     },
     //   ]}

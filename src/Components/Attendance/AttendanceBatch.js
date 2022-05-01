@@ -175,24 +175,6 @@ const AttendanceBatch = (props) => {
     swiper.slideTo(index);
   };
 
-  function selected() {
-    console.log('hii');
-  }
-
-  const download = () => {
-    const jsonDataToDownload = students.map((ele, index) => {
-      return {
-        SNo: index + 1,
-        First_name: ele.first_name,
-        Last_name: ele.last_name,
-        users_status: ele.fee_status,
-        contact: ele.contact,
-      };
-    });
-    console.log(jsonDataToDownload);
-    json2xlsDownload(JSON.stringify(jsonDataToDownload), 'studentsAttendance', true);
-  };
-
   const monthsArray = [
     'Jan',
     'Feb',
@@ -245,18 +227,19 @@ const AttendanceBatch = (props) => {
     console.log(selectedMonthIndex, selectedYear);
     const payload = {
       client_batch_id: attendanceBatch.client_batch_id,
-      month: `${selectedYear}-${selectedMonthIndex}`,
+      month:
+        selectedMonthIndex < 10
+          ? `${selectedYear}-0${selectedMonthIndex}`
+          : `${selectedYear}-${selectedMonthIndex}`,
     };
-    console.log(payload);
+    console.log(payload, 'paaaayload');
     get(payload, '/getAttendanceOfBatchMonthWise').then((data) => {
-      console.log(data, 'getAttendanceOfBatchMonthWise');
       const result = apiValidation(data);
       const dataToBeDownloaded = result.map((ele, index) => {
         delete ele.client_user_id;
         const resultant = { SNo: index + 1, ...ele };
         return resultant;
       });
-      console.log(dataToBeDownloaded, attendanceBatch);
       const fileName = `${attendanceBatch.batch_name}-attendance-${selectedYear}-${selectedMonthIndex}`;
       json2xlsDownload(JSON.stringify(dataToBeDownloaded), fileName, true);
       setIsDownloading(false);

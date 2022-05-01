@@ -36,6 +36,11 @@ const TeacherCourses = (props) => {
     setCourseObjectToStore,
     setCourseCurrentSlideToStore,
     dashboardData,
+    dashboardData: {
+      feature: {
+        courses: { client_feature_name: featureName },
+      },
+    },
     roleArray,
     currentbranding: {
       branding: { currency_symbol: currencySymbol },
@@ -95,7 +100,7 @@ const TeacherCourses = (props) => {
   // }, [activeTab]);
 
   const NoPreview =
-    'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1625835287424.jpg';
+    'https://s3.ap-south-1.amazonaws.com/question-images-ingenium/1625835287424.jpg';
 
   useEffect(() => {
     //   const payload = {
@@ -359,7 +364,7 @@ const TeacherCourses = (props) => {
   return (
     <>
       <PageHeader
-        title='Courses'
+        title={featureName || 'Courses'}
         handleBack={goToDashboard}
         customBack
         filter
@@ -378,7 +383,7 @@ const TeacherCourses = (props) => {
         >
           <Tab
             eventKey='My Courses'
-            title='My Courses'
+            title={featureName ? `My ${featureName}` : 'My Courses'}
             style={{ marginTop: '7rem', marginBottom: '1rem' }}
             onclick={() => handleSelect('My Courses')}
           >
@@ -393,7 +398,7 @@ const TeacherCourses = (props) => {
               }}
               onClick={() => showCourseModal()}
             >
-              Create Course
+              Create {featureName || 'Course'}
             </Button>
             {/* {(searchString.length > 0 && activeTab == 'My Courses' ? searchedCourses : courses).map( */}
             <InfiniteScroll
@@ -579,7 +584,7 @@ const TeacherCourses = (props) => {
                 ref={inputEl}
                 onChange={(e) => setCourseTitle(e.target.value)}
               />
-              <span>Course Title</span>
+              <span>{featureName ? featureName : 'Course'} Title</span>
             </label>
             {isValid && <small className='text-danger d-block'>Please enter a title</small>}
           </Modal.Body>
@@ -648,6 +653,7 @@ TeacherCourses.propTypes = {
   setCourseCurrentSlideToStore: PropTypes.func.isRequired,
   setCourseObjectToStore: PropTypes.func.isRequired,
   clientUserId: PropTypes.number.isRequired,
+  featureName: PropTypes.string.isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   dashboardData: PropTypes.instanceOf(Object).isRequired,
   roleArray: PropTypes.instanceOf(Array).isRequired,

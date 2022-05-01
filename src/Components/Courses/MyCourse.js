@@ -126,6 +126,7 @@ const Mycourse = (props) => {
   const nowPlayingVideoRef = useRef(null);
   const [testToOpen, setTestToOpen] = useState(null);
   const [testOpener, setTestOpener] = useState(false);
+  const [isCourseValid, setIsCourseValid] = useState(true);
   const handleImageOpen = () => setShowImageModal(true);
   const handleImageClose = () => setShowImageModal(false);
 
@@ -133,33 +134,11 @@ const Mycourse = (props) => {
     setNowPlayingVideo(courseNowPlayingVideo);
     setDocumentToOpen(courseDocumentToOpen);
     if (courseDocumentToOpen) setDocumentOpener(true);
-    // document.addEventListener('scroll', function (e) {
-    //   if (window.innerHeight + window.scrollY >= document.body.clientHeight - 50) {
-    //     // setscrolledToBottom(true);
-    //     const tabHeightFromTop = document.getElementById('idForScroll2')?.offsetTop;
-    //     const tabH = document.body.clientHeight - tabHeightFromTop;
-    //     setTabHeight(tabH - 50);
-    //     // console.log(document.body.clientHeight, 'CH');
-    //     // console.log(tabHeightFromTop, 'HT');
-    //     setIsTabScrollable(true);
-    //   } else {
-    //     // setIsTabScrollable(false);
-    //
-    //   }
-    // });
-    // if (window.mobileAndTabletCheck()) {
-    //   setIsDesktop(true);
-    // } else {
-    //   setIsDesktop(false);
-    // }
     if (document.body.clientWidth > 575) {
       setIsDesktop(true);
     } else {
       setIsDesktop(false);
     }
-    // if (window.mobileAndTabletCheck()) {
-    //   setIsDesktop(true);
-    // }
   }, []);
 
   useEffect(() => {
@@ -303,6 +282,7 @@ const Mycourse = (props) => {
       get(payload, '/getCourseDetailsStudent').then((res) => {
         const result = apiValidation(res);
         setCourse(result);
+        setIsCourseValid(result.is_course_valid === 'true');
         const newsectionArray = result.section_array;
         newsectionArray.forEach((ele) => {
           let totTime = 0;
@@ -1029,6 +1009,12 @@ const Mycourse = (props) => {
     return !isNaN(percentage) ? percentage : 0;
   };
 
+  const goToBuyCourse = (id) => {
+    history.replace({
+      pathname: `/courses/buyCourse/${window.btoa(clientId)}/${window.btoa(courseId)}`,
+    });
+  };
+
   return (
     <div className={`${isReviewing ? null : 'unscrollableOnMobile'}`}>
       <div className='desktopContainerMyCource'>
@@ -1569,6 +1555,21 @@ const Mycourse = (props) => {
         <Modal.Body className='mx-auto'>
           <img src={imgLink} alt='img' className='img-fluid' />
         </Modal.Body>
+      </Modal>
+
+      <Modal backdrop='static' keyboard={false} show={!isCourseValid} centered>
+        <Modal.Header closeButton>
+          <Modal.Title className='textModal'>Attention</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className='textModal mx-auto'>
+          The course you are trying to access has expired. Please subscribe to this course again to
+          access the content.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='boldText' onClick={goToBuyCourse}>
+            proceed to subscribe course
+          </Button>
+        </Modal.Footer>
       </Modal>
     </div>
   );

@@ -459,7 +459,7 @@ const BuyCourse = (props) => {
       const freeContentArray = course.course_content.filter(
         (ele) =>
           (ele.url =
-            '"https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1632724891457.png"'),
+            '"https://s3.ap-south-1.amazonaws.com/question-images-ingenium/1632724891457.png"'),
       );
       if (freeContentArray.length && freeContentArray[0].count > 0) {
         hist['Free Content'] = freeContentArray[0].count;
@@ -486,7 +486,7 @@ const BuyCourse = (props) => {
             icon = (
               <img
                 className='freeIcon'
-                src='https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1632724891457.png'
+                src='https://s3.ap-south-1.amazonaws.com/question-images-ingenium/1632724891457.png'
                 alt='free'
               />
             );
@@ -1029,7 +1029,7 @@ const BuyCourse = (props) => {
                                 {elem.is_free === 'true' ? (
                                   <img
                                     className='freeIcon'
-                                    src='https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1632724891457.png'
+                                    src='https://s3.ap-south-1.amazonaws.com/question-images-ingenium/1632724891457.png'
                                     alt='free'
                                   />
                                 ) : (

@@ -25,7 +25,7 @@ export const AspectCards = (props) => {
     boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)',
   };
   const NoPreview =
-    'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1625835287424.jpg';
+    'https://s3.ap-south-1.amazonaws.com/question-images-ingenium/1625835287424.jpg';
   const { width } = windowDimensions;
 
   const isScreenBig = () => {

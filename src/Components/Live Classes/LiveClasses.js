@@ -124,6 +124,7 @@ class LiveClasses extends Component {
       youtubeStreamLink: '',
       zoomMeeting: '',
       zoomPassCode: '',
+      zoomMeetObj: {},
       showDurationModal: false,
       durationValue: '',
       zoomPasscodeModal: false,
@@ -317,6 +318,20 @@ class LiveClasses extends Component {
     });
   };
 
+  addLiveStreamAttendanceOfStudent = (element, st = null) => {
+    const { clientUserId } = this.props;
+    const { role } = this.state;
+    if (role === 'student') {
+      const payload = {
+        client_user_id: clientUserId,
+        stream_id: element.stream_id,
+        stream_type: st || element.stream_type,
+      };
+      console.log(payload, 'addingLiveStreamAttendanceOfStudent');
+      post(payload, '/addLiveStreamAttendanceOfStudent').then((res) => console.log(res));
+    }
+  };
+
   startLiveStream = (element) => {
     const { domain, jitsiFirstName, jitsiLastName, role } = this.state;
     const {
@@ -337,7 +352,7 @@ class LiveClasses extends Component {
         domain: strippedDomain,
         triggerJitsi: false, // method === 'sdk
       });
-
+      this.addLiveStreamAttendanceOfStudent(element, 'alpha');
       this.openJitsiInNewWindow(
         element.server_url,
         element.stream_link,
@@ -355,17 +370,21 @@ class LiveClasses extends Component {
       this.setState({ doesBBBexist: true });
     } else if (element.stream_type === 'zoom') {
       console.log(element);
-      this.setState({ zoomPassCode: element.password, zoomMeeting: element.meeting_id }, () => {
-        this.openZoomPasscodeModal();
-      });
+      this.setState(
+        { zoomPassCode: element.password, zoomMeeting: element.meeting_id, zoomMeetObj: element },
+        () => {
+          this.openZoomPasscodeModal();
+        },
+      );
       // this.openZoomPasscodeModal();
 
       //  window.open(`https://zoom.us/j/${element.meeting_id}?pwd=${element.password}`);
     } else if (element.stream_type === 'meet') {
+      this.addLiveStreamAttendanceOfStudent(element);
       window.open(`https://meet.google.com/${element.meeting_id}`, '_blank');
     } else if (element.stream_type === 'youtube') {
       const vidId = getYoutubeIdFromLink(element.meeting_id);
-
+      this.addLiveStreamAttendanceOfStudent(element);
       history.push({ pathname: '/videoplayer', state: { link: vidId } });
     } else console.error('invalid stream type');
   };
@@ -1165,6 +1184,7 @@ class LiveClasses extends Component {
       showAskToDeleteModal,
       zoomMeetingIdInput,
       zoomMeetingLink,
+      zoomMeetObj,
     } = this.state;
     const { dashboardData, roleArray } = this.props;
     return (
@@ -1356,6 +1376,7 @@ class LiveClasses extends Component {
                 <Button
                   variant='boldText'
                   onClick={() => {
+                    this.addLiveStreamAttendanceOfStudent(zoomMeetObj);
                     window.open(`https://zoom.us/j/${zoomMeeting}?pwd=${zoomPassCode}`);
                   }} //eslint-disable-line
                 >

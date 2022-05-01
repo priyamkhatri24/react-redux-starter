@@ -463,6 +463,7 @@
 .playIconCourse:hover {
   color: #ffffffd0 !important;
 }
+
 .postBtnClr {
   background-color: var(--primary-blue);
 }
@@ -471,6 +472,7 @@
   font-size: 10px;
   color: #0000008a;
 }
+
 #idForScroll:hover {
   color: black;
   border-top: 1px solid transparent;
@@ -511,28 +513,34 @@
   border-left: 1px solid transparent;
   border-right: 1px solid transparent;
 }
+
 #detailTab:hover {
   color: black;
   border-top: 1px solid transparent;
   border-left: 1px solid transparent;
   border-right: 1px solid transparent;
 }
+
 .topMargin {
   margin-top: 50px !important;
 }
+
 .leftAlignText {
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
+
 .courseNameContainer {
   width: 90% !important;
   margin: auto !important;
 }
+
 .verySmallText {
   font-size: 10px;
   font-family: 'Montserrat-Regular';
 }
+
 .w-90 {
   width: 90% !important;
 }
@@ -542,11 +550,13 @@
   font-family: 'Montserrat-Medium';
   font-size: 14px;
 }
+
 .scrollableTabsForCourses .form-control {
   color: black !important;
   font-family: 'Montserrat-SemiBold';
   font-size: 14px;
 }
+
 .shareButtonForCourse {
   position: fixed;
   z-index: 999;
@@ -558,6 +568,7 @@
   border: transparent;
   border-radius: 0px 0px 0px 100px;
 }
+
 .shareButtonForbuyCourse {
   position: fixed;
   z-index: 999;
@@ -581,9 +592,11 @@
   z-index: 999;
   border-radius: 0px 0px 100px 0px;
 }
+
 .Scrollable__smallText {
   font-size: 12px;
 }
+
 #limited + label {
   font-family: 'Montserrat-Regular';
   font-size: 14px;
@@ -601,6 +614,7 @@
 .buyCourseBtn {
   width: 95%;
 }
+
 @media screen and (max-width: 500px) {
   .buyCourseBtn {
     width: 90%;
@@ -645,9 +659,11 @@
   font-family: 'Montserrat-Bold';
   color: rgb(66, 66, 66);
 }
+
 .scrollableContentOfCourses::-webkit-scrollbar {
   display: none;
 }
+
 .scrollableContentOfCourses_item {
   display: flex;
   margin: 10px 35px 10px 0px;
@@ -655,18 +671,22 @@
   justify-content: center;
   align-items: center;
 }
+
 .scrollableContentOfCourses_item p {
   margin: 0px;
 }
+
 #forever + label {
   font-family: 'Montserrat-Regular';
   font-size: 14px;
   color: var(--primary-blue);
   line-height: 18px;
 }
+
 .courseContentCardHeading {
   font-family: 'Montserrat-Bold';
 }
+
 #limitedNumber + label {
   font-family: 'Montserrat-Regular';
   font-size: 14px;
@@ -723,6 +743,7 @@
   margin-right: 7px !important;
   color: gray !important;
 }
+
 .previewVideoTextClass {
   color: white;
   margin: 0px;
@@ -735,9 +756,11 @@
   transition-duration: 0.3s;
   transition-property: opacity;
 }
+
 .Courses__videoplayer svg {
   background-color: white;
 }
+
 .activeRatingFilter {
   background-color: gray;
   color: white;
@@ -748,11 +771,13 @@
   border-radius: 10px;
   background-color: rgba(243, 241, 241, 0.5);
 }
+
 .videoContainerForContents {
   object-fit: cover;
   width: 64px;
   height: 64px;
 }
+
 @media screen and (min-width: 800px) and (max-height: 1000px) {
   .plyrComponent__myCourse {
     height: 90vh;
@@ -760,10 +785,12 @@
     margin: auto;
   }
 }
+
 .courseThumbnailImg {
   // max-height: 200px;
   text-align: center;
 }
+
 .courseDocumentOpenerImg {
   // max-height: 200px;
   width: 100%;
@@ -775,15 +802,19 @@
 .scrollable {
   overflow-y: scroll;
 }
+
 .unscrollable {
   overflow-y: hidden;
 }
+
 .scrollableTabsForCourses::-webkit-scrollbar {
   display: none;
 }
+
 .Courses__moreVertModalBodydiv {
   font-family: 'Montserrat-Medium';
 }
+
 .TextOnImage {
   display: flex;
   flex-direction: column;
@@ -794,11 +825,13 @@
   width: 100%;
   top: 40%;
 }
+
 .TextOnImage p {
   color: white;
   font-family: 'Montserrat-Bold';
   font-size: 18px;
 }
+
 .openDocumentBtn {
   background-color: var(--primary-blue);
   border: 1px solid var(--primary-blue);
@@ -809,6 +842,7 @@
   cursor: pointer;
   padding: 6px 12px;
 }
+
 .reattempBtn {
   background-color: transparent;
   border: transparent;
@@ -841,34 +875,31 @@
     // min-height: -webkit-fill-available;
   }
 }
-// .unscrollableOnMobile {
-//   height: auto;
-// }
-// .backdropOnPlayer {
-//   width: 100%;
-//   height: inherit;
-//   position: absolute;
-//   top: 0;
-//   left: 0;
-//   z-index: 50;
-//   background-color: rgba(0, 0, 0, 0.253);
-// }
+
 .nowPlayingText {
   margin: 0px auto;
   color: #4154cf;
   font-family: 'Montserrat-Bold';
   font-size: 10px;
 }
+
 .fgrow2 {
   flex-grow: 2;
   flex-basis: 0;
 }
+
 .fgrow1 {
   flex-grow: 1;
   flex-basis: 0;
 }
+
 .desktopContainerMyCource {
   display: block;
+}
+
+.validitySelectorDiv div {
+  width: 45%;
+  margin-right: 10px;
 }
 @media screen and (min-width: 575px) {
   .desktopContainerMyCource {
@@ -881,8 +912,13 @@
     right: 33.33%;
   }
 }
+
 .freeIcon {
   width: 34px;
   height: 20px;
   margin-bottom: 9px;
+}
+
+.textModal {
+  font-family: 'Montserrat-Regular';
 }

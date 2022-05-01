@@ -40,9 +40,12 @@ const BatchDetails = (props) => {
   const [batchName, setBatchName] = useState('');
   const [batchNameModal, setBatchNameModal] = useState(false);
   const [currentTab, setCurrentTab] = useState('Details');
+  const [batchStatusModal, setBatchStatusModal] = useState(false);
 
   const openBatchNameModal = () => setBatchNameModal(true);
   const closeBatchNameModal = () => setBatchNameModal(false);
+  const closeBatchStatusModal = () => setBatchStatusModal(false);
+  const openBatchStatusModal = () => setBatchStatusModal(true);
 
   const options = {
     colors: ['var(--primary-blue)', 'rgba(0, 0, 0, 0.54)'],
@@ -121,6 +124,31 @@ const BatchDetails = (props) => {
     history.push({ pathname: '/admissions/batch/addusers', state: { batch } });
   };
 
+  const changeBatchStatus = () => {
+    const payload = {
+      batch_id: currentBatch.batch.client_batch_id,
+      status: currentBatch.batch.batch_status === 'active' ? 'inactive' : 'active',
+    };
+    console.log(currentBatch, payload);
+    post(payload, '/changeBatchStatus').then((res) => {
+      console.log(res);
+      Swal.fire({
+        title: 'Success',
+        text: `${currentBatch.batch.batch_name} is now an ${
+          currentBatch.batch.batch_status === 'active' ? 'inactive' : 'active'
+        } batch`,
+        icon: 'success',
+      });
+      closeBatchStatusModal();
+      const newCurrentBatchObj = { ...currentBatch };
+      const newBatchObj = { ...newCurrentBatchObj.batch };
+      newBatchObj.batch_status =
+        currentBatch.batch.batch_status === 'active' ? 'inactive' : 'active';
+      newCurrentBatchObj.batch = newBatchObj;
+      setCurrentBatch(newCurrentBatchObj);
+    });
+  };
+
   return (
     Object.keys(currentBatch).length > 0 && (
       <div className='Profile'>
@@ -167,6 +195,17 @@ const BatchDetails = (props) => {
                   tabIndex='-1'
                 >
                   <DeleteIcon />
+                </div>
+                <div
+                  className='Batch__makeActive text-center py-1'
+                  onClick={() => openBatchStatusModal()}
+                  role='button'
+                  onKeyDown={() => {}}
+                  tabIndex='-1'
+                >
+                  <p className='Batch__makeActiveBtnText'>
+                    make {currentBatch.batch.batch_status === 'active' ? 'inactive' : 'active'}
+                  </p>
                 </div>
 
                 {currentBatch.batch.batch_name && (
@@ -230,7 +269,7 @@ const BatchDetails = (props) => {
                     </h6>
                     <p className='Admissions__adminDuration Batch__details '>
                       {format(
-                        fromUnixTime(parseInt(currentBatch.batch.session_end_date, 10)),
+                        fromUnixTime(parseInt(currentBatch.batch.session_end_date / 1000, 10)),
                         'dd MMM yyyy',
                       )}
                     </p>
@@ -345,6 +384,26 @@ const BatchDetails = (props) => {
             </Button>
             <Button variant='boldText' onClick={() => changeBatchName()}>
               Update
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal show={batchStatusModal} centered onHide={closeBatchStatusModal}>
+          <Modal.Body>
+            <Row className='mx-2'>
+              <p style={{ fontFamily: 'Montserrat-Regular' }}>
+                Are you sure you want to change `{currentBatch.batch.batch_name}` batch&apos;s
+                status to {currentBatch.batch.batch_status === 'active' ? 'inactive' : 'active'}{' '}
+                batch?
+              </p>
+            </Row>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant='boldTextSecondary' onClick={closeBatchStatusModal}>
+              Cancel
+            </Button>
+            <Button variant='boldText' onClick={changeBatchStatus}>
+              Yes
             </Button>
           </Modal.Footer>
         </Modal>

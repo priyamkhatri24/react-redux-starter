@@ -127,6 +127,7 @@ const Dashboard = (props) => {
   const [globalMessageCountState, setGlobalMessageCountState] = useState(0);
   const [showToast, setShowToast] = useState(false);
   const [optionsModal, setOptionsModal] = useState(false);
+  const [sessionStatus, setSessionStatus] = useState(true);
   const openOptionsModal = () => {
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
@@ -140,22 +141,10 @@ const Dashboard = (props) => {
   const [nameDisplay, setNameDisplay] = useState(false);
 
   // useEffect(() => {
-  //   if (searchContainerRef?.current)
-  //     document.addEventListener('scroll', () => {
-  //       console.log(searchContainerRef?.current?.offSet());
-  //     });
-
-  //   return document.removeEventListener('scroll', () => {
-  //     console.log('removed scroll listener');
-  //   });
-  // }, [searchContainerRef]);
-  // const nameDisplayTimer = setTimeout(() => {
-  //   setNameDisplayCounter(nameDisplayCounter + 1);
-  //   if (nameDisplayCounter >= 3) {
-  //     clearTimeout(nameDisplayTimer);
+  //   if (!sessionStatus) {
+  //     logout();
   //   }
-  //   console.log('timer');
-  // }, 1000);
+  // }, [sessionStatus]);
 
   useEffect(
     function () {
@@ -324,6 +313,25 @@ const Dashboard = (props) => {
     setSelectedSubjectToStore('');
   }, []);
 
+  const logout = () => {
+    const logoutPayload = {
+      client_user_id: clientUserId,
+    };
+    post(logoutPayload, '/logoutUser')
+      .then((res) => {
+        const result = apiValidation(res);
+        if (result) {
+          history.push({ pathname: '/preload' });
+          clearProfile();
+          clearClientIdDetails();
+          setFirstTimeLoginToStore(false);
+        }
+      })
+      .catch(() => {
+        history.push({ pathname: '/preload' });
+      });
+  };
+
   useEffect(() => {
     const roleId = roleArray.includes(4)
       ? 4
@@ -337,6 +345,10 @@ const Dashboard = (props) => {
       '/getLoginPageInformation',
     ).then((res) => {
       console.log(res, 'sadad');
+      // setSessionStatus(res.session_status);
+      // if (!res.session_status) {
+      //   logout();
+      // }
       const result = apiValidation(res);
       setNotices(result.notice);
       setClientStatus(result.client_status);
@@ -522,7 +534,7 @@ const Dashboard = (props) => {
     push('/questiontaker');
   };
 
-  const goToCoursesForTeacher = () => {
+  const goToCoursesForTeacher = (name) => {
     const { push } = history;
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
@@ -546,7 +558,7 @@ const Dashboard = (props) => {
       setRestrictionModal(true);
       return;
     }
-    push(`/courses/buyCourse/${window.btoa(clientId)}/${window.btoa(id)}`);
+    push({ pathname: `/courses/buyCourse/${window.btoa(clientId)}/${window.btoa(id)}` });
   };
 
   const goToMyCourse = (id) => {
@@ -662,7 +674,9 @@ const Dashboard = (props) => {
       if (page === 'displayPage') {
         goToDisplayPage();
       } else if (page === 'courses') {
-        role === 3 || role === 4 ? goToCoursesForTeacher() : goToCourses();
+        role === 3 || role === 4
+          ? goToCoursesForTeacher(param.client_feature_name)
+          : goToCourses(param.client_feature_name);
       } else if (page === 'chats') {
         goToChats();
       } else if (page === 'crm') {
@@ -1113,6 +1127,7 @@ const Dashboard = (props) => {
             buyCourseId={goToBuyCourse}
             myCourseId={goToMyCourse}
             clientLogo={branding.branding.client_logo}
+            featureName={param.client_feature_name}
           />
         ) : (
           <DashboardCards
@@ -1124,7 +1139,7 @@ const Dashboard = (props) => {
             boxshadow='0px 1px 3px 0px rgba(0, 0, 0, 0.16)'
             backgroundImg={`linear-gradient(90deg, ${param.start_colour} 0%, ${param.end_colour} 100%)`}
             backGround={param.start_colour}
-            buttonClick={goToCoursesForTeacher}
+            buttonClick={() => goToCoursesForTeacher(param.client_feature_name)}
             textColor={data.text_color}
           />
         );
@@ -1150,6 +1165,7 @@ const Dashboard = (props) => {
               lastName={lastName}
               liveClasses={studentLiveStream.slice(0, 4)}
               history={history}
+              clientUserId={clientUserId}
             />
           </>
         );
@@ -1543,6 +1559,21 @@ const Dashboard = (props) => {
         <Modal.Footer>
           <Button onClick={goToChats} variant='boldText'>
             Meanwhile, interact with your friends!
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={!sessionStatus} backdrop='static' keyboard={false} centered>
+        <Modal.Header>
+          <Modal.Title>Hey There</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p className='connectWithUsText'>
+            Previous session expired. Looks like you have logged in some other device.
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={logout} variant='boldText'>
+            Login again
           </Button>
         </Modal.Footer>
       </Modal>

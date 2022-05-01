@@ -59,6 +59,16 @@ export const setGlobalColors = (primary, light, lighter, superlight) => {
   document.body.style.setProperty('--lighter-blue', light);
   document.body.style.setProperty('--lightest-blue', lighter);
   document.body.style.setProperty('--superlight-blue', superlight);
+
+  // adding theme color of client
+  const oldThemeColorMeta = document.querySelector('meta[name="theme-color"]');
+  // console.log(oldThemeColorMeta, 'old tag');
+  const meta = document.createElement('meta');
+  meta.setAttribute('name', 'theme-color');
+  meta.setAttribute('content', primary);
+  document.getElementsByTagName('head')[0].appendChild(meta);
+  document.head.removeChild(oldThemeColorMeta);
+  document.head.appendChild(meta);
 };
 
 // function to dynamically change document title
@@ -185,6 +195,33 @@ const preventDefault = (event) => {
     event.preventDefault();
   }
 };
+
+// export const convertXlsIntoJson = (oEvent) => {
+//   // Get The File From The Input
+//   const oFile = oEvent.target.files[0];
+//   const sFilename = oFile.name;
+//   // Create A File Reader HTML5
+//   const reader = new FileReader();
+
+//   // Ready The Event For When A File Gets Selected
+//   reader.onload = function (e) {
+//     const data = e.target.result;
+//     const cfb = XLS.CFB.read(data, { type: 'binary' });
+//     const wb = XLS.parse_xlscfb(cfb);
+//     // Loop Over Each Sheet
+//     wb.SheetNames.forEach(function (sheetName) {
+//       // Obtain The Current Row As CSV
+//       const sCSV = XLS.utils.make_csv(wb.Sheets[sheetName]);
+//       const oJS = XLS.utils.sheet_to_row_object_array(wb.Sheets[sheetName]);
+
+//       // $('#my_file_output').html(sCSV);
+//       console.log(oJS, 'myReadData');
+//     });
+//   };
+
+//   // Tell JS To Start Reading The File.. You could delay this if desired
+//   reader.readAsBinaryString(oFile);
+// };
 
 // const makeRepeated = (arr, repeats) => Array.from({ length: repeats }, () => arr).flat();
 // makes array repeats itself n times....makesRepeat(arr, 5)

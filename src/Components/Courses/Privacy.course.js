@@ -8,6 +8,7 @@ import Modal from 'react-bootstrap/Modal';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
+import Select from 'react-select';
 import Form from 'react-bootstrap/Form';
 import { courseActions } from '../../redux/actions/course.action';
 import { BatchesSelector } from '../Common';
@@ -28,7 +29,12 @@ const Privacy = (props) => {
   const [showModal, setShowModal] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const [courseStatus, setCourseStatus] = useState(courseObject.course_status);
+  const [showValidity, setShowValidity] = useState(false);
+  const [selectedYearValue, setSelectedYearValue] = useState('');
+  const [selectedMonthValue, setSelectedMonthValue] = useState('');
   const isbatchChanged = useRef({ length: courseObject.current_batch.length, change: false });
+  const [months, setMonths] = useState([]);
+  const [years, setYears] = useState([]);
 
   const handleClose = () => setShowModal(false);
 
@@ -36,6 +42,31 @@ const Privacy = (props) => {
     setSelectedBatches(selectBatches);
     setBatches(allbatches);
   };
+
+  useEffect(() => {
+    console.log(courseObject);
+    if (courseObject.validity) {
+      setShowValidity(true);
+      const { validity } = courseObject;
+      const validityArr = validity.split('-');
+      const unitM = +validityArr[0] < 2 ? 'Month' : 'Months';
+      const unitY = +validityArr[1] < 2 ? 'Year' : 'Years';
+      setSelectedMonthValue({ value: +validityArr[0], label: `${validityArr[0]} ${unitM}` });
+      setSelectedYearValue({ value: +validityArr[1], label: `${validityArr[1]} ${unitY}` });
+    }
+    const eleven = new Array(11).fill('11');
+    const nintynine = new Array(99).fill('100');
+    const monthsOp = eleven.map((ele, i) => {
+      const unit = i < 1 ? 'Month' : 'Months';
+      return { value: i + 1, label: `${i + 1} ${unit}` };
+    });
+    setMonths(monthsOp);
+    const yearsOp = nintynine.map((ele, i) => {
+      const unit = i < 2 ? 'Year' : 'Years';
+      return { value: i, label: `${i} ${unit}` };
+    });
+    setYears(yearsOp);
+  }, []);
 
   useEffect(() => {
     const finalBatch = courseObject.final_batch;
@@ -143,12 +174,26 @@ const Privacy = (props) => {
   };
 
   const publishCourse = () => {
+    let validity = null;
+    if (selectedYearValue && selectedMonthValue) {
+      const validYears =
+        selectedYearValue.value < 10
+          ? `0${String(selectedYearValue.value)}`
+          : String(selectedYearValue.value);
+      const validMonths =
+        selectedMonthValue.value < 10
+          ? `0${String(selectedMonthValue.value)}`
+          : String(selectedMonthValue.value);
+      validity = `${validMonths}-${validYears}`;
+    }
+
     const payload = {
       course_id: courseId,
       batch_add: JSON.stringify(selectedBatches),
       batch_remove: JSON.stringify(batches),
       client_user_id: clientUserId,
       is_public: showWelcome,
+      validity,
     };
 
     console.log(payload);
@@ -200,6 +245,15 @@ const Privacy = (props) => {
       });
   };
 
+  const handleYearChange = (selectedOpt) => {
+    console.log(selectedOpt);
+    setSelectedYearValue(selectedOpt);
+  };
+  const handleMonthChange = (selectedOpt) => {
+    console.log(selectedOpt);
+    setSelectedMonthValue(selectedOpt);
+  };
+
   return (
     <div>
       {[
@@ -234,7 +288,7 @@ const Privacy = (props) => {
           <span className='my-auto ml-3'>Privacy and publish</span>
         </Row>
         <p className='mt-4 mx-2 Courses__motiDetail mb-0'>Who can see your course? </p>
-        <p className='mt-2 mx-2 Courses__chotiDetail'>
+        <p className='mt-2 Courses__chotiDetail'>
           Your course will show in feeds, on profile and search results. Students who are already
           enrolled will not be affected by this selection.{' '}
         </p>
@@ -267,7 +321,7 @@ const Privacy = (props) => {
         </Row>
         <Row className='m-2 ml-4 p-2'>
           <Form.Check
-            style={{ marginRight: 'auto' }}
+            style={{ marginRight: 'auto', fontFamily: 'Montserrat-Medium' }}
             type='checkbox'
             label='Show On Welcome Screen'
             bsPrefix='NoticeBoard__input'
@@ -275,6 +329,57 @@ const Privacy = (props) => {
             onClick={() => setShowWelcome(!showWelcome)}
           />
         </Row>
+        <div className='m-2 ml-4 p-2'>
+          <Form.Check
+            style={{ marginRight: 'auto', fontFamily: 'Montserrat-Medium' }}
+            type='checkbox'
+            label='Add course validity period'
+            bsPrefix='NoticeBoard__input'
+            value={showValidity}
+            checked={showValidity}
+            onClick={() => {
+              if (showValidity) {
+                setSelectedMonthValue('');
+                setSelectedYearValue('');
+              }
+              setShowValidity(!showValidity);
+            }}
+          />
+          {showValidity && (
+            <>
+              <p className='Courses__chotiDetail'>
+                Select both years and months to add a validity to the course.
+              </p>
+              <div className='d-flex w-100 my-3'>
+                <div style={{ width: '50%', marginRight: '5px' }}>
+                  <Select
+                    options={years}
+                    placeholder='Years*'
+                    onChange={handleYearChange}
+                    value={selectedYearValue}
+                  />
+                </div>
+                <div style={{ width: '45%' }}>
+                  <Select
+                    options={months}
+                    placeholder='Months*'
+                    onChange={handleMonthChange}
+                    value={selectedMonthValue}
+                  />
+                </div>
+              </div>
+              <p className='mt-2 Courses__chotiDetail'>
+                {selectedYearValue && selectedMonthValue && selectedYearValue.value > 0
+                  ? `This course will be valid for ${selectedYearValue.value} years(s) and ${selectedMonthValue.value}
+                   months(s) once someone subscribe to this course.`
+                  : selectedYearValue && selectedMonthValue && selectedYearValue.value === 0
+                  ? `This course will be valid for ${selectedMonthValue.value}
+                  months(s) once someone subscribe to this course.`
+                  : ''}
+              </p>
+            </>
+          )}
+        </div>
         <Row className='mb-3 Courses__createCourse mx-2'>
           Course Status
           <div

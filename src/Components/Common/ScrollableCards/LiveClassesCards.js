@@ -9,6 +9,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import { post } from '../../../Utilities';
 import teacherImg from '../../../assets/images/LiveClasses/teacher.png';
 import TimerWatch from '../../Live Classes/TimerWatch';
 
@@ -29,12 +30,13 @@ const getYoutubeIdFromLink = (link) => {
 };
 
 export const LiveClassesCards = (props) => {
-  const { liveClasses, history, firstName, lastName } = props;
+  const { liveClasses, history, firstName, lastName, clientUserId } = props;
   const [domain, setDomain] = useState('tcalive.ingenimedu.com');
   const [zoomMeeting, setZoomMeeting] = useState(null);
   const [zoomPassCode, setZoomPassCode] = useState(null);
   const [zoomPassCodeModal, setZoomPassCodeModal] = useState(false);
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
+  const [zoomMeetObj, setZoomMeetObj] = useState({});
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(zoomPassCode);
@@ -54,6 +56,16 @@ export const LiveClassesCards = (props) => {
     window.open(joinUrl, '_blank');
   };
 
+  const addLiveStreamAttendanceOfStudent = (element, st = null) => {
+    const payload = {
+      client_user_id: clientUserId,
+      stream_id: element.stream_id,
+      stream_type: st || element.stream_type,
+    };
+    console.log(payload, 'addingLiveStreamAttendanceOfStudent');
+    post(payload, '/addLiveStreamAttendanceOfStudent').then((res) => console.log(res));
+  };
+
   const rejoinBigBlueButtonStream = (firstname, lastname, streadId, clientUserid, role) => {};
 
   const openZoomPasscodeModal = () => setZoomPassCodeModal(true);
@@ -62,7 +74,7 @@ export const LiveClassesCards = (props) => {
     if (element.stream_type === 'jitsi') {
       let strippedDomain = domain;
       if (element.server_url) strippedDomain = element.server_url.split('/')[2]; // eslint-disable-line
-
+      addLiveStreamAttendanceOfStudent(element, 'alpha');
       openJitsiInNewWindow(element.server_url, element.stream_link, firstName, lastName);
     } else if (element.stream_type === 'big_blue_button') {
       rejoinBigBlueButtonStream(
@@ -76,13 +88,16 @@ export const LiveClassesCards = (props) => {
       console.log(element);
       setZoomMeeting(element.meeting_id);
       setZoomPassCode(element.password);
+      setZommMeetObj(element);
       openZoomPasscodeModal();
 
       //  window.open(`https://zoom.us/j/${element.meeting_id}?pwd=${element.password}`);
     } else if (element.stream_type === 'meet') {
+      addLiveStreamAttendanceOfStudent(element);
       window.open(`https://meet.google.com/${element.meeting_id}`, '_blank');
     } else if (element.stream_type === 'youtube') {
       const vidId = getYoutubeIdFromLink(element.meeting_id);
+      addLiveStreamAttendanceOfStudent(element);
       history.push({ pathname: '/videoplayer', state: { link: vidId } });
     } else console.error('invalid stream type');
   };
@@ -247,7 +262,10 @@ export const LiveClassesCards = (props) => {
               </Button>
               <Button
                 variant='boldText'
-                onClick={() => window.open(`https://zoom.us/j/${zoomMeeting}?pwd=${zoomPassCode}`)} //eslint-disable-line
+                onClick={() => {
+                  addLiveStreamAttendanceOfStudent(zoomMeetObj);
+                  window.open(`https://zoom.us/j/${zoomMeeting}?pwd=${zoomPassCode}`);
+                }} //eslint-disable-line
               >
                 Attend Meeting Now!
               </Button>

@@ -17,6 +17,7 @@ import pdf from '../../assets/images/FilesFolders/pdf.svg';
 import ppt from '../../assets/images/FilesFolders/ppt.svg';
 import xls from '../../assets/images/FilesFolders/xls.svg';
 import txt from '../../assets/images/FilesFolders/txt.svg';
+import ext from '../../assets/images/FilesFolders/external.svg';
 import youtube from '../../assets/images/FilesFolders/youtube.png';
 import videocam from '../../assets/images/FilesFolders/videocam.svg';
 import images from '../../assets/images/FilesFolders/Images.svg';
@@ -63,6 +64,11 @@ const StudyBin = (props) => {
   const [selectedToMove, setSelectedToMove] = useState([]);
   const [selectedFreezed, setSelectedFreezed] = useState(false);
   const [presentFolderId, setPresentFolderId] = useState(null);
+  const [externalName, setExternalName] = useState('');
+  const [externalLink, setExternalLink] = useState('');
+  const [triggerFilterModal, setTriggerFilterModal] = useState(false);
+  const [showExternalLinkModal, setShowExternalLinkModal] = useState(false);
+  const [sortBy, setSortBy] = useState('date');
   const [menuOptions, setMenuOptions] = useState({
     id: 0,
     type: '',
@@ -98,6 +104,7 @@ const StudyBin = (props) => {
       client_user_id: clientUserId,
       client_id: clientId,
       is_admin: roleArray.includes(4),
+      sort_by: sortBy,
     };
     console.log(temp, folderIdStack);
     get(temp, '/getPrimaryFoldersAndFiles2') // instead of temp should be [payload]
@@ -118,6 +125,7 @@ const StudyBin = (props) => {
       client_user_id: clientUserId,
       client_id: clientId,
       is_admin: roleArray.includes(4),
+      sort_by: sortBy,
     };
     console.log(temp, folderIdStack);
     if (folderIdStack.length <= 1) {
@@ -145,6 +153,7 @@ const StudyBin = (props) => {
         client_id: clientId,
         client_user_id: clientUserId,
         role_id: roleId,
+        sort_by: sortBy,
       };
       get(newPayload, '/getFoldersAndFilesOfFolder2')
         .then((res) => {
@@ -218,6 +227,25 @@ const StudyBin = (props) => {
   //     })
   //     .catch((e) => console.log(e));
   // };
+
+  const openExternalLinkModal = () => setShowExternalLinkModal(true);
+
+  const addExternalLink = () => {
+    const payload = {
+      client_user_id: clientUserId,
+      folder_id: folderIdStack[folderIdStack.length - 1],
+      file_name: externalName,
+      file_link: externalLink,
+      file_type: 'external',
+    };
+    post(payload, '/addFile')
+      .then((res) => {
+        console.log(res);
+        setShowExternalLinkModal(false);
+        rerenderFilesAndFolders();
+      })
+      .catch((e) => console.log(e));
+  };
 
   const addNewFile = (files) => {
     const filesArray = files.map((elem) => {
@@ -312,7 +340,8 @@ const StudyBin = (props) => {
     console.log('useeffecting........................................');
     const payload = {
       client_user_id: clientUserId,
-      clientId,
+      client_id: clientId,
+      sort_by: sortBy,
     };
 
     if (folderIdStack.length < 1) {
@@ -323,6 +352,7 @@ const StudyBin = (props) => {
           client_user_id: clientUserId,
           is_admin: roleArray.includes(4),
           client_id: clientId,
+          sort_by: sortBy,
         };
         console.log(temp, 'getPrimaryFoldersAndFiles2Payload');
         get(temp, '/getPrimaryFoldersAndFiles2') // instead of temp should be [payload]
@@ -371,6 +401,7 @@ const StudyBin = (props) => {
         client_id: clientId,
         client_user_id: clientUserId,
         role_id: roleId,
+        sort_by: sortBy,
       };
       get(newPayload, '/getFoldersAndFilesOfFolder2')
         .then((res) => {
@@ -386,8 +417,48 @@ const StudyBin = (props) => {
           setSpinnerStatusToStore(false);
           setLoadingSuccessToStore();
         });
+    } else if (folderIdStack.length === 1) {
+      setSpinnerStatusToStore(true);
+      setLoadingPendingToStore();
+      if (roleArray.includes(3) || roleArray.includes(4)) {
+        const temp = {
+          client_user_id: clientUserId,
+          is_admin: roleArray.includes(4),
+          client_id: clientId,
+          sort_by: sortBy,
+        };
+        console.log(temp, 'getPrimaryFoldersAndFiles2Payload');
+        get(temp, '/getPrimaryFoldersAndFiles2') // instead of temp should be [payload]
+          .then((res) => {
+            console.log(res, 'getPrimaryFoldersAndFiles2');
+            setSpinnerStatusToStore(false);
+            setLoadingSuccessToStore();
+            const result = apiValidation(res);
+            setFileArray(result.files);
+            setFolderArray(result.folders);
+          })
+          .catch((err) => {
+            console.log(err);
+            setSpinnerStatusToStore(false);
+            setLoadingSuccessToStore();
+          });
+      } else {
+        get(payload, '/getFoldersAndFilesForStudent')
+          .then((res) => {
+            setSpinnerStatusToStore(false);
+            setLoadingSuccessToStore();
+            const result = apiValidation(res);
+            setFileArray(result.files);
+            setFolderArray(result.folders);
+          })
+          .catch((err) => {
+            console.log(err);
+            setSpinnerStatusToStore(false);
+            setLoadingSuccessToStore();
+          });
+      }
     }
-  }, [folderIdStack]);
+  }, [folderIdStack, sortBy]);
 
   useEffect(() => {
     get({ client_user_id: clientUserId }, '/getFileCategoriesForStudent').then((res) => {
@@ -442,6 +513,7 @@ const StudyBin = (props) => {
     { name: 'add File', func: addNewFile },
     { name: 'add Folder', func: addNewFolder },
     { name: 'add Youtube Link', func: addYoutubeLink },
+    { name: 'add External Link', func: openExternalLinkModal },
   ];
 
   const openContextMenu = (elem, type) => {
@@ -551,6 +623,15 @@ const StudyBin = (props) => {
     });
   };
 
+  const openExternalLink = (elem) => window.open(elem.file_link, '_blank');
+
+  const closeTriggerFilterModal = () => setTriggerFilterModal(false);
+
+  const updateSortBy = (value) => {
+    setSortBy(value);
+    closeTriggerFilterModal();
+  };
+
   return (
     <>
       <StudyBinMenu
@@ -573,6 +654,8 @@ const StudyBin = (props) => {
           title='Library'
           search
           placeholder='Search for file or folder'
+          filter
+          triggerFilters={() => setTriggerFilterModal(true)}
           searchFilter={searchFolder}
           customBack={folderIdStack.length > 1}
           handleBack={handleBack}
@@ -803,6 +886,33 @@ const StudyBin = (props) => {
                               </h6>
                             </div>
                           </>
+                        ) : elem.file_type === 'external' ? (
+                          <>
+                            <span
+                              className='StudyBin__verticalDots'
+                              onClick={() => openContextMenu(elem, 'file')}
+                              onKeyDown={() => openContextMenu(elem, 'file')}
+                              tabIndex='-1'
+                              role='button'
+                            >
+                              <MoreVertIcon />
+                            </span>
+                            <div
+                              className='m-2 text-center'
+                              onClick={() => openExternalLink(elem)}
+                              onKeyDown={() => openExternalLink(elem)}
+                              role='button'
+                              tabIndex='-1'
+                            >
+                              <img src={ext} alt='External Link' height='67' width='67' />
+                              <h6
+                                className='text-center mt-3 StudyBin__folderName'
+                                style={{ wordBreak: 'break-all', lineHeight: '1' }}
+                              >
+                                {elem.file_name}
+                              </h6>
+                            </div>
+                          </>
                         ) : (
                           <>
                             <span
@@ -889,6 +999,46 @@ const StudyBin = (props) => {
         )}
       </Modal>
 
+      <Modal show={showExternalLinkModal} onHide={() => setShowExternalLinkModal(false)} centered>
+        <Modal.Header style={{ fontFamily: 'Montserrat-Bold' }} closeButton>
+          Add External Link
+        </Modal.Header>
+        <Modal.Body>
+          <label className='has-float-label my-3'>
+            <input
+              className='form-control'
+              name='File Name'
+              type='text'
+              placeholder='File Name'
+              onChange={(e) => setExternalName(e.target.value)}
+            />
+            <span>File Name</span>
+          </label>
+          <label className='has-float-label my-3'>
+            <input
+              className='form-control'
+              name='File Link'
+              type='text'
+              placeholder='File Name'
+              onChange={(e) => setExternalLink(e.target.value)}
+            />
+            <span>File Link</span>
+          </label>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='boldTextSecondary' onClick={() => setShowExternalLinkModal(false)}>
+            Cancel
+          </Button>
+          <Button
+            disabled={!externalName && !externalLink}
+            variant='boldText'
+            onClick={addExternalLink}
+          >
+            Add Link
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <Modal show={showImageModal} onHide={handleImageClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>Uploaded Image</Modal.Title>
@@ -897,6 +1047,33 @@ const StudyBin = (props) => {
           <img src={imgLink} alt='img' className='img-fluid' />
         </Modal.Body>
       </Modal>
+
+      <Modal show={triggerFilterModal} onHide={closeTriggerFilterModal} centered>
+        <Modal.Header>
+          <Modal.Title style={{ fontFamily: 'Montserrat-Regular' }}>Select filter type</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div
+            onClick={() => updateSortBy('name')}
+            onKeyDown={() => updateSortBy('name')}
+            className='studyBinFilterModalButtons'
+            tabIndex={-1}
+            role='button'
+          >
+            Alphabetical
+          </div>
+          <div
+            onClick={() => updateSortBy('date')}
+            onKeyDown={() => updateSortBy('date')}
+            className='studyBinFilterModalButtons'
+            tabIndex={-1}
+            role='button'
+          >
+            Date wise
+          </div>
+        </Modal.Body>
+      </Modal>
+
       {isMove && !selectedFreezed ? (
         <Alert className='alertModalToCopyAndMove' variant='secondary'>
           {/* Click to move selected files and folders{' '} */}

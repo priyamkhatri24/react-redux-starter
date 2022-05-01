@@ -25,6 +25,7 @@ import {
   getAdmissionBatchDescription,
   getAdmissionBatchName,
 } from '../../redux/reducers/admissions.reducer';
+import './Admissions.scss';
 
 const CustomInput = ({ value, onClick }) => (
   <Row className='m-2 justify-content-center'>
@@ -73,12 +74,13 @@ const AddBatch = (props) => {
       console.log(res);
       const result = apiValidation(res);
       setCurrentDate(fromUnixTime(parseInt(result.time_stamp, 10)));
+      console.log(currentDate);
     });
   }, []);
 
   useEffect(() => {
-    setBatchDescription(admissionBatchDescription);
-    setBatchName(admissionBatchName);
+    // setBatchDescription(admissionBatchDescription);
+    // setBatchName(admissionBatchName);
     setCurrentDate(admissionBatchDate);
   }, [admissionBatchDate, admissionBatchDescription, admissionBatchName]);
 
@@ -145,7 +147,8 @@ const AddBatch = (props) => {
                 Session Ends On
               </p>
               <p className='Dashboard__attendanceSubHeading'>
-                {showDate ? format(currentDate, 'dd MMM yyyy') : 'Select Date'}
+                {showDate ? format(currentDate, 'dd-MM-yyyy') : 'Select Date'}
+                <span style={{ color: 'red' }}> *</span>
               </p>
             </Col>
           </Row>
@@ -154,7 +157,7 @@ const AddBatch = (props) => {
           )}
         </Card>
         <Row className='justify-content-center m-4'>
-          <Button variant='customPrimary' onClick={() => goToNextStage()}>
+          <Button variant='customPrimary' disabled={!showDate} onClick={() => goToNextStage()}>
             Next
           </Button>
         </Row>
@@ -165,24 +168,26 @@ const AddBatch = (props) => {
         </Modal.Header>
         <Modal.Body className='text-center'>
           <Row
-            className='Dashboard__attendanceSubHeading justify-content-center mb-2'
+            className='Admissions__dateHeadings justify-content-center mb-2'
             onClick={() => addMonthsToDate('12')}
           >
-            {format(addMonths(currentDate, 12), 'dd MMM yyyy')} (1 year)
+            {format(addMonths(new Date(currentDate), 12), 'dd-MM-yyyy')} (1 year)
           </Row>
 
           <Row
-            className='Dashboard__attendanceSubHeading justify-content-center mb-2'
+            className='Admissions__dateHeadings justify-content-center mb-2'
             onClick={() => addMonthsToDate('6')}
           >
-            {format(addMonths(currentDate, 6), 'dd MMM yyyy')} (6 months)
+            {format(addMonths(new Date(currentDate), 6), 'dd-MM-yyyy')} (6 months)
           </Row>
 
           <Row
-            className='Dashboard__attendanceSubHeading justify-content-center mb-2'
+            className='Admissions__dateHeadings justify-content-center mb-2'
             onClick={() => addMonthsToDate('3')}
           >
-            {format(addMonths(currentDate, 3), 'dd MMM yyyy')} (3 months)
+            {/* {String(currentDate)}
+            {String(new Date(currentDate))} */}
+            {format(addMonths(new Date(currentDate), 3), 'dd-MM-yyyy')} (3 months)
           </Row>
 
           <Button variant='boldText'>Custom</Button>

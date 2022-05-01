@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col';
 import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
+import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get } from '../../Utilities';
 import { PageHeader } from '../Common';
@@ -16,7 +17,19 @@ import { courseActions } from '../../redux/actions/course.action';
 import './Courses.scss';
 
 const ViewCourses = (props) => {
-  const { clientUserId, history, setCourseIdToStore, clientId, currentbranding } = props;
+  const {
+    clientUserId,
+    history,
+    setCourseIdToStore,
+    clientId,
+    currentbranding,
+    dashboardData,
+    dashboardData: {
+      feature: {
+        courses: { client_feature_name: featureName },
+      },
+    },
+  } = props;
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
@@ -54,7 +67,11 @@ const ViewCourses = (props) => {
       <PageHeader
         search
         shadow
-        title={history.location.state.type === 'allCourses' ? ' All Courses' : 'My Courses'}
+        title={
+          history.location.state.type === 'allCourses'
+            ? `All ${featureName || 'Courses'}`
+            : `My ${featureName || 'Courses'}`
+        }
       />
       <div className='Courses__container'>
         {courses.map((course) => {
@@ -173,6 +190,7 @@ const ViewCourses = (props) => {
 const mapStateToProps = (state) => ({
   clientUserId: getClientUserId(state),
   clientId: getClientId(state),
+  dashboardData: getCurrentDashboardData(state),
   currentbranding: getCurrentBranding(state),
 });
 
@@ -192,4 +210,10 @@ ViewCourses.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   setCourseIdToStore: PropTypes.func.isRequired,
   currentbranding: PropTypes.instanceOf(Object).isRequired,
+  dashboardData: PropTypes.instanceOf(Object).isRequired,
+  // featureName: PropTypes.string,
+};
+
+ViewCourses.defaultProps = {
+  // featureName: 'Courses',
 };

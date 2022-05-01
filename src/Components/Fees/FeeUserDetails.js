@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Swal from 'sweetalert2';
 import DownloadIcon from '@material-ui/icons/GetApp';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import SwapHorizontalCircleIcon from '@material-ui/icons/SwapHorizontalCircle';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Calendar from 'react-calendar';
-// import Swal from 'sweetalert2';
 import 'react-calendar/dist/Calendar.css';
 import { apiValidation, get, post, json2xlsDownload } from '../../Utilities';
 import UserDataCard from '../Admissions/UsersDataCard';
@@ -24,19 +24,16 @@ const FeeUserDetails = (props) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [change, setChange] = useState();
-  const [feeData, setFeeData] = useState([]);
-
   const [startDate, setStartDate] = useState(new Date());
-  const [showStartDateSelectorModal, setShowStartDateSelectorModal] = useState(false);
-  const handleOpen1 = () => setShowStartDateSelectorModal(true);
-  const handleClose1 = () => setShowStartDateSelectorModal(false);
-  const changeStartDate = () => handleOpen1();
-
   const [endDate, setEndDate] = useState(new Date());
+  const [showStartDateSelectorModal, setShowStartDateSelectorModal] = useState(false);
   const [showEndDateSelectorModal, setShowEndDateSelectorModal] = useState(false);
-  const handleOpen2 = () => setShowEndDateSelectorModal(true);
+
+  const changeStartDate = () => setShowStartDateSelectorModal(true);
+  const handleClose1 = () => setShowStartDateSelectorModal(false);
+
+  const changeEndDate = () => setShowEndDateSelectorModal(true);
   const handleClose2 = () => setShowEndDateSelectorModal(false);
-  const changeEndDate = () => handleOpen2();
 
   const changeStart = (nextValue) => {
     setStartDate(nextValue);
@@ -45,17 +42,6 @@ const FeeUserDetails = (props) => {
   const changeEnd = (nextValue) => {
     setEndDate(nextValue);
   };
-
-  // const updateButton1 = () => {
-  //   setChange(setDate);
-  // };
-
-  // const goToTheDate = () => {
-  // setUserdate(date);
-  // history.push('/fees/users');
-  // setChange(onChange());
-  // handleClose1();
-  // };
 
   useEffect(() => {
     setTitle(history.location.state.batchName);
@@ -99,40 +85,52 @@ const FeeUserDetails = (props) => {
       state: { studentData: elem },
     });
   };
-  // const toTimestamp = (strDate) => {
-  //   const dt = Date.parse(strDate);
-  //   return dt / 1000;
-  // };
-  // console.log(toTimestamp(26 - 10 - 1999));
+
+  const formatDate = (date) => {
+    if (!date) return 'NA';
+
+    return String(new Date(+date * 1000))
+      .slice(4, 15)
+      .replaceAll(' ', '-');
+  };
 
   const downloader = () => {
     const payload = {
-      client_batch_id: clientId,
+      client_batch_id: history.location.state.batchId,
       start_date: startDate.getTime() / 1000,
       end_date: endDate.getTime() / 1000,
     };
+    console.log(payload);
     get(payload, '/getFeeDataOfUsersOfBatch').then((res) => {
       const result = apiValidation(res);
-      setFeeData(result);
+      if (!result.length) {
+        Swal.fire({
+          title: 'No Data found',
+          text: 'No fees data was found between the selected start and end date',
+          icon: 'alert',
+          confirmButtonText: `OK`,
+        }).then((butn) => {
+          if (butn.isConfirmed) {
+            setShow(false);
+          }
+        });
+        return;
+      }
+      const jsonDataToDownload = result.map((ele, index) => {
+        return {
+          SNo: index + 1,
+          First_name: ele.first_name,
+          Last_name: ele.last_name,
+          Status: ele.status,
+          Amount: ele.amount,
+          Due_date: formatDate(ele.due_date),
+          Paid_At: formatDate(ele.paid_at),
+        };
+      });
+      json2xlsDownload(JSON.stringify(jsonDataToDownload), 'studentFeeData', true);
+      setEndDate(new Date());
+      handleClose();
     });
-    console.log(feeData);
-    // if (feeData.length() == 0) {
-    //   swal.fire('No data found in selected duration');
-    //   return;
-    // }
-    const jsonDataToDownload = feeData.map((ele, index) => {
-      return {
-        SNo: index + 1,
-        First_name: ele.first_name,
-        Last_name: ele.last_name,
-        users_status: ele.status,
-        contact: ele.contact,
-      };
-    });
-    console.log(jsonDataToDownload);
-    json2xlsDownload(JSON.stringify(jsonDataToDownload), 'studentFeeData', true);
-    // setStartDate(new Date());
-    setEndDate(new Date());
   };
 
   return (
@@ -256,7 +254,7 @@ const FeeUserDetails = (props) => {
         <Modal.Header closeButton>
           <Modal.Title>Select Start Date</Modal.Title>
         </Modal.Header>
-        <Modal.Body className='text-center'>
+        <Modal.Body style={{ display: 'flex', justifyContent: 'center' }}>
           <Calendar onChange={changeStart} value={startDate} maxDate={endDate} />
         </Modal.Body>
         <Modal.Footer>
@@ -273,7 +271,7 @@ const FeeUserDetails = (props) => {
         <Modal.Header closeButton>
           <Modal.Title>Select End Date</Modal.Title>
         </Modal.Header>
-        <Modal.Body className='text-center'>
+        <Modal.Body style={{ display: 'flex', justifyContent: 'center' }}>
           <Calendar onChange={changeEnd} value={endDate} minDate={startDate} maxDate={new Date()} />
         </Modal.Body>
         <Modal.Footer>

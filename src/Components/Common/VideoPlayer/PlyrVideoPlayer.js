@@ -20,7 +20,7 @@ const PlyrVideoPlayer = (props) => {
     type: 'video',
     sources: [
       {
-        src: 'https://ingenium-userfiles.s3.ap-south-1.amazonaws.com/sample_960x540.m4v',
+        src: 'https://userfiles-ingenium.s3.ap-south-1.amazonaws.com/sample_960x540.m4v',
       },
     ],
   });

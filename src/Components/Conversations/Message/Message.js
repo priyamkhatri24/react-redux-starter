@@ -568,7 +568,7 @@ class Message extends Component {
                 <Image
                   src={
                     commentsInfo.sent_by.display_picture ||
-                    'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1631183013255.png'
+                    'https://s3.ap-south-1.amazonaws.com/question-images-ingenium/1631183013255.png'
                   }
                   width={30}
                   height={30}

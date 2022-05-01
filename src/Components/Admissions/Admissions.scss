@@ -17,6 +17,21 @@
     border-radius: 20px 0 0 20px !important;
     background-color: $lightestBlue !important;
   }
+
+  &__makeActive {
+    position: absolute !important;
+    top: 55px !important;
+    right: 5px !important;
+    width: 100px !important;
+  }
+
+  &__makeActiveBtnText {
+    font-family: 'Montserrat-Medium';
+    color: var(--primary-blue);
+    cursor: pointer;
+    font-size: $spacer * 0.85;
+  }
+
   &__edit-del {
     position: absolute !important;
     top: 10px !important;
@@ -164,6 +179,12 @@
     position: relative;
     filter: brightness(0.4);
   }
+}
+
+.Admissions__dateHeadings {
+  font-family: 'Montserrat-Bold';
+  color: var(--primary-blue);
+  cursor: pointer;
 }
 
 .checkIcon {

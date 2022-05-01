@@ -12,7 +12,15 @@ import rupee from '../../../assets/images/Courses/rupee.svg';
 import YCIcon from '../../../assets/images/ycIcon.png';
 
 export const CoursesCards = (props) => {
-  const { allCourses, myCourses, goToCourse, buyCourseId, myCourseId, clientLogo } = props;
+  const {
+    allCourses,
+    myCourses,
+    goToCourse,
+    buyCourseId,
+    myCourseId,
+    clientLogo,
+    featureName,
+  } = props;
 
   return (
     <>
@@ -20,7 +28,7 @@ export const CoursesCards = (props) => {
         <section className='Scrollable__courseCard mt-3' style={{ marginLeft: 0, marginRight: 0 }}>
           <div className='Scrollable__subHeadTextUnderHeading'>
             <div className='d-flex justify-content-between w-100'>
-              <h5 className='Scrollable__coursesInitialHeading mb-1'>Courses available</h5>
+              <h5 className='Scrollable__coursesInitialHeading mb-1'>{featureName} available</h5>
               {allCourses.length >= 4 ? (
                 <button
                   className='Scrollable__viewAllButtonForCards mb-0'
@@ -128,7 +136,9 @@ export const CoursesCards = (props) => {
         <>
           <div className='Scrollable__subHeadTextUnderHeading'>
             <div className='d-flex justify-content-between w-100'>
-              <h5 className='mt-4 mb-0 Scrollable__coursesInitialHeading mx-0 row'>My Courses</h5>
+              <h5 className='mt-4 mb-0 Scrollable__coursesInitialHeading mx-0 row'>
+                My {featureName}
+              </h5>
               {myCourses.length >= 4 ? (
                 <button
                   className='Scrollable__viewAllButtonForCards'
@@ -284,10 +294,12 @@ CoursesCards.propTypes = {
   buyCourseId: PropTypes.func.isRequired,
   myCourseId: PropTypes.func.isRequired,
   clientLogo: PropTypes.string,
+  featureName: PropTypes.string,
 };
 
 CoursesCards.defaultProps = {
   clientLogo: '',
+  featureName: 'Courses',
 };
 
 // col-sm-6 col-md-4 col-lg-2

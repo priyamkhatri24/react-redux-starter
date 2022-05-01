@@ -55,14 +55,17 @@
   height: 67px;
   width: 67px;
 }
+
 .container_studybin {
   justify-content: space-evenly;
   margin-bottom: 0.5rem;
 }
+
 .container_studybin::after {
   content: '';
   flex: 0 0 26%;
 }
+
 .alertModalToCopyAndMove {
   position: fixed;
   z-index: 99;
@@ -73,6 +76,15 @@
   justify-content: space-around;
   align-items: center;
 }
+
+.studyBinFilterModalButtons {
+  width: 100%;
+  border: 1px solid gray;
+  border-radius: 10px;
+  padding: 5px 9px;
+  margin: 10px 0px;
+}
+
 @media screen and (max-width: 600px) {
   .alertModalToCopyAndMove {
     position: fixed;
@@ -82,6 +94,7 @@
     width: 80%;
   }
 }
+
 .alertModalToPaste {
   position: fixed;
   z-index: 999;
@@ -92,6 +105,7 @@
   justify-content: space-around;
   align-items: center;
 }
+
 @media screen and (max-width: 600px) {
   .alertModalToPaste {
     left: 15%;

@@ -43,7 +43,7 @@ export const formatMessages = (list, clientUserId) =>
     message: formatMessageContent(data),
     thumbnail:
       data.sent_by.display_picture ||
-      'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1631183013255.png',
+      'https://s3.ap-south-1.amazonaws.com/question-images-ingenium/1631183013255.png',
     userIsAuthor: data.sent_by.client_user_id === clientUserId,
     timestamp: data.sent_time,
     username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,
@@ -79,7 +79,7 @@ export const formatMessage = (data, userIsAuthor) => ({
   message: formatMessageContent(data),
   thumbnail:
     data.sent_by.display_picture ||
-    'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1631183013255.png',
+    'https://s3.ap-south-1.amazonaws.com/question-images-ingenium/1631183013255.png',
   userIsAuthor,
   timestamp: data.sent_time,
   userColor: data.user_color,
@@ -106,7 +106,7 @@ export const formatConversations = (list) =>
     name: conversation.name,
     thumbnail:
       conversation.display_picture ||
-      'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1631183013255.png',
+      'https://s3.ap-south-1.amazonaws.com/question-images-ingenium/1631183013255.png',
     subTitle: conversation.last_message || '',
     unreadCount: conversation.unread_message_count || 0,
     messages: [],
@@ -132,7 +132,7 @@ export const formatPost = (data, clientUserId) => ({
   attachments: data.attachments_array,
   thumbnail:
     data.sent_by.display_picture ||
-    'https://s3.ap-south-1.amazonaws.com/ingenium-question-images/1631183013255.png',
+    'https://s3.ap-south-1.amazonaws.com/question-images-ingenium/1631183013255.png',
   userIsAuthor: data.sent_by.client_user_id === clientUserId,
   timestamp: data.sent_time,
   username: `${data.sent_by.first_name} ${data.sent_by.last_name}`,

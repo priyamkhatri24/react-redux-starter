@@ -26,26 +26,6 @@ const FeeBatches = (props) => {
   const [searchPage, setSearchPage] = useState(1);
   const [searchString, setSearchString] = useState('');
   const [limit, setLimit] = useState(5);
-
-  // const infiniteScroll = () => {
-  //   console.log(activeTab, 'batches');
-  //   if (
-  //     window.innerHeight + document.documentElement.scrollTop >=
-  //       document.documentElement.offsetHeight- 200 ||
-  //     window.innerHeight + document.body.scrollTop >= document.body.offsetHeight- 200
-  //   ) {
-  //     setSearchPage((prev) => prev + 1);
-  //     setPage((prev) => prev + 1);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (activeTab) {
-  //     window.addEventListener('scroll', infiniteScroll);
-  //   }
-  //   return () => window.removeEventListener('scroll', infiniteScroll);
-  // }, [activeTab]);
-
   const infiniteScroll = () => {
     setSearchPage((prev) => prev + 1);
     setPage((prev) => prev + 1);
