@@ -319,7 +319,7 @@ const Privacy = (props) => {
             </i>
           </label>
         </Row>
-        <Row className='m-2 ml-4 p-2'>
+        {/* <Row className='m-2 ml-4 p-2'>
           <Form.Check
             style={{ marginRight: 'auto', fontFamily: 'Montserrat-Medium' }}
             type='checkbox'
@@ -328,7 +328,7 @@ const Privacy = (props) => {
             value={showWelcome}
             onClick={() => setShowWelcome(!showWelcome)}
           />
-        </Row>
+        </Row> */}
         <div className='m-2 ml-4 p-2'>
           <Form.Check
             style={{ marginRight: 'auto', fontFamily: 'Montserrat-Medium' }}

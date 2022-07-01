@@ -32,6 +32,7 @@ const DisplayPage = (props) => {
   const [formDetails, setFormDetails] = useState([]);
   const [banners, setBanners] = useState([]);
   const [showModal, setShowModal] = useState(false);
+
   const [modalFile, setModalFile] = useState('');
   const openDeleteModal = (elem) => {
     setShowModal(true);

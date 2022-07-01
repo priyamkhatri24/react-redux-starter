@@ -16,7 +16,8 @@ const AnalysisDataCard = (props) => {
       <p className='LiveClasses__adminHeading mb-0 mt-2 mx-2'>{elem.test_name}</p>
       <p className='LiveClasses__adminCardTime mb-0 mx-2' style={{ fontSize: '10px' }}>
         Due:{' '}
-        {elem.due_date !== 'NaN' &&
+        {elem.due_date &&
+          elem.due_date !== 'NaN' &&
           format(fromUnixTime(parseInt(elem.due_date, 10)), 'dd-MMM-yyyy')}
       </p>
       <Row className='m-0'>

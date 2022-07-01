@@ -531,7 +531,8 @@ const SettlementPage = Loadable({
 });
 
 const EditPayments = Loadable({
-  loader: () => import(/* webpackChunkName: 'settlementPage' */ '../Components/Fees/EditPayment'),
+  loader: () =>
+    import(/* webpackChunkName: 'settlementPage' */ '../Components/Fees/EditSettlementPage'),
   loading: Loading,
 });
 

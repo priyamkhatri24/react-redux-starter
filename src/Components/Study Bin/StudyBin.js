@@ -461,11 +461,13 @@ const StudyBin = (props) => {
   }, [folderIdStack, sortBy]);
 
   useEffect(() => {
-    get({ client_user_id: clientUserId }, '/getFileCategoriesForStudent').then((res) => {
-      console.log(res);
-      const result = apiValidation(res);
-      setCategoryArray(result);
-    });
+    get({ client_user_id: clientUserId, client_id: clientId }, '/getFileCategoriesForStudent').then(
+      (res) => {
+        console.log(res);
+        const result = apiValidation(res);
+        setCategoryArray(result);
+      },
+    );
   }, [clientUserId]);
 
   const goToVideoPlayer = (elem, type) => {
@@ -663,9 +665,11 @@ const StudyBin = (props) => {
         <div style={{ marginTop: '6rem' }} className='mx-4 mx-md-5'>
           {(folderIdStack.length === 1 || roleArray.includes(1)) && (
             <div className='mb-3'>
-              <h6 className='StudyBin__heading'>
-                Categories <span>({categoryArray.length})</span>
-              </h6>
+              {categoryArray.length > 0 ? (
+                <h6 className='StudyBin__heading'>
+                  Categories <span>({categoryArray.length})</span>
+                </h6>
+              ) : null}
               {categoryArray.map((elem) => {
                 return (
                   <Row

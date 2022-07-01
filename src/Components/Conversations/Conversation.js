@@ -504,7 +504,7 @@ const Conversation = (props) => {
 
   const uploadFile = (file, fileType) => {
     // checkSocketAndReconnect();
-    // console.log(file, fileType, 'uploadddddddddddd');
+    console.log(file, fileType, 'uploadddddddddddd');
     if (!file) return;
     const url = URL.createObjectURL(file);
     const tempId = uuidv4();
@@ -545,8 +545,10 @@ const Conversation = (props) => {
     setConversation(newConversation);
 
     uploadFiles([{ file, type: fileType }]).then((res) => {
-      const { attachments_array: arr } = res;
-      const { url: filename } = arr[0];
+      console.log(res, 'checking docs response nowwww');
+      const arr = res?.attachments_array;
+      const filename = arr ? arr[0].url : '';
+      // const { url: filename } = arr ? arr[0] : '';
       const emitData = {
         sender_id: clientUserId,
         client_id: clientId,

@@ -2,6 +2,7 @@ import { dashboardConstants } from '../../constants';
 
 const initialState = {
   dashboardData: {},
+  locationData: {},
   redirectPath: null,
 };
 
@@ -11,6 +12,12 @@ export function dashboard(state = initialState, action) {
       return {
         ...state,
         dashboardData: action.payload,
+      };
+
+    case dashboardConstants.LOCATIONDATA:
+      return {
+        ...state,
+        locationData: action.payload,
       };
 
     case dashboardConstants.REDIRECTPATH:
@@ -30,4 +37,5 @@ export function dashboard(state = initialState, action) {
 }
 
 export const getCurrentDashboardData = (state) => state.dashboard.dashboardData;
+export const getCurrentLocationData = (state) => state.dashboard.locationData;
 export const getCurrentRedirectPath = (state) => state.dashboard.redirectPath;

@@ -46,6 +46,7 @@ const TeacherCourses = (props) => {
       branding: { currency_symbol: currencySymbol },
     },
   } = props;
+
   const [courses, setCourses] = useState([]);
   const [sortBy, setSortBy] = useState('date');
   const [filterModal, setFilterModal] = useState(false);

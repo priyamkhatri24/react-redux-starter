@@ -206,7 +206,9 @@ const SignIn = (props) => {
           props.setProfileImageToStore(profileImage);
           props.setContactToStore(userContact);
           props.setTokenToStore(token);
+
           props.setClientIdToStore(clientID);
+
           props.setUserNameToStore(userName);
           props.setBirthdayToStore(birthday);
           props.setAddressToStore(address);
@@ -258,7 +260,9 @@ const SignIn = (props) => {
           props.setProfileImageToStore(profileImage);
           props.setContactToStore(userContact);
           props.setTokenToStore(token);
+
           props.setClientIdToStore(clientID);
+
           props.setUserNameToStore(userName);
           props.setBirthdayToStore(birthday);
           props.setAddressToStore(address);

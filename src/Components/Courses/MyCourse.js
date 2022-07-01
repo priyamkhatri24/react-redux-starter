@@ -126,6 +126,7 @@ const Mycourse = (props) => {
   const nowPlayingVideoRef = useRef(null);
   const [testToOpen, setTestToOpen] = useState(null);
   const [testOpener, setTestOpener] = useState(false);
+  const [expiryDate, setExpiryDate] = useState(null);
   const [isCourseValid, setIsCourseValid] = useState(true);
   const handleImageOpen = () => setShowImageModal(true);
   const handleImageClose = () => setShowImageModal(false);
@@ -282,6 +283,20 @@ const Mycourse = (props) => {
       get(payload, '/getCourseDetailsStudent').then((res) => {
         const result = apiValidation(res);
         setCourse(result);
+        // calculation of validity if exists
+        if (result.validity && result.validity !== 'null') {
+          const subscribedAtStamp = +result.subscribed_at;
+
+          const validityStr = result.validity;
+          const validityArr = validityStr.split('-'); // [mm, yy]
+          const validityStamp =
+            Number(validityArr[0]) * 2629743.8 + Number(validityArr[1]) * 31556926;
+
+          const expdate = new Date((subscribedAtStamp + validityStamp) * 1000);
+          setExpiryDate(expdate);
+          console.log(expdate, 'expdate');
+        }
+
         setIsCourseValid(result.is_course_valid === 'true');
         const newsectionArray = result.section_array;
         newsectionArray.forEach((ele) => {
@@ -1383,9 +1398,18 @@ const Mycourse = (props) => {
                   })}
                 <hr className='' />
                 <p className='Courses__heading'>This course includes</p>
-                <p className='Courses__subHeading mb-2'>- Lifetime access</p>
-                <p className='Courses__subHeading mb-2'>- Course completion certificate</p>
-                <p className='Courses__subHeading mb-2'>- Access on mobile, laptop and TV</p>
+                {course.course_includes.map((ele) => {
+                  return <p className='Courses__subHeading mb-2'>- {ele}</p>;
+                })}
+                {expiryDate ? (
+                  <>
+                    <hr className='' />
+                    <p className='Courses__subHeading expiryText mb-2'>
+                      This course will expire on{' '}
+                      {String(expiryDate).split(' ').slice(1, 4).join(' ')}
+                    </p>
+                  </>
+                ) : null}
               </Tab>
               <Tab
                 style={{

@@ -28,7 +28,7 @@ const SettlementPage = (props) => {
       console.log(result, 'getCashFreeAccountDetails');
       console.log(payload);
       setData(result);
-      setVendorDetails(result.vendorDetails);
+      setVendorDetails(result.vendorDetails || {});
     });
   }, [clientId]);
 
@@ -49,18 +49,18 @@ const SettlementPage = (props) => {
         </div>
 
         <h5 style={{ paddingBottom: '15px', fontFamily: 'Montserrat-Medium' }}>Info</h5>
-        <h6 className='LiveClasses__adminHeading mb-0'>{vendorDetails.bank?.accountHolder}</h6>
+        <h6 className='LiveClasses__adminHeading mb-0'>{vendorDetails?.bank?.accountHolder}</h6>
         <p className='LiveClasses__adminDuration '>Account Holder Name</p>
-        <h6 className='LiveClasses__adminHeading mb-0'>{vendorDetails.phone}</h6>
+        <h6 className='LiveClasses__adminHeading mb-0'>{vendorDetails?.phone}</h6>
         <p className='LiveClasses__adminDuration '>Phone Number</p>
-        <h6 className='LiveClasses__adminHeading mb-0'>{vendorDetails.email}</h6>
+        <h6 className='LiveClasses__adminHeading mb-0'>{vendorDetails?.email}</h6>
         <p className='LiveClasses__adminDuration '>Email Id</p>
         <>
-          <h6 className='LiveClasses__adminHeading mb-0'>{vendorDetails.bank?.accountNumber}</h6>
+          <h6 className='LiveClasses__adminHeading mb-0'>{vendorDetails?.bank?.accountNumber}</h6>
           <p className='LiveClasses__adminDuration '>Account Number</p>
         </>
         <>
-          <h6 className='LiveClasses__adminHeading mb-0'>{vendorDetails.bank?.ifsc}</h6>
+          <h6 className='LiveClasses__adminHeading mb-0'>{vendorDetails?.bank?.ifsc}</h6>
           <p className='LiveClasses__adminDuration '>IFSC Code</p>
         </>
         <>

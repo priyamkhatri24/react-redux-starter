@@ -89,6 +89,7 @@ const Dashboard = (props) => {
     clearClientIdDetails,
     history,
     setDashboardDataToStore,
+    setLocationDataToStore,
     setTestResultArrayToStore,
     setTestStartTimeToStore,
     setTestTypeToStore,
@@ -113,6 +114,8 @@ const Dashboard = (props) => {
     setSelectedTypeToStore,
   } = props;
   const [time, setTime] = useState('');
+  const [currentCountry, setCurrentCountry] = useState(''); // location
+  const [currentState, setCurrentState] = useState(''); // location
   const [clientStatus, setClientStatus] = useState('');
   const [restrictionModal, setRestrictionModal] = useState(false);
   const [notices, setNotices] = useState([]);
@@ -145,6 +148,19 @@ const Dashboard = (props) => {
   //     logout();
   //   }
   // }, [sessionStatus]);
+
+  useEffect(() => {
+    fetch('https://api.ipregistry.co/?key=rklg5ykj756reab1')
+      .then((res) => res.json())
+      .then((ipdata) => {
+        setCurrentCountry(ipdata.location.country.name);
+        setCurrentState(ipdata.location.region.name);
+        setLocationDataToStore({
+          country: ipdata.location.country.name,
+          state: ipdata.location.region.name,
+        });
+      });
+  }, []);
 
   useEffect(
     function () {
@@ -297,13 +313,13 @@ const Dashboard = (props) => {
   useEffect(() => {
     partsOfDay();
 
-    get({ client_user_id: clientUserId }, '/getRecentCourses').then((res) => {
+    get({ client_user_id: clientUserId, client_id: clientId }, '/getRecentCourses').then((res) => {
       const result = apiValidation(res);
       setAllCourses(result.assigned_courses);
       setMyCourses(result.subscribed_courses);
       console.log(result, 'recentCourses');
     });
-  }, [clientId, clientUserId, setDashboardDataToStore]);
+  }, [clientId, clientUserId, setDashboardDataToStore, currentCountry, currentState]);
 
   useEffect(() => {
     setHomeworkLanguageTypeToStore('');
@@ -352,6 +368,7 @@ const Dashboard = (props) => {
       const result = apiValidation(res);
       setNotices(result.notice);
       setClientStatus(result.client_status);
+
       setAdmissions(result.admission || {});
       setAttendance(result.attendance);
       setData(result);
@@ -1127,7 +1144,10 @@ const Dashboard = (props) => {
             buyCourseId={goToBuyCourse}
             myCourseId={goToMyCourse}
             clientLogo={branding.branding.client_logo}
+            globalCurrency={branding.branding.currency_symbol}
             featureName={param.client_feature_name}
+            country={currentCountry}
+            state={currentState}
           />
         ) : (
           <DashboardCards
@@ -1698,6 +1718,9 @@ const mapDispatchToProps = (dispatch) => ({
   setDashboardDataToStore: (payload) => {
     dispatch(dashboardActions.setDashboardDataToStore(payload));
   },
+  setLocationDataToStore: (payload) => {
+    dispatch(dashboardActions.setLocationDataToStore(payload));
+  },
   setAnalysisStudentObjectToStore: (payload) => {
     dispatch(analysisActions.setAnalysisStudentObjectToStore(payload));
   },
@@ -1732,6 +1755,7 @@ Dashboard.propTypes = {
   setTestLanguageToStore: PropTypes.func.isRequired,
   setCourseIdToStore: PropTypes.func.isRequired,
   setDashboardDataToStore: PropTypes.func.isRequired,
+  setLocationDataToStore: PropTypes.func.isRequired,
   setAdmissionRoleArrayToStore: PropTypes.func.isRequired,
   setAnalysisStudentObjectToStore: PropTypes.func.isRequired,
   setFolderIdArrayToStore: PropTypes.func.isRequired,

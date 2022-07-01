@@ -22,9 +22,9 @@ const EditPayment = (props) => {
   const [phoneNum, setPhoneNum] = useState(history.location.state.vendorDetails.phone);
   const [emailID, setEmailID] = useState(history.location.state.vendorDetails.email);
   const [accountNo, SetAccountNo] = useState(
-    history.location.state.vendorDetails.bank.accountNumber,
+    history.location.state.vendorDetails.bank?.accountNumber,
   );
-  const [ifsc, SetIfsc] = useState(history.location.state.vendorDetails.bank.ifsc);
+  const [ifsc, SetIfsc] = useState(history.location.state.vendorDetails.bank?.ifsc);
   const [radioBtn, setRadioBtn] = useState('');
 
   const handleSubmit = (e) => {

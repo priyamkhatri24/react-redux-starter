@@ -41,7 +41,10 @@ import {
   getRoleArray,
 } from '../../redux/reducers/clientUserId.reducer';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
-import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
+import {
+  getCurrentDashboardData,
+  getCurrentLocationData,
+} from '../../redux/reducers/dashboard.reducer';
 import YCIcon from '../../assets/images/ycIcon.png';
 import checkmark from '../../assets/images/order/icons8-checked.svg';
 import caution from '../../assets/images/order/icons8-medium-risk-50.png';
@@ -55,6 +58,7 @@ const BuyCourse = (props) => {
     clientId,
     clientUserId,
     dashboardData,
+    locationData,
     currentbranding: {
       branding: {
         client_color: clientColor,
@@ -103,6 +107,8 @@ const BuyCourse = (props) => {
   const [isBrowserCompatible, setIsBrowserCompatible] = useState(true);
   const nowPlayingVideoRef = useRef(null);
   const [showImageModal, setShowImageModal] = useState(false);
+  const [finalCurrencyCode, setFinalCurrencyCode] = useState(currencyCode);
+  const [currencyCodes, setCurrencyCodes] = useState([]);
 
   const vidRef2 = useRef(null);
   const mainCRef = useRef(null);
@@ -111,6 +117,14 @@ const BuyCourse = (props) => {
     setReference(cfref);
     console.log(cfref);
   };
+
+  useEffect(() => {
+    get(null, '/getAllCurrencyCodes').then((res) => {
+      const result = apiValidation(res);
+      result.forEach((ele) => (ele.currencySymbol = ele.currency_symbol));
+      setCurrencyCodes(result);
+    });
+  }, []);
 
   const statusClass = cx({
     Fees__orderStatus: true,
@@ -162,11 +176,40 @@ const BuyCourse = (props) => {
     get(payload, '/getCourseDetailsStudent').then((res) => {
       console.log(res, 'course details');
       const result = apiValidation(res);
-      setCourse(result);
+
       setPaymentGateway(result.payment_gateway);
       setReviews(result.reviews);
-      // setReviews(sampleReviews);
-      console.log(result, 'coursee');
+      // regioanl courses check
+      // checkCourseRegionalityAndUpdateCourseObject();////////////////////////////////////////////////
+      if (result.is_regional) {
+        const countryFilteredPrices = result.regional_prices.filter(
+          (ele) => ele.country_name === locationData.country,
+        );
+        const checkForAllStates = countryFilteredPrices.find((ele) => ele.state_name === '');
+        const checkForCurrentState = countryFilteredPrices.find(
+          (ele) => ele.state_name === locationData.state,
+        );
+        if (checkForAllStates) {
+          result.course_price = checkForAllStates.region_course_price;
+          result.discount_price = checkForAllStates.region_discount_price;
+          result.inducedCurrencySymbol = currencyCodes.find(
+            (ele) => ele.currency_code === checkForAllStates.currency_code,
+          )?.currencySymbol;
+          setFinalCurrencyCode(checkForAllStates.currency_code);
+        }
+        if (checkForCurrentState) {
+          result.course_price = checkForCurrentState.region_course_price;
+          result.discount_price = checkForCurrentState.region_discount_price;
+          result.inducedCurrencySymbol = currencyCodes.find(
+            (ele) => ele.currency_code === checkForCurrentState.currency_code,
+          )?.currencySymbol;
+          setFinalCurrencyCode(checkForCurrentState.currency_code);
+        }
+        console.log(countryFilteredPrices, 'countryFilteredPrices');
+      }
+      // //////////////////////////////////////////////////////////////////////////////////////////////
+      setCourse(result);
+      setCoursePrice(result.discount_price);
       setCourseImage(result.course_display_image);
       if (result.course_preview_vedio) {
         const src = {
@@ -181,7 +224,7 @@ const BuyCourse = (props) => {
         setCourseVideo(src);
         setSource(result.course_preview_vedio);
       }
-      setCoursePrice(result.discount_price);
+
       const numberOfStars = Math.round(parseInt(result.course_rating, 10));
       setStarArray(
         [...Array(numberOfStars)].map((e, i) => (
@@ -209,7 +252,7 @@ const BuyCourse = (props) => {
       setContentArray(content);
       console.log(content, 'finalContentArray');
     });
-  }, [match, location]);
+  }, [match, currencyCodes, location]);
 
   const subscribeOrBuy = () => {
     if (roleArray.includes(3) || roleArray.includes(4)) {
@@ -352,11 +395,11 @@ const BuyCourse = (props) => {
       console.log(res);
       const credentials = apiValidation(res[0]);
       const orderDetails = apiValidation(res[1]);
-
+      console.log(finalCurrencyCode);
       displayRazorpay(
         orderDetails.order_id,
         coursePrice * 100,
-        currencyCode,
+        finalCurrencyCode,
         clientLogo,
         clientColor,
         clientName,
@@ -740,12 +783,23 @@ const BuyCourse = (props) => {
               </div>
               <div className='d-flex align-items-center justify-content-between'>
                 <div>
-                  <span className='mx-1 Courses__Price my-auto'>{`${currencySymbol} ${coursePrice}`}</span>
+                  {course.inducedCurrencySymbol ? (
+                    <span className='mx-1 Courses__Price my-auto'>{`${course.inducedCurrencySymbol} ${coursePrice}`}</span>
+                  ) : (
+                    <span className='mx-1 Courses__Price my-auto'>{`${currencySymbol} ${coursePrice}`}</span>
+                  )}
                   <span className='my-auto'>
-                    <del className='verySmallText'>
-                      {' '}
-                      {`${currencySymbol} ${course.course_price}`}
-                    </del>
+                    {course.inducedCurrencySymbol ? (
+                      <del className='verySmallText'>
+                        {' '}
+                        {`${course.inducedCurrencySymbol} ${course.course_price}`}
+                      </del>
+                    ) : (
+                      <del className='verySmallText'>
+                        {' '}
+                        {`${currencySymbol} ${course.course_price}`}
+                      </del>
+                    )}
                   </span>
                 </div>
                 <div>
@@ -1104,7 +1158,9 @@ const BuyCourse = (props) => {
                   fontFamily: 'MontSerrat-Medium',
                 }}
               >
-                {`${currencySymbol} ${coursePrice}`}
+                {course.inducedCurrencySymbol
+                  ? `${course.inducedCurrencySymbol} ${coursePrice}`
+                  : `${currencySymbol} ${coursePrice}`}
               </span>
             </Row>
           </Card>
@@ -1177,7 +1233,11 @@ const BuyCourse = (props) => {
               alt='caution'
               className='img-fluid'
             />
-            <h1 className='Fees__orderAmount mt-3'>{`${currencySymbol} ${order.amount}`}</h1>
+            <h1 className='Fees__orderAmount mt-3'>
+              {course.inducedCurrencySymbol
+                ? `${course.inducedCurrencySymbol} ${order.amount}`
+                : `${currencySymbol} ${order.amount}`}
+            </h1>
             <p className='Fees__orderDescription'>{order.description}</p>
             <h3 className={statusClass}>
               {order.status === 'due'
@@ -1252,6 +1312,7 @@ const mapStateToProps = (state) => ({
   clientUserId: getClientUserId(state),
   currentbranding: getCurrentBranding(state),
   dashboardData: getCurrentDashboardData(state),
+  locationData: getCurrentLocationData(state),
   roleArray: getRoleArray(state),
 });
 
@@ -1272,6 +1333,7 @@ BuyCourse.propTypes = {
   }).isRequired,
   clientUserId: PropTypes.number.isRequired,
   dashboardData: PropTypes.instanceOf(Object).isRequired,
+  locationData: PropTypes.instanceOf(Object).isRequired,
   currentbranding: PropTypes.shape({
     branding: PropTypes.shape({
       client_logo: PropTypes.string,

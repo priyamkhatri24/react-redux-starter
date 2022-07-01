@@ -60,12 +60,12 @@ const FinalQuestionCard = (props) => {
           </Row>
 
           <div className='Homework__questionHeading text-left m-2'>
-            <span>
+            <span style={{ lineHeight: '25px' }}>
               {(language === 'english' || language === 'both' || !language) && (
                 <MathJax math={String.raw`${question.question_text}`} />
               )}
             </span>
-            <span className='mt-1'>
+            <span style={{ lineHeight: '30px' }} className='mt-1'>
               {(language === 'hindi' || language === 'both') && (
                 <MathJax math={String.raw`${question.hindi_text}`} />
               )}

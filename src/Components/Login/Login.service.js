@@ -16,7 +16,9 @@ export function getBranding(param) {
           history.push('/invalidurl');
           return;
         }
+
         dispatch(clientUserIdActions.setClientIdToStore(res.result[0].client_id));
+
         dispatch(brandingActions.success(res.result[0]));
       })
       .catch((e) => dispatch(brandingActions.error(e)));

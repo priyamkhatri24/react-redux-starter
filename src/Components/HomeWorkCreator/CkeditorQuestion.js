@@ -626,7 +626,9 @@ const CkeditorQuestion = (props) => {
         </Row>
         <div className='d-flex questionUpperC my-2 mx-3'>
           <textarea
-            onChange={(e) => updateQuestion(e.target.value)}
+            onChange={(e) => {
+              updateQuestion(e.target.value);
+            }}
             placeholder='Question'
             className='questionTextarea'
           />

@@ -244,6 +244,15 @@
     color: var(--primary-blue);
   }
 
+  &__addRegionalPriceButton {
+    padding: 2px 12px;
+    font-family: 'Montserrat-Regular';
+    color: var(--primary-blue);
+    cursor: pointer;
+    border: 1px solid gray;
+    border-radius: 7px;
+  }
+
   &__mycoursesvideoplayer {
     height: auto;
     display: flex;
@@ -460,6 +469,24 @@
   z-index: 100;
 }
 
+.smallFont {
+  font-size: 10px !important;
+}
+
+.regionalPriceFormInput {
+  width: 15%;
+  margin: 5px !important;
+  min-width: 100px;
+}
+
+.alertTextRegionalPrice {
+  color: red;
+  margin: 0px;
+  margin-left: 1px;
+  font-family: 'Montserrat-Regular';
+  font-size: 8px;
+}
+
 .playIconCourse:hover {
   color: #ffffffd0 !important;
 }
@@ -660,8 +687,16 @@
   color: rgb(66, 66, 66);
 }
 
+.expiryText {
+  color: darkred !important;
+}
+
 .scrollableContentOfCourses::-webkit-scrollbar {
   display: none;
+}
+
+.saveDelBtns {
+  cursor: pointer;
 }
 
 .scrollableContentOfCourses_item {

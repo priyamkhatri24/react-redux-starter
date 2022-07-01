@@ -5,6 +5,8 @@ import parse from 'date-fns/parse';
 import { connect } from 'react-redux';
 import Card from 'react-bootstrap/Card';
 import CreateIcon from '@material-ui/icons/Create';
+import AddTaskIcon from '@material-ui/icons/SaveOutlined';
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
@@ -21,9 +23,12 @@ const Price = (props) => {
     discountPrice,
     coupons,
     clientId,
+    isRegional,
+    priceArray,
     courseId,
     clientUserId,
     currencySymbol,
+    paymentGateway,
   } = props;
   const [currentCoursePrice, setCurrentPrice] = useState(0);
   const [discountCoursePrice, setDiscountPrice] = useState(0);
@@ -41,12 +46,81 @@ const Price = (props) => {
   const [dateOfCoupon, setDateOfCoupon] = useState(new Date());
   const [noOfCouponsOptions, setNoOfCouponsOptions] = useState('unlimited');
   const [isFree, setIsFree] = useState(false);
+  const [courseIsRegional, setCourseIsRegional] = useState(false);
+  const [regionalPriceArray, setRegionalPriceArray] = useState([]);
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [currencies, setCurrencies] = useState([]);
+  const [isNewPriceSaved, setIsNewPriceSaved] = useState(true);
+  const [addMoreClickedStatus, setAddMoreClickedStatus] = useState(0);
+  const [validatorSwitch, setValidatorSwitch] = useState(0);
+  const [authToken, setAuthToken] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [selectedState, setSelectedState] = useState('all states');
+  const [selectedCurrencyCode, setSelectedCurrencyCode] = useState('');
+  const [enteredRegionCoursePrice, setEnteredRegionCoursePrice] = useState('');
+  const [enteredRegionDiscountPrice, setEnteredRegionDiscountPrice] = useState('');
+
+  useEffect(() => {
+    get(null, '/getAllCurrencyCodes').then((currency) => {
+      const result = apiValidation(currency);
+      setCurrencies(result);
+    });
+  }, []);
+
+  useEffect(() => {
+    const headers = {
+      Accept: 'application/json',
+      'api-token': '9hnzIwdfLG2vUx28TvkEqDRfBDsj4JoKcEkp8i1mRu9XJ8ZKnJ6ZoJo0T-eK_dHa02I',
+      'user-email': 'tech@ingeniumedu.com',
+    };
+    fetch('https://www.universal-tutorial.com/api/getaccesstoken', {
+      headers,
+    })
+      .then((res) => res.json())
+      .then((resp) => {
+        setAuthToken(resp.auth_token);
+        const headerss = {
+          Authorization: `Bearer ${resp.auth_token}`, // getting access token from this api
+          Accept: 'application/json',
+        };
+        fetch('https://www.universal-tutorial.com/api/countries', { headers: headerss })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data, 'countries'); // print countries data
+            setCountries(data || []);
+          })
+          .catch((err) => console.log(err));
+      });
+  }, []);
+
+  useEffect(() => {
+    if (selectedCountry) {
+      const headers = {
+        Authorization: `Bearer ${authToken}`,
+        Accept: 'application/json',
+      };
+      fetch(`https://www.universal-tutorial.com/api/states/${selectedCountry}`, {
+        headers,
+      })
+        .then((res) => res.json())
+        .then((resp) => {
+          setStates(resp);
+        });
+    }
+  }, [selectedCountry]);
 
   useEffect(() => {
     setCurrentPrice(coursePrice);
     setDiscountPrice(discountPrice);
     setCoupons(coupons);
   }, [coursePrice, discountPrice, coupons]);
+
+  useEffect(() => {
+    const filteredPriceArray = priceArray.filter((ele) => ele.country_name !== 'default');
+    setRegionalPriceArray(filteredPriceArray);
+    setCourseIsRegional(isRegional);
+  }, []);
 
   const getCouponInfo = (id, status) => {
     get({ client_id: clientId, coupon_id: id }, '/getCouponInformation').then((res) => {
@@ -187,6 +261,92 @@ const Price = (props) => {
     }
   };
 
+  const toggleCourseRegioanlity = () => {
+    setCourseIsRegional((prev) => !prev);
+  };
+
+  const addMoreClicked = () => {
+    setAddMoreClickedStatus(1);
+    console.log('updayed!');
+  };
+
+  const checkValidationForRegionalArrayObject = () => {
+    return (
+      selectedCountry &&
+      selectedState &&
+      !isNaN(enteredRegionCoursePrice) &&
+      enteredRegionCoursePrice !== '' &&
+      enteredRegionDiscountPrice !== '' &&
+      !isNaN(enteredRegionDiscountPrice) &&
+      selectedCurrencyCode
+    );
+  };
+
+  const updatePricesArrayHandler = () => {
+    if (!checkValidationForRegionalArrayObject()) {
+      setValidatorSwitch(1);
+      return;
+    }
+    const newRegionalPriceArray = [...regionalPriceArray];
+    newRegionalPriceArray.push({
+      country_name: selectedCountry,
+      state_name: selectedState === 'all states' ? '' : selectedState,
+      region_course_price: +enteredRegionCoursePrice,
+      region_discount_price: +enteredRegionDiscountPrice,
+      currency_code: selectedCurrencyCode,
+    });
+    setRegionalPriceArray(newRegionalPriceArray);
+    setAddMoreClickedStatus(0);
+    setEnteredRegionCoursePrice('');
+    setEnteredRegionDiscountPrice('');
+    setSelectedCurrencyCode('');
+    setSelectedState('all states');
+    setSelectedCountry('');
+    setValidatorSwitch(0);
+    console.log(newRegionalPriceArray);
+  };
+
+  const deletedObjectfromPriceArray = (object) => {
+    const newRegionalPriceArray = regionalPriceArray.filter((ele) => {
+      return (
+        ele.country_name !== object.country_name ||
+        ele.state_name !== object.state_name ||
+        ele.region_course_price !== object.region_course_price ||
+        ele.region_discount_price !== object.region_discount_price ||
+        ele.currency_code !== object.currency_code
+      );
+    });
+    setRegionalPriceArray(newRegionalPriceArray);
+  };
+
+  const addCourseRegionalPrices = () => {
+    const payload = {
+      course_id: courseId,
+      price_array: JSON.stringify(regionalPriceArray),
+      client_id: clientId,
+      need_msg: true,
+    };
+    console.log(regionalPriceArray);
+    post(payload, '/addCourseRegionalPrice')
+      .then((res) => {
+        console.log(res);
+        if (res.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Updated!',
+            text: `You have successfully updated the course's regional prices.`,
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops!',
+            text: `Unable to update course regional price.`,
+          });
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <div>
       {['Basic Information', 'Create your content', 'Course display page'].map((e, i) => {
@@ -244,6 +404,229 @@ const Price = (props) => {
             <span>Discounted Price</span>
           </label>
         </Row>
+        {paymentGateway === 'razorpay' && (
+          <Row className='m-2 mt-3'>
+            <div
+              onClick={toggleCourseRegioanlity}
+              onKeyPress={toggleCourseRegioanlity}
+              tabIndex={-1}
+              role='button'
+              className='Courses__addRegionalPriceButton'
+            >
+              + Add Course price for different regions.
+            </div>
+          </Row>
+        )}
+        {paymentGateway !== 'razorpay' && (
+          <Row className='my-3 Courses__createCourse mx-2'>
+            <span style={{ fontFamily: 'Montserrat-regular' }} className='my-auto ml-2'>
+              You cannot add regional prices to the course. The current payment gateway does not
+              support regional prices.
+            </span>
+          </Row>
+        )}
+        {courseIsRegional && paymentGateway === 'razorpay' ? (
+          <Row className='m-2 mt-3'>
+            {regionalPriceArray.map((ele) => {
+              return (
+                <div className='d-flex w-100' style={{ flexFlow: 'wrap' }}>
+                  <label className='has-float-label my-auto regionalPriceFormInput'>
+                    <input
+                      className='form-control'
+                      name='Country Name'
+                      disabled
+                      readOnly
+                      type='text'
+                      value={ele.country_name}
+                      placeholder='Country Name'
+                      // onChange={()=>{}}
+                    />
+                    <span className='smallFont'>Country Name</span>
+                  </label>
+                  <label className='has-float-label my-auto regionalPriceFormInput'>
+                    <input
+                      className='form-control'
+                      name='State Name'
+                      disabled
+                      readOnly
+                      type='text'
+                      value={ele.state_name === '' ? 'all states' : ele.state_name}
+                      placeholder='State Name'
+                      // onChange={()=>{}}
+                    />
+                    <span>State name</span>
+                  </label>
+                  <label className='has-float-label my-auto regionalPriceFormInput'>
+                    <input
+                      className='form-control'
+                      name='Country Price'
+                      type='text'
+                      disabled
+                      readOnly
+                      value={ele.region_course_price}
+                      placeholder='Country Price'
+                    />
+                    <span className='smallFont'>Country Price</span>
+                  </label>
+                  <label className='has-float-label my-auto regionalPriceFormInput'>
+                    <input
+                      className='form-control'
+                      name='Discounted Price'
+                      type='text'
+                      disabled
+                      readOnly
+                      value={ele.region_discount_price}
+                      placeholder='Discounted Price'
+                    />
+                    <span className='smallFont'>Discounted Price</span>
+                  </label>
+                  <label className='has-float-label my-auto regionalPriceFormInput'>
+                    <input
+                      className='form-control'
+                      name='Currency'
+                      type='text'
+                      disabled
+                      readOnly
+                      value={ele.currency_code}
+                      placeholder='Currency'
+                    />
+                    <span>Currrency</span>
+                  </label>
+                  <div style={{ color: 'gray' }} className='d-flex align-items-center mx-2'>
+                    <AddTaskIcon />
+                  </div>
+                  <div
+                    onClick={() => deletedObjectfromPriceArray(ele)}
+                    onKeyPress={() => deletedObjectfromPriceArray(ele)}
+                    tabIndex={-1}
+                    role='button'
+                    className='d-flex align-items-center mx-2 saveDelBtns'
+                  >
+                    <CancelOutlinedIcon />
+                  </div>
+                </div>
+              );
+            })}
+            {addMoreClickedStatus === 1 ? (
+              <div className='d-flex w-100' style={{ flexFlow: 'wrap' }}>
+                <label className='has-float-label my-auto regionalPriceFormInput'>
+                  <select
+                    className='form-control w-100'
+                    name='Country name'
+                    onChange={(e) => setSelectedCountry(e.target.value)}
+                  >
+                    {countries.map((country) => {
+                      return <option value={country.country_name}>{country.country_name}</option>;
+                    })}
+                  </select>
+                  <span>Country name</span>
+                  {validatorSwitch && !selectedCountry ? (
+                    <p className='alertTextRegionalPrice'>* Please select a country</p>
+                  ) : null}
+                </label>
+                <label className='has-float-label my-auto regionalPriceFormInput'>
+                  <select
+                    className='form-control w-100'
+                    name='State name'
+                    onChange={(e) => setSelectedState(e.target.value)}
+                  >
+                    <option value='all states' selected>
+                      All States
+                    </option>
+                    {states.map((state) => {
+                      return <option value={state.state_name}>{state.state_name}</option>;
+                    })}
+                  </select>
+                  <span>State name</span>
+                  {validatorSwitch && !selectedState ? (
+                    <p className='alertTextRegionalPrice'>* Please select a state</p>
+                  ) : null}
+                </label>
+                <label className='has-float-label my-auto regionalPriceFormInput'>
+                  <input
+                    className='form-control'
+                    name='Country Price'
+                    type='text'
+                    value={enteredRegionCoursePrice}
+                    placeholder='Country Price'
+                    onChange={(e) => setEnteredRegionCoursePrice(e.target.value)}
+                  />
+                  <span className='smallFont'>Country Price</span>
+                  {validatorSwitch &&
+                  isNaN(enteredRegionCoursePrice) &&
+                  enteredRegionCoursePrice !== '' ? (
+                    <p className='alertTextRegionalPrice'>* Please enter a valid price</p>
+                  ) : null}
+                </label>
+                <label className='has-float-label my-auto regionalPriceFormInput'>
+                  <input
+                    className='form-control'
+                    name='Discounted Price'
+                    type='text'
+                    value={enteredRegionDiscountPrice}
+                    placeholder='Discounted Price'
+                    onChange={(e) => setEnteredRegionDiscountPrice(e.target.value)}
+                  />
+                  <span className='smallFont'>Discounted Price</span>
+                  {validatorSwitch &&
+                  isNaN(enteredRegionDiscountPrice) &&
+                  enteredRegionDiscountPrice !== '' ? (
+                    <p className='alertTextRegionalPrice'>* Please enter a valid price</p>
+                  ) : null}
+                </label>
+                <label className='has-float-label my-auto regionalPriceFormInput'>
+                  <select
+                    className='form-control w-100'
+                    name='Currency'
+                    onChange={(e) => setSelectedCurrencyCode(e.target.value)}
+                  >
+                    {currencies.map((curr) => {
+                      return (
+                        <option value={curr.currency_code}>
+                          {curr.currency_code} ({curr.currency_symbol})
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <span>Currrency</span>
+                  {validatorSwitch && !selectedCurrencyCode ? (
+                    <p className='alertTextRegionalPrice'>* Please select a currency</p>
+                  ) : null}
+                </label>
+                <div
+                  onClick={updatePricesArrayHandler}
+                  onKeyPress={updatePricesArrayHandler}
+                  role='button'
+                  tabIndex={-1}
+                  className='d-flex align-items-center mx-2 saveDelBtns'
+                  style={{ maxHeight: '42px' }}
+                >
+                  <AddTaskIcon />
+                </div>
+              </div>
+            ) : null}
+            <div className='d-flex w-100'>
+              <div
+                onClick={addCourseRegionalPrices}
+                onKeyPress={addCourseRegionalPrices}
+                tabIndex={-1}
+                role='button'
+                className='Courses__addRegionalPriceButton mt-2 mr-2'
+              >
+                Save prices
+              </div>
+              <div
+                onClick={addMoreClicked}
+                onKeyPress={addMoreClicked}
+                tabIndex={-1}
+                role='button'
+                className='Courses__addRegionalPriceButton mt-2'
+              >
+                + Add More
+              </div>
+            </div>
+          </Row>
+        ) : null}
         <Row className='m-2 ml-4 p-2'>
           <Form.Check
             style={{ marginRight: 'auto' }}
@@ -564,6 +947,9 @@ Price.propTypes = {
   courseId: PropTypes.number.isRequired,
   currencySymbol: PropTypes.string.isRequired,
   clientUserId: PropTypes.number.isRequired,
+  isRegional: PropTypes.bool.isRequired,
+  priceArray: PropTypes.instanceOf(Array).isRequired,
+  paymentGateway: PropTypes.string.isRequired,
 };
 
 Price.defaultProps = {

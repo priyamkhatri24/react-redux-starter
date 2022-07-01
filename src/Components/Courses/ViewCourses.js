@@ -6,7 +6,10 @@ import Col from 'react-bootstrap/Col';
 import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
-import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
+import {
+  getCurrentDashboardData,
+  getCurrentLocationData,
+} from '../../redux/reducers/dashboard.reducer';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { apiValidation, get } from '../../Utilities';
 import { PageHeader } from '../Common';
@@ -24,6 +27,7 @@ const ViewCourses = (props) => {
     clientId,
     currentbranding,
     dashboardData,
+    locationData,
     dashboardData: {
       feature: {
         courses: { client_feature_name: featureName },
@@ -31,15 +35,26 @@ const ViewCourses = (props) => {
     },
   } = props;
   const [courses, setCourses] = useState([]);
+  const [currencyCodes, setCurrencyCodes] = useState([]);
+
+  useEffect(() => {
+    get(null, '/getAllCurrencyCodes').then((data) => {
+      const result = apiValidation(data);
+      result.forEach((ele) => (ele.currencySymbol = ele.currency_symbol));
+      setCurrencyCodes(result);
+    });
+  });
 
   useEffect(() => {
     if (history.location.state) {
       if (history.location.state.type === 'allCourses') {
-        get({ client_user_id: clientUserId }, '/getCoursesOfStudent').then((res) => {
-          console.log(res);
-          const result = apiValidation(res);
-          setCourses(result);
-        });
+        get({ client_user_id: clientUserId, client_id: clientId }, '/getCoursesOfStudent2').then(
+          (res) => {
+            console.log(res);
+            const result = apiValidation(res);
+            setCourses(result);
+          },
+        );
       } else {
         get({ client_user_id: clientUserId }, '/getSubscribedCoursesOfStudent').then((res) => {
           console.log(res, 'subsss');
@@ -75,6 +90,30 @@ const ViewCourses = (props) => {
       />
       <div className='Courses__container'>
         {courses.map((course) => {
+          if (course.is_regional) {
+            const countryFilteredPrices = course.prices_array.filter(
+              (ele) => ele.country_name === locationData.country,
+            );
+            const checkForAllStates = countryFilteredPrices.find((ele) => ele.state_name === '');
+            const checkForCurrentState = countryFilteredPrices.find(
+              (ele) => ele.state_name === locationData.state,
+            );
+
+            if (checkForAllStates) {
+              course.course_price = checkForAllStates.region_course_price;
+              course.discount_price = checkForAllStates.region_discount_price;
+              course.currencySymbol = currencyCodes.find(
+                (ele) => ele.currency_code === checkForAllStates.currency_code,
+              )?.currencySymbol;
+            }
+            if (checkForCurrentState) {
+              course.course_price = checkForCurrentState.region_course_price;
+              course.discount_price = checkForCurrentState.region_discount_price;
+              course.currencySymbol = currencyCodes.find(
+                (ele) => ele.currency_code === checkForCurrentState.currency_code,
+              )?.currencySymbol;
+            }
+          }
           const numberOfStars = Math.round(parseInt(course.course_rating, 10));
           const starArray = [...Array(numberOfStars)].map((e, i) => (
             /* eslint-disable-next-line */
@@ -139,10 +178,16 @@ const ViewCourses = (props) => {
                     <Row className='Scrollable__courseCardSubHeading text-left mx-2'>
                       {/* <img src={rupee} alt='rupee' height='10' width='10' className='my-auto' /> */}
                       <span className='mx-1 Scrollable__courseCardHeading my-auto'>
-                        {`${currentbranding.branding.currency_symbol} ${course.discount_price}`}
+                        {course.currencySymbol
+                          ? `${course.currencySymbol} ${course.discount_price}`
+                          : `${currentbranding.branding.currency_symbol} ${course.discount_price}`}
                       </span>
                       <span className='my-auto'>
-                        <del>{`${currentbranding.branding.currency_symbol} ${course.course_price}`}</del>
+                        <del>
+                          {course.currencySymbol
+                            ? `${course.currencySymbol} ${course.course_price}`
+                            : `${currentbranding.branding.currency_symbol} ${course.course_price}`}
+                        </del>
                       </span>
                       {course.bestseller_tag && (
                         <div
@@ -192,6 +237,7 @@ const mapStateToProps = (state) => ({
   clientId: getClientId(state),
   dashboardData: getCurrentDashboardData(state),
   currentbranding: getCurrentBranding(state),
+  locationData: getCurrentLocationData(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -211,6 +257,7 @@ ViewCourses.propTypes = {
   setCourseIdToStore: PropTypes.func.isRequired,
   currentbranding: PropTypes.instanceOf(Object).isRequired,
   dashboardData: PropTypes.instanceOf(Object).isRequired,
+  locationData: PropTypes.instanceOf(Object).isRequired,
   // featureName: PropTypes.string,
 };
 

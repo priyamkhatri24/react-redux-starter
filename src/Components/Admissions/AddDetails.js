@@ -47,6 +47,7 @@ const AddDetails = (props) => {
           contact: { iso2: 'in', dialCode: '91', phone: '' },
           parent_contact: '',
           parent_name: '',
+          parent_country_code: '',
           isEditing: false,
         }
       : {
@@ -62,6 +63,10 @@ const AddDetails = (props) => {
 
   const inputProps = {
     placeholder: 'Mobile Number',
+  };
+
+  const parentInputProps = {
+    placeholder: "Parent's Mobile Number",
   };
 
   const intlTelOpts = {
@@ -95,7 +100,13 @@ const AddDetails = (props) => {
         detailArray.map((e) => {
           const phoneNo = e.contact.phone;
           const countryCode = e.contact.dialCode;
-          return { ...e, contact: phoneNo, country_code: countryCode };
+          const parentContact = e.parent_contact.phone;
+          return {
+            ...e,
+            contact: phoneNo,
+            country_code: countryCode,
+            parent_contact: parentContact,
+          };
         }),
       ),
       role_array: JSON.stringify(admissionRoleArray),
@@ -304,7 +315,7 @@ const AddDetails = (props) => {
                           />
                           <span>Parent&apos;s Name</span>
                         </label>
-                        <label className='has-float-label my-auto mt-3'>
+                        {/* <label className='has-float-label my-auto mt-3'>
                           <input
                             className='form-control mt-3'
                             name="Parent's Mobile Number"
@@ -322,7 +333,21 @@ const AddDetails = (props) => {
                             }}
                           />
                           <span>Parent&apos;s Mobile Number</span>
-                        </label>
+                        </label> */}
+                        <ReactIntlTelInput
+                          inputProps={parentInputProps}
+                          intlTelOpts={intlTelOpts}
+                          value={arrayEdit.parent_contact}
+                          onChange={(elem) => {
+                            const newObject = {
+                              ...arrayEdit,
+                              parent_contact: elem,
+                            };
+                            setArrayEdit(newObject);
+                            console.log(newObject, 'abc');
+                          }}
+                          className='mt-3'
+                        />
                       </>
                     )}
                   </Col>
@@ -396,7 +421,7 @@ const AddDetails = (props) => {
                           <h6 className='LiveClasses__adminHeading mb-0'>
                             Parent&apos;s Mobile Number
                           </h6>
-                          <p className='LiveClasses__adminDuration '>{e.parent_contact}</p>
+                          <p className='LiveClasses__adminDuration '>{e.parent_contact.phone}</p>
                         </>
                       )}
                     </div>
@@ -479,7 +504,7 @@ const AddDetails = (props) => {
                     />
                     <span>Parent&apos;s Name</span>
                   </label>
-                  <label className='has-float-label my-auto mt-3'>
+                  {/* <label className='has-float-label my-auto mt-3'>
                     <input
                       className='form-control mt-3'
                       name="Parent's Mobile Number"
@@ -497,7 +522,20 @@ const AddDetails = (props) => {
                       }}
                     />
                     <span>Parent&apos;s Mobile Number</span>
-                  </label>
+                  </label> */}
+                  <ReactIntlTelInput
+                    inputProps={parentInputProps}
+                    intlTelOpts={intlTelOpts}
+                    value={details.parent_contact}
+                    onChange={(e) => {
+                      const newObject = {
+                        ...details,
+                        parent_contact: e,
+                      };
+                      setDetails(newObject);
+                    }}
+                    className='mt-3'
+                  />
                 </>
               )}
             </Col>

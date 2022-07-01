@@ -17,7 +17,7 @@ const ViewCoursesList = (props) => {
   useEffect(() => {
     get({ client_id: clientId }, '/getPublishedCoursesOfCoaching1').then((res) => {
       const result = apiValidation(res);
-      console.log(result);
+      console.log(result, 'getPublishedCoursesOfCoaching1');
       setCourses(result);
     });
   }, [clientId]);

@@ -402,7 +402,10 @@ const HomeWorkAssigner = (props) => {
             <DatePicker
               selected={startDate}
               dateFormat='dd/MM/yyyy'
-              onChange={(date) => setStartDate(date)}
+              onChange={(date) => {
+                console.log(date);
+                setStartDate(date);
+              }}
               customInput={<CustomInput />}
             />
           </Row>
@@ -540,7 +543,7 @@ const HomeWorkAssigner = (props) => {
             </Col>
           </Row>
         )}
-        {!onlyNext ? (
+        {/* {!onlyNext ? (
           <Row className='mx-2'>
             <small className='text-left Homework__smallHeading mx-3 mb-2 mt-4'>
               Where Do You want to post this assignment
@@ -565,11 +568,12 @@ const HomeWorkAssigner = (props) => {
               );
             })}
           </Row>
-        ) : null}
+        ) : null} */}
       </Card>
       <Row className='justify-content-center mt-4'>
         <Button
           variant='customPrimary'
+          disabled={currentAssignentType === 'Live Test' && !startTime}
           onClick={() => (onlyNext ? assignTestToCourse() : assignTestFinally())}
         >
           {onlyNext ? 'Add' : 'Send'}
