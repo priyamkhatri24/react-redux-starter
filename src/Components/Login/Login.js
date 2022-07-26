@@ -143,15 +143,20 @@ class Login extends Component {
     post(requestBody, '/enterNumberAndLoginLatest')
       .then((res) => {
         if (res.result.is_user === true) {
-          this.goToLoginOrSignUp('signin', requestBody.contact, res.result.user_info);
+          this.goToLoginOrSignUp(
+            'signin',
+            requestBody.contact,
+            res.result.user_info,
+            requestBody.country_code,
+          );
         } else {
-          this.goToLoginOrSignUp('signup', requestBody.contact);
+          this.goToLoginOrSignUp('signup', requestBody.contact, null, requestBody.country_code);
         }
       })
       .catch((e) => console.error(e));
   };
 
-  goToLoginOrSignUp(path, contact, payload = null) {
+  goToLoginOrSignUp(path, contact, payload = null, countryCode) {
     const {
       history: { push },
     } = this.props;
@@ -166,7 +171,7 @@ class Login extends Component {
     } else {
       push({
         pathname: '/signin',
-        state: { userInfo: payload, image, contact },
+        state: { userInfo: payload, image, contact, countryCode },
       });
     }
   }

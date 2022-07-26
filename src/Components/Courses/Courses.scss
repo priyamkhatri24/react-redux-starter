@@ -178,6 +178,9 @@
 
   &__container {
     width: 90%;
+    height: 100%;
+    max-height: calc(100vh - 5rem);
+    overflow-y: scroll;
     margin: auto;
     margin-top: 5rem;
     padding-left: 10%;

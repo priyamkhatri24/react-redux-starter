@@ -128,7 +128,10 @@ const EditProfileHOC = (props) => {
         post(payloadWhiteList, '/editUserWhiteListData').then((resp) => {
           console.log(resp);
           if (res.success) {
-            history.push('/admissions');
+            history.replace({
+              pathname: '/admissions/user',
+              state: { user: { ...user, ...values } },
+            });
           }
         });
       }

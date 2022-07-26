@@ -21,12 +21,14 @@ import { apiValidation, get, post } from '../../Utilities';
 import 'intl-tel-input/build/css/intlTelInput.css';
 import '../Courses/Courses.scss';
 import '../Profile/Profile.scss';
+import UsersDataCard from './UsersDataCard';
 
 const AddDetails = (props) => {
   const { history, admissionRoleArray, clientId } = props;
 
   const addRef = useRef(null);
-
+  const [usersModal, setUsersModal] = useState(false);
+  const [existingUsers, setExistingUsers] = useState([]);
   const [details, setDetails] = useState(
     admissionRoleArray[0] === '1'
       ? {
@@ -79,7 +81,9 @@ const AddDetails = (props) => {
   const [batches, setBatches] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
   const handleClose = () => setShowModal(false);
+  const handleUsersClose = () => setUsersModal(false);
   const handleOpen = () => setShowModal(true);
+  const handleUsersOpen = () => setUsersModal(true);
   const getSelectedBatches = (selectBatches) => {
     setSelectedBatches(selectBatches);
   };
@@ -93,6 +97,12 @@ const AddDetails = (props) => {
     });
   }, [clientId]);
 
+  const showUserPromptForRepeatedNumberAddition = (userArray) => {
+    console.log(userArray);
+
+    return userArray;
+  };
+
   const addUserToWhiteList = () => {
     const payload = {
       client_id: clientId,
@@ -100,7 +110,7 @@ const AddDetails = (props) => {
         detailArray.map((e) => {
           const phoneNo = e.contact.phone;
           const countryCode = e.contact.dialCode;
-          const parentContact = e.parent_contact.phone;
+          const parentContact = e.parent_contact?.phone;
           return {
             ...e,
             contact: phoneNo,
@@ -112,7 +122,7 @@ const AddDetails = (props) => {
       role_array: JSON.stringify(admissionRoleArray),
       batch_array: JSON.stringify(selectedBatches.map((e) => e.client_batch_id)),
     };
-
+    console.log(payload);
     Swal.fire({
       title: 'Add Users',
       text: 'Do you wish to add the User(s)?',
@@ -132,31 +142,69 @@ const AddDetails = (props) => {
   };
   /** ********************************************************************* */
 
-  const addToDetailArray = () => {
+  const checkIfUserWithContactAlreadyExists = (user) => {
+    console.log(user, 'newly added');
+    const payload = {
+      client_id: clientId,
+      contact: user.contact.phone,
+    };
+    return get(payload, '/getUsersOfContact').then((res) => {
+      const result = apiValidation(res);
+      return result;
+    });
+  };
+
+  const addToDetailArray = (checked = false) => {
     console.log(detailArray, details);
-    const filteredDetails = Object.values(details).filter((e) => e !== '');
-    if (admissionRoleArray[0] === '1' && filteredDetails.length === 5) {
-      setDetailArray((e) => [...e, { ...details, id: new Date().getTime() }]);
-      setValid(false);
-      setDetails({
-        name: '',
-        contact: { iso2: 'in', dialCode: '91', phone: '' },
-        parent_contact: '',
-        parent_name: '',
-        isEditing: false,
-      });
-    } else if (
-      (admissionRoleArray[0] === '3' || admissionRoleArray[0] === '4') &&
-      filteredDetails.length === 3
-    ) {
-      setDetailArray((e) => [...e, { ...details, id: new Date().getTime() }]);
-      setValid(false);
-      setDetails({
-        name: '',
-        contact: { iso2: 'in', dialCode: '91', phone: '' },
-        isEditing: false,
-      });
-    } else setValid(true);
+    // if (!details.contact.phone) return;
+    checkIfUserWithContactAlreadyExists(details).then((users) => {
+      console.log(users);
+      if (!users.length || (users.length && checked)) {
+        const filteredDetails = Object.values(details).filter((e) => e !== '');
+        if (admissionRoleArray[0] === '1' && filteredDetails.length === 5) {
+          if (
+            users.find((ele) => {
+              return ele.first_name === details.name;
+            })
+          ) {
+            Swal.fire({
+              title: 'Oops',
+              text:
+                'User with this name and contact already exists! Please try a different name or contact.',
+              icon: 'error',
+              confirmButtonText: `Okay`,
+              customClass: 'Assignments__SweetAlert',
+            });
+            return;
+          }
+          setDetailArray((e) => [...e, { ...details, id: new Date().getTime() }]);
+          setValid(false);
+          setDetails({
+            name: '',
+            contact: { iso2: 'in', dialCode: '91', phone: '' },
+            parent_contact: '',
+            parent_name: '',
+            isEditing: false,
+          });
+        } else if (
+          (admissionRoleArray[0] === '3' || admissionRoleArray[0] === '4') &&
+          filteredDetails.length === 3
+        ) {
+          setDetailArray((e) => [...e, { ...details, id: new Date().getTime() }]);
+          setValid(false);
+          setDetails({
+            name: '',
+            contact: { iso2: 'in', dialCode: '91', phone: '' },
+            isEditing: false,
+          });
+        } else setValid(true);
+      } else {
+        // remove user from details array
+        console.log('user already exists', users);
+        setExistingUsers(users);
+        handleUsersOpen();
+      }
+    });
   };
 
   const removeStudent = (id) => {
@@ -230,7 +278,11 @@ const AddDetails = (props) => {
     // } else {
     //   handleOpen();
     // }
-    handleOpen();
+    checkIfUserWithContactAlreadyExists(details).then((users) => {
+      if (!users || (users && !users.length)) {
+        handleOpen();
+      }
+    });
   };
 
   return (
@@ -571,6 +623,31 @@ const AddDetails = (props) => {
         <Modal.Footer>
           <Button variant='dashboardBlueOnWhite' onClick={() => addUserToWhiteList()}>
             Next
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={usersModal} onHide={handleUsersClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>User(s) Already exists with this contact</Modal.Title>
+        </Modal.Header>
+        {existingUsers.map((ele) => {
+          const roleId = ele.role_id;
+          ele.role_id = String(roleId);
+          return <UsersDataCard noRedirect elem={ele} withStatus />;
+        })}
+        <Modal.Footer>
+          <Button variant='dashboardBlueOnWhite' onClick={() => handleUsersClose()}>
+            Add another contact
+          </Button>
+          <Button
+            variant='dashboardBlueOnWhite'
+            onClick={() => {
+              addToDetailArray(true);
+              handleUsersClose();
+            }}
+          >
+            Proceed adding this contact
           </Button>
         </Modal.Footer>
       </Modal>

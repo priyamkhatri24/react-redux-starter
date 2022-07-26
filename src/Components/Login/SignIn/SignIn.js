@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
 import './SignIn.scss';
+import Modal from 'react-bootstrap/Modal';
 import { getCurrentBranding } from '../../../redux/reducers/branding.reducer';
 import { get, post } from '../../../Utilities/Remote';
 import { apiValidation } from '../../../Utilities';
@@ -36,6 +37,7 @@ const SignIn = (props) => {
     }
   }, []);
   const [password, setPassword] = useState('');
+  // const [countryCode, setCountryCode] = useState('91')
   const [verify, setVerify] = useState(false);
   const [currentComponent, setComponent] = useState('username');
   const [validUser, checkValidUser] = useState(false);
@@ -238,6 +240,7 @@ const SignIn = (props) => {
               client_user_id: clientUserId,
               client_client_id: clientID,
               contact: userContact,
+              country_code: countryCodee,
               first_name: firstName,
               role_array: roleArray,
               last_name: lastName,
@@ -286,7 +289,14 @@ const SignIn = (props) => {
       if (result.status === 'sending successful') {
         push({
           pathname: '/forgotpassword',
-          state: { image, contact, userId: loginParams.user_id, loginParams, userStatus },
+          state: {
+            image,
+            contact,
+            countryCode: userProfile.countryCode,
+            userId: loginParams.user_id,
+            loginParams,
+            userStatus,
+          },
         });
       } else {
         Swal.fire({
@@ -320,6 +330,7 @@ const SignIn = (props) => {
             resendOtp={resendOtp}
             verifyOTP={verifyOTP}
             resendText={resendText}
+            countryCode={userProfile.countryCode}
           />
         </div>
       )}
@@ -353,9 +364,17 @@ const SignIn = (props) => {
       )}
 
       {validUser && (
-        <small className='text-danger d-block text-center mx-auto'>
-          Please enter a valid {currentComponent}
-        </small>
+        // <small className='text-danger d-block text-center mx-auto'>
+        //   Please enter a valid {currentComponent}
+        // </small>
+        <Modal show={validUser} centered onHide={() => checkValidUser(false)}>
+          <Modal.Header style={{ fontFamily: 'Montserrat-Bold', fontSize: '18px' }} closeButton>
+            Attention
+          </Modal.Header>
+          <Modal.Body style={{ fontFamily: 'Montserrat-Regular' }}>
+            Please enter a valid {currentComponent}
+          </Modal.Body>
+        </Modal>
       )}
     </>
   );
@@ -426,6 +445,7 @@ SignIn.propTypes = {
       image: PropTypes.string,
       userInfo: PropTypes.instanceOf(Array),
       contact: PropTypes.string.isRequired,
+      countryCode2: PropTypes.string.isRequired,
     }),
   }),
 

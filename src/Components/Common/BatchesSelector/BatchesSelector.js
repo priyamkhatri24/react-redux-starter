@@ -97,15 +97,15 @@ export const BatchesSelector = (props) => {
                 className='form-control'
                 name='Batches'
                 type='text'
-                placeholder='Search batches'
+                placeholder={`Search ${title}`}
                 onChange={(e) => setSearchString(e.target.value)}
                 value={searchString}
               />
-              <span>Search batches</span>
+              <span>Search {title}</span>
             </label>
             {allBatches.length > 0 &&
               allBatches
-                .filter((ele) => ele.batch_name.toLowerCase().includes(searchString.toLowerCase()))
+                .filter((ele) => ele.batch_name.toLowerCase().includes(searchString?.toLowerCase()))
                 .map((elem) => {
                   return (
                     <Row

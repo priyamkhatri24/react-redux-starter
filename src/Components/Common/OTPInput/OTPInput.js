@@ -10,7 +10,7 @@ export const OTPInput = (props) => {
   const [count, setCount] = useState(60);
   const [resend, setResend] = useState(false);
 
-  const { contact, resendOtp, verifyOTP, resendText } = props;
+  const { contact, resendOtp, verifyOTP, resendText, countryCode } = props;
 
   const ContainerStyle = {
     alignItems: 'center',
@@ -39,7 +39,9 @@ export const OTPInput = (props) => {
       <p className='OTPInput__heading  mx-4'>
         Enter the 4-digit one time password we have sent you on
       </p>
-      <p className='OTPInput__mobile mb-5'>{contact}</p>
+      <p className='OTPInput__mobile mb-5'>
+        +{countryCode}-{contact}
+      </p>
       <OtpInput
         value={otp}
         onChange={(e) => setOtp(e)}
@@ -87,4 +89,5 @@ OTPInput.propTypes = {
   verifyOTP: PropTypes.func.isRequired,
   resendText: PropTypes.string.isRequired,
   contact: PropTypes.string.isRequired,
+  countryCode: PropTypes.string.isRequired,
 };

@@ -6,12 +6,13 @@ import { connect } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import './Analysis.scss';
 import { getAnalysisStudentObject } from '../../redux/reducers/analysis.reducer';
 import { getRoleArray } from '../../redux/reducers/clientUserId.reducer';
 import { PageHeader } from '../Common';
-import { apiValidation, get } from '../../Utilities';
+import { apiValidation, get, json2xlsDownload } from '../../Utilities';
 import AdmissionStyle from '../Admissions/Admissions.style';
 import AnalysisCalendar from './AnalysisCalendar';
 import AnalysisTestsCard from './AnalysisTestsCard';
@@ -67,14 +68,14 @@ const StudentList = (props) => {
       isPercent: true,
       isSelected: false,
     },
-    // {
-    //   id: 5,
-    //   heading: 'Offline assignments',
-    //   numerator: analysisStudentObject.completed_offline_test,
-    //   denominator: analysisStudentObject.total_offline_test,
-    //   isPercent: false,
-    //   isSelected: false,
-    // },
+    {
+      id: 5,
+      heading: 'Offline assignments',
+      numerator: analysisStudentObject.completed_offline_test,
+      denominator: analysisStudentObject.total_offline_test,
+      isPercent: false,
+      isSelected: false,
+    },
   ]);
 
   useEffect(() => {
@@ -195,9 +196,43 @@ const StudentList = (props) => {
     setStudentBatches(newBatches);
   };
 
-  // const removeBatch = () => {
-  //   setCurrentBatch({});
-  // };
+  const downloadData = (type) => {
+    if (type === 'test') {
+      console.log(tests);
+      const jsonDataToDownload = tests.map((elem, index) => {
+        return {
+          SNo: index + 1,
+          Test_name: elem.test_name,
+          Date: elem.date,
+          Max_Marks: elem.total_questions,
+          Marks_Obtained: elem.correct_questions,
+        };
+      });
+      console.log(jsonDataToDownload);
+      json2xlsDownload(
+        JSON.stringify(jsonDataToDownload),
+        `${analysisStudentObject.first_name}_${analysisStudentObject.last_name}_TestData`,
+        true,
+      );
+    } else if (type === 'homework') {
+      console.log(homework);
+      const jsonDataToDownload = homework.map((elem, index) => {
+        return {
+          SNo: index + 1,
+          Homework_name: elem.test_name,
+          Date: elem.date,
+          Max_Marks: elem.total_questions,
+          Marks_Obtained: elem.correct_questions,
+        };
+      });
+      console.log(jsonDataToDownload);
+      json2xlsDownload(
+        JSON.stringify(jsonDataToDownload),
+        `${analysisStudentObject.first_name}_${analysisStudentObject.last_name}_Homeworkdata`,
+        true,
+      );
+    }
+  };
 
   return (
     <>
@@ -331,6 +366,22 @@ const StudentList = (props) => {
             </div>
           ))}
 
+        {topButtons[1].isSelected && (
+          <Button
+            variant='customPrimaryWithShadow'
+            style={{
+              position: 'fixed',
+              bottom: 20,
+              zIndex: '10',
+              left: '50%',
+              transform: 'translate(-50%, 0)',
+            }}
+            onClick={() => downloadData('test')}
+          >
+            Download
+          </Button>
+        )}
+
         {topButtons[1].isSelected &&
           (tests.length > 0 ? (
             tests.map((elem) => {
@@ -353,6 +404,21 @@ const StudentList = (props) => {
               <span>No tests to show</span>
             </div>
           ))}
+        {topButtons[2].isSelected && (
+          <Button
+            variant='customPrimaryWithShadow'
+            style={{
+              position: 'fixed',
+              bottom: 20,
+              zIndex: '10',
+              left: '50%',
+              transform: 'translate(-50%, 0)',
+            }}
+            onClick={() => downloadData('homework')}
+          >
+            Download
+          </Button>
+        )}
         {topButtons[2].isSelected &&
           (homework.length > 0 ? (
             homework.map((elem) => {

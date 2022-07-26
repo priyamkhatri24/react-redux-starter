@@ -36,9 +36,18 @@ const UserDetails = (props) => {
   const [admissionFormData, setAdmissionFormData] = useState([]);
   const [toggleIndex, setToggleIndex] = useState(0);
   const [showBatchModal, setShowBatchModal] = useState(false);
+  const [userData, setUserData] = useState(user);
+  const [batchCardOptionModal, setBatchCardOptionModal] = useState(false);
+  const [triggeredBatch, setTriggeredBatch] = useState({});
   const accordionRef = useRef(null);
   const openBatchModal = () => setShowBatchModal(true);
   const closeBatchModal = () => setShowBatchModal(false);
+
+  useEffect(() => {
+    if (history.location.state?.user) {
+      setUserData(history.location.state?.user);
+    }
+  }, []);
 
   useEffect(() => {
     const payload = {
@@ -56,11 +65,11 @@ const UserDetails = (props) => {
   const submitBatchModal = () => {
     const batchPayload = {
       client_id: clientId,
-      client_user_id: user.client_user_id,
+      client_user_id: userData.client_user_id,
     };
 
     const payload = {
-      client_user_id: user.client_user_id,
+      client_user_id: userData.client_user_id,
       batch_add: JSON.stringify(batches),
       batch_remove: JSON.stringify(
         allBatches.filter((e) => Object.prototype.hasOwnProperty.call(e, 'user_batch_id')),
@@ -105,7 +114,7 @@ const UserDetails = (props) => {
   useEffect(() => {
     const batchPayload = {
       client_id: clientId,
-      client_user_id: user.client_user_id,
+      client_user_id: userData.client_user_id,
     };
 
     get(batchPayload, '/getBatchInformationOfUser').then((res) => {
@@ -123,8 +132,8 @@ const UserDetails = (props) => {
 
   const deleteUser = (id) => {
     Swal.fire({
-      title: 'Delete Section',
-      text: 'Do you wish to delete this section?',
+      title: 'Delete User',
+      text: 'Do you wish to delete this user?',
       icon: 'question',
       confirmButtonText: `Yes`,
       showDenyButton: true,
@@ -148,19 +157,66 @@ const UserDetails = (props) => {
     }
   };
 
+  const triggerBatchCardOptions = (batch) => {
+    setTriggeredBatch(batch);
+    setBatchCardOptionModal(true);
+  };
+
+  const closeBatchCardModal = () => {
+    setBatchCardOptionModal(false);
+  };
+
+  const changeStudentActivityInBatch = (status) => {
+    let status2;
+    if (status === 'active') {
+      status2 = 'inactive';
+    } else {
+      status2 = 'active';
+    }
+    const payload = {
+      client_batch_id: triggeredBatch.client_batch_id,
+      client_user_id: userData.client_user_id,
+      status: status2,
+    };
+    post(payload, '/makeStudentActiveInactiveInBatch').then((res) => {
+      console.log(res);
+      closeBatchCardModal();
+      if (res.success) {
+        const newUserBatches = batches.map((ele) => {
+          if (ele.user_batch_id === triggeredBatch.user_batch_id) {
+            ele.user_batch_status = status2;
+          }
+          return ele;
+        });
+        setBatches(newUserBatches);
+        Swal.fire({
+          icon: 'success',
+          title: 'Status changed!',
+          text: `You have successfully made ${userData.first_name} ${userData.last_name} ${status2} in ${triggeredBatch.batch_name}!`,
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops!',
+          text: `Unable to change status`,
+        });
+      }
+    });
+  };
+
   return (
     <div className='Profile'>
       <PageHeader title='User Details' />
       <div style={{ marginTop: '6rem' }}>
         <Col className='text-center'>
           <img
-            src={user.profile_image ? user.profile_image : userImage}
+            src={userData.profile_image ? userData.profile_image : userImage}
             width='100'
             height='100'
             alt='profile'
             className='rounded-circle'
           />
-          <p className='Profile__mainName my-3'>{`${user.first_name} ${user.last_name}`}</p>
+          <p className='Profile__mainName my-3'>{`${userData.first_name} ${userData.last_name}`}</p>
         </Col>
         <Tabs defaultActiveKey='Details' className='Profile__Tabs' justify>
           <Tab eventKey='Details' title='Details'>
@@ -173,82 +229,88 @@ const UserDetails = (props) => {
                 <div
                   className='Courses__edit text-center py-1'
                   onClick={() =>
-                    history.push({ pathname: '/admissions/editprofile', state: { user } })
+                    history.replace({
+                      pathname: '/admissions/editprofile',
+                      state: { user: userData },
+                    })
                   } //eslint-disable-line
                   role='button'
                   onKeyDown={() =>
-                    history.push({ pathname: '/admissions/editprofile', state: { user } })
+                    history.replace({
+                      pathname: '/admissions/editprofile',
+                      state: { user: userData },
+                    })
                   } //eslint-disable-line
                   tabIndex='-1'
                 >
                   <CreateIcon />
                 </div>
-                {user.user_id !== userId && (
+                {userData.user_id !== userId && (
                   <div
                     className='Profile__edit text-center py-1'
-                    onClick={() => deleteUser(user.user_id)}
+                    onClick={() => deleteUser(userData.user_id)}
                     role='button'
-                    onKeyDown={() => deleteUser(user.user_id)}
+                    onKeyDown={() => deleteUser(userData.user_id)}
                     tabIndex='-1'
                   >
                     <DeleteIcon />
                   </div>
                 )}
                 <h6 className='Batch__heading mb-0'>First Name</h6>
-                <p className=' Batch__details '>{user.first_name}</p>
+                <p className=' Batch__details '>{userData.first_name}</p>
 
-                {user.last_name && (
+                {userData.last_name && (
                   <>
                     <h6 className=' Batch__heading mb-0'>Last Name</h6>
-                    <p className=' Batch__details '>{user.last_name}</p>
+                    <p className=' Batch__details '>{userData.last_name}</p>
                   </>
                 )}
 
                 <h6 className=' Batch__heading mb-0'>Mobile Number</h6>
-                <p className=' Batch__details '>{user.contact}</p>
+                <p className=' Batch__details '>{userData.contact}</p>
 
-                {user.username && (
+                {userData.username && (
                   <>
                     <h6 className=' Batch__heading mb-0'>Username</h6>
-                    <p className=' Batch__details '>{user.username}</p>
+                    <p className=' Batch__details '>{userData.username}</p>
                   </>
                 )}
-                {user.parent_name && (
+                {userData.parent_name && (
                   <>
                     <h6 className=' Batch__heading mb-0'>Parent&apos;s Name</h6>
-                    <p className=' Batch__details '>{user.parent_name}</p>
+                    <p className=' Batch__details '>{userData.parent_name}</p>
                   </>
                 )}
-                {user.parent_contact && (
+                {userData.parent_contact && (
                   <>
                     <h6 className='Batch__heading mb-0'>Parent&apos;s Mobile Number</h6>
-                    <p className=' Batch__details '>{user.parent_contact}</p>
+                    <p className=' Batch__details '>{userData.parent_contact}</p>
                   </>
                 )}
-                {user.gender && (
+                {userData.gender && (
                   <>
                     <h6 className='Batch__heading mb-0'>Gender</h6>
-                    <p className='Batch__details '>{user.gender}</p>
+                    <p className='Batch__details '>{userData.gender}</p>
                   </>
                 )}
 
-                {user.email && (
+                {userData.email && (
                   <>
                     <h6 className='Batch__heading mb-0'>Email Address</h6>
-                    <p className='Batch__details '>{user.email}</p>
+                    <p className='Batch__details '>{userData.email}</p>
                   </>
                 )}
-                {user.address && (
+                {userData.address && (
                   <>
                     <h6 className='Batch__heading mb-0'>Residential Address</h6>
-                    <p className='Batch__details '>{user.address}</p>
+                    <p className='Batch__details '>{userData.address}</p>
                   </>
                 )}
-                {user.birthday && user.birthday !== 'NaN' && (
+                {userData.birthday && userData.birthday !== 'NaN' && (
                   <>
                     <h6 className='Batch__heading mb-0'>Date Of Birth</h6>
                     <p className='Batch__details '>
-                      {format(fromUnixTime(parseInt(user.birthday, 10)), 'dd-MMM-yyyy')}
+                      {format(fromUnixTime(parseInt(userData.birthday, 10)), 'dd-MMM-yyyy')}
                     </p>
                   </>
                 )}
@@ -294,16 +356,32 @@ const UserDetails = (props) => {
                     key={elem.client_batch_id}
                     css={AdmissionStyle.box}
                     className='p-2 my-2 mx-2'
+                    style={
+                      elem.batch_status === 'inactive'
+                        ? { backgroundColor: 'rgba(238,238,238,0.8)', border: 'transparent' }
+                        : {}
+                    }
                   >
                     <>
-                      <span css={AdmissionStyle.verticalDots}>
+                      <span
+                        onClick={() => triggerBatchCardOptions(elem)}
+                        css={AdmissionStyle.verticalDots}
+                      >
                         <MoreVertIcon />
                       </span>
                       <div className='m-2 text-center'>
                         <img src={userImage} alt='batchpic' height='40' width='40' />
-                        <h6 className=' Profile__batchName text-center mt-3'>{elem.batch_name}</h6>
-                        <p className='Profile__batchStudents mb-0'>{elem.number_of_students}</p>
-                        <p className='Profile__students'>students</p>
+                        <h6 className=' Profile__batchName text-center mt-3'>
+                          {elem.batch_name} {elem.batch_status === 'inactive' ? '(inactive)' : null}
+                        </h6>
+                        {elem.user_batch_status === 'inactive' ? (
+                          <p className='Profile__students mb-0'>Currently inactive in this batch</p>
+                        ) : (
+                          <>
+                            <p className='Profile__batchStudents mb-0'>{elem.number_of_students}</p>
+                            <p className='Profile__students'>students</p>
+                          </>
+                        )}
                       </div>
                     </>
                   </Col>
@@ -324,6 +402,24 @@ const UserDetails = (props) => {
               <Modal.Footer>
                 <Button variant='boldText' onClick={() => submitBatchModal()}>
                   Done
+                </Button>
+              </Modal.Footer>
+            </Modal>
+            <Modal show={batchCardOptionModal} onHide={closeBatchCardModal} centered>
+              <Modal.Body>
+                Do you wish to make {userData.first_name} {userData.last_name}{' '}
+                {triggeredBatch.user_batch_status === 'active' ? 'inactive' : 'active'} in{' '}
+                {triggeredBatch.batch_name}?
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant='boldText' onClick={() => closeBatchCardModal()}>
+                  cancel
+                </Button>
+                <Button
+                  variant='boldText'
+                  onClick={() => changeStudentActivityInBatch(triggeredBatch.user_batch_status)}
+                >
+                  yes
                 </Button>
               </Modal.Footer>
             </Modal>

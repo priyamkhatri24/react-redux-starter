@@ -187,7 +187,7 @@ const EditFeePlan = (props) => {
       client_user_id: feeStudentCLientUserID,
       plan_array: JSON.stringify(planArray),
       one_time_array: JSON.stringify(oneTimePlanArray),
-      plan_type: monthlyOrCustom === 'Monthly' ? 'monthly' : 'Custom',
+      plan_type: monthlyOrCustom === 'Monthly' ? 'monthly' : 'custom',
     };
     console.log(oneTimePlanArray);
     console.log(customFeePlanArray, 'fkfgjk');
@@ -198,6 +198,9 @@ const EditFeePlan = (props) => {
     });
   };
 
+  const removeDefaultRegistration = () => {
+    setOneTimePlanArray([]);
+  };
   return (
     <>
       <PageHeader title='Edit Fee Plans' />
@@ -260,6 +263,7 @@ const EditFeePlan = (props) => {
               setTagAmount={editTagAmount}
               setTagName={editTagName}
               id={elem.user_fee_id}
+              removeDefaultRegistration={removeDefaultRegistration}
             />
           );
         })}
@@ -306,7 +310,9 @@ const EditFeePlan = (props) => {
                     <Row key={elem.user_fee_id} className='mx-0 w-100 my-2'>
                       <Col className='Fees__planInfoDetails p-0 text-center'>{i + 1}</Col>
                       <Col className='Fees__planInfoDetails p-0 text-center'>
-                        {format(fromUnixTime(parseInt(elem.due_date, 10)), 'dd-MMM-yyyy')}
+                        {elem.due_date
+                          ? format(fromUnixTime(parseInt(elem.due_date, 10)), 'dd-MMM-yyyy')
+                          : '-'}
                       </Col>
                       <Col className='Fees__planInfoDetails p-0 text-center'>
                         {`${currencySymbol} ${elem.amount}`}

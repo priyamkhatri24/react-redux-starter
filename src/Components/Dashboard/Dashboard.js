@@ -1373,6 +1373,8 @@ const Dashboard = (props) => {
                   goToAdmissions={goToAdmissions}
                   openOptionsModal={openOptionsModal}
                   heroImage={param.feature_icon}
+                  heading={param.client_feature_name}
+                  subHeading={param.description}
                 />
               ) || <Skeleton count={20} />}
             </>

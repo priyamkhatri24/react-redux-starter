@@ -9,7 +9,15 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 
 const DashBoardAdmissions = (props) => {
-  const { admissions, goToAdmissions, openOptionsModal, goToAddBatch, heroImage } = props;
+  const {
+    admissions,
+    goToAdmissions,
+    openOptionsModal,
+    goToAddBatch,
+    heroImage,
+    heading,
+    subHeading,
+  } = props;
 
   const options = {
     legend: {
@@ -64,7 +72,7 @@ const DashBoardAdmissions = (props) => {
           <MoreVertIcon />
         </span> */}
         <Row className='my-2 mx-3'>
-          <p className='Dashboard__todaysHitsText p-0 mb-3'>Admissions</p>
+          <p className='Dashboard__todaysHitsText p-0 mb-3'>{heading}</p>
         </Row>
         <div
           onClick={() => goToAdmissions()}
@@ -73,9 +81,7 @@ const DashBoardAdmissions = (props) => {
           onKeyDown={() => goToAdmissions()}
           className='mx-3 d-flex w-100'
         >
-          <p className='admissionsSubHeading mb-0'>
-            Manage all of your institute users here: Students, Teachers and Admins
-          </p>
+          <p className='admissionsSubHeading mb-0'>{subHeading}</p>
           <img
             src={heroImage}
             className='admissionImage'
@@ -175,4 +181,6 @@ DashBoardAdmissions.propTypes = {
   goToAddBatch: PropTypes.func.isRequired,
   openOptionsModal: PropTypes.func.isRequired,
   heroImage: PropTypes.string.isRequired,
+  heading: PropTypes.string.isRequired,
+  subHeading: PropTypes.string.isRequired,
 };

@@ -62,8 +62,12 @@ const MonthlyCustomPlan = (props) => {
         tempArray.push({
           id: idIndex,
           amount: 0,
-          due_date: customFeePlanArray[customFeePlanArray.length - 1].due_date,
-          date: customFeePlanArray[customFeePlanArray.length - 1].date,
+          due_date: customFeePlanArray[customFeePlanArray.length - 1]
+            ? customFeePlanArray[customFeePlanArray.length - 1].due_date
+            : Date.now(),
+          date: customFeePlanArray[customFeePlanArray.length - 1]
+            ? customFeePlanArray[customFeePlanArray.length - 1].date
+            : Date.now(),
           isRead: false,
           status: 'due',
         });
@@ -113,7 +117,7 @@ const MonthlyCustomPlan = (props) => {
             <Row className='mx-auto w-100 Fees__datePicker'>
               <DatePicker
                 minDate={addDays(new Date(), 1)}
-                selected={monthlyFeeDate}
+                selected={new Date()}
                 dateFormat='dd/MM/yyyy'
                 onChange={(date) => {
                   setMonthlyFeeDate(date);
@@ -138,13 +142,14 @@ const MonthlyCustomPlan = (props) => {
           <div className='m-2 p-4'>
             <RangeSlider
               max={11}
-              min={minNoOfInstallments}
+              min={1}
               value={noOfInstallments}
               onChange={(e) => setNoOfInstallments(e.target.value)}
               tooltip='on'
             />
           </div>
           {customFeePlanArray.map((elem, i) => {
+            console.log(elem, 'checkdatevalidhaiyanahiii');
             return (
               <div key={elem.key}>
                 <p
@@ -172,15 +177,16 @@ const MonthlyCustomPlan = (props) => {
                           ? addDays(new Date(), 1)
                           : addDays(customFeePlanArray[i - 1].date, 1)
                       }
-                      selected={elem.date}
+                      selected={new Date(elem.date).getTime()}
                       disabled={i === 0 ? false : !customFeePlanArray[i - 1].isRead}
                       dateFormat='dd/MM/yyyy'
                       onChange={(currdate) => {
                         const newFeeAmount = customFeePlanArray.map((element) => {
                           if (element.id === elem.id) {
                             element.date = currdate;
+                            console.log(new Date(currdate).getTime(), 'ha');
                             element.due_date = parseInt(
-                              (new Date().getTime() / 1000).toFixed(0),
+                              (new Date(currdate).getTime() / 1000).toFixed(0),
                               10,
                             );
                             elem.isRead = true;

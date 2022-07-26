@@ -171,6 +171,7 @@ const TeacherCourses = (props) => {
         is_admin: roleArray.includes(4),
         sort_by: sortBy,
         page: coursePage,
+        // limit: 1,
       };
 
       get(payload, '/getCoursesOfCoachingLatest3').then((res) => {
@@ -335,7 +336,11 @@ const TeacherCourses = (props) => {
     console.log(tab);
     setCoursePage(1);
     setStatisticsPage(1);
+    setCourses([]);
+    setSearchedCourses([]);
     setSearchedCoursePage(1);
+    setSearchedStatistics([]);
+    setStatistics([]);
     setSearchedStatisticsPage(1);
     setActiveTab(tab);
     window.scrollTo(0, 0);

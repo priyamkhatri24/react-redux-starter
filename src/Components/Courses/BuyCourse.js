@@ -86,6 +86,8 @@ const BuyCourse = (props) => {
   const [showFeeModal, setShowFeeModal] = useState(false);
   const [coupon, setCoupon] = useState('');
   const [couponId, setCouponId] = useState('');
+  const [couponState, setCouponState] = useState('removed');
+  const [couponPrice, setCouponPrice] = useState(0);
   const [couponMessage, setCouponMessage] = useState('');
   const [order, setOrder] = useState({});
   const [showToast, setShowToast] = useState(false);
@@ -364,6 +366,8 @@ const BuyCourse = (props) => {
         let newPrice = coursePrice - result.price;
         if (newPrice <= 0) newPrice = 0;
         setCoursePrice(newPrice);
+        setCouponPrice(result.price);
+        setCouponState('applied');
         setCouponId(result.coupon_id);
         setCouponMessage(result.message);
       } else {
@@ -371,6 +375,15 @@ const BuyCourse = (props) => {
         setCouponId(result.coupon_id);
       }
     });
+  };
+
+  const removeCoupon = () => {
+    const newPrice = coursePrice + +couponPrice;
+    setCoursePrice(newPrice);
+    setCouponId('');
+    setCouponMessage('');
+    setCouponPrice(0);
+    setCouponState('removed');
   };
 
   const payToRazorBaba = () => {
@@ -1183,8 +1196,11 @@ const BuyCourse = (props) => {
                   </label>
                 </Col>
                 <Col xs={4}>
-                  <Button variant='dashboardBlueOnWhite' onClick={() => applyCoupon()}>
-                    Apply
+                  <Button
+                    variant='dashboardBlueOnWhite'
+                    onClick={() => (couponState === 'removed' ? applyCoupon() : removeCoupon())}
+                  >
+                    {couponState === 'removed' ? 'Apply' : 'Remove'}
                   </Button>
                 </Col>
               </Row>

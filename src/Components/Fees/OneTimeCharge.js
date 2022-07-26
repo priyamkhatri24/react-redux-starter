@@ -5,9 +5,20 @@ import Row from 'react-bootstrap/Row';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const OneTimeCharge = (props) => {
-  const { tags, setTagAmount, setTagName, tagAmount, tagName, EditFeePlan, status, id } = props;
+  const {
+    tags,
+    setTagAmount,
+    setTagName,
+    tagAmount,
+    tagName,
+    EditFeePlan,
+    status,
+    id,
+    removeDefaultRegistration,
+  } = props;
   const [showModal, setShowModal] = useState(false);
   const [showOtherTagName, setOtherTagName] = useState(false);
   const handleClose = () => setShowModal(false);
@@ -79,6 +90,19 @@ const OneTimeCharge = (props) => {
         />
         <span>Enter amount</span>
       </label>
+      <Row
+        style={{ color: 'rgba(255, 0, 0, 0.87)', fontFamily: 'Montserrat-SemiBold' }}
+        className='m-2'
+      >
+        <span
+          onClick={() => removeDefaultRegistration()}
+          onKeyDown={() => removeDefaultRegistration()}
+          role='button'
+          tabIndex='-1'
+        >
+          <DeleteIcon /> <span className='my-auto'>Delete</span>
+        </span>
+      </Row>
       <Modal show={showModal} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <span className='Scrollable__recentlyUsed my-auto'>
@@ -169,6 +193,7 @@ OneTimeCharge.propTypes = {
   EditFeePlan: PropTypes.bool,
   status: PropTypes.string,
   id: PropTypes.number,
+  removeDefaultRegistration: PropTypes.func.isRequired,
 };
 
 OneTimeCharge.defaultProps = {

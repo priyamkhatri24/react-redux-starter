@@ -163,9 +163,17 @@ const Profile = (props) => {
                       </span>
                       <div className='m-2 text-center'>
                         <img src={userImage} alt='batchpic' height='40' width='40' />
-                        <h6 className='text-center mt-3 Profile__batchName'>{elem.batch_name}</h6>
-                        <p className='Profile__batchStudents mb-0'>{elem.number_of_students}</p>
-                        <p className='Profile__students'>students</p>
+                        <h6 className=' Profile__batchName text-center mt-3'>
+                          {elem.batch_name} {elem.batch_status === 'inactive' ? '(inactive)' : null}
+                        </h6>
+                        {elem.user_batch_status === 'inactive' ? (
+                          <p className='Profile__students mb-0'>Currently inactive in this batch</p>
+                        ) : (
+                          <>
+                            <p className='Profile__batchStudents mb-0'>{elem.number_of_students}</p>
+                            <p className='Profile__students'>students</p>
+                          </>
+                        )}
                       </div>
                     </>
                   </Col>

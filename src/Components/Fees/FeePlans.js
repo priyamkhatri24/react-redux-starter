@@ -161,7 +161,7 @@ const FeePlans = (props) => {
           : 'custom',
     };
 
-    console.log(customPlanForPost, 'aCustomPlanForPost');
+    console.log(payload, 'aCustomPlanForPost');
     post(payload, '/addFeeToMultipleUsers').then((responce) => {
       console.log(responce);
       if (responce.success) {

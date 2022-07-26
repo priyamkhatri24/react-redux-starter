@@ -67,6 +67,7 @@ const UserDataCard = (props) => {
     goToFeePlan,
     noRedirect,
     selectedCard,
+    withStatus,
   } = props;
 
   return (
@@ -179,6 +180,7 @@ const UserDataCard = (props) => {
             {elem.username ? (
               <span css={AdmissionStyle.subHeading} className='my-auto'>
                 <PersonOutlineIcon css={AdmissionStyle.onlineIcon} /> {elem.username}
+                {withStatus ? <p>{`Verification: ${elem.user_status}`}</p> : null}
               </span>
             ) : (
               <span css={AdmissionStyle.batchStudents}>{elem.pin}</span>
@@ -209,12 +211,14 @@ UserDataCard.propTypes = {
   goToFeePlan: PropTypes.func,
   noRedirect: PropTypes.bool,
   selectedCard: PropTypes.bool,
+  withStatus: PropTypes.bool,
 };
 
 UserDataCard.defaultProps = {
   FeeUser: false,
   noRedirect: false,
   selectedCard: false,
+  withStatus: false,
   notifyFeeUser: () => {},
   goToFeePlan: () => {},
 };

@@ -103,6 +103,7 @@ const SignUp = (props) => {
       client_id: clientId,
       contact: userProfile.contact,
       email: userProfile.email,
+      country_code: userProfile.countryCode,
     };
     post(requestBody, '/resendOTPForCRM')
       .then((res) => {
@@ -197,6 +198,7 @@ const SignUp = (props) => {
             resendOtp={resendOtp}
             verifyOTP={verifyOTP}
             resendText={resendText}
+            countryCode={userProfile.countryCode}
           />
         </div>
       )}

@@ -12,7 +12,12 @@ const EnterPhone = (props) => {
   const [isValid, setValid] = useState(false);
   const [title, setTitle] = useState('');
 
-  const onChange = (values) => setMobileNo(values);
+  const onChange = (values) => {
+    const trimmedPhone = values.phone.trim();
+    const trimmedValues = { ...values, phone: trimmedPhone };
+    setMobileNo(trimmedValues);
+    console.log(trimmedValues);
+  };
 
   const setClick = () => {
     if (placeholder === 'Mobile number') {

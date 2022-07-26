@@ -44,7 +44,7 @@ export const OnlineAssignments = (props) => {
   };
 
   const searchAssignments = (search) => {
-    setSearchString(search);
+    setSearchString(search.toLowerCase());
     // console.log(searchString);
   };
 
