@@ -41,6 +41,7 @@ const DisplayPage = (props) => {
   const closeDeleteModal = () => setShowModal(false);
 
   const [cropperImageModal, setCropperImageModal] = useState(false);
+  const [counter, setCounter] = useState(0);
   const [currentSection, setCurrentSection] = useState({});
   const profileImageRef = useRef(null);
   const [upImg, setUpImg] = useState();
@@ -92,10 +93,26 @@ const DisplayPage = (props) => {
       section_id: currentSection.homepage_section_id,
       priority_order: (currentSection.file_array.length + 1).toString(),
     };
-
+    const bannerObject = banners.find(
+      (ele) => ele.homepage_section_id === currentSection.homepage_section_id,
+    );
+    bannerObject.file_array.push({
+      file_link: file,
+      file_type: type,
+      priority_order: (currentSection.file_array.length + 1).toString(),
+      session_status: 'active',
+    });
+    console.log(bannerObject, 'bannerObject');
+    const newBanners = banners.map((ele) => {
+      if (ele.homepage_section_id === currentSection.homepage_section_id) {
+        ele.file_array = bannerObject.file_array;
+      }
+      return ele;
+    });
+    console.log(newBanners, 'newBanners');
+    setBanners(newBanners);
     post(payload, '/addFileToHomePageSection').then((res) => {
       console.log(res);
-      getHomepageContent();
     });
     // console.log(payload);
   };

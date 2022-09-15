@@ -38,7 +38,7 @@ export const FeeScrollableCards = (props) => {
                 className='Scrollable__feecardHeading m-2'
                 style={{ color: 'var(--primary-blue)' }}
               >
-                {`${currencySymbol} ${elem.plan_array[0].amount}`}
+                {`${currencySymbol} ${elem.plan_array.reduce((sum, acc) => +sum + +acc.amount, 0)}`}
               </p>
             </Card>
           );

@@ -304,8 +304,12 @@ const DummyDashboard = (props) => {
             <Col xs={4} className='p-2' style={{ textAlign: 'right' }}>
               <img src={form} alt='form' className='Dashboard_image' />
             </Col>
-            <Button variant='customPrimarySmol' className='mb-3 addmissionButton'>
-              Fill admission form
+            <Button
+              onClick={() => changeComponent('PhoneNo')}
+              variant='customPrimarySmol'
+              className='mb-3 addmissionButton'
+            >
+              Login to fill admission form
             </Button>
           </Row>
         </Card>

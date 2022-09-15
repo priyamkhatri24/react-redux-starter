@@ -36,6 +36,7 @@ import { PageHeader } from '../Common/PageHeader/PageHeader';
 import { analysisActions } from '../../redux/actions/analysis.action';
 import { testsActions } from '../../redux/actions/tests.action';
 import { courseActions } from '../../redux/actions/course.action';
+import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import {
@@ -83,6 +84,7 @@ const Mycourse = (props) => {
     courseNowPlayingVideo,
     setAnalysisSubjectArrayToStore,
     setAnalysisTestObjectToStore,
+    userProfile,
     currentbranding: {
       branding: { client_logo: image },
     },
@@ -109,6 +111,7 @@ const Mycourse = (props) => {
   );
   const [tabHeight, setTabHeight] = useState(400);
   const [source, setSource] = useState(null);
+  const [courseVideo, setCourseVideo] = useState(null);
   const [showToast, setShowToast] = useState(false);
   const [addedRating, setAddedRating] = useState(0);
   const [addedReview, setAddedReview] = useState('');
@@ -271,6 +274,14 @@ const Mycourse = (props) => {
     }
   };
 
+  const urlify = (text) => {
+    if (!text) return '';
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.replace(urlRegex, function (url) {
+      return `<a href="${url}">${url}</a>`;
+    });
+  };
+
   useEffect(() => {
     if (!courseId) history.push('/');
     else {
@@ -282,7 +293,9 @@ const Mycourse = (props) => {
 
       get(payload, '/getCourseDetailsStudent').then((res) => {
         const result = apiValidation(res);
+
         setCourse(result);
+        setCourseVideo(result.course_preview_vedio);
         // calculation of validity if exists
         if (result.validity && result.validity !== 'null') {
           const subscribedAtStamp = +result.subscribed_at;
@@ -526,6 +539,34 @@ const Mycourse = (props) => {
           state: { filePath: elem.file_link },
         });
       }
+    } else if (type === 'preview') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setDocumentOpener(false);
+      setTestToOpen(null);
+      setTestOpener(false);
+      setSource(false);
+      console.log(elem, 'videoooooele');
+      console.log(navigator.userAgent);
+      setDocumentToOpen({});
+      if (navigator.userAgent.includes('VivoBrowser')) {
+        console.log('browserIncompatible');
+        setIsBrowserCompatible(false);
+        return;
+      }
+      // startVidTimer();
+      const playingVid = {
+        src: elem.file_link,
+        linkArray: [elem.file_link],
+        id: 1404, // random
+        name: 'Preview Video',
+        finishedTime: 0,
+        duration: 0,
+        sectionFileId: 1404, // random
+      };
+      setNowPlayingVideo(false);
+      setSource(elem.file_link);
+      setCourseDocumentToOpenToStore(null);
+      setCourseNowPlayingVideoToStore(false);
     } else if (type === 'test') {
       setSource(false);
       setNowPlayingVideo(null);
@@ -1083,6 +1124,16 @@ const Mycourse = (props) => {
               Preview video
             </p>
           ) : null}
+          {!source && nowPlayingVideo ? (
+            <>
+              <p className='studentCredentialsTextClass'>
+                {`${userProfile.firstName} ${userProfile.lastName}`}
+              </p>
+              <p className='studentCredentialsTextClass'>
+                +{userProfile.countryCode}-{userProfile.contact}
+              </p>
+            </>
+          ) : null}
           {!source && !nowPlayingVideo && !documentOpener && !testOpener && (
             <div className='mx-auto Courses__mycoursethumbnail mb-2'>
               <img
@@ -1142,12 +1193,12 @@ const Mycourse = (props) => {
                 style={{ fontFamily: 'Montserrat-Regular' }}
                 className='Courses__courseCardHeading mx-auto mb-0 mt-3 w-90'
               >
-                {nowPlayingVideo
+                {nowPlayingVideo || source
                   ? 'NOW PLAYING: '
                   : documentToOpen || testToOpen
                   ? 'NOW SHOWING: '
                   : ''}
-                {nowPlayingVideo?.name || documentToOpen?.name || testToOpen?.name || ''}
+                {nowPlayingVideo?.name || documentToOpen?.name || testToOpen?.name || 'Preview'}
               </p>
             </>
           ) : null}
@@ -1372,6 +1423,36 @@ const Mycourse = (props) => {
                   height: `${tabHeight}px`,
                 }}
               >
+                {courseVideo ? (
+                  <Row
+                    style={{
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      width: '100%',
+                      marginTop: '20px',
+                    }}
+                    /* eslint-disable */
+                    onClick={() => displayContent({ file_link: courseVideo }, 'preview')}
+                    className='d-flex mx-auto'
+                  >
+                    <div style={{ width: '90%' }} className='d-flex align-items-top'>
+                      <div className='videoContainerForContents'>
+                        <video className='individualVideoThumbnail' preload='metadata'>
+                          <source src={courseVideo + '#t=0.1'} />
+                        </video>
+                      </div>
+                      <div style={{ overflowX: 'hidden', width: '100%' }}>
+                        <p style={{ fontFamily: 'Montserrat-Bold' }} className='mx-2 mb-0'>
+                          Preview Video
+                        </p>
+                        <div>
+                          <small className='verySmallText mx-2'>VIDEO</small>
+                        </div>
+                      </div>
+                    </div>
+                  </Row>
+                ) : null}
+                <hr className='' />
                 <p className='Courses__heading my-2'>What will I learn?</p>
                 {course.tag_array
                   .filter((e) => e.tag_type === 'learning')
@@ -1382,9 +1463,13 @@ const Mycourse = (props) => {
                       </p>
                     ) : null;
                   })}
+
                 <hr className='' />
                 <p className='Courses__heading'>Description</p>
-                <p className='Courses__subHeading mb-1'>{course.course_description}</p>
+                <p
+                  className='Courses__subHeading mb-1'
+                  dangerouslySetInnerHTML={{ __html: urlify(course.course_description) }}
+                ></p>
                 <hr className='' />
                 <p className='Courses__heading my-2'>Requirements</p>
                 {course.tag_array
@@ -1607,6 +1692,7 @@ const mapStateToProps = (state) => ({
   dashboardData: getCurrentDashboardData(state),
   courseNowPlayingVideo: getCourseNowPlayingVideo(state),
   courseDocumentToOpen: getCourseDocumentToOpen(state),
+  userProfile: getUserProfile(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -1656,6 +1742,12 @@ Mycourse.propTypes = {
   setTestLanguageToStore: PropTypes.func.isRequired,
   setTestIdToStore: PropTypes.func.isRequired,
   setTestTypeToStore: PropTypes.func.isRequired,
+  userProfile: PropTypes.shape({
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string,
+    contact: PropTypes.string.isRequired,
+    countryCode: PropTypes.string.isRequired,
+  }),
   currentbranding: PropTypes.shape({
     branding: PropTypes.shape({
       client_logo: PropTypes.string,

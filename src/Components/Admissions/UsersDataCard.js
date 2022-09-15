@@ -74,7 +74,13 @@ const UserDataCard = (props) => {
     <Card
       css={AdmissionStyle.card}
       key={elem.user_id}
-      style={selectedCard ? { backgroundColor: 'rgb(236, 245, 252)' } : {}}
+      style={
+        selectedCard
+          ? { backgroundColor: 'rgb(236, 245, 252)' }
+          : elem.user_batch_status === 'inactive'
+          ? { backgroundColor: '#eee', border: 'transparent' }
+          : {}
+      }
       onClick={
         FeeUser
           ? () => goToFeePlan(elem)
@@ -121,7 +127,8 @@ const UserDataCard = (props) => {
           </div>
           <div className='p-0'>
             <p css={AdmissionStyle.avatarHeading} className='mb-0 mt-2 ml-2'>
-              {`${elem.first_name} ${elem.last_name}`}
+              {`${elem.first_name} ${elem.last_name}`}{' '}
+              {elem.user_batch_status === 'inactive' && '(inactive)'}
             </p>
             <p css={AdmissionStyle.avatarStatus}>
               <PhoneIcon css={AdmissionStyle.onlineIcon} />+{elem.country_code}-{elem.contact}

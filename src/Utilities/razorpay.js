@@ -51,7 +51,7 @@ export async function displayRazorpay(
     amount: amount.toString(),
     currency,
     name: brandName,
-    description: 'Test Transaction',
+    description: 'Transaction',
     image: brandImage,
     order_id: orderId,
     account_id: accountId,

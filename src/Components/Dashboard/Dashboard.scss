@@ -306,6 +306,17 @@
 .connectText {
   color: var(--primary-blue);
   text-decoration: none;
+  
+}
+
+.callbackText {
+  color: var(--primary-blue) !important;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.callbackText:hover {
+  text-decoration: underline;
 }
 
 .connectWithUsText {

@@ -5,5 +5,5 @@ export const onlyAlphaRegExp = /^[a-zA-Z ]{0,50}$/;
 // All english characters accepted, from 2 to 30 length.
 // United-States is valid.
 export const verifyIsImage = /(gif|jpe?g|tiff?|png|webp|bmp)$/i;
-export const verifyIsVideo = /(mov|mp3|mp4|mpg|avi|wmv|flv|3gp)$/i;
+export const verifyIsVideo = /(mov|mp3|mp4|mpg|avi|wmv|flv|3gp|mkv)$/i;
 export const verifyIsFile = /(doc|docx|xls|xlsx|ppt|pptx|txt|pdf)$/i;

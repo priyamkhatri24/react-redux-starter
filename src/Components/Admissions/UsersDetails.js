@@ -41,7 +41,10 @@ const UserDetails = (props) => {
   const [triggeredBatch, setTriggeredBatch] = useState({});
   const accordionRef = useRef(null);
   const openBatchModal = () => setShowBatchModal(true);
-  const closeBatchModal = () => setShowBatchModal(false);
+  const closeBatchModal = () => {
+    setShowBatchModal(false);
+    setBatches([]);
+  };
 
   useEffect(() => {
     if (history.location.state?.user) {

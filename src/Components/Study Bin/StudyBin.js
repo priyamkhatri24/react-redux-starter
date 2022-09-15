@@ -490,7 +490,9 @@ const StudyBin = (props) => {
   const openFileView = (elem) => {
     console.log(elem);
     const fileType = elem.file_type.replace(/\./g, ''); // removes the . form .doc / .ppt etc
-    fileType === 'pdf' || fileType === 'pd'
+    fileType.includes('pdf') ||
+    fileType.includes('pd') ||
+    (fileType.includes('file') && linkExtention(elem.file_link).includes('pdf'))
       ? history.push({
           pathname: '/fileviewer',
           state: { filePath: elem.file_link, type: fileType },
@@ -632,6 +634,10 @@ const StudyBin = (props) => {
   const updateSortBy = (value) => {
     setSortBy(value);
     closeTriggerFilterModal();
+  };
+
+  const linkExtention = (link) => {
+    return link.slice(link.length - 3, link.length).toLowerCase();
   };
 
   return (
@@ -833,7 +839,7 @@ const StudyBin = (props) => {
                               </h6>
                             </div>
                           </>
-                        ) : elem.file_type === 'video' || elem.file_type === '.mp4' ? (
+                        ) : elem.file_type === 'video' || elem.file_type.includes('mp4') ? (
                           <>
                             <span
                               className='StudyBin__verticalDots'
@@ -860,8 +866,15 @@ const StudyBin = (props) => {
                               </h6>
                             </div>
                           </>
-                        ) : elem.file_type === '.jpg' ||
-                          elem.file_type === '.png' ||
+                        ) : elem.file_type.includes('jpg') ||
+                          (elem.file_type.includes('file') &&
+                            linkExtention(elem.file_link).includes('jpg')) ||
+                          (elem.file_type.includes('file') &&
+                            linkExtention(elem.file_link).includes('png')) ||
+                          (elem.file_type.includes('file') &&
+                            linkExtention(elem.file_link).includes('svg')) ||
+                          elem.file_type.includes('png') ||
+                          elem.file_type.includes('svg') ||
                           elem.file_type === 'gallery' ? (
                           // eslint-disable-next-line
                           <>
@@ -937,18 +950,36 @@ const StudyBin = (props) => {
                             >
                               <img
                                 src={
-                                  elem.file_type === '.doc'
+                                  elem.file_type.includes('doc') ||
+                                  (elem.file_type.includes('file') &&
+                                    linkExtention(elem.file_link).includes('doc'))
                                     ? doc
-                                    : elem.file_type === '.docx'
+                                    : elem.file_type.includes('docx') ||
+                                      (elem.file_type.includes('file') &&
+                                        linkExtention(elem.file_link).includes('ocx'))
                                     ? docx
-                                    : elem.file_type === '.pdf'
+                                    : elem.file_type.includes('pdf')
                                     ? pdf
-                                    : elem.file_type === '.ppt' || elem.file_type === '.pptx'
+                                    : elem.file_type.includes('ppt') ||
+                                      elem.file_type.includes('pptx') ||
+                                      (elem.file_type.includes('file') &&
+                                        linkExtention(elem.file_link).includes('ppt')) ||
+                                      (elem.file_type.includes('file') &&
+                                        linkExtention(elem.file_link).includes('ptx'))
                                     ? ppt
-                                    : elem.file_type === '.csv' ||
-                                      elem.file_type === '.xls' ||
-                                      elem.file_type === '.xlsx'
+                                    : elem.file_type.includes('csv') ||
+                                      elem.file_type.includes('xls') ||
+                                      elem.file_type.includes('xlsx') ||
+                                      (elem.file_type.includes('file') &&
+                                        linkExtention(elem.file_link).includes('xls')) ||
+                                      (elem.file_type.includes('file') &&
+                                        linkExtention(elem.file_link).includes('lsx')) ||
+                                      (elem.file_type.includes('file') &&
+                                        linkExtention(elem.file_link).includes('csv'))
                                     ? xls
+                                    : elem.file_type.includes('file') &&
+                                      linkExtention(elem.file_link).includes('pdf')
+                                    ? pdf
                                     : txt
                                 }
                                 alt='file'

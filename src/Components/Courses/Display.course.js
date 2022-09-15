@@ -84,7 +84,7 @@ const Display = (props) => {
           type === 'image'
             ? 'gif, jpeg, jpg, tiff, png, webp, bmp'
             : type === 'video'
-            ? 'mov,mp3, mp4 , mpg, avi, wmv, flv, 3gp'
+            ? 'mov, mp3, mp4 , mpg, avi, wmv, flv, 3gp'
             : 'doc, docx, xls, xlsx, ppt, pptx, txt, pdf'
         }`,
       });
@@ -217,8 +217,8 @@ const Display = (props) => {
             imageModal={imageModal}
             handleClose={handleClose}
             setProfileImage={setProfileImage}
-            aspectTop={3}
-            aspectBottom={2}
+            aspectTop={16}
+            aspectBottom={9}
           />
           <Col xs={8} className='p-0'>
             <Row className='my-auto Courses__createCourse mx-2'>

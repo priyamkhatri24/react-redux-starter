@@ -117,8 +117,8 @@ const MonthlyCustomPlan = (props) => {
             <Row className='mx-auto w-100 Fees__datePicker'>
               <DatePicker
                 minDate={addDays(new Date(), 1)}
-                selected={new Date()}
                 dateFormat='dd/MM/yyyy'
+                selected={monthlyFeeDate}
                 onChange={(date) => {
                   setMonthlyFeeDate(date);
                 }}
@@ -141,7 +141,7 @@ const MonthlyCustomPlan = (props) => {
           </p>
           <div className='m-2 p-4'>
             <RangeSlider
-              max={11}
+              max={15}
               min={1}
               value={noOfInstallments}
               onChange={(e) => setNoOfInstallments(e.target.value)}

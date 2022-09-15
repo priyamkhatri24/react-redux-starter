@@ -170,7 +170,7 @@ const ConversationDetails = (props) => {
                   </div>
                 </Card.Header>
                 <Card.Body>
-                  <div className='d-flex justify-content-between pb-2'>
+                  {/* <div className='d-flex justify-content-between pb-2'>
                     <p className='mb-0'>Notifications</p>
                     <Form.Group controlId='formBasicCheckbox'>
                       <Form.Check
@@ -181,7 +181,7 @@ const ConversationDetails = (props) => {
                         label=''
                       />
                     </Form.Group>
-                  </div>
+                  </div> */}
                   <div className='d-flex justify-content-between pb-2'>
                     <p className='mb-0'>Students can message</p>
                     <Form.Group controlId='formBasicCheckbox'>

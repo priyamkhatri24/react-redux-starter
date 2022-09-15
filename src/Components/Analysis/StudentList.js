@@ -129,7 +129,7 @@ const StudentList = (props) => {
     } else {
       get(
         { client_user_id: analysisStudentObject.client_user_id },
-        '/getAllSubmittedTestAnalysisOfStudent',
+        '/getAllSubmittedTestAnalysisOfStudentLatest',
       ).then((res) => {
         console.log(res, 'hahaaa');
         const result = apiValidation(res);
@@ -396,6 +396,7 @@ const StudentList = (props) => {
                   testId={elem.test_id}
                   clientUserId={elem.client_user_id}
                   language={elem.language_type}
+                  rank={elem.rank}
                 />
               );
             })

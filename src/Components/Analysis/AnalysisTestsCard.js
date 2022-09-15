@@ -20,6 +20,7 @@ const AnalysisTestCard = (props) => {
     testId,
     clientUserId,
     language,
+    rank,
   } = props;
 
   const goToStudentAnalysis = (elem) => {
@@ -64,7 +65,7 @@ const AnalysisTestCard = (props) => {
           {maxMarks}
         </Col>
         <Col xs={4} className='text-right Analysis__testCardDetails'>
-          {marksObtained}
+          {marksObtained} {rank ? `Rank ${rank}` : ''}
         </Col>
       </Row>
       <Row
@@ -104,7 +105,12 @@ AnalysisTestCard.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   setAnalysisTestObjectToStore: PropTypes.func.isRequired,
   setAnalysisSubjectArrayToStore: PropTypes.func.isRequired,
+  rank: PropTypes.string,
   clientUserId: PropTypes.number.isRequired,
   testId: PropTypes.number.isRequired,
   language: PropTypes.string.isRequired,
+};
+
+AnalysisTestCard.defaultProps = {
+  rank: '',
 };

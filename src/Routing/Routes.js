@@ -295,6 +295,12 @@ const AddDetails = Loadable({
 });
 // import AddDetails from '../Components/Admissions/AddDetails';
 
+const AddFees = Loadable({
+  loader: () => import(/* webpackChunkName: 'AddFees' */ '../Components/Admissions/AddFees'),
+  loading: Loading,
+});
+// import AddFees from '../Components/Admissions/AddFees';
+
 const SelectClass = Loadable({
   loader: () =>
     import(/* webpackChunkName: 'SelectClass' */ '../Components/Admissions/SelectClass'),
@@ -383,6 +389,12 @@ const InvalidURL = Loadable({
 
 const ErrorCode = Loadable({
   loader: () => import(/* webpackChunkName: 'ErrorCode' */ '../Components/ErrorPages/ErrorCode'),
+  loading: Loading,
+});
+
+const InvalidCourse = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: 'InvalidCourse' */ '../Components/ErrorPages/InvalidCourse'),
   loading: Loading,
 });
 
@@ -554,7 +566,7 @@ export function Routes() {
   return (
     <Switch>
       <AuthenticatedRoute exact path='/' component={Dashboard} />
-      <AuthenticatedRoute exact path='/temp-route-for-testing' component={Temp} />
+      <AuthenticatedRoute exact path='/priyamtestkrrega' component={Temp} />
       <Route path='/signin' component={SignIn} />
       <Route path='/signup' component={SignUp} />
       <Route exact path='/login' component={Login} />
@@ -606,6 +618,7 @@ export function Routes() {
       <AuthenticatedRoute exact path='/admissions/batch' component={BatchDetails} />
       <AuthenticatedRoute exact path='/admissions/batch/addusers' component={AddUsersToBatch} />
       <AuthenticatedRoute exact path='/admissions/add/details' component={AddDetails} />
+      <AuthenticatedRoute exact path='/admissions/add/fees' component={AddFees} />
       <AuthenticatedRoute exact path='/admissions/add/class' component={SelectClass} />
       <AuthenticatedRoute exact path='/admissions/add/batch' component={AddBatch} />
       <AuthenticatedRoute exact path='/admissions/editprofile' component={EditProfileHOC} />
@@ -661,6 +674,7 @@ export function Routes() {
       {/* If error occurs */}
 
       <Route exact path='/error' component={ErrorCode} />
+      <Route exact path='/course-access-invalid' component={InvalidCourse} />
 
       {/* redirect user to FourZeroFour page if route does not exist */}
 

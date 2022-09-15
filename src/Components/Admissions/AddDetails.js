@@ -12,19 +12,32 @@ import Button from 'react-bootstrap/Button';
 import Accordion from 'react-bootstrap/Accordion';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import isBefore from 'date-fns/isBefore';
+import fromUnixTime from 'date-fns/fromUnixTime';
 import ReactIntlTelInput from 'react-intl-tel-input-v2';
-import { PageHeader, BatchesSelector } from '../Common';
+import { PageHeader, BatchesSelector, FeeScrollableCards } from '../Common';
 import { getAdmissionRoleArray } from '../../redux/reducers/admissions.reducer';
 import { admissionActions } from '../../redux/actions/admissions.action';
-import { getClientId } from '../../redux/reducers/clientUserId.reducer';
+import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
+import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
+import { getfeePlanType } from '../../redux/reducers/fees.reducer';
 import { apiValidation, get, post } from '../../Utilities';
 import 'intl-tel-input/build/css/intlTelInput.css';
 import '../Courses/Courses.scss';
 import '../Profile/Profile.scss';
+import MonthlyCustomPlan from '../Fees/MonthlyCustomPlan';
 import UsersDataCard from './UsersDataCard';
 
 const AddDetails = (props) => {
-  const { history, admissionRoleArray, clientId } = props;
+  const {
+    history,
+    admissionRoleArray,
+    clientId,
+    clientUserId,
+    currentbranding: {
+      branding: { currency_code: currencyCode, currency_symbol: currencySymbol },
+    },
+  } = props;
 
   const addRef = useRef(null);
   const [usersModal, setUsersModal] = useState(false);
@@ -34,11 +47,17 @@ const AddDetails = (props) => {
       ? {
           name: '',
           contact: { iso2: 'in', dialCode: '91', phone: '' },
-          parent_contact: '',
+          email: '',
+          parent_contact: { iso2: 'in', dialCode: '91', phone: '' },
           parent_name: '',
           isEditing: false,
         }
-      : { name: '', contact: { iso2: 'in', dialCode: '91', phone: '' }, isEditing: false },
+      : {
+          name: '',
+          contact: { iso2: 'in', dialCode: '91', phone: '' },
+          email: '',
+          isEditing: false,
+        },
   );
 
   const [arrayEdit, setArrayEdit] = useState(
@@ -47,7 +66,8 @@ const AddDetails = (props) => {
           id: new Date().getTime(),
           name: '',
           contact: { iso2: 'in', dialCode: '91', phone: '' },
-          parent_contact: '',
+          email: '',
+          parent_contact: { iso2: 'in', dialCode: '91', phone: '' },
           parent_name: '',
           parent_country_code: '',
           isEditing: false,
@@ -56,12 +76,42 @@ const AddDetails = (props) => {
           id: new Date().getTime(),
           name: '',
           contact: { iso2: 'in', dialCode: '91', phone: '' },
+          email: '',
           isEditing: false,
         },
   );
 
   const [detailArray, setDetailArray] = useState([]);
+  const [feeAssignModal, setFeeAssignModal] = useState(false);
+  const [isSkip, setIsSkip] = useState(false);
   const [isValid, setValid] = useState(false);
+  const [recentPlans, setRecentPlans] = useState([]);
+  const [batchSearchString, setBatchSearchString] = useState('');
+  const [studentSearchString, setStudentSearchString] = useState('');
+
+  const [feeTags, setFeeTags] = useState([]);
+  const [tagName, setTagName] = useState('');
+  const [tagAmount, setTagAmount] = useState('');
+  const [showBatchesModal, setShowBatchesModal] = useState(false);
+  const [students, setStudents] = useState([]);
+  const [selectedStudents, setSelectedStudents] = useState([]);
+  const [showStudentsModal, setShowStudentsModal] = useState(false);
+  const [existingStudentsNumber, setExistingStudentsNumber] = useState(0);
+  const [showAssignPlanModal, setShowAssignPlanModal] = useState(false);
+  const [replaceOptions, setOptions] = useState('');
+  const [monthlyFeeAmount, setMonthlyFeeAmount] = useState('');
+  const [monthlyFeeDate, setMonthlyFeeDate] = useState(new Date());
+  const [noOfInstallments, setNoOfInstallments] = useState(1);
+  const [customFeePlanArray, setCustomFeePlanArray] = useState([
+    {
+      id: 0,
+      amount: 0,
+      due_date: parseInt((new Date().getTime() / 1000).toFixed(0), 10),
+      date: new Date(),
+      isRead: true,
+    },
+  ]);
+  const [monthlyOrCustom, setMonthlyOrCustom] = useState('Monthly');
 
   const inputProps = {
     placeholder: 'Mobile Number',
@@ -74,18 +124,25 @@ const AddDetails = (props) => {
   const intlTelOpts = {
     preferredCountries: ['in'],
   };
+  const intlTelOpts2 = {
+    preferredCountries: ['in'],
+  };
 
   /** ****************************Batches Modal Logic***************************** */
 
   const [showModal, setShowModal] = useState(false);
   const [batches, setBatches] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
-  const handleClose = () => setShowModal(false);
+  const handleClose = () => {
+    setSelectedBatches([]);
+    setShowModal(false);
+  };
   const handleUsersClose = () => setUsersModal(false);
   const handleOpen = () => setShowModal(true);
   const handleUsersOpen = () => setUsersModal(true);
   const getSelectedBatches = (selectBatches) => {
     setSelectedBatches(selectBatches);
+    console.log(selectedBatches, 'hey raam');
   };
 
   useEffect(() => {
@@ -103,25 +160,77 @@ const AddDetails = (props) => {
     return userArray;
   };
 
+  const openFeeModal = () => setFeeAssignModal(true);
+  const closeFeeModal = () => setFeeAssignModal(false);
+
   const addUserToWhiteList = () => {
-    const payload = {
-      client_id: clientId,
-      user_array: JSON.stringify(
-        detailArray.map((e) => {
-          const phoneNo = e.contact.phone;
-          const countryCode = e.contact.dialCode;
-          const parentContact = e.parent_contact?.phone;
-          return {
-            ...e,
-            contact: phoneNo,
-            country_code: countryCode,
-            parent_contact: parentContact,
-          };
-        }),
-      ),
-      role_array: JSON.stringify(admissionRoleArray),
-      batch_array: JSON.stringify(selectedBatches.map((e) => e.client_batch_id)),
-    };
+    const customPlanForPost = customFeePlanArray.map((elem) => {
+      elem.due_date = (elem.date.getTime() / 1000).toFixed(0);
+      return elem;
+    });
+    let payload = {};
+    const ua = detailArray.map((e) => {
+      const phoneNo = e.contact.phone;
+      const countryCode = e.contact.dialCode;
+      const parentContact = e.parent_contact?.phone;
+      return {
+        ...e,
+        contact: phoneNo,
+        country_code: countryCode,
+        parent_contact: parentContact,
+      };
+    });
+    console.log(ua);
+    if (isSkip) {
+      payload = {
+        client_id: clientId,
+        user_array: JSON.stringify(
+          detailArray.map((e) => {
+            const phoneNo = e.contact.phone;
+            const countryCode = e.contact.dialCode;
+            const parentContact = e.parent_contact?.phone;
+            return {
+              ...e,
+              contact: phoneNo,
+              country_code: countryCode,
+              parent_contact: parentContact,
+            };
+          }),
+        ),
+        role_array: JSON.stringify(admissionRoleArray),
+        batch_array: JSON.stringify(selectedBatches.map((e) => e.client_batch_id)),
+      };
+    } else {
+      payload = {
+        client_id: clientId,
+        user_array: JSON.stringify(
+          detailArray.map((e) => {
+            const phoneNo = e.contact.phone;
+            const countryCode = e.contact.dialCode;
+            const parentContact = e.parent_contact?.phone;
+            return {
+              ...e,
+              contact: phoneNo,
+              country_code: countryCode,
+              parent_contact: parentContact,
+            };
+          }),
+        ),
+        role_array: JSON.stringify(admissionRoleArray),
+        batch_array: JSON.stringify(selectedBatches.map((e) => e.client_batch_id)),
+        plan_type: monthlyOrCustom === 'Monthly' ? 'monthly' : 'custom',
+        plan_array:
+          monthlyOrCustom === 'Monthly'
+            ? JSON.stringify([
+                {
+                  amount: monthlyFeeAmount,
+                  due_date: parseInt((monthlyFeeDate.getTime() / 1000).toFixed(0), 10),
+                },
+              ])
+            : JSON.stringify(customPlanForPost),
+      };
+    }
+
     console.log(payload);
     Swal.fire({
       title: 'Add Users',
@@ -161,7 +270,7 @@ const AddDetails = (props) => {
       console.log(users);
       if (!users.length || (users.length && checked)) {
         const filteredDetails = Object.values(details).filter((e) => e !== '');
-        if (admissionRoleArray[0] === '1' && filteredDetails.length === 5) {
+        if (admissionRoleArray[0] === '1' && filteredDetails.length >= 5) {
           if (
             users.find((ele) => {
               return ele.first_name === details.name;
@@ -182,19 +291,21 @@ const AddDetails = (props) => {
           setDetails({
             name: '',
             contact: { iso2: 'in', dialCode: '91', phone: '' },
-            parent_contact: '',
+            email: '',
+            parent_contact: { iso2: 'in', dialCode: '91', phone: '' },
             parent_name: '',
             isEditing: false,
           });
         } else if (
           (admissionRoleArray[0] === '3' || admissionRoleArray[0] === '4') &&
-          filteredDetails.length === 3
+          filteredDetails.length >= 3
         ) {
           setDetailArray((e) => [...e, { ...details, id: new Date().getTime() }]);
           setValid(false);
           setDetails({
             name: '',
             contact: { iso2: 'in', dialCode: '91', phone: '' },
+            email: '',
             isEditing: false,
           });
         } else setValid(true);
@@ -246,7 +357,8 @@ const AddDetails = (props) => {
             if (elem.id === arrayEdit.id) {
               elem.name = arrayEdit.name;
               elem.contact = { ...arrayEdit.contact };
-              elem.parent_contact = arrayEdit.parent_contact;
+              elem.email = arrayEdit.email;
+              elem.parent_contact = { ...arrayEdit.parent_contact };
               elem.parent_name = arrayEdit.parent_name;
               elem.isEditing = false;
             }
@@ -256,6 +368,7 @@ const AddDetails = (props) => {
             if (elem.id === arrayEdit.id) {
               elem.name = arrayEdit.name;
               elem.contact = { ...arrayEdit.contact };
+              elem.email = arrayEdit.email;
               elem.isEditing = false;
             }
             return elem;
@@ -268,6 +381,7 @@ const AddDetails = (props) => {
 
   const goToNextStage = () => {
     addRef.current.click();
+    closeFeeModal();
     // if (admissionRoleArray[0] === '1') {
     //   if (detailArray.length > 0 && detailArray.length <= 20) {
     //     setAdmissionUserArrayToStore(detailArray);
@@ -283,6 +397,99 @@ const AddDetails = (props) => {
         handleOpen();
       }
     });
+  };
+  // after this line we have begun the fee modal wala part copied from the add fee file>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+  useEffect(() => {
+    const url = '/getRecentPlansOfUser';
+    get({ client_user_id: clientUserId }, url).then((res) => {
+      const result = apiValidation(res);
+      setRecentPlans(result);
+    });
+    get({ client_id: clientId }, '/getAllBatchesOfCoaching').then((res) => {
+      console.log(res);
+      const result = apiValidation(res);
+      setBatches(result);
+    });
+    get(null, '/getFeeTags').then((res) => {
+      console.log(res);
+      const result = apiValidation(res);
+      setFeeTags(result);
+    });
+  }, [clientUserId, clientId]);
+
+  const getPlanValue = (name, amount) => {
+    setTagName(name);
+    setTagAmount(amount);
+  };
+
+  const handleBatchesClose = () => setShowBatchesModal(false);
+  const handleBatchesOpen = () => setShowBatchesModal(true);
+
+  const getStudentsOfBatches = () => {
+    const idBatches = selectedBatches.map((e) => e.client_batch_id);
+
+    const payload = {
+      batch_array: JSON.stringify(idBatches),
+      plan_type: monthlyOrCustom === 'Monthly' ? 'monthly' : 'custom',
+      fee_tag: tagName,
+    };
+    get(payload, '/getStudentsOfBatchArrayForFee').then((res) => {
+      console.log(res);
+      const result = apiValidation(res);
+      setStudents(result);
+      handleBatchesClose();
+      handleStudentsOpen();
+    });
+  };
+
+  const handleStudentsClose = () => setShowStudentsModal(false);
+  const handleStudentsOpen = () => setShowStudentsModal(true);
+
+  const getSelectedStudents = (allstudents, selectStudents) => {
+    setSelectedStudents(selectStudents);
+    console.log(selectStudents);
+  };
+
+  const handleAssignPlanClose = () => setShowAssignPlanModal(false);
+  const handleAssignPlanOpen = () => setShowAssignPlanModal(true);
+
+  const checkForExistingPlans = () => {
+    const existingStudents = selectedStudents.filter((e) => e.is_fee === 'true');
+    setExistingStudentsNumber(existingStudents.length);
+    handleStudentsClose();
+    handleAssignPlanOpen();
+  };
+
+  const getMonthlyOrCustom = (elem) => {
+    if (elem.plan_type === 'monthly') {
+      const currDate = fromUnixTime(parseInt(elem.plan_array[0].due_date, 10));
+      setMonthlyFeeDate(isBefore(currDate, new Date()) ? new Date() : currDate);
+      setMonthlyFeeAmount(elem.plan_array[0].amount);
+      setMonthlyOrCustom('Monthly');
+    } else {
+      setMonthlyOrCustom('Custom');
+      console.log(elem);
+      console.log(customFeePlanArray, 'ji');
+      const addToFeePlan = elem.plan_array.map((e) => {
+        const obj = {};
+        obj.id = Math.floor(Math.random() * 100000).toString(16);
+        obj.isRead = true;
+        obj.date = fromUnixTime(parseInt(e.due_date, 10));
+        obj.amount = parseInt(e.amount, 10);
+        obj.due_date = parseInt(e.due_date, 10);
+        return obj;
+      });
+      console.log('hamara,', addToFeePlan);
+      setCustomFeePlanArray(addToFeePlan);
+      setNoOfInstallments(elem.plan_array.length);
+    }
+  };
+
+  const skipFee = () => {
+    setIsSkip(true);
+    closeFeeModal();
+    goToNextStage();
   };
 
   return (
@@ -345,8 +552,25 @@ const AddDetails = (props) => {
                         setArrayEdit(newObject);
                         console.log(newObject, 'abc');
                       }}
-                      className='mt-3'
+                      className='mt-3 mb-3'
                     />
+                    <label className='has-float-label my-auto mt-3'>
+                      <input
+                        className='form-control'
+                        name='Email (optional)'
+                        type='text'
+                        placeholder='Email (optional)'
+                        value={arrayEdit.email}
+                        onChange={(elem) => {
+                          const newObject = {
+                            ...arrayEdit,
+                            email: elem.target.value,
+                          };
+                          setArrayEdit(newObject);
+                        }}
+                      />
+                      <span>Email (optional)</span>
+                    </label>
 
                     {admissionRoleArray[0] === '1' && (
                       <>
@@ -388,7 +612,7 @@ const AddDetails = (props) => {
                         </label> */}
                         <ReactIntlTelInput
                           inputProps={parentInputProps}
-                          intlTelOpts={intlTelOpts}
+                          intlTelOpts={intlTelOpts2}
                           value={arrayEdit.parent_contact}
                           onChange={(elem) => {
                             const newObject = {
@@ -534,8 +758,25 @@ const AddDetails = (props) => {
                   };
                   setDetails(newObject);
                 }}
-                className='mt-3'
+                className='mt-3 mb-3'
               />
+              <label className='has-float-label my-auto mt-3'>
+                <input
+                  className='form-control'
+                  name='Email (optional)'
+                  type='text'
+                  placeholder='Email (optional)'
+                  value={details.email}
+                  onChange={(e) => {
+                    const newObject = {
+                      ...details,
+                      email: e.target.value,
+                    };
+                    setDetails(newObject);
+                  }}
+                />
+                <span>Email (optional)</span>
+              </label>
 
               {admissionRoleArray[0] === '1' && (
                 <>
@@ -577,7 +818,7 @@ const AddDetails = (props) => {
                   </label> */}
                   <ReactIntlTelInput
                     inputProps={parentInputProps}
-                    intlTelOpts={intlTelOpts}
+                    intlTelOpts={intlTelOpts2}
                     value={details.parent_contact}
                     onChange={(e) => {
                       const newObject = {
@@ -605,12 +846,21 @@ const AddDetails = (props) => {
           )}
         </Card>
         <Row className='justify-content-center m-4'>
-          <Button variant='customPrimary' onClick={() => goToNextStage()}>
+          <Button
+            variant='customPrimary'
+            onClick={() => {
+              if (admissionRoleArray[0] === '1') {
+                openFeeModal();
+              } else {
+                goToNextStage();
+              }
+            }}
+          >
             Next
           </Button>
         </Row>
       </div>
-      <Modal show={showModal} onHide={handleClose} centered>
+      <Modal show={showModal} onHide={() => handleClose()} centered>
         <Modal.Header closeButton>
           <Modal.Title>Select Batches</Modal.Title>
         </Modal.Header>
@@ -651,6 +901,43 @@ const AddDetails = (props) => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <Modal show={feeAssignModal} size='lg' centered onHide={closeFeeModal}>
+        <Modal.Header className='d-flex justify-content-between'>
+          <Modal.Title>Add Fee Plan</Modal.Title>
+          <button className='skipButtonFor' type='button' onClick={() => skipFee()}>
+            {' '}
+            Skip{' '}
+          </button>
+        </Modal.Header>
+
+        <FeeScrollableCards
+          data={recentPlans}
+          currencySymbol={currencySymbol}
+          // planType={feePlanType}
+          getPlanValue={getMonthlyOrCustom}
+        />
+
+        <MonthlyCustomPlan
+          monthlyFeeAmount={monthlyFeeAmount}
+          currencySymbol={currencySymbol}
+          setMonthlyFeeAmount={setMonthlyFeeAmount}
+          monthlyFeeDate={monthlyFeeDate}
+          setMonthlyFeeDate={setMonthlyFeeDate}
+          noOfInstallments={noOfInstallments}
+          setNoOfInstallments={setNoOfInstallments}
+          customFeePlanArray={customFeePlanArray}
+          setCustomFeePlanArray={setCustomFeePlanArray}
+          activeTab={monthlyOrCustom}
+          changeTab={setMonthlyOrCustom}
+        />
+
+        <Row className='justify-content-center my-3'>
+          <Button variant='customPrimary' onClick={() => goToNextStage()}>
+            Next
+          </Button>
+        </Row>
+      </Modal>
     </>
   );
 };
@@ -658,6 +945,8 @@ const AddDetails = (props) => {
 const mapStateToProps = (state) => ({
   admissionRoleArray: getAdmissionRoleArray(state),
   clientId: getClientId(state),
+  clientUserId: getClientUserId(state),
+  currentbranding: getCurrentBranding(state),
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -674,4 +963,11 @@ AddDetails.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   admissionRoleArray: PropTypes.instanceOf(Array).isRequired,
   clientId: PropTypes.number.isRequired,
+  clientUserId: PropTypes.number.isRequired,
+  currentbranding: PropTypes.shape({
+    branding: PropTypes.shape({
+      currency_code: PropTypes.string,
+      currency_symbol: PropTypes.string,
+    }),
+  }).isRequired,
 };

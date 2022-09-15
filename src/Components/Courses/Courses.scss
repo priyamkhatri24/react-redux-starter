@@ -19,6 +19,8 @@
   &__courseCardHeading {
     font-size: 16px;
     font-family: 'Montserrat-SemiBold';
+    margin-top: 0px !important;
+    margin-bottom: 16px !important;
   }
   &__Price {
     font-size: 12px;
@@ -184,6 +186,10 @@
     margin: auto;
     margin-top: 5rem;
     padding-left: 10%;
+    perspective: 1000;
+    // -webkit-transform: translate3d(0, 0, 0);
+    -webkit-perspective: 1000;
+
     @include media-breakpoint-down(sm) {
       width: 100%;
     }
@@ -474,6 +480,13 @@
 
 .smallFont {
   font-size: 10px !important;
+}
+
+.skipButtonFor {
+  border: transparent;
+  border-radius: 100px;
+  outline: none;
+  padding: 8px 20px;
 }
 
 .regionalPriceFormInput {
@@ -795,6 +808,19 @@
   transition-property: opacity;
 }
 
+.studentCredentialsTextClass {
+  color: white;
+  margin: 0px;
+  font-family: 'Montserrat-Light';
+  font-size: 16px;
+  position: relative;
+  top: -79px;
+  width: 90%;
+  margin: auto;
+  transition-duration: 0.3s;
+  transition-property: opacity;
+}
+
 .Courses__videoplayer svg {
   background-color: white;
 }
@@ -951,6 +977,18 @@
   }
 }
 
+@media screen and (max-width: 570px) {
+  .regionalPriceFormInput {
+    width: 45%;
+  }
+  .Courses__mycoursesvideoplayer {
+    max-height: 40vh;
+  }
+  .studentCredentialsTextClass {
+    font-size: 13px;
+  }
+}
+
 .freeIcon {
   width: 34px;
   height: 20px;
@@ -960,3 +998,27 @@
 .textModal {
   font-family: 'Montserrat-Regular';
 }
+
+.valuePadding {
+  top: 4px;
+  right: 10px;
+  color: #000;
+  position: absolute;
+  z-index: 1;
+}
+
+.valuePadding input {
+  border: none;
+  padding: 0px;
+  outline: none;
+}
+
+// .plyr audio,
+// .plyr iframe,
+// .plyr video {
+//   display: block;
+//   height: 100%;
+//   text-align: center;
+//   margin: auto;
+//   width: auto !important;
+// }

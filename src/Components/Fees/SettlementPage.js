@@ -12,9 +12,13 @@ import { PageHeader } from '../Common';
 const SettlementPage = (props) => {
   const { clientId, history } = props;
   const [data, setData] = useState({});
-  const [vendorDetails, setVendorDetails] = useState({});
+  const [vendorDetails, setVendorDetails] = useState({
+    bank: {},
+    phone: '',
+    email: '',
+  });
 
-  const goToEditPayment = () => {
+  const goToEditPayment = (how = 'goback') => {
     history.push({ pathname: '/teacherfees/editaccountdetails', state: { vendorDetails } });
   };
 
@@ -23,12 +27,23 @@ const SettlementPage = (props) => {
       client_id: clientId,
       type: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
     };
+
     get(payload, '/getCashFreeAccountDetails').then((res) => {
-      const result = apiValidation(res);
-      console.log(result, 'getCashFreeAccountDetails');
-      console.log(payload);
-      setData(result);
-      setVendorDetails(result.vendorDetails || {});
+      if (res.success) {
+        const result = apiValidation(res);
+        console.log(result, 'getCashFreeAccountDetails');
+        console.log(payload);
+        setData(result);
+        setVendorDetails(
+          result.vendorDetails || {
+            bank: {},
+            phone: '',
+            email: '',
+          },
+        );
+      } else {
+        goToEditPayment();
+      }
     });
   }, [clientId]);
 

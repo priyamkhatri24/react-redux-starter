@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Modal from 'react-bootstrap/Modal';
 import MathJax from 'react-mathjax-preview';
 import Card from 'react-bootstrap/Card';
 
@@ -16,6 +17,10 @@ const FinalQuestionCard = (props) => {
     isAnalysis,
     language,
   } = props;
+  const [imgLink, setImgLink] = useState('');
+  const [showImageModal, setShowImageModal] = useState(false);
+  const handleImageClose = () => setShowImageModal(false);
+  const handleImageOpen = () => setShowImageModal(true);
   // const [question, setQuestion] = useState({});
 
   // useEffect(() => {
@@ -72,10 +77,22 @@ const FinalQuestionCard = (props) => {
             </span>
           </div>
           {question.question_image && (
-            <div className='text-center'>
+            <div
+              style={{ width: '93%', margin: 'auto' }}
+              role='button'
+              tabIndex={-1}
+              onKeyPress={() => {
+                setImgLink(question.question_image);
+                handleImageOpen();
+              }}
+              onClick={() => {
+                setImgLink(question.question_image);
+                handleImageOpen();
+              }}
+            >
               <img
                 src={question.question_image}
-                className='img-fluid m-2 w-75 mx-auto'
+                className='img-fluid m-2 mx-auto finalQuestionImageClass'
                 alt='question'
               />
             </div>
@@ -92,7 +109,26 @@ const FinalQuestionCard = (props) => {
                 <Row className='d-flex mx-3 mb-2 Homework__multipleOptions' key={e.order}>
                   <span className='mr-2 my-auto'>{i + 1}.</span>{' '}
                   <MathJax math={String.raw`${e.text}`} />
-                  {e.image && <img src={e.image} className='img-fluid w-75' alt='option' />}
+                  {e.image && (
+                    <div
+                      role='button'
+                      tabIndex={-1}
+                      onKeyPress={() => {
+                        setImgLink(e.image);
+                        handleImageOpen();
+                      }}
+                      onClick={() => {
+                        setImgLink(e.image);
+                        handleImageOpen();
+                      }}
+                    >
+                      <img
+                        src={e.image}
+                        className='img-fluid finalQuestionImageClass'
+                        alt='option'
+                      />
+                    </div>
+                  )}
                 </Row>
               );
             })}
@@ -104,7 +140,26 @@ const FinalQuestionCard = (props) => {
                 <Row className='d-flex mx-3 mb-2 Homework__multipleOptions' key={e.order}>
                   <span className='mr-2 my-auto'>{i + 1}.</span>{' '}
                   <MathJax math={String.raw`${e.text}`} />
-                  {e.image && <img src={e.image} className='img-fluid w-75' alt='option' />}
+                  {e.image && (
+                    <div
+                      role='button'
+                      tabIndex={-1}
+                      onKeyPress={() => {
+                        setImgLink(e.image);
+                        handleImageOpen();
+                      }}
+                      onClick={() => {
+                        setImgLink(e.image);
+                        handleImageOpen();
+                      }}
+                    >
+                      <img
+                        src={e.image}
+                        className='img-fluid finalQuestionImageClass'
+                        alt='option'
+                      />
+                    </div>
+                  )}
                 </Row>
               );
             })}
@@ -136,7 +191,19 @@ const FinalQuestionCard = (props) => {
           {question.question_solution_image && (
             <>
               <p className='Homework__options text-left m-2'>Solution:</p>
-              <div className='d-flex mx-3 mb-2 Homework__multipleOptions soultionImage text-left'>
+              <div
+                className='d-flex mx-3 mb-2 Homework__multipleOptions soultionImage text-left'
+                role='button'
+                tabIndex={-1}
+                onKeyPress={() => {
+                  setImgLink(question.question_solution_image);
+                  handleImageOpen();
+                }}
+                onClick={() => {
+                  setImgLink(question.question_solution_image);
+                  handleImageOpen();
+                }}
+              >
                 <img
                   src={question.question_solution_image}
                   className='img-fluid m-2 w-75 mx-auto'
@@ -217,6 +284,15 @@ const FinalQuestionCard = (props) => {
           })}
         </Row>
       )}
+
+      <Modal show={showImageModal} onHide={handleImageClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Image Modal</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className='mx-auto d-flex justify-content-center'>
+          <img src={imgLink} alt='img' className='img-fluid' />
+        </Modal.Body>
+      </Modal>
     </Card>
   );
 };

@@ -84,11 +84,11 @@ const Cropper = (props) => {
   };
 
   return (
-    <Modal show={imageModal} onHide={handleClose} centered>
+    <Modal show={imageModal} onHide={handleClose} backdrop='static' centered>
       <Modal.Header closeButton>
         <Modal.Title>Crop Image</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body className='d-flex justify-content-center'>
         <Row className='mx-2 justify-content-between'>
           <Col xs={12}>
             <ReactCrop
@@ -98,7 +98,7 @@ const Cropper = (props) => {
               onChange={(c) => {
                 const cropp = {
                   ...c,
-                  aspect: sourceImage.width / sourceImage.height,
+                  // aspect: sourceImage.width / sourceImage.height,
                 };
                 setCrop(cropp);
               }}

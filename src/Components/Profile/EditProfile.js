@@ -53,7 +53,7 @@ const EditProfile = (props) => {
     { label: 'Residential Address', value: user.address, type: 'input', name: 'address' },
     {
       label: 'Date of Birth',
-      value: format(user.birthday ? fromUnixTime(user.birthday) : new Date(), 'yyyy-MM-dd'),
+      value: user.birthday ? format(fromUnixTime(user.birthday), 'yyyy-MM-dd') : '',
       type: 'date',
       name: 'birthday',
     },
@@ -116,7 +116,7 @@ const EditProfile = (props) => {
   };
 
   const getFormData = (values) => {
-    console.log(values);
+    console.log(values, 'valuessssss');
     if (fromAdmissions) updateAdmissionProfile(values, profileImage.current);
     else {
       const payload = {
@@ -124,13 +124,15 @@ const EditProfile = (props) => {
         last_name: values.last_name,
         contact: user.contact,
         email: values.email,
-        address: values.address,
-        gender: values.gender,
+        address: values.address ? values.address : '',
+        gender: values.gender ? values.gender : '',
         user_id: userId,
         parent_name: values.parent_name === undefined ? '' : values.parent_name,
         parent_contact: values.parent_contact === undefined ? '' : values.parent_contact,
         parent_id: userUserId,
-        birthday: parse(values.birthday, 'yyyy-MM-dd', new Date()).getTime() / 1000,
+        birthday: values.birthday
+          ? parse(values.birthday, 'yyyy-MM-dd', new Date()).getTime() / 1000
+          : '',
         // profile_image: profileImage.current,
       };
 
@@ -154,7 +156,11 @@ const EditProfile = (props) => {
               setProfileImageToStore(profileImage.current);
               setEmailToStore(values.email);
               setAddressToStore(values.address);
-              setBirthdayToStore(parse(values.birthday, 'yyyy-MM-dd', new Date()).getTime() / 1000);
+              setBirthdayToStore(
+                values.birthday
+                  ? parse(values.birthday, 'yyyy-MM-dd', new Date()).getTime() / 1000
+                  : '',
+              );
               setGenderToStore(values.gender);
             }
           });

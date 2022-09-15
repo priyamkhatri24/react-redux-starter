@@ -1898,16 +1898,17 @@ class LiveClasses extends Component {
                                 customInput={<CustomInput />}
                               />
                               <label className='has-float-label my-auto w-100 margin-8'>
-                                {/* <input
+                                <input
                                   className='form-control'
                                   name='Start Time'
                                   type='time'
-                                  step='1'
                                   placeholder='Start Time'
                                   value={scheduledTime}
-                                  onChange={(e) => this.setState({ scheduledTime: e.target.value })}
-                                /> */}
-                                <TimePicker
+                                  onChange={(e) =>
+                                    this.setState({ scheduledTime: `${e.target.value}:00` })
+                                  }
+                                />
+                                {/* <TimePicker
                                   className='form-control'
                                   onChange={this.setScheduledTime}
                                   value={scheduledTime}
@@ -1915,7 +1916,7 @@ class LiveClasses extends Component {
                                   hourPlaceholder='hh'
                                   minutePlaceholder='mm'
                                   secondPlaceholder='ss'
-                                />
+                                /> */}
                                 <span onClick={() => {}}>Start Time</span>
                               </label>
                               <label className='has-float-label my-auto w-100 margin-18'>

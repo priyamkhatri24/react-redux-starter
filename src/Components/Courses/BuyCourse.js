@@ -88,6 +88,7 @@ const BuyCourse = (props) => {
   const [couponId, setCouponId] = useState('');
   const [couponState, setCouponState] = useState('removed');
   const [couponPrice, setCouponPrice] = useState(0);
+  const [couponType, setCouponType] = useState('');
   const [couponMessage, setCouponMessage] = useState('');
   const [order, setOrder] = useState({});
   const [showToast, setShowToast] = useState(false);
@@ -111,6 +112,7 @@ const BuyCourse = (props) => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [finalCurrencyCode, setFinalCurrencyCode] = useState(currencyCode);
   const [currencyCodes, setCurrencyCodes] = useState([]);
+  const [couponCheckMessageColor, setCouponCheckMessageColor] = useState('red');
 
   const vidRef2 = useRef(null);
   const mainCRef = useRef(null);
@@ -156,6 +158,15 @@ const BuyCourse = (props) => {
     });
   }, []);
 
+  const urlify = (text) => {
+    if (!text) return '';
+
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.replace(urlRegex, function (url) {
+      return `<a href="${url}">${url}</a>`;
+    });
+  };
+
   useEffect(() => {
     setRedirectPathToStore(null);
     setCurrentComponentToStore('Welcome');
@@ -178,7 +189,9 @@ const BuyCourse = (props) => {
     get(payload, '/getCourseDetailsStudent').then((res) => {
       console.log(res, 'course details');
       const result = apiValidation(res);
-
+      if (result.course_status !== 'published') {
+        push({ pathname: '/course-access-invalid' });
+      }
       setPaymentGateway(result.payment_gateway);
       setReviews(result.reviews);
       // regioanl courses check
@@ -210,6 +223,7 @@ const BuyCourse = (props) => {
         console.log(countryFilteredPrices, 'countryFilteredPrices');
       }
       // //////////////////////////////////////////////////////////////////////////////////////////////
+
       setCourse(result);
       setCoursePrice(result.discount_price);
       setCourseImage(result.course_display_image);
@@ -358,19 +372,34 @@ const BuyCourse = (props) => {
         : +window.atob(match.params.courseId),
       client_id: clientId,
       coupon_code: coupon,
+      currency_code: finalCurrencyCode,
     };
     console.log(payload, 'checkCouponCodePayload');
     get(payload, '/checkCouponCode').then((res) => {
       const result = apiValidation(res);
       if (result.coupon_status === 'true') {
-        let newPrice = coursePrice - result.price;
-        if (newPrice <= 0) newPrice = 0;
-        setCoursePrice(newPrice);
-        setCouponPrice(result.price);
-        setCouponState('applied');
-        setCouponId(result.coupon_id);
-        setCouponMessage(result.message);
+        setCouponCheckMessageColor('green');
+        if (result.coupon_type === 'price') {
+          let newPrice = coursePrice - result.price;
+          if (newPrice <= 0) newPrice = 0;
+          setCoursePrice(newPrice);
+          setCouponType(result.coupon_type);
+          setCouponPrice(result.price);
+          setCouponState('applied');
+          setCouponId(result.coupon_id);
+          setCouponMessage(result.message);
+        } else if (result.coupon_type === 'percent') {
+          let newPrice = coursePrice - (result.price * coursePrice) / 100;
+          if (newPrice <= 0) newPrice = 0;
+          setCoursePrice(newPrice);
+          setCouponType(result.coupon_type);
+          setCouponPrice(result.price);
+          setCouponState('applied');
+          setCouponId(result.coupon_id);
+          setCouponMessage(result.message);
+        }
       } else {
+        setCouponCheckMessageColor('red');
         setCouponMessage(result.message);
         setCouponId(result.coupon_id);
       }
@@ -378,12 +407,21 @@ const BuyCourse = (props) => {
   };
 
   const removeCoupon = () => {
-    const newPrice = coursePrice + +couponPrice;
-    setCoursePrice(newPrice);
-    setCouponId('');
-    setCouponMessage('');
-    setCouponPrice(0);
-    setCouponState('removed');
+    if (couponType === 'price') {
+      const newPrice = coursePrice + +couponPrice;
+      setCoursePrice(newPrice);
+      setCouponId('');
+      setCouponMessage('');
+      setCouponPrice(0);
+      setCouponState('removed');
+    } else {
+      const newPrice = (100 * coursePrice) / (100 - couponPrice);
+      setCoursePrice(newPrice);
+      setCouponId('');
+      setCouponMessage('');
+      setCouponPrice(0);
+      setCouponState('removed');
+    }
   };
 
   const payToRazorBaba = () => {
@@ -394,6 +432,8 @@ const BuyCourse = (props) => {
         : +window.atob(match.params.courseId),
       amount: coursePrice,
       coupon_id: couponId,
+      type: process.env.NODE_ENV === 'development' ? 'Development' : 'Production',
+      currency_code: finalCurrencyCode,
     };
 
     const razorPayload = {
@@ -411,7 +451,7 @@ const BuyCourse = (props) => {
       console.log(finalCurrencyCode);
       displayRazorpay(
         orderDetails.order_id,
-        coursePrice * 100,
+        coursePrice,
         finalCurrencyCode,
         clientLogo,
         clientColor,
@@ -872,7 +912,10 @@ const BuyCourse = (props) => {
                 })}
               <hr className='' />
               <p className='Courses__heading'>Description</p>
-              <p className='Courses__subHeading mb-1'>{course.course_description}</p>
+              <p
+                className='Courses__subHeading mb-1'
+                dangerouslySetInnerHTML={{ __html: urlify(course.course_description) }}
+              ></p>
               <hr className='' />
               <p className='Courses__heading my-2'>Requirements</p>
               {course.tag_array
@@ -1162,12 +1205,14 @@ const BuyCourse = (props) => {
         <Modal.Body>
           <Card style={{ borderRadius: '10px' }}>
             <Row className='p-2 m-0'>
-              <span className='my-auto Courses__couponHeading'>{course.course_title}</span>
+              <span style={{ fontSize: '18px' }} className='my-auto Courses__couponHeading'>
+                <strong>{course.course_title}</strong>
+              </span>
               <span
                 className='ml-auto my-auto'
                 style={{
                   color: 'var(--primary-blue)',
-                  fontSize: '12px',
+                  fontSize: '18px',
                   fontFamily: 'MontSerrat-Medium',
                 }}
               >
@@ -1179,11 +1224,11 @@ const BuyCourse = (props) => {
           </Card>
           {course.is_coupon_available === 'true' ? (
             <>
-              <p className='Scrollable__courseCardHeading mt-3' style={{ fontSize: '14px' }}>
-                Coupon:
+              <p className='Scrollable__courseCardHeading mt-3' style={{ fontSize: '12px' }}>
+                Have any coupon?
               </p>
               <Row className='m-0'>
-                <Col xs={8} className='my-auto'>
+                <Col xs={8} className='my-auto mt-0 pl-0'>
                   <label className='has-float-label my-auto'>
                     <input
                       className='form-control'
@@ -1205,7 +1250,9 @@ const BuyCourse = (props) => {
                 </Col>
               </Row>
               <p className='m-2'>
-                <small className='text-center text-danger'>{couponMessage}</small>
+                <small style={{ color: couponCheckMessageColor }} className='text-center'>
+                  {couponMessage}
+                </small>
               </p>
             </>
           ) : null}

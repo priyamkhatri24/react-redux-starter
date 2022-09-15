@@ -18,7 +18,7 @@ const ForgotPassword = (props) => {
 
   const {
     location: {
-      state: { contact, loginParams, userStatus, countryCode },
+      state: { contact, loginParams, userStatus, countryCode, email },
     },
     history,
     setFirstTimeLoginToStore,
@@ -32,7 +32,6 @@ const ForgotPassword = (props) => {
       country_code: countryCode,
     };
 
-    console.log(loginParams);
     get(requestBody, '/verifyOTP')
       .then((res) => {
         console.log(res);
@@ -204,6 +203,7 @@ const ForgotPassword = (props) => {
           verifyOTP={verifyOTP}
           resendText={resendText}
           countryCode={countryCode}
+          email={email}
         />
       )}
 
@@ -292,6 +292,7 @@ ForgotPassword.propTypes = {
       image: PropTypes.string.isRequired,
       userId: PropTypes.number,
       contact: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
       countryCode: PropTypes.string.isRequired,
       userStatus: PropTypes.string.isRequired,
       loginParams: PropTypes.instanceOf(Object).isRequired,

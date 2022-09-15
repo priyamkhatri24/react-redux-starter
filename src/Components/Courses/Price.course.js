@@ -35,6 +35,7 @@ const Price = (props) => {
   const [coupon, setCoupons] = useState([]);
   const [isNewCoupon, setIsNewCoupon] = useState(false);
   const [newCouponCOde, setNewCouponCode] = useState('');
+  const [newCouponType, setNewCouponType] = useState('price');
   const [newCouponAmount, setNewCouponAmount] = useState('');
   const [couponInfo, setCouponInfo] = useState({});
   const [couponModal, setCouponModal] = useState(false);
@@ -57,12 +58,13 @@ const Price = (props) => {
   const [authToken, setAuthToken] = useState('');
   const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedState, setSelectedState] = useState('all states');
-  const [selectedCurrencyCode, setSelectedCurrencyCode] = useState('');
+  const [selectedCurrencyCode, setSelectedCurrencyCode] = useState('INR');
   const [enteredRegionCoursePrice, setEnteredRegionCoursePrice] = useState('');
   const [enteredRegionDiscountPrice, setEnteredRegionDiscountPrice] = useState('');
+  const [newCouponCurrency, setNewCouponCurrency] = useState('INR');
 
   useEffect(() => {
-    get(null, '/getAllCurrencyCodes').then((currency) => {
+    get(null, '/getAllCurrencyCodesWithNames').then((currency) => {
       const result = apiValidation(currency);
       setCurrencies(result);
     });
@@ -221,8 +223,9 @@ const Price = (props) => {
           : parse(dateOfCoupon, 'yyyy-MM-dd', new Date()).getTime(),
       client_user_id: clientUserId,
       no_of_coupon: noOfCouponsOptions === 'unlimited' ? 'unlimited' : noOfCoupons,
+      coupon_type: newCouponType,
+      coupon_currency: newCouponCurrency,
     };
-
     post(payload, '/addCoupon').then((res) => {
       console.log(res);
       setIsNewCoupon(false);
@@ -230,6 +233,8 @@ const Price = (props) => {
       setNewCouponAmount(0);
       setNewCouponCode('');
       setNoOfCouponsOptions('unlimited');
+      setNewCouponType('price');
+      setNewCouponCurrency('INR');
       setNoOfCoupons(0);
       setDateOfCoupon(new Date());
       get({ course_id: courseId, client_id: clientId }, '/getCouponsOfCourse').then((resp) => {
@@ -429,7 +434,7 @@ const Price = (props) => {
           <Row className='m-2 mt-3'>
             {regionalPriceArray.map((ele) => {
               return (
-                <div className='d-flex w-100' style={{ flexFlow: 'wrap' }}>
+                <div className='d-flex mb-3 w-100' style={{ flexFlow: 'wrap' }}>
                   <label className='has-float-label my-auto regionalPriceFormInput'>
                     <input
                       className='form-control'
@@ -493,7 +498,7 @@ const Price = (props) => {
                     <span>Currrency</span>
                   </label>
                   <div style={{ color: 'gray' }} className='d-flex align-items-center mx-2'>
-                    <AddTaskIcon />
+                    saved
                   </div>
                   <div
                     onClick={() => deletedObjectfromPriceArray(ele)}
@@ -502,7 +507,7 @@ const Price = (props) => {
                     role='button'
                     className='d-flex align-items-center mx-2 saveDelBtns'
                   >
-                    <CancelOutlinedIcon />
+                    remove
                   </div>
                 </div>
               );
@@ -519,7 +524,7 @@ const Price = (props) => {
                       return <option value={country.country_name}>{country.country_name}</option>;
                     })}
                   </select>
-                  <span>Country name</span>
+                  <span>Country</span>
                   {validatorSwitch && !selectedCountry ? (
                     <p className='alertTextRegionalPrice'>* Please select a country</p>
                   ) : null}
@@ -537,7 +542,7 @@ const Price = (props) => {
                       return <option value={state.state_name}>{state.state_name}</option>;
                     })}
                   </select>
-                  <span>State name</span>
+                  <span>State</span>
                   {validatorSwitch && !selectedState ? (
                     <p className='alertTextRegionalPrice'>* Please select a state</p>
                   ) : null}
@@ -580,10 +585,11 @@ const Price = (props) => {
                     name='Currency'
                     onChange={(e) => setSelectedCurrencyCode(e.target.value)}
                   >
+                    <option value='INR'>Indian Rupee (INR ₹)</option>
                     {currencies.map((curr) => {
                       return (
-                        <option value={curr.currency_code}>
-                          {curr.currency_code} ({curr.currency_symbol})
+                        <option value={curr.code}>
+                          {curr.name} ({curr.code} {curr.symbol})
                         </option>
                       );
                     })}
@@ -601,7 +607,7 @@ const Price = (props) => {
                   className='d-flex align-items-center mx-2 saveDelBtns'
                   style={{ maxHeight: '42px' }}
                 >
-                  <AddTaskIcon />
+                  save
                 </div>
               </div>
             ) : null}
@@ -613,7 +619,7 @@ const Price = (props) => {
                 role='button'
                 className='Courses__addRegionalPriceButton mt-2 mr-2'
               >
-                Save prices
+                Update prices
               </div>
               <div
                 onClick={addMoreClicked}
@@ -654,7 +660,15 @@ const Price = (props) => {
                     onClick={() => getCouponInfo(elem.coupon_id, elem.status)}
                   >
                     <p className='m-2'>
-                      <span className='Courses__rupeeAmount'>{`${currencySymbol} ${elem.price}`}</span>
+                      {elem.coupon_type === 'price' ? (
+                        <span className='Courses__rupeeAmount'>
+                          {`${
+                            currencies.find((ele) => ele.code === elem.coupon_currency)?.symbol
+                          } ${elem.price}`}
+                        </span>
+                      ) : (
+                        <span className='Courses__rupeeAmount'>{`${elem.price}%`}</span>
+                      )}
                       <span className='Courses__tinySubHeading'> OFF</span>
                     </p>
                     <Row className='justify-content-center m-2'>
@@ -711,32 +725,98 @@ const Price = (props) => {
                 <span>Code</span>
               </label>
             </Row>
+
+            <div className='m-2'>
+              <p className='mb-0 Courses__tinySubHeading'>Coupon Type:</p>
+              <div className='d-block d-sm-flex'>
+                <Form.Check
+                  type='radio'
+                  className='mr-3'
+                  id='forever'
+                  label='Price'
+                  value='percent'
+                  checked={newCouponType === 'price'}
+                  name='Price'
+                  onChange={(e) => setNewCouponType('price')}
+                />
+                <Form.Check
+                  type='radio'
+                  id='forever'
+                  label='Percent'
+                  value='percent'
+                  checked={newCouponType === 'percent'}
+                  name='Percent'
+                  onChange={(e) => setNewCouponType('percent')}
+                />
+              </div>
+            </div>
             <Row className='m-2 mt-3 justify-content-center'>
               <Col className='pl-0'>
-                <label className='has-float-label my-auto w-100'>
-                  <input
-                    className='form-control'
-                    name='Discount Type'
-                    type='text'
-                    value={currencySymbol}
-                    placeholder='Discount Type'
-                    readOnly
-                  />
-                  <span>Discount Type</span>
-                </label>
+                {newCouponType === 'price' ? (
+                  <label className='has-float-label my-auto w-100'>
+                    <select
+                      className='form-control w-100'
+                      name='Coupon Currency'
+                      style={{ maxHeight: '32px' }}
+                      onChange={(e) => setNewCouponCurrency(e.target.value)}
+                    >
+                      <option value='INR'>Indian Rupee (INR ₹)</option>
+                      {currencies.map((curr) => {
+                        return (
+                          <option value={curr.code}>
+                            {curr.name} ({curr.code} {curr.symbol})
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <span>Coupon Currrency</span>
+                  </label>
+                ) : (
+                  <label className='has-float-label my-auto w-100'>
+                    <input
+                      className='form-control'
+                      name='Percent'
+                      type='text'
+                      readOnly
+                      value='Percent (%)'
+                      placeholder='Percent (%)'
+                      onChange={(e) => setNewCouponAmount(e.target.value)}
+                    />
+                    <span>Percent</span>
+                  </label>
+                )}
               </Col>
               <Col className='pr-0'>
-                <label className='has-float-label my-auto w-100'>
-                  <input
-                    className='form-control'
-                    name='Amount'
-                    type='text'
-                    value={newCouponAmount}
-                    placeholder='Amount'
-                    onChange={(e) => setNewCouponAmount(e.target.value)}
-                  />
-                  <span>Amount</span>
-                </label>
+                {newCouponType === 'price' ? (
+                  <label className='has-float-label my-auto w-100'>
+                    <input
+                      className='form-control'
+                      name='Amount'
+                      type='number'
+                      value={newCouponAmount}
+                      placeholder='Amount'
+                      onChange={(e) => setNewCouponAmount(e.target.value)}
+                    />
+                    <span>Amount</span>
+                  </label>
+                ) : (
+                  <label className='has-float-label my-auto w-100'>
+                    <div className='valuePadding'>%</div>
+                    <input
+                      className='form-control'
+                      name='Enter Percentage'
+                      type='number'
+                      max={100}
+                      min={0}
+                      value={newCouponAmount}
+                      placeholder='percent'
+                      onChange={(e) => {
+                        setNewCouponAmount(e.target.value);
+                      }}
+                    />
+                    <span>Enter Percentage</span>
+                  </label>
+                )}
               </Col>
             </Row>
             <p className='Courses__tinySubHeading mt-3 mb-0 mx-3' style={{ fontSize: '12px' }}>

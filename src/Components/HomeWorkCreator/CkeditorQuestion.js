@@ -276,15 +276,23 @@ const CkeditorQuestion = (props) => {
         get({ client_id: clientId }, '/getClassesForClient').then((resp) => {
           const resultant = apiValidation(resp);
           const selectedClassObj = resultant.find((ele) => ele.class_id === selectedClass.class_id);
-          setSubjects(selectedClassObj.subject_array);
-          const selectedSubObj = selectedClassObj.subject_array.find(
-            (ele) => ele.subject_name === newSubject,
+          const newSubArray = selectedClassObj.subject_array.map((ele) => {
+            ele.label = ele.subject_name;
+            ele.value = ele.subject_id;
+            return ele;
+          });
+          const newSelectedCourse = resultant.find(
+            (ele) => ele.class_id === selectedClassObj.class_id,
           );
+          const selectedSubObj = newSubArray.find((ele) => ele.subject_name === newSubject);
+          setSelectedSubject(selectedSubObj);
+          setSelectedSubjectToStore(selectedSubObj);
+          setSelectedCourseToStore(newSelectedCourse);
+          setCurrentSubjectArrayToStore([selectedSubObj.subject_id]);
+          setSubjects(newSubArray);
           setTimeout(() => {
+            console.log(subjects, 'haah');
             subjectSelectRef.current.value = selectedSubObj.subject_id;
-            setSelectedSubject(selectedSubObj);
-            setSelectedSubjectToStore(selectedSubObj);
-            setCurrentSubjectArrayToStore([selectedSubObj.subject_id]);
           }, 200);
         });
       });

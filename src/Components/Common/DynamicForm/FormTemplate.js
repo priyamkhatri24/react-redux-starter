@@ -170,6 +170,8 @@ const FormTemplate = (props) => {
           <Field name={input.name}>
             {(property) => {
               const { field } = property;
+
+              console.log(field, 'checking field for date input');
               const { errors, touched } = property.form;
               const hasError = errors[input.name] && touched[input.name] ? 'hasError' : '';
 

@@ -18,13 +18,21 @@ import './Fees.scss';
 const EditPayment = (props) => {
   const { clientId, history } = props;
   console.log(history.location.state);
-  const [holderName, setholderName] = useState(history.location.state.vendorDetails.name);
-  const [phoneNum, setPhoneNum] = useState(history.location.state.vendorDetails.phone);
-  const [emailID, setEmailID] = useState(history.location.state.vendorDetails.email);
-  const [accountNo, SetAccountNo] = useState(
-    history.location.state.vendorDetails.bank?.accountNumber,
+  const [holderName, setholderName] = useState(
+    history.location.state ? history.location.state.vendorDetails.name : '',
   );
-  const [ifsc, SetIfsc] = useState(history.location.state.vendorDetails.bank?.ifsc);
+  const [phoneNum, setPhoneNum] = useState(
+    history.location.state ? history.location.state.vendorDetails.phone : '',
+  );
+  const [emailID, setEmailID] = useState(
+    history.location.state ? history.location.state.vendorDetails.email : '',
+  );
+  const [accountNo, SetAccountNo] = useState(
+    history.location.state ? history.location.state.vendorDetails.bank?.accountNumber : '',
+  );
+  const [ifsc, SetIfsc] = useState(
+    history.location.state ? history.location.state.vendorDetails.bank?.ifsc : '',
+  );
   const [radioBtn, setRadioBtn] = useState('');
 
   const handleSubmit = (e) => {
@@ -61,10 +69,19 @@ const EditPayment = (props) => {
       console.log(data);
     });
   };
+  const goBack = () => {
+    history.push('/');
+  };
   return (
     <div className='mainFormPage'>
       <div className='marginBottomHeader upperMargin'>
-        <PageHeader transparentBlue title='Vendor Details' customIcon={<MoreVertIcon />} />
+        <PageHeader
+          customBack
+          handleBack={goBack}
+          transparentBlue
+          title='Vendor Details'
+          customIcon={<MoreVertIcon />}
+        />
       </div>
       <div className='OFAFormContainer' style={{ marginTop: '30px' }}>
         <div className='OFAForm__formContainerOffline'>

@@ -93,14 +93,17 @@ const CreateQuestion = (props) => {
     });
 
     const optionsArr = ckAnswerArray.map((e) => e.text);
-    const options = optionsArr.join('').length ? optionsArr.join('~') : '';
+
+    const options = optionsArr.join('').length
+      ? optionsArr.join('~')
+      : '~'.repeat(optionsArr.length - 1);
     const optionsImageArr = ckAnswerArray.map((e) => e.image);
     const optionsImage = optionsImageArr.join('').length ? optionsImageArr.join('~') : '';
 
     const finalPayload = {
       macroskill_array: null,
       chapter_id: payload.selectedChapter.chapter_id,
-      question_text: ckQuestion,
+      question_text: ckQuestion || ' ',
       question_type: payload.type,
       question_positive_marks: null,
       question_negative_marks: null,
@@ -109,7 +112,7 @@ const CreateQuestion = (props) => {
       question_tag: null,
       question_comment: null,
       question_image: questionImage,
-      question_solution_text: ckSolution,
+      question_solution_text: ckSolution || ' ',
       question_answer: payload.type === 'subjective' ? ckSolution : answer,
       question_solution_image: solutionImage,
       client_id: clientId,

@@ -16,6 +16,8 @@ class QuestionCard extends Component {
       checked: [],
       review: false,
       currentLanguage: 'english',
+      imgLink: '',
+      showImageModal: false,
     };
   }
 
@@ -32,6 +34,14 @@ class QuestionCard extends Component {
       });
     }
   }
+
+  // handleImageClose = () => {
+  //   this.setState({showImageModal: false})
+  // }
+
+  // handleImageOpen = () => {
+  //   this.setState({showImageModal: true})
+  // }
 
   componentDidUpdate(prevProps) {
     const { currentQuestion, onUnmount, language } = this.props;
@@ -392,7 +402,7 @@ class QuestionCard extends Component {
               src={question.question_image}
               alt='question'
               className='m-2'
-              style={{ width: '60%', height: 'auto' }}
+              style={{ width: '80%', height: 'auto', maxHeight: '120px' }}
             />
           )}
           <div className='mt-4'>
@@ -466,7 +476,7 @@ class QuestionCard extends Component {
                           src={elem.image}
                           alt='option'
                           className='img-fluid'
-                          style={{ width: '60%', height: 'auto' }}
+                          style={{ maxWidth: '70%', height: 'auto', maxHeight: '110px' }}
                         />
                       )}
                     </div>
@@ -485,6 +495,16 @@ class QuestionCard extends Component {
           })}
         </Row>
         {/* <pre>{timer}</pre> */}
+        {/* <Modal show={showImageModal} onHide={handleImageClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>
+            Image Modal
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className='mx-auto'>
+          <img src={imgLink} alt='img' className='img-fluid' />
+        </Modal.Body>
+      </Modal> */}
       </>
     );
   }

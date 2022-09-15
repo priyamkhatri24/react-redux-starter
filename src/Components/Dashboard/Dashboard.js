@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Loadable from 'react-loadable';
 import Skeleton from 'react-loading-skeleton';
+import Swal from 'sweetalert2';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import format from 'date-fns/format';
@@ -11,7 +12,7 @@ import Modal from 'react-bootstrap/Modal';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-
+import addDays from 'date-fns/addDays';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
@@ -131,6 +132,14 @@ const Dashboard = (props) => {
   const [showToast, setShowToast] = useState(false);
   const [optionsModal, setOptionsModal] = useState(false);
   const [sessionStatus, setSessionStatus] = useState(true);
+
+  const [showCallbackModal, setShowCallbackModal] = useState(false);
+  const [callbackContact, setCallbackContact] = useState('');
+  const [selectedSlot, setSelectedSlot] = useState('9:00 AM - 11:00 AM');
+  const [selectedDate, setSelectedDate] = useState('');
+  const [slots, setSlots] = useState([]);
+  const [issueDescription, setIssueDescription] = useState('');
+
   const openOptionsModal = () => {
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
@@ -162,6 +171,15 @@ const Dashboard = (props) => {
       });
   }, []);
 
+  useEffect(() => {
+    if (showCallbackModal) {
+      get(null, '/getAllTimeSlots').then((res) => {
+        const result = apiValidation(res);
+        setSlots(result);
+      });
+    }
+  }, [showCallbackModal]);
+
   useEffect(
     function () {
       if (!socket) {
@@ -191,9 +209,51 @@ const Dashboard = (props) => {
     [socket],
   );
 
+  const openCallbackModal = () => {
+    setShowCallbackModal(true);
+  };
+
+  const closeCallbackModal = () => {
+    setShowCallbackModal(false);
+  };
+
   const addMessageToGlobalCount = (messagedata) => {
     console.log(messagedata);
     setGlobalMessageCountState((prev) => prev + 1);
+  };
+
+  const sendClientTicket = () => {
+    const payload = {
+      client_id: clientId,
+      client_user_id: clientUserId,
+      preferred_date: selectedDate,
+      preferred_slot: selectedSlot,
+      callback_contact: callbackContact,
+      ticket_description: issueDescription,
+    };
+    console.log(payload);
+    post(payload, '/addClientTicket').then((res) => {
+      const result = apiValidation(res);
+      setShowCallbackModal(false);
+      setSelectedSlot('9:00 AM - 11:00 AM');
+      setSelectedDate('');
+      setCallbackContact('');
+      setIssueDescription('');
+      if (res.success) {
+        Swal.fire({
+          title: 'Success',
+          text:
+            'Thankyou for contacting us. You will recieve a callback from Ingenium really soon.',
+          icon: 'success',
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops',
+          text: 'Something went wrong. Please try again after sometime.',
+        });
+      }
+    });
   };
 
   useEffect(() => {
@@ -726,6 +786,13 @@ const Dashboard = (props) => {
     }
   };
 
+  const getTodaysDate = () => {
+    let yourDate = new Date();
+    const offset = yourDate.getTimezoneOffset();
+    yourDate = new Date(yourDate.getTime() - offset * 60 * 1000);
+    return yourDate.toISOString().split('T')[0];
+  };
+
   const renderComponents = (param) => {
     if (param.switcher.includes('dynamicCard')) {
       return roleArray.includes(3) || roleArray.includes(4) ? (
@@ -1225,8 +1292,8 @@ const Dashboard = (props) => {
             <Row className='mx-0 justify-content-center mt-2'>
               <Col xs={8} className='text-left p-3'>
                 <h6 className='Dummy__joinUs'>{param.client_feature_name}</h6>
-                <p className='mb-0 mt-3 Dummy__joinDetails'>Your are not in any batch yet</p>
-                <p className='Dummy__joinSmall mt-1'>Fill admission form to join us.</p>
+                <p className='mb-0 mt-3 Dummy__joinDetails'>Fill your profile details.</p>
+                {/* <p className='Dummy__joinSmall mt-1'>Fill your profile details</p> */}
               </Col>
               <Col xs={4} className='p-2' style={{ textAlign: 'right' }}>
                 {/* form */}
@@ -1251,14 +1318,58 @@ const Dashboard = (props) => {
                     history.push('/admissionform');
                   }}
                 >
-                  Fill admission form
+                  Complete your profile
                 </Button>
               ) : (
                 <p
                   // style={{ textAlign: 'center' }}
                   className='Dashboard__attendanceSubHeading mb-3 text-center'
                 >
-                  You have already filled the admission form!
+                  You have completed your profile!
+                </p>
+              )}
+            </div>
+          </Card>
+        );
+      case 'redirectCard':
+        return (
+          <Card
+            className='DashboardCards'
+            style={{
+              border: '1px solid rgba(112,112,112,0.5)',
+              margin: 'auto',
+              backgroundColor: '#F7FDFF',
+            }}
+          >
+            <Row className='mx-0 justify-content-center mt-2'>
+              <Col xs={8} className='text-left p-3'>
+                <h6 className='Dummy__joinUs'>{param.client_feature_name}</h6>
+                <p className='mb-0 mt-3 Dummy__joinDetails'>{param.description}</p>
+              </Col>
+              <Col xs={4} className='p-2' style={{ textAlign: 'right' }}>
+                {/* <img
+                  src={param.feature_icon}
+                  alt='form'
+                  // style={{ width: '100px' }}
+                  className='Dashboard_image shareImage'
+                /> */}
+              </Col>
+            </Row>
+            <div className='Dashboard__admissionButtonContainer'>
+              {data.admission_form_filled !== 'true' ? (
+                <Button
+                  variant='customPrimarySmol'
+                  className='mb-3 fillAdmissionFormButton'
+                  onClick={() => window.open(param.redirect_url, '_blank')}
+                >
+                  Go To Link
+                </Button>
+              ) : (
+                <p
+                  // style={{ textAlign: 'center' }}
+                  className='Dashboard__attendanceSubHeading mb-3 text-center'
+                >
+                  You have completed your profile!
                 </p>
               )}
             </div>
@@ -1452,7 +1563,7 @@ const Dashboard = (props) => {
           style={{
             height: `${nameDisplay ? '100%' : '0px'}`,
             opacity: `${nameDisplay ? 1 : 0}`,
-            // display: `${nameDisplay ? 'flex' : 'none'}`,
+            // display: `${nameDisplay ? 'flex' : 'none'}`, 
           }}
         /> */}
 
@@ -1643,7 +1754,18 @@ const Dashboard = (props) => {
           <a className='connectText' href='tel:+918826286002'>
             Connect
           </a>{' '}
-          with us!
+          {/* with us! */}
+          with us! or
+          <span
+            role='button'
+            tabIndex={-1}
+            onKeyDown={openCallbackModal}
+            onClick={openCallbackModal}
+            className='callbackText'
+          >
+            {' '}
+            request a callback
+          </span>
         </p>
       ) : null}
       {hasLoaded && (
@@ -1658,6 +1780,78 @@ const Dashboard = (props) => {
         </footer>
       )}
       <BottomNavigation history={history} activeNav='home' />
+      <Modal show={showCallbackModal} onHide={closeCallbackModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Request a callback</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div>
+            <div className='d-flex w-100 justify-content-between'>
+              <label style={{ margin: '0px 10px 0px 0px' }} className='has-float-label mb-3 w-100'>
+                <select
+                  className='form-control w-100'
+                  name='Preferred Slot'
+                  style={{ maxHeight: '32px' }}
+                  onChange={(e) => setSelectedSlot(e.target.value || '9:00 AM - 11:00 AM')}
+                >
+                  {slots.map((ele) => {
+                    return <option value={ele}>{ele}</option>;
+                  })}
+                </select>
+                <span>Preferred Slot</span>
+                {false ? (
+                  <p className='alertTextRegionalPrice'>* Please select a preferred slot</p>
+                ) : null}
+              </label>
+              <label style={{ margin: '0px 0px 0px 10px' }} className='has-float-label mb-3 w-100'>
+                <input
+                  className='form-control'
+                  name='Preferred Date'
+                  type='date'
+                  value={selectedDate}
+                  min={getTodaysDate()}
+                  placeholder='Preferred Date'
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                />
+                <span>Preferred Date</span>
+                {false ? (
+                  <p className='alertTextRegionalPrice'>* Please select a preferred date</p>
+                ) : null}
+              </label>
+            </div>
+            <label className='has-float-label mb-3'>
+              <input
+                className='form-control'
+                name='Contact'
+                type='text'
+                value={callbackContact}
+                placeholder='Contact'
+                onChange={(e) => setCallbackContact(e.target.value)}
+              />
+              <span className='smallFont'>Contact</span>
+            </label>
+            <label className='has-float-label mb-3'>
+              <input
+                className='form-control'
+                name='Feedback (optional)'
+                type='textarea'
+                value={issueDescription}
+                placeholder='Please describe your issue here'
+                onChange={(e) => setIssueDescription(e.target.value)}
+              />
+              <span className='smallFont'>Feedback</span>
+            </label>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='boldTextSecondary' onClick={closeCallbackModal}>
+            Cancel
+          </Button>
+          <Button variant='boldText' onClick={sendClientTicket}>
+            Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

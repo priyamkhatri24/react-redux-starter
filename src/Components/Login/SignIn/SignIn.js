@@ -287,12 +287,14 @@ const SignIn = (props) => {
     post(requestBody, '/forgotPassword').then((res) => {
       const result = apiValidation(res);
       if (result.status === 'sending successful') {
+        console.log(userProfile, 'checking country code incoming');
         push({
           pathname: '/forgotpassword',
           state: {
             image,
             contact,
             countryCode: userProfile.countryCode,
+            email: userProfile.email,
             userId: loginParams.user_id,
             loginParams,
             userStatus,
@@ -331,6 +333,7 @@ const SignIn = (props) => {
             verifyOTP={verifyOTP}
             resendText={resendText}
             countryCode={userProfile.countryCode}
+            email={userProfile.email}
           />
         </div>
       )}

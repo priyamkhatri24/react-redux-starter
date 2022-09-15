@@ -36,6 +36,8 @@ const ViewCourses = (props) => {
   } = props;
   const [courses, setCourses] = useState([]);
   const [currencyCodes, setCurrencyCodes] = useState([]);
+  const [searchString, setSearchString] = useState('');
+  const [cached, setCached] = useState([]);
 
   useEffect(() => {
     get(null, '/getAllCurrencyCodes').then((data) => {
@@ -53,6 +55,7 @@ const ViewCourses = (props) => {
             console.log(res);
             const result = apiValidation(res);
             setCourses(result);
+            setCached(result);
           },
         );
       } else {
@@ -60,12 +63,27 @@ const ViewCourses = (props) => {
           console.log(res, 'subsss');
           const result = apiValidation(res);
           setCourses(result);
+          setCached(result);
         });
       }
     } else {
       history.push('/');
     }
   }, [clientUserId, history]);
+
+  useEffect(() => {
+    let timer;
+    if (searchString) {
+      timer = setTimeout(() => {
+        const filtered = cached.filter((ele) =>
+          ele.course_title.toLowerCase().includes(searchString),
+        );
+        setCourses(filtered);
+      }, 1000);
+    }
+
+    return () => clearTimeout(timer);
+  }, [searchString]);
 
   const goToBuyCourse = (id) => {
     const { push } = history;
@@ -77,11 +95,15 @@ const ViewCourses = (props) => {
     setCourseIdToStore(id);
   };
 
+  const triggerSearch = (search) => {
+    setSearchString(search.toLowerCase());
+  };
+
   return (
     <>
       <PageHeader
         search
-        shadow
+        searchFilter={triggerSearch}
         title={
           history.location.state.type === 'allCourses'
             ? `All ${featureName || 'Courses'}`

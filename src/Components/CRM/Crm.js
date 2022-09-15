@@ -33,6 +33,7 @@ const CRM = (props) => {
   const [openFilterModal, setOpenFilterModal] = useState(false);
   const [enquiryPage, setEnquiryPage] = useState(1);
   const [admissionPage, setAdmissionPage] = useState(1);
+  const [admissionTabClicks, setAdmissionTabClicks] = useState(0);
   // const [searchEnquiryPage, setSearchEnquiryPage] = useState(1);
   const [sortBy, setSortBy] = useState('date');
   const [currentTab, setCurrentTab] = useState('Enquiries');
@@ -124,7 +125,23 @@ const CRM = (props) => {
     return () => {
       clearTimeout(timer);
     };
-  }, [searchString, sortBy, currentTab, enquiryPage, document.documentElement.clientHeight]);
+  }, [searchString, sortBy, enquiryPage, document.documentElement.clientHeight]);
+
+  useEffect(() => {
+    if (admissionTabClicks === 1) {
+      const payload = {
+        client_id: clientId,
+        page: admissionPage,
+        sort_by: sortBy,
+      };
+      get(payload, '/getAdmissionsOfClient').then((res) => {
+        const result = apiValidation(res);
+        console.log(result, 'searchAdmissionsOfClient');
+        const resultant = [...searchedAdmissionFormArray, ...result];
+        setAdmissionFormArray(resultant);
+      });
+    }
+  }, [admissionTabClicks]);
 
   // SEARCH API ADDMISSION
   useEffect(() => {
@@ -158,11 +175,22 @@ const CRM = (props) => {
         const resultant = [...admissionFormArray, ...result];
         setAdmissionFormArray(resultant);
       });
+      //    fetch
+      //    (
+      // `https://class.ingeniumedu.com/getAdmissionsOfClient?client_id=${clientId}&page=${admissionPage}&sort_by=${sortBy}`
+      //     )
+      //     .then(res => res.json())
+      //     .then(data => {
+      //       const result = apiValidation(data)
+      //       console.log(result, 'getAdmissionOfClient');
+      //       const resultant = [...searchedAdmissionFormArray, ...result];
+      //       setAdmissionFormArray(resultant);
+      //     })
     }
     return () => {
       clearTimeout(timer);
     };
-  }, [searchString, sortBy, currentTab, admissionPage, document.documentElement.clientHeight]);
+  }, [searchString, sortBy, admissionPage, document.documentElement.clientHeight]);
 
   const filterResult = (how) => {
     if (how === 'alphabetically') {
@@ -204,6 +232,9 @@ const CRM = (props) => {
   };
 
   const handleSelect = (tab) => {
+    if (tab === 'Admission') {
+      setAdmissionTabClicks((prev) => prev + 1);
+    }
     setCurrentTab(tab);
     window.scrollTo(0, 0);
   };

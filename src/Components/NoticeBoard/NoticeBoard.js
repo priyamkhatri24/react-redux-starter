@@ -483,7 +483,9 @@ const NoticeBoard = (props) => {
                 </p>
               </Col>
               <Col xs={2} className='p-4 text-center'>
-                <MoreVertIcon style={{ cursor: 'pointer' }} onClick={() => openEditModal(elem)} />
+                {roleArray.includes(4) || roleArray.includes(3) ? (
+                  <MoreVertIcon style={{ cursor: 'pointer' }} onClick={() => openEditModal(elem)} />
+                ) : null}
               </Col>
             </Row>
             <p className='p-2 Dashboard__noticeText notice-text'>{elem.notice_text}</p>

@@ -199,6 +199,7 @@ const SignUp = (props) => {
             verifyOTP={verifyOTP}
             resendText={resendText}
             countryCode={userProfile.countryCode}
+            email={userProfile.email}
           />
         </div>
       )}

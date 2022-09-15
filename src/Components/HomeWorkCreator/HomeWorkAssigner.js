@@ -459,10 +459,13 @@ const HomeWorkAssigner = (props) => {
                     className='form-control'
                     name='Start Time'
                     type='time'
-                    step='1'
                     placeholder='Start Time'
                     value={startTime}
-                    onChange={(e) => setStartTime(e.target.value)}
+                    dateFormat='hh:mm'
+                    onChange={(e) => {
+                      setStartTime(`${e.target.value}:00`);
+                      console.log(`${e.target.value}:00`);
+                    }}
                   />
                   <span>Start Time</span>
                 </label>

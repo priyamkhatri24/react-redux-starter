@@ -7,7 +7,15 @@ import Button from 'react-bootstrap/Button';
 import './BatchesSelector.scss';
 
 export const BatchesSelector = (props) => {
-  const { batches, getSelectedBatches, title, selectBatches, sendBoth, isStudentFee } = props;
+  const {
+    batches,
+    getSelectedBatches,
+    title,
+    selectBatches,
+    sendBoth,
+    isStudentFee,
+    removeAll,
+  } = props;
   const [selectedBatches, setSelectedBatches] = useState([...selectBatches]);
   const [selectAllStudents, setSelectAllStudents] = useState(false);
   const [allBatches, setAllBatches] = useState([...batches]);
@@ -18,15 +26,16 @@ export const BatchesSelector = (props) => {
 
   useEffect(() => {
     console.log(batches);
+
     if (batchesLength.current !== batches.length) {
-      setAllBatches(batches);
+      setAllBatches(batches.filter((batch) => !selectedBatches.includes(batch)));
       batchesLength.current = batches.length;
     }
   }, [batches]);
 
   useEffect(() => {
     if (isStudentFee) {
-      setAllBatches(batches);
+      setAllBatches(batches.filter((batch) => !selectedBatches.includes(batch)));
     }
   }, [isStudentFee, batches]);
 
@@ -36,6 +45,7 @@ export const BatchesSelector = (props) => {
   }, [selectedBatches, getSelectedBatches, allBatches, sendBoth]);
 
   const selectBatch = (elem) => {
+    // const batchess = allBatches.filter((e) => e.client_batch_id !== elem.client_batch_id);
     const batchess = [...allBatches];
     const newRemoved = removedBatches.filter(
       (batch) => batch.client_batch_id !== elem.client_batch_id,
@@ -105,7 +115,13 @@ export const BatchesSelector = (props) => {
             </label>
             {allBatches.length > 0 &&
               allBatches
-                .filter((ele) => ele.batch_name.toLowerCase().includes(searchString?.toLowerCase()))
+                .filter((ele) => {
+                  if (title === 'Courses') {
+                    console.log(ele);
+                    return ele.course_title.includes(searchString?.toLowerCase());
+                  }
+                  return ele.batch_name.toLowerCase().includes(searchString?.toLowerCase());
+                })
                 .map((elem) => {
                   return (
                     <Row
@@ -156,9 +172,11 @@ BatchesSelector.propTypes = {
   title: PropTypes.string.isRequired,
   sendBoth: PropTypes.bool,
   isStudentFee: PropTypes.bool,
+  removeAll: PropTypes.func,
 };
 
 BatchesSelector.defaultProps = {
   sendBoth: false,
   isStudentFee: false,
+  removeAll: () => {},
 };
