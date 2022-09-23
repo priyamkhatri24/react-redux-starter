@@ -86,6 +86,11 @@ const NoticeBoard = (props) => {
     return null;
   };
 
+  useEffect(() => {
+    // keep this because page is scrolling diean
+    window.scrollTo(0, 0);
+  }, []);
+
   const getNotices = useCallback(() => {
     let isAdmin = false;
     if (roleArray.includes(4)) isAdmin = true;

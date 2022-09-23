@@ -89,10 +89,10 @@ export const BatchesSelector = (props) => {
         type='checkbox'
         checked={selectAllStudents}
         onChange={(e) => selectAll(!selectAllStudents)}
-        className='my-auto ml-1'
+        className='m-auto'
         label='Select All'
         name='selectAll'
-        style={{ textAlign: 'center' }}
+        
       />
       <Row className='Batches py-3'>
         <Col xs={6} className='text-center'>
@@ -111,7 +111,14 @@ export const BatchesSelector = (props) => {
                 onChange={(e) => setSearchString(e.target.value)}
                 value={searchString}
               />
-              <span>Search {title}</span>
+              <span
+                role='button'
+                tabIndex={-1}
+                onKeyDown={(e) => e.target.previousSibling.focus()}
+                onClick={(e) => e.target.previousSibling.focus()}
+              >
+                Search {title}
+              </span>
             </label>
             {allBatches.length > 0 &&
               allBatches

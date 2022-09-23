@@ -69,7 +69,10 @@ import footerIngenium from '../../assets/images/ingiLOGO.png';
 import '../Login/DummyDashboard.scss';
 import { dashboardActions } from '../../redux/actions/dashboard.action';
 import { analysisActions } from '../../redux/actions/analysis.action';
-import { getCurrentRedirectPath } from '../../redux/reducers/dashboard.reducer';
+import {
+  getCurrentRedirectPath,
+  getCurrentSccrolledHeight,
+} from '../../redux/reducers/dashboard.reducer';
 import { getToken, onMessageListener } from '../../Utilities/firebase';
 import { conversationsActions } from '../../redux/actions/conversations.action';
 
@@ -89,6 +92,7 @@ const Dashboard = (props) => {
     clearProfile,
     clearClientIdDetails,
     history,
+    scrolledHeight,
     setDashboardDataToStore,
     setLocationDataToStore,
     setTestResultArrayToStore,
@@ -113,6 +117,7 @@ const Dashboard = (props) => {
     setSelectedChapterToStore,
     setSelectedSubjectToStore,
     setSelectedTypeToStore,
+    setScrolledHeightOfDocumentToStore,
   } = props;
   const [time, setTime] = useState('');
   const [currentCountry, setCurrentCountry] = useState(''); // location
@@ -139,6 +144,8 @@ const Dashboard = (props) => {
   const [selectedDate, setSelectedDate] = useState('');
   const [slots, setSlots] = useState([]);
   const [issueDescription, setIssueDescription] = useState('');
+  const [ipRegistryKey, setIpRegistryKey] = useState('');
+  const doc = useRef();
 
   const openOptionsModal = () => {
     if (clientStatus === 'deleted') {
@@ -159,7 +166,8 @@ const Dashboard = (props) => {
   // }, [sessionStatus]);
 
   useEffect(() => {
-    fetch('https://api.ipregistry.co/?key=rklg5ykj756reab1')
+    if (!ipRegistryKey) return;
+    fetch(`https://api.ipregistry.co/?key=${ipRegistryKey}`)
       .then((res) => res.json())
       .then((ipdata) => {
         setCurrentCountry(ipdata.location.country.name);
@@ -169,7 +177,7 @@ const Dashboard = (props) => {
           state: ipdata.location.region.name,
         });
       });
-  }, []);
+  }, [ipRegistryKey]);
 
   useEffect(() => {
     if (showCallbackModal) {
@@ -260,7 +268,6 @@ const Dashboard = (props) => {
     const nameDisplayTimer = setTimeout(() => {
       setNameDisplay(true);
     }, 3000);
-
     return () => {
       clearTimeout(nameDisplayTimer);
     };
@@ -408,6 +415,14 @@ const Dashboard = (props) => {
       });
   };
 
+  const setScrolling = () => {
+    setScrolledHeightOfDocumentToStore(
+      window.pageYOffset !== undefined
+        ? window.pageYOffset
+        : (document.documentElement || document.body.parentNode || document.body).scrollTop,
+    );
+  };
+
   useEffect(() => {
     const roleId = roleArray.includes(4)
       ? 4
@@ -428,7 +443,7 @@ const Dashboard = (props) => {
       const result = apiValidation(res);
       setNotices(result.notice);
       setClientStatus(result.client_status);
-
+      setIpRegistryKey(result.ip_registry_key);
       setAdmissions(result.admission || {});
       setAttendance(result.attendance);
       setData(result);
@@ -486,6 +501,7 @@ const Dashboard = (props) => {
 
   const goToLiveClasses = () => {
     const { push } = history;
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -495,6 +511,7 @@ const Dashboard = (props) => {
 
   const goToNoticeBoard = () => {
     const { push } = history;
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -504,6 +521,7 @@ const Dashboard = (props) => {
 
   const goToAdmissions = () => {
     const { push } = history;
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -513,6 +531,7 @@ const Dashboard = (props) => {
 
   const goToStudyBin = () => {
     const { push } = history;
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -523,6 +542,7 @@ const Dashboard = (props) => {
 
   const goToProfile = () => {
     const { push } = history;
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -532,6 +552,7 @@ const Dashboard = (props) => {
 
   const goToFees = () => {
     const { push } = history;
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -541,6 +562,7 @@ const Dashboard = (props) => {
 
   const goToTeacherFees = () => {
     const { push } = history;
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -550,6 +572,7 @@ const Dashboard = (props) => {
 
   const goToHomeWorkCreator = () => {
     const { push } = history;
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -559,6 +582,7 @@ const Dashboard = (props) => {
 
   const goToSentTests = (type) => {
     const { push } = history;
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -568,6 +592,7 @@ const Dashboard = (props) => {
 
   const goToChats = () => {
     const { push } = history;
+    setScrolling();
     // if (clientStatus === 'deleted') {
     //   setRestrictionModal(true);
     //   return;
@@ -577,6 +602,7 @@ const Dashboard = (props) => {
 
   const startHomework = (responseArray, testId, languageType = 'english') => {
     const { push } = history;
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -597,6 +623,7 @@ const Dashboard = (props) => {
     languageType = 'english',
   ) => {
     const { push } = history;
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -613,6 +640,7 @@ const Dashboard = (props) => {
 
   const goToCoursesForTeacher = (name) => {
     const { push } = history;
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -622,6 +650,7 @@ const Dashboard = (props) => {
 
   const goToCourses = (type) => {
     const { push } = history;
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -631,6 +660,7 @@ const Dashboard = (props) => {
 
   const goToBuyCourse = (id) => {
     const { push } = history;
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -640,6 +670,7 @@ const Dashboard = (props) => {
 
   const goToMyCourse = (id) => {
     const { push } = history;
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -650,6 +681,7 @@ const Dashboard = (props) => {
 
   const goToAddBatch = () => {
     const { push } = history;
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -658,6 +690,7 @@ const Dashboard = (props) => {
   };
 
   const addDetails = (type) => {
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -671,6 +704,7 @@ const Dashboard = (props) => {
   };
 
   const goToTeacherAnalysis = () => {
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -680,6 +714,7 @@ const Dashboard = (props) => {
   };
 
   const goToStudentAnalysis = () => {
+    setScrolling();
     get({ client_user_id: clientUserId }, '/getOverallAnalysisOfStudent').then((res) => {
       console.log(res);
       const result = apiValidation(res);
@@ -693,6 +728,7 @@ const Dashboard = (props) => {
 
   const gotToAttendance = () => {
     const { push } = history;
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -702,6 +738,7 @@ const Dashboard = (props) => {
 
   const goToDisplayPage = () => {
     const { push } = history;
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -710,6 +747,7 @@ const Dashboard = (props) => {
   };
 
   const goToCRM = () => {
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -718,6 +756,7 @@ const Dashboard = (props) => {
   };
 
   const goToVideos = () => {
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -726,6 +765,7 @@ const Dashboard = (props) => {
   };
 
   const goToOfflineAssignments = () => {
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -737,11 +777,13 @@ const Dashboard = (props) => {
     // if (clientStatus === 'deleted') {
     //   setRestrictionModal(true);
     //   return;
+    setScrolling();
     // }
     history.push('/conversations');
   };
 
   const dynamicCardClicked = (param) => {
+    setScrolling();
     if (clientStatus === 'deleted') {
       setRestrictionModal(true);
       return;
@@ -872,9 +914,7 @@ const Dashboard = (props) => {
             style={{ backgroundColor: '#fffef4' }} // hardcoded by Aakash sir
             onKeyDown={() => goToNoticeBoard()}
           >
-            <span className='Dashboard__verticalDots'>
-              <MoreVertIcon />
-            </span>
+            <span className='Dashboard__verticalDots'>{/* <MoreVertIcon /> */}</span>
             <Row className='mt-2'>
               <Col xs={8} className='pl-4'>
                 <p className='Dashboard__todaysHitsText'>{param.client_feature_name}</p>
@@ -1315,10 +1355,11 @@ const Dashboard = (props) => {
                       setRestrictionModal(true);
                       return;
                     }
+                    setScrolling();
                     history.push('/admissionform');
                   }}
                 >
-                  Complete your profile
+                  Let&apos;s do it
                 </Button>
               ) : (
                 <p
@@ -1347,12 +1388,12 @@ const Dashboard = (props) => {
                 <p className='mb-0 mt-3 Dummy__joinDetails'>{param.description}</p>
               </Col>
               <Col xs={4} className='p-2' style={{ textAlign: 'right' }}>
-                {/* <img
+                <img
                   src={param.feature_icon}
                   alt='form'
                   // style={{ width: '100px' }}
                   className='Dashboard_image shareImage'
-                /> */}
+                />
               </Col>
             </Row>
             <div className='Dashboard__admissionButtonContainer'>
@@ -1534,6 +1575,14 @@ const Dashboard = (props) => {
     }
   };
 
+  // dashboard scrolling saving in cache
+  useEffect(() => {
+    setTimeout(() => {
+      window.scrollTo({ top: scrolledHeight, behavior: 'smooth' });
+    }, 1000);
+    setScrolledHeightOfDocumentToStore(0);
+  }, []);
+
   return (
     <div className='Dashboard__mainContainerDiv'>
       <div
@@ -1542,9 +1591,9 @@ const Dashboard = (props) => {
         //   roleArray.includes(1) || roleArray.includes(2) ? 'mb-4' : 'mb-0'
         // }`}
       >
-        <Row className='pt-4 pr-4'>
+        <div className='pt-4 pr-4'>
           <span className='ml-auto p-3'>{/* <MoreVertIcon /> */}</span>
-        </Row>
+        </div>
         {hasLoaded && (
           <h3 style={{ color: data.app_name_color }} className='Dummy__coachingName text-center'>
             {data.client_name}
@@ -1573,7 +1622,6 @@ const Dashboard = (props) => {
             opacity: `${nameDisplay ? 1 : 0}`,
             // display: `${nameDisplay ? 'flex' : 'none'}`,
           }}
-          className=''
           className='nameAndProfilePic mx-auto px-2 mt-4'
         >
           <Col
@@ -1750,12 +1798,13 @@ const Dashboard = (props) => {
       </Toast>
       {hasLoaded && roleArray.includes(4) ? (
         <p className='connectWithUsText'>
-          Have an issue?{' '}
+          Having an issue?
+          <br />{' '}
           <a className='connectText' href='tel:+918826286002'>
             Connect
           </a>{' '}
           {/* with us! */}
-          with us! or
+          with us or
           <span
             role='button'
             tabIndex={-1}
@@ -1764,7 +1813,7 @@ const Dashboard = (props) => {
             className='callbackText'
           >
             {' '}
-            request a callback
+            Request a callback!
           </span>
         </p>
       ) : null}
@@ -1786,6 +1835,7 @@ const Dashboard = (props) => {
         </Modal.Header>
         <Modal.Body>
           <div>
+            <p className='Dummy__joinSmall'>Please fill all the details below.</p>
             <div className='d-flex w-100 justify-content-between'>
               <label style={{ margin: '0px 10px 0px 0px' }} className='has-float-label mb-3 w-100'>
                 <select
@@ -1836,10 +1886,10 @@ const Dashboard = (props) => {
                 name='Feedback (optional)'
                 type='textarea'
                 value={issueDescription}
-                placeholder='Please describe your issue here'
+                placeholder='Describe your issue'
                 onChange={(e) => setIssueDescription(e.target.value)}
               />
-              <span className='smallFont'>Feedback</span>
+              <span className='smallFont'>Describe your issue</span>
             </label>
           </div>
         </Modal.Body>
@@ -1847,7 +1897,11 @@ const Dashboard = (props) => {
           <Button variant='boldTextSecondary' onClick={closeCallbackModal}>
             Cancel
           </Button>
-          <Button variant='boldText' onClick={sendClientTicket}>
+          <Button
+            disabled={!issueDescription || !callbackContact || !selectedDate}
+            variant='boldText'
+            onClick={sendClientTicket}
+          >
             Submit
           </Button>
         </Modal.Footer>
@@ -1866,6 +1920,7 @@ const mapStateToProps = (state) => ({
   redirectPath: getCurrentRedirectPath(state),
   firstTimeLogin: getFirstTimeLoginState(state),
   socket: getSocket(state),
+  scrolledHeight: getCurrentSccrolledHeight(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -1932,6 +1987,9 @@ const mapDispatchToProps = (dispatch) => ({
   setSelectedTypeToStore: (payload) => {
     dispatch(homeworkActions.setSelectedTypeToStore(payload));
   },
+  setScrolledHeightOfDocumentToStore: (payload) => {
+    dispatch(dashboardActions.setScrolledHeightOfDocumentToStore(payload));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
@@ -1940,6 +1998,7 @@ Dashboard.propTypes = {
   clientId: PropTypes.number.isRequired,
   clientUserId: PropTypes.number.isRequired,
   clearProfile: PropTypes.func.isRequired,
+  scrolledHeight: PropTypes.func.isRequired,
   clearClientIdDetails: PropTypes.func.isRequired,
   setTestResultArrayToStore: PropTypes.func.isRequired,
   setTestEndTimeToStore: PropTypes.func.isRequired,
@@ -1974,4 +2033,5 @@ Dashboard.propTypes = {
   setSelectedChapterToStore: PropTypes.func.isRequired,
   setSelectedTypeToStore: PropTypes.func.isRequired,
   setSelectedSubjectToStore: PropTypes.func.isRequired,
+  setScrolledHeightOfDocumentToStore: PropTypes.func.isRequired,
 };

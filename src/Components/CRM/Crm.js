@@ -175,17 +175,7 @@ const CRM = (props) => {
         const resultant = [...admissionFormArray, ...result];
         setAdmissionFormArray(resultant);
       });
-      //    fetch
-      //    (
-      // `https://class.ingeniumedu.com/getAdmissionsOfClient?client_id=${clientId}&page=${admissionPage}&sort_by=${sortBy}`
-      //     )
-      //     .then(res => res.json())
-      //     .then(data => {
-      //       const result = apiValidation(data)
-      //       console.log(result, 'getAdmissionOfClient');
-      //       const resultant = [...searchedAdmissionFormArray, ...result];
-      //       setAdmissionFormArray(resultant);
-      //     })
+      
     }
     return () => {
       clearTimeout(timer);

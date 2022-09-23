@@ -294,12 +294,15 @@ const DummyDashboard = (props) => {
           ))}
         </div>
 
-        <Card className='m-3' style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}>
+        <Card
+          className='m-3 largeScreenPadding'
+          style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}
+        >
           <Row className='mx-0 justify-content-center mt-2'>
             <Col xs={8} className='text-left p-2'>
               <h6 className='Dummy__joinUs'>Join us NOW!</h6>
-              <p className='mb-0 Dummy__joinDetails'>Your are not in any batch yet</p>
-              <p className='Dummy__joinSmall'>Fill admission form to join us.</p>
+              <p className='mb-0 Dummy__joinDetails'>Login to create your profile.</p>
+              {/* <p className='Dummy__joinSmall'>Fill admission form to join us.</p> */}
             </Col>
             <Col xs={4} className='p-2' style={{ textAlign: 'right' }}>
               <img src={form} alt='form' className='Dashboard_image' />
@@ -309,12 +312,15 @@ const DummyDashboard = (props) => {
               variant='customPrimarySmol'
               className='mb-3 addmissionButton'
             >
-              Login to fill admission form
+              Let&apos;s do it
             </Button>
           </Row>
         </Card>
 
-        <Card className='m-3 mt-4' style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}>
+        <Card
+          className='m-3 mt-4 largeScreenPadding'
+          style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}
+        >
           <Row className='mx-0 justify-content-center mt-2'>
             <Col xs={7} className='text-left p-2'>
               <h6 className='Dummy__connect'>Share app with friends</h6>
@@ -336,7 +342,10 @@ const DummyDashboard = (props) => {
         </Card>
 
         {Object.keys(dummyData.address).length > 0 && (
-          <Card className='m-3 mt-4' style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}>
+          <Card
+            className='m-3 mt-4 largeScreenPadding'
+            style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}
+          >
             <Row className='mx-3 justify-content-left mt-2'>
               <h6 className='Dummy__joinUs'>Contact us</h6>
             </Row>

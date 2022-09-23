@@ -10,6 +10,11 @@ if (process.env.NODE_ENV === 'development') {
   key = 'BcBf29XSXBiPpBpG66JY';
 } else if (process.env.NODE_ENV === 'production' && window.location.origin.includes('rypmindia')) {
   key = 'o1HgM8bBaqhaZtnK3ZIa';
+} else if (
+  process.env.NODE_ENV === 'production' &&
+  window.location.origin.includes('shandilyaacademy')
+) {
+  key = 'hRyGs9HnimqatBH1PRHc';
 } else {
   key = 'gouud4ANiuGZf2TRV8jO';
 }

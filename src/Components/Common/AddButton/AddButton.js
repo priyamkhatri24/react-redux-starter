@@ -6,6 +6,10 @@ import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import classNames from 'classnames';
 import PersonAddRoundedIcon from '@material-ui/icons/PersonAddRounded';
+import AttachFile from '@material-ui/icons/AttachFile';
+import CreateNewFolderOutlined from '@material-ui/icons/CreateNewFolderOutlined';
+import Youtube from '@material-ui/icons/YouTube';
+import AddLinkIcon from '@material-ui/icons/Link'; 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { uploadMultipleImages } from '../../../Utilities/customUpload';
@@ -100,7 +104,7 @@ const AddButton = (props) => {
                             }}
                             className='my-auto'
                           >
-                            <PersonAddRoundedIcon />
+                            <AttachFile />
                           </span>
                         </Col>
                       </Row>
@@ -126,7 +130,15 @@ const AddButton = (props) => {
                             }}
                             className='my-auto'
                           >
-                            <PersonAddRoundedIcon />
+                            {elem.name === 'add Folder' ? (
+                              <CreateNewFolderOutlined />
+                            ) : elem.name === 'add Youtube Link' ? (
+                              <Youtube />
+                            ) : elem.name === 'add External Link' ? (
+                              <AddLinkIcon />
+                            ) : (
+                              <AttachFile />
+                            )}
                           </span>
                         </Col>
                       </Row>

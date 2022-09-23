@@ -274,6 +274,13 @@ const Mycourse = (props) => {
     }
   };
 
+  const detectNextLine = (text) => {
+    return text
+      .split('\n')
+      .map((ele) => `<p>${ele}</p>`)
+      .join('');
+  };
+
   const urlify = (text) => {
     if (!text) return '';
     const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -1468,7 +1475,9 @@ const Mycourse = (props) => {
                 <p className='Courses__heading'>Description</p>
                 <p
                   className='Courses__subHeading mb-1'
-                  dangerouslySetInnerHTML={{ __html: urlify(course.course_description) }}
+                  dangerouslySetInnerHTML={{
+                    __html: urlify(detectNextLine(course.course_description)),
+                  }}
                 ></p>
                 <hr className='' />
                 <p className='Courses__heading my-2'>Requirements</p>

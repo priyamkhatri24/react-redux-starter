@@ -7,6 +7,7 @@ import Card from 'react-bootstrap/Card';
 import CreateIcon from '@material-ui/icons/Create';
 import AddTaskIcon from '@material-ui/icons/SaveOutlined';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
+import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
@@ -62,6 +63,8 @@ const Price = (props) => {
   const [enteredRegionCoursePrice, setEnteredRegionCoursePrice] = useState('');
   const [enteredRegionDiscountPrice, setEnteredRegionDiscountPrice] = useState('');
   const [newCouponCurrency, setNewCouponCurrency] = useState('INR');
+  const [couponPage, setCouponPage] = useState(1);
+  const [seeMore, setSeeMore] = useState(true);
 
   useEffect(() => {
     get(null, '/getAllCurrencyCodesWithNames').then((currency) => {
@@ -199,7 +202,10 @@ const Price = (props) => {
           title: 'Updated!',
           text: `You have successfully updated the course list.`,
         });
-        get({ course_id: courseId, client_id: clientId }, '/getCouponsOfCourse').then((resp) => {
+        get(
+          { course_id: courseId, client_id: clientId, limit: couponPage > 1 ? 60 : 30, page: 1 },
+          '/getCouponsOfCourseLatest',
+        ).then((resp) => {
           const result = apiValidation(resp);
           setCoupons(result);
         });
@@ -237,9 +243,12 @@ const Price = (props) => {
       setNewCouponCurrency('INR');
       setNoOfCoupons(0);
       setDateOfCoupon(new Date());
-      get({ course_id: courseId, client_id: clientId }, '/getCouponsOfCourse').then((resp) => {
+      get(
+        { course_id: courseId, client_id: clientId, limit: 30, page: couponPage },
+        '/getCouponsOfCourseLatest',
+      ).then((resp) => {
         const result = apiValidation(resp);
-        setCoupons(result);
+        setCoupons([...coupon, result[result.length - 1]]);
       });
     });
   };
@@ -264,6 +273,18 @@ const Price = (props) => {
         }
       });
     }
+  };
+
+  const fetchMoreCoupons = () => {
+    get(
+      { course_id: courseId, client_id: clientId, limit: 30, page: couponPage + 1 },
+      '/getCouponsOfCourseLatest',
+    ).then((resp) => {
+      const result = apiValidation(resp);
+      setCoupons([...coupon, ...result]);
+      setCouponPage((prev) => prev + 1);
+      setSeeMore(result.length >= 30);
+    });
   };
 
   const toggleCourseRegioanlity = () => {
@@ -690,6 +711,15 @@ const Price = (props) => {
                 </Col>
               );
             })}
+          <Row className='text-right mx-2 w-100'>
+            <Col>
+              {seeMore ? (
+                <Button variant='boldTextSecondary' onClick={fetchMoreCoupons}>
+                  See more <KeyboardArrowDown />
+                </Button>
+              ) : null}
+            </Col>
+          </Row>
         </Row>
 
         {!isNewCoupon && (

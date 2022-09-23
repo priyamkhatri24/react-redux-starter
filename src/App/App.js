@@ -12,6 +12,7 @@ import { setGlobalColors, changeFaviconAndDocumentTitle } from '../Utilities';
 import { Loader } from '../Components/Common/Loader/Loading';
 import './App.scss';
 import { history, Routes } from '../Routing';
+import { dashboardActions } from '../redux/actions/dashboard.action';
 import { getCurrentLoadingStatus, getStatusOfSpinner } from '../redux/reducers/loading.reducer';
 import withClearCache from './BustCache';
 import { server } from '../Utilities/Remote';
@@ -19,7 +20,19 @@ import { server } from '../Utilities/Remote';
 // const io = loadable.lib(() => import('socket.io-client'));
 
 function MainApp(props) {
-  const { color, currentbranding, isLoading, setSocket, isSpinner } = props;
+  const {
+    color,
+    currentbranding,
+    isLoading,
+    setSocket,
+    isSpinner,
+    setScrolledHeightOfDocumentToStore,
+  } = props;
+
+  window.onbeforeunload = function closingCode() {
+    setScrolledHeightOfDocumentToStore(0);
+    return null;
+  };
 
   useEffect(() => {
     const socket = io(server, {
@@ -53,7 +66,7 @@ function MainApp(props) {
   }, [color, currentbranding, isSpinner]);
 
   return (
-    <Container fluid className='p-0 m-0 overflow-hidden rootContainer mx-auto'>
+    <Container fluid className='p-0 m-0 rootContainer mx-auto'>
       {isLoading && <Loader isSpinner={isSpinner} />}
       <ConnectedRouter history={history}>
         <Routes />
@@ -66,6 +79,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setSocket: (socket) => {
       dispatch(conversationsActions.setSocket(socket));
+    },
+    setScrolledHeightOfDocumentToStore: (payload) => {
+      dispatch(dashboardActions.setScrolledHeightOfDocumentToStore(payload));
     },
   };
 };
@@ -100,4 +116,5 @@ MainApp.propTypes = {
   }).isRequired,
   isSpinner: PropTypes.bool.isRequired,
   setSocket: PropTypes.func.isRequired,
+  setScrolledHeightOfDocumentToStore: PropTypes.func.isRequired,
 };

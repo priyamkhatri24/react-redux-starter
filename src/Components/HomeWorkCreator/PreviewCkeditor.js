@@ -78,8 +78,6 @@ const PreviewCkeditor = (props) => {
                         src={e.image}
                         alt='option'
                         className='img-fluid m-1'
-                        width='70'
-                        height='70'
                       />
                     )}
                   </Col>

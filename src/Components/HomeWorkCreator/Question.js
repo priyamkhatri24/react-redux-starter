@@ -73,11 +73,11 @@ const Question = (props) => {
                 }`}
               />
               {question.question_image && (
-                <div className=' mt-2 Homework__questionImgContainer'>
+                <div className=' mt-2 Homework__questionImgContainer text-left'>
                   <img
                     src={question.question_image}
                     alt='question'
-                    className='img-fluid m-2 Homework__questionImg'
+                    className='img-fluid m-2'
                   />
                 </div>
               )}
@@ -101,11 +101,13 @@ const Question = (props) => {
                       <MathJax math={String.raw`${e.text}`} />
                     </div>
                     {e.image && (
-                      <img
-                        src={e.image}
-                        alt='option'
-                        className='img-fluid m-2 Homework__questionImg'
-                      />
+                      <div>
+                        <img
+                          src={e.image}
+                          alt='option'
+                          className='img-fluid m-2'
+                        />
+                      </div>
                     )}
                   </>
                 );

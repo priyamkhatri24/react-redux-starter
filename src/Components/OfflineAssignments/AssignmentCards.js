@@ -32,7 +32,7 @@ const AssignmentCards = (props) => {
           <Card.Body className='body1'>
             <Card.Title className='cardTitle'>
               <AssignmentIcon style={{ marginRight: '10px' }} />
-              {testName}
+              {testName.length > 15 ? `${testName.slice(0, 12)}...` : testName}
             </Card.Title>
 
             <Card.Subtitle className='mb-2 text-muted cardSubtitle'>

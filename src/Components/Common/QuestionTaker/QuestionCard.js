@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 import MathJax from 'react-mathjax-preview';
 import { propComparator } from '../../../Utilities';
 
@@ -19,6 +20,8 @@ class QuestionCard extends Component {
       imgLink: '',
       showImageModal: false,
     };
+    this.optionImageRef = React.createRef();
+    this.questionImageRef = React.createRef();
   }
 
   componentDidMount() {
@@ -34,14 +37,6 @@ class QuestionCard extends Component {
       });
     }
   }
-
-  // handleImageClose = () => {
-  //   this.setState({showImageModal: false})
-  // }
-
-  // handleImageOpen = () => {
-  //   this.setState({showImageModal: true})
-  // }
 
   componentDidUpdate(prevProps) {
     const { currentQuestion, onUnmount, language } = this.props;
@@ -83,6 +78,27 @@ class QuestionCard extends Component {
     clearInterval(this.sectionTimeIntervalId);
     // remove the focused if not save and next done
   }
+
+  handleImageClose = () => {
+    this.setState({ showImageModal: false });
+  };
+
+  handleImageOpen = () => {
+    this.setState({ showImageModal: true });
+  };
+
+  /** ********Timer logic***** */
+  handleChecked(order) {
+    const { checked } = this.state;
+    const checkedArray = checked.length === 0 ? [false, false, false, false] : [...checked];
+
+    checkedArray[order - 1] = !checkedArray[order - 1];
+    this.setState({ checked: checkedArray });
+    console.log(checkedArray);
+    console.log('CHANGE!');
+  }
+
+  /** *********** */
 
   selectedAnswer = (e) => {
     // option arrays must be the same always
@@ -279,15 +295,16 @@ class QuestionCard extends Component {
           <div className='radioControl'>
             <MathJax math={String.raw`${elem.text}`} />
           </div>
+          {elem.image && (
+            <img
+              src={elem.image}
+              alt='option'
+              className='img-fluid m-2'
+              ref={this.optionImageRef}
+              style={{ maxWidth: '70%', height: 'auto' }}
+            />
+          )}
         </label>
-        {elem.image && (
-          <img
-            src={elem.image}
-            alt='option'
-            className='img-fluid m-2'
-            style={{ maxWidth: '60%', height: 'auto' }}
-          />
-        )}
       </div>
     );
   };
@@ -335,7 +352,7 @@ class QuestionCard extends Component {
               src={elem.image}
               alt='option'
               className='img-fluid'
-              style={{ width: '60%', height: 'auto' }}
+              style={{ width: '70%', height: 'auto' }}
             />
           )}
         </div>
@@ -359,21 +376,8 @@ class QuestionCard extends Component {
     this.setState({ timer: 0 });
   };
 
-  /** ********Timer logic***** */
-  handleChecked(order) {
-    const { checked } = this.state;
-    const checkedArray = checked.length === 0 ? [false, false, false, false] : [...checked];
-
-    checkedArray[order - 1] = !checkedArray[order - 1];
-    this.setState({ checked: checkedArray });
-    console.log(checkedArray);
-    console.log('CHANGE!');
-  }
-
-  /** *********** */
-
   render() {
-    const { question, checked, currentLanguage } = this.state;
+    const { question, checked, currentLanguage, showImageModal, imgLink } = this.state;
     return (
       <>
         <Card
@@ -398,12 +402,15 @@ class QuestionCard extends Component {
             </div>
           )}
           {question.question_image && (
-            <img
-              src={question.question_image}
-              alt='question'
-              className='m-2'
-              style={{ width: '80%', height: 'auto', maxHeight: '120px' }}
-            />
+            <div>
+              <img
+                src={question.question_image}
+                alt='question'
+                className='m-2'
+                ref={this.questionImageRef}
+                style={{ maxWidth: '80%', height: 'auto', maxHeight: '270px' }}
+              />
+            </div>
           )}
           <div className='mt-4'>
             {Object.keys(question).length > 0 &&
@@ -476,7 +483,7 @@ class QuestionCard extends Component {
                           src={elem.image}
                           alt='option'
                           className='img-fluid'
-                          style={{ maxWidth: '70%', height: 'auto', maxHeight: '110px' }}
+                          style={{ maxWidth: '70%', height: 'auto', maxHeight: '140px' }}
                         />
                       )}
                     </div>
@@ -495,16 +502,14 @@ class QuestionCard extends Component {
           })}
         </Row>
         {/* <pre>{timer}</pre> */}
-        {/* <Modal show={showImageModal} onHide={handleImageClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            Image Modal
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body className='mx-auto'>
-          <img src={imgLink} alt='img' className='img-fluid' />
-        </Modal.Body>
-      </Modal> */}
+        <Modal show={showImageModal} onHide={this.handleImageClose} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Image Modal</Modal.Title>
+          </Modal.Header>
+          <Modal.Body className='mx-auto'>
+            <img src={imgLink} alt='img' className='img-fluid' />
+          </Modal.Body>
+        </Modal>
       </>
     );
   }

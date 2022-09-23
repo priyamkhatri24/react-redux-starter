@@ -41,9 +41,7 @@ export const DashboardCards = (props) => {
       onClick={() => buttonClick()}
       onKeyDown={() => buttonClick()}
     >
-      <span className='Dashboard__verticalDots'>
-        <MoreVertIcon />
-      </span>
+      <span className='Dashboard__verticalDots'>{/* <MoreVertIcon /> */}</span>
       <Row className='mt-2 p-4'>
         <Col xs={8}>
           <p className='Dashboard__todaysHitsText'>

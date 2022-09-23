@@ -26,6 +26,7 @@ SwiperCore.use([Autoplay, Pagination, Navigation]);
 const WelcomeCarousel = (props) => {
   const { changeComponent, currentbranding } = props;
   const [buttonFont, setButtonFont] = useState(18);
+  const [swiperLevel, setSwiperLevel] = useState(0);
   // useInterval(() => {
   //   if (buttonFont <= 19) {
   //     setButtonFont(buttonFont++);
@@ -53,6 +54,7 @@ const WelcomeCarousel = (props) => {
       <Swiper
         spaceBetween={30}
         centeredSlides
+        onSlideChange={(swiper) => setSwiperLevel(swiper.activeIndex)}
         autoplay={{
           delay: 3000,
           disableOnInteraction: false,
@@ -82,7 +84,13 @@ const WelcomeCarousel = (props) => {
       <Button
         variant='JumboLogin'
         onClick={() => changeComponent('PhoneNo')}
-        style={{ zIndex: '999', fontSize: `${buttonFont}px`, marginBottom: '8px' }}
+        style={{
+          zIndex: '999',
+          fontSize: `${swiperLevel === 0 ? '16' : swiperLevel === 1 ? '18' : '20'}px`,
+          marginBottom: '8px',
+          transitionDuration: '0.3s',
+          transitionProperty: 'font-size',
+        }}
       >
         Log In / Sign Up
       </Button>

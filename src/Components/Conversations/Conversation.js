@@ -555,7 +555,9 @@ const Conversation = (props) => {
         conversation_id: conversation.id,
         text: '',
         type: 'message',
-        attachments_array: [{ url: filename, type: fileType, name: file.name }],
+        attachments_array: [
+          { url: filename, type: fileType === 'document' ? 'doc' : fileType, name: file.name },
+        ],
         primaryChat: reply,
       };
       socket?.emit('sendMessage', emitData, (error, data) => {
@@ -705,7 +707,7 @@ const Conversation = (props) => {
               isLoading={isLoading}
               nextPage={conversation.page}
               loadMore={(page) => fetchMoreMessages(page)}
-              ref={messagesEnd}
+              // ref={messagesEnd}
               deleteMessage={deleteMessage}
               role={role}
               action={action}

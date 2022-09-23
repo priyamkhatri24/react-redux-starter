@@ -12,6 +12,10 @@ function setRedirectPathToStore(payload) {
   return { type: dashboardConstants.REDIRECTPATH, payload };
 }
 
+function setScrolledHeightOfDocumentToStore(payload) {
+  return { type: dashboardConstants.SCROLLEDHEIGHT, payload };
+}
+
 function clearDashboardDataFromStore() {
   return { type: dashboardConstants.CLEARDASHBOARDDATA };
 }
@@ -21,4 +25,5 @@ export const dashboardActions = {
   setLocationDataToStore,
   clearDashboardDataFromStore,
   setRedirectPathToStore,
+  setScrolledHeightOfDocumentToStore,
 };

@@ -149,6 +149,8 @@ const HomeWorkAssigner = (props) => {
       }, '');
       if (selectedBatches.length > 0) setBatchInputValue(inputString + extraBatchesString);
       else setBatchInputValue('');
+    } else {
+      setBatchInputValue('');
     }
   };
 
@@ -191,6 +193,14 @@ const HomeWorkAssigner = (props) => {
   };
 
   const assignTestFinally = () => {
+    if (!selectedBatches.length) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops',
+        text: 'Please select atleast one batch before sending test/homework.',
+      });
+      return;
+    }
     const testType = assignmentType.filter((e) => e.isSelected === true)[0].value;
     const testDuration = (duration.hours * 3600 + duration.minutes * 60 + duration.seconds) * 1000;
     const startDateMidnight = new Date(startDate.toDateString());
@@ -281,7 +291,7 @@ const HomeWorkAssigner = (props) => {
                 customClass: 'Assignments__SweetAlert',
               }).then((result) => {
                 if (result.isConfirmed) {
-                  history.push({ pathname: '/homework/savedsent', state: 'sent' });
+                  history.push({ pathname: '/homework/savedsent', state: { testsType: 'sent' } });
                 }
               });
             }
@@ -295,7 +305,7 @@ const HomeWorkAssigner = (props) => {
             customClass: 'Assignments__SweetAlert',
           }).then((result) => {
             if (result.isConfirmed) {
-              history.push({ pathname: '/homework/savedsent', state: { testType: 'sent' } });
+              history.push({ pathname: '/homework/savedsent', state: { testsType: 'sent' } });
             }
           });
         }

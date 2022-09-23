@@ -42,7 +42,10 @@ const CreateCourse = (props) => {
     // if (!courseId) {
     //   history.push('/');
     // } else {
-    get({ client_id: clientId, course_id: courseId }, '/getCouponsOfCourse').then((res) => {
+    get(
+      { client_id: clientId, course_id: courseId, limit: 30, page: 1 },
+      '/getCouponsOfCourseLatest',
+    ).then((res) => {
       console.log(res);
       const result = apiValidation(res);
       setCoupons(result);

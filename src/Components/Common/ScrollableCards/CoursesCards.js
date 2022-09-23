@@ -143,7 +143,9 @@ export const CoursesCards = (props) => {
                       </div>
                     </div>
                     <p className='Scrollable__courseCardHeading mt-3 mb-0 mx-2'>
-                      {elem.course_title}
+                      {elem.course_title.length > 48
+                        ? `${elem.course_title.slice(0, 45)}...`
+                        : elem.course_title}
                     </p>
                     <p className='Scrollable__courseCardSubHeading text-left mx-2'>
                       {elem.currencySymbol ? (
@@ -265,7 +267,9 @@ export const CoursesCards = (props) => {
                         </div> */}
                       </div>
                       <p className='Scrollable__courseCardHeading mt-3 mb-0 mx-2'>
-                        {elem.course_title}
+                        {elem.course_title.length > 48
+                          ? `${elem.course_title.slice(0, 45)}...`
+                          : elem.course_title}
                       </p>
                       <div
                         style={{ width: '90%', position: 'absolute', bottom: '10px' }}

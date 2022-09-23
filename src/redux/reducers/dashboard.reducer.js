@@ -4,6 +4,7 @@ const initialState = {
   dashboardData: {},
   locationData: {},
   redirectPath: null,
+  scrolledHeight: 0
 };
 
 export function dashboard(state = initialState, action) {
@@ -25,6 +26,12 @@ export function dashboard(state = initialState, action) {
         ...state,
         redirectPath: action.payload,
       };
+    
+      case dashboardConstants.SCROLLEDHEIGHT:
+        return {
+          ...state,
+          scrolledHeight: action.payload,
+        };
 
     case dashboardConstants.CLEARDASHBOARDDATA:
       return {
@@ -39,3 +46,4 @@ export function dashboard(state = initialState, action) {
 export const getCurrentDashboardData = (state) => state.dashboard.dashboardData;
 export const getCurrentLocationData = (state) => state.dashboard.locationData;
 export const getCurrentRedirectPath = (state) => state.dashboard.redirectPath;
+export const getCurrentSccrolledHeight = (state) => state.dashboard.scrolledHeight;
