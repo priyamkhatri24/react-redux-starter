@@ -27,6 +27,9 @@ const ForgotPassword = Loadable({
 
 const FileView = Loadable({
   loader: () =>
+    // import(
+    //   /* webpackChunkName: 'PDFFileViewer' */ '../Components/Common/FileViewer/PDFFinalViewer'
+    // ),
     import(/* webpackChunkName: 'PDFFileViewer' */ '../Components/Common/FileViewer/PDFFileViewer'),
   loading: Loading,
 });

@@ -2,15 +2,25 @@ import React, { useEffect, useState, useRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import PlyrComponent from 'plyr-react';
 import 'plyr-react/dist/plyr.css';
+// import { HttpRequest } from 'aws-sdk/protocol-http';
+// import { S3RequestPresigner } from 'aws-sdk/s3-request-presigner';
+// import { parseUrl } from 'aws-sdk/url-parser';
+// import { Hash } from 'aws-sdk/hash-node';
+// import { formatUrl } from 'aws-sdk/util-format-url';
 import { PageHeader } from '../PageHeader/PageHeader';
+import { get, apiValidation, generatePreSignedUrl } from '../../../Utilities';
 import Comments from './Comments';
+// import captions from './caption.srt'
 import './VideoPlayer.scss';
 
 const PlyrVideoPlayer = (props) => {
   const { match, history } = props;
+  const ancestor = useRef(null);
+  const [nowPlayingVideo, setNowPlayingVideo] = useState({});
   const options = {
     autoplay: true,
     youtube: { noCookie: false, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
+    fullscreen: { enabled: true, fallback: true, iosNative: false, container: 'plyrComponent' },
   };
   const [quality, setQuality] = useState(480);
   const [expandedNote, setExpandedNote] = useState(false);
@@ -20,12 +30,16 @@ const PlyrVideoPlayer = (props) => {
     type: 'video',
     sources: [
       {
-        src: 'https://userfiles-ingenium.s3.ap-south-1.amazonaws.com/sample_960x540.m4v',
+        src: '',
       },
     ],
   });
   const [videoId, setVideoId] = useState('');
   const playerRef = useRef(null);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     let timer;
@@ -49,21 +63,67 @@ const PlyrVideoPlayer = (props) => {
   }, [playerRef]);
 
   useEffect(() => {
+    playerRef.current.plyr.on('error', (e) => {
+      // setTimeout(() => {
+      console.log('seeked');
+
+      // setCurrentTime(playerRef.current.plyr.currentTime);
+      const currTime = playerRef.current.plyr.currentTime;
+      if (currTime < 3) return;
+      setCurrentTime(currTime);
+
+      // setTimeout(() => {
+      //   playerRef.current.plyr.currentTime = currTime;
+      // }, 800);
+      // }, 0);
+      console.log(playerRef.current.plyr.currentTime, 'well');
+      const arr = history.location.state?.videoLinkArray;
+      if (!arr) return;
+      const newSource = JSON.parse(JSON.stringify(source));
+      newSource.sources = [{ src: generatePreSignedUrl(arr[0]) }];
+      setSource(newSource);
+      console.log(newSource);
+      setNowPlayingVideo(newSource.sources[0]);
+      // setTimeout(() => {
+      //   playerRef.current.plyr.currentTime = currTime;
+      //   // e.detail.plyr.forward(currTime);
+      // }, 800);
+    });
+  }, []);
+
+  useEffect(() => {
+    playerRef.current.plyr.once('play', () => {
+      playerRef.current.plyr.currentTime = currentTime;
+    });
+  }, [nowPlayingVideo]);
+
+  useEffect(() => {
     const arr = history.location.state?.videoLinkArray;
     let timer;
     if (!arr) return;
     if (quality === 360) {
       const newSource = JSON.parse(JSON.stringify(source));
-      newSource.sources = [{ src: arr[1] || arr[0] }];
+      newSource.sources = [
+        { src: arr[1] ? generatePreSignedUrl(arr[1]) : generatePreSignedUrl(arr[0]) },
+      ];
       setSource(newSource);
+      setNowPlayingVideo({
+        src: arr[1] ? generatePreSignedUrl(arr[1]) : generatePreSignedUrl(arr[0]),
+      });
     } else if (quality === 240) {
       const newSource = JSON.parse(JSON.stringify(source));
-      newSource.sources = [{ src: arr[2] || arr[0] }];
+      newSource.sources = [
+        { src: arr[2] ? generatePreSignedUrl(arr[2]) : generatePreSignedUrl(arr[0]) },
+      ];
       setSource(newSource);
+      setNowPlayingVideo({
+        src: arr[2] ? generatePreSignedUrl(arr[2]) : generatePreSignedUrl(arr[0]),
+      });
     } else {
       const newSource = JSON.parse(JSON.stringify(source));
-      newSource.sources = [{ src: arr[0] }];
+      newSource.sources = [{ src: generatePreSignedUrl(arr[0]) }];
       setSource(newSource);
+      setNowPlayingVideo({ src: generatePreSignedUrl(arr[0]) });
     }
     playerRef.current.plyr.once('play', () => {
       playerRef.current.plyr.currentTime = currentTime;
@@ -82,12 +142,14 @@ const PlyrVideoPlayer = (props) => {
       const newSource = JSON.parse(JSON.stringify(source));
       newSource.sources = [{ src: history.location.state.link, provider: 'youtube' }];
       setSource(newSource);
+      setNowPlayingVideo({ src: history.location.state.link, provider: 'youtube' });
     } else if (history.location.state && history.location.state.videoLink) {
       const newSource = JSON.parse(JSON.stringify(source));
-      newSource.sources = [{ src: history.location.state.videoLink }];
+      newSource.sources = [{ src: generatePreSignedUrl(history.location.state.videoLink) }];
       console.log(newSource);
       setSource(newSource);
-      setLinkArray(history.location.state.videoLinkArray);
+      setNowPlayingVideo(newSource.sources[0]);
+      setLinkArray(history.location.state.videoLinkArray.map((ele) => generatePreSignedUrl(ele)));
       console.log(history.location.state);
     } else {
       const { id } = match.params;
@@ -95,6 +157,7 @@ const PlyrVideoPlayer = (props) => {
       const newSource = JSON.parse(JSON.stringify(source));
       newSource.sources = [{ src: id, provider: 'youtube' }];
       setSource(newSource);
+      setNowPlayingVideo({ src: id, provider: 'youtube' });
     }
   }, [history, match]);
 
@@ -115,10 +178,17 @@ const PlyrVideoPlayer = (props) => {
   const renderVideoPlayer = useMemo(() => {
     return (
       <div className='mx-auto plyrComponent'>
-        <PlyrComponent ref={playerRef} source={source} options={options} />
+        <PlyrComponent
+          ref={playerRef}
+          source={{
+            type: 'video',
+            sources: [nowPlayingVideo],
+          }}
+          options={options}
+        />
       </div>
     );
-  }, [source, playerRef]);
+  }, [nowPlayingVideo, playerRef]);
 
   return (
     <>

@@ -24,6 +24,7 @@ export const CoursesCards = (props) => {
     country,
     state,
     globalCurrency,
+    noViewAllButton,
   } = props;
 
   const [currencyCodes, setCurrencyCodes] = useState([]);
@@ -42,8 +43,8 @@ export const CoursesCards = (props) => {
         <section className='Scrollable__courseCard mt-3' style={{ marginLeft: 0, marginRight: 0 }}>
           <div className='Scrollable__subHeadTextUnderHeading'>
             <div className='d-flex justify-content-between w-100'>
-              <h5 className='Scrollable__coursesInitialHeading mb-1'>{featureName} available</h5>
-              {allCourses.length >= 4 ? (
+              <h5 className='Scrollable__coursesInitialHeading mb-1'>{featureName}</h5>
+              {allCourses.length >= 4 && !noViewAllButton ? (
                 <button
                   className='Scrollable__viewAllButtonForCards mb-0'
                   type='button'
@@ -53,9 +54,11 @@ export const CoursesCards = (props) => {
                 </button>
               ) : null}
             </div>
-            <p className='smallTextUnderHeading'>
-              Top quality digital courses in your hands. Get them NOW!
-            </p>
+            {featureName.toLowerCase() === 'courses' ? (
+              <p className='smallTextUnderHeading text-left'>
+                Top quality digital courses in your hands. Get them NOW!
+              </p>
+            ) : null}
           </div>
           <div style={{ display: 'flex', marginTop: '100px' }} className='desktopDisplayforCards'>
             {allCourses.map((elem) => {
@@ -160,7 +163,7 @@ export const CoursesCards = (props) => {
                       <span className='mx-1 Scrollable__courseCardHeading'>
                         {elem.discount_price}
                       </span>
-                      <span>
+                      <span className='strictInline'>
                         <del>{elem.course_price}</del>
                       </span>
                     </p>
@@ -351,12 +354,14 @@ CoursesCards.propTypes = {
   country: PropTypes.string.isRequired,
   state: PropTypes.string.isRequired,
   globalCurrency: PropTypes.string,
+  noViewAllButton: PropTypes.bool,
 };
 
 CoursesCards.defaultProps = {
   clientLogo: '',
   featureName: 'Courses',
   globalCurrency: '₹',
+  noViewAllButton: false,
 };
 
 // col-sm-6 col-md-4 col-lg-2

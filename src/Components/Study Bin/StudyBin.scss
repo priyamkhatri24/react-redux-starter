@@ -24,6 +24,7 @@
 
     @include media-breakpoint-up(md) {
       font-size: $spacer * 1.25;
+      line-height: 24px;
     }
   }
 
@@ -64,6 +65,7 @@
 .container_studybin::after {
   content: '';
   flex: 0 0 26%;
+  display: none;
 }
 
 .alertModalToCopyAndMove {

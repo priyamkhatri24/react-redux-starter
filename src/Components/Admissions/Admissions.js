@@ -166,8 +166,8 @@ const Admissions = (props) => {
       }, 500);
     }
     if (searchString.length === 0 && userNextPage) {
-      get(payload, '/getUsersUsingFilter2').then((res) => {
-        console.log(res, 'getUsersUsingFilter2');
+      get(payload, '/getUsersUsingFilter3').then((res) => {
+        console.log(res, 'getUsersUsingFilter3');
         const result = apiValidation(res);
         // const searchedArray = [...users, ...result].filter(
         //   (e) =>

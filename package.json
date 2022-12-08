@@ -18,9 +18,10 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "amazon-s3-uri": "^0.1.1",
     "animated": "^0.2.2",
     "apexcharts": "^3.27.1",
-    "aws-sdk": "^2.919.0",
+    "aws-sdk": "^2.1223.0",
     "axios": "^0.21.1",
     "bootstrap": "^4.5.0",
     "ckeditor5-math": "^24.0.0",
@@ -162,5 +163,5 @@
       "git push sid-origin auto"
     ]
   },
-  "buildDate": 1663929241360
+  "buildDate": 1670503241512
 }

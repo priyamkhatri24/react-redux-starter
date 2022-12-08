@@ -17,12 +17,22 @@ export const BatchesSelector = (props) => {
     removeAll,
   } = props;
   const [selectedBatches, setSelectedBatches] = useState([...selectBatches]);
+  const [selectedBatchesId, setSelectedBatchesId] = useState(
+    selectedBatches.map((ele) => ele.client_batch_id),
+  );
   const [selectAllStudents, setSelectAllStudents] = useState(false);
   const [allBatches, setAllBatches] = useState([...batches]);
   const [removedBatches, setRemovedBatches] = useState([]);
   const [searchString, setSearchString] = useState('');
 
   const batchesLength = useRef(0);
+
+  // useEffect(() => {
+  //   const actualBatches = allBatches.filter(
+  //     (ele) => !selectedBatchesId.includes(ele.client_batch_id),
+  //   );
+  //   setAllBatches(actualBatches);
+  // }, []);
 
   useEffect(() => {
     console.log(batches);
@@ -92,7 +102,6 @@ export const BatchesSelector = (props) => {
         className='m-auto'
         label='Select All'
         name='selectAll'
-        
       />
       <Row className='Batches py-3'>
         <Col xs={6} className='text-center'>

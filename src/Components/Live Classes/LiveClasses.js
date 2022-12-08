@@ -369,16 +369,16 @@ class LiveClasses extends Component {
       );
       this.setState({ doesBBBexist: true });
     } else if (element.stream_type === 'zoom') {
-      console.log(element);
+      console.log(element, 'zoom');
       this.setState(
         { zoomPassCode: element.password, zoomMeeting: element.meeting_id, zoomMeetObj: element },
         () => {
+          console.log('halla');
           this.openZoomPasscodeModal();
+          // window.open(`https://zoom.us/j/${element.meeting_id}?pwd=${element.password}`, '_blank');
         },
       );
       // this.openZoomPasscodeModal();
-
-      //  window.open(`https://zoom.us/j/${element.meeting_id}?pwd=${element.password}`);
     } else if (element.stream_type === 'meet') {
       this.addLiveStreamAttendanceOfStudent(element);
       window.open(`https://meet.google.com/${element.meeting_id}`, '_blank');

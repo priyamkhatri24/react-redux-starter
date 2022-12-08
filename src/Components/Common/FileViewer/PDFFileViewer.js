@@ -23,19 +23,6 @@ const FileView = (props) => {
   const { history } = props;
   console.log(window.location.origin);
   const viewer = useRef(null);
-  //   const [url, setUrl] = useState('');
-  //   useEffect(() => {
-  //     if (history.location.state) {
-  //       const { type, filePath } = history.location.state;
-  //       //  setFileType(type);
-  //       setUrl(filePath);
-  //       console.log(filePath, 'state');
-  //     } else {
-  //       const params = getParams(window.location.href);
-  //       //    setFileType(params.fileType);
-  //       setUrl(params.filePath);
-  //     }
-  //   }, [history.location.state]);
 
   useEffect(() => {
     let url;
@@ -49,7 +36,6 @@ const FileView = (props) => {
       //    setFileType(params.fileType);
       url = params.filePath;
     }
-    // let key = '';
 
     WebViewer(
       {

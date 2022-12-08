@@ -8,7 +8,7 @@ import ProgressBar from '../Common/ProgressBar/ProgressBar';
 import './Courses.scss';
 
 const Reviews = (props) => {
-  const { isFilterVisible, reviews, displayTwo, editClicked } = props;
+  const { isFilterVisible, reviews, displayTwo, editClicked, allowReviews } = props;
   const [ratingArray, setRatingArray] = useState([0, 0, 0, 0, 0]);
   const [finalReviews, setFinalReviews] = useState([]);
   const [isNewestActive, setIsNewestActive] = useState(true);
@@ -119,7 +119,7 @@ const Reviews = (props) => {
   };
 
   // const ratingArray = ['80', '70', '22', '38', '28'];
-  return (
+  return allowReviews == 'true' ? (
     <>
       <div className='d-flex align-items-end mb-1'>
         <h2 style={{ fontSize: '28px', fontFamily: 'Montserrat-Bold' }} className='mb-0'>
@@ -252,6 +252,10 @@ const Reviews = (props) => {
         })}
       </div>
     </>
+  ) : (
+    <p style={{ textAlign: 'center', fontFamily: 'Montserrat-Medium' }}>
+      Reviews have been disabled by the admin for this course.
+    </p>
   );
 };
 
@@ -262,4 +266,5 @@ Reviews.propTypes = {
   reviews: PropTypes.instanceOf(Array).isRequired,
   displayTwo: PropTypes.bool.isRequired,
   editClicked: PropTypes.func.isRequired,
+  allowReviews: PropTypes.string.isRequired,
 };

@@ -166,7 +166,7 @@ const Categories = (props) => {
   // };
 
   const goToRecording = (link) => {
-    console.log(link, 'lodu');
+    console.log(link);
     history.push({ pathname: `/videoplayer`, state: { videoLink: link } });
   };
 
@@ -358,6 +358,7 @@ const Categories = (props) => {
                         </div>
                       </>
                     ) : elem.file_type === '.jpg' ||
+                      elem.file_type === '.jpeg' ||
                       elem.file_type === '.png' ||
                       elem.file_type === 'gallery' ? (
                       // eslint-disable-next-line

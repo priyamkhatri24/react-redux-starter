@@ -9,14 +9,14 @@ import PersonAddRoundedIcon from '@material-ui/icons/PersonAddRounded';
 import AttachFile from '@material-ui/icons/AttachFile';
 import CreateNewFolderOutlined from '@material-ui/icons/CreateNewFolderOutlined';
 import Youtube from '@material-ui/icons/YouTube';
-import AddLinkIcon from '@material-ui/icons/Link'; 
+import AddLinkIcon from '@material-ui/icons/Link';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { uploadMultipleImages } from '../../../Utilities/customUpload';
 import { loadingActions } from '../../../redux/actions/loading.action';
 
 const AddButton = (props) => {
-  const { addButtonArray, onlyUseButton, triggerButton } = props;
+  const { addButtonArray, onlyUseButton, triggerButton, clientId, folderId } = props;
   const courseFileRef = useRef(null);
 
   const [openMenu, setOpenMenu] = useState(false);
@@ -40,8 +40,10 @@ const AddButton = (props) => {
       //   console.log('fileu;lod ', res);
       //   elem.func(file.name, res.filename);
       // });
-
-      uploadMultipleImages(e.target.files).then((res) => {
+      const path = `${
+        process.env.NODE_ENV == 'development' ? 'Development' : 'Production'
+      }/${clientId}/Library/${folderId}`;
+      uploadMultipleImages(e.target.files, path).then((res) => {
         elem.func(res);
       });
     }
@@ -179,10 +181,14 @@ AddButton.propTypes = {
   addButtonArray: PropTypes.instanceOf(Array),
   onlyUseButton: PropTypes.bool,
   triggerButton: PropTypes.func,
+  clientId: PropTypes.number,
+  folderId: PropTypes.number,
 };
 
 AddButton.defaultProps = {
   onlyUseButton: false,
   addButtonArray: [],
   triggerButton: () => {},
+  clientId: '',
+  folderId: '',
 };

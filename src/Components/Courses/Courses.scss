@@ -1013,6 +1013,18 @@
   outline: none;
 }
 
+.downloadButtonCourse {
+  outline: none;
+  border: 1px solid gray;
+  background-color: transparent;
+  border-radius: 100px;
+  cursor: pointer;
+  padding: 2px 8px;
+  font-size: 12px;
+  margin-left: 10px;
+
+}
+
 // .plyr audio,
 // .plyr iframe,
 // .plyr video {
@@ -1022,3 +1034,9 @@
 //   margin: auto;
 //   width: auto !important;
 // }
+
+@media screen and (min-width: 1200px) {
+  .downloadButtonCourse {
+    margin-left: 35%;
+  }
+}

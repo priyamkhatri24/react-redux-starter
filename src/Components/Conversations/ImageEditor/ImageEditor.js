@@ -10,6 +10,7 @@ import { getConversation, getSocket } from '../../../redux/reducers/conversation
 import { getClientUserId } from '../../../redux/reducers/clientUserId.reducer';
 import 'react-image-crop/dist/ReactCrop.css';
 import './ImageEditor.scss';
+import { uploadingImage } from '../../../Utilities/customUpload';
 
 const ImageEditor = ({}) => {
   const history = useHistory();
@@ -69,16 +70,16 @@ const ImageEditor = ({}) => {
 
   const sendCroppedImage = async () => {
     const blob = await getCroppedImg(img, state.file.name);
-    uploadFiles([{ file: blob, type: state.file.type }]).then((res) => {
+    uploadingImage(blob).then((res) => {
       console.log('res', res);
       const { attachments_array: arr } = res;
-      const { url: filename } = arr[0];
+      // const { url: filename } = arr[0];
       const emitData = {
         sender_id: clientUserId,
         conversation_id: conversation.id,
         text: '',
         type: 'message',
-        attachments_array: [{ url: filename, type: 'image', name: state.file.name }],
+        attachments_array: [{ url: res.filename, type: 'image', name: state.file.name }],
       };
       socket?.emit('sendMessage', emitData, (error, data) => {
         console.log('ack', data);

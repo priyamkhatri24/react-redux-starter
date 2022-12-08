@@ -449,8 +449,13 @@
   flex-grow: 1;
 }
 
+.strictInline {
+  display: inline !important;
+}
+
 .redTag {
   background-color: red;
+  display: inline !important;
   border-radius: 5px;
   padding: 3px 17px;
   color: white;

@@ -136,6 +136,7 @@ export const uploadFiles = (files) => {
       console.error(`The error is ${err}`);
     });
 };
+
 /* eslint-disable */
 export const json2xlsDownload = (JSONData, ReportTitle, ShowLabel) => {
   //  If JSONData is not an object then JSON.parse will parse the JSON string in an Object

@@ -98,53 +98,132 @@ class QuestionCard extends Component {
     console.log('CHANGE!');
   }
 
-  /** *********** */
+  sectionTimerHandler = () => {
+    this.setState((prevState) => {
+      return {
+        timer: prevState.timer + 1,
+      };
+    });
+  };
 
-  selectedAnswer = (e) => {
-    // option arrays must be the same always
-    const { question, currentLanguage } = this.state;
-    console.log(question);
-    this.setState({ answer: e });
-    const focusedQuestions = question;
-    focusedQuestions.option_array =
-      currentLanguage === 'english'
-        ? question.option_array.map((elem) => {
-            if (elem.order === Number(e)) {
-              elem.isFocus = true;
-              return elem;
-            }
-            elem.isFocus = false;
-            return elem;
-          })
-        : question.hindi_option_array.map((elem) => {
-            if (elem.order === Number(e)) {
-              elem.isFocus = true;
-              return elem;
-            }
-            elem.isFocus = false;
-            return elem;
-          });
+  restartSectionTimer = () => {
+    if (this.sectionTimeIntervalId !== 0) {
+      clearInterval(this.sectionTimeIntervalId);
+    }
+    this.sectionTimeIntervalId = setInterval(this.sectionTimerHandler, 1000);
+    this.setState({ timer: 0 });
+  };
 
-    focusedQuestions.hindi_option_array =
-      currentLanguage === 'english'
-        ? question.option_array.map((elem) => {
-            if (elem.order === Number(e)) {
-              elem.isFocus = true;
-              return elem;
-            }
-            elem.isFocus = false;
-            return elem;
-          })
-        : question.hindi_option_array.map((elem) => {
-            if (elem.order === Number(e)) {
-              elem.isFocus = true;
-              return elem;
-            }
-            elem.isFocus = false;
-            return elem;
-          });
+  multipleQuestionRender = (elem, i) => {
+    const { checked } = this.state;
+    return (
+      <div key={elem.order} className='QuestionTaker__questionOptions d-flex m-2'>
+        <span className='my-auto mr-1'>
+          {i === 0
+            ? 'A.'
+            : i === 1
+            ? 'B.'
+            : i === 2
+            ? 'C.'
+            : i === 3
+            ? 'D.'
+            : i === 4
+            ? 'E.'
+            : 'F.'}
+        </span>
 
-    this.setState({ question: focusedQuestions });
+        <div
+          // htmlFor={`test${elem.order}`}
+          className={`QuestionTaker__customRadio p-2 w-100 ${
+            checked[elem.order - 1] ? 'QuestionTaker__focusedRadio' : 'w-75'
+          }`}
+          onClick={() => this.handleChecked(elem.order)}
+          onKeyDown={() => this.handleChecked(elem.order)}
+          role='button'
+          tabIndex='-1'
+        >
+          <div className='radioControl'>
+            <MathJax math={String.raw`${elem.text}`} />
+            {/* {elem.text} */}
+          </div>
+          {/* <input
+                        onChange={() => this.handleChecked(elem.order)}
+                        id={`test${elem.order}`}
+                        type=''
+                        checked={checked[elem.order - 1]}
+                      /> */}
+          {elem.image && (
+            <img
+              src={elem.image}
+              alt='option'
+              className='img-fluid'
+              style={{ width: '70%', height: 'auto' }}
+            />
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  singleQuestionRender = (elem, i) => {
+    return (
+      <div key={elem.order} className='QuestionTaker__questionOptions m-2 d-flex'>
+        <span className='my-auto mr-1'>
+          {i === 0
+            ? 'A.'
+            : i === 1
+            ? 'B.'
+            : i === 2
+            ? 'C.'
+            : i === 3
+            ? 'D.'
+            : i === 4
+            ? 'E.'
+            : 'F.'}
+        </span>
+        <label
+          className={`QuestionTaker__customRadio p-2 w-100 ${
+            elem.isFocus ? 'QuestionTaker__focusedRadio' : 'w-75'
+          }`}
+          htmlFor={`testRadio${elem.order}`}
+        >
+          <input
+            type='radio'
+            name='testRadio'
+            value={elem.order}
+            onChange={(e) => this.selectedAnswer(e.target.value)}
+            onClick={(e) => this.selectedAnswer(e.target.value)}
+            id={`testRadio${elem.order}`}
+          />
+          <div className='radioControl'>
+            <MathJax math={String.raw`${elem.text}`} />
+          </div>
+          {elem.image && (
+            <img
+              src={elem.image}
+              alt='option'
+              className='img-fluid m-2'
+              ref={this.optionImageRef}
+              style={{ maxWidth: '70%', height: 'auto' }}
+            />
+          )}
+        </label>
+      </div>
+    );
+  };
+
+  checkAnswer = (elem) => {
+    if (elem.question_type === 'single') {
+      if (elem.option_array[0].order === 1 && elem.question_answer === '[A]') return true;
+      if (elem.option_array[0].order === 2 && elem.question_answer === '[B]') return true;
+      if (elem.option_array[0].order === 3 && elem.question_answer === '[C]') return true;
+      if (elem.option_array[0].order === 4 && elem.question_answer === '[D]') return true;
+      if (elem.option_array[0].order === 5 && elem.question_answer === '[E]') return true;
+      if (elem.option_array[0].order === 6 && elem.question_answer === '[F]') return true;
+
+      return false;
+    }
+    return null;
   };
 
   submitAnswer = (e) => {
@@ -248,133 +327,54 @@ class QuestionCard extends Component {
     }
   };
 
-  checkAnswer = (elem) => {
-    if (elem.question_type === 'single') {
-      if (elem.option_array[0].order === 1 && elem.question_answer === '[A]') return true;
-      if (elem.option_array[0].order === 2 && elem.question_answer === '[B]') return true;
-      if (elem.option_array[0].order === 3 && elem.question_answer === '[C]') return true;
-      if (elem.option_array[0].order === 4 && elem.question_answer === '[D]') return true;
-      if (elem.option_array[0].order === 5 && elem.question_answer === '[E]') return true;
-      if (elem.option_array[0].order === 6 && elem.question_answer === '[F]') return true;
+  selectedAnswer = (e) => {
+    // option arrays must be the same always
+    const { question, currentLanguage } = this.state;
+    console.log(question);
+    this.setState({ answer: e });
+    const focusedQuestions = question;
+    focusedQuestions.option_array =
+      currentLanguage === 'english'
+        ? question.option_array.map((elem) => {
+            if (elem.order === Number(e)) {
+              elem.isFocus = true;
+              return elem;
+            }
+            elem.isFocus = false;
+            return elem;
+          })
+        : question.hindi_option_array.map((elem) => {
+            if (elem.order === Number(e)) {
+              elem.isFocus = true;
+              return elem;
+            }
+            elem.isFocus = false;
+            return elem;
+          });
 
-      return false;
-    }
-    return null;
+    focusedQuestions.hindi_option_array =
+      currentLanguage === 'english'
+        ? question.option_array.map((elem) => {
+            if (elem.order === Number(e)) {
+              elem.isFocus = true;
+              return elem;
+            }
+            elem.isFocus = false;
+            return elem;
+          })
+        : question.hindi_option_array.map((elem) => {
+            if (elem.order === Number(e)) {
+              elem.isFocus = true;
+              return elem;
+            }
+            elem.isFocus = false;
+            return elem;
+          });
+
+    this.setState({ question: focusedQuestions });
   };
 
-  singleQuestionRender = (elem, i) => {
-    return (
-      <div key={elem.order} className='QuestionTaker__questionOptions m-2 d-flex'>
-        <span className='my-auto mr-1'>
-          {i === 0
-            ? 'A.'
-            : i === 1
-            ? 'B.'
-            : i === 2
-            ? 'C.'
-            : i === 3
-            ? 'D.'
-            : i === 4
-            ? 'E.'
-            : 'F.'}
-        </span>
-        <label
-          className={`QuestionTaker__customRadio p-2 w-100 ${
-            elem.isFocus ? 'QuestionTaker__focusedRadio' : 'w-75'
-          }`}
-          htmlFor={`testRadio${elem.order}`}
-        >
-          <input
-            type='radio'
-            name='testRadio'
-            value={elem.order}
-            onChange={(e) => this.selectedAnswer(e.target.value)}
-            onClick={(e) => this.selectedAnswer(e.target.value)}
-            id={`testRadio${elem.order}`}
-          />
-          <div className='radioControl'>
-            <MathJax math={String.raw`${elem.text}`} />
-          </div>
-          {elem.image && (
-            <img
-              src={elem.image}
-              alt='option'
-              className='img-fluid m-2'
-              ref={this.optionImageRef}
-              style={{ maxWidth: '70%', height: 'auto' }}
-            />
-          )}
-        </label>
-      </div>
-    );
-  };
-
-  multipleQuestionRender = (elem, i) => {
-    const { checked } = this.state;
-    return (
-      <div key={elem.order} className='QuestionTaker__questionOptions d-flex m-2'>
-        <span className='my-auto mr-1'>
-          {i === 0
-            ? 'A.'
-            : i === 1
-            ? 'B.'
-            : i === 2
-            ? 'C.'
-            : i === 3
-            ? 'D.'
-            : i === 4
-            ? 'E.'
-            : 'F.'}
-        </span>
-
-        <div
-          // htmlFor={`test${elem.order}`}
-          className={`QuestionTaker__customRadio p-2 w-100 ${
-            checked[elem.order - 1] ? 'QuestionTaker__focusedRadio' : 'w-75'
-          }`}
-          onClick={() => this.handleChecked(elem.order)}
-          onKeyDown={() => this.handleChecked(elem.order)}
-          role='button'
-          tabIndex='-1'
-        >
-          <div className='radioControl'>
-            <MathJax math={String.raw`${elem.text}`} />
-            {/* {elem.text} */}
-          </div>
-          {/* <input
-                        onChange={() => this.handleChecked(elem.order)}
-                        id={`test${elem.order}`}
-                        type=''
-                        checked={checked[elem.order - 1]}
-                      /> */}
-          {elem.image && (
-            <img
-              src={elem.image}
-              alt='option'
-              className='img-fluid'
-              style={{ width: '70%', height: 'auto' }}
-            />
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  sectionTimerHandler = () => {
-    this.setState((prevState) => {
-      return {
-        timer: prevState.timer + 1,
-      };
-    });
-  };
-
-  restartSectionTimer = () => {
-    if (this.sectionTimeIntervalId !== 0) {
-      clearInterval(this.sectionTimeIntervalId);
-    }
-    this.sectionTimeIntervalId = setInterval(this.sectionTimerHandler, 1000);
-    this.setState({ timer: 0 });
-  };
+  /** *********** */
 
   render() {
     const { question, checked, currentLanguage, showImageModal, imgLink } = this.state;
@@ -392,12 +392,12 @@ class QuestionCard extends Component {
               : 'Subjective'}
           </span>
           {currentLanguage === 'english' && (
-            <div className='QuestionTaker__questionHeading'>
+            <div className='QuestionTaker__questionHeading cantSelect'>
               <MathJax math={String.raw`${question.question_text}`} />
             </div>
           )}
           {currentLanguage === 'hindi' && (
-            <div className='QuestionTaker__questionHeading'>
+            <div className='QuestionTaker__questionHeading cantSelect'>
               <MathJax math={String.raw`${question.hindi_text}`} />
             </div>
           )}

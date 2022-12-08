@@ -28,7 +28,7 @@ import StarBorderIcon from '@material-ui/icons/StarBorderRounded';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ShareIcon from '@material-ui/icons/Share';
 // import freeIcon from '../../assets/images/Courses/freeIcon.svg';
-import { apiValidation, get, post, displayRazorpay, shareThis } from '../../Utilities';
+import { apiValidation, get, post, displayRazorpay, shareThis, urlify } from '../../Utilities';
 import { PageHeader } from '../Common';
 import Cashfree from '../Common/Cashfree/Cashfree';
 import sampleReviews from './courseReviewsSample';
@@ -73,6 +73,7 @@ const BuyCourse = (props) => {
     setRedirectPathToStore,
     setCurrentComponentToStore,
     roleArray,
+    setLocationDataToStore,
   } = props;
   const [course, setCourse] = useState({});
   const [paymentGateway, setPaymentGateway] = useState(null);
@@ -123,6 +124,21 @@ const BuyCourse = (props) => {
   };
 
   useEffect(() => {
+    fetch('https://api.country.is/')
+      .then((res) => res.json())
+      .then((dataa) => {
+        fetch(`https://api.techniknews.net/ipgeo/${dataa.ip}`)
+          .then((res2) => res2.json())
+          .then((data1) => {
+            setLocationDataToStore({
+              country: data1.country,
+              state: data1.regionName,
+            });
+          });
+      });
+  }, []);
+
+  useEffect(() => {
     get(null, '/getAllCurrencyCodes').then((res) => {
       const result = apiValidation(res);
       result.forEach((ele) => (ele.currencySymbol = ele.currency_symbol));
@@ -157,15 +173,6 @@ const BuyCourse = (props) => {
       }
     });
   }, []);
-
-  const urlify = (text) => {
-    if (!text) return '';
-
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return text.replace(urlRegex, function (url) {
-      return `<a href="${url}">${url}</a>`;
-    });
-  };
 
   useEffect(() => {
     setRedirectPathToStore(null);
@@ -268,7 +275,7 @@ const BuyCourse = (props) => {
       setContentArray(content);
       console.log(content, 'finalContentArray');
     });
-  }, [match, currencyCodes, location]);
+  }, [match, currencyCodes, location, locationData]);
 
   const subscribeOrBuy = () => {
     if (roleArray.includes(3) || roleArray.includes(4)) {
@@ -636,6 +643,7 @@ const BuyCourse = (props) => {
   });
 
   const detectNextLine = (text) => {
+    if (!text) return '';
     return text
       .split('\n')
       .map((ele) => `<p>${ele}</p>`)
@@ -846,7 +854,9 @@ const BuyCourse = (props) => {
                   {course.inducedCurrencySymbol ? (
                     <span className='mx-1 Courses__Price my-auto'>{`${course.inducedCurrencySymbol} ${coursePrice}`}</span>
                   ) : (
-                    <span className='mx-1 Courses__Price my-auto'>{`${currencySymbol} ${coursePrice}`}</span>
+                    <span className='mx-1 Courses__Price my-auto'>{`${
+                      currencySymbol || '₹'
+                    } ${coursePrice}`}</span>
                   )}
                   <span className='my-auto'>
                     {course.inducedCurrencySymbol ? (
@@ -857,7 +867,7 @@ const BuyCourse = (props) => {
                     ) : (
                       <del className='verySmallText'>
                         {' '}
-                        {`${currencySymbol} ${course.course_price}`}
+                        {`${currencySymbol || '₹'} ${course.course_price}`}
                       </del>
                     )}
                   </span>
@@ -1177,7 +1187,12 @@ const BuyCourse = (props) => {
               eventKey='Review'
             >
               <div style={{ marginTop: '1.2rem' }}>
-                <Reviews displayTwo={false} isFilterVisible reviews={reviews} />
+                <Reviews
+                  displayTwo={false}
+                  isFilterVisible
+                  reviews={reviews}
+                  allowReviews={course.allow_reviews}
+                />
               </div>
             </Tab>
           </Tabs>
@@ -1227,7 +1242,7 @@ const BuyCourse = (props) => {
               >
                 {course.inducedCurrencySymbol
                   ? `${course.inducedCurrencySymbol} ${coursePrice}`
-                  : `${currencySymbol} ${coursePrice}`}
+                  : `${currencySymbol || '₹'} ${coursePrice}`}
               </span>
             </Row>
           </Card>
@@ -1308,7 +1323,7 @@ const BuyCourse = (props) => {
             <h1 className='Fees__orderAmount mt-3'>
               {course.inducedCurrencySymbol
                 ? `${course.inducedCurrencySymbol} ${order.amount}`
-                : `${currencySymbol} ${order.amount}`}
+                : `${currencySymbol || '₹'} ${order.amount}`}
             </h1>
             <p className='Fees__orderDescription'>{order.description}</p>
             <h3 className={statusClass}>
@@ -1390,6 +1405,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   setRedirectPathToStore: (payload) => dispatch(dashboardActions.setRedirectPathToStore(payload)),
+  setLocationDataToStore: (payload) => {
+    dispatch(dashboardActions.setLocationDataToStore(payload));
+  },
   setCurrentComponentToStore: (payload) =>
     dispatch(brandingActions.setCurrentComponentToStore(payload)),
 });
@@ -1405,6 +1423,7 @@ BuyCourse.propTypes = {
   }).isRequired,
   clientUserId: PropTypes.number.isRequired,
   dashboardData: PropTypes.instanceOf(Object).isRequired,
+  setLocationDataToStore: PropTypes.func.isRequired,
   locationData: PropTypes.instanceOf(Object).isRequired,
   currentbranding: PropTypes.shape({
     branding: PropTypes.shape({
@@ -1423,4 +1442,8 @@ BuyCourse.propTypes = {
   setRedirectPathToStore: PropTypes.func.isRequired,
   setCurrentComponentToStore: PropTypes.func.isRequired,
   roleArray: PropTypes.instanceOf(Array).isRequired,
+};
+
+BuyCourse.defaultProps = {
+  currencySymbol: '₹',
 };

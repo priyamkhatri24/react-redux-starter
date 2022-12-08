@@ -10,3 +10,29 @@
     display: none;
   }
 }
+
+.desktoppdf {
+  color: black;
+}
+
+.mobilepdf {
+  color: black;
+}
+
+@media screen and (max-width: 550px) {
+  /* .mobilepdf {
+    display: none;
+  } */
+  .desktoppdf {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 550px) {
+  .mobilepdf {
+    display: none;
+  }
+  /* .desktoppdf {
+    display: none;
+  } */
+}

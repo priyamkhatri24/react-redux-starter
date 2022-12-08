@@ -1,28 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import ReactPlayer from 'react-player';
+import PlyrComponent from 'plyr-react';
+import AWS from 'aws-sdk';
+import { get } from '../../../Utilities';
+
+import 'plyr-react/dist/plyr.css';
+// import ReactPlayer from 'react-player';
 
 const Temp = () => {
   const [imageUrl, setImageUrl] = useState('');
 
-  useEffect(() => {
-    const xhr = new XMLHttpRequest();
+  // useEffect(() => {
+  //   const xhr = new XMLHttpRequest();
 
-    xhr.open(
-      'GET',
-      // 'http://vjs.zencdn.net/v/oceans.mp4',
-    );
-    xhr.responseType = 'arraybuffer';
+  //   xhr.open(
+  //     'GET',
+  //     // 'http://vjs.zencdn.net/v/oceans.mp4',
+  //   );
+  //   xhr.responseType = 'arraybuffer';
 
-    xhr.onload = function (e) {
-      const blob = new Blob([xhr.response]);
-      const url = URL.createObjectURL(blob);
-      console.log(url);
-      setImageUrl(url);
-      const img = document.getElementById('sapad');
-      img.src = url;
-    };
-    xhr.send();
-  }, []);
+  //   xhr.onload = function (e) {
+  //     const blob = new Blob([xhr.response]);
+  //     const url = URL.createObjectURL(blob);
+  //     console.log(url);
+  //     setImageUrl(url);
+  //     const img = document.getElementById('sapad');
+  //     img.src = url;
+  //   };
+  //   xhr.send();
+  // }, []);
 
   // useEffect(() => {
   //   const xhr = new XMLHttpRequest();
@@ -60,22 +65,49 @@ const Temp = () => {
   //   video.src = videoUrl;
   // }
 
-  // useEffect(() => {
-  //   display('http://vjs.zencdn.net/v/oceans.mp4');
-  // }, []);
+  useEffect(() => {
+    get(null, '/getAwsCredentialsWithBucketConfiguration').then((res) => {
+      console.log(res);
+    });
 
+    AWS.config.update({
+      accessKeyId: 'AKIAXIWOK44ITYEOJK2M',
+      secretAccessKey: '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',
+    });
+    const params = {
+      Bucket: 'question-images-ingenium',
+      Key: '1622643251264.mp4',
+      Expires: 10,
+    };
+    // const S3 = new AWS.S3();
+    const S3 = new AWS.S3({ region: 'ap-south-1', signatureVersion: 'v4' });
+    const url = S3.getSignedUrl('getObject', params);
+    console.log('The URL is', url);
+  }, []);
+
+  const options = {
+    autoplay: true,
+    youtube: { noCookie: false, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
+  };
   return (
     <div className='lol'>
-      <h1>TEMP</h1>
-      {/* <video id='sapad' style={{ maxWidth: '500px' }} /> */}
-      <video className='mb-2' id='sapad' width='320' height='240' controls>
-        <track src='' kind='captions' srcLang='en' label='english_captions' />
-      </video>
-      <video id='sapad2' width='320' height='240' controls>
-        <track src='' kind='captions' srcLang='en' label='english_captions' />
-      </video>
+      <PlyrComponent
+        source={{
+          type: 'video',
+          sources: [
+            {
+              src: 'https://s3.ap-south-1.amazonaws.com/question-images-ingenium/1622643251264.mp4',
+            },
+          ],
+        }}
+        options={options}
+      />
     </div>
   );
 };
 
 export default Temp;
+
+// https://userfiles-ingenium.s3.ap-south-1.amazonaws.com/SampleVideo_1280x720_1mb.mp4
+// https://s3.ap-south-1.amazonaws.com/userfiles-ingenium/SampleVideo_1280x720_1mb.mp4
+// https://userfiles-ingenium.s3.ap-south-1.amazonaws.com/Development/3.01606.020210303_205655.mp4

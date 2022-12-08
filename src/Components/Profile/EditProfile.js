@@ -11,10 +11,16 @@ import { post } from '../../Utilities';
 import Cropper from '../Common/CropperModal/Cropper';
 
 import '../Login/AdmissionChat/AdmissionForm/AdmissionForm.scss';
-import { getClientId, getUserId, getUserUserId } from '../../redux/reducers/clientUserId.reducer';
+import {
+  getClientId,
+  getClientUserId,
+  getUserId,
+  getUserUserId,
+} from '../../redux/reducers/clientUserId.reducer';
 import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { userProfileActions } from '../../redux/actions/userProfile.action';
 import { getAdmissionUserProfile } from '../../redux/reducers/admissions.reducer';
+import { deleteFileFromS3 } from '../../Utilities/customUpload';
 
 const EditProfile = (props) => {
   const {
@@ -24,6 +30,7 @@ const EditProfile = (props) => {
     profileImagePath,
     history,
     clientId,
+    clientUserId,
     userUserId,
     userId,
     user,
@@ -103,7 +110,7 @@ const EditProfile = (props) => {
 
   const addProfileImage = (file) => {
     profileImage.current = file;
-    console.log(file);
+    console.log(file, 'yooooo');
     const payload = {
       profile_image: file,
       /* eslint-disable */
@@ -112,6 +119,7 @@ const EditProfile = (props) => {
     console.log(payload);
     post(payload, '/editProfilePicture').then((res) => {
       console.log(res, 'profilepic edit');
+      deleteFileFromS3(file);
     });
   };
 
@@ -192,6 +200,9 @@ const EditProfile = (props) => {
           setProfileImage={addProfileImage}
           aspectTop={1}
           aspectBottom={1}
+          clientId={clientId}
+          featureId={clientUserId}
+          feature='Profile'
         />
       </div>
 
@@ -202,6 +213,7 @@ const EditProfile = (props) => {
 
 const mapStateToProps = (state) => ({
   clientId: getClientId(state),
+  clientUserId: getClientUserId(state),
   userId: getUserId(state),
   userUserId: getUserUserId(state),
   user: getUserProfile(state),
@@ -234,6 +246,7 @@ EditProfile.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
   clientId: PropTypes.number.isRequired,
   userId: PropTypes.number.isRequired,
+  clientUserId: PropTypes.number.isRequired,
   userUserId: PropTypes.number.isRequired,
   user: PropTypes.instanceOf(Object).isRequired,
   userAdmission: PropTypes.instanceOf(Object).isRequired,

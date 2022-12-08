@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import AWS from 'aws-sdk';
+import AmazonS3URI from 'amazon-s3-uri';
+
 // Custom hook to implement setInterval
 
 export const useInterval = (callback, delay) => {
@@ -155,6 +158,34 @@ export default function useWindowDimensions() {
 
   return windowDimensions;
 }
+
+export const urlify = (text) => {
+  if (!text) return '';
+
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.replace(urlRegex, function (url) {
+    return `<a href="${url}" target="_blank">${url}</a>`;
+  });
+};
+
+export const generatePreSignedUrl = (url) => {
+  // const obj = AmazonS3URI(url);
+  // const newkey = obj.key.replaceAll('+', ' ');
+
+  // AWS.config.update({
+  //   accessKeyId: 'AKIAXIWOK44ITYEOJK2M',
+  //   secretAccessKey: 'OUo7cud4HNC/+wfdqOhLq9UhTeie6RvF7JAc8+LL',
+  // });
+  // const params = {
+  //   Bucket: obj.bucket,
+  //   Key: newkey,
+  //   Expires: 4000,
+  // };
+  // const S3 = new AWS.S3({ region: obj.region, signatureVersion: 'v4' });
+  // const presignedurl = S3.getSignedUrl('getObject', params);
+  // console.log('The URL is', presignedurl);
+  return url;
+};
 
 export const shareThis = (url, content, title = 'Look at this awesome course!') => {
   if (navigator.share) {

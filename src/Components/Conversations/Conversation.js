@@ -31,6 +31,7 @@ import ConversationInput from './ConversationInput';
 import { formatMessages, formatMessage, formatPost } from './formatter';
 import Messages from './Messages/Messages';
 import './Conversation.scss';
+import { uploadingImage } from '../../Utilities/customUpload';
 
 const CONVERSATION_TYPES = {
   CHAT: 'chats',
@@ -544,7 +545,7 @@ const Conversation = (props) => {
     newConversation.messages = newMessages;
     setConversation(newConversation);
 
-    uploadFiles([{ file, type: fileType }]).then((res) => {
+    uploadingImage(file).then((res) => {
       console.log(res, 'checking docs response nowwww');
       const arr = res?.attachments_array;
       const filename = arr ? arr[0].url : '';
@@ -556,7 +557,7 @@ const Conversation = (props) => {
         text: '',
         type: 'message',
         attachments_array: [
-          { url: filename, type: fileType === 'document' ? 'doc' : fileType, name: file.name },
+          { url: res.filename, type: fileType === 'document' ? 'doc' : fileType, name: file.name },
         ],
         primaryChat: reply,
       };

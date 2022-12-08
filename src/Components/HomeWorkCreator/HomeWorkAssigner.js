@@ -400,7 +400,14 @@ const HomeWorkAssigner = (props) => {
                 readOnly
                 value={batchInputValue}
               />
-              <span>Select Batch</span>
+              <span
+                role='button'
+                tabIndex={-1}
+                onKeyDown={(e) => e.target.previousSibling.focus()}
+                onClick={(e) => e.target.previousSibling.focus()}
+              >
+                Select Batch
+              </span>
               <i className='LiveClasses__show'>
                 <ExpandMoreIcon />
               </i>

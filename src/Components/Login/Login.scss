@@ -10,8 +10,8 @@
   &__jumbo {
     width: 50%;
     background: transparent;
-    max-width: 200px;
-    max-height: 25vh;
+    max-width: 210px;
+    max-height: 30vh;
     width: auto;
     // @include media-breakpoint-down(md) {
     //   max-height: 25vh;
@@ -109,8 +109,20 @@
   }
 }
 
+@media screen and (min-width: 2500px) {
+  .Login__jumbo {
+    max-width: 330px !important;
+    max-height: 33vh !important;
+  }
+}
+
 @media screen and (max-height: 750px) {
   .Login__footer {
     position: relative;
   }
+  .Preloader__brand {
+    font-size: 40px;
+  }
 }
+
+

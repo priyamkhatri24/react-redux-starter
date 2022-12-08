@@ -10,6 +10,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
+
 import VideocamIcon from '@material-ui/icons/Videocam';
 import { PageHeader } from '../Common';
 import AddButton from '../Common/AddButton/AddButton';
@@ -31,7 +32,7 @@ import {
   getCourseId,
 } from '../../redux/reducers/course.reducer';
 import { homeworkActions } from '../../redux/actions/homework.action';
-import { getClientUserId } from '../../redux/reducers/clientUserId.reducer';
+import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
 import { courseActions } from '../../redux/actions/course.action';
 import ContentRow from './ContentRow';
 
@@ -47,6 +48,7 @@ const AddContent = (props) => {
     },
     history,
     sectionId,
+    clientId,
     courseId,
     sectionName,
     setSelectedQuestionArrayToStore,
@@ -142,10 +144,10 @@ const AddContent = (props) => {
 
   const goToContent = (i) => {
     if (i === 6) {
-      Swal.fire({
-        icon: 'info',
-        title: 'Coming Soon!',
-      });
+      // Swal.fire({
+      //   icon: 'info',
+      //   title: 'Coming Soon!',
+      // });
     } else if (i === 1) {
       courseImageRef.current.click();
     } else if (i === 4) {
@@ -263,7 +265,10 @@ const AddContent = (props) => {
     if (filess?.length && isFileAllowedArray.every((ele) => ele === true)) {
       // reader.readAsDataURL(e.target.files[0]);
       console.log(filess, 'beforeResponse');
-      uploadMultipleImages(filesArr).then((res) => {
+      const path = `${
+        process.env.NODE_ENV == 'development' ? 'Development' : 'Production'
+      }/${clientId}/Course/${courseId}/Sections/${sectionId}`;
+      uploadMultipleImages(filesArr, path, 'courses').then((res) => {
         res.forEach((ele, index) => {
           filess.forEach((elem) => {
             if (ele.name === elem.file.name) {
@@ -306,19 +311,22 @@ const AddContent = (props) => {
     } else if (type === 'image') {
       setImgLink(elem.file_link);
       handleImageOpen();
-    } else if (type === 'file') {
+    } else if (type.includes('pdf')) {
       // const fileType = elem.file_type.replace(/\./g, ''); // removes the . form .doc / .ppt etc
       const fileType = elem.name.split('.')[1];
-      fileType === 'pdf' || fileType === 'pd'
-        ? history.push({
-            pathname: '/fileviewer',
-            state: { filePath: elem.file_link, type: fileType },
-          })
-        : history.push({
-            pathname: '/otherfileviewer',
-            state: { filePath: elem.file_link, type: fileType },
-          });
-
+      // fileType === 'pdf' || fileType === 'pd'
+      //   ? history.push({
+      //       pathname: '/fileviewer',
+      //       state: { filePath: elem.file_link, type: fileType },
+      //     })
+      //   : history.push({
+      //       pathname: '/otherfileviewer',
+      //       state: { filePath: elem.file_link, type: fileType },
+      //     });
+      history.push({
+        pathname: '/fileviewer',
+        state: { filePath: elem.file_link, type: fileType },
+      });
       // history.push({
       //   pathname: '/otherfileviewer',
       //   state: { filePath: elem.file_link },
@@ -445,6 +453,41 @@ const AddContent = (props) => {
     return res;
   };
 
+  const makeContentDownloadable = (item) => {
+    if (item.content_type === 'test' || item.file_type === 'youtube') {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops',
+        text: "This content can't be made downloadable",
+        confirmButtonText: `OK`,
+      });
+      return;
+    }
+    console.log(item, 'download krdee');
+    const newIsDownloadable = item.is_downloadable !== 'true' ? 'true' : 'false';
+    const payload = {
+      section_has_file_id: item.section_has_file_id,
+      is_downloadable: newIsDownloadable,
+    };
+    const newContent = content.map((elem) => {
+      if (elem.section_has_file_id === item.section_has_file_id) {
+        elem.is_downloadable = newIsDownloadable;
+      }
+      return elem;
+    });
+    // item.is_downloadable = item.is_downloadable !== 'true' ? 'false' : 'true';
+    console.log(payload);
+    post(payload, '/makeContentDownloadable').then((res) => {
+      setContent(newContent);
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: `Content made ${!item.is_downloadable ? 'non-downloadable' : 'downloadable'}`,
+        confirmButtonText: `OK`,
+      });
+    });
+  };
+
   return (
     <div>
       <PageHeader title={sectionName} customBack handleBack={handleBackButton} />
@@ -453,6 +496,7 @@ const AddContent = (props) => {
         <ContentRow
           removeSection={removeSection}
           makeContentFree={makeContentFree}
+          makeContentDownloadable={makeContentDownloadable}
           renameContent={renameContent}
           openTheContent={openTheContent}
           handleDragEnd={handleDragEnd}
@@ -532,6 +576,7 @@ const mapStateToProps = (state) => ({
   sectionId: getCourseCurrentSectionId(state),
   sectionName: getCourseCurrentSectionName(state),
   courseId: getCourseId(state),
+  clientId: getClientId(state),
   clientUserId: getClientUserId(state),
   courseSectionPriorityOrder: getCourseSectionPriorityOrder(state),
   courseAddContentTestId: getCourseAddContentTestId(state),
@@ -561,6 +606,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(AddContent);
 
 AddContent.propTypes = {
   history: PropTypes.instanceOf(Object).isRequired,
+  clientId: PropTypes.number.isRequired,
   sectionId: PropTypes.number.isRequired,
   courseId: PropTypes.number.isRequired,
   sectionName: PropTypes.string.isRequired,

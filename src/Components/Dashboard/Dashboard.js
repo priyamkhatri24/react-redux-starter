@@ -75,6 +75,7 @@ import {
 } from '../../redux/reducers/dashboard.reducer';
 import { getToken, onMessageListener } from '../../Utilities/firebase';
 import { conversationsActions } from '../../redux/actions/conversations.action';
+import DiwaliLights from '../Common/Festives/DiwaliLights/DiwaliLights';
 
 const DashBoardAdmissions = Loadable({
   loader: () => import('./DashBoardAdmissions'),
@@ -166,18 +167,37 @@ const Dashboard = (props) => {
   // }, [sessionStatus]);
 
   useEffect(() => {
-    if (!ipRegistryKey) return;
-    fetch(`https://api.ipregistry.co/?key=${ipRegistryKey}`)
+    // if (!ipRegistryKey) return;
+    // fetch(`https://api.ipregistry.co/?key=${ipRegistryKey}`)
+    //   .then((res) => res.json())
+    //   .then((ipdata) => {
+    //     setCurrentCountry(ipdata.location.country.name);
+    //     setCurrentState(ipdata.location.region.name);
+    //     setLocationDataToStore({
+    //       country: ipdata.location.country.name,
+    //       state: ipdata.location.region.name,
+    //     });
+    //   });
+
+    fetch('https://api.country.is/')
       .then((res) => res.json())
-      .then((ipdata) => {
-        setCurrentCountry(ipdata.location.country.name);
-        setCurrentState(ipdata.location.region.name);
-        setLocationDataToStore({
-          country: ipdata.location.country.name,
-          state: ipdata.location.region.name,
-        });
+      .then((dataa) => {
+        fetch(`https://api.techniknews.net/ipgeo/${dataa.ip}`)
+          .then((res2) => res2.json())
+          .then((data1) => {
+            setCurrentCountry(data1.country);
+            console.log({
+              country: data1.country,
+              state: data1.regionName,
+            });
+            setCurrentState(data1.regionName);
+            setLocationDataToStore({
+              country: data1.country,
+              state: data1.regionName,
+            });
+          });
       });
-  }, [ipRegistryKey]);
+  }, []);
 
   useEffect(() => {
     if (showCallbackModal) {
@@ -1585,6 +1605,7 @@ const Dashboard = (props) => {
 
   return (
     <div className='Dashboard__mainContainerDiv'>
+      {/* <DiwaliLights /> */}
       <div
         className='Dashboard__headerCard pb-3'
         // className={`Dashboard__headerCard pb-3 ${

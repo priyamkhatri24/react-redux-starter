@@ -65,7 +65,9 @@ export const PageHeader = (props) => {
             ) : (
               <BackButton color={iconColor} />
             ))}
-          <span className='ml-3 PageHeader__title'>{title}</span>
+          <span className='ml-3 PageHeader__title'>
+            {title.length > 28 ? `${title.slice(0, 28)}...` : title}
+          </span>
           {globalSearch ? <GlobalSearchBar /> : null}
           <div className='ml-auto '>
             {search && (

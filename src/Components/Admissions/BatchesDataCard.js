@@ -8,7 +8,7 @@ import AdmissionStyle from './Admissions.style';
 
 const BatchesDataCard = (props) => {
   const { elem, history } = props;
-  // console.log(elem, 'elemmmmmmm', 'agcth');
+  console.log(elem, 'elemmmmmmm', 'agcth');
   return (
     <Col
       xs={5}

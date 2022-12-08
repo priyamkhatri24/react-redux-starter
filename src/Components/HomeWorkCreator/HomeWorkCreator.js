@@ -456,7 +456,6 @@ const HomeWorkCreator = (props) => {
             solutionImage={solutionImage}
             type={type}
             compressed={compressed}
-            answerText={ckAnswerText}
           />
         )}
       </div>

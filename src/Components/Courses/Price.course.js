@@ -65,13 +65,20 @@ const Price = (props) => {
   const [newCouponCurrency, setNewCouponCurrency] = useState('INR');
   const [couponPage, setCouponPage] = useState(1);
   const [seeMore, setSeeMore] = useState(true);
+  const [codes, setCodes] = useState([]);
 
   useEffect(() => {
     get(null, '/getAllCurrencyCodesWithNames').then((currency) => {
       const result = apiValidation(currency);
       setCurrencies(result);
+      get(null, '/getAllCurrencyCodes').then((codescurrency) => {
+        const result2 = apiValidation(codescurrency);
+        setCodes(result2);
+      });
     });
   }, []);
+
+  console.log(currencies, 'currencies');
 
   useEffect(() => {
     const headers = {
@@ -148,7 +155,10 @@ const Price = (props) => {
     });
   };
 
-  const openCouponInfoModal = () => setCouponModal(true);
+  const openCouponInfoModal = () => {
+    setCouponModal(true);
+    console.log(couponInfo);
+  };
   const closeCouponInfoModal = () => setCouponModal(false);
   const openCourseModal = () => setShowCourseModal(true);
   const closeCourseModal = () => setShowCourseModal(false);
@@ -958,7 +968,12 @@ const Price = (props) => {
             <p className='m-2'>
               <span className='Courses__rupeeAmount' style={{ fontSize: '18px' }}>
                 {' '}
-                {`${currencySymbol} ${couponInfo.price}`}
+                {`${
+                  couponInfo.coupon_type === 'price'
+                    ? codes.find((ele) => ele.currency_code == couponInfo.coupon_currency)
+                        .currency_symbol
+                    : ''
+                } ${couponInfo.price} ${couponInfo.coupon_type === 'percent' ? '%' : ''}`}
               </span>
               <span style={{ fontSize: '12px' }} className='Courses__tinySubHeading'>
                 {' '}

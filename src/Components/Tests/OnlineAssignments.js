@@ -31,7 +31,7 @@ export const OnlineAssignments = (props) => {
     if (!tabRef && !tabRef?.current) return;
     const tabHeightFromTop = document.querySelector('.t1')?.offsetTop;
     console.log(tabHeightFromTop, 'thft');
-    const tabH = document.body.clientHeight - 130;
+    const tabH = document.body.clientHeight - 90;
     setTabHeight(tabH);
     console.log(tabH);
   });
@@ -39,7 +39,7 @@ export const OnlineAssignments = (props) => {
   const handleTabHeight = () => {
     if (!tabRef && !tabRef?.current) return;
     const tabHeightFromTop = document.querySelector('.t1')?.offsetTop;
-    const tabH = document.body.clientHeight - 130;
+    const tabH = document.body.clientHeight - 90;
     setTabHeight(tabH);
   };
 
@@ -72,7 +72,7 @@ export const OnlineAssignments = (props) => {
       >
         <Tab
           eventKey='0'
-          className='tab t1 Profile__Tabs'
+          className='tablc t1 Profile__Tabs'
           id='idForONT1'
           ref={tabRef}
           style={{ height: `${tabHeight}px` }}
@@ -88,7 +88,7 @@ export const OnlineAssignments = (props) => {
           style={{ height: `${tabHeight}px` }}
           onScroll={handleTabHeight}
           title='Tests'
-          className='tab Profile__Tabs'
+          className='tablc Profile__Tabs'
           // onClick={() => searchAssignments('')}
         >
           <Test clientUserId={clientUserId} searchString={searchString} />

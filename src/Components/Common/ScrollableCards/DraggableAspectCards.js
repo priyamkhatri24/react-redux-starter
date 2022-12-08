@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import AddIcon from '@material-ui/icons/Add';
 import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { post } from '../../../Utilities';
 import './ScrollableCards.scss';
@@ -181,7 +182,7 @@ export const DraggableAspectCards = (props) => {
                           style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
                           onClick={() => {
                             clickCard(elem);
-                            showCardOnModal(elem);
+                            // showCardOnModal(elem);
                           }}
                         >
                           {elem.file_type === 'video' ? (
@@ -197,13 +198,15 @@ export const DraggableAspectCards = (props) => {
                               <track src='' kind='subtitles' srcLang='en' label='English' />
                             </video>
                           ) : (
-                            <img
-                              src={elem.file_link}
-                              alt='student'
-                              // height={bigAspectCard ? '177px' : '113px'}
-                              // width={bigAspectCard ? '315px' : '200px'}
-                              style={{ borderRadius: '5px' }}
-                            />
+                            <>
+                              <img
+                                src={elem.file_link}
+                                alt='student'
+                                // height={bigAspectCard ? '177px' : '113px'}
+                                // width={bigAspectCard ? '315px' : '200px'}
+                                style={{ borderRadius: '5px' }}
+                              />
+                            </>
                           )}
                         </Card>
                       )}

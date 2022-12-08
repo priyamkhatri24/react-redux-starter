@@ -95,21 +95,23 @@ const UserDataCard = (props) => {
       {FeeUser === false && (
         <Row className='ml-auto mx-2 pt-1'>
           <FaceIcon css={AdmissionStyle.onlineIcon} />
-          {elem.role_id.split(',').map((e, i) => {
-            return (
-              // eslint-disable-next-line
-              <span style={{ fontSize: '8px', color: '#212121' }} className='my-auto' key={i}>
-                {e.toString() === '1'
-                  ? 'Student'
-                  : e.toString() === '2'
-                  ? 'Parent'
-                  : e.toString() === '3'
-                  ? 'Teacher'
-                  : 'Admin'}
-                {i !== elem.role_id.split(',').length - 1 && ','}
-              </span>
-            );
-          })}
+          {String(elem.role_id)
+            .split(',')
+            .map((e, i) => {
+              return (
+                // eslint-disable-next-line
+                <span style={{ fontSize: '8px', color: '#212121' }} className='my-auto' key={i}>
+                  {e.toString() === '1'
+                    ? 'Student'
+                    : e.toString() === '2'
+                    ? 'Parent'
+                    : e.toString() === '3'
+                    ? 'Teacher'
+                    : 'Admin'}
+                  {i !== String(elem.role_id).split(',').length - 1 && ','}
+                </span>
+              );
+            })}
         </Row>
       )}
       <Row className=' m-0 px-2 my-auto'>

@@ -175,7 +175,6 @@ const CRM = (props) => {
         const resultant = [...admissionFormArray, ...result];
         setAdmissionFormArray(resultant);
       });
-      
     }
     return () => {
       clearTimeout(timer);
@@ -242,6 +241,11 @@ const CRM = (props) => {
           Address: ele.address,
           Parent_contact: ele.parent_contact,
           Parent_name: ele.parent_name,
+          signup_time: new Date(ele.signup_time * 1000)
+            .toISOString()
+            .split('T')
+            .join(' at ')
+            .slice(0, 23),
         };
       });
       console.log(jsonDataToDownload);
@@ -338,7 +342,12 @@ const CRM = (props) => {
                           className='mb-2 ml-2'
                           style={{ fontFamily: 'Montserrat-Regular' }}
                         >
-                          Signup time: {getReadableDate(inquiry.signup_time)}
+                          Signup time:{' '}
+                          {new Date(inquiry.signup_time * 1000)
+                            .toISOString()
+                            .split('T')
+                            .join(' at ')
+                            .slice(0, 19)}
                         </p>
                       </Col>
                     </Row>
@@ -451,7 +460,12 @@ const CRM = (props) => {
                             className='mb-2 ml-2'
                             style={{ fontFamily: 'Montserrat-Regular' }}
                           >
-                            Signup time: {getReadableDate(e.signup_time)}
+                            Signup time:{' '}
+                            {new Date(e.signup_time * 1000)
+                              .toISOString()
+                              .split('T')
+                              .join(' at ')
+                              .slice(0, 19)}
                           </div>
                         </Col>
                       </Row>

@@ -14,6 +14,9 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import LockIcon from '@material-ui/icons/Lock';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteIcon from '@material-ui/icons/Delete';
+import FileDownload from '@material-ui/icons/CloudDownload';
+// import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import FileDownloadOff from '@material-ui/icons/CloudOff';
 import EditIcon from '@material-ui/icons/Edit';
 import UnlockIcon from '@material-ui/icons/LockOpen';
 import { responsesAreSame } from 'workbox-broadcast-update';
@@ -28,6 +31,7 @@ const ContentRow = (props) => {
     handleDragEnd,
     renameContent,
     makeContentFree,
+    makeContentDownloadable,
   } = props;
   const [showMoreVertModal, setShowMoreVertModal] = useState(false);
   const [selectedContent, setSelectedContent] = useState({});
@@ -192,6 +196,12 @@ const ContentRow = (props) => {
                                           ? elem.file_type
                                           : elem.content_type}
                                       </span>
+                                      {` (${
+                                        elem.is_downloadable == 'true' ||
+                                        elem.is_downloadable == true
+                                          ? 'downloadable'
+                                          : 'non-downloadable'
+                                      })`}
                                     </p>
                                   </div>
                                 </div>
@@ -315,6 +325,32 @@ const ContentRow = (props) => {
             <p>Delete Content</p>
             <DeleteIcon />
           </div>
+
+          <div
+            role='button'
+            tabIndex='-1'
+            className='d-flex w-100 justify-content-between Courses__moreVertModalBodydiv'
+            onClick={() => {
+              makeContentDownloadable(selectedContent);
+              closeMoreVertModal();
+            }}
+            onKeyDown={() => {
+              makeContentDownloadable(selectedContent);
+              closeMoreVertModal();
+            }}
+          >
+            {selectedContent.is_downloadable === 'true' ? (
+              <>
+                <p>Make Non-downloadable</p>
+                <FileDownloadOff />
+              </>
+            ) : (
+              <>
+                <p>Make downloadable</p>
+                <FileDownload />
+              </>
+            )}
+          </div>
         </Modal.Body>
       </Modal>
     </div>
@@ -331,4 +367,5 @@ ContentRow.propTypes = {
   makeContentFree: PropTypes.func.isRequired,
   handleDragEnd: PropTypes.func.isRequired,
   updateContent: PropTypes.func.isRequired,
+  makeContentDownloadable: PropTypes.func.isRequired,
 };

@@ -36,16 +36,22 @@ const DisplayPage = (props) => {
   const [modalFile, setModalFile] = useState('');
   const openDeleteModal = (elem) => {
     setShowModal(true);
+    setCardUrl(elem.redirect_url);
     setModalFile(elem);
   };
-  const closeDeleteModal = () => setShowModal(false);
+  const closeDeleteModal = () => {
+    setShowModal(false);
+    setUrlState(false);
+  };
 
   const [cropperImageModal, setCropperImageModal] = useState(false);
   const [counter, setCounter] = useState(0);
   const [currentSection, setCurrentSection] = useState({});
   const profileImageRef = useRef(null);
   const [upImg, setUpImg] = useState();
-
+  const [cardUrl, setCardUrl] = useState(null);
+  const [urlState, setUrlState] = useState(false);
+  const [newImageCardUrl, setNewImageCardUrl] = useState('');
   const handleCropperClose = () => setCropperImageModal(false);
   const handleCropperOpen = () => setCropperImageModal(true);
 
@@ -71,6 +77,30 @@ const DisplayPage = (props) => {
     history.push('/displaypage/editprofile');
   };
 
+  const saveFile = () => {
+    const payload = {
+      redirect_url: cardUrl || '',
+      file_id: modalFile.homepage_section_file_id,
+    };
+    post(payload, '/editUrlOfBanner')
+      .then((res) => {
+        modalFile.redirect_url = cardUrl || null;
+        closeDeleteModal();
+        setCardUrl(null);
+      })
+      .catch((err) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops',
+          text: 'Something went wrong. Please try again.',
+        });
+        setCardUrl(null);
+        closeDeleteModal();
+      });
+
+    console.log('saved');
+  };
+
   const deleteFile = () => {
     post({ file_id: modalFile.homepage_section_file_id }, '/deleteFileFromHomepageSection').then(
       (res) => {
@@ -81,40 +111,59 @@ const DisplayPage = (props) => {
     );
   };
 
+  const getCardUrl = (url) => {
+    setNewImageCardUrl(url);
+  };
+
   function reverse(s) {
     return [...s].reverse().join('');
   }
   const addNewFile = (file, type = 'image') => {
     console.log(file, 'fileeee');
+
     const payload = {
       client_user_id: clientUserId,
       file_type: type,
       file_link: file,
       section_id: currentSection.homepage_section_id,
       priority_order: (currentSection.file_array.length + 1).toString(),
+      redirect_url: newImageCardUrl,
     };
-    const bannerObject = banners.find(
-      (ele) => ele.homepage_section_id === currentSection.homepage_section_id,
-    );
-    bannerObject.file_array.push({
-      file_link: file,
-      file_type: type,
-      priority_order: (currentSection.file_array.length + 1).toString(),
-      session_status: 'active',
-    });
-    console.log(bannerObject, 'bannerObject');
-    const newBanners = banners.map((ele) => {
+    // const bannerObject = banners.find(
+    //   (ele) => ele.homepage_section_id === currentSection.homepage_section_id,
+    // );
+
+    console.log(payload, 'payloadd');
+    banners.forEach((ele) => {
       if (ele.homepage_section_id === currentSection.homepage_section_id) {
-        ele.file_array = bannerObject.file_array;
+        ele.file_array.push({
+          file_link: file,
+          file_type: type,
+          priority_order: (currentSection.file_array.length + 1).toString(),
+          session_status: 'active',
+          redirect_url: newImageCardUrl,
+        });
       }
-      return ele;
     });
-    console.log(newBanners, 'newBanners');
-    setBanners(newBanners);
+    console.log(banners, 'bannersss');
+    // bannerObject.file_array.push({
+    //   file_link: file,
+    //   file_type: type,
+    //   priority_order: (currentSection.file_array.length + 1).toString(),
+    //   session_status: 'active',
+    // });
+
+    // const newBanners = banners.map((ele) => {
+    //   if (ele.homepage_section_id === currentSection.homepage_section_id) {
+    //     ele.file_array = bannerObject.file_array;
+    //   }
+    //   return ele;
+    // });
+    // setBanners(newBanners);
+
     post(payload, '/addFileToHomePageSection').then((res) => {
       console.log(res);
     });
-    // console.log(payload);
   };
 
   const onSelectFile = (e) => {
@@ -132,7 +181,12 @@ const DisplayPage = (props) => {
       if (type === 'image') {
         handleCropperOpen();
       } else if (type === 'video') {
-        uploadingImage(file).then((res) => {
+        uploadingImage(
+          file,
+          `${
+            process.env.NODE_ENV == 'development' ? 'Development' : 'Production'
+          }/${clientId}/DisplayPage/${currentSection.section_name.replace(' ', '')}/Videos`,
+        ).then((res) => {
           console.log('videooolod ', res);
           addNewFile(res.filename, 'video');
         });
@@ -160,6 +214,16 @@ const DisplayPage = (props) => {
     // data[result.source.index] = data[result.destination.index];
     // data[result.destination.index] = temp;
   };
+
+  const removeUrlState = () => {
+    setCardUrl(null);
+    setUrlState(false);
+    // const newModalFile = { ...modalFile };
+    // newModalFile.redirect_url = '';
+    // setModalFile(newModalFile);
+  };
+
+  console.log(clientId, 'pwoepwoepwoepwoepwopeopwoe');
 
   return (
     <>
@@ -226,6 +290,10 @@ const DisplayPage = (props) => {
                 handleClose={handleCropperClose}
                 setProfileImage={addNewFile}
                 sourceImage={upImg}
+                fromDisplayPage
+                getCardUrl={getCardUrl}
+                clientId={clientId}
+                feature={`DisplayPage/${currentSection.section_name?.replace(' ', '')}`}
               />
             </React.Fragment>
           );
@@ -241,11 +309,11 @@ const DisplayPage = (props) => {
         />
       </div>
 
-      <Modal show={showModal} onHide={closeDeleteModal} centered>
+      <Modal show={showModal} onHide={closeDeleteModal} centered size='lg'>
         <Modal.Header closeButton>
           <Modal.Title>Selected File</Modal.Title>
         </Modal.Header>
-        <Modal.Body className=' mx-auto'>
+        <Modal.Body className='d-flex displayCardModal mx-auto'>
           {modalFile.file_type === 'video' ? (
             /* eslint-disable */
             <video
@@ -258,15 +326,64 @@ const DisplayPage = (props) => {
               <track src='' kind='subtitles' srcLang='en' label='English' />
             </video>
           ) : (
-            <img src={modalFile.file_link} alt='file' className='img-fluid' />
+            <>
+              <img src={modalFile.file_link} alt='file' className='img-fluid' />
+              <div>
+                {cardUrl || urlState ? (
+                  <Button
+                    style={{ padding: '0px', margin: '8px 0px', fontSize: '12px' }}
+                    variant='boldText'
+                    onClick={() => removeUrlState()}
+                  >
+                    Remove url
+                  </Button>
+                ) : (
+                  <Button
+                    style={{ padding: '0px', margin: '8px 0px', fontSize: '12px' }}
+                    variant='boldText'
+                    onClick={() => {
+                      setCardUrl(modalFile.redirect_url);
+                      setUrlState(true);
+                    }}
+                  >
+                    Add url (optional)
+                  </Button>
+                )}
+                {cardUrl || urlState ? (
+                  <label style={{ width: '100%' }} htmlFor='url' className='d-flex has-float-label'>
+                    <input
+                      className='form-control'
+                      name='url'
+                      type='text'
+                      placeholder='Enter url'
+                      onChange={(e) => setCardUrl(e.target.value)}
+                      value={cardUrl}
+                    />
+                    <span
+                      role='button'
+                      tabIndex={-1}
+                      onKeyDown={(e) => e.target.previousSibling.focus()}
+                      onClick={(e) => e.target.previousSibling.focus()}
+                    >
+                      Enter url
+                    </span>
+                  </label>
+                ) : (
+                  <p style={{ margin: '5px 0px' }} className='scheduleCardSmallText'>
+                    adding url will allow users to redirect to a url when they click on this card on
+                    your display page.
+                  </p>
+                )}
+              </div>
+            </>
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant='boldTextSecondary' onClick={() => closeDeleteModal()}>
-            Cancel
-          </Button>
           <Button variant='boldText' onClick={() => deleteFile()}>
-            Delete
+            Delete banner
+          </Button>
+          <Button variant='boldText' onClick={() => saveFile()}>
+            Save
           </Button>
         </Modal.Footer>
       </Modal>

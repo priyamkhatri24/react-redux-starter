@@ -1,0 +1,6 @@
+[{
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target" : { "namespace": "android_app", "package_name": "com.mohit.web.app",
+                     "sha256_cert_fingerprints": ["24:72:69:72:9D:6F:4F:C6:97:AC:13:BD:31:40:B3:AF:81:4C:15:AD:34:F2:39:80:C1:3A:54:52:FF:65:23:31"] }
+      }
+]

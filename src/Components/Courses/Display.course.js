@@ -24,6 +24,8 @@ const Display = (props) => {
     updateDisplayDetails,
     courseDisplayImage,
     courseDisplayVideo,
+    clientId,
+    courseId,
   } = props;
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -95,7 +97,10 @@ const Display = (props) => {
       reader.readAsDataURL(e.target.files[0]);
 
       if (type !== 'image') {
-        uploadingImage(file).then((res) => {
+        const path = `${
+          process.env.NODE_ENV == 'development' ? 'Development' : 'Production'
+        }/${clientId}/Course/${courseId}/Preview/Videos`;
+        uploadingImage(file, path).then((res) => {
           courseVideo.current = res.filename;
           const startVideo = courseVideo.current.lastIndexOf('/') + 1;
           setVideoName(courseVideo.current.substr(startVideo, courseVideo.current.length));
@@ -219,6 +224,9 @@ const Display = (props) => {
             setProfileImage={setProfileImage}
             aspectTop={16}
             aspectBottom={9}
+            clientId={clientId}
+            featureId={`${courseId}/Preview`}
+            feature='Course'
           />
           <Col xs={8} className='p-0'>
             <Row className='my-auto Courses__createCourse mx-2'>
@@ -359,6 +367,8 @@ Display.propTypes = {
   updateDisplayDetails: PropTypes.func.isRequired,
   courseDisplayImage: PropTypes.string,
   courseDisplayVideo: PropTypes.string,
+  clientId: PropTypes.number.isRequired,
+  courseId: PropTypes.number.isRequired,
 };
 
 Display.defaultProps = {

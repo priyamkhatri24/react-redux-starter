@@ -29,7 +29,8 @@ import 'plyr-react/dist/plyr.css';
 import Col from 'react-bootstrap/Col';
 import Reviews from './CourseReviews';
 import ProgressBar from '../Common/ProgressBar/ProgressBar';
-import { apiValidation, get, post, shareThis } from '../../Utilities';
+import { apiValidation, get, post, shareThis, urlify, generatePreSignedUrl } from '../../Utilities';
+import { downloadFile } from '../../Utilities/customUpload';
 import sampleReviews from './courseReviewsSample';
 import YCIcon from '../../assets/images/ycIcon.png';
 import { PageHeader } from '../Common/PageHeader/PageHeader';
@@ -121,7 +122,7 @@ const Mycourse = (props) => {
   const [videoIsPlaying, setVideoIsPlaying] = useState(true);
   const [previewText, setPreviewText] = useState(true);
   const [lapseTime, setLapseTime] = useState(0);
-  const [nowPlayingVideo, setNowPlayingVideo] = useState(null);
+  const [nowPlayingVideo, setNowPlayingVideo] = useState({});
   const [documentToOpen, setDocumentToOpen] = useState(null);
   const [documentOpener, setDocumentOpener] = useState(false);
   const [isBrowserCompatible, setIsBrowserCompatible] = useState(true);
@@ -275,18 +276,11 @@ const Mycourse = (props) => {
   };
 
   const detectNextLine = (text) => {
+    if (!text) return '';
     return text
       .split('\n')
       .map((ele) => `<p>${ele}</p>`)
       .join('');
-  };
-
-  const urlify = (text) => {
-    if (!text) return '';
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return text.replace(urlRegex, function (url) {
-      return `<a href="${url}">${url}</a>`;
-    });
   };
 
   useEffect(() => {
@@ -529,8 +523,8 @@ const Mycourse = (props) => {
         }
         // startVidTimer();
         const playingVid = {
-          src: elem.file_link_array[0],
-          linkArray: elem.file_link_array,
+          src: generatePreSignedUrl(elem.file_link_array[0]),
+          linkArray: elem.file_link_array.map((ele) => generatePreSignedUrl(ele)),
           id: elem.id,
           name: elem.name,
           finishedTime: elem.finished_time || 0,
@@ -562,8 +556,8 @@ const Mycourse = (props) => {
       }
       // startVidTimer();
       const playingVid = {
-        src: elem.file_link,
-        linkArray: [elem.file_link],
+        src: generatePreSignedUrl(elem.file_link),
+        linkArray: [generatePreSignedUrl(elem.file_link)],
         id: 1404, // random
         name: 'Preview Video',
         finishedTime: 0,
@@ -571,7 +565,7 @@ const Mycourse = (props) => {
         sectionFileId: 1404, // random
       };
       setNowPlayingVideo(false);
-      setSource(elem.file_link);
+      setSource(generatePreSignedUrl(elem.file_link));
       setCourseDocumentToOpenToStore(null);
       setCourseNowPlayingVideoToStore(false);
     } else if (type === 'test') {
@@ -613,6 +607,31 @@ const Mycourse = (props) => {
       });
     }
   };
+
+  // useEffect(() => {
+  //   nowPlayingVideoRef.current.plyr.on('error', (e) => {
+  //     // setTimeout(() => {
+  //     console.log('seeked');
+  //     const currTime = nowPlayingVideoRef.current.plyr.currentTime;
+  //     if (currTime < 3) return;
+  //     setCurrentTime(currTime);
+  //     const newSource = JSON.parse(JSON.stringify(source));
+  //     newSource.sources = [{ src: generatePreSignedUrl(nowPlayingVideo.src) }];
+  //     setSource(newSource);
+  //     console.log(newSource);
+  //     setNowPlayingVideo(newSource.sources[0]);
+  //     // setTimeout(() => {
+  //     //   playerRef.current.plyr.currentTime = currTime;
+  //     //   // e.detail.plyr.forward(currTime);
+  //     // }, 800);
+  //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   nowPlayingVideoRef.current.plyr.once('play', () => {
+  //     nowPlayingVideoRef.current.plyr.currentTime = currentTime;
+  //   });
+  // }, [nowPlayingVideo]);
 
   const testIgniter = () => {
     if (testToOpen.test_type === 'homework') {
@@ -1045,15 +1064,6 @@ const Mycourse = (props) => {
     );
   }, [nowPlayingVideo, nowPlayingVideoRef?.current]);
 
-  useEffect(() => {
-    if (nowPlayingVideo) {
-      // nowPlayingVideoRef.current.plyr.once('play', () => {
-      //   nowPlayingVideoRef.current.plyr.currentTime = nowPlayingVideo.finishedTime;
-      //   console.log('seeking....');
-      // });
-    }
-  }, [nowPlayingVideo]);
-
   const editReviewHandler = useCallback(() => {
     setUserHasCommented(false);
     setIsReviewing(true);
@@ -1076,6 +1086,15 @@ const Mycourse = (props) => {
     history.replace({
       pathname: `/courses/buyCourse/${window.btoa(clientId)}/${window.btoa(courseId)}`,
     });
+  };
+
+  const downloadContent = (contentUrl) => {
+    console.log(contentUrl.file_link);
+    if (contentUrl.original_file_link.includes('question-images-ingenium')) {
+      window.open(contentUrl.file_link, '_blank');
+    } else {
+      downloadFile(contentUrl.file_link);
+    }
   };
 
   return (
@@ -1302,7 +1321,7 @@ const Mycourse = (props) => {
                               if (elem.category === 'Videos' && !elem.isYoutube) {
                                 icon = (
                                   <video className='individualVideoThumbnail' preload='metadata'>
-                                    <source src={elem.file_link + '#t=0.1'} />
+                                    <source src={generatePreSignedUrl(elem.file_link) + '#t=0.1'} />
                                   </video>
                                 );
                               } else if (elem.category === 'Videos' && elem.isYoutube) {
@@ -1346,6 +1365,7 @@ const Mycourse = (props) => {
                                       >
                                         {elem.name}
                                       </p>
+
                                       <div>
                                         <small className='verySmallText mx-2'>
                                           {elem.file_type
@@ -1357,11 +1377,16 @@ const Mycourse = (props) => {
                                             {formatDurationFromSeconds(elem.total_time)}
                                           </small>
                                         ) : null}
+                                        {elem.is_downloadable == 'true' ? (
+                                          <button
+                                            onClick={() => downloadContent(elem)}
+                                            className='downloadButtonCourse'
+                                          >
+                                            Download
+                                          </button>
+                                        ) : null}
                                       </div>
-                                      {/* <div
-                                      style={{ width: '90%' }}
-                                      className='d-flex mx-auto align-items-center'
-                                    > */}
+
                                       {elem.id === nowPlayingVideo?.id ||
                                       elem.id === documentToOpen?.id ? (
                                         <p className='nowPlayingText mx-2'>
@@ -1517,7 +1542,7 @@ const Mycourse = (props) => {
                 title='Reviews'
                 eventKey='Review'
               >
-                {!userHasCommented && (
+                {!userHasCommented && course.allow_reviews == 'true' && (
                   <>
                     <p className='Courses__heading mt-4'>Rate this course</p>
 
@@ -1576,6 +1601,7 @@ const Mycourse = (props) => {
                     displayTwo={false}
                     isFilterVisible
                     reviews={reviews}
+                    allowReviews={course.allow_reviews}
                   />
                 </div>
               </Tab>

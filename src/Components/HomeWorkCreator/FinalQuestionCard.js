@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
 import MathJax from 'react-mathjax-preview';
 import Card from 'react-bootstrap/Card';
+import { urlify } from '../../Utilities';
 
 const FinalQuestionCard = (props) => {
   const {
@@ -21,6 +22,7 @@ const FinalQuestionCard = (props) => {
   const [showImageModal, setShowImageModal] = useState(false);
   const handleImageClose = () => setShowImageModal(false);
   const handleImageOpen = () => setShowImageModal(true);
+
   // const [question, setQuestion] = useState({});
 
   // useEffect(() => {
@@ -37,7 +39,7 @@ const FinalQuestionCard = (props) => {
   // }, [ques]);
   console.log(question, 'questionCard ke under');
   return (
-    <Card className='m-1' key={question.question_id}>
+    <Card className='m-1 cantSelect' key={question.question_id}>
       {Object.keys(question).length > 0 && (
         <>
           <Row className=' ml-2 mr-0 mt-2'>
@@ -175,7 +177,7 @@ const FinalQuestionCard = (props) => {
             <>
               <p className='Homework__options text-left m-2'>Solution:</p>
               <div className='d-flex mx-3 mb-2 Homework__multipleOptions soultion text-left'>
-                <MathJax math={String.raw`${question.question_solution_text}`} />
+                <MathJax math={String.raw`${urlify(question.question_solution_text)}`} />
               </div>
             </>
           )}

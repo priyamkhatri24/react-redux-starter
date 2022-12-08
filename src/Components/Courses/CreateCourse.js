@@ -143,6 +143,8 @@ const CreateCourse = (props) => {
                 updateDisplayDetails={updateDisplayDetails}
                 courseDisplayImage={course.course_display_image}
                 courseDisplayVideo={course.course_preview_video}
+                clientId={clientId}
+                courseId={courseId}
               />
             )}
             {currentSlide === 4 && (

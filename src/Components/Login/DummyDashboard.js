@@ -29,7 +29,7 @@ import youtube from '../../assets/images/dummyDashboard/youtube.png';
 import telegram from '../../assets/images/dummyDashboard/telegram.svg';
 import form from '../../assets/images/dummyDashboard/form.svg';
 import '../Common/ScrollableCards/ScrollableCards.scss';
-import { AspectCards } from '../Common';
+import { AspectCards, CoursesCards } from '../Common';
 import { getClientId } from '../../redux/reducers/clientUserId.reducer';
 import userAvatar from '../../assets/images/user.svg';
 
@@ -47,6 +47,7 @@ const DummyDashboard = (props) => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [modalImage, setModalImage] = useState({});
   const [modalHeading, setModalHeading] = useState(null);
+  const [recentCourses, setRecentCourses] = useState([]);
 
   useEffect(() => {
     get({ client_id: clientId, is_skip: true, is_new: true }, '/getLoginPageInformation').then(
@@ -57,6 +58,11 @@ const DummyDashboard = (props) => {
         setNotices(result.notice);
       },
     );
+    get({ client_id: clientId, is_skip: true }, '/getRecentCourses').then((res) => {
+      const result = apiValidation(res);
+      setRecentCourses(result.assigned_courses);
+      console.log(result, 'recentcourses');
+    });
   }, [clientId]);
 
   const shareThis = () => {
@@ -85,6 +91,16 @@ const DummyDashboard = (props) => {
   };
 
   const imgUrl = branding.client_logo;
+
+  const goToBuyCourse = (id) => {
+    const { push } = history;
+    // setScrolling();
+    // if (clientStatus === 'deleted') {
+    //   setRestrictionModal(true);
+    //   return;
+    // }
+    push({ pathname: `/courses/buyCourse/${window.btoa(clientId)}/${window.btoa(id)}` });
+  };
 
   return (
     Object.keys(dummyData).length > 0 && (
@@ -177,6 +193,21 @@ const DummyDashboard = (props) => {
               />
             </>
           )}
+        </div>
+        <div>
+          <CoursesCards
+            allCourses={recentCourses}
+            myCourses={[]}
+            // goToCourse={goToCourses}
+            buyCourseId={goToBuyCourse}
+            // myCourseId={goToMyCourse}
+            clientLogo={branding.client_logo}
+            globalCurrency={branding.currency_symbol}
+            featureName='Courses'
+            // country={currentCountry}
+            // state={currentState}
+            noViewAllButton
+          />
         </div>
         <div className='text-left m-3'>
           <h5 className='Dummy__aboutus mt-5'>About us</h5>

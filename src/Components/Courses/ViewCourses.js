@@ -45,7 +45,7 @@ const ViewCourses = (props) => {
       result.forEach((ele) => (ele.currencySymbol = ele.currency_symbol));
       setCurrencyCodes(result);
     });
-  });
+  }, []);
 
   useEffect(() => {
     if (history.location.state) {

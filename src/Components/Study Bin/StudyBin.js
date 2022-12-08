@@ -860,13 +860,13 @@ const StudyBin = (props) => {
                               <img src={videocam} alt='video' height='67' width='67' />
                               <h6
                                 className='text-center mt-3 StudyBin__folderName'
-                                style={{ wordBreak: 'break-all', lineHeight: '1' }}
+                                style={{ lineHeight: '1' }}
                               >
                                 {elem.file_name}
                               </h6>
                             </div>
                           </>
-                        ) : elem.file_type.includes('jpg') ||
+                        ) : elem.file_type.includes('jp') ||
                           (elem.file_type.includes('file') &&
                             linkExtention(elem.file_link).includes('jpg')) ||
                           (elem.file_type.includes('file') &&
@@ -897,7 +897,7 @@ const StudyBin = (props) => {
                               <img src={images} alt='video' height='67' width='67' />
                               <h6
                                 className='text-center mt-3 StudyBin__folderName'
-                                style={{ wordBreak: 'break-all', lineHeight: '1' }}
+                                style={{ lineHeight: '1' }}
                               >
                                 {elem.file_name}
                               </h6>
@@ -924,7 +924,7 @@ const StudyBin = (props) => {
                               <img src={ext} alt='External Link' height='67' width='67' />
                               <h6
                                 className='text-center mt-3 StudyBin__folderName'
-                                style={{ wordBreak: 'break-all', lineHeight: '1' }}
+                                style={{ lineHeight: '1' }}
                               >
                                 {elem.file_name}
                               </h6>
@@ -988,7 +988,7 @@ const StudyBin = (props) => {
                               />
                               <h6
                                 className='text-center mt-3 StudyBin__folderName'
-                                style={{ wordBreak: 'break-all' }}
+                                // style={{ wordBreak: 'break-all' }}
                               >
                                 {elem.file_name}
                               </h6>
@@ -1005,7 +1005,11 @@ const StudyBin = (props) => {
       </div>
 
       {(roleArray.includes(3) || roleArray.includes(4)) && (
-        <AddButton addButtonArray={addButtonArray} />
+        <AddButton
+          addButtonArray={addButtonArray}
+          clientId={clientId}
+          folderId={folderIdStack.length ? folderIdStack[folderIdStack.length - 1] : ''}
+        />
       )}
       <BottomNavigation activeNav='studyBin' history={history} />
 

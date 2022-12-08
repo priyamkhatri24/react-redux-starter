@@ -13,6 +13,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 const FileView = (props) => {
   // const [fileType, setFileType] = useState('');
+  const { history } = props;
   const [fileViewPath, setFilePath] = useState('');
   const [scale, setScale] = useState(1);
   const [numPages, setNumPages] = useState(null);
@@ -21,8 +22,9 @@ const FileView = (props) => {
   const sliderRef = useRef(null);
   const pageRef = useRef(null);
   useEffect(() => {
-    if (props.location.state) {
-      const { type, filePath } = props.location.state;
+    console.log(history);
+    if (history.location.state) {
+      const { type, filePath } = history.location.state;
       //  setFileType(type);
       setFilePath(filePath);
       console.log(filePath, 'state');
@@ -34,7 +36,7 @@ const FileView = (props) => {
 
     sliderRef.current.style.width = '60%';
     sliderRef.current.style.margin = 'auto';
-  }, [props.location.state, sliderRef]);
+  }, [history.location.state, sliderRef]);
 
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);

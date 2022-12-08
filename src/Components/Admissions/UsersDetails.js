@@ -321,9 +321,7 @@ const UserDetails = (props) => {
                   <Accordion.Collapse ref={accordionRef} eventKey='0'>
                     <div className='m-0'>
                       <p className='Batch__admissionFormDetailsText mb-0'>
-                        {admissionFormData.length
-                          ? 'Admission form filled:'
-                          : 'Admission Form not filled.'}
+                        {admissionFormData.length ? 'Profile completed:' : 'Profile not completed.'}
                       </p>
                       {admissionFormData?.map((elem) => {
                         return (

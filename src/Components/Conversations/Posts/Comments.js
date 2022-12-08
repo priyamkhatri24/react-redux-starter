@@ -167,7 +167,7 @@ const Comments = function ({
               </div>
               <div className='justify-content-end d-flex mb-2'>
                 <span
-                  className='p-1 mr-3'
+                  className='p-1 mr-3 redgrayiconcontainer'
                   role='button'
                   tabIndex={0}
                   onKeyPress={(e) => e.key === 13 && reactToComment(c, index, 'comment')}

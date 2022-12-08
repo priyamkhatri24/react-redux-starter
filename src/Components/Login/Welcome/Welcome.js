@@ -19,7 +19,7 @@ const Welcome = (props) => {
   const { changeComponent, data } = props;
 
   return (
-    <>
+    <div style={{ overflow: 'hidden', maxHeight: '95vh' }}>
       <Button
         variant='customSkip'
         className='Welcome__skip'
@@ -299,7 +299,7 @@ const Welcome = (props) => {
           SIGN IN
         </Button>
       </div>
-    </>
+    </div>
   );
 };
 

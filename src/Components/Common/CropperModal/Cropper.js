@@ -6,38 +6,76 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import 'react-image-crop/dist/ReactCrop.css';
-import { uploadImage } from '../../../Utilities';
+import { uploadingImage } from '../../../Utilities/customUpload';
+// import { uploadImage } from '../../../Utilities';
 // import { uploadingImage } from '../../../Utilities/customUpload';
 
-const generateImageURL = (canvas, crop) => {
-  if (!crop || !canvas) {
-    return '';
-  }
-
-  return new Promise((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      const newFileName = `${Math.random().toString(16).slice(2)}.png`;
-      const finalFile = new File([blob], newFileName);
-      console.log(finalFile, uploadImage);
-      uploadImage(finalFile).then((res) => {
-        console.log('fileu;lod ', res);
-        resolve(res.filename);
-      });
-    });
-  });
-};
-
 const Cropper = (props) => {
-  const { imageModal, handleClose, setProfileImage, sourceImage, aspectTop, aspectBottom } = props;
+  const {
+    imageModal,
+    handleClose,
+    setProfileImage,
+    sourceImage,
+    aspectTop,
+    aspectBottom,
+    fromDisplayPage,
+    getCardUrl,
+    clientId,
+    featureId,
+    feature,
+  } = props;
 
   const imgRef = useRef(null);
   const previewCanvasRef = useRef(null);
   const [crop, setCrop] = useState({ unit: '%', width: 30, aspect: aspectTop / aspectBottom });
   const [completedCrop, setCompletedCrop] = useState(null);
+  const [cardUrl, setCardUrl] = useState('');
+
+  const callCardUrl = (url) => {
+    getCardUrl(url);
+  };
 
   const onLoad = useCallback((img) => {
     imgRef.current = img;
   }, []);
+
+  const generateImageURL = (canvas, cropp) => {
+    if (!cropp || !canvas) {
+      return '';
+    }
+
+    return new Promise((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        const newFileName = `${Math.random().toString(16).slice(2)}.png`;
+        const finalFile = new File([blob], newFileName);
+        console.log(finalFile, 'finalfile');
+        console.log(featureId, 'cuid'); // clientUserId is actually feature_id
+        let path = '';
+        if (!featureId) {
+          path = `${
+            process.env.NODE_ENV == 'development' ? 'Development' : 'Production'
+          }/${clientId}/${feature}/Images`;
+        } else {
+          path = `${
+            process.env.NODE_ENV == 'development' ? 'Development' : 'Production'
+          }/${clientId}/${feature}/${featureId}/Images`;
+        }
+        let customName = '';
+        if (feature === 'Profile') {
+          customName = 'profile';
+          path = `${
+            process.env.NODE_ENV == 'development' ? 'Development' : 'Production'
+          }/${clientId}/${feature}/${featureId}/Images`;
+        }
+
+        console.log(path, 'finalPath');
+        uploadingImage(finalFile, path, customName).then((res) => {
+          console.log('fileu;lod', res);
+          resolve(res.filename);
+        });
+      });
+    });
+  };
 
   useEffect(() => {
     if (!completedCrop || !previewCanvasRef.current || !imgRef.current) {
@@ -88,7 +126,7 @@ const Cropper = (props) => {
       <Modal.Header closeButton>
         <Modal.Title>Crop Image</Modal.Title>
       </Modal.Header>
-      <Modal.Body className='d-flex justify-content-center'>
+      <Modal.Body style={{ flexDirection: 'column' }} className='d-flex justify-content-center'>
         <Row className='mx-2 justify-content-between'>
           <Col xs={12}>
             <ReactCrop
@@ -119,13 +157,39 @@ const Cropper = (props) => {
             </div>
           </Col>
         </Row>
+        {fromDisplayPage ? (
+          <Row className='px-4'>
+            <p className='scheduleCardSmallText my-1 mx-0'>Add redirect url (optional)</p>
+            <label style={{ width: '100%' }} htmlFor='url' className='d-flex has-float-label'>
+              <input
+                className='form-control'
+                name='url'
+                type='text'
+                placeholder='Enter url'
+                onChange={(e) => {
+                  setCardUrl(e.target.value);
+                  callCardUrl(e.target.value);
+                }}
+                value={cardUrl}
+              />
+              <span
+                role='button'
+                tabIndex={-1}
+                onKeyDown={(e) => e.target.previousSibling.focus()}
+                onClick={(e) => e.target.previousSibling.focus()}
+              >
+                Enter url
+              </span>
+            </label>
+          </Row>
+        ) : null}
       </Modal.Body>
       <Modal.Footer>
         <Button variant='boldTextSecondary' onClick={() => handleClose()}>
           Cancel
         </Button>
         <Button variant='boldText' onClick={() => uploadProfileImage()}>
-          Ok
+          Save
         </Button>
       </Modal.Footer>
     </Modal>
@@ -139,6 +203,19 @@ Cropper.propTypes = {
   sourceImage: PropTypes.string.isRequired,
   aspectTop: PropTypes.number.isRequired,
   aspectBottom: PropTypes.number.isRequired,
+  fromDisplayPage: PropTypes.bool,
+  getCardUrl: PropTypes.func,
+  clientId: PropTypes.number,
+  featureId: PropTypes.number,
+  feature: PropTypes.string,
+};
+
+Cropper.defaultProps = {
+  fromDisplayPage: false,
+  getCardUrl: () => {},
+  clientId: '',
+  featureId: '',
+  feature: '',
 };
 
 export default Cropper;

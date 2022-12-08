@@ -84,7 +84,7 @@ export const AspectCards = (props) => {
         style={{ opacity }}
         role='button'
         onClick={() => scrollNext()}
-        className='Scrollable__arrowIconRight'
+        // className='Scrollable__arrowIconRight'
         className={
           bigAspectCard
             ? 'Scrollable__arrowIconRightBig hoverClass'
@@ -98,7 +98,7 @@ export const AspectCards = (props) => {
 
   return (
     <>
-      <Modal show={showImageModal} onHide={closeImageModal} centered>
+      <Modal show={showImageModal} onHide={closeImageModal} centered size='lg'>
         <Modal.Header closeButton>
           <Modal.Title>{modalHeading}</Modal.Title>{' '}
         </Modal.Header>
@@ -183,8 +183,12 @@ export const AspectCards = (props) => {
                   key={`elem+${elem.homepage_section_file_id}`}
                   style={cardStyle}
                   onClick={() => {
-                    clickCard(elem);
-                    showCardOnModal(elem);
+                    if (elem.redirect_url && elem.file_type !== 'video') {
+                      window.open(elem.redirect_url, '_blank');
+                    } else {
+                      clickCard(elem);
+                      showCardOnModal(elem);
+                    }
                   }}
                 >
                   {elem.file_type === 'video' ? (
