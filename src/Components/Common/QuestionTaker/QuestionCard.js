@@ -98,14 +98,6 @@ class QuestionCard extends Component {
     console.log('CHANGE!');
   }
 
-  sectionTimerHandler = () => {
-    this.setState((prevState) => {
-      return {
-        timer: prevState.timer + 1,
-      };
-    });
-  };
-
   restartSectionTimer = () => {
     if (this.sectionTimeIntervalId !== 0) {
       clearInterval(this.sectionTimeIntervalId);
@@ -372,6 +364,14 @@ class QuestionCard extends Component {
           });
 
     this.setState({ question: focusedQuestions });
+  };
+
+  sectionTimerHandler = () => {
+    this.setState((prevState) => {
+      return {
+        timer: prevState.timer + 1,
+      };
+    });
   };
 
   /** *********** */

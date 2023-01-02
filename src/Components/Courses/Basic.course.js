@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
+import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import CloseIcon from '@material-ui/icons/Close';
 
 const Basic = (props) => {
-  const { tagArray, getTagArrays } = props;
+  const { tagArray, getTagArrays, numberOfSeatsProp } = props;
 
   const [learningtags, setLearningTags] = useState([]);
   const [prerequisiteTags, setprerequisiteTags] = useState([]);
@@ -16,6 +17,12 @@ const Basic = (props) => {
   const [currentPrerequisite, setCurrentRequisite] = useState('');
   const [isLearningValid, setIsLearningValid] = useState(false);
   const [isPrequisiteValid, setIsPrequisiteValid] = useState(false);
+  const [isLimitedSeats, setIsLimitedSeats] = useState(
+    numberOfSeatsProp !== 'unlimited' && numberOfSeatsProp !== null,
+  );
+  const [numberOfSeats, setNumberOfSeats] = useState(
+    numberOfSeatsProp === 'unlimited' ? 100 : Number(numberOfSeatsProp),
+  );
 
   useEffect(() => {
     const learn = tagArray
@@ -130,10 +137,10 @@ const Basic = (props) => {
       delete e.meriId;
       return e;
     });
-
+    const finalNumberOfSeats = isLimitedSeats ? numberOfSeats : 'unlimited';
     const deletedArray = [...deleteLearningArray, ...deletePrerequisiteArray];
     if (instantLearning.length && instantpreRequisite.length)
-      getTagArrays(prunedTags, deletedArray);
+      getTagArrays(prunedTags, deletedArray, finalNumberOfSeats);
   };
 
   return (
@@ -273,6 +280,42 @@ const Basic = (props) => {
           </Button>
         </Row>
 
+        <Row className='align-items-center w-100 m-auto'>
+          <p className='mt-2 mx-2 Courses__motiDetail'>
+            Do you wish to make limited seats for this course?
+          </p>
+          <Form.Check
+            className='mb-2'
+            type='checkbox'
+            value={isLimitedSeats}
+            checked={isLimitedSeats}
+            name='Check'
+            onChange={(e) => {
+              setIsLimitedSeats((prev) => !prev);
+            }}
+          />
+        </Row>
+
+        {isLimitedSeats ? (
+          <Row className='flex-column m-auto w-100'>
+            <label className='has-float-label my-auto regionalPriceFormInput'>
+              <input
+                className='form-control'
+                style={{ width: '125px' }}
+                name='Number Of Seats'
+                type='number'
+                value={numberOfSeats}
+                placeholder='Number of seats'
+                onChange={(e) => setNumberOfSeats(e.target.value)}
+              />
+              <span className='smallFont'>Number of seats</span>
+            </label>
+            <p className='Courses__tinySubHeading ml-1'>
+              Maximum {numberOfSeats} User(s) can subscribe for this course.
+            </p>
+          </Row>
+        ) : null}
+
         <Row className='w-25 justify-content-end ml-auto m-2'>
           <Button variant='customPrimarySmol' onClick={() => goToNext()}>
             Continue
@@ -307,4 +350,5 @@ export default Basic;
 Basic.propTypes = {
   tagArray: PropTypes.instanceOf(Array).isRequired,
   getTagArrays: PropTypes.func.isRequired,
+  numberOfSeatsProp: PropTypes.string.isRequired,
 };

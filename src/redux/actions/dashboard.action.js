@@ -16,6 +16,11 @@ function setScrolledHeightOfDocumentToStore(payload) {
   return { type: dashboardConstants.SCROLLEDHEIGHT, payload };
 }
 
+function setTokenToStore(payload) {
+  console.log('firebase token getting saved');
+  return { type: dashboardConstants.FIREBASETOKEN, payload };
+}
+
 function clearDashboardDataFromStore() {
   return { type: dashboardConstants.CLEARDASHBOARDDATA };
 }
@@ -25,5 +30,6 @@ export const dashboardActions = {
   setLocationDataToStore,
   clearDashboardDataFromStore,
   setRedirectPathToStore,
+  setTokenToStore,
   setScrolledHeightOfDocumentToStore,
 };

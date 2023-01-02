@@ -29,7 +29,8 @@
 .has-float-label > input[type='time']:focus + span,
 .has-float-label > input[type='textarea']:focus + span,
 .has-float-label > span > input[type='number']:focus + span,
-.has-float-label > textarea:focus + span {
+.has-float-label > textarea:focus + span, 
+  .has-float-label > select:focus + span {
   color: var(--primary-blue);
 }
 
@@ -135,7 +136,8 @@ input[readonly].form-control {
 .has-float-label > span > input[type='number']:focus,
 .has-float-label > input[type='time']:focus,
 .has-float-label > input[type='textarea']:focus,
-.has-float-label > textarea:focus {
+.has-float-label > textarea:focus, 
+  .has-float-label > select:focus {
   border-color: var(--primary-blue);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(255, 255, 255, 0.6);
   outline: 0 none;
@@ -148,7 +150,8 @@ input[readonly].form-control {
 .has-float-label > span > input[type='number'],
 .has-float-label > input[type='text'],
 .has-float-label > input[type='textarea'],
-.has-float-label > input[type='time'] {
+.has-float-label > input[type='time'], 
+  .has-float-label > select {
   border-color: rgba(0, 0, 0, 0.54);
   border-radius: 5px;
   color: rgba(0, 0, 0, 0.87);
@@ -156,7 +159,8 @@ input[readonly].form-control {
   height: 32px;
 }
 
-.has-float-label > textarea {
+.has-float-label > textarea, 
+  .has-float-label > select {
   border-color: rgba(0, 0, 0, 0.54);
   border-radius: 5px;
   color: rgba(0, 0, 0, 0.87);

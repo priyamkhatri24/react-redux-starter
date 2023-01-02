@@ -206,6 +206,16 @@ export const shareThis = (url, content, title = 'Look at this awesome course!') 
   return 'clipboard';
 };
 
+export const formatDateInEnglish = (date) => {
+  if (!date) return null;
+  if (date == 'null') return null;
+  const format1 = String(new Date(+date * 1000));
+  console.log(format1, 'format1');
+  const formatArr = format1.split(' '); // [month, date, year]
+  const finalFormat = [formatArr[2], formatArr[1], formatArr[3]];
+  return finalFormat.join(' ');
+};
+
 // export const useDidMountEffect = (func, deps) => {
 //   const didMount = useRef(false);
 

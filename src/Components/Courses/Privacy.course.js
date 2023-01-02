@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
+import DatePicker from 'react-datepicker';
 import Card from 'react-bootstrap/Card';
 import CreateIcon from '@material-ui/icons/Create';
 import Modal from 'react-bootstrap/Modal';
@@ -10,10 +11,38 @@ import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Select from 'react-select';
 import Form from 'react-bootstrap/Form';
+import addDays from 'date-fns/addDays';
 import { courseActions } from '../../redux/actions/course.action';
 import { BatchesSelector } from '../Common';
 import { post } from '../../Utilities';
 import { getCourseObject } from '../../redux/reducers/course.reducer';
+
+const CustomInput = ({ value, onClick }) => (
+  <div className='justify-content-center'>
+    <label htmlFor='Select Date' className='has-float-label my-auto w-100 margin-8'>
+      <input
+        className='form-control'
+        name='Select Date'
+        type='text'
+        placeholder='Select Date'
+        onClick={onClick}
+        readOnly
+        id='dateInputLiveClass'
+        value={value}
+      />
+      {/* eslint-disable */}
+      <span onClick={() => document.getElementById('dateInputLiveClass')?.click()}>
+        Select Date
+      </span>
+      <i
+        onClick={() => document.getElementById('dateInputLiveClass')?.click()}
+        className='LiveClasses__show'
+      >
+        <ExpandMoreIcon />
+      </i>
+    </label>
+  </div>
+);
 
 const Privacy = (props) => {
   const {
@@ -35,6 +64,16 @@ const Privacy = (props) => {
   const isbatchChanged = useRef({ length: courseObject.current_batch.length, change: false });
   const [months, setMonths] = useState([]);
   const [years, setYears] = useState([]);
+  const [isExpiry, setIsExpiry] = useState(!!courseObject.expiry_date);
+  const [expiryDate, setExpiryDate] = useState(
+    `${new Date(courseObject.expiry_date * 1000).getFullYear()}-${
+      new Date(courseObject.expiry_date * 1000).getMonth() + 1
+    }-${new Date(courseObject.expiry_date * 1000).getDate()}`,
+  );
+  const [minDate, setMinDate] = useState(
+    `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
+  );
+  const [allowReviews, setAllowReviews] = useState(courseObject.allow_reviews);
 
   const handleClose = () => setShowModal(false);
 
@@ -194,9 +233,11 @@ const Privacy = (props) => {
       client_user_id: clientUserId,
       is_public: showWelcome,
       validity,
+      expiry_date: isExpiry ? String(new Date(expiryDate).getTime() / 1000) : '',
+      allow_reviews: allowReviews,
     };
 
-    console.log(payload);
+    console.log(payload, 'hala');
 
     post(payload, '/assignCourseLatest').then((res) => {
       if (res.success) {
@@ -329,12 +370,12 @@ const Privacy = (props) => {
             onClick={() => setShowWelcome(!showWelcome)}
           />
         </Row> */}
-        <div className='m-2 ml-4 p-2'>
+        <Row className='flex-column w-100 mx-auto mt-2'>
           <Form.Check
             style={{ marginRight: 'auto', fontFamily: 'Montserrat-Medium' }}
             type='checkbox'
-            label='Add course validity period'
-            bsPrefix='NoticeBoard__input'
+            className='ml-2'
+            label='Add course validity period '
             value={showValidity}
             checked={showValidity}
             onClick={() => {
@@ -345,12 +386,17 @@ const Privacy = (props) => {
               setShowValidity(!showValidity);
             }}
           />
+          {/* <span className='Courses__tinySubHeading ml-4'>
+            (How long course will be valid for an individual user)
+          </span> */}
+        </Row>
+        <Row className='m-auto w-100 '>
           {showValidity && (
             <>
-              <p className='Courses__chotiDetail'>
+              <p className='Courses__chotiDetail ml-2'>
                 Select both years and months to add a validity to the course.
               </p>
-              <div className='d-flex w-100 my-3'>
+              <div className='d-flex w-100 my-2 ml-2'>
                 <div style={{ width: '50%', marginRight: '5px' }}>
                   <Select
                     options={years}
@@ -379,7 +425,68 @@ const Privacy = (props) => {
               </p>
             </>
           )}
-        </div>
+        </Row>
+
+        <Row className='flex-column w-100 mx-auto mt-3 mb-2'>
+          {/* <p className='Courses__motiDetail mb-2 ml-2'>Add an expiry date to this course.</p> */}
+          <Form.Check
+            className='ml-2'
+            type='checkbox'
+            style={{ marginRight: 'auto', fontFamily: 'Montserrat-Medium' }}
+            label='Add expiry date to this course'
+            value={isExpiry}
+            checked={isExpiry}
+            name='Check'
+            onChange={(e) => {
+              setIsExpiry((prev) => !prev);
+            }}
+          />
+          {/* <span className='Courses__tinySubHeading ml-4'>
+            (Course will get expired for all users on this date)
+          </span> */}
+        </Row>
+        {isExpiry ? (
+          <Row className='m-2 justify-content-start mb-4'>
+            <label className='has-float-label my-auto w-100'>
+              <input
+                className='form-control'
+                name='Course Expiry Date'
+                min={minDate}
+                type='date'
+                value={expiryDate}
+                placeholder='Course Expiry Date'
+                onChange={(e) => {
+                  setExpiryDate(e.target.value);
+                }}
+              />
+              <span>Course Expiry Date</span>
+            </label>
+          </Row>
+        ) : null}
+
+        <Row className='flex-column w-100 mx-auto mt-3 mb-2'>
+          {/* <p className='Courses__motiDetail mb-2 ml-2'>Add an expiry date to this course.</p> */}
+          <Form.Check
+            className='ml-2'
+            type='checkbox'
+            style={{ marginRight: 'auto', fontFamily: 'Montserrat-Medium' }}
+            label='Allow subscribers to add review to this course'
+            value={allowReviews}
+            checked={allowReviews === 'true'}
+            name='Check'
+            onChange={(e) => {
+              let newallowValue = 'true';
+              if (allowReviews === 'true') {
+                newallowValue = 'false';
+              }
+              setAllowReviews(newallowValue);
+            }}
+          />
+          {/* <span className='Courses__tinySubHeading ml-4'>
+            (Course will get expired for all users on this date)
+          </span> */}
+        </Row>
+
         <Row className='mb-3 Courses__createCourse mx-2'>
           Course Status
           <div
@@ -478,4 +585,9 @@ Privacy.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   courseObject: PropTypes.instanceOf(Object).isRequired,
+};
+
+CustomInput.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  value: PropTypes.string.isRequired,
 };

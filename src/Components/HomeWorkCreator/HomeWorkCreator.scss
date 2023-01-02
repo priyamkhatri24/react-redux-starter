@@ -179,6 +179,12 @@
     align-items: center;
   }
 
+  &__vl {
+    border-left: .1px solid gray;
+    height: inherit;
+  
+  }
+
   &__inlineEditor {
     display: flex;
   }

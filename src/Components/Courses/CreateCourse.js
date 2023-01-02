@@ -58,18 +58,23 @@ const CreateCourse = (props) => {
     setCurrentSlide(courseCurrentSlide);
   }, [courseObject, courseCurrentSlide]);
 
-  const getTagsOfBasic = (courseTagArray, deletedArray) => {
+  const getTagsOfBasic = (courseTagArray, deletedArray, numberOfSeats) => {
     const payload = {
       course_id: courseId,
       client_user_id: clientUserId,
       course_tag_array: JSON.stringify(courseTagArray),
       delete_array: JSON.stringify(deletedArray),
+      no_of_seats: numberOfSeats,
     };
 
     post(payload, '/addCourseTagsAndPreRequisites').then((res) => {
       console.log(res);
       const result = apiValidation(res);
-      setCourseObjectToStore({ ...course, tag_array: result.tag_array });
+      setCourseObjectToStore({
+        ...course,
+        tag_array: result.tag_array,
+        no_of_seats: numberOfSeats,
+      });
       setCourseCurrentSlideToStore(2);
     });
   };
@@ -91,15 +96,22 @@ const CreateCourse = (props) => {
     });
   };
 
-  const updateDisplayDetails = (courseName, courseDesc, previewImage, previewVideo) => {
+  const updateDisplayDetails = (
+    courseName,
+    courseDesc,
+    previewImage,
+    previewVideo,
+    languageString,
+  ) => {
     const payload = {
       course_id: courseId,
       course_name: courseName,
       course_description: courseDesc,
       image_url: previewImage,
       preview_video_url: previewVideo,
+      language: languageString,
     };
-
+    console.log(payload);
     post(payload, '/changeCourseDisplayPicture').then((res) => {
       console.log(res);
       if (res.success) {
@@ -109,6 +121,7 @@ const CreateCourse = (props) => {
           course_title: courseName,
           course_display_image: previewImage,
           course_preview_video: previewVideo,
+          languageString,
         });
         setCourseCurrentSlideToStore(4);
       }
@@ -126,7 +139,11 @@ const CreateCourse = (props) => {
           <PageHeader title={course.course_title} customBack handleBack={handleBack} />
           <div style={{ marginTop: '5rem' }}>
             {currentSlide === 1 && (
-              <Basic tagArray={course.tag_array} getTagArrays={getTagsOfBasic} />
+              <Basic
+                tagArray={course.tag_array}
+                getTagArrays={getTagsOfBasic}
+                numberOfSeatsProp={course.no_of_seats}
+              />
             )}
             {currentSlide === 2 && (
               <Content

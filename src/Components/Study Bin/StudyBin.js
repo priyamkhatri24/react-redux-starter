@@ -8,7 +8,7 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
 import AddIcon from '@material-ui/icons/Add';
-
+import axios from 'axios';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import folder from '../../assets/images/FilesFolders/folderIcon.svg';
 import doc from '../../assets/images/FilesFolders/doc.svg';
@@ -36,6 +36,11 @@ import StudyBinMenu from './StudyBinMenu';
 import BottomNavigation from '../Common/BottomNavigation/BottomNavigation';
 import { loadingActions } from '../../redux/actions/loading.action';
 
+window.URL = window.URL || window.webkitURL;
+const script = document.createElement('script');
+script.src = '//mozilla.github.io/pdf.js/build/pdf.js';
+document.head.appendChild(script);
+
 const StudyBin = (props) => {
   const {
     clientUserId,
@@ -45,12 +50,16 @@ const StudyBin = (props) => {
     studyBinFolderIdArray,
     pushFolderIDToFolderIDArrayInStore,
     popFolderIDFromFolderIDArrayInStore,
+    setFolderIdArrayToStore,
     setSpinnerStatusToStore,
     setLoadingSuccessToStore,
     setLoadingPendingToStore,
   } = props;
 
+  console.log(history.location.state, 'frommmm');
+
   const [fileArray, setFileArray] = useState([]);
+  const [from, setFrom] = useState(history.location.state || {});
   const [folderArray, setFolderArray] = useState([]);
   const [folderIdStack, setFolderIdStack] = useState(studyBinFolderIdArray);
   const [showModal, setModal] = useState(false);
@@ -470,13 +479,115 @@ const StudyBin = (props) => {
     );
   }, [clientUserId]);
 
+  const returnToCourse = () => {
+    for (let i = 0; i < folderIdStack.length - 1; i++) {
+      popFolderIDFromFolderIDArrayInStore();
+    }
+    history.push('/courses/createcourse/addcontent');
+  };
+
+  const getVideoDuration = (fileLink) => {
+    const video = document.createElement('video');
+    video.preload = 'metadata';
+    video.src = fileLink;
+    video.onloadedmetadata = function () {
+      // window.URL.revokeObjectURL(video.src);
+      console.log(video.duration, 'haah');
+    };
+  };
+
+  const YTDurationToSeconds = (duration) => {
+    let match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+    match = match.slice(1).map((x) => {
+      if (x != null) {
+        return x.replace(/\D/, '');
+      }
+      return x;
+    });
+
+    console.log(match);
+    /* eslint-disable */
+    const hours = parseInt(match[0]) || 0;
+    const minutes = parseInt(match[1]) || 0;
+    const seconds = parseInt(match[2]) || 0;
+
+    return hours * 3600 + minutes * 60 + seconds;
+  };
+
   const goToVideoPlayer = (elem, type) => {
-    if (type === 'youtube')
+    if (from?.from === 'course') {
+      console.log(elem, type);
+      if (type === 'video') {
+        const video = document.createElement('video');
+        video.preload = 'metadata';
+        video.src = elem.file_link;
+        video.onloadedmetadata = function () {
+          // window.URL.revokeObjectURL(video.src);
+          console.log(video.duration, 'haah');
+          const payload = {
+            ...elem,
+            priority_order: from?.priorityOrder,
+            section_id: from?.sectionId,
+            total_time: video.duration || '1000',
+          };
+          post(payload, '/addLibraryContentToCourse')
+            .then((res) => {
+              console.log(res);
+              returnToCourse();
+            })
+            .catch((err) => console.log(err));
+        };
+      } else if (type === 'youtube') {
+        get(null, '/getGCPCredentials').then((ress) => {
+          const result = apiValidation(ress);
+          const { key } = result;
+          axios
+            .get('https://www.googleapis.com/youtube/v3/videos', {
+              params: {
+                key,
+                part: 'snippet',
+                id: elem.file_link,
+              },
+            })
+            .then((res) => {
+              if (res.data.items.length) {
+                fetch(
+                  `https://www.googleapis.com/youtube/v3/videos?id=${elem.file_link}&part=contentDetails&key=${key}`,
+                )
+                  .then((resp) => resp.json())
+                  .then((data) => {
+                    console.log(data);
+                    const { duration } = data.items[0].contentDetails;
+                    const inSeconds = YTDurationToSeconds(duration);
+                    const payload = {
+                      ...elem,
+                      priority_order: from?.priorityOrder,
+                      section_id: from?.sectionId,
+                      total_time: inSeconds || '1000',
+                    };
+                    post(payload, '/addLibraryContentToCourse')
+                      .then((resp) => {
+                        console.log(resp);
+                        returnToCourse();
+                      })
+                      .catch((err) => console.log(err));
+                  })
+                  .catch((err) => console.log(err));
+              } else {
+                console.log('ss');
+              }
+            });
+        });
+      }
+
+      return;
+    }
+    if (type === 'youtube') {
       history.push({
         pathname: `/videoplayer/${elem.file_link}`,
         state: { videoId: elem.file_id },
       });
-    else if (type === 'video')
+    } else if (type === 'video') {
       history.push({
         pathname: `/videoplayer`,
         state: {
@@ -485,25 +596,59 @@ const StudyBin = (props) => {
           videoLinkArray: elem.file_link_array,
         },
       });
+    }
   };
 
   const openFileView = (elem) => {
-    console.log(elem);
-    const fileType = elem.file_type.replace(/\./g, ''); // removes the . form .doc / .ppt etc
-    fileType.includes('pdf') ||
-    fileType.includes('pd') ||
-    (fileType.includes('file') && linkExtention(elem.file_link).includes('pdf'))
-      ? history.push({
-          pathname: '/fileviewer',
-          state: { filePath: elem.file_link, type: fileType },
+    if (from?.from === 'course') {
+      console.log('adding file to course');
+      const payload = {
+        ...elem,
+        priority_order: from?.priorityOrder,
+        section_id: from?.sectionId,
+        total_time: '600',
+      };
+
+      post(payload, '/addLibraryContentToCourse')
+        .then((res) => {
+          console.log(res);
+          returnToCourse();
         })
-      : history.push({
-          pathname: '/otherfileviewer',
-          state: { filePath: elem.file_link, type: fileType },
-        });
+        .catch((err) => console.log(err));
+    } else {
+      console.log(elem);
+      const fileType = elem.file_type.replace(/\./g, ''); // removes the . form .doc / .ppt etc
+      fileType.includes('pdf') ||
+      fileType.includes('pd') ||
+      (fileType.includes('file') && linkExtention(elem.file_link).includes('pdf'))
+        ? history.push({
+            pathname: '/fileviewer',
+            state: { filePath: elem.file_link, type: fileType },
+          })
+        : history.push({
+            pathname: '/otherfileviewer',
+            state: { filePath: elem.file_link, type: fileType },
+          });
+    }
   };
 
   const openImage = (elem) => {
+    if (from?.from === 'course') {
+      console.log('adding file to course');
+      const payload = {
+        ...elem,
+        priority_order: from?.priorityOrder,
+        section_id: from?.sectionId,
+        total_time: '180',
+      };
+      post(payload, '/addLibraryContentToCourse')
+        .then((res) => {
+          console.log(res);
+          returnToCourse();
+        })
+        .catch((err) => console.log(err));
+      return;
+    }
     setImgLink(elem.file_link);
     handleImageOpen();
   };
@@ -521,6 +666,22 @@ const StudyBin = (props) => {
   ];
 
   const openContextMenu = (elem, type) => {
+    // if (from?.from === 'course') {
+    //   console.log('adding file to course');
+    //   const payload = {
+    //     ...elem,
+    //     priority_order: from?.priorityOrder,
+    //     section_id: from?.sectionId,
+    //   };
+    //   console.log(elem);
+    //   post(payload, '/addLibraryContentToCourse')
+    //     .then((res) => {
+    //       console.log(res);
+    //       returnToCourse();
+    //     })
+    //     .catch((err) => console.log(err));
+    //   return;
+    // }
     console.log(elem, 'elememememm');
     const getBatchesPayload =
       type === 'folder'
@@ -627,7 +788,24 @@ const StudyBin = (props) => {
     });
   };
 
-  const openExternalLink = (elem) => window.open(elem.file_link, '_blank');
+  const openExternalLink = (elem) => {
+    if (from?.from === 'course') {
+      const payload = {
+        ...elem,
+        priority_order: from?.priorityOrder,
+        section_id: from?.sectionId,
+        total_time: '0',
+      };
+      post(payload, '/addLibraryContentToCourse')
+        .then((res) => {
+          console.log(res);
+          returnToCourse();
+        })
+        .catch((err) => console.log(err));
+      return;
+    }
+    window.open(elem.file_link, '_blank');
+  };
 
   const closeTriggerFilterModal = () => setTriggerFilterModal(false);
 
@@ -1182,11 +1360,17 @@ StudyBin.propTypes = {
   clientUserId: PropTypes.number.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
+    location: PropTypes.shape({
+      state: PropTypes.shape({
+        from: PropTypes.instanceOf(Object),
+      }),
+    }),
   }).isRequired,
   roleArray: PropTypes.instanceOf(Array).isRequired,
   studyBinFolderIdArray: PropTypes.instanceOf(Array).isRequired,
   pushFolderIDToFolderIDArrayInStore: PropTypes.func.isRequired,
   popFolderIDFromFolderIDArrayInStore: PropTypes.func.isRequired,
+  setFolderIdArrayToStore: PropTypes.func.isRequired,
   setSpinnerStatusToStore: PropTypes.func.isRequired,
   setLoadingPendingToStore: PropTypes.func.isRequired,
   setLoadingSuccessToStore: PropTypes.func.isRequired,

@@ -6,12 +6,14 @@ import Swal from 'sweetalert2';
 import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
-import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
-
+import Storage from '@material-ui/icons/Storage';
+import Link from '@material-ui/icons/Link';
 import VideocamIcon from '@material-ui/icons/Videocam';
+import YouTube from '@material-ui/icons/YouTube';
 import { PageHeader } from '../Common';
 import AddButton from '../Common/AddButton/AddButton';
 import {
@@ -64,6 +66,9 @@ const AddContent = (props) => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [content, setContent] = useState([]);
   const [imgLink, setImgLink] = useState('');
+  const [externalLinkModal, setExternalLinkModal] = useState(false);
+  const [externalLink, setExternalLink] = useState('');
+  const [externalLinkName, setExternalLinkName] = useState('');
   const handleClose = () => setShowModal(false);
   const handleOpen = () => setShowModal(true);
   const handleImageOpen = () => setShowImageModal(true);
@@ -71,6 +76,8 @@ const AddContent = (props) => {
   const courseVideoRef = useRef(null);
   const courseImageRef = useRef(null);
   const courseFileRef = useRef(null);
+
+  const closeExternalLinkModal = () => setExternalLinkModal(false);
 
   const getSectionContent = useCallback(() => {
     get({ section_id: sectionId }, '/getSectionContent').then((resp) => {
@@ -142,12 +149,27 @@ const AddContent = (props) => {
     handleOpen();
   };
 
+  const validURL = (str) => {
+    const pattern = new RegExp(
+      '^(https?:\\/\\/)?' + // protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+        '(\\#[-a-z\\d_]*)?$',
+      'i',
+    ); // fragment locator
+    return !!pattern.test(str);
+  };
+
   const goToContent = (i) => {
     if (i === 6) {
       // Swal.fire({
       //   icon: 'info',
       //   title: 'Coming Soon!',
       // });
+      handleClose();
+      setExternalLinkModal(true);
     } else if (i === 1) {
       courseImageRef.current.click();
     } else if (i === 4) {
@@ -161,7 +183,16 @@ const AddContent = (props) => {
       });
     } else if (i === 2) {
       courseFileRef.current.click();
+    } else if (i === 7) {
+      goToLibraryForImport();
     }
+  };
+
+  const goToLibraryForImport = () => {
+    history.push({
+      pathname: '/studybin',
+      state: { from: 'course', priorityOrder: courseSectionPriorityOrder + 1, sectionId },
+    });
   };
 
   const postImageToSection = (arr, type) => {
@@ -287,6 +318,38 @@ const AddContent = (props) => {
     history.push('/courses/createcourse');
   };
 
+  const addExternalLink = () => {
+    if (!validURL(externalLink)) {
+      return Swal.fire({
+        icon: 'warning',
+        title: 'Invalid Url!',
+      });
+    }
+    const newOrder = courseSectionPriorityOrder + 1;
+
+    const payload = {
+      section_id: sectionId,
+      file_array: JSON.stringify([
+        {
+          file_url: externalLink,
+          order: newOrder + 1,
+          file_name: externalLinkName,
+          file_type: 'external',
+          total_time: 0,
+        },
+      ]),
+      client_user_id: clientUserId,
+    };
+    post(payload, '/addSectionContentLatest').then((res) => {
+      getSectionContent();
+      setCourseSectionPriorityOrderToStore(newOrder + 1);
+      closeExternalLinkModal();
+    });
+    setExternalLink('');
+    setExternalLinkName('');
+    return 1;
+  };
+
   const openTheContent = (type, elem) => {
     if (type === 'test') {
       get({ test_id: elem.id }, '/getTestQuestions').then((res) => {
@@ -303,12 +366,17 @@ const AddContent = (props) => {
       });
     } else if (type === 'youtube') {
       history.push(`/videoplayer/${elem.file_link}`);
-    } else if (type === 'video') {
+    } else if (type === 'video' || type.includes('mp4')) {
       history.push({
         pathname: `/videoplayer`,
         state: { videoLink: elem.file_link, videoLinkArray: elem.file_link_array },
       });
-    } else if (type === 'image') {
+    } else if (
+      type === 'image' ||
+      type.includes('png') ||
+      type.includes('jpg') ||
+      type.includes('jpeg')
+    ) {
       setImgLink(elem.file_link);
       handleImageOpen();
     } else if (type.includes('pdf')) {
@@ -331,6 +399,8 @@ const AddContent = (props) => {
       //   pathname: '/otherfileviewer',
       //   state: { filePath: elem.file_link },
       // });
+    } else if (type === 'external') {
+      window.open(elem.file_link, '_blank');
     }
   };
 
@@ -509,14 +579,15 @@ const AddContent = (props) => {
           <Modal.Title>Select Content</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Row>
+          <Row className='justify-content-center'>
             {[
               { title: 'From Gallery', icon: <PhotoLibraryIcon /> },
               { title: 'From Files', icon: <AttachFileIcon /> },
               { title: 'Assignment', icon: <AssignmentIcon /> },
               { title: 'Video', icon: <VideocamIcon /> },
-              { title: 'Youtube Video', icon: <AttachFileIcon /> },
-              { title: 'Live Class', icon: <PhotoCameraIcon /> },
+              { title: 'Youtube Video', icon: <YouTube /> },
+              { title: 'External Link', icon: <Link /> },
+              { title: 'Import from Library', icon: <Storage /> },
             ].map((elem, i) => {
               return (
                 <Col
@@ -539,12 +610,13 @@ const AddContent = (props) => {
             onChange={(e) => getImageInput(e, 'image')}
             style={{ display: 'none' }}
             ref={courseImageRef}
+            accept='image/*'
             multiple='multiple'
           />
           <input
             id='file-input-video'
             type='file'
-            accept
+            accept='video/*,audio/*'
             onChange={(e) => getImageInput(e, 'video')}
             style={{ display: 'none' }}
             ref={courseVideoRef}
@@ -560,12 +632,50 @@ const AddContent = (props) => {
           />
         </Modal.Body>
       </Modal>
+
       <Modal show={showImageModal} onHide={handleImageClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>Uploaded Image</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <img src={imgLink} alt='img' className='img-fluid' />
+        </Modal.Body>
+      </Modal>
+
+      <Modal show={externalLinkModal} onHide={closeExternalLinkModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Add External Link</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <label className='has-float-label my-auto'>
+            <input
+              className='form-control'
+              name='Name'
+              type='text'
+              placeholder='Name'
+              onChange={(e) => setExternalLinkName(e.target.value)}
+            />
+            <span>Name</span>
+          </label>
+          <label className='has-float-label my-auto'>
+            <input
+              className='form-control'
+              name='Add url'
+              type='text'
+              placeholder='Add url'
+              onChange={(e) => setExternalLink(e.target.value)}
+            />
+            <span>Add url</span>
+          </label>
+
+          <div className='mt-2' style={{ textAlign: 'end' }}>
+            <Button variant='boldTextSecondary' onClick={closeExternalLinkModal}>
+              Cancel
+            </Button>
+            <Button variant='boldText' onClick={addExternalLink}>
+              Add
+            </Button>
+          </div>
         </Modal.Body>
       </Modal>
     </div>

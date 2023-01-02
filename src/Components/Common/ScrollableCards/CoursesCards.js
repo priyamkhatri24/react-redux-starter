@@ -10,7 +10,7 @@ import { get, apiValidation } from '../../../Utilities';
 import ProgressBar from '../ProgressBar/ProgressBar';
 import coursesBoy from '../../../assets/images/Courses/coursesBoy.svg';
 import rupee from '../../../assets/images/Courses/rupee.svg';
-import YCIcon from '../../../assets/images/ycIcon.png';
+import YCIcon from '../../../assets/images/Courses/thumbnail.png';
 
 export const CoursesCards = (props) => {
   const {
@@ -28,6 +28,19 @@ export const CoursesCards = (props) => {
   } = props;
 
   const [currencyCodes, setCurrencyCodes] = useState([]);
+  const [colors, setColors] = useState([
+    '#d4a373',
+    '#f08080',
+    '#a0c4ff',
+    '#abc4ff',
+    '#84dcc6',
+    '#b388eb',
+    '#a7bed3',
+    '#e7cee3',
+    '#e4b4c2',
+    '#fcd29f',
+    '#d2e0bf',
+  ]);
 
   useEffect(() => {
     get(null, '/getAllCurrencyCodes').then((res) => {
@@ -62,6 +75,17 @@ export const CoursesCards = (props) => {
           </div>
           <div style={{ display: 'flex', marginTop: '100px' }} className='desktopDisplayforCards'>
             {allCourses.map((elem) => {
+              let totalRating = 0;
+              let calculatedRating = 0;
+              if (elem.reviews?.length) {
+                const reviewsArary = elem.reviews[0];
+                for (let i = 0; i < reviewsArary.length; i++) {
+                  totalRating += Number(reviewsArary[i].rating);
+                }
+
+                calculatedRating = totalRating / reviewsArary.length;
+              }
+
               // elem.currencySymbol = '₹'; // default
               if (elem.is_regional) {
                 const countryFilteredPrices = elem.prices_array.filter(
@@ -89,7 +113,7 @@ export const CoursesCards = (props) => {
                   )?.currencySymbol;
                 }
               }
-              const numberOfStars = Math.round(parseInt(elem.course_rating, 10));
+              const numberOfStars = Math.round(parseInt(Math.floor(calculatedRating), 10));
               const starArray = [...Array(numberOfStars)].map((e, i) => (
                 /* eslint-disable-next-line */
                 <span role='img' aria-label='emoji' key={i}>
@@ -117,32 +141,50 @@ export const CoursesCards = (props) => {
                     key={`elem+${elem.course_id}`}
                     onClick={() => buyCourseId(elem.course_id)}
                   >
-                    <div style={{ position: 'relative' }}>
+                    <div
+                      style={
+                        elem.course_display_image
+                          ? { position: 'relative' }
+                          : {
+                              position: 'relative',
+                              backgroundColor: colors[Math.floor(Math.random() * colors.length)],
+                              borderRadius: '10px 10px 0px 0px',
+                            }
+                      }
+                    >
                       <img
-                        src={
-                          elem.course_display_image
-                            ? elem.course_display_image
-                            : clientLogo || YCIcon
-                        }
+                        src={elem.course_display_image ? elem.course_display_image : YCIcon}
                         alt='student'
+                        style={!elem.course_display_image ? { width: 'auto' } : {}}
                         className='mx-auto
                 Scrollable__courseImage'
                       />
-                      <div style={{ position: 'absolute', bottom: 0 }}>
-                        <Row className='mx-2'>
-                          {starArray.map((e) => {
-                            return e;
-                          })}
-                          {whiteStarArray.map((e) => {
-                            return e;
-                          })}
-                          <span className='Scrollable__smallText my-auto'>
-                            {elem.course_rating}
-                          </span>
-                          <span className='Scrollable__smallText my-auto'>
-                            ({elem.total_votes})
-                          </span>
-                        </Row>
+                      <div
+                        style={{
+                          position: 'absolute',
+                          width: '100%',
+                          bottom: 0,
+                          backgroundImage: 'linear-gradient(transparent, #44444484)',
+                        }}
+                      >
+                        {elem.reviews?.length && elem.allow_reviews === 'true' ? (
+                          <Row className='mx-0 px-2 pb-1 d-flex align-items-center'>
+                            {starArray.map((e) => {
+                              return e;
+                            })}
+                            {whiteStarArray.map((e) => {
+                              return e;
+                            })}
+                            <span className='Scrollable__smallText Scrollable__negativeMargin my-0 ml-1'>
+                              {String(calculatedRating).slice(0, 3)}
+                            </span>
+                            <span className='Scrollable__smallText Scrollable__negativeMargin my-0 ml-1'>
+                              ({elem.reviews[0].length})
+                            </span>
+                          </Row>
+                        ) : (
+                          <p className='Scrollable__noReviewsText'>No reviews yet</p>
+                        )}
                       </div>
                     </div>
                     <p className='Scrollable__courseCardHeading mt-3 mb-0 mx-2'>
@@ -241,16 +283,22 @@ export const CoursesCards = (props) => {
                       key={`elem+${elem.course_id}`}
                       onClick={() => myCourseId(elem.course_id)}
                     >
-                      <div style={{ position: 'relative' }}>
+                      <div
+                        style={
+                          elem.course_display_image
+                            ? { position: 'relative' }
+                            : {
+                                position: 'relative',
+                                backgroundColor: colors[Math.floor(Math.random() * colors.length)],
+                                borderRadius: '10px 10px 0px 0px',
+                              }
+                        }
+                      >
                         <img
-                          src={
-                            elem.course_display_image
-                              ? elem.course_display_image
-                              : clientLogo || YCIcon
-                          }
+                          src={elem.course_display_image ? elem.course_display_image : YCIcon}
                           alt='student'
-                          className='mx-auto
-                  Scrollable__courseImage'
+                          style={!elem.course_display_image ? { width: 'auto' } : {}}
+                          className='mx-auto Scrollable__courseImage'
                         />
                         {/* <div style={{ position: 'absolute', bottom: 0 }}>
                           <Row className='mx-2'>

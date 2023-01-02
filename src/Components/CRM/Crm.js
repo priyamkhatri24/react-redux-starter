@@ -241,7 +241,7 @@ const CRM = (props) => {
           Address: ele.address,
           Parent_contact: ele.parent_contact,
           Parent_name: ele.parent_name,
-          signup_time: new Date(ele.signup_time * 1000)
+          signup_time: new Date(ele.signup_time * 1000 + 19800)
             .toISOString()
             .split('T')
             .join(' at ')
@@ -343,7 +343,7 @@ const CRM = (props) => {
                           style={{ fontFamily: 'Montserrat-Regular' }}
                         >
                           Signup time:{' '}
-                          {new Date(inquiry.signup_time * 1000)
+                          {new Date(inquiry.signup_time * 1000 + 19800000)
                             .toISOString()
                             .split('T')
                             .join(' at ')
@@ -461,7 +461,7 @@ const CRM = (props) => {
                             style={{ fontFamily: 'Montserrat-Regular' }}
                           >
                             Signup time:{' '}
-                            {new Date(e.signup_time * 1000)
+                            {new Date(e.signup_time * 1000 + 19800000)
                               .toISOString()
                               .split('T')
                               .join(' at ')

@@ -42,7 +42,7 @@ export const DashboardCards = (props) => {
       onKeyDown={() => buttonClick()}
     >
       <span className='Dashboard__verticalDots'>{/* <MoreVertIcon /> */}</span>
-      <Row className='mt-2 p-4'>
+      <Row className='mt-2 p-4 mx-0'>
         <Col xs={8}>
           <p className='Dashboard__todaysHitsText'>
             {coloredHeading && <span style={{ color }}>{coloredHeading}</span>}{' '}

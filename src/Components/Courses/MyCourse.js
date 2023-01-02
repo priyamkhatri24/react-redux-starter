@@ -15,6 +15,7 @@ import StarIcon from '@material-ui/icons/StarRounded';
 import VideoIcon from '@material-ui/icons/VideoLibrary';
 import Play from '@material-ui/icons/PlayArrowRounded';
 import LiveIcon from '@material-ui/icons/LiveTv';
+import Resources from '@material-ui/icons/BusinessCenter';
 import DocIcon from '@material-ui/icons/Description';
 import TestIcon from '@material-ui/icons/LiveHelp';
 import Card from 'react-bootstrap/Card';
@@ -24,6 +25,7 @@ import Modal from 'react-bootstrap/Modal';
 import ShareIcon from '@material-ui/icons/Share';
 import Button from 'react-bootstrap/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import CardMembership from '@material-ui/icons/CardMembership';
 import PlyrComponent from 'plyr-react';
 import 'plyr-react/dist/plyr.css';
 import Col from 'react-bootstrap/Col';
@@ -34,6 +36,7 @@ import { downloadFile } from '../../Utilities/customUpload';
 import sampleReviews from './courseReviewsSample';
 import YCIcon from '../../assets/images/ycIcon.png';
 import { PageHeader } from '../Common/PageHeader/PageHeader';
+import { conversationsActions } from '../../redux/actions/conversations.action';
 import { analysisActions } from '../../redux/actions/analysis.action';
 import { testsActions } from '../../redux/actions/tests.action';
 import { courseActions } from '../../redux/actions/course.action';
@@ -48,6 +51,7 @@ import {
 import checkmark from '../../assets/images/order/icons8-checked.svg';
 import { getCurrentDashboardData } from '../../redux/reducers/dashboard.reducer';
 import './Courses.scss';
+import CourseChat from './CourseChat';
 
 window.mobileAndTabletCheck = function () {
   let check = false;
@@ -76,6 +80,7 @@ const Mycourse = (props) => {
     setTestEndTimeToStore,
     setTestStartTimeToStore,
     setTestLanguageToStore,
+    setConversation,
     clientUserId,
     dashboardData,
     clientId,
@@ -98,6 +103,7 @@ const Mycourse = (props) => {
   const [isDesktop, setIsDesktop] = useState(true);
   const [quality, setQuality] = useState(480);
   const [analysis, setAnalysis] = useState({});
+  const [courseConversation, setCourseConversation] = useState({});
   const [sectionArray, setSectionArray] = useState([]);
   const [showAnalysisModal, setShowAnalysisModal] = useState(false);
   const [isVideo, setVideo] = useState(false);
@@ -132,6 +138,7 @@ const Mycourse = (props) => {
   const [testOpener, setTestOpener] = useState(false);
   const [expiryDate, setExpiryDate] = useState(null);
   const [isCourseValid, setIsCourseValid] = useState(true);
+  const [completedPercentage, setCompletedPercentage] = useState(0);
   const handleImageOpen = () => setShowImageModal(true);
   const handleImageClose = () => setShowImageModal(false);
 
@@ -139,7 +146,7 @@ const Mycourse = (props) => {
     setNowPlayingVideo(courseNowPlayingVideo);
     setDocumentToOpen(courseDocumentToOpen);
     if (courseDocumentToOpen) setDocumentOpener(true);
-    if (document.body.clientWidth > 575) {
+    if (document.body.clientWidth > 940) {
       setIsDesktop(true);
     } else {
       setIsDesktop(false);
@@ -220,57 +227,24 @@ const Mycourse = (props) => {
     };
   }, [nowPlayingVideo]);
 
-  // useEffect(() => {
-  //   if (!nowPlayingVideo) return;
-  //   const arr = nowPlayingVideo.linkArray;
-  //   let timer;
-  //   if (!arr) return;
-  //   if (quality === 360) {
-  //     const playingVid = {
-  //       src: nowPlayingVideo.linkArray[1] || nowPlayingVideo.linkArray[0],
-  //       ...nowPlayingVideo,
-  //     };
-  //     setNowPlayingVideo(playingVid);
-  //     setCourseNowPlayingVideoToStore(playingVid);
-  //   } else if (quality === 240) {
-  //     const playingVid = {
-  //       src: nowPlayingVideo.linkArray[2] || nowPlayingVideo.linkArray[0],
-  //       ...nowPlayingVideo,
-  //     };
-  //     setNowPlayingVideo(playingVid);
-  //     setCourseNowPlayingVideoToStore(playingVid);
-  //   } else {
-  //     const playingVid = {
-  //       src: nowPlayingVideo.linkArray[0],
-  //       ...nowPlayingVideo,
-  //     };
-  //     setNowPlayingVideo(playingVid);
-  //     setCourseNowPlayingVideoToStore(playingVid);
-  //   }
-  //   nowPlayingVideoRef.current.plyr.currentTime = +nowPlayingVideo.finishedTime;
-  //   return () => {
-  //     setCurrentTime(nowPlayingVideoRef.current.plyr.currentTime);
-  //   };
-  // }, [quality]);
-
   useEffect(() => {
     if (currentTab === 'reviews') return;
     // setscrolledToBottom(true);
     // console.log('changinggg');
     const tabHeightFromTop = document.getElementById('idForScroll2')?.offsetTop;
-    const tabH = document.body.clientHeight - tabHeightFromTop;
+    const tabH = document.body.clientHeight - 0;
     setTabHeight(tabH - 50);
   });
 
   const handleTabHeight = () => {
     const tabHeightFromTop = document.getElementById('idForScroll2')?.offsetTop;
-    const tabH = document.body.clientHeight - tabHeightFromTop;
-    if (document.body.clientWidth < 575) {
+    const tabH = document.body.clientHeight - 0;
+    if (document.body.clientWidth < 940) {
       setTabHeight(tabH - 50);
       setIsTabScrollable(true);
-      console.log('tabscrolling');
+      console.log('tabscrolling', document.body.clientHeight, tabHeightFromTop);
     } else {
-      // console.log('233');
+      console.log('233');
       setTabHeight(tabH - 50);
     }
   };
@@ -294,6 +268,16 @@ const Mycourse = (props) => {
 
       get(payload, '/getCourseDetailsStudent').then((res) => {
         const result = apiValidation(res);
+
+        get(
+          null,
+          `/getConversationOfCourse?client_user_id=${clientUserId}&course_id=${result.course_id}`,
+        ).then((res) => {
+          console.log(res, 'conversations');
+          const data = apiValidation(res);
+          setCourseConversation(data);
+          // setConversation(data);
+        });
 
         setCourse(result);
         setCourseVideo(result.course_preview_vedio);
@@ -328,6 +312,17 @@ const Mycourse = (props) => {
         });
         console.log(result);
         setSectionArray(newsectionArray);
+
+        let completed = 0;
+        for (let i = 0; i < newsectionArray.length; i++) {
+          completed += newsectionArray[i].completed_percentage;
+        }
+        if (newsectionArray.length) {
+          setCompletedPercentage(completed / newsectionArray.length);
+        } else {
+          setCompletedPercentage(0);
+        }
+
         if (result.course_preview_vedio) {
           const vidsource = {
             type: 'video',
@@ -473,6 +468,8 @@ const Mycourse = (props) => {
         setDocumentToOpen(elem);
         setCourseDocumentToOpenToStore(elem);
         setCourseNowPlayingVideoToStore(null);
+      } else if (elem.file_type === 'external') {
+        window.open(elem.file_link, '_blank');
       } else if (elem.file_type === '.pdf') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         setNowPlayingVideo(false);
@@ -875,9 +872,20 @@ const Mycourse = (props) => {
     const array = [...arr];
     const hist = {};
     array.forEach((elem) => {
-      if (elem.file_type === 'image') {
+      if (
+        elem.file_type === 'image' ||
+        elem.file_type.includes('png') ||
+        elem.file_type.includes('jpg') ||
+        elem.file_type.includes('jpeg')
+      ) {
+        elem.file_type = 'image';
         elem.category = 'Documents';
-      } else if (elem.file_type === 'video') {
+      } else if (
+        elem.file_type === 'video' ||
+        elem.file_type.includes('mp4') ||
+        elem.file_type.includes('mkv')
+      ) {
+        elem.file_type = 'video';
         elem.category = 'Videos';
       } else if (elem.file_type === 'youtube') {
         elem.category = 'Videos';
@@ -885,6 +893,8 @@ const Mycourse = (props) => {
         elem.category = 'Tests';
       } else if (elem.file_type === 'live class') {
         elem.category = 'Live Classes';
+      } else if (elem.file_type === 'external') {
+        elem.category = 'Resources';
       } else {
         elem.category = 'Documents';
       }
@@ -906,6 +916,8 @@ const Mycourse = (props) => {
             icon = <VideoIcon style={{ color: '#9f16cf' }} />;
           } else if (key === 'Documents') {
             icon = <DocIcon style={{ color: 'green' }} />;
+          } else if (key === 'Resources') {
+            icon = <Resources style={{ color: 'orange' }} />;
           } else if (key === 'Live classes') {
             icon = <LiveIcon style={{ color: '#faa300' }} />;
           } else if (key === 'Tests') {
@@ -972,7 +984,7 @@ const Mycourse = (props) => {
     };
     if (!addedRating || !addedReview) return;
     setTimeout(() => {
-      if (document.body.clientWidth < 575) {
+      if (document.body.clientWidth < 940) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
       post(payload, '/addCourseReview').then((res) => {
@@ -1131,8 +1143,9 @@ const Mycourse = (props) => {
                   // onClick={controlPreview}
                   width='100%'
                   style={{ borderRadius: '5px' }}
-                  autoplay='autoplay'
+                  // autoplay='autoplay'
                   id='vidElement'
+                  controls={!videoIsPlaying}
                 >
                   <source src={source} type='video/mp4' />
                   <track src='' kind='subtitles' srcLang='en' label='English' />
@@ -1212,9 +1225,38 @@ const Mycourse = (props) => {
           )}
           {isDesktop ? (
             <>
-              <p className='Courses__courseCardHeading mx-auto mb-0 mt-3 w-90'>
-                {course.course_title}
-              </p>
+              <div
+                style={{ width: completedPercentage > 95 ? '90%' : '100%', margin: 'auto' }}
+                className='d-flex align-items-center justify-content-between'
+              >
+                <p
+                  style={{ height: '31px' }}
+                  className='Courses__courseCardHeading mx-auto mb-1 mt-3 w-90'
+                >
+                  {course.course_title}
+                </p>
+                {Number(completedPercentage) > 95 ? (
+                  <Button
+                    style={{ fontSize: '10px', width: '300px' }}
+                    variant='customPrimary'
+                    onClick={() => {
+                      history.push({
+                        pathname: '/courses/certificate',
+                        state: {
+                          instructor: 'Mohit Patel',
+                          duration: '30',
+                          date: '1/1/2023',
+                          course: course.course_title,
+                          user: `${userProfile.firstName} ${userProfile.lastName}`,
+                        },
+                      });
+                    }}
+                  >
+                    <CardMembership style={{ fontSize: '16px' }} className='mr-2' />
+                    <span className=''>Get Completion Certificate</span>
+                  </Button>
+                ) : null}
+              </div>
               <p
                 style={{ fontFamily: 'Montserrat-Regular' }}
                 className='Courses__courseCardHeading mx-auto mb-0 mt-3 w-90'
@@ -1222,13 +1264,17 @@ const Mycourse = (props) => {
                 {nowPlayingVideo || source
                   ? 'NOW PLAYING: '
                   : documentToOpen || testToOpen
-                  ? 'NOW SHOWING: '
+                  ? 'NOW VIEWING: '
                   : ''}
                 {nowPlayingVideo?.name || documentToOpen?.name || testToOpen?.name || 'Preview'}
               </p>
+              {/* <div className='Courses__chatDiv mx-auto'>
+                <CourseChat />
+              </div> */}
             </>
           ) : null}
         </div>
+
         {Object.keys(course).length > 0 && (
           <div className='Courses__mycourseContainer fgrow1'>
             {!isDesktop ? (
@@ -1238,6 +1284,7 @@ const Mycourse = (props) => {
                 {nowPlayingVideo?.name || documentToOpen?.name || course.course_title}
               </p>
             ) : null}
+
             <Tabs
               defaultActiveKey='Content'
               className='Courses__Tabs'
@@ -1245,7 +1292,7 @@ const Mycourse = (props) => {
               style={{ marginTop: '1rem', width: '100%' }}
             >
               <Tab
-                className={`scrollableTabsForCourses ${
+                className={`scrollableTabsForCourses noBorderOnHover ${
                   isTabScrollable ? 'scrollable' : 'unscrollable'
                 }`}
                 id='idForScroll2'
@@ -1336,6 +1383,8 @@ const Mycourse = (props) => {
                                 icon = <DocIcon style={{ color: 'green' }} />;
                               } else if (elem.category === 'Live classes') {
                                 icon = <LiveIcon style={{ color: '#faa300' }} />;
+                              } else if (elem.category === 'Resources') {
+                                icon = <Resources style={{ color: 'orange' }} />;
                               } else if (elem.category === 'Tests') {
                                 icon = <TestIcon style={{ color: '#530de1' }} />;
                               }
@@ -1372,7 +1421,8 @@ const Mycourse = (props) => {
                                             ? elem.file_type.toUpperCase()
                                             : elem.content_type.toUpperCase()}
                                         </small>
-                                        {elem.content_type !== 'test' ? (
+                                        {elem.content_type !== 'test' &&
+                                        elem.file_type !== 'external' ? (
                                           <small className='verySmallText'>
                                             {formatDurationFromSeconds(elem.total_time)}
                                           </small>
@@ -1394,12 +1444,13 @@ const Mycourse = (props) => {
                                           {nowPlayingVideo
                                             ? 'Playing'
                                             : documentToOpen
-                                            ? 'Showing'
+                                            ? 'Viewing'
                                             : null}
                                         </p>
                                       ) : (
                                         <div className='d-flex align-items-center'>
-                                          {elem.content_type !== 'test' ? (
+                                          {elem.content_type !== 'test' &&
+                                          elem.file_type !== 'external' ? (
                                             <>
                                               <ProgressBar
                                                 width={`${calculateIndividualItemPercentage(
@@ -1444,7 +1495,9 @@ const Mycourse = (props) => {
                 })}
               </Tab>
               <Tab
-                className={`scrollableTabsForCourses ${isTabScrollable ? 'scrollable' : null}`}
+                className={`scrollableTabsForCourses noBorderOnHover ${
+                  isTabScrollable ? 'scrollable' : null
+                }`}
                 eventKey='Details'
                 title='Details'
                 onScroll={handleTabHeight}
@@ -1484,6 +1537,15 @@ const Mycourse = (props) => {
                     </div>
                   </Row>
                 ) : null}
+                {expiryDate ? (
+                  <>
+                    <hr className='' />
+                    <p className='Courses__subHeading expiryText mb-2'>
+                      This course will expire on{' '}
+                      {String(expiryDate).split(' ').slice(1, 4).join(' ')}
+                    </p>
+                  </>
+                ) : null}
                 <hr className='' />
                 <p className='Courses__heading my-2'>What will I learn?</p>
                 {course.tag_array
@@ -1520,22 +1582,15 @@ const Mycourse = (props) => {
                 {course.course_includes.map((ele) => {
                   return <p className='Courses__subHeading mb-2'>- {ele}</p>;
                 })}
-                {expiryDate ? (
-                  <>
-                    <hr className='' />
-                    <p className='Courses__subHeading expiryText mb-2'>
-                      This course will expire on{' '}
-                      {String(expiryDate).split(' ').slice(1, 4).join(' ')}
-                    </p>
-                  </>
-                ) : null}
               </Tab>
               <Tab
                 style={{
                   height: `${tabHeight}px`,
                   margin: 'auto 15px',
                 }}
-                className={`scrollableTabsForCourses ${isTabScrollable ? 'scrollable' : null}`}
+                className={`scrollableTabsForCourses noBorderOnHover ${
+                  isTabScrollable ? 'scrollable' : null
+                }`}
                 id='ReviewTab'
                 // onScroll={handleTabHeight}
                 onClick={() => setCurrentTab('reviews')}
@@ -1762,6 +1817,9 @@ const mapDispatchToProps = (dispatch) => {
     setAnalysisSubjectArrayToStore: (payload) => {
       dispatch(analysisActions.setAnalysisSubjectArrayToStore(payload));
     },
+    setConversation: (conversation) => {
+      dispatch(conversationsActions.setConversation(conversation));
+    },
   };
 };
 
@@ -1796,4 +1854,5 @@ Mycourse.propTypes = {
   courseDocumentToOpen: PropTypes.instanceOf(Object).isRequired,
   setAnalysisTestObjectToStore: PropTypes.func.isRequired,
   setAnalysisSubjectArrayToStore: PropTypes.func.isRequired,
+  setConversation: PropTypes.func.isRequired,
 };

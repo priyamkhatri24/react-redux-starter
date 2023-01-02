@@ -134,7 +134,7 @@ const DummyDashboard = (props) => {
           Register Now!
         </Button>
         <div className='m-2 mt-4'>
-          {dummyData.posters.length > 0 && (
+          {dummyData.posters?.length > 0 && (
             <>
               <AspectCards
                 data={dummyData.posters}
@@ -148,7 +148,7 @@ const DummyDashboard = (props) => {
           )}
 
           <>
-            {dummyData.star_performers.length > 0 && (
+            {dummyData.star_performers?.length > 0 && (
               <>
                 <h6
                   style={{
@@ -171,7 +171,7 @@ const DummyDashboard = (props) => {
               </>
             )}
           </>
-          {dummyData.testimonials.length > 0 && (
+          {dummyData.testimonials?.length > 0 && (
             <>
               <h6
                 style={{
@@ -372,7 +372,7 @@ const DummyDashboard = (props) => {
           </Row>
         </Card>
 
-        {Object.keys(dummyData.address).length > 0 && (
+        {Object.keys(dummyData.address)?.length > 0 && (
           <Card
             className='m-3 mt-4 largeScreenPadding'
             style={{ border: '1px solid rgba(112, 112, 112, 0.5)' }}

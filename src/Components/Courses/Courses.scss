@@ -1,5 +1,6 @@
 .Courses {
   @import '../../scss/bootstrap';
+  @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
 
   &__heading {
     color: $headingGrey;
@@ -20,7 +21,7 @@
     font-size: 16px;
     font-family: 'Montserrat-SemiBold';
     margin-top: 0px !important;
-    margin-bottom: 16px !important;
+    margin-bottom: 0px !important;
   }
   &__Price {
     font-size: 12px;
@@ -48,14 +49,15 @@
 
   &__viewCourseImage {
     max-width: 100%;
-    width: 95px;
-    height: 61px;
-    object-fit: cover;
+    width: 108px;
+    height: 63px;
+    object-fit: contain;
     border-radius: 5px;
+    padding: 0px !important;
 
     @include media-breakpoint-up(md) {
-      width: 150px;
-      height: 80px;
+      width: 160px;
+      height: 90px;
     }
   }
 
@@ -181,10 +183,10 @@
   &__container {
     width: 90%;
     height: 100%;
-    max-height: calc(100vh - 5rem);
+    max-height: calc(100vh - 4rem);
     overflow-y: scroll;
     margin: auto;
-    margin-top: 5rem;
+    margin-top: 3rem;
     padding-left: 10%;
     perspective: 1000;
     // -webkit-transform: translate3d(0, 0, 0);
@@ -220,8 +222,12 @@
   }
 
   &__image {
+    padding-left: 0px !important;
+      padding-right: 0px !important;
+      
     @include media-breakpoint-down(sm) {
-      padding-left: 0;
+      padding-left: 0px !important;
+      padding-right: 0px !important;
     }
   }
 
@@ -259,6 +265,16 @@
     color: var(--primary-blue);
     cursor: pointer;
     border: 1px solid gray;
+    border-radius: 7px;
+  }
+
+  &__addRegionalPriceButtonFilled {
+    padding: 2px 12px;
+    font-family: 'Montserrat-Regular';
+    color: white;
+    cursor: pointer;
+    background-color: var(--primary-blue);
+    // border: 1px solid gray;
     border-radius: 7px;
   }
 
@@ -436,16 +452,63 @@
     position: absolute;
     right: -35px;
   }
+
+  &__certificateBody {
+    
+    width: 100%;
+    height: auto;
+    margin: auto;
+
+  }
+
+  &__certificateHeadText {
+    width: 100%;
+    top: 25%;
+    text-align: center;
+  }
+
+  &__cetificateNameDiv {
+    top: 45%;
+  }
+
+  &__certificateName {
+    font-family: 'Montserrat-Medium';
+    font-size: 50px;
+    color: #009ece;
+    margin-top: 75px;
+    text-decoration: underline;
+    @include media-breakpoint-down(sm) {
+      font-size: 32px;
+    }
+  }
+
+  &__certificateNormalText {
+    font-size: 18px;
+    line-height: 24px;
+    width: 90% !important;
+    margin: 16px auto 10px auto;
+    font-family: 'Montserrat-Regular';
+    
+  }
+
+  &__certificateLogo {
+    width: 60px;
+  }
+
+  &__chatDiv {
+    width: 90%;
+  }
+  
 }
 
 .Courses__mycourseContainer {
   width: 33vw;
-  margin: auto;
+  margin: 0px;
   height: fit-content;
   height: calc(100vh - 0px);
 }
 
-@media screen and (max-width: 575px) {
+@media screen and (max-width: 940px) {
   .Courses__mycourseContainer {
     width: 100%;
     height: calc(100vh - 75px);
@@ -456,13 +519,14 @@
 #detailTab,
 #ReviewTab {
   background-color: transparent;
+  
 }
 
 #contentTab:hover {
   color: black;
-  border-top: 1px solid transparent;
-  border-left: 1px solid transparent;
-  border-right: 1px solid transparent;
+  // border-top: 1px solid transparent;
+  // border-left: 1px solid transparent;
+  // border-right: 1px solid transparent;
 }
 
 .playIconCourse {
@@ -518,9 +582,9 @@
 
 #idForScroll:hover {
   color: black;
-  border-top: 1px solid transparent;
-  border-left: 1px solid transparent;
-  border-right: 1px solid transparent;
+  // border-top: 1px solid transparent;
+  // border-left: 1px solid transparent;
+  // border-right: 1px solid transparent;
 }
 
 .addReviewsBigIcon {
@@ -545,23 +609,23 @@
 
 #ReviewTab:hover {
   color: black;
-  border-top: 1px solid transparent;
-  border-left: 1px solid transparent;
-  border-right: 1px solid transparent;
+  // border-top: 1px solid transparent;
+  // border-left: 1px solid transparent;
+  // border-right: 1px solid transparent;
 }
 
 #idForScroll2:hover {
   color: black;
-  border-top: 1px solid transparent;
-  border-left: 1px solid transparent;
-  border-right: 1px solid transparent;
+  // border-top: 1px solid transparent;
+  // border-left: 1px solid transparent;
+  // border-right: 1px solid transparent;
 }
 
 #detailTab:hover {
   color: black;
-  border-top: 1px solid transparent;
-  border-left: 1px solid transparent;
-  border-right: 1px solid transparent;
+  // border-top: 1px solid transparent;
+  // border-left: 1px solid transparent;
+  // border-right: 1px solid transparent;
 }
 
 .topMargin {
@@ -797,13 +861,13 @@
 
 .previewVideoTextClass {
   color: white;
-  margin: 0px;
+  margin-left: 40px;
   font-family: 'Montserrat-Light';
   font-size: 16px;
   position: relative;
   top: -35px;
-  width: 90%;
-  margin: auto;
+  width: 200px;
+  // margin: auto;
   transition-duration: 0.3s;
   transition-property: opacity;
 }
@@ -916,17 +980,18 @@
   outline: none;
 }
 
-@media screen and (min-width: 575px) {
+@media screen and (min-width: 940px) {
   .courseNameContainer {
     width: 90% !important;
   }
   .Scrollable__bestSeller {
     font-size: 0.6rem;
+    padding: 8px;
   }
 }
 
 // mobile
-@media screen and (max-width: 575px) {
+@media screen and (max-width: 940px) {
   .Scrollable__courseCardSubHeading {
     width: 94%;
   }
@@ -936,6 +1001,7 @@
   }
   .unscrollableOnMobile {
     height: 100vh !important;
+    // overflow: hidden;
     // min-height: -webkit-fill-available;
   }
 }
@@ -949,7 +1015,13 @@
 
 .fgrow2 {
   flex-grow: 2;
+  max-height: 100vh;
+  overflow: scroll;
   flex-basis: 0;
+}
+
+.fgrow2::-webkit-scrollbar {
+  display: none;
 }
 
 .fgrow1 {
@@ -965,7 +1037,7 @@
   width: 45%;
   margin-right: 10px;
 }
-@media screen and (min-width: 575px) {
+@media screen and (min-width: 940px) {
   .desktopContainerMyCource {
     display: flex;
   }
@@ -977,15 +1049,21 @@
   }
 }
 
-@media screen and (max-width: 570px) {
+@media screen and (max-width: 575px) {
   .regionalPriceFormInput {
     width: 45%;
+  }
+  .previewVideoTextClass {
+    margin-left: 20px;
   }
   .Courses__mycoursesvideoplayer {
     max-height: 40vh;
   }
   .studentCredentialsTextClass {
     font-size: 13px;
+  }
+  .courseThumbnailImg {
+    max-width: 70% !important;
   }
 }
 
@@ -1023,6 +1101,45 @@
   font-size: 12px;
   margin-left: 10px;
 
+  
+}
+
+.removeImageIcon {
+  // padding: 5px;
+  width: 22px;
+  top: -8px;
+  opacity: 0.8;
+  height: 22px;
+  position: relative;
+  right: -57%;
+  background-color: gray;
+  border-radius: 100px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.centerjustification {
+  justify-content: center !important;
+}
+
+.removeLanguage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0px 5px;
+  border-radius: 100px;
+  // background-color: lightgray;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+
+}
+
+.positionVideo {
+  right: -87% !important;
 }
 
 // .plyr audio,
@@ -1040,3 +1157,79 @@
     margin-left: 35%;
   }
 }
+
+
+///////
+
+
+$color-alpha: var(--primary-blue);
+.certiborder {
+  position: relative;
+  height: 90%;
+  margin: auto;
+  // top: 50%;
+  // left: 50%;
+  // transform: translate3d(-50%, -50%, 0);
+  background-color: #fff;
+  width: 95%;
+  // max-width: 600px;
+  padding: 5px;
+  border: 2px solid $color-alpha;
+  &:before, &:after {
+    content: "•";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    font-size: 14px;
+    color: $color-alpha;
+    border: 2px solid $color-alpha;
+    line-height: 12px;
+    top: 5px;
+    text-align: center;
+  }
+  &:before {
+    left: 5px;
+  }
+  &:after {
+    right: 5px;
+  }
+  .certiborder-inner {
+    position: relative;
+    background-color: #fff;
+
+    border: 2px solid $color-alpha;
+    padding: 20px;
+    height: 100%;
+    &:before, &:after {
+      content: "•";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      font-size: 14px;
+      color: $color-alpha;
+      border: 2px solid $color-alpha;
+      line-height: 12px;
+      bottom: -2px;
+      text-align: center;
+    }
+    &:before {
+      left: -2px;
+    }
+    &:after {
+      right: -2px;
+    }
+  }
+}
+
+.signature {
+  font-family: 'Caramel-Regular';
+  font-size: 30px;
+}
+
+.certiMain {
+  width: 100%;
+  height: max-content;
+  background-color: white;
+  padding: 10px;
+}
+

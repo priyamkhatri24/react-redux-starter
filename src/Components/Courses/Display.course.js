@@ -7,6 +7,8 @@ import CreateIcon from '@material-ui/icons/Create';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import CloseIcon from '@material-ui/icons/Close';
 import AddIcon from '@material-ui/icons/Add';
 import VideoThumbnail from 'react-video-thumbnail';
 import { courseActions } from '../../redux/actions/course.action';
@@ -15,6 +17,7 @@ import { uploadingImage } from '../../Utilities/customUpload';
 import YCIcon from '../../assets/images/ycIcon.png';
 import { loadingActions } from '../../redux/actions/loading.action';
 import Cropper from '../Common/CropperModal/Cropper';
+// import { shadow } from 'pdfjs-dist';
 
 const Display = (props) => {
   const {
@@ -29,6 +32,31 @@ const Display = (props) => {
   } = props;
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [languages, setLanguages] = useState([
+    'English',
+    'Hindi',
+    'Bengali',
+    'Marathi',
+    'Tamil',
+    'Telegu',
+    'Gujarati',
+    'Kannada',
+    'Punjabi',
+    'French',
+    'Mandarin (Chinese)',
+    'Cantonese (Chinese)',
+    'Spanish',
+    'Arabic',
+    'Russian',
+    'German',
+    'Sanskrit',
+    'Japanese',
+    'Korean',
+    'Urdu',
+    'Portugese',
+  ]);
+  const [selectedLanguage, setSelectedLanguage] = useState(['English']);
+  const [languageString, setLanguageString] = useState('English');
   const [imageTitle, setImageTitle] = useState('');
   const [imageModal, setImageModal] = useState(false);
   const [upImg, setUpImg] = useState();
@@ -111,13 +139,63 @@ const Display = (props) => {
       if (type === 'image') {
         reader.onloadend = function getImage() {
           const base64data = reader.result;
-          setImageTitle(base64data);
+          setImageTitle(profileImage);
+          // setImageTitle(courseDisplayImage);
+          // courseImage.current = profileImage;
         };
       }
     }
   };
+
+  useEffect(() => {
+    if (profileImage) {
+      setImageTitle(profileImage);
+      courseImage.current = profileImage;
+    }
+  }, [profileImage]);
+
   console.log(profileImage);
-  courseImage.current = profileImage;
+  // courseImage.current = courseDisplayImage;
+
+  const removeDisplayImage = (e, type) => {
+    e.stopPropagation();
+    if (type === 'image') {
+      setImageTitle(null);
+      courseImage.current = '';
+    } else if (type === 'video') {
+      setVideoURL(null);
+      setThumbnail(null);
+      courseVideo.current = '';
+    }
+  };
+
+  const addLanguage = () => {
+    const langArray = [...selectedLanguage];
+    langArray.push('English');
+    setSelectedLanguage(langArray);
+    setLanguageString(`${languageString}~English`);
+  };
+
+  const makeLanguageString = (lang, index) => {
+    const langArray = languageString.split('~');
+    langArray[index] = lang;
+    const selectedAr = [...selectedLanguage];
+    selectedAr[index] = lang;
+    setLanguageString(langArray.join('~'));
+    setSelectedLanguage(selectedAr);
+  };
+
+  const removeLanguage = (ix) => {
+    const selectedAr = selectedLanguage.filter((e, i) => i !== ix);
+    setSelectedLanguage(selectedAr);
+    const langStr = languageString
+      .split('~')
+      .filter((e, i) => i !== ix)
+      .join('~');
+    setLanguageString(langStr);
+  };
+
+  console.log(imageTitle, 'titleee');
 
   return (
     <div>
@@ -125,7 +203,7 @@ const Display = (props) => {
         return (
           <Card
             className='m-2 p-2'
-            style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)', borderRadius: '10px' }}
+            style={{ boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.16)', borderRadius: '5px' }}
             onClick={() => setCourseCurrentSlideToStore(i + 1)}
             key={i} // eslint-disable-line
           >
@@ -173,11 +251,68 @@ const Display = (props) => {
             <span>Course Description</span>
           </label>
         </Row>
-        <Row className='m-2'>
+
+        <div className='m-2 justify-content-start align-items-center'>
+          {selectedLanguage.map((ele, i) => {
+            return (
+              <div className='d-flex align-items-center'>
+                <label className='has-float-label my-2 w-100'>
+                  <select
+                    className='form-control'
+                    style={{ boxShadow: 'none' }}
+                    name='Language'
+                    type='select'
+                    value={languageString.split('~')[i]}
+                    placeholder='Language'
+                    onChange={(e) => makeLanguageString(e.target.value, i)}
+                  >
+                    {/* <option>English</option> */}
+                    {languages.sort().map((lang) => (
+                      <option selected={lang === 'English'}>{lang}</option>
+                    ))}
+                  </select>
+                  <span>Language</span>
+                </label>
+                {i > 0 ? (
+                  <div
+                    className='d-flex justify-content-center'
+                    style={{
+                      width: '10%',
+                    }}
+                  >
+                    <span
+                      onKeyPress={() => removeLanguage(i)}
+                      tabIndex={-1}
+                      role='button'
+                      onClick={() => removeLanguage(i)}
+                      className='removeLanguage'
+                    >
+                      <CloseIcon />
+                    </span>
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
+          {selectedLanguage.length < 3 ? (
+            <div
+              onClick={addLanguage}
+              onKeyPress={addLanguage}
+              tabIndex={-1}
+              role='button'
+              style={{ width: '130px' }}
+              className='Courses__addRegionalPriceButton mt-2'
+            >
+              + Add More
+            </div>
+          ) : null}
+        </div>
+
+        <Row className='m-2 mt-4'>
           <Col
             xs={4}
             style={{ height: '60px', width: '95px', borderRadius: '5px' }}
-            className='align-items-center d-flex justify-content-center p-0'
+            className=' d-flex justify-content-center p-0'
             onClick={() => courseImageRef.current.click()}
             onKeyDown={() => courseImageRef.current.click()}
             role='button'
@@ -191,14 +326,23 @@ const Display = (props) => {
               ref={courseImageRef}
             />
             {imageTitle && (
-              <>
+              <Row className='justify-content-center'>
+                <span
+                  role='button'
+                  tabIndex={-1}
+                  onKeyDown={(e) => removeDisplayImage(e, 'image')}
+                  onClick={(e) => removeDisplayImage(e, 'image')}
+                  className='removeImageIcon positionVideo'
+                >
+                  X
+                </span>
                 <img
                   src={imageTitle}
                   alt='upload your profile pic'
                   className='img-fluid'
                   style={{ height: '60px', width: '95px', borderRadius: '5px' }}
                 />
-              </>
+              </Row>
             )}
             {!imageTitle && (
               <div
@@ -262,6 +406,15 @@ const Display = (props) => {
             {courseVideo.current && (
               <div style={{ flexDirection: 'row' }}>
                 <Row className='justify-content-center'>
+                  <span
+                    role='button'
+                    tabIndex={-1}
+                    onKeyDown={(e) => removeDisplayImage(e, 'video')}
+                    onClick={(e) => removeDisplayImage(e, 'video')}
+                    className='removeImageIcon positionVideo'
+                  >
+                    X
+                  </span>
                   <img
                     src={thumbnailImg || YCIcon}
                     alt='upload your profile pic'
@@ -276,9 +429,7 @@ const Display = (props) => {
                   </div>
                 </Row>
                 <Row>
-                  <div>
-                    <small className='Courses__tinySubHeading'>{videoName}</small>
-                  </div>
+                  <div>{/* <small className='Courses__tinySubHeading'>{videoName}</small> */}</div>
                 </Row>
               </div>
             )}
@@ -319,7 +470,17 @@ const Display = (props) => {
           <Button
             variant='customPrimarySmol'
             onClick={() =>
-              updateDisplayDetails(title, description, courseImage.current, courseVideo.current)} // prettier-ignore
+            {
+              if (!imageTitle) {
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'Attention',
+                  text: 'Please add a preview image to the course. It will make your course more attractive.',
+                });
+                return;
+              }
+              updateDisplayDetails(title, description, courseImage.current, courseVideo.current, languageString)
+            }} // prettier-ignore
           >
             Continue
           </Button>

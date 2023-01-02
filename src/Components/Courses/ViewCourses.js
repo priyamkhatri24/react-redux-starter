@@ -11,11 +11,11 @@ import {
   getCurrentLocationData,
 } from '../../redux/reducers/dashboard.reducer';
 import { getClientId, getClientUserId } from '../../redux/reducers/clientUserId.reducer';
-import { apiValidation, get } from '../../Utilities';
+import { apiValidation, get, formatDateInEnglish } from '../../Utilities';
 import { PageHeader } from '../Common';
 import rupee from '../../assets/images/Courses/rupee.svg';
 import ProgressBar from '../Common/ProgressBar/ProgressBar';
-import placeholder from '../../assets/images/ycIcon.png';
+import placeholder from '../../assets/images/Courses/thumbnail.png';
 import { courseActions } from '../../redux/actions/course.action';
 import './Courses.scss';
 
@@ -38,6 +38,19 @@ const ViewCourses = (props) => {
   const [currencyCodes, setCurrencyCodes] = useState([]);
   const [searchString, setSearchString] = useState('');
   const [cached, setCached] = useState([]);
+  const [colors, setColors] = useState([
+    '#d4a373',
+    '#f08080',
+    '#a0c4ff',
+    '#abc4ff',
+    '#84dcc6',
+    '#b388eb',
+    '#a7bed3',
+    '#e7cee3',
+    '#e4b4c2',
+    '#fcd29f',
+    '#d2e0bf',
+  ]);
 
   useEffect(() => {
     get(null, '/getAllCurrencyCodes').then((data) => {
@@ -113,6 +126,17 @@ const ViewCourses = (props) => {
       <div>
         <div className='Courses__container'>
           {courses.map((course) => {
+            let totalRating = 0;
+            let calculatedRating = 0;
+            if (history.location.state.type === 'allCourses' && course.reviews.length) {
+              const reviewsArary = course.reviews;
+              for (let i = 0; i < reviewsArary.length; i++) {
+                totalRating += Number(reviewsArary[i].rating);
+              }
+
+              calculatedRating = totalRating / reviewsArary.length;
+            }
+
             if (course.is_regional) {
               const countryFilteredPrices = course.prices_array.filter(
                 (ele) => ele.country_name === locationData.country,
@@ -137,7 +161,7 @@ const ViewCourses = (props) => {
                 )?.currencySymbol;
               }
             }
-            const numberOfStars = Math.round(parseInt(course.course_rating, 10));
+            const numberOfStars = Math.round(parseInt(Math.floor(calculatedRating), 10));
             const starArray = [...Array(numberOfStars)].map((e, i) => (
               /* eslint-disable-next-line */
               <span role='img' aria-label='emoji' key={i}>
@@ -167,45 +191,62 @@ const ViewCourses = (props) => {
                   <img
                     src={course.course_display_image ? course.course_display_image : placeholder}
                     alt='course '
+                    style={
+                      !course.course_display_image
+                        ? { backgroundColor: colors[Math.floor(Math.random() * colors.length)] }
+                        : { objectFit: 'cover' }
+                    }
                     className='mx-auto Courses__viewCourseImage'
                   />
                 </Col>
-                <Col xs={8} sm={8} className='p-0'>
+                <Col xs={8} sm={8} className='p-0 pl-2'>
                   <p className='Scrollable__courseCardHeading mb-0 mx-2'>{course.course_title}</p>
                   {history.location.state.type === 'allCourses' ? (
                     <>
-                      <div className='mx-2 d-flex align-items-center'>
-                        {starArray.map((e) => {
-                          return e;
-                        })}
-                        {whiteStarArray.map((e) => {
-                          return e;
-                        })}
-                        <span
-                          className='Scrollable__smallText my-auto'
-                          style={{
-                            color: 'rgba(0, 0, 0, 0.87)',
-                            paddingLeft: '5px',
-                            fontSize: '10px',
-                          }}
+                      {course.reviews.length && course.allow_reviews ? (
+                        <div className='mx-2 d-flex align-items-center'>
+                          {starArray.map((e) => {
+                            return e;
+                          })}
+                          {whiteStarArray.map((e) => {
+                            return e;
+                          })}
+                          <span
+                            className='Scrollable__smallText Scrollable__negativeMargin2 my-auto'
+                            style={{
+                              color: 'rgba(0, 0, 0, 0.87)',
+                              paddingLeft: '5px',
+                              fontSize: '10px',
+                            }}
+                          >
+                            {String(calculatedRating).slice(0, 3)}
+                          </span>
+                          <span
+                            className='Scrollable__smallText Scrollable__negativeMargin2 my-auto ml-1'
+                            style={{
+                              color: 'rgba(0, 0, 0, 0.87)',
+                              fontSize: '10px',
+                            }}
+                          >
+                            ({course.reviews.length})
+                          </span>
+                        </div>
+                      ) : (
+                        <p
+                          style={{ color: 'black', fontSize: '9px' }}
+                          className='Scrollable__smallText my-1 mx-2'
                         >
-                          {course.course_rating}
-                        </span>
-                        <span
-                          className='Scrollable__smallText my-auto'
-                          style={{ color: 'rgba(0, 0, 0, 0.87)', fontSize: '10px' }}
-                        >
-                          ({course.total_votes})
-                        </span>
-                      </div>
+                          Subscribe and be the first one to review this course
+                        </p>
+                      )}
                       <Row className='Scrollable__courseCardSubHeading text-left mx-2'>
                         {/* <img src={rupee} alt='rupee' height='10' width='10' className='my-auto' /> */}
-                        <span className='mx-1 Scrollable__courseCardHeading my-auto'>
+                        <span className='mx-0 Scrollable__courseCardHeading my-auto'>
                           {course.currencySymbol
                             ? `${course.currencySymbol} ${course.discount_price}`
                             : `${currentbranding.branding.currency_symbol} ${course.discount_price}`}
                         </span>
-                        <span className='my-auto'>
+                        <span className='my-auto ml-2'>
                           <del>
                             {course.currencySymbol
                               ? `${course.currencySymbol} ${course.course_price}`
@@ -221,6 +262,13 @@ const ViewCourses = (props) => {
                           </div>
                         )}
                       </Row>
+                      {course.modified_at ? (
+                        <Row className='mx-2' style={{ fontSize: '10px', width: '100%' }}>
+                          <span className='mx-0' style={{ fontFamily: 'Montserrat-Regular' }}>
+                            Last updated on {formatDateInEnglish(course.modified_at)}
+                          </span>
+                        </Row>
+                      ) : null}
                     </>
                   ) : (
                     <div

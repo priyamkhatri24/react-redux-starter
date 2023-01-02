@@ -164,7 +164,7 @@ const AdmissionForm = (props) => {
     <div className='AdmissionForm'>
       <Row className='ml-4 mt-4'>
         <BackButton color='#000' />
-        <span className='ml-3 AdmissionForm__navHeading'>Admission Form</span>
+        <span className='ml-3 AdmissionForm__navHeading'>Complete Your Profile</span>
       </Row>
       <div className='AdmissionForm__fileUpload text-center'>
         <label htmlFor='file-input'>

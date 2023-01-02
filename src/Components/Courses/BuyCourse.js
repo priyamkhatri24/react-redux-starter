@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
+import PropTypes, { element } from 'prop-types';
 import { connect } from 'react-redux';
 import cx from 'classnames';
 import format from 'date-fns/format';
@@ -26,6 +26,7 @@ import TestIcon from '@material-ui/icons/LiveHelp';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import StarBorderIcon from '@material-ui/icons/StarBorderRounded';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import Resources from '@material-ui/icons/BusinessCenter';
 import ShareIcon from '@material-ui/icons/Share';
 // import freeIcon from '../../assets/images/Courses/freeIcon.svg';
 import { apiValidation, get, post, displayRazorpay, shareThis, urlify } from '../../Utilities';
@@ -40,12 +41,14 @@ import {
   getClientUserId,
   getRoleArray,
 } from '../../redux/reducers/clientUserId.reducer';
+import { courseActions } from '../../redux/actions/course.action';
+import { getUserProfile } from '../../redux/reducers/userProfile.reducer';
 import { getCurrentBranding } from '../../redux/reducers/branding.reducer';
 import {
   getCurrentDashboardData,
   getCurrentLocationData,
 } from '../../redux/reducers/dashboard.reducer';
-import YCIcon from '../../assets/images/ycIcon.png';
+import YCIcon from '../../assets/images/Courses/thumbnail.png';
 import checkmark from '../../assets/images/order/icons8-checked.svg';
 import caution from '../../assets/images/order/icons8-medium-risk-50.png';
 import { dashboardActions } from '../../redux/actions/dashboard.action';
@@ -74,8 +77,13 @@ const BuyCourse = (props) => {
     setCurrentComponentToStore,
     roleArray,
     setLocationDataToStore,
+    setCourseIdToStore,
+    userProfile,
   } = props;
   const [course, setCourse] = useState({});
+  const [calculatedRating, setCalculatedRating] = useState('4');
+  // const [numberOfStars, setNumberOfStars] = useState(0);
+  // const [normalStars, setNormalStars] = useState(0);
   const [paymentGateway, setPaymentGateway] = useState(null);
   const [courseVideo, setCourseVideo] = useState(null);
   const [source, setSource] = useState(null);
@@ -248,7 +256,17 @@ const BuyCourse = (props) => {
         setSource(result.course_preview_vedio);
       }
 
-      const numberOfStars = Math.round(parseInt(result.course_rating, 10));
+      let totalSum = 0;
+      for (let i = 0; i < result.reviews.length; i++) {
+        totalSum += Number(result.reviews[i].rating);
+      }
+      let calcRating = 0;
+      if (result.reviews.length) {
+        calcRating = totalSum / result.reviews.length;
+        setCalculatedRating(String(totalSum / result.reviews.length).slice(0, 3));
+      }
+
+      const numberOfStars = Math.round(parseInt(Math.floor(calcRating), 10));
       setStarArray(
         [...Array(numberOfStars)].map((e, i) => (
           /* eslint-disable-next-line */
@@ -268,7 +286,7 @@ const BuyCourse = (props) => {
           </span>
         )),
       );
-      const content = [...contentArray];
+      const content = [];
       result.section_array.forEach((elem) => {
         content.push(...elem.content_array);
       });
@@ -295,7 +313,8 @@ const BuyCourse = (props) => {
             title: 'Subscribed!',
             text: `You have successfully subscribed to ${course.course_title}.`,
           });
-          push('/');
+          setCourseIdToStore(course.course_id);
+          push('/courses/mycourse');
         } else {
           Swal.fire({
             icon: 'error',
@@ -359,6 +378,7 @@ const BuyCourse = (props) => {
   const closeFeeModal = () => {
     setShowFeeModal(false);
     if (order.status === 'marked' || order.status === 'waived' || order.status === 'paid') {
+      setCourseIdToStore(course.course_id);
       push({
         pathname: '/courses/mycourse',
         state: {
@@ -464,7 +484,7 @@ const BuyCourse = (props) => {
         clientColor,
         clientName,
         clientAddress,
-        clientContact,
+        userProfile.contact,
         razorSuccess,
         orderDetails.course_order_id,
         clientId,
@@ -504,7 +524,8 @@ const BuyCourse = (props) => {
           title: 'Subscribed!',
           text: `You have successfully subscribed to ${course.course_title}.`,
         });
-        push('/');
+        setCourseIdToStore(course.course_id);
+        push('/courses/mycourse');
       } else {
         Swal.fire({
           icon: 'error',
@@ -541,9 +562,18 @@ const BuyCourse = (props) => {
     const array = [...arr];
     const hist = {};
     array.forEach((elem) => {
-      if (elem.file_type === 'image') {
+      if (
+        elem.file_type === 'image' ||
+        elem.file_type.includes('png') ||
+        elem.file_type.includes('jpg') ||
+        elem.file_type.includes('jpeg')
+      ) {
         elem.category = 'Documents';
-      } else if (elem.file_type === 'video') {
+      } else if (
+        elem.file_type === 'video' ||
+        elem.file_type.includes('mp4') ||
+        elem.file_type.includes('mkv')
+      ) {
         elem.category = 'Videos';
       } else if (elem.file_type === 'youtube') {
         elem.category = 'Videos';
@@ -551,6 +581,8 @@ const BuyCourse = (props) => {
         elem.category = 'Tests';
       } else if (elem.file_type === 'live class') {
         elem.category = 'Live Classes';
+      } else if (elem.file_type === 'external') {
+        elem.category = 'Resources';
       } else {
         elem.category = 'Documents';
       }
@@ -571,7 +603,7 @@ const BuyCourse = (props) => {
     return hist;
   };
 
-  const renderContentHistogram = () => {
+  const renderContentHistogram = useCallback(() => {
     const renderedHist = getHistogram(contentArray);
     return (
       <div className='scrollableContentOfCourses mt-3'>
@@ -581,6 +613,8 @@ const BuyCourse = (props) => {
             icon = <VideoIcon style={{ color: '#9f16cf', marginBottom: '9px' }} />;
           } else if (key === 'Documents') {
             icon = <DocIcon style={{ color: 'green', marginBottom: '9px' }} />;
+          } else if (key === 'Resources') {
+            icon = <Resources style={{ color: 'orange', marginBottom: '9px' }} />;
           } else if (key === 'Live classes') {
             icon = <LiveIcon style={{ color: '#faa300', marginBottom: '9px' }} />;
           } else if (key === 'Tests') {
@@ -606,7 +640,7 @@ const BuyCourse = (props) => {
         })}
       </div>
     );
-  };
+  }, [contentArray]);
 
   const goToCourse = (courseId) => {
     // console.log('gotocourse', history);
@@ -707,6 +741,8 @@ const BuyCourse = (props) => {
           sectionFileId: elem.section_has_file_id,
         };
         setNowPlayingVideo(playingVid);
+      } else if (elem.file_type === 'external') {
+        window.open(elem.file_link, '_blank');
       } else {
         push({
           pathname: '/otherfileviewer',
@@ -769,7 +805,7 @@ const BuyCourse = (props) => {
             </button>
           </div>
           <img
-            src={course.course_display_image || clientLogo || YCIcon}
+            src={course.course_display_image || YCIcon}
             alt='course'
             className='mx-auto courseDocumentOpenerImg'
           />
@@ -785,6 +821,7 @@ const BuyCourse = (props) => {
               style={{ borderRadius: '5px' }}
               autoplay='autoplay'
               id='vidElement2'
+              controls={!videoIsPlaying}
             >
               <source src={source} type='video/mp4' />
               <track src='' kind='subtitles' srcLang='en' label='English' />
@@ -803,16 +840,18 @@ const BuyCourse = (props) => {
       )}
       {!nowPlayingVideo && !documentOpener && !courseVideo && courseImage ? (
         <div className='mx-auto Courses__thumbnail'>
-          <img src={courseImage} alt='course' className='mx-auto img-fluid courseThumbnailImg' />
+          <img src={courseImage} alt='course' className='mx-auto  courseThumbnailImg' />
         </div>
       ) : null}
       {!nowPlayingVideo && !documentOpener && !courseVideo && !courseImage ? (
-        <div className='mx-auto Courses__thumbnail'>
-          <img
-            src={clientLogo ? clientLogo : YCIcon}
-            alt='course'
-            className='mx-auto img-fluid courseThumbnailImg'
-          />
+        <div
+          style={{
+            backgroundColor: location.state || clientColor,
+            padding: '40px',
+          }}
+          className='mx-auto Courses__thumbnail'
+        >
+          <img src={YCIcon} alt='course' className='mx-auto  courseThumbnailImg' />
         </div>
       ) : null}
       {!nowPlayingVideo && !documentOpener && courseVideo ? (
@@ -828,26 +867,60 @@ const BuyCourse = (props) => {
         <div className='Courses__buycourseContainer' style={{ marginTop: '0px' }}>
           <div className='courseNameContainer'>
             <div>
-              <p className='Courses__courseCardHeading mb-0'>{course.course_title}</p>
+              <p
+                style={{ fontFamily: 'Montserrat-Bold' }}
+                className='Courses__courseCardHeading mb-0'
+              >
+                {course.course_title}
+              </p>
+              {Number(course.total_subscriptions) > 0 ? (
+                <p style={{ color: 'black' }} className='Scrollable__smallText'>
+                  {course.total_subscriptions} people have subscribed to this course
+                </p>
+              ) : (
+                <p style={{ color: 'black' }} className='Scrollable__smallText'>
+                  Be the first one to subscribe this course.
+                </p>
+              )}
               <div className='d-flex align-items-center w-100 mx-auto'>
                 {starArray.map((e) => {
-                  return e;
+                  if (course.reviews.length && course.allow_reviews === 'true') {
+                    return e;
+                  } else {
+                    return null;
+                  }
                 })}
                 {whiteStarArray.map((e) => {
-                  return e;
+                  if (course.reviews.length && course.allow_reviews === 'true') {
+                    return e;
+                  } else {
+                    return null;
+                  }
                 })}
-                <p
-                  className='Scrollable__smallText mt-1 mb-0 ml-1'
-                  style={{ color: 'rgba(0, 0, 0, 0.87)', fontSize: '10px' }}
-                >
-                  {course.course_rating}
-                </p>
-                <p
-                  className='Scrollable__smallText mt-1 mb-0'
-                  style={{ color: 'rgba(0, 0, 0, 0.87)', fontSize: '10px' }}
-                >
-                  ({course.total_votes})
-                </p>
+                {course.reviews.length && course.allow_reviews === 'true' ? (
+                  <>
+                    <p
+                      className='Scrollable__smallText mt-1 mb-0 ml-1'
+                      style={{ color: 'rgba(0, 0, 0, 0.87)', fontSize: '10px' }}
+                    >
+                      {calculatedRating}
+                    </p>
+                    <p
+                      className='Scrollable__smallText mt-1 ml-1 mb-0'
+                      style={{ color: 'rgba(0, 0, 0, 0.87)', fontSize: '10px' }}
+                    >
+                      {` (${course.reviews.length})`}
+                    </p>
+                  </>
+                ) : !course.reviews.length && course.allow_reviews === 'true' ? (
+                  <p style={{ color: 'black' }} className='Scrollable__smallText'>
+                    Subscribe and be the first one to review this course
+                  </p>
+                ) : (
+                  <p style={{ color: 'black' }} className='Scrollable__smallText'>
+                    No Reviews
+                  </p>
+                )}
               </div>
               <div className='d-flex align-items-center justify-content-between'>
                 <div>
@@ -1072,10 +1145,14 @@ const BuyCourse = (props) => {
                               {Object.entries(getHistogram(e.content_array)).map(([key, val]) => {
                                 return (
                                   <div className='d-flex'>
-                                    <span className='mr-1 verySmallText'>{val}</span>
-                                    <span className='verySmallText mr-4'>
-                                      {val > 1 ? key : key.slice(0, key.length - 1)}
-                                    </span>
+                                    {!key.includes('Free Content') ? (
+                                      <>
+                                        <span className='mr-1 verySmallText'>{val}</span>
+                                        <span className='verySmallText mr-4'>
+                                          {val > 1 ? key : key.slice(0, key.length - 1)}
+                                        </span>
+                                      </>
+                                    ) : null}
                                   </div>
                                 );
                               })}
@@ -1110,6 +1187,8 @@ const BuyCourse = (props) => {
                               );
                             } else if (elem.category === 'Documents') {
                               icon = <DocIcon style={{ color: 'green' }} />;
+                            } else if (elem.category === 'Resources') {
+                              icon = <Resources style={{ color: 'orange' }} />;
                             } else if (elem.category === 'Live classes') {
                               icon = <LiveIcon style={{ color: '#faa300' }} />;
                             } else if (elem.category === 'Tests') {
@@ -1401,12 +1480,16 @@ const mapStateToProps = (state) => ({
   dashboardData: getCurrentDashboardData(state),
   locationData: getCurrentLocationData(state),
   roleArray: getRoleArray(state),
+  userProfile: getUserProfile(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   setRedirectPathToStore: (payload) => dispatch(dashboardActions.setRedirectPathToStore(payload)),
   setLocationDataToStore: (payload) => {
     dispatch(dashboardActions.setLocationDataToStore(payload));
+  },
+  setCourseIdToStore: (payload) => {
+    dispatch(courseActions.setCourseIdToStore(payload));
   },
   setCurrentComponentToStore: (payload) =>
     dispatch(brandingActions.setCurrentComponentToStore(payload)),
@@ -1421,6 +1504,12 @@ BuyCourse.propTypes = {
     push: PropTypes.func.isRequired,
     location: PropTypes.instanceOf(Object).isRequired,
   }).isRequired,
+  userProfile: PropTypes.shape({
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string,
+    contact: PropTypes.string.isRequired,
+    countryCode: PropTypes.string.isRequired,
+  }),
   clientUserId: PropTypes.number.isRequired,
   dashboardData: PropTypes.instanceOf(Object).isRequired,
   setLocationDataToStore: PropTypes.func.isRequired,
@@ -1442,6 +1531,7 @@ BuyCourse.propTypes = {
   setRedirectPathToStore: PropTypes.func.isRequired,
   setCurrentComponentToStore: PropTypes.func.isRequired,
   roleArray: PropTypes.instanceOf(Array).isRequired,
+  setCourseIdToStore: PropTypes.func.isRequired,
 };
 
 BuyCourse.defaultProps = {

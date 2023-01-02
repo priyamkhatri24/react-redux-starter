@@ -8,6 +8,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import AddTaskIcon from '@material-ui/icons/SaveOutlined';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
+import CloseIcon from '@material-ui/icons/Close';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
@@ -411,7 +412,7 @@ const Price = (props) => {
           <span className='Courses__coloredNumber mr-2'>4</span>{' '}
           <span className='my-auto ml-3'>Pricing and promotion</span>
         </Row>
-        <Row className='m-2 mt-3 justify-content-center'>
+        <Row className='m-2 mt-3 justify-content-start'>
           <label className='has-float-label my-auto w-100'>
             <input
               className='form-control'
@@ -424,9 +425,12 @@ const Price = (props) => {
             />
             <span>Course Price</span>
           </label>
+          <span className='mt-1 Courses__tinySubHeading'>
+            This is the price before discount. Not the actual price that user will pay.
+          </span>
         </Row>
 
-        <Row className='m-2 mt-3 justify-content-center'>
+        <Row className='m-2 mt-3 justify-content-start'>
           <label className='has-float-label my-auto w-100'>
             <input
               className='form-control'
@@ -439,6 +443,9 @@ const Price = (props) => {
             />
             <span>Discounted Price</span>
           </label>
+          <span className='mt-1 Courses__tinySubHeading'>
+            This is the actual price that user will pay while buying the course.
+          </span>
         </Row>
         {paymentGateway === 'razorpay' && (
           <Row className='m-2 mt-3'>
@@ -538,7 +545,7 @@ const Price = (props) => {
                     role='button'
                     className='d-flex align-items-center mx-2 saveDelBtns'
                   >
-                    remove
+                    <CloseIcon />
                   </div>
                 </div>
               );
@@ -610,6 +617,7 @@ const Price = (props) => {
                     <p className='alertTextRegionalPrice'>* Please enter a valid price</p>
                   ) : null}
                 </label>
+
                 <label className='has-float-label my-auto regionalPriceFormInput'>
                   <select
                     className='form-control w-100'
@@ -644,22 +652,24 @@ const Price = (props) => {
             ) : null}
             <div className='d-flex w-100'>
               <div
-                onClick={addCourseRegionalPrices}
-                onKeyPress={addCourseRegionalPrices}
-                tabIndex={-1}
-                role='button'
-                className='Courses__addRegionalPriceButton mt-2 mr-2'
-              >
-                Update prices
-              </div>
-              <div
                 onClick={addMoreClicked}
                 onKeyPress={addMoreClicked}
                 tabIndex={-1}
                 role='button'
-                className='Courses__addRegionalPriceButton mt-2'
+                className='Courses__addRegionalPriceButton mt-0'
               >
                 + Add More
+              </div>
+            </div>
+            <div className='w-100 d-flex justify-content-end'>
+              <div
+                onClick={addCourseRegionalPrices}
+                onKeyPress={addCourseRegionalPrices}
+                tabIndex={-1}
+                role='button'
+                className='Courses__addRegionalPriceButtonFilled mt-1'
+              >
+                Save prices
               </div>
             </div>
           </Row>
@@ -771,22 +781,23 @@ const Price = (props) => {
               <div className='d-block d-sm-flex'>
                 <Form.Check
                   type='radio'
+                  // defaultChecked
                   className='mr-3'
-                  id='forever'
+                  id={newCouponType === 'price' ? 'forever' : 'limited'}
                   label='Price'
-                  value='percent'
+                  value='price'
                   checked={newCouponType === 'price'}
                   name='Price'
-                  onChange={(e) => setNewCouponType('price')}
+                  onChange={(e) => setNewCouponType(e.target.value)}
                 />
                 <Form.Check
                   type='radio'
-                  id='forever'
+                  id={newCouponType === 'percent' ? 'forever' : 'limited'}
                   label='Percent'
                   value='percent'
                   checked={newCouponType === 'percent'}
                   name='Percent'
-                  onChange={(e) => setNewCouponType('percent')}
+                  onChange={(e) => setNewCouponType(e.target.value)}
                 />
               </div>
             </div>

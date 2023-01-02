@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'react-bootstrap/Modal';
 import CreateIcon from '@material-ui/icons/Create';
@@ -21,6 +21,7 @@ const Question = (props) => {
   const { question, index, update, language } = props;
   const [questionModal, setQuestionModal] = useState(false);
   const [questionText, setQuestionText] = useState(question.question_text);
+  const [solutionText, setSolutionText] = useState(question.solution_text);
   const [questionImage, setQuestionImage] = useState(question.question_image);
   const [solutionImage, setSolutionImage] = useState(question.question_solution_image);
   const [options, setOptions] = useState(question.option_array);
@@ -86,8 +87,8 @@ const Question = (props) => {
 
   const updateOptionText = (optext, indx) => {
     const newOptions = [...options];
-    newOptions[indx].text = optext;
-    // console.log(newOptions, options);
+    newOptions[indx] = { text: optext, order: options[indx].order };
+    console.log(newOptions, options);
     setOptions(newOptions);
   };
 
@@ -195,9 +196,11 @@ const Question = (props) => {
       </Card>
 
       <Modal show={questionModal} onHide={hideQuestionModal} size='lg'>
-        <Modal.Header>Edit Question</Modal.Header>
-        <Modal.Body className='d-flex justify-content-center'>
-          <div>
+        <Modal.Header style={{ fontWeight: 'bolder', fontFamily: 'Montserrat-Bold' }}>
+          Edit Question
+        </Modal.Header>
+        <Modal.Body className='d-flex justify-content-between'>
+          <div style={{ width: '48%' }}>
             <div className='d-flex questionUpperC my-2 mx-3'>
               <textarea
                 onChange={(e) => {
@@ -293,20 +296,22 @@ const Question = (props) => {
                           />
                         </Col>
                         <Col className='d-flex align-items-center justify-content-center' xs={1}>
-                          <div
-                            role='button'
-                            tabIndex={-1}
-                            className='removeOptionBtn'
-                            onClick={() => {}}
-                            onKeyDown={() => {}}
-                          >
-                            {i === question.option_array.length - 1 && i > 1 ? '-' : null}
-                          </div>
+                          {question.question_type !== 'subjective' ? (
+                            <div
+                              role='button'
+                              tabIndex={-1}
+                              className='removeOptionBtn'
+                              onClick={() => {}}
+                              onKeyDown={() => {}}
+                            >
+                              {i === question.option_array.length - 1 && i > 1 ? '-' : null}
+                            </div>
+                          ) : null}
                         </Col>
                       </Row>
                     );
                   })}
-                {question.type !== 'subjective' && question.option_array.length < 6 && (
+                {question.question_type !== 'subjective' && question.option_array.length < 6 && (
                   <Row className='mb-3'>
                     <button
                       className='addMoreOptionsBtn'
@@ -332,8 +337,12 @@ const Question = (props) => {
             <div className='d-flex questionUpperC my-2 mx-3'>
               <textarea
                 placeholder='Solution'
-                // onChange={(e) => updateSolution(e.target.value)}
+                onChange={(e) => {
+                  // updateQuestion(e.target.value);
+                  setSolutionText(e.target.value);
+                }}
                 className='questionTextarea'
+                value={solutionText}
               />
               <span className='Homework__ckAttach mt-1'>
                 <label htmlFor='file-inputer'>
@@ -373,20 +382,22 @@ const Question = (props) => {
             </div>
           </div>
 
-          <div>
-            <h1 className='Homework__options text-center hideOnDesktopHW'>Preview</h1>
+          <div className='Homework__vl' />
+
+          <div style={{ width: '48%', padding: '0px 10px' }}>
+            <h1 className='Homework__options text-center'>Preview</h1>
 
             <h3 className='Homework__options'>Question</h3>
             <div className='d-flex mb-3 Homework__questionHeading'>
-              {/* <MathJax math={String.raw`${question}`} /> */}
-              {questionText}
+              <MathJax math={String.raw`${questionText}`} />
+              {/* {questionText} */}
             </div>
             {questionImage && <img src={questionImage} alt='question ' className='img-fluid m-1' />}
 
             {question.question_type !== 'subjective' ? (
               <>
                 <h3 className='Homework__options'>Options</h3>
-                {question.option_array.map((e) => {
+                {options.map((e) => {
                   return (
                     <Row className='Homework__previewText ml-1' key={e.value}>
                       <Col xs={1}>
@@ -403,15 +414,14 @@ const Question = (props) => {
                             ? 'E'
                             : e.value === '6'
                             ? 'F'
-                            : '.'}
-                          .
+                            : '-'}
                         </p>
                       </Col>
                       {e.text ? (
                         <Col>
                           <div className='Homework__multipleOptions'>
-                            {/* <MathJax math={String.raw`${e.text}`} /> */}
-                            {e.text}
+                            <MathJax math={String.raw`${e.text}`} />
+                            {/* {e.text} */}
                           </div>
                         </Col>
                       ) : null}
@@ -436,8 +446,8 @@ const Question = (props) => {
             ) : null}
             <h3 className='Homework__options'>Solution</h3>
             <div className='d-flex Homework__questionHeading'>
-              {/* <MathJax math={String.raw`${solution}`} /> */}
-              {/* {solution} */}
+              {solutionText ? <MathJax math={String.raw`${solutionText}`} /> : null}
+              {/* {solutionText} */}
             </div>
             {solutionImage && <img src={solutionImage} alt='solution' className='img-fluid m-1' />}
           </div>

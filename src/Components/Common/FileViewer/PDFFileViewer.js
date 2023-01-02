@@ -8,6 +8,11 @@ if (process.env.NODE_ENV === 'development') {
   key = 'q1oxn6WyDRc572siUU5z';
 } else if (process.env.NODE_ENV === 'production' && window.location.origin.includes('askilc')) {
   key = 'BcBf29XSXBiPpBpG66JY';
+} else if (
+  process.env.NODE_ENV === 'production' &&
+  window.location.origin.includes('physicsmantra')
+) {
+  key = 'TTKeN7IQEvXriGIHM8rC';
 } else if (process.env.NODE_ENV === 'production' && window.location.origin.includes('rypmindia')) {
   key = 'o1HgM8bBaqhaZtnK3ZIa';
 } else if (

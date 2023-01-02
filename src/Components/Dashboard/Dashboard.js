@@ -76,6 +76,8 @@ import {
 import { getToken, onMessageListener } from '../../Utilities/firebase';
 import { conversationsActions } from '../../redux/actions/conversations.action';
 import DiwaliLights from '../Common/Festives/DiwaliLights/DiwaliLights';
+import ChristmasSnow from '../Common/Festives/ChristmasSnow/ChristmasSnow';
+// import
 
 const DashBoardAdmissions = Loadable({
   loader: () => import('./DashBoardAdmissions'),
@@ -95,6 +97,7 @@ const Dashboard = (props) => {
     history,
     scrolledHeight,
     setDashboardDataToStore,
+    setTokenToStore,
     setLocationDataToStore,
     setTestResultArrayToStore,
     setTestStartTimeToStore,
@@ -159,6 +162,19 @@ const Dashboard = (props) => {
   const [features, setFeatures] = useState([]);
   const [isToken, setIsToken] = useState(true);
   const [nameDisplay, setNameDisplay] = useState(false);
+  const [colors, setColors] = useState([
+    '#d4a373',
+    '#f08080',
+    '#a0c4ff',
+    '#abc4ff',
+    '#84dcc6',
+    '#b388eb',
+    '#a7bed3',
+    '#e7cee3',
+    '#e4b4c2',
+    '#fcd29f',
+    '#d2e0bf',
+  ]);
 
   // useEffect(() => {
   //   if (!sessionStatus) {
@@ -334,11 +350,13 @@ const Dashboard = (props) => {
     console.log(firstTimeLogin);
     const topicArr = getTopicArray();
     const getTok = getToken(setIsToken);
-
     Promise.all([topicArr, getTok]).then((res) => {
       console.log(res);
       const token = res[1];
       const topicArray = res[0];
+      setTokenToStore(token);
+      // console.error(token);
+
       post({ topic_array: JSON.stringify(topicArray), token }, '/subscribeTokenToTopic')
         .then((resp) => {
           onMessageListener();
@@ -685,7 +703,10 @@ const Dashboard = (props) => {
       setRestrictionModal(true);
       return;
     }
-    push({ pathname: `/courses/buyCourse/${window.btoa(clientId)}/${window.btoa(id)}` });
+    push({
+      pathname: `/courses/buyCourse/${window.btoa(clientId)}/${window.btoa(id)}`,
+      state: colors[Math.floor(Math.random() * colors.length)],
+    });
   };
 
   const goToMyCourse = (id) => {
@@ -1244,21 +1265,23 @@ const Dashboard = (props) => {
                     </a>
                   );
                 })}
-              <a
-                href={data.other_link}
-                className='text-center mr-3 my-3 ml-0'
-                style={{
-                  backgroundColor: 'rgba(112, 112, 112, 1)',
-                  color: '#fff',
-                  height: '36px',
-                  width: '36px',
-                  borderRadius: '36px',
-                  padding: '4px',
-                }}
-                key={7}
-              >
-                <LinkIcon />
-              </a>
+              {data.other_link ? (
+                <a
+                  href={data.other_link}
+                  className='text-center mr-3 my-3 ml-0'
+                  style={{
+                    backgroundColor: 'rgba(112, 112, 112, 1)',
+                    color: '#fff',
+                    height: '36px',
+                    width: '36px',
+                    borderRadius: '36px',
+                    padding: '4px',
+                  }}
+                  key={7}
+                >
+                  <LinkIcon />
+                </a>
+              ) : null}
             </section>
           </div>
         );
@@ -1606,6 +1629,7 @@ const Dashboard = (props) => {
   return (
     <div className='Dashboard__mainContainerDiv'>
       {/* <DiwaliLights /> */}
+      <ChristmasSnow />
       <div
         className='Dashboard__headerCard pb-3'
         // className={`Dashboard__headerCard pb-3 ${
@@ -2008,6 +2032,9 @@ const mapDispatchToProps = (dispatch) => ({
   setSelectedTypeToStore: (payload) => {
     dispatch(homeworkActions.setSelectedTypeToStore(payload));
   },
+  setTokenToStore: (payload) => {
+    dispatch(dashboardActions.setTokenToStore(payload));
+  },
   setScrolledHeightOfDocumentToStore: (payload) => {
     dispatch(dashboardActions.setScrolledHeightOfDocumentToStore(payload));
   },
@@ -2035,6 +2062,7 @@ Dashboard.propTypes = {
   setAdmissionRoleArrayToStore: PropTypes.func.isRequired,
   setAnalysisStudentObjectToStore: PropTypes.func.isRequired,
   setFolderIdArrayToStore: PropTypes.func.isRequired,
+  setTokenToStore: PropTypes.func.isRequired,
   userProfile: PropTypes.shape({
     firstName: PropTypes.string.isRequired,
     lastName: PropTypes.string.isRequired,

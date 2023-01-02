@@ -2,13 +2,13 @@ import firebase from 'firebase/app';
 import 'firebase/messaging';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBHw4PABmM68oVfyqTc5BCgTbvuJapIxL4',
-  authDomain: 'ingenium-backend-webportal.firebaseapp.com',
-  projectId: 'ingenium-backend-webportal',
-  storageBucket: 'ingenium-backend-webportal.appspot.com',
-  messagingSenderId: '838837260191',
-  appId: '1:838837260191:web:6c9e087ecbda21f1d5f7aa',
-  measurementId: 'G-7G56SQSZME',
+  apiKey: 'AIzaSyCfzlbpDIEy6BbiaBd0vpauoCSIeyEokhk',
+  authDomain: 'web-notifications-c1bbf.firebaseapp.com',
+  projectId: 'web-notifications-c1bbf',
+  storageBucket: 'web-notifications-c1bbf.appspot.com',
+  messagingSenderId: '1021666200890',
+  appId: '1:1021666200890:web:8584cd0ac0df2dae7c9403',
+  measurementId: 'G-KTE0ZLMW52',
 };
 // Initialize Firebase
 // firebase.initializeApp(firebaseConfig);
@@ -26,13 +26,27 @@ export const getToken = (setTokenFound) => {
     ? messaging
         .getToken({
           vapidKey:
-            'BC0KWilVn8okoLQJMYNTCe-L6e7cafEyqE_I_Z9-cScvjS_pR2oM96sx4rBBNYgGhraajB6EU0ETj1BVAGNjTt8',
+            'BFmQxaxpDdQnyNJfY0huEOtOUNSX-jP2oIvjWI3w5eirn9ASuY56Zs2USZVmDZOG0BKAiOfKp-vJXTHUYyPxz1c',
         })
         .then((currentToken) => {
           if (currentToken) {
             console.log('current token for client: ', currentToken);
             setTokenFound(true);
+
+            // messaging
+            //   .getMessaging()
+            //   .subscribeToTopic([currentToken], 'mohitpatel')
+            //   .then((response) => {
+            //     // See the MessagingTopicManagementResponse reference documentation
+            //     // for the contents of response.
+            //     console.log('Successfully subscribed to topic:', response);
+            //   })
+            //   .catch((error) => {
+            //     console.log('Error subscribing to topic:', error);
+            //   });
+
             return currentToken;
+
             // Track the token -> client mapping, by sending to backend server
             // show on the UI that permission is secured
           }
@@ -48,22 +62,28 @@ export const getToken = (setTokenFound) => {
     : null;
 };
 
+export const sibscribeToTopic = () => {};
+
 export const onMessageListener = () => {
-  messaging.onMessage(function sid(payload) {
-    console.log(payload);
+  messaging.onMessage((payload) => {
+    console.log('noti', payload);
     const notificationTitle = payload.notification.title;
     const notificationOptions = {
       body: payload.notification.body,
       //  icon: payload.notification.icon,
     };
 
+    // self.registration.showNotification(notificationTitle, notificationOptions);
+
     if (!('Notification' in window)) {
       console.log('This browser does not support system notifications.');
     } else if (Notification.permission === 'granted') {
       // If it's okay let's create a notification
+      console.log('aagya');
+
       const notification = new Notification(notificationTitle, notificationOptions);
-      notification.onclick = function sd(event) {
-        event.preventDefault();
+      notification.onclick = function (event) {
+        // event.preventDefault();
         window.open(payload.notification.click_action, '_blank');
         notification.close();
       };

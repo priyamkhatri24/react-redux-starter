@@ -231,6 +231,12 @@ const Mycourse = Loadable({
 });
 // import Mycourse from '../Components/Courses/MyCourse';
 
+const Certificate = Loadable({
+  loader: () => import(/* webpackChunkName: 'MyCourse' */ '../Components/Courses/Certificate'),
+  loading: Loading,
+});
+// import Certificate from '../Components/Courses/Certificate';
+
 const Dashboard = Loadable({
   loader: () => import(/* webpackChunkName: 'Dashboard' */ '../Components/Dashboard/Dashboard'),
   loading: Loading,
@@ -608,6 +614,7 @@ export function Routes() {
       <AuthenticatedRoute exact path='/courses' component={ViewCourses} />
       <Route exact path='/courses/buyCourse/:clientId?/:courseId?' component={BuyCourse} />
       <AuthenticatedRoute exact path='/courses/mycourse' component={Mycourse} />
+      <AuthenticatedRoute exact path='/courses/certificate' component={Certificate} />
       <AuthenticatedRoute exact path='/courses/teachercourse' component={TeacherCourses} />
       <AuthenticatedRoute
         exact

@@ -124,16 +124,22 @@ const Reviews = (props) => {
       <div className='d-flex align-items-end mb-1'>
         <h2 style={{ fontSize: '28px', fontFamily: 'Montserrat-Bold' }} className='mb-0'>
           {/* {Number(course.course_rating).toFixed(1)} */}
-          {!isNaN(findActualRating().toFixed(1)) ? findActualRating().toFixed(1) : '4.0'}
+          {!isNaN(findActualRating().toFixed(1)) ? findActualRating().toFixed(1) : ''}
         </h2>
-        <p style={{ fontSize: '14px', fontFamily: 'Montserrat-Medium' }} className='mb-0 ml-2'>
-          Course rating{' '}
-          {finalReviews.length > 0 ? (
-            <span style={{ fontSize: '14px', fontFamily: 'Montserrat-Regular' }}>
-              (based on {finalReviews.length} {finalReviews.length > 1 ? 'Reviews' : 'Review'})
-            </span>
-          ) : null}
-        </p>
+        {reviews.length ? (
+          <p style={{ fontSize: '14px', fontFamily: 'Montserrat-Medium' }} className='mb-0 ml-2'>
+            Course rating{' '}
+            {finalReviews.length > 0 ? (
+              <span style={{ fontSize: '14px', fontFamily: 'Montserrat-Regular' }}>
+                (based on {finalReviews.length} {finalReviews.length > 1 ? 'Reviews' : 'Review'})
+              </span>
+            ) : null}
+          </p>
+        ) : (
+          <p style={{ fontSize: '16px', fontFamily: 'Montserrat-Bold' }} className='mb-0 ml-0'>
+            No reviews yet
+          </p>
+        )}
       </div>
       <div>
         {ratingArray.length
