@@ -75,37 +75,18 @@ self.addEventListener('message', (event) => {
 // Any other custom service worker logic can go here.
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCfzlbpDIEy6BbiaBd0vpauoCSIeyEokhk',
-  authDomain: 'web-notifications-c1bbf.firebaseapp.com',
-  projectId: 'web-notifications-c1bbf',
-  storageBucket: 'web-notifications-c1bbf.appspot.com',
-  messagingSenderId: '1021666200890',
-  appId: '1:1021666200890:web:8584cd0ac0df2dae7c9403',
-  measurementId: 'G-KTE0ZLMW52',
+  apiKey: 'AIzaSyBpPeRLuOqzE2NxFxuu5dtOwGTgvwC05hw',
+  authDomain: 'ingenium-backend-197210.firebaseapp.com',
+  databaseURL: 'https://ingenium-backend-197210.firebaseio.com',
+  projectId: 'ingenium-backend-197210',
+  storageBucket: 'ingenium-backend-197210.appspot.com',
+  messagingSenderId: '686232401045',
+  appId: '1:686232401045:web:c7523d06f9907d37f9d79c',
+  measurementId: 'G-15RBG7S51T',
 };
 
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
-
-// messaging.onMessage((payload) => {
-//   console.log('message recieved', payload);
-
-//   const notificationTitle = 'TEST';
-//   const notificationOptions = {
-//     body: 'noti aagyaa',
-//   };
-//   self.registration.showNotification(notificationTitle, notificationOptions);
-// });
-
-// messaging.onBackgroundMessage(function (payload) {
-//   console.log('Received background messagee ', payload);
-
-//   const notificationTitle = 'TEST';
-//   const notificationOptions = {
-//     body: 'noti aagyaa',
-//   };
-//   self.registration.showNotification(notificationTitle, notificationOptions);
-// });
 
 self.addEventListener('notificationclick', (event) => {
   console.log(event);

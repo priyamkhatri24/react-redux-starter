@@ -1,5 +1,0 @@
-export const studyBinConstants = {
-  FOLDERARRAY: 'STUDY_FOLDERARRAY',
-  FOLDERPOP: 'STUDY_FOLDER_POP',
-  FOLDERPUSH: 'STUDY_FOLDER_PUSH',
-};

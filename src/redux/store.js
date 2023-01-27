@@ -18,25 +18,7 @@ const store = createStore(rootReducer(history), persistedState, applyMiddleware(
 
 store.subscribe(() => {
   saveState({
-    branding: store.getState().branding,
-    admission: store.getState().admission,
-    clientUserIdUpdate: store.getState().clientUserIdUpdate,
-    userProfile: store.getState().userProfile,
-    color: store.getState().color,
-    testsUpdate: store.getState().testsUpdate,
-    homework: store.getState().homework,
-    course: store.getState().course,
-    studyBin: store.getState().studyBin,
-    conversations: {
-      conversations: store.getState().conversations.conversations,
-      conversation: store.getState().conversations.conversation,
-    },
-    fees: store.getState().fees,
-    analysis: store.getState().analysis,
-    attendance: store.getState().attendance,
-    displayPage: store.getState().displayPage,
     dashboard: store.getState().dashboard,
-    test: store.getState().test,
   });
 });
 

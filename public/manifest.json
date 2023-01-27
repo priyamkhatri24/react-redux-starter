@@ -1,6 +1,7 @@
 {
-  "short_name": "Ingenium Education",
-  "name": "Powered By Ingenium education",
+  "short_name": "10point.ai",
+  "description": "Book of the Future",
+  "name": "10point.ai",
   "icons": [
     {
       "src": "favicon.ico",
@@ -10,18 +11,101 @@
     {
       "src": "logo192.png",
       "type": "image/png",
-      "sizes": "192x192",
-      "purpose": "maskable any"
+      "sizes": "192x192"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "maskable any"
+      "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "categories": ["education"],
+  "screenshots": [
+    {
+      "src": "https://question-images-ingenium.s3.ap-south-1.amazonaws.com/ProductScreenShot/1.jpeg",
+      "sizes": "586x1041",
+      "type": "image/jpeg",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "https://question-images-ingenium.s3.ap-south-1.amazonaws.com/ProductScreenShot/2.jpeg",
+      "sizes": "586x1041",
+      "type": "image/jpeg",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "https://question-images-ingenium.s3.ap-south-1.amazonaws.com/ProductScreenShot/3.jpeg",
+      "sizes": "586x1041",
+      "type": "image/jpeg",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "https://question-images-ingenium.s3.ap-south-1.amazonaws.com/ProductScreenShot/4.jpeg",
+      "sizes": "586x1041",
+      "type": "image/jpeg",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "https://question-images-ingenium.s3.ap-south-1.amazonaws.com/ProductScreenShot/5.jpeg",
+      "sizes": "586x1041",
+      "type": "image/jpeg",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Go Live",
+      "url": "/",
+      "icons": [
+        {
+          "src": "https://abs.twimg.com/responsive-web/client-web/icon-search-stroke.5f9aa88a.png",
+          "type": "image/png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Courses",
+      "url": "/",
+      "icons": [
+        {
+          "src": "https://abs.twimg.com/responsive-web/client-web/icon-notifications-stroke.429602da.png",
+          "type": "image/png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Chats",
+      "url": "/",
+      "icons": [
+        {
+          "src": "https://abs.twimg.com/responsive-web/client-web/icon-messages-stroke.5f95edca.png",
+          "type": "image/png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  
+  "gcm_sender_id": "1021666200890",
+  "gcm_user_visible_only": true,
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#009ece",
+  "background_color": "#000000",
+  "scope": "/",
+  "android_package_name": "com.mohit.web.app",
+  "prefer_related_applications": true,
+  "related_applications": [
+    {
+      "id": "com.mohit.web.app",
+      "platform": "chromeos_play",
+      "url": ""
+    }
+  ],
+  "launch_handler": {
+    "route_to": "existing-client",
+    "navigate_existing_client": "never"
+  }
 }

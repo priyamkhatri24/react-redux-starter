@@ -1,4 +1,4 @@
-import { dashboardConstants } from '../../constants';
+import { dashboardConstants } from '../../constants/index';
 
 function setDashboardDataToStore(payload) {
   return { type: dashboardConstants.DASHBOARDDATA, payload };

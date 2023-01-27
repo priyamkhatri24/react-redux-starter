@@ -18,7 +18,7 @@
   line-height: 1;
   padding: 0 1px;
   font-family: 'Montserrat-Regular';
-  color: rgba(0, 0, 0, 0.87);
+  color: #0000008A;
   font-weight: 900;
 }
 
@@ -85,7 +85,7 @@
 .has-float-label .form-control:placeholder-shown:not(:focus) + * {
   font-size: 14px;
   opacity: 0.7;
-  top: 0.7em;
+  top: 1em;
 }
 
 .input-group .has-float-label {
@@ -152,7 +152,7 @@ input[readonly].form-control {
 .has-float-label > input[type='textarea'],
 .has-float-label > input[type='time'], 
   .has-float-label > select {
-  border-color: rgba(0, 0, 0, 0.54);
+  border-color: #0000001f;
   border-radius: 5px;
   color: rgba(0, 0, 0, 0.87);
   font-family: 'Montserrat-SemiBold';
@@ -161,8 +161,24 @@ input[readonly].form-control {
 
 .has-float-label > textarea, 
   .has-float-label > select {
-  border-color: rgba(0, 0, 0, 0.54);
+  border-color: #0000001f;
   border-radius: 5px;
   color: rgba(0, 0, 0, 0.87);
   font-family: 'Montserrat-SemiBold';
 }
+
+
+  .has-float-label > select {
+  height: 43.59px !important;
+}
+
+.has-float-label > input[type='text'],
+.has-float-label > input[type='password'],
+.has-float-label > input[type='date'],
+.has-float-label > input[type='number'],
+.has-float-label > span > input[type='number'],
+.has-float-label > input[type='text'],
+.has-float-label > input[type='textarea'] {
+  padding: 1.3rem 0.75rem;
+}
+

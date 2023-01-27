@@ -1,73 +1,16 @@
-import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import Container from 'react-bootstrap/Container';
 import { ConnectedRouter } from 'connected-react-router';
 import { connect } from 'react-redux';
-import io from 'socket.io-client';
-// import loadable from '@loadable/component';
-import { getCurrentcolor } from '../redux/reducers/color.reducer';
-import { getCurrentBranding } from '../redux/reducers/branding.reducer';
-import { conversationsActions } from '../redux/actions/conversations.action';
-import { setGlobalColors, changeFaviconAndDocumentTitle } from '../Utilities';
-import { Loader } from '../Components/Common/Loader/Loading';
 import './App.scss';
 import { history, Routes } from '../Routing';
-import { dashboardActions } from '../redux/actions/dashboard.action';
-import { getCurrentLoadingStatus, getStatusOfSpinner } from '../redux/reducers/loading.reducer';
 import withClearCache from './BustCache';
-import { server } from '../Utilities/Remote';
 
 // const io = loadable.lib(() => import('socket.io-client'));
 
 function MainApp(props) {
-  const {
-    color,
-    currentbranding,
-    isLoading,
-    setSocket,
-    isSpinner,
-    setScrolledHeightOfDocumentToStore,
-  } = props;
-
-  window.onbeforeunload = function closingCode() {
-    setScrolledHeightOfDocumentToStore(0);
-    return null;
-  };
-
-  useEffect(() => {
-    const socket = io(server, {
-      transports: ['websocket', 'polling'],
-      autoConnect: true,
-    });
-    socket.on('connect', () => {
-      console.log(socket.id, 'connect');
-    });
-
-    socket.on('disconnect', () => {
-      console.log(socket.id, 'disconnected');
-      socket.connect();
-    });
-
-    setSocket({ socket });
-    return () => socket.emit('disconnect');
-  }, []);
-
-  useEffect(() => {
-    console.log(isSpinner);
-    if (Object.keys(color.color) !== 0) {
-      const { primary, light, lighter, superLight } = color.color;
-      setGlobalColors(primary, light, lighter, superLight);
-    }
-
-    if (Object.keys(currentbranding.branding) !== 0) {
-      const { client_icon: clientIcon, client_title: clientTitle } = currentbranding.branding;
-      changeFaviconAndDocumentTitle(clientIcon, clientTitle);
-    }
-  }, [color, currentbranding, isSpinner]);
-
   return (
     <Container fluid className='p-0 m-0 rootContainer mx-auto'>
-      {isLoading && <Loader isSpinner={isSpinner} />}
       <ConnectedRouter history={history}>
         <Routes />
       </ConnectedRouter>
@@ -75,25 +18,7 @@ function MainApp(props) {
   );
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setSocket: (socket) => {
-      dispatch(conversationsActions.setSocket(socket));
-    },
-    setScrolledHeightOfDocumentToStore: (payload) => {
-      dispatch(dashboardActions.setScrolledHeightOfDocumentToStore(payload));
-    },
-  };
-};
-
-const mapStateToProps = (state) => ({
-  color: getCurrentcolor(state),
-  currentbranding: getCurrentBranding(state),
-  isLoading: getCurrentLoadingStatus(state),
-  isSpinner: getStatusOfSpinner(state),
-});
-
-const BustCache = withClearCache(connect(mapStateToProps, mapDispatchToProps)(MainApp));
+const BustCache = withClearCache(connect(null, null)(MainApp));
 
 function App() {
   return <BustCache />;
@@ -101,20 +26,4 @@ function App() {
 
 export default App;
 
-MainApp.propTypes = {
-  color: PropTypes.shape({
-    color: PropTypes.shape({
-      primary: PropTypes.string,
-      light: PropTypes.string,
-      lighter: PropTypes.string,
-      superLight: PropTypes.string,
-    }),
-  }).isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  currentbranding: PropTypes.shape({
-    branding: PropTypes.instanceOf(Object).isRequired,
-  }).isRequired,
-  isSpinner: PropTypes.bool.isRequired,
-  setSocket: PropTypes.func.isRequired,
-  setScrolledHeightOfDocumentToStore: PropTypes.func.isRequired,
-};
+MainApp.propTypes = {};

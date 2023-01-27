@@ -2,6 +2,10 @@
 @import './scss/bootstrap';
 
 // overrides bootstraps default tabbing style
+html,body{
+  overflow-x: hidden !important;
+}
+
 
 .nav-tabs .nav-link.active {
   color: var(--primary-blue);
@@ -13,7 +17,7 @@
 }
 
 .nav-link {
-  color: $black;
+  color: black;
   font-family: $regular;
 }
 
